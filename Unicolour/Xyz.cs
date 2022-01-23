@@ -11,8 +11,8 @@ public class Xyz
     public Xyz(double x, double y, double z)
     {
         x.Check(0.0, 1.0, "X");
-        y.Check(0.0, 1.0, "X");
-        z.Check(0.0, 1.0, "X");
+        y.Check(0.0, 1.0, "Y");
+        z.Check(0.0, 1.0, "Z");
 
         X = x;
         Y = y;

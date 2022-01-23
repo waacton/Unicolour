@@ -1,0 +1,43 @@
+﻿namespace Wacton.Unicolour;
+
+using System;
+
+public class Hsb : IEquatable<Hsb>
+{
+    public double H { get; }
+    public double S { get; }
+    public double B { get; }
+
+    public Hsb(double h, double s, double b)
+    {
+        h.Check(0.0, 360.0, "Hue");
+        s.Check(0.0, 1.0, "Saturation");
+        b.Check(0.0, 1.0, "Brightness");
+
+        H = h;
+        S = s;
+        B = b;
+    }
+
+    public override string ToString() => $"{Math.Round(H, 1)}° {Math.Round(S * 100, 1)}% {Math.Round(B * 100, 1)}%";
+
+    public bool Equals(Hsb? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return H.Equals(other.H) && S.Equals(other.S) && B.Equals(other.B);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Hsb) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(H, S, B);
+    }
+}

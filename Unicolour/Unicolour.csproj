@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Wacton.Unicolour</AssemblyName>
+        <RootNamespace>Wacton.Unicolour</RootNamespace>
+        <PackageId>Wacton.Unicolour</PackageId>
+        <Authors>William Acton</Authors>
+        <Description>Colour utilities</Description>
+        <Copyright>William Acton</Copyright>
+        <PackageProjectUrl>https://gitlab.com/Wacton/Unicolour</PackageProjectUrl>
+        <RepositoryUrl>https://gitlab.com/Wacton/Unicolour</RepositoryUrl>
+        <LangVersion>10</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+</Project>

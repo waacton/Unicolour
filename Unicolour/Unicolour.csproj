@@ -1,18 +1,38 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AssemblyName>Wacton.Unicolour</AssemblyName>
         <RootNamespace>Wacton.Unicolour</RootNamespace>
-        <PackageId>Wacton.Unicolour</PackageId>
+        <PackageId>$(AssemblyName)</PackageId>
         <Authors>William Acton</Authors>
-        <Description>Colour utilities</Description>
+        <Description>Colour conversion, interpolation, and comparison</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://gitlab.com/Wacton/Unicolour</PackageProjectUrl>
         <RepositoryUrl>https://gitlab.com/Wacton/Unicolour</RepositoryUrl>
         <LangVersion>10</LangVersion>
         <TargetFramework>net6.0</TargetFramework>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageIcon>Resources\Unicolour.png</PackageIcon>
+        <PackageVersion>1.0.0-alpha.1</PackageVersion>
+        <PackageTags>colour color converter RGB HSB HSV LAB XYZ interpolation comparison contrast luminance deltaE</PackageTags>
+        <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+        <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
+
+
+    <ItemGroup>
+        <None Update="Resources\Unicolour.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+
+        <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 
 </Project>

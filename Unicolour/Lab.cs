@@ -13,5 +13,10 @@ public class Lab
         B = b;
     }
 
-    public override string ToString() => $"{L} {(A > 0 ? "+" : string.Empty)}{A} {(B > 0 ? "+" : string.Empty)}{B}";
+    public override string ToString()
+    {
+        var prefixA = A > 0 ? "+" : string.Empty;
+        var prefixB = B > 0 ? "+" : string.Empty;
+        return $"{Math.Round(L, 2)} {prefixA}{Math.Round(A, 2)} {prefixB}{Math.Round(B, 2)}";
+    }
 }

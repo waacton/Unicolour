@@ -35,4 +35,11 @@
         </None>
     </ItemGroup>
 
+    <!-- enables test module to access internal classes and methods -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
 </Project>

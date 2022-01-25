@@ -20,7 +20,7 @@ public class Unicolour : IEquatable<Unicolour>
 
     public static Unicolour FromRgb(int r, int g, int b, int a = 255) => FromRgb(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
     
-    public static Unicolour FromRgb(double r, double g, double b, double a = 255)
+    public static Unicolour FromRgb(double r, double g, double b, double a = 1.0)
     {
         var rgb = new Rgb(r, g, b);
         var hsb = Converter.RgbToHsb(rgb);

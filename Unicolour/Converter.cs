@@ -52,19 +52,14 @@ internal static class Converter
         var (red, green, blue) = (r + m, g + m, b + m);
         return new Rgb(red, green, blue);
     }
-    
+
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
     public static Xyz RgbToXyz(Rgb rgb)
     {
-        var r = rgb.R;
-        var g = rgb.G;
-        var b = rgb.B;
-        
-        double LinearCorrection(double value) => value < 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
-        var rLinear = LinearCorrection(r);
-        var gLinear = LinearCorrection(g);
-        var bLinear = LinearCorrection(b);
-            
+        var rLinear = rgb.RLinear;
+        var gLinear = rgb.GLinear;
+        var bLinear = rgb.BLinear;
+
         var x = (0.4124 * rLinear) + (0.3576 * gLinear) + (0.1805 * bLinear);
         var y = (0.2126 * rLinear) + (0.7152 * gLinear) + (0.0722 * bLinear);
         var z = (0.0193 * rLinear) + (0.1192 * gLinear) + (0.9505 * bLinear);

@@ -15,5 +15,5 @@ public class Xyz
         Z = z;
     }
 
-    public override string ToString() => $"{Math.Round(X, 1)} {Math.Round(Y, 1)} {Math.Round(Z, 1)}";
+    public override string ToString() => $"{Math.Round(X, 2)} {Math.Round(Y, 2)} {Math.Round(Z, 2)}";
 }

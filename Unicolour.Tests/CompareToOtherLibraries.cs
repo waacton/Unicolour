@@ -10,7 +10,7 @@ using ColorMineHsb = ColorMine.ColorSpaces.Hsb;
 using ColorMineXyz = ColorMine.ColorSpaces.Xyz;
 using ColorMineLab = ColorMine.ColorSpaces.Lab;
 
-public class OtherLibraries
+public class CompareToOtherLibraries
 {
     // https://docs.opencv.org/4.5.5/de/d25/imgproc_color_conversions.html
     [Test]

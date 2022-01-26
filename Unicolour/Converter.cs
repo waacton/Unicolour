@@ -89,7 +89,7 @@ internal static class Converter
          * --- 0.008856 = delta ^ 3
          * --- t * 7.787037 = t / 0.128419 = t / 3delta^2 [1 / 0.128419 = 7.787037]
          */
-        double F(double t) => t > 0.008856 ? Math.Cbrt(t) : (t * 7.787037) + (4.0 / 29.0);
+        double F(double t) => t > 0.008856 ? Math.Pow(t, 1 / 3.0) : (t * 7.787037) + (4.0 / 29.0);
         var l = 116 * F(yRatio) - 16;
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));

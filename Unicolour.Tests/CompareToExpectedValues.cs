@@ -5,7 +5,7 @@ using System.Drawing;
 using NUnit.Framework;
 using Wacton.Unicolour;
 
-public class UnicolourConversion
+public class CompareToExpectedValues
 {
     [Test]
     public void RgbSameAfterConvertedViaHsb()

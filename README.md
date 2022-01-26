@@ -2,7 +2,7 @@
 Unicolour is a small set of utilities for working with colour:
 - Conversion between RGB, HSB/HSV, LAB, and XYZ colour spaces
 - Interpolation between colours
-- Comparisons of colours via contrast and Delta E
+- Comparisons of colours
 
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
 

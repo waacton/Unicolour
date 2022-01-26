@@ -12,31 +12,33 @@ The goal of this library is to be intuitive and easy to use; performance is not 
 ## How to use 🔴🟢🔵
 🚧 Still in alpha 🚧
 
-Can be installed as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour/) [![NuGet](https://img.shields.io/nuget/v/Wacton.Unicolour.svg?maxAge=2592000)](https://www.nuget.org/packages/Wacton.Unicolour/)
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/) [![NuGet](https://img.shields.io/nuget/v/Wacton.Unicolour.svg?maxAge=2592000)](https://www.nuget.org/packages/Wacton.Unicolour/)
 ```
 dotnet add package Wacton.Unicolour
 ```
 
-1. Create a `Unicolour` from RGB or HSB/HSV values:
+2. Create a `Unicolour` from RGB or HSB/HSV values:
 ```c#
 using Wacton.Unicolour;
 ...
 var unicolour = Unicolour.FromRgb(r, g, b, a);
 var unicolour = Unicolour.FromHsb(h, s, b, a);
 ```
-2. Get representation of colour in different colour spaces:
+
+3. Get representation of colour in different colour spaces:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
 var xyz = unicolour.Xyz;
 var lab = unicolour.Lab;
 ```
-3. Interpolate between colours:
+
+4. Interpolate between colours:
 ```c#
 var interpolated = unicolour1.InterpolateViaHsb(unicolour2, 0.5);
 ```
 
-4. Compare colours:
+5. Compare colours:
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);

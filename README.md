@@ -1,13 +1,19 @@
 # <img src="https://gitlab.com/Wacton/Unicolour/-/raw/main/Unicolour/Resources/Unicolour.png" width="32" height="32"> Unicolour
 Unicolour is a small set of utilities for working with colour:
-- Conversion between RGB, HSB/HSV, LAB, and XYZ colour spaces
-- Interpolation between colours
-- Comparisons of colours
+- Colour space conversion
+- Colour interpolation
+- Colour comparison
 
-A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
+A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
+- RGB
+- HSB/HSV
+- CIE LAB
+- CIE XYZ
 
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be intuitive and easy to use; performance is not a priority.
+
+More functionality will be added over time.
 
 ## How to use 🔴🟢🔵
 🚧 Still in alpha 🚧

@@ -1,0 +1,18 @@
+image: mcr.microsoft.com/dotnet/sdk:6.0
+
+stages:
+    - build
+    - test
+
+build:
+    stage: build
+    script:
+        - "dotnet build Unicolour"
+    artifacts:
+      paths:
+        - Unicolour/bin/
+
+test:
+    stage: test
+    script: 
+        - "dotnet test --verbosity normal"

@@ -3,7 +3,7 @@
 public static class Interpolation
 {
     // TODO: include alpha as optional
-    public static Unicolour InterpolateViaHsb(this Unicolour startColour, Unicolour endColour, double distance)
+    public static Unicolour InterpolateHsb(this Unicolour startColour, Unicolour endColour, double distance)
     {
         var startHsb = startColour.Hsb;
         var endHsb = endColour.Hsb;

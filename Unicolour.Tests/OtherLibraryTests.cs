@@ -1,24 +1,29 @@
 namespace Wacton.Unicolour.Tests;
 
+using System;
 using System.Drawing;
 using Colourful;
 using NUnit.Framework;
 using OpenCvSharp;
 using Wacton.Unicolour;
+using Wacton.Unicolour.Tests.Lookups;
 using ColorMineRgb = ColorMine.ColorSpaces.Rgb;
 using ColorMineHsb = ColorMine.ColorSpaces.Hsb;
 using ColorMineXyz = ColorMine.ColorSpaces.Xyz;
 using ColorMineLab = ColorMine.ColorSpaces.Lab;
 
-public class CompareToOtherLibraries
+public class OtherLibraryTests
 {
+    private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
+
     // https://docs.opencv.org/4.5.5/de/d25/imgproc_color_conversions.html
     [Test]
-    public void OpenCV()
+    public void OpenCV_Windows()
     {
-        foreach (var name in ColourReference.Names)
+        Assume.That(IsWindows()); // I've given up trying to make OpenCV work in a dockerised unix environment...
+        foreach (var name in NamedColours.Names)
         {
-            var hex = ColourReference.Hexs[name];
+            var hex = NamedColours.Hexs[name];
             var systemColour = ColorTranslator.FromHtml(hex);
             var (r, g, b) = (systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
 
@@ -70,9 +75,9 @@ public class CompareToOtherLibraries
     [Test]
     public void Colourful()
     {
-        foreach (var name in ColourReference.Names)
+        foreach (var name in NamedColours.Names)
         {
-            var hex = ColourReference.Hexs[name];
+            var hex = NamedColours.Hexs[name];
             var systemColour = ColorTranslator.FromHtml(hex);
             var (r, g, b) = (systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
 
@@ -120,9 +125,9 @@ public class CompareToOtherLibraries
     [Test]
     public void ColorMine()
     {
-        foreach (var name in ColourReference.Names)
+        foreach (var name in NamedColours.Names)
         {
-            var hex = ColourReference.Hexs[name];
+            var hex = NamedColours.Hexs[name];
             var systemColour = ColorTranslator.FromHtml(hex);
             var (r, g, b) = (systemColour.R, systemColour.G, systemColour.B);
 

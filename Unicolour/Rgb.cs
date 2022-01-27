@@ -19,9 +19,9 @@ public class Rgb : IEquatable<Rgb>
 
     public Rgb(double r, double g, double b)
     {
-        r.Check(0.0, 1.0, "Red");
-        g.Check(0.0, 1.0, "Green");
-        b.Check(0.0, 1.0, "Blue");
+        r.Guard(0.0, 1.0, "Red");
+        g.Guard(0.0, 1.0, "Green");
+        b.Guard(0.0, 1.0, "Blue");
 
         R = r;
         G = g;

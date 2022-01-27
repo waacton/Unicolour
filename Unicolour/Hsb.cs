@@ -10,9 +10,9 @@ public class Hsb : IEquatable<Hsb>
 
     public Hsb(double h, double s, double b)
     {
-        h.Check(0.0, 360.0, "Hue");
-        s.Check(0.0, 1.0, "Saturation");
-        b.Check(0.0, 1.0, "Brightness");
+        h.Guard(0.0, 360.0, "Hue");
+        s.Guard(0.0, 1.0, "Saturation");
+        b.Guard(0.0, 1.0, "Brightness");
 
         H = h;
         S = s;

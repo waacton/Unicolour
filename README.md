@@ -1,4 +1,8 @@
 # <img src="https://gitlab.com/Wacton/Unicolour/-/raw/main/Unicolour/Resources/Unicolour.png" width="32" height="32"> Unicolour
+[![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
+[![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
+[![NuGet](https://img.shields.io/nuget/v/Wacton.Unicolour.svg?maxAge=2592000)](https://www.nuget.org/packages/Wacton.Unicolour/)
+
 Unicolour is a small set of utilities for working with colour:
 - Colour space conversion
 - Colour interpolation
@@ -18,7 +22,7 @@ More functionality will be added over time.
 ## How to use 🔴🟢🔵
 🚧 Still in alpha 🚧
 
-1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/) [![NuGet](https://img.shields.io/nuget/v/Wacton.Unicolour.svg?maxAge=2592000)](https://www.nuget.org/packages/Wacton.Unicolour/)
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/) 
 ```
 dotnet add package Wacton.Unicolour
 ```

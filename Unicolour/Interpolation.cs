@@ -22,6 +22,6 @@ public static class Interpolation
             : CalculateValue(Math.Min(startHsb.H, endHsb.H) + 360, Math.Max(startHsb.H, endHsb.H));
         var s = CalculateValue(startHsb.S, endHsb.S);
         var b = CalculateValue(startHsb.B, endHsb.B);
-        return Unicolour.FromHsb(Utils.Modulo(h, 360), s, b);
+        return Unicolour.FromHsb(h.Modulo(360), s, b);
     }
 }

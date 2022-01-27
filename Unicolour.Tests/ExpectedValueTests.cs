@@ -4,15 +4,16 @@ using System;
 using System.Drawing;
 using NUnit.Framework;
 using Wacton.Unicolour;
+using Wacton.Unicolour.Tests.Lookups;
 
-public class CompareToExpectedValues
+public class ExpectedValueTests
 {
     [Test]
     public void RgbSameAfterConvertedViaHsb()
     {
-        foreach (var name in ColourReference.Names)
+        foreach (var name in NamedColours.Names)
         {
-            var hex = ColourReference.Hexs[name];
+            var hex = NamedColours.Hexs[name];
             var systemColour = ColorTranslator.FromHtml(hex);
             
             var originalRgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
@@ -32,9 +33,9 @@ public class CompareToExpectedValues
     [Test]
     public void HsbSameAfterConvertedViaRgb()
     {
-        foreach (var name in ColourReference.Names)
+        foreach (var name in NamedColours.Names)
         {
-            var (h, s, b) = ColourReference.HSBs[name];
+            var (h, s, b) = NamedColours.HSBs[name];
             var originalHsb = new Hsb(h, s, b);
             var rgb = Converter.HsbToRgb(originalHsb);
             var convertedHsb = Converter.RgbToHsb(rgb);
@@ -48,14 +49,14 @@ public class CompareToExpectedValues
     [Test]
     public void FromRgbProducesExpectedHsb()
     {
-        foreach (var name in ColourReference.Names)
+        foreach (var name in NamedColours.Names)
         {
-            var hex = ColourReference.Hexs[name];
+            var hex = NamedColours.Hexs[name];
             var systemColour = ColorTranslator.FromHtml(hex);
             var unicolourFromRgb = Unicolour.FromRgb(systemColour.R, systemColour.G, systemColour.B);
             var hsbFromRgb = unicolourFromRgb.Hsb;
             
-            var roundedHsb = ColourReference.HSBs[name];
+            var roundedHsb = NamedColours.HSBs[name];
             Assert.That(Math.Round(hsbFromRgb.H), Is.EqualTo(roundedHsb.h));
             Assert.That(Math.Round(hsbFromRgb.S, 2), Is.EqualTo(roundedHsb.s));
             Assert.That(Math.Round(hsbFromRgb.B, 2), Is.EqualTo(roundedHsb.b));

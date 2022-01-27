@@ -3,6 +3,7 @@ image: mcr.microsoft.com/dotnet/sdk:6.0
 stages:
     - build
     - test
+    - security-test
 
 build:
     stage: build
@@ -12,7 +13,31 @@ build:
       paths:
         - Unicolour/bin/
 
+# dotnet test generates JUnit format logs for GitLab test reporting (https://docs.gitlab.com/ee/ci/unit_test_reports.html#net-example)
+# and collects code coverage report (https://github.com/coverlet-coverage/coverlet)
+# however coverage report is not in a useful format, so create a report from it (https://github.com/danielpalme/ReportGenerator) which requires installing as a tool
+# finally, cat the coverage report summary so it is displayed in the job log - which can then be regex'd from gitlab (https://gitlab.com/Wacton/Unicolour/-/settings/ci_cd)
 test:
     stage: test
-    script: 
-        - "dotnet test --verbosity normal"
+    script:
+        - 'dotnet test 
+            --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+            --collect:"XPlat Code Coverage" --results-directory:".\artifacts"'
+        - 'export PATH="$PATH:/root/.dotnet/tools"'
+        - 'dotnet tool install -g dotnet-reportgenerator-globaltool'
+        - 'reportgenerator "-reports:./**/coverage.cobertura.xml" "-targetdir:./artifacts/report" "-reporttypes:Html;TextSummary"'
+        - 'cat ./artifacts/report/Summary.txt'
+
+    artifacts:
+        when: always
+        paths:
+            - ./**/*test-result.xml
+        reports:
+            junit:
+                - ./**/*test-result.xml
+            cobertura: ./**/coverage.cobertura.xml
+
+sast:
+    stage: security-test
+include:
+    - template: Security/SAST.gitlab-ci.yml

@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
+﻿namespace Wacton.Unicolour.Tests.Lookups;
 
 using System.Collections.Generic;
 
-public static class ColourReference
+public static class NamedColours
 {
     public static readonly List<string> Names = new()
     {

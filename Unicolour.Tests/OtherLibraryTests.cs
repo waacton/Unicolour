@@ -21,10 +21,9 @@ public class OtherLibraryTests
     public void OpenCV_Windows()
     {
         Assume.That(IsWindows()); // I've given up trying to make OpenCV work in a dockerised unix environment...
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var hex = NamedColours.Hexs[name];
-            var systemColour = ColorTranslator.FromHtml(hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
             var (r, g, b) = (systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
 
             var unicolour = Unicolour.FromRgb(r, g, b);
@@ -33,7 +32,7 @@ public class OtherLibraryTests
             var xyz = unicolour.Xyz;
             var lab = unicolour.Lab;
 
-            string FailMessage() => $"colour:{name}";
+            string FailMessage() => $"colour:{namedColour.Name}";
 
             var matRgb = new Mat(1, 1, MatType.CV_32FC3, new Scalar(r, g, b));
             var openCvRgb = matRgb.Get<Vec3f>(0, 0);
@@ -75,10 +74,9 @@ public class OtherLibraryTests
     [Test]
     public void Colourful()
     {
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var hex = NamedColours.Hexs[name];
-            var systemColour = ColorTranslator.FromHtml(hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
             var (r, g, b) = (systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
 
             var unicolour = Unicolour.FromRgb(systemColour.R, systemColour.G, systemColour.B);
@@ -86,7 +84,7 @@ public class OtherLibraryTests
             var xyz = unicolour.Xyz;
             var lab = unicolour.Lab;
 
-            string FailMessage() => $"colour:{name}";
+            string FailMessage() => $"colour:{namedColour.Name}";
 
             var colourfulRgb = new RGBColor(r, g, b);
             Assert.That(rgb.R, Is.EqualTo(colourfulRgb.R).Within(0.00000000001), FailMessage);
@@ -125,10 +123,9 @@ public class OtherLibraryTests
     [Test]
     public void ColorMine()
     {
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var hex = NamedColours.Hexs[name];
-            var systemColour = ColorTranslator.FromHtml(hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
             var (r, g, b) = (systemColour.R, systemColour.G, systemColour.B);
 
             var unicolour = Unicolour.FromRgb(systemColour.R, systemColour.G, systemColour.B);
@@ -137,7 +134,7 @@ public class OtherLibraryTests
             var xyz = unicolour.Xyz;
             var lab = unicolour.Lab;
 
-            string FailMessage() => $"colour:{name}";
+            string FailMessage() => $"colour:{namedColour.Name}";
 
             var colorMineRgb = new ColorMineRgb {R = r, G = g, B = b};
             Assert.That(rgb.R, Is.EqualTo(colorMineRgb.R / 255.0).Within(0.00000000001), FailMessage);

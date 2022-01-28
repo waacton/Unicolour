@@ -31,6 +31,19 @@ public class UtilsTests
     }
     
     [Test]
+    public void GuardUnusual()
+    {
+        Assert.Catch<InvalidOperationException>(() => double.MinValue.Guard(-1.0, 1.0, "test"));
+        Assert.Catch<InvalidOperationException>(() => double.MaxValue.Guard(-1.0, 1.0, "test"));
+        Assert.Catch<InvalidOperationException>(() => double.PositiveInfinity.Guard(-1.0, 1.0, "test"));
+        Assert.Catch<InvalidOperationException>(() => double.NegativeInfinity.Guard(-1.0, 1.0, "test"));
+        Assert.Catch<InvalidOperationException>(() => double.NaN.Guard(-1.0, 1.0, "test"));
+        Assert.Catch<InvalidOperationException>(() => double.Epsilon.Guard(0.00000000001, 1.0, "test"));
+        double.Epsilon.Guard(-1.0, 1.0, "test");
+        Assert.Pass();
+    }
+    
+    [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)
     {
         AssertModulo(dividend, dividend, 0);

@@ -11,14 +11,13 @@ public class ExpectedValueTests
     [Test]
     public void RgbSameAfterConvertedViaHsb()
     {
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var hex = NamedColours.Hexs[name];
-            var systemColour = ColorTranslator.FromHtml(hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
             
             var originalRgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
-            var hsb = Converter.RgbToHsb(originalRgb);
-            var convertedRgb = Converter.HsbToRgb(hsb);
+            var hsb = Conversion.RgbToHsb(originalRgb);
+            var convertedRgb = Conversion.HsbToRgb(hsb);
             
             Assert.That(convertedRgb.R, Is.EqualTo(originalRgb.R).Within(0.00000000001));
             Assert.That(convertedRgb.G, Is.EqualTo(originalRgb.G).Within(0.00000000001));
@@ -33,12 +32,12 @@ public class ExpectedValueTests
     [Test]
     public void HsbSameAfterConvertedViaRgb()
     {
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var (h, s, b) = NamedColours.HSBs[name];
+            var (h, s, b) = namedColour.Hsb;
             var originalHsb = new Hsb(h, s, b);
-            var rgb = Converter.HsbToRgb(originalHsb);
-            var convertedHsb = Converter.RgbToHsb(rgb);
+            var rgb = Conversion.HsbToRgb(originalHsb);
+            var convertedHsb = Conversion.RgbToHsb(rgb);
 
             Assert.That(convertedHsb.H, Is.EqualTo(originalHsb.H).Within(0.00000000001));
             Assert.That(convertedHsb.S, Is.EqualTo(originalHsb.S).Within(0.00000000001));
@@ -49,14 +48,13 @@ public class ExpectedValueTests
     [Test]
     public void FromRgbProducesExpectedHsb()
     {
-        foreach (var name in NamedColours.Names)
+        foreach (var namedColour in NamedColours.All)
         {
-            var hex = NamedColours.Hexs[name];
-            var systemColour = ColorTranslator.FromHtml(hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
             var unicolourFromRgb = Unicolour.FromRgb(systemColour.R, systemColour.G, systemColour.B);
             var hsbFromRgb = unicolourFromRgb.Hsb;
-            
-            var roundedHsb = NamedColours.HSBs[name];
+
+            var roundedHsb = namedColour.Hsb;
             Assert.That(Math.Round(hsbFromRgb.H), Is.EqualTo(roundedHsb.h));
             Assert.That(Math.Round(hsbFromRgb.S, 2), Is.EqualTo(roundedHsb.s));
             Assert.That(Math.Round(hsbFromRgb.B, 2), Is.EqualTo(roundedHsb.b));

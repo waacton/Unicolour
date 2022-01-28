@@ -4,6 +4,7 @@ internal static class Utils
 {
     public static void Guard(this double value, double min, double max, string name)
     {
+        if (double.IsNaN(value)) throw new InvalidOperationException($"{name} cannot be NaN");
         if (value < min) throw new InvalidOperationException($"{name} cannot be less than {min}");
         if (value > max) throw new InvalidOperationException($"{name} cannot be more than {max}");
     }

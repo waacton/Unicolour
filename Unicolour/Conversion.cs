@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-internal static class Converter
+internal static class Conversion
 {
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
     public static Hsb RgbToHsb(Rgb rgb)
@@ -23,7 +23,7 @@ internal static class Converter
         hue = hue < 0 ? 360 + hue : hue;
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
-        return new Hsb(hue, saturation, brightness);
+        return new Hsb(hue, saturation, brightness, false);
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB

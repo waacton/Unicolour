@@ -4,7 +4,7 @@ using System;
 using NUnit.Framework;
 using Wacton.Unicolour;
 
-public class InterpolationTests
+public class InterpolateHsbTests
 {
     [Test]
     public void SameColour()
@@ -95,37 +95,23 @@ public class InterpolationTests
     }
     
     [Test]
-    public void BeyondEndColourToInvalidSaturation()
+    public void BeyondColourToInvalidSaturation()
     {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 1, 0);
+        var unicolour1 = Unicolour.FromHsb(90, 0, 0.6);
+        var unicolour2 = Unicolour.FromHsb(270, 1, 0.4);
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
-    }
-    
-    [Test]
-    public void BeyondEndColourToInvalidBrightness()
-    {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 0, 1);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
-    }
-    
-    [Test]
-    public void BeyondStartColourToInvalidSaturation()
-    {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 1, 0);
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
     }
     
     [Test]
-    public void BeyondStartColourToInvalidBrightness()
+    public void BeyondColourToInvalidBrightness()
     {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 0, 1);
+        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0);
+        var unicolour2 = Unicolour.FromHsb(270, 0.4, 1);
+        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
+        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
     }

@@ -26,4 +26,10 @@
       <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Lookups\NamedColours.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

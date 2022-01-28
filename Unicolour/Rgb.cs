@@ -11,7 +11,7 @@ public class Rgb : IEquatable<Rgb>
     public int R255 => (int) Math.Round(R * 255);
     public int G255 => (int) Math.Round(G * 255);
     public int B255 => (int) Math.Round(B * 255);
-    public string Hex => $"#{R255:X}{G255:X}{B255:X}";
+    public string Hex => $"#{R255:X2}{G255:X2}{B255:X2}";
 
     public double RLinear => LinearCorrection(R);
     public double GLinear => LinearCorrection(G);

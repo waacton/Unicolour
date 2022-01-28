@@ -19,6 +19,8 @@ The goal of this library is to be intuitive and easy to use; performance is not 
 
 More functionality will be added over time.
 
+Targets .NET Standard 2.0 for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
+
 ## How to use 🔴🟢🔵
 🚧 Still in alpha 🚧
 

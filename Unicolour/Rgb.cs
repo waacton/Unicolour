@@ -29,7 +29,7 @@ public class Rgb : IEquatable<Rgb>
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
-    private static double LinearCorrection(double value)
+    public static double LinearCorrection(double value)
     {
         return value <= 0.04045 
             ? value / 12.92 

@@ -11,9 +11,9 @@ public class ExpectedValueTests
     [Test]
     public void RgbSameAfterConvertedViaHsb()
     {
-        foreach (var namedColour in NamedColours.All)
+        foreach (var namedColour in TestColours.NamedColours)
         {
-            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
             
             var originalRgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
             var hsb = Conversion.RgbToHsb(originalRgb);
@@ -32,7 +32,7 @@ public class ExpectedValueTests
     [Test]
     public void HsbSameAfterConvertedViaRgb()
     {
-        foreach (var namedColour in NamedColours.All)
+        foreach (var namedColour in TestColours.NamedColours)
         {
             var (h, s, b) = namedColour.Hsb;
             var originalHsb = new Hsb(h, s, b);
@@ -48,9 +48,9 @@ public class ExpectedValueTests
     [Test]
     public void FromRgbProducesExpectedHsb()
     {
-        foreach (var namedColour in NamedColours.All)
+        foreach (var namedColour in TestColours.NamedColours)
         {
-            var systemColour = ColorTranslator.FromHtml(namedColour.Hex);
+            var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
             var unicolourFromRgb = Unicolour.FromRgb(systemColour.R, systemColour.G, systemColour.B);
             var hsbFromRgb = unicolourFromRgb.Hsb;
 

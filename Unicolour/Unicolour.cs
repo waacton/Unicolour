@@ -4,30 +4,34 @@ using System;
 
 public class Unicolour : IEquatable<Unicolour>
 {
-    public Hsb Hsb { get; }
-    public Rgb Rgb => Conversion.HsbToRgb(Hsb);
-    public Xyz Xyz => Conversion.RgbToXyz(Rgb);
-    public Lab Lab => Conversion.XyzToLab(Xyz);
+    private Hsb? hsb;
+    private Rgb? rgb;
+    private Xyz? xyz;
+    private Lab? lab;
+
+    public Hsb Hsb => hsb ??= Conversion.RgbToHsb(Rgb);
+    public Rgb Rgb => rgb ??= Conversion.HsbToRgb(Hsb);
+    public Xyz Xyz => xyz ??= Conversion.RgbToXyz(Rgb);
+    public Lab Lab => lab ??= Conversion.XyzToLab(Xyz);
     public double A { get; }
 
     public double Luminance => this.Luminance();
 
-    private Unicolour(double h, double s, double b, double a, bool explicitHue)
+    private Unicolour(Hsb hsb, double a)
     {
-        Hsb = new Hsb(h, s, b, explicitHue);
+        this.hsb = hsb;
         A = a;
     }
     
-    public static Unicolour FromHsb(double h, double s, double b, double a = 1.0) => new(h, s, b, a, true);
-
-    public static Unicolour FromRgb(int r, int g, int b, int a = 255) => FromRgb(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
-    
-    public static Unicolour FromRgb(double r, double g, double b, double a = 1.0)
+    private Unicolour(Rgb rgb, double a)
     {
-        var rgb = new Rgb(r, g, b);
-        var hsb = Conversion.RgbToHsb(rgb);
-        return new Unicolour(hsb.H, hsb.S, hsb.B, a, false);
+        this.rgb = rgb;
+        A = a;
     }
+    
+    public static Unicolour FromHsb(double h, double s, double b, double a = 1.0) => new(new Hsb(h, s, b), a);
+    public static Unicolour FromRgb(int r, int g, int b, int a = 255) => FromRgb(r / 255.0, g / 255.0, b / 255.0, a / 255.0);
+    public static Unicolour FromRgb(double r, double g, double b, double a = 1.0) => new(new Rgb(r, g, b), a);
 
     public override string ToString() => $"HSB:[{Hsb}] RGB:[{Rgb}] A:{Math.Round(A * 100, 1)}";
 

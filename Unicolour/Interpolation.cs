@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-public static class Interpolation
+internal static class Interpolation
 {
     // TODO: include alpha as optional
     public static Unicolour InterpolateHsb(this Unicolour startColour, Unicolour endColour, double distance)

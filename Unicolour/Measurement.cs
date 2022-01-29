@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-public static class Measurement
+internal static class Measurement
 {
     public static double Luminance(this Unicolour colour)
     {

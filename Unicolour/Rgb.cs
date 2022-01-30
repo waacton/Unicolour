@@ -7,15 +7,18 @@ public class Rgb : IEquatable<Rgb>
     public double R { get; }
     public double G { get; }
     public double B { get; }
+    public (double r, double g, double b) Tuple => (R, G, B);
 
     public int R255 => (int) Math.Round(R * 255);
     public int G255 => (int) Math.Round(G * 255);
     public int B255 => (int) Math.Round(B * 255);
+    public (double r255, double g255, double b255) Tuple255 => (R255, G255, B255);
     public string Hex => $"#{R255:X2}{G255:X2}{B255:X2}";
 
     public double RLinear => LinearCorrection(R);
     public double GLinear => LinearCorrection(G);
     public double BLinear => LinearCorrection(B);
+    public (double rLinear, double gLinear, double bLinear) TupleLinear => (RLinear, GLinear, BLinear);
 
     public Rgb(double r, double g, double b)
     {

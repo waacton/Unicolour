@@ -8,8 +8,13 @@ using System.Linq;
 // NamedColours.csv is a list of 145 colours taken from https://en.wikipedia.org/wiki/X11_color_names
 internal static class TestColours
 {
+    private static readonly Random Random = new();
+    
     public static readonly List<TestColour> NamedColours;
     public static readonly List<TestColour> OpenCvColours;
+    public static readonly List<(int r, int g, int b)> RandomRGB255s = new();
+    public static readonly List<(double r255, double g255, double b255)> RandomRGBs = new();
+    public static readonly List<(double h, double s, double b)> RandomHSBs = new();
     
     static TestColours()
     {
@@ -18,7 +23,16 @@ internal static class TestColours
         
         OpenCvColours = File.ReadAllLines(Path.Combine("Lookups", "OpenCvColours.csv"))
             .Select(CreateOpenCvColour).ToList();
+
+        for (var i = 0; i < 1000; i++)
+        {
+            RandomRGB255s.Add((Random.Next(256), Random.Next(256), Random.Next(256)));
+            RandomRGBs.Add((Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
+            RandomHSBs.Add((Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
+        }
     }
+
+    public static TestColour GetOpenCvColour(string name) => OpenCvColours.Single(x => x.Name == name);
 
     private static TestColour CreateNamedColour(string csvRow)
     {

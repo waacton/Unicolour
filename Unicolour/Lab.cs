@@ -5,6 +5,7 @@ public class Lab : IEquatable<Lab>
     public double L { get; }
     public double A { get; }
     public double B { get; }
+    public (double l, double a, double b) Tuple => (L, A, B);
 
     public Lab(double l, double a, double b)
     {

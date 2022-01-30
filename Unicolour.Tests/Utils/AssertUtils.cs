@@ -5,7 +5,7 @@ using Wacton.Unicolour.Tests.Lookups;
 
 internal static class AssertUtils
 {
-    public static void AssertNamedColour(Action<TestColour> action)
+    public static void AssertNamedColours(Action<TestColour> action)
     {
         foreach (var namedColour in TestColours.NamedColours)
         {
@@ -13,7 +13,7 @@ internal static class AssertUtils
         }
     }
 
-    public static void AssertRandomRgb255Colour(Action<int, int, int> action)
+    public static void AssertRandomRgb255Colours(Action<int, int, int> action)
     {
         foreach (var (r, g, b) in TestColours.RandomRGB255s)
         {
@@ -21,7 +21,7 @@ internal static class AssertUtils
         }
     }
     
-    public static void AssertRandomRgbColour(Action<double, double, double> action)
+    public static void AssertRandomRgbColours(Action<double, double, double> action)
     {
         foreach (var (r, g, b) in TestColours.RandomRGBs)
         {
@@ -29,7 +29,7 @@ internal static class AssertUtils
         }
     }
     
-    public static void AssertRandomHsbColour(Action<double, double, double> action)
+    public static void AssertRandomHsbColours(Action<double, double, double> action)
     {
         foreach (var (r, g, b) in TestColours.RandomHSBs)
         {

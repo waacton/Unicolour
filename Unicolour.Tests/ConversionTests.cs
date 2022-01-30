@@ -13,21 +13,21 @@ public class ConversionTests
     private const double HsbTolerance = 0.000000005;
 
     [Test]
-    public void NamedRgbMatchesNamedHsb() => AssertUtils.AssertNamedColour(AssertRgbToHsbConversion);
+    public void NamedRgbMatchesNamedHsb() => AssertUtils.AssertNamedColours(AssertRgbToHsbConversion);
 
     [Test]
     public void RgbSameAfterUnconversion()
     {
-        AssertUtils.AssertNamedColour(AssertRgbUnconversion);
-        AssertUtils.AssertRandomRgbColour(AssertRgbUnconversion);
-        AssertUtils.AssertRandomRgb255Colour(AssertRgbUnconversion);
+        AssertUtils.AssertNamedColours(AssertRgbUnconversion);
+        AssertUtils.AssertRandomRgbColours(AssertRgbUnconversion);
+        AssertUtils.AssertRandomRgb255Colours(AssertRgbUnconversion);
     }
 
     [Test]
     public void HsbSameAfterUnconversion()
     {
-        AssertUtils.AssertNamedColour(AssertHsbUnconversion);
-        AssertUtils.AssertRandomHsbColour(AssertHsbUnconversion);
+        AssertUtils.AssertNamedColours(AssertHsbUnconversion);
+        AssertUtils.AssertRandomHsbColours(AssertHsbUnconversion);
     }
 
     private static void AssertRgbToHsbConversion(TestColour namedColour)

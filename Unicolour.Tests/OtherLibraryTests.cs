@@ -37,10 +37,10 @@ public class OtherLibraryTests
     {
         // I've given up trying to make OpenCvSharp work in a dockerised unix environment...
         Assume.That(IsWindows());
-        AssertUtils.AssertNamedColour(namedColour => AssertFromNamed(namedColour, OpenCvUtils.FromRgb255, OpenCvTolerances));
-        AssertUtils.AssertRandomRgb255Colour((r, g, b) => AssertFromRgb255(r, g, b, OpenCvUtils.FromRgb255, OpenCvTolerances)); 
-        AssertUtils.AssertRandomRgbColour((r, g, b) => AssertFromRgb(r, g, b, OpenCvUtils.FromRgb, OpenCvTolerances));
-        AssertUtils.AssertRandomHsbColour((h, s, b) => AssertFromHsb(h, s, b, OpenCvUtils.FromHsb, OpenCvTolerances));
+        AssertUtils.AssertNamedColours(namedColour => AssertFromNamed(namedColour, OpenCvUtils.FromRgb255, OpenCvTolerances));
+        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, OpenCvUtils.FromRgb255, OpenCvTolerances)); 
+        AssertUtils.AssertRandomRgbColours((r, g, b) => AssertFromRgb(r, g, b, OpenCvUtils.FromRgb, OpenCvTolerances));
+        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, OpenCvUtils.FromHsb, OpenCvTolerances));
     }
     
     [Test] 
@@ -48,23 +48,23 @@ public class OtherLibraryTests
     {
         // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
         TestColour GetStoredOpenCvColour(string name) => TestColours.GetOpenCvColour(name);
-        AssertUtils.AssertNamedColour(namedColour => AssertFromStored(namedColour, GetStoredOpenCvColour, OpenCvTolerances));
+        AssertUtils.AssertNamedColours(namedColour => AssertFromStored(namedColour, GetStoredOpenCvColour, OpenCvTolerances));
     }
 
     [Test]
     public void Colourful()
     {
-        AssertUtils.AssertNamedColour(namedColour => AssertFromNamed(namedColour, ColourfulUtils.FromRgb255, ColourfulTolerances));
-        AssertUtils.AssertRandomRgb255Colour((r, g, b) => AssertFromRgb255(r, g, b, ColourfulUtils.FromRgb255, ColourfulTolerances)); 
-        AssertUtils.AssertRandomRgbColour((r, g, b) => AssertFromRgb(r, g, b, ColourfulUtils.FromRgb, ColourfulTolerances));
+        AssertUtils.AssertNamedColours(namedColour => AssertFromNamed(namedColour, ColourfulUtils.FromRgb255, ColourfulTolerances));
+        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, ColourfulUtils.FromRgb255, ColourfulTolerances)); 
+        AssertUtils.AssertRandomRgbColours((r, g, b) => AssertFromRgb(r, g, b, ColourfulUtils.FromRgb, ColourfulTolerances));
     }
     
     [Test]
     public void ColorMine()
     {
-        AssertUtils.AssertNamedColour(namedColour => AssertFromNamed(namedColour, ColorMineUtils.FromRgb255, ColorMineTolerances));
-        AssertUtils.AssertRandomRgb255Colour((r, g, b) => AssertFromRgb255(r, g, b, ColorMineUtils.FromRgb255, ColorMineTolerances)); 
-        AssertUtils.AssertRandomHsbColour((h, s, b) => AssertFromHsb(h, s, b, ColorMineUtils.FromHsb, ColorMineTolerances)); 
+        AssertUtils.AssertNamedColours(namedColour => AssertFromNamed(namedColour, ColorMineUtils.FromRgb255, ColorMineTolerances));
+        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, ColorMineUtils.FromRgb255, ColorMineTolerances)); 
+        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, ColorMineUtils.FromHsb, ColorMineTolerances)); 
     }
     
     private static void AssertFromNamed(TestColour namedColour, ToOtherLibFromNamed toOtherLibColour, Tolerances tolerances)

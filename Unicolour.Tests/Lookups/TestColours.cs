@@ -15,6 +15,7 @@ internal static class TestColours
     public static readonly List<(int r, int g, int b)> RandomRGB255s = new();
     public static readonly List<(double r255, double g255, double b255)> RandomRGBs = new();
     public static readonly List<(double h, double s, double b)> RandomHSBs = new();
+    public static readonly List<string> RandomHexs = new();
     
     static TestColours()
     {
@@ -29,10 +30,11 @@ internal static class TestColours
             RandomRGB255s.Add((Random.Next(256), Random.Next(256), Random.Next(256)));
             RandomRGBs.Add((Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
             RandomHSBs.Add((Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
+            RandomHexs.Add(GenerateRandomHex());
         }
     }
 
-    public static TestColour GetOpenCvColour(string name) => OpenCvColours.Single(x => x.Name == name);
+    public static TestColour GetStoredOpenCvColour(string name) => OpenCvColours.Single(x => x.Name == name);
 
     private static TestColour CreateNamedColour(string csvRow)
     {
@@ -65,5 +67,19 @@ internal static class TestColours
     private static double FromPercentage(string text) => double.Parse(text.TrimEnd('%')) / 100.0;
     private static double FromDegrees(string text) => double.Parse(text.TrimEnd('°'));
     private static double FromText(string text) => double.Parse(text);
+    
+    private static string GenerateRandomHex()
+    {
+        const string hexChars = "0123456789abcdefABCDEF";
+        var useHash = Random.Next(0, 2) == 0;
+        var length = Random.Next(0, 2) == 0 ? 6 : 8;
 
+        var hex = useHash ? "#" : string.Empty;
+        for (var i = 0; i < length; i++)
+        {
+            hex += hexChars[Random.Next(hexChars.Length)];
+        }
+
+        return hex;
+    }
 }

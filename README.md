@@ -33,8 +33,10 @@ dotnet add package Wacton.Unicolour
 ```c#
 using Wacton.Unicolour;
 ...
-var unicolour = Unicolour.FromRgb(r, g, b, a);
-var unicolour = Unicolour.FromHsb(h, s, b, a);
+var unicolour = Unicolour.FromHex("#FF1493");
+var unicolour = Unicolour.FromRgb255(255, 20, 147);
+var unicolour = Unicolour.FromRgb(1.0, 0.078, 0.576);
+var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
 ```
 
 3. Get representation of colour in different colour spaces:

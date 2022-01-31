@@ -8,26 +8,23 @@ public class UtilsTests
     [Test]
     public void GuardInRange()
     {
-        0.5.Guard(0.0, 1.0, "test");
-        Assert.Pass();
+        Assert.DoesNotThrow(() => 0.5.Guard(0.0, 1.0, "test"));
     }
     
     [Test]
     public void GuardLowerLimit()
     {
         Assert.Catch<InvalidOperationException>(() => 0.99999.Guard(1.0, 2.0, "test"));
-        1.00000.Guard(1.0, 2.0, "test");
-        1.00001.Guard(1.0, 2.0, "test");
-        Assert.Pass();
+        Assert.DoesNotThrow(() => 1.00000.Guard(1.0, 2.0, "test"));
+        Assert.DoesNotThrow(() => 1.00001.Guard(1.0, 2.0, "test"));
     }
     
     [Test]
     public void GuardUpperLimit()
     {
         Assert.Catch<InvalidOperationException>(() => 2.00001.Guard(1.0, 2.0, "test"));
-        2.00000.Guard(1.0, 2.0, "test");
-        1.99999.Guard(1.0, 2.0, "test");
-        Assert.Pass();
+        Assert.DoesNotThrow(() => 2.00000.Guard(1.0, 2.0, "test"));
+        Assert.DoesNotThrow(() => 1.99999.Guard(1.0, 2.0, "test"));
     }
     
     [Test]
@@ -39,8 +36,7 @@ public class UtilsTests
         Assert.Catch<InvalidOperationException>(() => double.NegativeInfinity.Guard(-1.0, 1.0, "test"));
         Assert.Catch<InvalidOperationException>(() => double.NaN.Guard(-1.0, 1.0, "test"));
         Assert.Catch<InvalidOperationException>(() => double.Epsilon.Guard(0.00000000001, 1.0, "test"));
-        double.Epsilon.Guard(-1.0, 1.0, "test");
-        Assert.Pass();
+        Assert.DoesNotThrow(() => double.Epsilon.Guard(-1.0, 1.0, "test"));
     }
     
     [Test]

@@ -12,7 +12,7 @@ internal static class AssertUtils
             action(namedColour);
         }
     }
-
+    
     public static void AssertRandomRgb255Colours(Action<int, int, int> action)
     {
         foreach (var (r, g, b) in TestColours.RandomRGB255s)
@@ -34,6 +34,14 @@ internal static class AssertUtils
         foreach (var (r, g, b) in TestColours.RandomHSBs)
         {
             action(r, g, b);
+        }
+    }
+    
+    public static void AssertRandomHexs(Action<string> action)
+    {
+        foreach (var hex in TestColours.RandomHexs)
+        {
+            action(hex);
         }
     }
 }

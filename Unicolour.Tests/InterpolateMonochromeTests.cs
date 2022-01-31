@@ -10,8 +10,8 @@ public class InterpolateMonochromeTests
     // monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
     public void MonochromeStartColour()
     {
-        var rgbBlack = Unicolour.FromRgb(0, 0, 0);
-        var rgbWhite = Unicolour.FromRgb(255, 255, 255);
+        var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
+        var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
         var hsbBlack = Unicolour.FromHsb(180, 1, 0); // no brightness = black
         var hsbWhite = Unicolour.FromHsb(180, 0, 1); // no saturation = greyscale
         var green = Unicolour.FromHsb(120, 1, 1);
@@ -34,8 +34,8 @@ public class InterpolateMonochromeTests
     // monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
     public void MonochromeEndColour()
     {
-        var rgbBlack = Unicolour.FromRgb(0, 0, 0);
-        var rgbWhite = Unicolour.FromRgb(255, 255, 255);
+        var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
+        var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
         var hsbBlack = Unicolour.FromHsb(180, 1, 0); // no brightness = black
         var hsbWhite = Unicolour.FromHsb(180, 0, 1); // no saturation = greyscale
         var blue = Unicolour.FromHsb(240, 1, 1);

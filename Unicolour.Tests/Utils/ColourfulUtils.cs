@@ -6,7 +6,7 @@ using Wacton.Unicolour.Tests.Lookups;
 internal static class ColourfulUtils
 {
     public static TestColour FromRgb255(int r255, int g255, int b255) => FromRgb255(r255, g255, b255, $"{r255:000} {g255:000} {b255:000}");
-    public static TestColour FromRgb255(int r255, int g255, int b255, string name)
+    private static TestColour FromRgb255(int r255, int g255, int b255, string name)
     {
         var r = r255 / 255.0;
         var g = g255 / 255.0;
@@ -15,7 +15,7 @@ internal static class ColourfulUtils
     }
 
     public static TestColour FromRgb(double r, double g, double b) => FromRgb(r, g, b, $"{r:F2} {g:F2} {b:F2}");
-    public static TestColour FromRgb(double r, double g, double b, string name)
+    private static TestColour FromRgb(double r, double g, double b, string name)
     {
         var rgb = new RGBColor(r, g, b);
 

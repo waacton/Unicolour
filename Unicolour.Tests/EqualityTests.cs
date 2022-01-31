@@ -12,7 +12,7 @@ public class EqualityTests
     public void EqualRgbGivesEqualObjects()
     {
         var unicolour1 = GetRandomRgbUnicolour();
-        var unicolour2 = Unicolour.FromRgb(unicolour1.Rgb.R, unicolour1.Rgb.G, unicolour1.Rgb.B, unicolour1.A);
+        var unicolour2 = Unicolour.FromRgb(unicolour1.Rgb.R, unicolour1.Rgb.G, unicolour1.Rgb.B, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
@@ -20,7 +20,7 @@ public class EqualityTests
     public void EqualHsbGivesEqualObjects()
     {
         var unicolour1 = GetRandomHsbUnicolour();
-        var unicolour2 = Unicolour.FromHsb(unicolour1.Hsb.H, unicolour1.Hsb.S, unicolour1.Hsb.B, unicolour1.A);
+        var unicolour2 = Unicolour.FromHsb(unicolour1.Hsb.H, unicolour1.Hsb.S, unicolour1.Hsb.B, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
@@ -32,7 +32,7 @@ public class EqualityTests
             (unicolour1.Rgb.R + 0.1).Modulo(1),
             (unicolour1.Rgb.G + 0.1).Modulo(1),
             (unicolour1.Rgb.B + 0.1).Modulo(1),
-            (unicolour1.A + 0.1).Modulo(1));
+            (unicolour1.Alpha.A + 0.1).Modulo(1));
         AssertUnicoloursNotEqual(unicolour1, unicolour2);
     }
     
@@ -44,7 +44,7 @@ public class EqualityTests
             (unicolour1.Hsb.H + 0.1).Modulo(360),
             (unicolour1.Hsb.S + 0.1).Modulo(1),
             (unicolour1.Hsb.B + 0.1).Modulo(1),
-            (unicolour1.A + 0.1).Modulo(1));
+            (unicolour1.Alpha.A + 0.1).Modulo(1));
         AssertUnicoloursNotEqual(unicolour1, unicolour2);
     }
 
@@ -66,7 +66,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Hsb, unicolour2.Hsb);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Lab, unicolour2.Lab);
-        AssertEqual(unicolour1.A, unicolour2.A);
+        AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Luminance, unicolour2.Luminance);
         AssertEqual(unicolour1, unicolour2);
     }
@@ -77,7 +77,7 @@ public class EqualityTests
         AssertNotEqual(unicolour1.Hsb, unicolour2.Hsb);
         AssertNotEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertNotEqual(unicolour1.Lab, unicolour2.Lab);
-        AssertNotEqual(unicolour1.A, unicolour2.A);
+        AssertNotEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertNotEqual(unicolour1.Luminance, unicolour2.Luminance);
         AssertNotEqual(unicolour1, unicolour2);
     }
@@ -91,7 +91,7 @@ public class EqualityTests
         }
         
         Assert.That(object1, Is.EqualTo(object2));
-        Assert.That(object1.Equals(object2), Is.True);
+        Assert.That(object1.Equals(object2));
         Assert.That(object1.GetHashCode(), Is.EqualTo(object2.GetHashCode()));
         Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
     }

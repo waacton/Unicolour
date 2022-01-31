@@ -11,7 +11,7 @@ public class ConversionTests
 {
     private const double RgbTolerance = 0.00000000001;
     private const double HsbTolerance = 0.000000005;
-
+    
     [Test]
     public void NamedRgbMatchesNamedHsb() => AssertUtils.AssertNamedColours(AssertRgbToHsbConversion);
 

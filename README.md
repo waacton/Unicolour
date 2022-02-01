@@ -11,8 +11,8 @@ Unicolour is a small set of utilities for working with colour:
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
 - RGB
 - HSB/HSV
-- CIE LAB
 - CIE XYZ
+- CIE LAB
 
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be intuitive and easy to use; performance is not a priority.

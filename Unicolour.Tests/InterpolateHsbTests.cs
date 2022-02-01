@@ -9,96 +9,96 @@ public class InterpolateHsbTests
     [Test]
     public void SameColour()
     {
-        var unicolour1 = Unicolour.FromHsb(180, 0.25, 0.75);
-        var unicolour2 = Unicolour.FromHsb(180, 0.25, 0.75);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 0.25).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 0.75).Hsb;
-        var hsb3 = unicolour1.InterpolateHsb(unicolour2, 0.75).Hsb;
-        var hsb4 = unicolour2.InterpolateHsb(unicolour1, 0.25).Hsb;
+        var unicolour1 = Unicolour.FromHsb(180, 0.25, 0.75, 0.5);
+        var unicolour2 = Unicolour.FromHsb(180, 0.25, 0.75, 0.5);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.25);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.75);
+        var interpolated3 = unicolour1.InterpolateHsb(unicolour2, 0.75);
+        var interpolated4 = unicolour2.InterpolateHsb(unicolour1, 0.25);
         
-        AssertHsb(hsb1, (180, 0.25, 0.75));
-        AssertHsb(hsb2, (180, 0.25, 0.75));
-        AssertHsb(hsb3, (180, 0.25, 0.75));
-        AssertHsb(hsb4, (180, 0.25, 0.75));
+        AssertHsba(interpolated1, (180, 0.25, 0.75, 0.5));
+        AssertHsba(interpolated2, (180, 0.25, 0.75, 0.5));
+        AssertHsba(interpolated3, (180, 0.25, 0.75, 0.5));
+        AssertHsba(interpolated4, (180, 0.25, 0.75, 0.5));
     }
-    
+
     [Test]
     public void EquidistantForward()
     {
-        var unicolour1 = Unicolour.FromHsb(0, 0, 0);
+        var unicolour1 = Unicolour.FromHsb(0, 0, 0, 0);
         var unicolour2 = Unicolour.FromHsb(180, 1, 1);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 0.5).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 0.5).Hsb;
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.5);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.5);
         
-        AssertHsb(hsb1, (90, 0.5, 0.5));
-        AssertHsb(hsb2, (90, 0.5, 0.5));
+        AssertHsba(interpolated1, (90, 0.5, 0.5, 0.5));
+        AssertHsba(interpolated2, (90, 0.5, 0.5, 0.5));
     }
     
     [Test]
     public void EquidistantBackward()
     {
-        var unicolour1 = Unicolour.FromHsb(0, 0, 0);
-        var unicolour2 = Unicolour.FromHsb(340, 0.5, 0.8);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 0.5).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 0.5).Hsb;
+        var unicolour1 = Unicolour.FromHsb(0, 0, 0, 0);
+        var unicolour2 = Unicolour.FromHsb(340, 0.5, 0.8, 0.2);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.5);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.5);
         
-        AssertHsb(hsb1, (350, 0.25, 0.4));
-        AssertHsb(hsb2, (350, 0.25, 0.4));
+        AssertHsba(interpolated1, (350, 0.25, 0.4, 0.1));
+        AssertHsba(interpolated2, (350, 0.25, 0.4, 0.1));
     }
     
     [Test]
     public void CloserToEndColour()
     {
         var unicolour1 = Unicolour.FromHsb(0, 1, 0);
-        var unicolour2 = Unicolour.FromHsb(180, 0, 1);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 0.75).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 0.75).Hsb;
+        var unicolour2 = Unicolour.FromHsb(180, 0, 1, 0.5);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.75);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.75);
 
-        AssertHsb(hsb1, (135, 0.25, 0.75));
-        AssertHsb(hsb2, (45, 0.75, 0.25));
+        AssertHsba(interpolated1, (135, 0.25, 0.75, 0.625));
+        AssertHsba(interpolated2, (45, 0.75, 0.25, 0.875));
     }
     
     [Test]
     public void CloserToStartColour()
     {
         var unicolour1 = Unicolour.FromHsb(0, 1, 0);
-        var unicolour2 = Unicolour.FromHsb(180, 0, 1);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 0.25).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 0.25).Hsb;
+        var unicolour2 = Unicolour.FromHsb(180, 0, 1, 0.5);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.25);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.25);
         
-        AssertHsb(hsb1, (45, 0.75, 0.25));
-        AssertHsb(hsb2, (135, 0.25, 0.75));
+        AssertHsba(interpolated1, (45, 0.75, 0.25, 0.875));
+        AssertHsba(interpolated2, (135, 0.25, 0.75, 0.625));
     }
     
     [Test]
     public void BeyondEndColour()
     {
-        var unicolour1 = Unicolour.FromHsb(0, 0.4, 0.6);
-        var unicolour2 = Unicolour.FromHsb(90, 0.6, 0.4);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, 1.5).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, 1.5).Hsb;
+        var unicolour1 = Unicolour.FromHsb(0, 0.4, 0.6, 0.8);
+        var unicolour2 = Unicolour.FromHsb(90, 0.6, 0.4, 0.9);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 1.5);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 1.5);
 
-        AssertHsb(hsb1, (135, 0.7, 0.3));
-        AssertHsb(hsb2, (315, 0.3, 0.7));
+        AssertHsba(interpolated1, (135, 0.7, 0.3, 0.95));
+        AssertHsba(interpolated2, (315, 0.3, 0.7, 0.75));
     }
     
     [Test]
     public void BeyondStartColour()
     {
-        var unicolour1 = Unicolour.FromHsb(0, 0.4, 0.6);
-        var unicolour2 = Unicolour.FromHsb(90, 0.6, 0.4);
-        var hsb1 = unicolour1.InterpolateHsb(unicolour2, -0.5).Hsb;
-        var hsb2 = unicolour2.InterpolateHsb(unicolour1, -0.5).Hsb;
+        var unicolour1 = Unicolour.FromHsb(0, 0.4, 0.6, 0.8);
+        var unicolour2 = Unicolour.FromHsb(90, 0.6, 0.4, 0.9);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, -0.5);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, -0.5);
 
-        AssertHsb(hsb1, (315, 0.3, 0.7));
-        AssertHsb(hsb2, (135, 0.7, 0.3));
+        AssertHsba(interpolated1, (315, 0.3, 0.7, 0.75));
+        AssertHsba(interpolated2, (135, 0.7, 0.3, 0.95));
     }
     
     [Test]
     public void BeyondColourToInvalidSaturation()
     {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0.6);
-        var unicolour2 = Unicolour.FromHsb(270, 1, 0.4);
+        var unicolour1 = Unicolour.FromHsb(90, 0, 0.6, 0.8);
+        var unicolour2 = Unicolour.FromHsb(270, 1, 0.4, 0.9);
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
@@ -108,18 +108,33 @@ public class InterpolateHsbTests
     [Test]
     public void BeyondColourToInvalidBrightness()
     {
-        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 0.4, 1);
+        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0, 0.8);
+        var unicolour2 = Unicolour.FromHsb(270, 0.4, 1, 0.9);
+        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
+        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
+        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
+        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
+    }
+    
+    [Test]
+    public void BeyondColourToInvalidAlpha()
+    {
+        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0.4, 0);
+        var unicolour2 = Unicolour.FromHsb(270, 0.4, 0.6);
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
         Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
     }
 
-    private static void AssertHsb(Hsb actualHsb, (double h, double s, double b) expectedHsb)
+    private static void AssertHsba(Unicolour unicolour, (double h, double s, double b, double a) expectedHsba)
     {
-        Assert.That(actualHsb.H, Is.EqualTo(expectedHsb.h).Within(0.00000000005));
-        Assert.That(actualHsb.S, Is.EqualTo(expectedHsb.s).Within(0.00000000005));
-        Assert.That(actualHsb.B, Is.EqualTo(expectedHsb.b).Within(0.00000000005));
+        var actualHsb = unicolour.Hsb;
+        var actualAlpha = unicolour.Alpha;
+        
+        Assert.That(actualHsb.H, Is.EqualTo(expectedHsba.h).Within(0.00000000005));
+        Assert.That(actualHsb.S, Is.EqualTo(expectedHsba.s).Within(0.00000000005));
+        Assert.That(actualHsb.B, Is.EqualTo(expectedHsba.b).Within(0.00000000005));
+        Assert.That(actualAlpha.A, Is.EqualTo(expectedHsba.a).Within(0.00000000005));
     }
 }

@@ -22,9 +22,9 @@ internal static class Comparison
         return Math.Sqrt(squaredDiffL + squaredDiffA + squaredDiffB);
     }
     
-    // https://en.wikipedia.org/wiki/Color_difference#CIE94
-    private static double DeltaE94(this Unicolour colour1, Unicolour colour2) => throw new NotImplementedException("Use Delta E 76 instead");
+    // TODO: https://en.wikipedia.org/wiki/Color_difference#CIE94
+    // private static double DeltaE94(this Unicolour colour1, Unicolour colour2) => throw new NotImplementedException("Use Delta E 76 instead");
         
-    // https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-    private static double DeltaE00(this Unicolour colour1, Unicolour colour2) => throw new NotImplementedException("Use Delta E 76 instead");
+    // TODO: https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+    // private static double DeltaE00(this Unicolour colour1, Unicolour colour2) => throw new NotImplementedException("Use Delta E 76 instead");
 }

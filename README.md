@@ -49,6 +49,7 @@ var lab = unicolour.Lab;
 
 4. Interpolate between colours:
 ```c#
+var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
 ```
 

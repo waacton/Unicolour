@@ -21,8 +21,9 @@ public class OtherLibraryTests
      * the LAB test tolerances are so large is not really worth testing against
      */
     private static readonly Tolerances OpenCvTolerances = new() { Rgb = 0.005, Hsb = 0.005, Xyz = 0.0005, Lab = 50.0 };
-    private static readonly Tolerances ColourfulTolerances = new() { Rgb = 0.00000000001, RgbLinear = 0.00000000001, Xyz = 0.0005, Lab = 0.05 };
-    private static readonly Tolerances ColorMineTolerances = new() { Rgb = 0.00000000001, Hsb = 0.0005, Xyz = 0.0005, Lab = 0.0005 };
+    private static readonly Tolerances ColourfulTolerances = new() { Rgb = 0.00000000001, RgbLinear = 0.00000000001, Xyz = 0.00000000001, Lab = 0.0000005 };
+    private static readonly Tolerances ColorMineTolerances = new() { Rgb = 0.00000000001, Hsb = 0.0005, Xyz = 0.0005, Lab = 0.05 };
+    private static readonly Tolerances SixLaborsTolerances = new() { Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.0005, Xyz = 0.005, Lab = 0.1 };
     
     private delegate TestColour ToOtherLibFromRgb255(int r, int g, int b);
     private delegate TestColour ToOtherLibFromRgb(double r, double g, double b);
@@ -64,6 +65,15 @@ public class OtherLibraryTests
         AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, ColorMineUtils.FromRgb255, ColorMineTolerances));
         AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, ColorMineUtils.FromRgb255, ColorMineTolerances)); 
         AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, ColorMineUtils.FromHsb, ColorMineTolerances)); 
+    }
+    
+    [Test]
+    public void SixLabors()
+    {
+        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsUtils.FromRgb255, SixLaborsTolerances));
+        AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, SixLaborsUtils.FromRgb255, SixLaborsTolerances));
+        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, SixLaborsUtils.FromRgb255, SixLaborsTolerances)); 
+        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, SixLaborsUtils.FromHsb, SixLaborsTolerances)); 
     }
     
     private static void AssertFromHex(string hex, ToOtherLibFromRgb255 toOtherLibColour, Tolerances tolerances)
@@ -115,21 +125,22 @@ public class OtherLibraryTests
     
     private static void AssertOtherColour(Unicolour unicolour, TestColour otherColour, Tolerances tolerances)
     {
-        string FailMessage() => $"colour:{otherColour.Name}";
         
-        void AssertColourSpace((double, double, double) unicolourSpace, (double, double, double)? otherSpace, double tolerance)
+        void AssertColourSpace((double, double, double) unicolourSpace, (double, double, double)? otherSpace, double tolerance, string spaceName)
         {
+            string FailMessage() => $"colour: {otherColour.Name} {spaceName}";
+
             if (!otherSpace.HasValue) return;
             Assert.That(unicolourSpace.Item1, Is.EqualTo(otherSpace.Value.Item1).Within(tolerance), FailMessage);
             Assert.That(unicolourSpace.Item2, Is.EqualTo(otherSpace.Value.Item2).Within(tolerance), FailMessage);
             Assert.That(unicolourSpace.Item3, Is.EqualTo(otherSpace.Value.Item3).Within(tolerance), FailMessage);
         }
 
-        AssertColourSpace(unicolour.Rgb.Tuple, otherColour.Rgb, tolerances.Rgb);
-        AssertColourSpace(unicolour.Rgb.TupleLinear, otherColour.RgbLinear, tolerances.RgbLinear);
-        AssertColourSpace(unicolour.Hsb.Tuple, otherColour.Hsb, tolerances.Hsb);
-        AssertColourSpace(unicolour.Xyz.Tuple, otherColour.Xyz, tolerances.Xyz);
-        AssertColourSpace(unicolour.Lab.Tuple, otherColour.Lab, tolerances.Lab);
+        AssertColourSpace(unicolour.Rgb.Tuple, otherColour.Rgb, tolerances.Rgb, "Rgb");
+        AssertColourSpace(unicolour.Rgb.TupleLinear, otherColour.RgbLinear, tolerances.RgbLinear, "RgbLinear");
+        AssertColourSpace(unicolour.Hsb.Tuple, otherColour.Hsb, tolerances.Hsb, "Hsb");
+        AssertColourSpace(unicolour.Xyz.Tuple, otherColour.Xyz, tolerances.Xyz, "Xyz");
+        AssertColourSpace(unicolour.Lab.Tuple, otherColour.Lab, tolerances.Lab, "Lab");
     }
 
     private class Tolerances {

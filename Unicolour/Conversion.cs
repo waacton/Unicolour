@@ -27,7 +27,7 @@ internal static class Conversion
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
-    public static Rgb HsbToRgb(Hsb hsb)
+    public static Rgb HsbToRgb(Hsb hsb, Configuration config)
     {
         var hue = hsb.H;
         var saturation = hsb.S;
@@ -50,39 +50,40 @@ internal static class Conversion
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue);
+        return new Rgb(red, green, blue, config);
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
-    public static Xyz RgbToXyz(Rgb rgb)
+    public static Xyz RgbToXyz(Rgb rgb, Configuration config)
     {
-        var rLinear = rgb.RLinear;
-        var gLinear = rgb.GLinear;
-        var bLinear = rgb.BLinear;
+        var rgbLinearMatrix = new Matrix(new[,]
+        {
+            {rgb.RLinear},
+            {rgb.GLinear},
+            {rgb.BLinear}
+        });
 
-        var x = (0.4124 * rLinear) + (0.3576 * gLinear) + (0.1805 * bLinear);
-        var y = (0.2126 * rLinear) + (0.7152 * gLinear) + (0.0722 * bLinear);
-        var z = (0.0193 * rLinear) + (0.1192 * gLinear) + (0.9505 * bLinear);
+        var transformationMatrix = config.RgbToXyzMatrix;
+        var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
+
+        var x = xyzMatrix[0, 0];
+        var y = xyzMatrix[1, 0];
+        var z = xyzMatrix[2, 0];
 
         return new Xyz(x, y, z);
     }
     
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
-    public static Lab XyzToLab(Xyz xyz)
+    public static Lab XyzToLab(Xyz xyz, Configuration config)
     {
         var x = xyz.X;
         var y = xyz.Y;
         var z = xyz.Z;
-        
-        // Standard Illuminant D65 using standard 2° observer (https://en.wikipedia.org/wiki/Illuminant_D65) - reference white = Y = 100
-        const double xn = 95.047;
-        const double yn = 100.0;
-        const double zn = 108.883;
-            
-        // XYZ is 0-1, conversion to LAB expects 0-100
-        var xRatio = (x * 100) / xn;
-        var yRatio = (y * 100) / yn;
-        var zRatio = (z * 100) / zn;
+
+        var referenceWhite = Illuminants.ReferenceWhite(config.XyzIlluminant, config.Observer);
+        var xRatio = x * 100 / referenceWhite.x;
+        var yRatio = y * 100 / referenceWhite.y;
+        var zRatio = z * 100 / referenceWhite.z;
 
         /*
          * --- delta = 6 / 29

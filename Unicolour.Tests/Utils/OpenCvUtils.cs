@@ -24,9 +24,9 @@ internal static class OpenCvUtils
     public static TestColour FromRgb(double r, double g, double b) => FromRgb(r, g, b, $"{r:F2} {g:F2} {b:F2}");
     private static TestColour FromRgb(double r, double g, double b, string name)
     {
-        var rLinear = Rgb.LinearCorrection(r);
-        var gLinear = Rgb.LinearCorrection(g);
-        var bLinear = Rgb.LinearCorrection(b);
+        var rLinear = Companding.InverseStandardRgb(r);
+        var gLinear = Companding.InverseStandardRgb(g);
+        var bLinear = Companding.InverseStandardRgb(b);
         
         // it appears that OpenCV's RGB -> XYZ and RGB -> LAB conversions 
         // expect to receive RGB values that have already undergone linear correction...

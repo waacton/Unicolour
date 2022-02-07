@@ -10,7 +10,7 @@ using Wacton.Unicolour.Tests.Utils;
 public class ConversionTests
 {
     private const double RgbTolerance = 0.00000000001;
-    private const double HsbTolerance = 0.000000005;
+    private const double HsbTolerance = 0.00000001;
     
     [Test]
     public void NamedRgbMatchesNamedHsb() => AssertUtils.AssertNamedColours(AssertRgbToHsbConversion);
@@ -29,11 +29,11 @@ public class ConversionTests
         AssertUtils.AssertNamedColours(AssertHsbUnconversion);
         AssertUtils.AssertRandomHsbColours(AssertHsbUnconversion);
     }
-
+    
     private static void AssertRgbToHsbConversion(TestColour namedColour)
     {
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
-        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
+        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, Configuration.Default);
         var hsb = Conversion.RgbToHsb(rgb);
         var expectedRoundedHsb = namedColour.Hsb;
         
@@ -45,25 +45,25 @@ public class ConversionTests
     private static void AssertRgbUnconversion(TestColour namedColour)
     {
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
-        var originalRgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
+        var originalRgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, Configuration.Default);
         AssertRgbUnconversion(originalRgb);
     }
     
     private static void AssertRgbUnconversion(int r, int g, int b)
     {
-        var originalRgb = new Rgb(r / 255.0, g / 255.0, b / 255.0);
+        var originalRgb = new Rgb(r / 255.0, g / 255.0, b / 255.0, Configuration.Default);
         AssertRgbUnconversion(originalRgb);
     }
     
     private static void AssertRgbUnconversion(double r, double g, double b)
     {
-        var originalRgb = new Rgb(r, g, b);
+        var originalRgb = new Rgb(r, g, b, Configuration.Default);
         AssertRgbUnconversion(originalRgb);
     }
     
     private static void AssertRgbUnconversion(Rgb originalRgb)
     {
-        var convertedRgb = Conversion.HsbToRgb(Conversion.RgbToHsb(originalRgb));
+        var convertedRgb = Conversion.HsbToRgb(Conversion.RgbToHsb(originalRgb), Configuration.Default);
         
         Assert.That(convertedRgb.R, Is.EqualTo(originalRgb.R).Within(RgbTolerance));
         Assert.That(convertedRgb.G, Is.EqualTo(originalRgb.G).Within(RgbTolerance));
@@ -96,7 +96,7 @@ public class ConversionTests
     
     private static void AssertHsbUnconversion(Hsb originalHsb)
     {
-        var convertedHsb = Conversion.RgbToHsb(Conversion.HsbToRgb(originalHsb));
+        var convertedHsb = Conversion.RgbToHsb(Conversion.HsbToRgb(originalHsb, Configuration.Default));
         Assert.That(convertedHsb.H, Is.EqualTo(originalHsb.H).Within(HsbTolerance));
         Assert.That(convertedHsb.S, Is.EqualTo(originalHsb.S).Within(HsbTolerance));
         Assert.That(convertedHsb.B, Is.EqualTo(originalHsb.B).Within(HsbTolerance));

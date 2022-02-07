@@ -19,13 +19,14 @@ public static class DifferenceTests
         var random = Unicolour.FromRgb(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
         
         AssertKnownDifference(black, white, 100);
-        AssertKnownDifference(red, green, 170.58);
-        AssertKnownDifference(green, blue, 258.69);
-        AssertKnownDifference(blue, red, 176.33);
+        AssertKnownDifference(red, green, 170.565);
+        AssertKnownDifference(green, blue, 258.683);
+        AssertKnownDifference(blue, red, 176.314);
         AssertKnownDifference(random, random, 0);
     }
     
     // these tests should be easier and improved if I add a Unicolour.FromLab() function
+    // differences calculated from http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_Lab.html
     private static void AssertKnownDifference(Unicolour colour1, Unicolour colour2, double expectedDelta)
     {
         var delta1 = colour1.DeltaE76(colour2);

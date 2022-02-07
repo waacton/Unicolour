@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-internal static class Comparison
+public static class Comparison
 {
     // https://www.w3.org/WAI/WCAG21/Techniques/general/G18.html#tests
     // minimal recommended contrast ratio is 4.5, or 3 for larger font-sizes

@@ -25,7 +25,6 @@ public static class ContrastTests
         AssertKnownContrast(random, random, 1);
     }
     
-    // these tests should be easier and improved if I add a Unicolour.FromLab() function
     private static void AssertKnownContrast(Unicolour colour1, Unicolour colour2, double expectedContrast)
     {
         var delta1 = colour1.Contrast(colour2);

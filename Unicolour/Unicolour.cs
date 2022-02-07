@@ -4,40 +4,48 @@ using System;
 
 public class Unicolour : IEquatable<Unicolour>
 {
+    // TODO: track initial colour space for equality and defining process
     private Hsb? hsb;
     private Rgb? rgb;
     private Xyz? xyz;
     private Lab? lab;
 
     public Hsb Hsb => hsb ??= Conversion.RgbToHsb(Rgb);
-    public Rgb Rgb => rgb ??= Conversion.HsbToRgb(Hsb);
-    public Xyz Xyz => xyz ??= Conversion.RgbToXyz(Rgb);
-    public Lab Lab => lab ??= Conversion.XyzToLab(Xyz);
+    public Rgb Rgb => rgb ??= Conversion.HsbToRgb(Hsb, Config);
+    public Xyz Xyz => xyz ??= Conversion.RgbToXyz(Rgb, Config);
+    public Lab Lab => lab ??= Conversion.XyzToLab(Xyz, Config);
     public Alpha Alpha { get; }
+    public Configuration Config { get; }
 
     public double Luminance => this.Luminance();
 
-    private Unicolour(Hsb hsb, Alpha alpha)
+    private Unicolour(Configuration config, Hsb hsb, Alpha alpha)
     {
         this.hsb = hsb;
         Alpha = alpha;
+        Config = config;
     }
     
-    private Unicolour(Rgb rgb, Alpha alpha)
+    private Unicolour(Configuration config, Rgb rgb, Alpha alpha)
     {
         this.rgb = rgb;
         Alpha = alpha;
+        Config = config;
     }
 
-    public static Unicolour FromHex(string hex)
+    public static Unicolour FromHex(string hex) => FromHex(Configuration.Default, hex);
+    public static Unicolour FromHex(Configuration config, string hex)
     {
         var (r255, g255, b255, a255) = Utils.ParseColourHex(hex);
-        return FromRgb255(r255, g255, b255, a255);
+        return FromRgb255(config, r255, g255, b255, a255);
     }
-    
-    public static Unicolour FromRgb255(int r255, int g255, int b255, int a255 = 255) => FromRgb(r255 / 255.0, g255 / 255.0, b255 / 255.0, a255 / 255.0);
-    public static Unicolour FromRgb(double r, double g, double b, double a = 1.0) => new(new Rgb(r, g, b), new Alpha(a));
-    public static Unicolour FromHsb(double h, double s, double b, double a = 1.0) => new(new Hsb(h, s, b), new Alpha(a));
+
+    public static Unicolour FromRgb255(int r255, int g255, int b255, int a255 = 255) => FromRgb255(Configuration.Default, r255, g255, b255, a255);
+    public static Unicolour FromRgb255(Configuration config, int r255, int g255, int b255, int a255 = 255) => FromRgb(config, r255/255.0, g255/255.0, b255/255.0, a255/255.0);
+    public static Unicolour FromRgb(double r, double g, double b, double a = 1.0) => FromRgb(Configuration.Default, r, g, b, a);
+    public static Unicolour FromRgb(Configuration config, double r, double g, double b, double a = 1.0) => new(config, new Rgb(r, g, b, config), new Alpha(a));
+    public static Unicolour FromHsb(double h, double s, double b, double a = 1.0) => FromHsb(Configuration.Default, h, s, b, a);
+    public static Unicolour FromHsb(Configuration config, double h, double s, double b, double a = 1.0) => new(config, new Hsb(h, s, b), new Alpha(a));
 
     public override string ToString() => $"HSB:[{Hsb}] RGB:[{Rgb}] Hex:{Rgb.Hex} A:{Alpha.A}";
 

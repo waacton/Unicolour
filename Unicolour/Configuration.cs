@@ -5,9 +5,8 @@ public class Configuration
     public Chromaticity ChromaticityR { get; }
     public Chromaticity ChromaticityG { get; }
     public Chromaticity ChromaticityB { get; }
-    public Illuminant RgbIlluminant { get; }
-    public Illuminant XyzIlluminant { get; }
-    public Observer Observer { get; }
+    public WhitePoint RgbWhitePoint { get; }
+    public WhitePoint XyzWhitePoint { get; }
     public Func<double, double> InverseCompanding { get; }
     
     internal Matrix RgbToXyzMatrix { get; }
@@ -18,27 +17,24 @@ public class Configuration
         Chromaticity.StandardRgbR,
         Chromaticity.StandardRgbG, 
         Chromaticity.StandardRgbB, 
-        Illuminant.D65,
-        Illuminant.D65,
-        Observer.Standard2,
+        WhitePoint.From(Illuminant.D65),
+        WhitePoint.From(Illuminant.D65),
         Companding.InverseStandardRgb);
 
     public Configuration(
         Chromaticity chromaticityR, Chromaticity chromaticityG, Chromaticity chromaticityB,
-        Illuminant rgbIlluminant, Illuminant xyzIlluminant, Observer observer,
-        Func<double, double> inverseCompanding)
+        WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint, Func<double, double> inverseCompanding)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
         ChromaticityB = chromaticityB;
-        RgbIlluminant = rgbIlluminant;
-        XyzIlluminant = xyzIlluminant;
-        Observer = observer;
+        RgbWhitePoint = rgbWhitePoint;
+        XyzWhitePoint = xyzWhitePoint;
         InverseCompanding = inverseCompanding;
         RgbToXyzMatrix = Matrices.RgbToXyzMatrix(this);
     }
 
-    public override string ToString() => $"RGB {RgbIlluminant} {ChromaticityR} {ChromaticityG} {ChromaticityB} -> XYZ {XyzIlluminant} ";
+    public override string ToString() => $"RGB {RgbWhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB} -> XYZ {XyzWhitePoint} ";
 }
 
 public record Chromaticity(double X, double Y)
@@ -49,6 +45,5 @@ public record Chromaticity(double X, double Y)
     
     public double X { get; } = X;
     public double Y { get; } = Y;
-
     public override string ToString() => $"({X}, {Y})";
 }

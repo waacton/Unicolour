@@ -47,9 +47,8 @@ public class InterpolateConfigTests
             Chromaticity.StandardRgbR,
             Chromaticity.StandardRgbG,
             Chromaticity.StandardRgbB,
-            Illuminant.D65,
-            Illuminant.D65,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D65), 
+            WhitePoint.From(Illuminant.D65),
             Companding.InverseStandardRgb);
     }
 

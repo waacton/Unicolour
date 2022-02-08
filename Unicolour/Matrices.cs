@@ -15,9 +15,8 @@ internal static class Matrices
         var cr = config.ChromaticityR;
         var cg = config.ChromaticityG;
         var cb = config.ChromaticityB;
-        var rgbIlluminant = config.RgbIlluminant;
-        var xyzIlluminant = config.XyzIlluminant;
-        var observer = config.Observer;
+        var rgbWhitePoint = config.RgbWhitePoint;
+        var xyzWhitePoint = config.XyzWhitePoint;
         
         double X(Chromaticity c) => c.X / c.Y;
         double Y(Chromaticity c) => 1;
@@ -34,7 +33,7 @@ internal static class Matrices
             {zr, zg, zb}
         });
         
-        var sourceWhite = ReferenceWhiteMatrix(rgbIlluminant, observer);
+        var sourceWhite = ReferenceWhiteMatrix(rgbWhitePoint);
         
         var s = fromPrimaries.Inverse().Multiply(sourceWhite);
         var sr = s[0, 0];
@@ -48,18 +47,18 @@ internal static class Matrices
             {sr * zr, sg * zg, sb * zb}
         });
 
-        if (rgbIlluminant == xyzIlluminant)
+        if (rgbWhitePoint == xyzWhitePoint)
         {
             return matrix;
         }
     
-        var adaptedBradford = AdaptedBradfordMatrix(rgbIlluminant, xyzIlluminant, observer);
+        var adaptedBradford = AdaptedBradfordMatrix(rgbWhitePoint, xyzWhitePoint);
         return adaptedBradford.Multiply(matrix);
     }
     
-    private static Matrix ReferenceWhiteMatrix(Illuminant illuminant, Observer observer)
+    private static Matrix ReferenceWhiteMatrix(WhitePoint whitePoint)
     {
-        var (x, y, z) = Illuminants.ReferenceWhite(illuminant, observer);
+        var (x, y, z) = whitePoint;
         return new Matrix(new[,]
         {
             {x / 100.0},
@@ -69,10 +68,10 @@ internal static class Matrices
     }
 
     // based on http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
-    private static Matrix AdaptedBradfordMatrix(Illuminant source, Illuminant destination, Observer observer)
+    private static Matrix AdaptedBradfordMatrix(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
-        var sourceWhite = ReferenceWhiteMatrix(source, observer);
-        var destinationWhite = ReferenceWhiteMatrix(destination, observer);
+        var sourceWhite = ReferenceWhiteMatrix(sourceWhitePoint);
+        var destinationWhite = ReferenceWhiteMatrix(destinationWhitePoint);
 
         var sourceLms = Bradford.Multiply(sourceWhite);
         var destinationLms = Bradford.Multiply(destinationWhite);

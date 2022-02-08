@@ -61,8 +61,8 @@ var difference = unicolour1.DeltaE76(unicolour2);
 ```
 
 <details>
-<summary>Advanced configuration 💡</summary>
-<br/>
+<summary><strong>Advanced configuration 💡</strong></summary>
+
 A `Configuration` parameter can be used to change the RGB model (e.g. Adobe RGB, wide-gamut RGB)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 

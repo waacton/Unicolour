@@ -61,9 +61,8 @@ public static class ConfigurationTests
             Chromaticity.StandardRgbR,
             Chromaticity.StandardRgbG,
             Chromaticity.StandardRgbB,
-            Illuminant.D65,
-            Illuminant.D50,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
+            WhitePoint.From(Illuminant.D50, Observer.Standard2),
             Companding.InverseStandardRgb);
         
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
@@ -93,9 +92,8 @@ public static class ConfigurationTests
             AdobeChromaticityR,
             AdobeChromaticityG,
             AdobeChromaticityB,
-            Illuminant.D65,
-            Illuminant.D65,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
+            WhitePoint.From(Illuminant.D65, Observer.Standard2),
             value => Companding.InverseGamma(value, 2.19921875));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
@@ -116,9 +114,8 @@ public static class ConfigurationTests
             AdobeChromaticityR,
             AdobeChromaticityG,
             AdobeChromaticityB,
-            Illuminant.D65,
-            Illuminant.D50,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
+            WhitePoint.From(Illuminant.D50, Observer.Standard2),
             value => Companding.InverseGamma(value, 2.19921875));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
@@ -139,9 +136,8 @@ public static class ConfigurationTests
             WideGamutChromaticityR,
             WideGamutChromaticityG,
             WideGamutChromaticityB,
-            Illuminant.D50,
-            Illuminant.D65,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D50, Observer.Standard2), 
+            WhitePoint.From(Illuminant.D65, Observer.Standard2),
             value => Companding.InverseGamma(value, 2.19921875));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
@@ -162,9 +158,8 @@ public static class ConfigurationTests
             WideGamutChromaticityR,
             WideGamutChromaticityG,
             WideGamutChromaticityB,
-            Illuminant.D50,
-            Illuminant.D50,
-            Observer.Standard2,
+            WhitePoint.From(Illuminant.D50, Observer.Standard2), 
+            WhitePoint.From(Illuminant.D50, Observer.Standard2),
             value => Companding.InverseGamma(value, 2.19921875));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);

@@ -80,10 +80,10 @@ internal static class Conversion
         var y = xyz.Y;
         var z = xyz.Z;
 
-        var referenceWhite = Illuminants.ReferenceWhite(config.XyzIlluminant, config.Observer);
-        var xRatio = x * 100 / referenceWhite.x;
-        var yRatio = y * 100 / referenceWhite.y;
-        var zRatio = z * 100 / referenceWhite.z;
+        var referenceWhite = config.XyzWhitePoint;
+        var xRatio = x * 100 / referenceWhite.X;
+        var yRatio = y * 100 / referenceWhite.Y;
+        var zRatio = z * 100 / referenceWhite.Z;
 
         /*
          * --- delta = 6 / 29

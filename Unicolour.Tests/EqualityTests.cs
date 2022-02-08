@@ -55,26 +55,23 @@ public class EqualityTests
             Chromaticity.StandardRgbR,
             new Chromaticity(0.25, 0.75),
             new Chromaticity(0.5, 0.5),
-            Illuminant.D65,
-            Illuminant.D50,
-            Observer.Standard2,
+            new WhitePoint(0.9, 1.0, 1.1),
+            new WhitePoint(0.95, 1.0, 1.05),
             Companding.InverseStandardRgb);
-        
+
         var config2 = new Configuration(
             Chromaticity.StandardRgbR,
             new Chromaticity(0.75, 0.25),
             new Chromaticity(0.5, 0.5),
-            Illuminant.D65,
-            Illuminant.E,
-            Observer.Standard2,
+            new WhitePoint(0.9, 1.0, 1.1),
+            new WhitePoint(0.95001, 1.0001, 1.05001),
             Companding.InverseStandardRgb);
         
         AssertEqual(config1.ChromaticityR, config2.ChromaticityR);
         AssertNotEqual(config1.ChromaticityG, config2.ChromaticityG);
         AssertEqual(config1.ChromaticityB, config2.ChromaticityB);
-        AssertEqual(config1.RgbIlluminant, config2.RgbIlluminant);
-        AssertNotEqual(config1.XyzIlluminant, config2.XyzIlluminant);
-        AssertEqual(config1.Observer, config2.Observer);
+        AssertEqual(config1.RgbWhitePoint, config2.RgbWhitePoint);
+        AssertNotEqual(config1.XyzWhitePoint, config2.XyzWhitePoint);
         AssertEqual(config1.InverseCompanding, config2.InverseCompanding);
         AssertNotEqual(config1, config2);
     }

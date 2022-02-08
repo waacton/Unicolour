@@ -15,7 +15,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageVersion>1.0.0-alpha.3</PackageVersion>
+        <PackageVersion>1.0.0</PackageVersion>
         <PackageTags>colour color converter RGB HSB HSV LAB XYZ color-spaces colour-spaces interpolation comparison contrast luminance deltaE</PackageTags>
         <PackageReleaseNotes>Initial release</PackageReleaseNotes>
         <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>

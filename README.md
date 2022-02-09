@@ -15,7 +15,7 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIE LAB
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
-These [can be overridden](#-advanced-configuration-) using the `Configuration` parameter.
+These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
 
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be intuitive and easy to use; performance is not a priority.

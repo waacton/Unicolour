@@ -20,6 +20,7 @@ These [can be overridden](#advanced-configuration-) using the `Configuration` pa
 
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be intuitive and easy to use; performance is not a priority.
+It is also [extensively tested](Unicolour.Tests) against known colour values and other .NET libraries.
 
 More functionality will be added over time.
 
@@ -31,7 +32,7 @@ Targets .NET Standard 2.0 for use in .NET 5.0+, .NET Core 2.0+ and .NET Framewor
 dotnet add package Wacton.Unicolour
 ```
 
-2. Create a `Unicolour` from RGB or HSB/HSV values:
+2. Create a `Unicolour`:
 ```c#
 using Wacton.Unicolour;
 ...
@@ -63,6 +64,8 @@ var interpolated = unicolour1.InterpolateHsl(unicolour2, 0.5);
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
 ```
+
+See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces.
 
 ## Advanced configuration 💡
 A `Configuration` parameter can be used to change the RGB model (e.g. Adobe RGB, wide-gamut RGB)

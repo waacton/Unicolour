@@ -22,7 +22,7 @@ public class InterpolateHsbTests
     }
 
     [Test]
-    public void EquidistantForward()
+    public void Equidistant()
     {
         var unicolour1 = Unicolour.FromHsb(0, 0, 0, 0);
         var unicolour2 = Unicolour.FromHsb(180, 1, 1);
@@ -34,7 +34,7 @@ public class InterpolateHsbTests
     }
     
     [Test]
-    public void EquidistantBackward()
+    public void EquidistantViaRed()
     {
         var unicolour1 = Unicolour.FromHsb(0, 0, 0, 0);
         var unicolour2 = Unicolour.FromHsb(340, 0.5, 0.8, 0.2);
@@ -58,6 +58,18 @@ public class InterpolateHsbTests
     }
     
     [Test]
+    public void CloserToEndColourViaRed()
+    {
+        var unicolour1 = Unicolour.FromHsb(300, 1, 0);
+        var unicolour2 = Unicolour.FromHsb(60, 0, 1, 0.5);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.75);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.75);
+
+        AssertHsba(interpolated1, (30, 0.25, 0.75, 0.625));
+        AssertHsba(interpolated2, (330, 0.75, 0.25, 0.875));
+    }
+    
+    [Test]
     public void CloserToStartColour()
     {
         var unicolour1 = Unicolour.FromHsb(0, 1, 0);
@@ -67,6 +79,18 @@ public class InterpolateHsbTests
         
         AssertHsba(interpolated1, (45, 0.75, 0.25, 0.875));
         AssertHsba(interpolated2, (135, 0.25, 0.75, 0.625));
+    }
+    
+    [Test]
+    public void CloserToStartColourViaRed()
+    {
+        var unicolour1 = Unicolour.FromHsb(300, 1, 0);
+        var unicolour2 = Unicolour.FromHsb(60, 0, 1, 0.5);
+        var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.25);
+        var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.25);
+        
+        AssertHsba(interpolated1, (330, 0.75, 0.25, 0.875));
+        AssertHsba(interpolated2, (30, 0.25, 0.75, 0.625));
     }
     
     [Test]

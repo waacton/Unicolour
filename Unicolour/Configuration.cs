@@ -16,21 +16,20 @@ public class Configuration
     public static readonly Configuration Default = new(
         Chromaticity.StandardRgbR,
         Chromaticity.StandardRgbG, 
-        Chromaticity.StandardRgbB, 
-        WhitePoint.From(Illuminant.D65),
-        WhitePoint.From(Illuminant.D65),
-        Companding.InverseStandardRgb);
+        Chromaticity.StandardRgbB,
+        Companding.InverseStandardRgb, 
+        WhitePoint.From(Illuminant.D65), 
+        WhitePoint.From(Illuminant.D65));
 
-    public Configuration(
-        Chromaticity chromaticityR, Chromaticity chromaticityG, Chromaticity chromaticityB,
-        WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint, Func<double, double> inverseCompanding)
+    public Configuration(Chromaticity chromaticityR, Chromaticity chromaticityG, Chromaticity chromaticityB,
+        Func<double, double> inverseCompanding, WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
         ChromaticityB = chromaticityB;
+        InverseCompanding = inverseCompanding;
         RgbWhitePoint = rgbWhitePoint;
         XyzWhitePoint = xyzWhitePoint;
-        InverseCompanding = inverseCompanding;
         RgbToXyzMatrix = Matrices.RgbToXyzMatrix(this);
     }
 

@@ -2,116 +2,121 @@ namespace Wacton.Unicolour.Tests;
 
 using System;
 using NUnit.Framework;
-using Wacton.Unicolour;
-using Wacton.Unicolour.Tests.Lookups;
+using Wacton.Unicolour.Tests.Factories;
 using Wacton.Unicolour.Tests.Utils;
-
 
 public class OtherLibraryTests
 {
+    private static readonly OpenCvFactory OpenCvFactory = new();
+    private static readonly ColourfulFactory ColourfulFactory = new();
+    private static readonly ColorMineFactory ColorMineFactory = new();
+    private static readonly SixLaborsFactory SixLaborsFactory = new();
+    
     private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
 
-    /*
-     * OPENCV:    doesn't expose linear RGB, doesn't directly convert HSV -> XYZ/LAB
-     * COLOURFUL: doesn't support HSB!
-     * COLORMINE: doesn't expose linear RGB
-     * --------------------
-     * at this point I'm pretty sure OpenCV doesn't calculate RGB -> LAB correctly
-     * since all other libraries and online tools calculate the same LAB as Unicolour
-     * the LAB test tolerances are so large is not really worth testing against
-     */
-    private static readonly Tolerances OpenCvTolerances = new() { Rgb = 0.005, Hsb = 0.005, Xyz = 0.0005, Lab = 50.0 };
-    private static readonly Tolerances ColourfulTolerances = new() { Rgb = 0.00000000001, RgbLinear = 0.00000000001, Xyz = 0.00000000001, Lab = 0.0000005 };
-    private static readonly Tolerances ColorMineTolerances = new() { Rgb = 0.00000000001, Hsb = 0.0005, Xyz = 0.0005, Lab = 0.05 };
-    private static readonly Tolerances SixLaborsTolerances = new() { Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.0005, Xyz = 0.005, Lab = 0.1 };
-    
-    private delegate TestColour ToOtherLibFromRgb255(int r, int g, int b);
-    private delegate TestColour ToOtherLibFromRgb(double r, double g, double b);
-    private delegate TestColour ToOtherLibFromHsb(double h, double s, double b);
-    private delegate TestColour ToOtherLibFromStored(string name); // specifically for OpenCv on non-Windows
-    
     [Test] 
     public void OpenCvWindows()
     {
         // I've given up trying to make OpenCvSharp work in a dockerised unix environment...
         Assume.That(IsWindows());
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, OpenCvUtils.FromRgb255, OpenCvTolerances));
-        AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, OpenCvUtils.FromRgb255, OpenCvTolerances));
-        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, OpenCvUtils.FromRgb255, OpenCvTolerances)); 
-        AssertUtils.AssertRandomRgbColours((r, g, b) => AssertFromRgb(r, g, b, OpenCvUtils.FromRgb, OpenCvTolerances));
-        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, OpenCvUtils.FromHsb, OpenCvTolerances));
+        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, OpenCvFactory));
+        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, OpenCvFactory));
+        AssertUtils.AssertRandomRgb255Colours(tuple => AssertFromRgb255(tuple, OpenCvFactory));
+        AssertUtils.AssertRandomRgbColours(tuple => AssertFromRgb(tuple, OpenCvFactory));
+        AssertUtils.AssertRandomHsbColours(tuple => AssertFromHsb(tuple, OpenCvFactory)); 
+        AssertUtils.AssertRandomHslColours(tuple => AssertFromHsl(tuple, OpenCvFactory)); 
     }
     
     [Test] 
     public void OpenCvCrossPlatform()
     {
+        // TODO: regenerate to include "HLS" values
         // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
-        AssertUtils.AssertNamedColours(namedColour => AssertFromStored(namedColour.Hex!, namedColour.Name!, OpenCvUtils.FromStored, OpenCvTolerances));
+        AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
     }
 
     [Test]
     public void Colourful()
     {
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColourfulUtils.FromRgb255, ColourfulTolerances));
-        AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, ColourfulUtils.FromRgb255, ColourfulTolerances));
-        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, ColourfulUtils.FromRgb255, ColourfulTolerances)); 
-        AssertUtils.AssertRandomRgbColours((r, g, b) => AssertFromRgb(r, g, b, ColourfulUtils.FromRgb, ColourfulTolerances));
+        // no asserting random HSB colours because Colourful doesn't support HSB/HSL
+        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColourfulFactory));
+        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColourfulFactory));
+        AssertUtils.AssertRandomRgb255Colours(tuple => AssertFromRgb255(tuple, ColourfulFactory));
+        AssertUtils.AssertRandomRgbColours(tuple => AssertFromRgb(tuple, ColourfulFactory));
     }
     
     [Test]
     public void ColorMine()
     {
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColorMineUtils.FromRgb255, ColorMineTolerances));
-        AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, ColorMineUtils.FromRgb255, ColorMineTolerances));
-        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, ColorMineUtils.FromRgb255, ColorMineTolerances)); 
-        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, ColorMineUtils.FromHsb, ColorMineTolerances)); 
+        // no asserting random RGB 0-1 colours because ColorMine only accepts RGB 255
+        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColorMineFactory));
+        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColorMineFactory));
+        AssertUtils.AssertRandomRgb255Colours(tuple => AssertFromRgb255(tuple, ColorMineFactory)); 
+        AssertUtils.AssertRandomHsbColours(tuple => AssertFromHsb(tuple, ColorMineFactory)); 
+        AssertUtils.AssertRandomHslColours(tuple => AssertFromHsl(tuple, ColorMineFactory)); 
     }
     
     [Test]
     public void SixLabors()
     {
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsUtils.FromRgb255, SixLaborsTolerances));
-        AssertUtils.AssertRandomHexs(hex => AssertFromHex(hex, SixLaborsUtils.FromRgb255, SixLaborsTolerances));
-        AssertUtils.AssertRandomRgb255Colours((r, g, b) => AssertFromRgb255(r, g, b, SixLaborsUtils.FromRgb255, SixLaborsTolerances)); 
-        AssertUtils.AssertRandomHsbColours((h, s, b) => AssertFromHsb(h, s, b, SixLaborsUtils.FromHsb, SixLaborsTolerances)); 
+        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsFactory));
+        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, SixLaborsFactory));
+        AssertUtils.AssertRandomRgb255Colours(tuple => AssertFromRgb255(tuple, SixLaborsFactory)); 
+        AssertUtils.AssertRandomRgbColours(tuple => AssertFromRgb(tuple, SixLaborsFactory));
+        AssertUtils.AssertRandomHsbColours(tuple => AssertFromHsb(tuple, SixLaborsFactory)); 
+        AssertUtils.AssertRandomHslColours(tuple => AssertFromHsl(tuple, SixLaborsFactory)); 
     }
     
-    private static void AssertFromHex(string hex, ToOtherLibFromRgb255 toOtherLibColour, Tolerances tolerances)
+    private static void AssertFromHex(string hex, ITestColourFactory testColourFactory)
     {
         var unicolour = Unicolour.FromHex(hex);
         var (r255, g255, b255, _) = SystemColorUtils.HexToRgb255(hex);
-        var otherLibColour = toOtherLibColour(r255, g255, b255);
+        var testColour = testColourFactory.FromRgb255(r255, g255, b255);
         AssertHex(unicolour, hex);
-        AssertOtherColour(unicolour, otherLibColour, tolerances);
+        AssertTestColour(unicolour, testColour, $"HEX [{hex}]");
     }
     
-    private static void AssertFromRgb255(int r, int g, int b, ToOtherLibFromRgb255 toOtherLibColour, Tolerances tolerances)
+    private static void AssertFromRgb255(ColourTuple tuple, ITestColourFactory testColourFactory)
     {
-        var unicolour = Unicolour.FromRgb255(r, g, b);
-        var otherLibColour = toOtherLibColour(r, g, b);
-        AssertOtherColour(unicolour, otherLibColour, tolerances);
+        var (first, second, third) = tuple;
+        var r255 = (int)(first / 255.0);
+        var g255 = (int)(second / 255.0);
+        var b255 = (int)(third / 255.0);
+        var unicolour = Unicolour.FromRgb255(r255, g255, b255);
+        var testColour = testColourFactory.FromRgb255(r255, g255, b255);
+        AssertTestColour(unicolour, testColour, $"RGB [{unicolour.Rgb.Tuple255}]");
     }
     
-    private static void AssertFromRgb(double r, double g, double b, ToOtherLibFromRgb toOtherLibColour, Tolerances tolerances)
+    private static void AssertFromRgb(ColourTuple tuple, ITestColourFactory testColourFactory)
     {
+        var (r, g, b) = tuple;
         var unicolour = Unicolour.FromRgb(r, g, b);
-        var otherLibColour = toOtherLibColour(r, g, b);
-        AssertOtherColour(unicolour, otherLibColour, tolerances);
+        var testColour = testColourFactory.FromRgb(r, g, b);
+        AssertTestColour(unicolour, testColour, $"RGB [{unicolour.Rgb}]");
     }
     
-    private static void AssertFromHsb(double h, double s, double b, ToOtherLibFromHsb toOtherLibColour, Tolerances tolerances)
+    private static void AssertFromHsb(ColourTuple tuple, ITestColourFactory testColourFactory)
     {
+        var (h, s, b) = tuple;
         var unicolour = Unicolour.FromHsb(h, s, b);
-        var otherLibColour = toOtherLibColour(h, s, b);
-        AssertOtherColour(unicolour, otherLibColour, tolerances);
+        var testColour = testColourFactory.FromHsb(h, s, b);
+        AssertTestColour(unicolour, testColour, $"HSB [{unicolour.Hsb}]");
     }
     
-    private static void AssertFromStored(string hex, string name, ToOtherLibFromStored toOtherLibColour, Tolerances tolerances)
+    private static void AssertFromHsl(ColourTuple tuple, ITestColourFactory testColourFactory)
+    {
+        var (h, s, l) = tuple;
+        var unicolour = Unicolour.FromHsl(h, s, l);
+        var testColour = testColourFactory.FromHsl(h, s, l);
+        AssertTestColour(unicolour, testColour, $"HSL [{unicolour.Hsl}]");
+    }
+    
+    private static void AssertFromCsvData(string hex, string name)
     {
         var unicolour = Unicolour.FromHex(hex);
-        var otherLibColour = toOtherLibColour(name);
+        var otherLibColour = OpenCvCsvFactory.FromName(name);
         AssertHex(unicolour, hex);
-        AssertOtherColour(unicolour, otherLibColour, tolerances);
+        AssertTestColour(unicolour, otherLibColour, $"NAME [{name}]");
     }
 
     private static void AssertHex(Unicolour unicolour, string hex)
@@ -123,27 +128,32 @@ public class OtherLibraryTests
         Assert.That(unicolour.Alpha.Hex, Is.EqualTo(expectedA.ToUpper()));
     }
     
-    private static void AssertOtherColour(Unicolour unicolour, TestColour otherColour, Tolerances tolerances)
+    private static void AssertTestColour(Unicolour unicolour, TestColour testColour, string source)
     {
-        
-        void AssertColourSpace((double, double, double) unicolourSpace, (double, double, double)? otherSpace, double tolerance, string spaceName)
+        var colourName = testColour.Name;
+        var tolerances = testColour.Tolerances;
+        if (colourName == null) throw new ArgumentException("Malformed test colour: no name");
+        if (tolerances == null) throw new ArgumentException("Malformed test colour: no tolerances");
+
+        AssertColourTuple(unicolour.Rgb.Tuple, testColour.Rgb, tolerances.Rgb, $"{source} -> RGB");
+        AssertColourTuple(unicolour.Rgb.TupleLinear, testColour.RgbLinear, tolerances.RgbLinear, $"{source} -> RGB Linear");
+        AssertColourTuple(unicolour.Xyz.Tuple, testColour.Xyz, tolerances.Xyz, $"{source} -> XYZ");
+        AssertColourTuple(unicolour.Lab.Tuple, testColour.Lab, tolerances.Lab, $"{source} -> LAB");
+
+        if (testColour.ExcludeFromHueBasedTest)
         {
-            string FailMessage() => $"colour: {otherColour.Name} {spaceName}";
-
-            if (!otherSpace.HasValue) return;
-            Assert.That(unicolourSpace.Item1, Is.EqualTo(otherSpace.Value.Item1).Within(tolerance), FailMessage);
-            Assert.That(unicolourSpace.Item2, Is.EqualTo(otherSpace.Value.Item2).Within(tolerance), FailMessage);
-            Assert.That(unicolourSpace.Item3, Is.EqualTo(otherSpace.Value.Item3).Within(tolerance), FailMessage);
+            var reasons = string.Join(", ", testColour.ExcludeFromHueBasedTestReasons);
+            Console.WriteLine($"Excluded test colour {source} -> HSB [{unicolour.Hsb}] / HSL [{unicolour.Hsl}] because: {reasons}");
+            return;
         }
-
-        AssertColourSpace(unicolour.Rgb.Tuple, otherColour.Rgb, tolerances.Rgb, "Rgb");
-        AssertColourSpace(unicolour.Rgb.TupleLinear, otherColour.RgbLinear, tolerances.RgbLinear, "RgbLinear");
-        AssertColourSpace(unicolour.Hsb.Tuple, otherColour.Hsb, tolerances.Hsb, "Hsb");
-        AssertColourSpace(unicolour.Xyz.Tuple, otherColour.Xyz, tolerances.Xyz, "Xyz");
-        AssertColourSpace(unicolour.Lab.Tuple, otherColour.Lab, tolerances.Lab, "Lab");
+        
+        AssertColourTuple(unicolour.Hsb.Tuple, testColour.Hsb, tolerances.Hsb, $"{source} -> HSB", true);
+        AssertColourTuple(unicolour.Hsl.Tuple, testColour.Hsl, tolerances.Hsl, $"{source} -> HSL", true);
     }
-
-    private class Tolerances {
-        public double Rgb, RgbLinear, Hsb, Xyz, Lab;
+    
+    private static void AssertColourTuple(ColourTuple unicolourTuple, ColourTuple? testTuple, double tolerance, string details, bool hasHue = false)
+    {
+        if (testTuple == null) return;
+        AssertUtils.AssertColourTuple(unicolourTuple, testTuple, tolerance, hasHue, details);
     }
 }

@@ -2,7 +2,6 @@ namespace Wacton.Unicolour.Tests;
 
 using System;
 using NUnit.Framework;
-using Wacton.Unicolour;
 
 public class InterpolateConfigTests
 {
@@ -47,9 +46,9 @@ public class InterpolateConfigTests
             Chromaticity.StandardRgbR,
             Chromaticity.StandardRgbG,
             Chromaticity.StandardRgbB,
+            Companding.InverseStandardRgb, 
             WhitePoint.From(Illuminant.D65), 
-            WhitePoint.From(Illuminant.D65),
-            Companding.InverseStandardRgb);
+            WhitePoint.From(Illuminant.D65));
     }
 
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)

@@ -2,7 +2,7 @@
 
 using System;
 using NUnit.Framework;
-using Wacton.Unicolour.Tests.Lookups;
+using Wacton.Unicolour.Tests.Utils;
 
 public static class ContrastTests
 {

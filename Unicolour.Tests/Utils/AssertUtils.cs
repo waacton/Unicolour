@@ -1,47 +1,33 @@
 ﻿namespace Wacton.Unicolour.Tests.Utils;
 
 using System;
-using Wacton.Unicolour.Tests.Lookups;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 internal static class AssertUtils
 {
-    public static void AssertNamedColours(Action<TestColour> action)
+    public static void AssertNamedColours(Action<TestColour> action) => AssertItems(TestColours.NamedColours, action);
+    public static void AssertRandomRgb255Colours(Action<ColourTuple> action) => AssertItems(TestColours.RandomRgb255Colours, action);
+    public static void AssertRandomRgbColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomRgbColours, action);
+    public static void AssertRandomHsbColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomHsbColours, action);
+    public static void AssertRandomHslColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomHslColours, action);
+    public static void AssertRandomHexColours(Action<string> action) => AssertItems(TestColours.RandomHexColours, action);
+    
+    private static void AssertItems<T>(List<T> itemsToAssert, Action<T> assertAction)
     {
-        foreach (var namedColour in TestColours.NamedColours)
+        foreach (var itemToAssert in itemsToAssert)
         {
-            action(namedColour);
+            assertAction(itemToAssert);
         }
     }
-    
-    public static void AssertRandomRgb255Colours(Action<int, int, int> action)
+
+    public static void AssertColourTuple(ColourTuple actual, ColourTuple expected, double tolerance, bool hasHue = false, string? details = null)
     {
-        foreach (var (r, g, b) in TestColours.RandomRGB255s)
-        {
-            action(r, g, b);
-        }
-    }
-    
-    public static void AssertRandomRgbColours(Action<double, double, double> action)
-    {
-        foreach (var (r, g, b) in TestColours.RandomRGBs)
-        {
-            action(r, g, b);
-        }
-    }
-    
-    public static void AssertRandomHsbColours(Action<double, double, double> action)
-    {
-        foreach (var (r, g, b) in TestColours.RandomHSBs)
-        {
-            action(r, g, b);
-        }
-    }
-    
-    public static void AssertRandomHexs(Action<string> action)
-    {
-        foreach (var hex in TestColours.RandomHexs)
-        {
-            action(hex);
-        }
+        double NormalisedFirst(double value) => hasHue ? value / 360.0 : value;
+        
+        string FailMessage(string channel) => $"{channel}{(details == null ? string.Empty : $" ({details})")}";
+        Assert.That(NormalisedFirst(actual.First), Is.EqualTo(NormalisedFirst(expected.First)).Within(tolerance), FailMessage("Channel 1"));
+        Assert.That(actual.Second, Is.EqualTo(expected.Second).Within(tolerance), FailMessage("Channel 2"));
+        Assert.That(actual.Third, Is.EqualTo(expected.Third).Within(tolerance), FailMessage("Channel 3"));
     }
 }

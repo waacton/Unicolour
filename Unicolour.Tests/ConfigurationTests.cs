@@ -1,7 +1,7 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
-using Wacton.Unicolour.Tests.Lookups;
+using Wacton.Unicolour.Tests.Utils;
 
 public static class ConfigurationTests
 {
@@ -43,9 +43,9 @@ public static class ConfigurationTests
         var unicolourWithConfig = Unicolour.FromRgb(Configuration.Default, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.200757, 0.119618, 0.506757),
-            Lab = (41.1553, 51.4108, -56.4485),
-            // Luv = (41.1553, 16.3709, -86.7190)
+            Xyz = new(0.200757, 0.119618, 0.506757),
+            Lab = new(41.1553, 51.4108, -56.4485),
+            // Luv = new(41.1553, 16.3709, -86.7190)
         };
         
         Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
@@ -61,9 +61,9 @@ public static class ConfigurationTests
             Chromaticity.StandardRgbR,
             Chromaticity.StandardRgbG,
             Chromaticity.StandardRgbB,
+            Companding.InverseStandardRgb, 
             WhitePoint.From(Illuminant.D65, Observer.Standard2), 
-            WhitePoint.From(Illuminant.D50, Observer.Standard2),
-            Companding.InverseStandardRgb);
+            WhitePoint.From(Illuminant.D50, Observer.Standard2));
         
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         var expectedMatrix = new[,]
@@ -76,9 +76,9 @@ public static class ConfigurationTests
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.187691, 0.115771, 0.381093),
-            Lab = (40.5359, 46.0847, -57.1158),
-            // Luv = (40.5359, 18.7523, -78.2057)
+            Xyz = new(0.187691, 0.115771, 0.381093),
+            Lab = new(40.5359, 46.0847, -57.1158),
+            // Luv = new(40.5359, 18.7523, -78.2057)
         };
         
         Assert.That(configuration.RgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
@@ -92,16 +92,14 @@ public static class ConfigurationTests
             AdobeChromaticityR,
             AdobeChromaticityG,
             AdobeChromaticityB,
-            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
-            WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            value => Companding.InverseGamma(value, 2.19921875));
+            value => Companding.InverseGamma(value, 2.19921875), WhitePoint.From(Illuminant.D65, Observer.Standard2), WhitePoint.From(Illuminant.D65, Observer.Standard2));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.234243, 0.134410, 0.535559),
-            Lab = (43.4203, 57.3600, -55.4259),
-            // Luv = (43.4203, 25.4480, -87.3268)
+            Xyz = new(0.234243, 0.134410, 0.535559),
+            Lab = new(43.4203, 57.3600, -55.4259),
+            // Luv = new(43.4203, 25.4480, -87.3268)
         };
         
         AssertColour(unicolour, expectedColour);
@@ -114,16 +112,14 @@ public static class ConfigurationTests
             AdobeChromaticityR,
             AdobeChromaticityG,
             AdobeChromaticityB,
-            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
-            WhitePoint.From(Illuminant.D50, Observer.Standard2),
-            value => Companding.InverseGamma(value, 2.19921875));
+            value => Companding.InverseGamma(value, 2.19921875), WhitePoint.From(Illuminant.D65, Observer.Standard2), WhitePoint.From(Illuminant.D50, Observer.Standard2));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.221673, 0.130920, 0.402670),
-            Lab = (42.9015, 52.4152, -55.9013),
-            // Luv = (42.9015, 29.0751, -78.5576)
+            Xyz = new(0.221673, 0.130920, 0.402670),
+            Lab = new(42.9015, 52.4152, -55.9013),
+            // Luv = new(42.9015, 29.0751, -78.5576)
         };
         
         AssertColour(unicolour, expectedColour);
@@ -136,16 +132,14 @@ public static class ConfigurationTests
             WideGamutChromaticityR,
             WideGamutChromaticityG,
             WideGamutChromaticityB,
-            WhitePoint.From(Illuminant.D50, Observer.Standard2), 
-            WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            value => Companding.InverseGamma(value, 2.19921875));
+            value => Companding.InverseGamma(value, 2.19921875), WhitePoint.From(Illuminant.D50, Observer.Standard2), WhitePoint.From(Illuminant.D65, Observer.Standard2));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.251993, 0.102404, 0.550393),
-            Lab = (38.2704, 87.2838, -65.7493),
-            // Luv = (38.2704, 47.3837, -99.6819)
+            Xyz = new(0.251993, 0.102404, 0.550393),
+            Lab = new(38.2704, 87.2838, -65.7493),
+            // Luv = new(38.2704, 47.3837, -99.6819)
         };
         
         AssertColour(unicolour, expectedColour);
@@ -158,16 +152,14 @@ public static class ConfigurationTests
             WideGamutChromaticityR,
             WideGamutChromaticityG,
             WideGamutChromaticityB,
-            WhitePoint.From(Illuminant.D50, Observer.Standard2), 
-            WhitePoint.From(Illuminant.D50, Observer.Standard2),
-            value => Companding.InverseGamma(value, 2.19921875));
+            value => Companding.InverseGamma(value, 2.19921875), WhitePoint.From(Illuminant.D50, Observer.Standard2), WhitePoint.From(Illuminant.D50, Observer.Standard2));
         
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
-            Xyz = (0.238795, 0.099490, 0.413181),
-            Lab = (37.7508, 82.3084, -66.1402),
-            // Luv = (37.7508, 55.1488, -91.6044)
+            Xyz = new(0.238795, 0.099490, 0.413181),
+            Lab = new(37.7508, 82.3084, -66.1402),
+            // Luv = new(37.7508, 55.1488, -91.6044)
         };
         
         AssertColour(unicolour, expectedColour);
@@ -175,7 +167,7 @@ public static class ConfigurationTests
 
     private static void AssertColour(Unicolour unicolour, TestColour expected)
     {
-        Assert.That(unicolour.Xyz.Tuple, Is.EqualTo(expected.Xyz).Within(0.001));
-        Assert.That(unicolour.Lab.Tuple, Is.EqualTo(expected.Lab).Within(0.05));
+        AssertUtils.AssertColourTuple(unicolour.Xyz.Tuple, expected.Xyz!, 0.001);
+        AssertUtils.AssertColourTuple(unicolour.Lab.Tuple, expected.Lab!, 0.05);
     }
 }

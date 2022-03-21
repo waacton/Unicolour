@@ -10,36 +10,6 @@ public static class Interpolation
         }
     }
     
-    public static Unicolour InterpolateHsb(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        
-        var startHsb = startColour.Hsb;
-        var endHsb = endColour.Hsb;
-        var startAlpha = startColour.Alpha;
-        var endAlpha = endColour.Alpha;
-
-        // don't use hue if one colour is monochrome (e.g. black n/a° to green 120° should always stay at hue 120°)
-        var noHue = !startHsb.HasHue && !endHsb.HasHue;
-        var startHue = noHue || startHsb.HasHue ? startHsb.H : endHsb.H;
-        var endHue = noHue || endHsb.HasHue ? endHsb.H : startHsb.H;
-
-        var forwardStart = startHue;
-        var forwardEnd = endHue;
-        var backwardStart = Math.Min(startHue, endHue) + 360;
-        var backwardEnd = Math.Max(startHue, endHue);
-        
-        var interpolateForward = Math.Abs(forwardStart - forwardEnd) <= Math.Abs(backwardStart - backwardEnd);
-        startHue = interpolateForward ? forwardStart : backwardStart;
-        endHue = interpolateForward ? forwardEnd : backwardEnd;
-
-        var h = Interpolate(startHue, endHue, distance);
-        var s = Interpolate(startHsb.S, endHsb.S, distance);
-        var b = Interpolate(startHsb.B, endHsb.B, distance);
-        var a = Interpolate(startAlpha.A, endAlpha.A, distance);
-        return Unicolour.FromHsb(startColour.Config, h.Modulo(360), s, b, a);
-    }
-    
     public static Unicolour InterpolateRgb(this Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);
@@ -56,6 +26,59 @@ public static class Interpolation
         return Unicolour.FromRgb(startColour.Config, r, g, b, a);
     }
     
+    public static Unicolour InterpolateHsb(this Unicolour startColour, Unicolour endColour, double distance)
+    {
+        GuardConfiguration(startColour, endColour);
+        
+        var startHsb = startColour.Hsb;
+        var endHsb = endColour.Hsb;
+        var startAlpha = startColour.Alpha;
+        var endAlpha = endColour.Alpha;
+
+        var (startHue, endHue) = GetHuePoints((startHsb.HasHue, startHsb.H), (endHsb.HasHue, endHsb.H));
+        var h = Interpolate(startHue, endHue, distance);
+        var s = Interpolate(startHsb.S, endHsb.S, distance);
+        var b = Interpolate(startHsb.B, endHsb.B, distance);
+        var a = Interpolate(startAlpha.A, endAlpha.A, distance);
+        return Unicolour.FromHsb(startColour.Config, h.Modulo(360), s, b, a);
+    }
+
+    public static Unicolour InterpolateHsl(this Unicolour startColour, Unicolour endColour, double distance)
+    {
+        GuardConfiguration(startColour, endColour);
+        
+        var startHsl = startColour.Hsl;
+        var endHsl = endColour.Hsl;
+        var startAlpha = startColour.Alpha;
+        var endAlpha = endColour.Alpha;
+
+        var (startHue, endHue) = GetHuePoints((startHsl.HasHue, startHsl.H), (endHsl.HasHue, endHsl.H));
+        var h = Interpolate(startHue, endHue, distance);
+        var s = Interpolate(startHsl.S, endHsl.S, distance);
+        var l = Interpolate(startHsl.L, endHsl.L, distance);
+        var a = Interpolate(startAlpha.A, endAlpha.A, distance);
+        return Unicolour.FromHsl(startColour.Config, h.Modulo(360), s, l, a);
+    }
+    
+    private static (double startHue, double endHue) GetHuePoints((bool hasHue, double hueValue) start, (bool hasHue, double hueValue) end)
+    {
+        // don't use hue if one colour is monochrome (e.g. black n/a° to green 120° should always stay at hue 120°)
+        var noHue = !start.hasHue && !end.hasHue;
+        var startHue = noHue || start.hasHue ? start.hueValue : end.hueValue;
+        var endHue = noHue || end.hasHue ? end.hueValue : start.hueValue;
+        
+        var forwardStart = startHue;
+        var forwardEnd = endHue;
+        var backwardStart = Math.Min(startHue, endHue) + 360;
+        var backwardEnd = Math.Max(startHue, endHue);
+        
+        var interpolateForward = Math.Abs(forwardStart - forwardEnd) <= Math.Abs(backwardStart - backwardEnd);
+        startHue = interpolateForward ? forwardStart : backwardStart;
+        endHue = interpolateForward ? forwardEnd : backwardEnd;
+
+        return (startHue, endHue);
+    }
+
     private static double Interpolate(double startValue, double endValue, double distance)
     {
         var difference = endValue - startValue;

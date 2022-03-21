@@ -11,6 +11,7 @@ Unicolour is a small set of utilities for working with colour:
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
 - RGB
 - HSB/HSV
+- HSL
 - CIE XYZ
 - CIE LAB
 
@@ -38,12 +39,14 @@ var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
 var unicolour = Unicolour.FromRgb(1.0, 0.078, 0.576);
 var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
+var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
 ```
 
 3. Get representation of colour in different colour spaces:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
+var hsl = unicolour.Hsl;
 var xyz = unicolour.Xyz;
 var lab = unicolour.Lab;
 ```
@@ -52,6 +55,7 @@ var lab = unicolour.Lab;
 ```c#
 var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateHsl(unicolour2, 0.5);
 ```
 
 5. Compare colours:
@@ -70,12 +74,12 @@ XYZ configuration only requires the reference white point.
 
 ```c#
 var config = new Configuration(
-    new(0.7347, 0.2653), // RGB: red chromaticity coordinates
-    new(0.1152, 0.8264), // RGB: green chromaticity coordinates
-    new(0.1566, 0.0177), // RGB: blue chromaticity coordinates
+    new(0.7347, 0.2653), // RGB red chromaticity coordinates
+    new(0.1152, 0.8264), // RGB green chromaticity coordinates
+    new(0.1566, 0.0177), // RGB blue chromaticity coordinates
+    value => Companding.InverseGamma(value, 2.2), // RGB inverse companding function
     WhitePoint.From(Illuminant.D50), // RGB white point
-    WhitePoint.From(Illuminant.D50), // XYZ white point
-    value => Companding.InverseGamma(value, 2.2)); // RGB inverse companding function
+    WhitePoint.From(Illuminant.D50)); // XYZ white point
     
 var unicolour = Unicolour.FromRgb(config, 255, 20, 147);
 ```

@@ -2,7 +2,6 @@ namespace Wacton.Unicolour.Tests;
 
 using System;
 using NUnit.Framework;
-using Wacton.Unicolour;
 
 public class EqualityTests
 {
@@ -21,6 +20,14 @@ public class EqualityTests
     {
         var unicolour1 = GetRandomHsbUnicolour();
         var unicolour2 = Unicolour.FromHsb(unicolour1.Hsb.H, unicolour1.Hsb.S, unicolour1.Hsb.B, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualHslGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomHslUnicolour();
+        var unicolour2 = Unicolour.FromHsl(unicolour1.Hsl.H, unicolour1.Hsl.S, unicolour1.Hsl.L, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
@@ -49,23 +56,35 @@ public class EqualityTests
     }
     
     [Test]
+    public void NotEqualHslGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomHslUnicolour();
+        var unicolour2 = Unicolour.FromHsl(
+            (unicolour1.Hsl.H + 0.1).Modulo(360),
+            (unicolour1.Hsl.S + 0.1).Modulo(1),
+            (unicolour1.Hsl.L + 0.1).Modulo(1),
+            (unicolour1.Alpha.A + 0.1).Modulo(1));
+        AssertUnicoloursNotEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
     public void DifferentConfigurationObjects()
     {
         var config1 = new Configuration(
             Chromaticity.StandardRgbR,
             new Chromaticity(0.25, 0.75),
             new Chromaticity(0.5, 0.5),
-            new WhitePoint(0.9, 1.0, 1.1),
-            new WhitePoint(0.95, 1.0, 1.05),
-            Companding.InverseStandardRgb);
+            Companding.InverseStandardRgb, 
+            new WhitePoint(0.9, 1.0, 1.1), 
+            new WhitePoint(0.95, 1.0, 1.05));
 
         var config2 = new Configuration(
             Chromaticity.StandardRgbR,
             new Chromaticity(0.75, 0.25),
             new Chromaticity(0.5, 0.5),
-            new WhitePoint(0.9, 1.0, 1.1),
-            new WhitePoint(0.95001, 1.0001, 1.05001),
-            Companding.InverseStandardRgb);
+            Companding.InverseStandardRgb, 
+            new WhitePoint(0.9, 1.0, 1.1), 
+            new WhitePoint(0.95001, 1.0001, 1.05001));
         
         AssertEqual(config1.ChromaticityR, config2.ChromaticityR);
         AssertNotEqual(config1.ChromaticityG, config2.ChromaticityG);
@@ -86,6 +105,12 @@ public class EqualityTests
     {
         var (h, s, b, a) = (Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
         return Unicolour.FromHsb(h, s, b, a);
+    }
+    
+    private static Unicolour GetRandomHslUnicolour()
+    {
+        var (h, s, l, a) = (Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+        return Unicolour.FromHsl(h, s, l, a);
     }
     
     private static void AssertUnicoloursEqual(Unicolour unicolour1, Unicolour unicolour2)

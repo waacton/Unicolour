@@ -29,10 +29,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Lookups\NamedColours.csv">
+      <None Update="Utils\NamedColours.csv">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Lookups\OpenCvColours.csv">
+      <None Update="Utils\OpenCvColours.csv">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Wacton.Unicolour.Tests.Lookups;
+﻿namespace Wacton.Unicolour.Tests.Utils;
 
 using System.Collections.Generic;
 

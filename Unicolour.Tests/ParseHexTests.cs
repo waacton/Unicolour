@@ -10,7 +10,7 @@ public class ParseHexTests
     public void ParsedHexSameRgbAsSystem()
     {
         AssertUtils.AssertNamedColours(namedColour => AssertHexParse(namedColour.Hex!));
-        AssertUtils.AssertRandomHexs(AssertHexParse);
+        AssertUtils.AssertRandomHexColours(AssertHexParse);
     }
     
     [Test]

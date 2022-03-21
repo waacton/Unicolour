@@ -26,6 +26,33 @@ internal static class Conversion
         return new Hsb(hue, saturation, brightness, false);
     }
     
+    // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
+    public static Hsl RgbToHsl(Rgb rgb)
+    {
+        var r = rgb.R;
+        var g = rgb.G;
+        var b = rgb.B;
+
+        var components = new[] {r, g, b};
+        var xMax = components.Max();
+        var xMin = components.Min();
+        var chroma = xMax - xMin;
+        var lightness = (xMax + xMin) / 2.0;
+
+        double hue;
+        if (chroma == 0.0) hue = 0;
+        else if (xMax == r) hue = 60 * (0 + ((g - b) / chroma));
+        else if (xMax == g) hue = 60 * (2 + ((b - r) / chroma));
+        else if (xMax == b) hue = 60 * (4 + ((r - g) / chroma));
+        else throw new InvalidOperationException();
+        hue = hue < 0 ? 360 + hue : hue;
+        var saturation = lightness > 0.0 && lightness < 1.0
+            ? (xMax - lightness) / Math.Min(lightness, 1 - lightness)
+            : 0.0;
+        
+        return new Hsl(hue, saturation, lightness, false);
+    }
+    
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
     public static Rgb HsbToRgb(Hsb hsb, Configuration config)
     {
@@ -51,6 +78,31 @@ internal static class Conversion
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
         return new Rgb(red, green, blue, config);
+    }
+    
+    // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
+    public static Hsl HsbToHsl(Hsb hsb)
+    {
+        var hue = hsb.H;
+        var lightness = hsb.B * (1 - hsb.S / 2);
+        var saturation = lightness is > 0.0 and < 1.0
+            ? (hsb.B - lightness) / Math.Min(lightness, 1 - lightness)
+            : 0;
+
+        return new Hsl(hue, saturation, lightness, hsb.HasHue);
+    }
+    
+    // https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
+    public static Hsb HslToHsb(Hsl hsl)
+    {
+        var hue = hsl.H;
+        var lightness = hsl.L;
+        var brightness = lightness + hsl.S * Math.Min(lightness, 1 - lightness);
+        var saturation = brightness > 0.0
+            ? 2 * (1 - lightness / brightness)
+            : 0;
+
+        return new Hsb(hue, saturation, brightness);
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ

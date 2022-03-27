@@ -10,8 +10,11 @@ public class ConversionTests
     private const double RgbTolerance = 0.00000000001;
     private const double HsbTolerance = 0.00000001;
     private const double HslTolerance = 0.00000001;
+    private const double XyzTolerance = 0.00000001;
+    private const double LabTolerance = 0.00000001;
     
     [Test]
+    // no point doing this test starting with Wikipedia's HSB / HSL values since they're rounded
     public void NamedColoursMatchRgbConversion() => AssertUtils.AssertNamedColours(AssertRgbConversion);
 
     [Test]
@@ -36,6 +39,12 @@ public class ConversionTests
         AssertUtils.AssertRandomHslColours(AssertHslDeconversion);
     }
     
+    [Test]
+    public void XyzSameAfterDeconversion() => AssertUtils.AssertRandomXyzColours(AssertXyzDeconversion);
+
+    [Test]
+    public void LabSameAfterDeconversion() => AssertUtils.AssertRandomLabColours(AssertLabDeconversion);
+
     private static void AssertRgbConversion(TestColour namedColour)
     {
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
@@ -61,33 +70,26 @@ public class ConversionTests
     private static void AssertRgbDeconversion(ColourTuple tuple) => AssertRgbDeconversion(new Rgb(tuple.First, tuple.Second, tuple.Third, Configuration.Default));
     private static void AssertRgbDeconversion(Rgb original)
     {
-        var deconverted = Conversion.HsbToRgb(Conversion.RgbToHsb(original), Configuration.Default);
+        var deconvertedViaHsb = Conversion.HsbToRgb(Conversion.RgbToHsb(original), Configuration.Default);
+        AssertUtils.AssertColourTuple(deconvertedViaHsb.Tuple, original.Tuple, RgbTolerance);
+        AssertUtils.AssertColourTuple(deconvertedViaHsb.TupleLinear, original.TupleLinear, RgbTolerance);
+        AssertUtils.AssertColourTuple(deconvertedViaHsb.Tuple255, original.Tuple255, RgbTolerance);
         
-        Assert.That(deconverted.R, Is.EqualTo(original.R).Within(RgbTolerance));
-        Assert.That(deconverted.G, Is.EqualTo(original.G).Within(RgbTolerance));
-        Assert.That(deconverted.B, Is.EqualTo(original.B).Within(RgbTolerance));
-        AssertUtils.AssertColourTuple(deconverted.Tuple, original.Tuple, RgbTolerance);
-        
-        Assert.That(deconverted.RLinear, Is.EqualTo(original.RLinear).Within(RgbTolerance));
-        Assert.That(deconverted.GLinear, Is.EqualTo(original.GLinear).Within(RgbTolerance));
-        Assert.That(deconverted.BLinear, Is.EqualTo(original.BLinear).Within(RgbTolerance));
-        AssertUtils.AssertColourTuple(deconverted.TupleLinear, original.TupleLinear, RgbTolerance);
-
-        Assert.That(deconverted.R255, Is.EqualTo(original.R255));
-        Assert.That(deconverted.G255, Is.EqualTo(original.G255));
-        Assert.That(deconverted.B255, Is.EqualTo(original.B255));
-        AssertUtils.AssertColourTuple(deconverted.Tuple255, original.Tuple255, RgbTolerance);
+        var deconvertedViaXyz = Conversion.XyzToRgb(Conversion.RgbToXyz(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTuple(deconvertedViaXyz.Tuple, original.Tuple, RgbTolerance);
+        AssertUtils.AssertColourTuple(deconvertedViaXyz.TupleLinear, original.TupleLinear, RgbTolerance);
+        AssertUtils.AssertColourTuple(deconvertedViaXyz.Tuple255, original.Tuple255, RgbTolerance);
     }
 
     private static void AssertHsbDeconversion(TestColour namedColour) => AssertHsbDeconversion(namedColour.Hsb!);
     private static void AssertHsbDeconversion(ColourTuple tuple) => AssertHsbDeconversion(new Hsb(tuple.First, tuple.Second, tuple.Third));
     private static void AssertHsbDeconversion(Hsb original)
     {
-        var deconverted = Conversion.RgbToHsb(Conversion.HsbToRgb(original, Configuration.Default));
-        Assert.That(deconverted.H, Is.EqualTo(original.H).Within(HsbTolerance));
-        Assert.That(deconverted.S, Is.EqualTo(original.S).Within(HsbTolerance));
-        Assert.That(deconverted.B, Is.EqualTo(original.B).Within(HsbTolerance));
-        AssertUtils.AssertColourTuple(deconverted.Tuple, original.Tuple, HsbTolerance, true);
+        var deconvertedViaRgb = Conversion.RgbToHsb(Conversion.HsbToRgb(original, Configuration.Default));
+        AssertUtils.AssertColourTuple(deconvertedViaRgb.Tuple, original.Tuple, HsbTolerance, true);
+        
+        var deconvertedViaHsl = Conversion.HslToHsb(Conversion.HsbToHsl(original));
+        AssertUtils.AssertColourTuple(deconvertedViaHsl.Tuple, original.Tuple, HsbTolerance, true);
     }
     
     private static void AssertHslDeconversion(TestColour namedColour) => AssertHslDeconversion(namedColour.Hsl!);
@@ -95,12 +97,25 @@ public class ConversionTests
     private static void AssertHslDeconversion(Hsl original)
     {
         var deconverted = Conversion.RgbToHsl(Conversion.HsbToRgb(Conversion.HslToHsb(original), Configuration.Default));
-        Assert.That(deconverted.H, Is.EqualTo(original.H).Within(HslTolerance));
-        Assert.That(deconverted.S, Is.EqualTo(original.S).Within(HslTolerance));
-        Assert.That(deconverted.L, Is.EqualTo(original.L).Within(HslTolerance));
         AssertUtils.AssertColourTuple(deconverted.Tuple, original.Tuple, HslTolerance, true);
     }
     
+    private static void AssertXyzDeconversion(ColourTuple tuple) => AssertXyzDeconversion(new Xyz(tuple.First, tuple.Second, tuple.Third));
+    private static void AssertXyzDeconversion(Xyz original)
+    {
+        // note: cannot test deconversion via RGB space as XYZ <-> RGB is not 1:1
+        var deconverted = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTuple(deconverted.Tuple, original.Tuple, XyzTolerance);
+    }
+    
+    private static void AssertLabDeconversion(ColourTuple tuple) => AssertLabDeconversion(new Lab(tuple.First, tuple.Second, tuple.Third));
+    private static void AssertLabDeconversion(Lab original)
+    {
+        // note: cannot test deconversion via RGB space as XYZ <-> RGB is not 1:1
+        var deconverted = Conversion.XyzToLab(Conversion.LabToXyz(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTuple(deconverted.Tuple, original.Tuple, LabTolerance);
+    }
+
     private static ColourTuple GetRgbTupleFromHex(string hex)
     {
         var (r255, g255, b255, _) = Wacton.Unicolour.Utils.ParseColourHex(hex);

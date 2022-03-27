@@ -117,47 +117,14 @@ public class InterpolateHslTests
         AssertHsla(interpolated2, (135, 0.7, 0.3, 0.95));
     }
     
-    [Test]
-    public void BeyondColourToInvalidSaturation()
-    {
-        var unicolour1 = Unicolour.FromHsl(90, 0, 0.6, 0.8);
-        var unicolour2 = Unicolour.FromHsl(270, 1, 0.4, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidBrightness()
-    {
-        var unicolour1 = Unicolour.FromHsl(90, 0.6, 0, 0.8);
-        var unicolour2 = Unicolour.FromHsl(270, 0.4, 1, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidAlpha()
-    {
-        var unicolour1 = Unicolour.FromHsl(90, 0.6, 0.4, 0);
-        var unicolour2 = Unicolour.FromHsl(270, 0.4, 0.6);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsl(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsl(unicolour1, -0.0001));
-    }
-
-    private static void AssertHsla(Unicolour unicolour, (double h, double s, double l, double a) expectedHsla)
+    private static void AssertHsla(Unicolour unicolour, (double h, double s, double l, double alpha) expected)
     {
         var actualHsl = unicolour.Hsl;
         var actualAlpha = unicolour.Alpha;
         
-        Assert.That(actualHsl.H, Is.EqualTo(expectedHsla.h).Within(0.00000000005));
-        Assert.That(actualHsl.S, Is.EqualTo(expectedHsla.s).Within(0.00000000005));
-        Assert.That(actualHsl.L, Is.EqualTo(expectedHsla.l).Within(0.00000000005));
-        Assert.That(actualAlpha.A, Is.EqualTo(expectedHsla.a).Within(0.00000000005));
+        Assert.That(actualHsl.H, Is.EqualTo(expected.h).Within(0.00000000005));
+        Assert.That(actualHsl.S, Is.EqualTo(expected.s).Within(0.00000000005));
+        Assert.That(actualHsl.L, Is.EqualTo(expected.l).Within(0.00000000005));
+        Assert.That(actualAlpha.A, Is.EqualTo(expected.alpha).Within(0.00000000005));
     }
 }

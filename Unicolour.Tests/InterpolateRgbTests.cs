@@ -80,59 +80,15 @@ public class InterpolateRgbTests
         AssertRgba(interpolated1, (0.15, 0.3, 0.7, 0.75));
         AssertRgba(interpolated2, (0.35, 0.7, 0.3, 0.95));
     }
-    
-    [Test]
-    public void BeyondColourToInvalidRed()
-    {
-        var unicolour1 = Unicolour.FromRgb(0.0, 0.4, 0.6, 0.8);
-        var unicolour2 = Unicolour.FromRgb(1.0, 0.6, 0.4, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidGreen()
-    {
-        var unicolour1 = Unicolour.FromRgb(0.4, 0.0, 0.6, 0.8);
-        var unicolour2 = Unicolour.FromRgb(0.6, 1.0, 0.4, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidBlue()
-    {
-        var unicolour1 = Unicolour.FromRgb(0.4, 0.6, 0.0, 0.8);
-        var unicolour2 = Unicolour.FromRgb(0.6, 0.4, 1.0, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidAlpha()
-    {
-        var unicolour1 = Unicolour.FromRgb(0.4, 0.6, 0.4, 0.0);
-        var unicolour2 = Unicolour.FromRgb(0.6, 0.4, 0.6);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, -0.0001));
-    }
-    
-    private static void AssertRgba(Unicolour unicolour, (double r, double g, double b, double a) expectedRgba)
+
+    private static void AssertRgba(Unicolour unicolour, (double r, double g, double b, double alpha) expected)
     {
         var actualRgb = unicolour.Rgb;
         var actualAlpha = unicolour.Alpha;
         
-        Assert.That(actualRgb.R, Is.EqualTo(expectedRgba.r).Within(0.00000000005));
-        Assert.That(actualRgb.G, Is.EqualTo(expectedRgba.g).Within(0.00000000005));
-        Assert.That(actualRgb.B, Is.EqualTo(expectedRgba.b).Within(0.00000000005));
-        Assert.That(actualAlpha.A, Is.EqualTo(expectedRgba.a).Within(0.00000000005));
+        Assert.That(actualRgb.R, Is.EqualTo(expected.r).Within(0.00000000005));
+        Assert.That(actualRgb.G, Is.EqualTo(expected.g).Within(0.00000000005));
+        Assert.That(actualRgb.B, Is.EqualTo(expected.b).Within(0.00000000005));
+        Assert.That(actualAlpha.A, Is.EqualTo(expected.alpha).Within(0.00000000005));
     }
 }

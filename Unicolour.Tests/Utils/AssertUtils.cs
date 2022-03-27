@@ -7,11 +7,13 @@ using NUnit.Framework;
 internal static class AssertUtils
 {
     public static void AssertNamedColours(Action<TestColour> action) => AssertItems(TestColours.NamedColours, action);
+    public static void AssertRandomHexColours(Action<string> action) => AssertItems(TestColours.RandomHexColours, action);
     public static void AssertRandomRgb255Colours(Action<ColourTuple> action) => AssertItems(TestColours.RandomRgb255Colours, action);
     public static void AssertRandomRgbColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomRgbColours, action);
     public static void AssertRandomHsbColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomHsbColours, action);
     public static void AssertRandomHslColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomHslColours, action);
-    public static void AssertRandomHexColours(Action<string> action) => AssertItems(TestColours.RandomHexColours, action);
+    public static void AssertRandomXyzColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomXyzColours, action);
+    public static void AssertRandomLabColours(Action<ColourTuple> action) => AssertItems(TestColours.RandomLabColours, action);
     
     private static void AssertItems<T>(List<T> itemsToAssert, Action<T> assertAction)
     {

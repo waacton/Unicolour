@@ -53,14 +53,14 @@ public static class MatrixTests
         // 3x3 * 1x3
         var matrixA = new Matrix(DataA);
         var matrixB = new Matrix(new[,] {{1.0, 2.0, 3.0} });
-        Assert.Catch<ArgumentException>(() => matrixA.Multiply(matrixB));
+        Assert.Throws<ArgumentException>(() => matrixA.Multiply(matrixB));
     }
 
     [Test]
     public static void InverseThreeByThree()
     {
         // DataA has determinant of 0, no inverse
-        Assert.Catch<InvalidOperationException>(() => new Matrix(DataA).Inverse());
+        Assert.Throws<InvalidOperationException>(() => new Matrix(DataA).Inverse());
         AssertMatrixInverse(DataB, ExpectedInverseB);
     }
     
@@ -76,9 +76,9 @@ public static class MatrixTests
         var threeByOne = new Matrix(new[,] {{1.0}, {2.0}, {3.0}});
         var oneByThree = new Matrix(new[,] {{1.0, 2.0, 3.0}});
         
-        Assert.Catch<InvalidOperationException>(() => twoByTwo.Inverse());
-        Assert.Catch<InvalidOperationException>(() => threeByOne.Inverse());
-        Assert.Catch<InvalidOperationException>(() => oneByThree.Inverse());
+        Assert.Throws<InvalidOperationException>(() => twoByTwo.Inverse());
+        Assert.Throws<InvalidOperationException>(() => threeByOne.Inverse());
+        Assert.Throws<InvalidOperationException>(() => oneByThree.Inverse());
     }
 
     private static void AssertMatrixMultiply(double[,] dataA, double[,] dataB, double[,] expectedResult)

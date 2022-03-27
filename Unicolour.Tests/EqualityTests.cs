@@ -1,12 +1,10 @@
 namespace Wacton.Unicolour.Tests;
 
-using System;
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 public class EqualityTests
 {
-    private static readonly Random Random = new();
-    
     [Test]
     public void EqualRgbGivesEqualObjects()
     {
@@ -28,6 +26,22 @@ public class EqualityTests
     {
         var unicolour1 = GetRandomHslUnicolour();
         var unicolour2 = Unicolour.FromHsl(unicolour1.Hsl.H, unicolour1.Hsl.S, unicolour1.Hsl.L, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualXyzGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomXyzUnicolour();
+        var unicolour2 = Unicolour.FromXyz(unicolour1.Xyz.X, unicolour1.Xyz.Y, unicolour1.Xyz.Z, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualLabGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomLabUnicolour();
+        var unicolour2 = Unicolour.FromLab(unicolour1.Lab.L, unicolour1.Lab.A, unicolour1.Lab.B, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
@@ -74,6 +88,7 @@ public class EqualityTests
             Chromaticity.StandardRgbR,
             new Chromaticity(0.25, 0.75),
             new Chromaticity(0.5, 0.5),
+            Companding.StandardRgb,
             Companding.InverseStandardRgb, 
             new WhitePoint(0.9, 1.0, 1.1), 
             new WhitePoint(0.95, 1.0, 1.05));
@@ -82,6 +97,7 @@ public class EqualityTests
             Chromaticity.StandardRgbR,
             new Chromaticity(0.75, 0.25),
             new Chromaticity(0.5, 0.5),
+            Companding.StandardRgb,
             Companding.InverseStandardRgb, 
             new WhitePoint(0.9, 1.0, 1.1), 
             new WhitePoint(0.95001, 1.0001, 1.05001));
@@ -91,32 +107,46 @@ public class EqualityTests
         AssertEqual(config1.ChromaticityB, config2.ChromaticityB);
         AssertEqual(config1.RgbWhitePoint, config2.RgbWhitePoint);
         AssertNotEqual(config1.XyzWhitePoint, config2.XyzWhitePoint);
-        AssertEqual(config1.InverseCompanding, config2.InverseCompanding);
+        AssertEqual(config1.Compand, config2.Compand);
+        AssertEqual(config1.InverseCompand, config2.InverseCompand);
         AssertNotEqual(config1, config2);
     }
-
+    
     private static Unicolour GetRandomRgbUnicolour()
     {
-        var (r, g, b, a) = (Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-        return Unicolour.FromRgb(r, g, b, a);
+        var (r, g, b) = TestColours.GetRandomRgb();
+        return Unicolour.FromRgb(r, g, b, TestColours.GetRandomAlpha());
     }
     
     private static Unicolour GetRandomHsbUnicolour()
     {
-        var (h, s, b, a) = (Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-        return Unicolour.FromHsb(h, s, b, a);
+        var (h, s, b) = TestColours.GetRandomHsb();
+        return Unicolour.FromHsb(h, s, b, TestColours.GetRandomAlpha());
     }
     
     private static Unicolour GetRandomHslUnicolour()
     {
-        var (h, s, l, a) = (Random.NextDouble(), Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-        return Unicolour.FromHsl(h, s, l, a);
+        var (h, s, l) = TestColours.GetRandomHsl();
+        return Unicolour.FromHsl(h, s, l, TestColours.GetRandomAlpha());
+    }
+    
+    private static Unicolour GetRandomXyzUnicolour()
+    {
+        var (x, y, z) = TestColours.GetRandomXyz();
+        return Unicolour.FromXyz(x, y, z, TestColours.GetRandomAlpha());
+    }
+    
+    private static Unicolour GetRandomLabUnicolour()
+    {
+        var (l, a, b) = TestColours.GetRandomLab();
+        return Unicolour.FromLab(l, a, b, TestColours.GetRandomAlpha());
     }
     
     private static void AssertUnicoloursEqual(Unicolour unicolour1, Unicolour unicolour2)
     {
         AssertEqual(unicolour1.Rgb, unicolour2.Rgb);
         AssertEqual(unicolour1.Hsb, unicolour2.Hsb);
+        AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Lab, unicolour2.Lab);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);

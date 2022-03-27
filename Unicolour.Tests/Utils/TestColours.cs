@@ -11,11 +11,13 @@ internal static class TestColours
     private static readonly Random Random = new();
     
     public static readonly List<TestColour> NamedColours;
+    public static readonly List<string> RandomHexColours = new();
     public static readonly List<ColourTuple> RandomRgb255Colours = new();
     public static readonly List<ColourTuple> RandomRgbColours = new();
     public static readonly List<ColourTuple> RandomHsbColours = new();
     public static readonly List<ColourTuple> RandomHslColours = new();
-    public static readonly List<string> RandomHexColours = new();
+    public static readonly List<ColourTuple> RandomXyzColours = new();
+    public static readonly List<ColourTuple> RandomLabColours = new();
     
     static TestColours()
     {
@@ -24,13 +26,24 @@ internal static class TestColours
 
         for (var i = 0; i < 1000; i++)
         {
-            RandomRgb255Colours.Add(new(Random.Next(256), Random.Next(256), Random.Next(256)));
-            RandomRgbColours.Add(new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
-            RandomHsbColours.Add(new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
-            RandomHslColours.Add(new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble()));
             RandomHexColours.Add(GenerateRandomHex());
+            RandomRgb255Colours.Add(GetRandomRgb255());
+            RandomRgbColours.Add(GetRandomRgb());
+            RandomHsbColours.Add(GetRandomHsb());
+            RandomHslColours.Add(GetRandomHsl());
+            RandomXyzColours.Add(GetRandomXyz());
+            RandomLabColours.Add(GetRandomLab());
         }
     }
+
+    internal static ColourTuple GetRandomRgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
+    internal static ColourTuple GetRandomRgb() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+    internal static ColourTuple GetRandomHsb() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
+    internal static ColourTuple GetRandomHsl() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
+    internal static ColourTuple GetRandomXyz() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+    internal static ColourTuple GetRandomLab() => new(Random.NextDouble() * 100, Random.NextDouble() * 256 - 128, Random.NextDouble() * 256 - 128);
+    internal static double GetRandomAlpha() => Random.NextDouble();
+
 
     private static TestColour CreateNamedColour(string csvRow)
     {

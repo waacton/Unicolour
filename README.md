@@ -32,7 +32,7 @@ Targets .NET Standard 2.0 for use in .NET 5.0+, .NET Core 2.0+ and .NET Framewor
 dotnet add package Wacton.Unicolour
 ```
 
-2. Create a `Unicolour`:
+2. Create a `Unicolour` from values:
 ```c#
 using Wacton.Unicolour;
 ...
@@ -41,6 +41,8 @@ var unicolour = Unicolour.FromRgb255(255, 20, 147);
 var unicolour = Unicolour.FromRgb(1.0, 0.078, 0.576);
 var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
 var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
+var unicolour = Unicolour.FromXyz(0.47, 0.24, 0.3);
+var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
 ```
 
 3. Get representation of colour in different colour spaces:
@@ -57,6 +59,8 @@ var lab = unicolour.Lab;
 var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsl(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateXyz(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateLab(unicolour2, 0.5);
 ```
 
 5. Compare colours:
@@ -71,7 +75,7 @@ See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour
 A `Configuration` parameter can be used to change the RGB model (e.g. Adobe RGB, wide-gamut RGB)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
-RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the inverse companding function.
+RGB configuration requires red, green, and blue chromaticity coordinates, the companding functions, and the reference white point.
 XYZ configuration only requires the reference white point.
 
 
@@ -80,6 +84,7 @@ var config = new Configuration(
     new(0.7347, 0.2653), // RGB red chromaticity coordinates
     new(0.1152, 0.8264), // RGB green chromaticity coordinates
     new(0.1566, 0.0177), // RGB blue chromaticity coordinates
+    value => Companding.Gamma(value, 2.2), // RGB companding function
     value => Companding.InverseGamma(value, 2.2), // RGB inverse companding function
     WhitePoint.From(Illuminant.D50), // RGB white point
     WhitePoint.From(Illuminant.D50)); // XYZ white point

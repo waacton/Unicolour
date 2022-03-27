@@ -116,48 +116,15 @@ public class InterpolateHsbTests
         AssertHsba(interpolated1, (315, 0.3, 0.7, 0.75));
         AssertHsba(interpolated2, (135, 0.7, 0.3, 0.95));
     }
-    
-    [Test]
-    public void BeyondColourToInvalidSaturation()
-    {
-        var unicolour1 = Unicolour.FromHsb(90, 0, 0.6, 0.8);
-        var unicolour2 = Unicolour.FromHsb(270, 1, 0.4, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidBrightness()
-    {
-        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0, 0.8);
-        var unicolour2 = Unicolour.FromHsb(270, 0.4, 1, 0.9);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
-    }
-    
-    [Test]
-    public void BeyondColourToInvalidAlpha()
-    {
-        var unicolour1 = Unicolour.FromHsb(90, 0.6, 0.4, 0);
-        var unicolour2 = Unicolour.FromHsb(270, 0.4, 0.6);
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 1.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, -0.0001));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, -0.0001));
-    }
 
-    private static void AssertHsba(Unicolour unicolour, (double h, double s, double b, double a) expectedHsba)
+    private static void AssertHsba(Unicolour unicolour, (double h, double s, double b, double alpha) expected)
     {
         var actualHsb = unicolour.Hsb;
         var actualAlpha = unicolour.Alpha;
         
-        Assert.That(actualHsb.H, Is.EqualTo(expectedHsba.h).Within(0.00000000005));
-        Assert.That(actualHsb.S, Is.EqualTo(expectedHsba.s).Within(0.00000000005));
-        Assert.That(actualHsb.B, Is.EqualTo(expectedHsba.b).Within(0.00000000005));
-        Assert.That(actualAlpha.A, Is.EqualTo(expectedHsba.a).Within(0.00000000005));
+        Assert.That(actualHsb.H, Is.EqualTo(expected.h).Within(0.00000000005));
+        Assert.That(actualHsb.S, Is.EqualTo(expected.s).Within(0.00000000005));
+        Assert.That(actualHsb.B, Is.EqualTo(expected.b).Within(0.00000000005));
+        Assert.That(actualAlpha.A, Is.EqualTo(expected.alpha).Within(0.00000000005));
     }
 }

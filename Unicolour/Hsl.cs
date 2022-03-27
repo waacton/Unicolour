@@ -8,16 +8,16 @@ public record Hsl
     public double L { get; }
     public ColourTuple Tuple => new(H, S, L);
     
+    public double ClampedH => H.Clamp(0.0, 360.0);
+    public double ClampedS => S.Clamp(0.0, 1.0);
+    public double ClampedL => L.Clamp(0.0, 1.0);
+    public ColourTuple ClampedTuple => new(ClampedH, ClampedS, ClampedL);
+    
     public bool HasHue => explicitHue || S > 0.0 && L is > 0.0 and < 1.0;
     
     public Hsl(double h, double s, double l) : this(h, s, l, true) {}
-
     internal Hsl(double h, double s, double l, bool explicitHue)
     {
-        h.Guard(0.0, 360.0, "Hue");
-        s.Guard(0.0, 1.0, "Saturation");
-        l.Guard(0.0, 1.0, "Lightness");
-
         H = h;
         S = s;
         L = l;

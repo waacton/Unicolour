@@ -22,8 +22,8 @@ internal class SixLaborsFactory : ITestColourFactory
      */
     private static readonly Tolerances BaseTolerances = new() { Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Lab = 0.1 };
     private static readonly Tolerances FromRgbTolerances = BaseTolerances with { Hsb = 0.05, Hsl = 0.05 };
-    private static readonly Tolerances FromHsbTolerances = BaseTolerances;
-    private static readonly Tolerances FromHslTolerances = BaseTolerances with { Rgb = 0.05, Lab = 0.15 };
+    private static readonly Tolerances FromHsbTolerances = BaseTolerances with { Hsl = 0.00005, Lab = 0.125 };
+    private static readonly Tolerances FromHslTolerances = BaseTolerances with { Rgb = 0.05, Hsb = 0.00005, Lab = 0.175 };
 
     private static readonly ColorSpaceConverter Converter = new(new ColorSpaceConverterOptions
     {

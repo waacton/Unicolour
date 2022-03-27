@@ -1,18 +1,11 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Lab
+public record Lab(double L, double A, double B)
 {
-    public double L { get; }
-    public double A { get; }
-    public double B { get; }
+    public double L { get; } = L;
+    public double A { get; } = A;
+    public double B { get; } = B;
     public ColourTuple Tuple => new(L, A, B);
-
-    public Lab(double l, double a, double b)
-    {
-        L = l;
-        A = a;
-        B = b;
-    }
 
     public override string ToString()
     {

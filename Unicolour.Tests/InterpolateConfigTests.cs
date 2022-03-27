@@ -46,6 +46,7 @@ public class InterpolateConfigTests
             Chromaticity.StandardRgbR,
             Chromaticity.StandardRgbG,
             Chromaticity.StandardRgbB,
+            Companding.StandardRgb,
             Companding.InverseStandardRgb, 
             WhitePoint.From(Illuminant.D65), 
             WhitePoint.From(Illuminant.D65));
@@ -61,9 +62,9 @@ public class InterpolateConfigTests
     
     private static void AssertError(Unicolour unicolour1, Unicolour unicolour2)
     {
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 0.5));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 0.5));
-        Assert.Catch<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 0.5));
-        Assert.Catch<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 0.5));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 0.5));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 0.5));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 0.5));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.InterpolateHsb(unicolour1, 0.5));
     }
 }

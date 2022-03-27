@@ -30,7 +30,6 @@ public class OtherLibraryTests
     [Test] 
     public void OpenCvCrossPlatform()
     {
-        // TODO: regenerate to include "HLS" values
         // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
         AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
     }

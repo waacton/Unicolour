@@ -7,9 +7,11 @@ public class Configuration
     public Chromaticity ChromaticityB { get; }
     public WhitePoint RgbWhitePoint { get; }
     public WhitePoint XyzWhitePoint { get; }
-    public Func<double, double> InverseCompanding { get; }
+    public Func<double, double> Compand { get; }
+    public Func<double, double> InverseCompand { get; }
     
     internal Matrix RgbToXyzMatrix { get; }
+    internal Matrix XyzToRgbMatrix { get; }
     
     // default is sRGB model (defined by these chromaticities, illuminant/observer, and sRGB linear correction)
     // and will transform into D65-based XYZ colour space
@@ -17,20 +19,24 @@ public class Configuration
         Chromaticity.StandardRgbR,
         Chromaticity.StandardRgbG, 
         Chromaticity.StandardRgbB,
+        Companding.StandardRgb,
         Companding.InverseStandardRgb, 
         WhitePoint.From(Illuminant.D65), 
         WhitePoint.From(Illuminant.D65));
 
     public Configuration(Chromaticity chromaticityR, Chromaticity chromaticityG, Chromaticity chromaticityB,
-        Func<double, double> inverseCompanding, WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint)
+        Func<double, double> compand, Func<double, double> inverseCompand, 
+        WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
         ChromaticityB = chromaticityB;
-        InverseCompanding = inverseCompanding;
+        Compand = compand;
+        InverseCompand = inverseCompand;
         RgbWhitePoint = rgbWhitePoint;
         XyzWhitePoint = xyzWhitePoint;
         RgbToXyzMatrix = Matrices.RgbToXyzMatrix(this);
+        XyzToRgbMatrix = RgbToXyzMatrix.Inverse();
     }
 
     public override string ToString() => $"RGB {RgbWhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB} -> XYZ {XyzWhitePoint} ";

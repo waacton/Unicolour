@@ -1,44 +1,19 @@
 namespace Wacton.Unicolour.Tests;
 
-using System;
 using NUnit.Framework;
 
 public class UtilsTests
 {
     [Test]
-    public void GuardInRange()
+    public void Clamp()
     {
-        Assert.DoesNotThrow(() => 0.5.Guard(0.0, 1.0, "test"));
+        Assert.That(0.5.Clamp(0, 1), Is.EqualTo(0.5));
+        Assert.That(1.00001.Clamp(0, 1), Is.EqualTo(1.0));
+        Assert.That(1.0.Clamp(0, 1), Is.EqualTo(1.0));
+        Assert.That(0.0.Clamp(0, 1), Is.EqualTo(0.0));
+        Assert.That((-0.00001).Clamp(0, 1), Is.EqualTo(0.0));
     }
-    
-    [Test]
-    public void GuardLowerLimit()
-    {
-        Assert.Catch<InvalidOperationException>(() => 0.99999.Guard(1.0, 2.0, "test"));
-        Assert.DoesNotThrow(() => 1.00000.Guard(1.0, 2.0, "test"));
-        Assert.DoesNotThrow(() => 1.00001.Guard(1.0, 2.0, "test"));
-    }
-    
-    [Test]
-    public void GuardUpperLimit()
-    {
-        Assert.Catch<InvalidOperationException>(() => 2.00001.Guard(1.0, 2.0, "test"));
-        Assert.DoesNotThrow(() => 2.00000.Guard(1.0, 2.0, "test"));
-        Assert.DoesNotThrow(() => 1.99999.Guard(1.0, 2.0, "test"));
-    }
-    
-    [Test]
-    public void GuardUnusual()
-    {
-        Assert.Catch<InvalidOperationException>(() => double.MinValue.Guard(-1.0, 1.0, "test"));
-        Assert.Catch<InvalidOperationException>(() => double.MaxValue.Guard(-1.0, 1.0, "test"));
-        Assert.Catch<InvalidOperationException>(() => double.PositiveInfinity.Guard(-1.0, 1.0, "test"));
-        Assert.Catch<InvalidOperationException>(() => double.NegativeInfinity.Guard(-1.0, 1.0, "test"));
-        Assert.Catch<InvalidOperationException>(() => double.NaN.Guard(-1.0, 1.0, "test"));
-        Assert.Catch<InvalidOperationException>(() => double.Epsilon.Guard(0.00000000001, 1.0, "test"));
-        Assert.DoesNotThrow(() => double.Epsilon.Guard(-1.0, 1.0, "test"));
-    }
-    
+
     [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)
     {

@@ -18,21 +18,11 @@ internal static class ColourLimits
         {"blue", Unicolour.FromRgb(0, 0, 1)}    // lab --> 32.297, +79.1875, -107.8602
     };
     
-    /*
-     * to the best of my knowledge these represent "extremes" of the LAB colour space
-     * where L remains in the middle of the range at 50
-     * red      = L:50 A:+128 B:000 --> R:1.139093 G:-0.440911 B:0.489153
-     * green    = L:50 A:-128 B:000 --> R:-0.573680 G:0.606029 B:0.456624
-     * yellow   = L:50 A:000 B:+128 --> R:0.582705 G:0.454891 B:-0.268797
-     * blue     = L:50 A:000 B:-128 --> R:-0.840632 G:0.542790 B:1.355088
-     * ----------
-     * could easily be wrong...
-     */
     public static readonly Dictionary<string, Unicolour> Lab = new()
     {
-        {"red", Unicolour.FromRgb(1, 0, 0.489153)},
-        {"green", Unicolour.FromRgb(0, 0.606029, 0.456624)},
-        {"yellow", Unicolour.FromRgb(0.582705, 0.454891, 0)},
-        {"blue", Unicolour.FromRgb(0, 0.542790, 1)}
+        {"red", Unicolour.FromLab(50, 128, 0)},
+        {"green", Unicolour.FromLab(50, -128, 0)},
+        {"yellow", Unicolour.FromLab(50, 0, 128)},
+        {"blue", Unicolour.FromLab(50, 0, -128)}
     };
 }

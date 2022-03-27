@@ -16,18 +16,18 @@ public class ParseHexTests
     [Test]
     public void ParseThrowsExceptionWhenInvalidLength()
     {
-        Assert.Catch<NullReferenceException>(() => ParseColourHex(null!));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(string.Empty));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(1)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(2)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(3)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(4)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(5)));
+        Assert.Throws<NullReferenceException>(() => ParseColourHex(null!));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(string.Empty));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(1)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(2)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(3)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(4)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(5)));
         Assert.That(ParseColourHex(GetString(6)), Is.EqualTo((170, 170, 170, 255)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(7)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(7)));
         Assert.That(ParseColourHex(GetString(8)), Is.EqualTo((170, 170, 170, 170)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(9)));
-        Assert.Catch<ArgumentException>(() => ParseColourHex(GetString(10)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(9)));
+        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(10)));
     }
     
     [Test]
@@ -48,7 +48,7 @@ public class ParseHexTests
                 }
                 else
                 {
-                    Assert.Catch<ArgumentException>(() => ParseColourHex(hex));
+                    Assert.Throws<ArgumentException>(() => ParseColourHex(hex));
                 }
             }
         }

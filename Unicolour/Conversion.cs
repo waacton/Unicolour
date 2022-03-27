@@ -125,6 +125,30 @@ internal static class Conversion
         return new Xyz(x, y, z);
     }
     
+    // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
+    public static Rgb XyzToRgb(Xyz xyz, Configuration config)
+    {
+        var xyzMatrix = new Matrix(new[,]
+        {
+            {xyz.X},
+            {xyz.Y},
+            {xyz.Z}
+        });
+
+        var transformationMatrix = config.XyzToRgbMatrix;
+        var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
+
+        var rLinear = rgbLinearMatrix[0, 0];
+        var gLinear = rgbLinearMatrix[1, 0];
+        var bLinear = rgbLinearMatrix[2, 0];
+
+        var r = config.Compand(rLinear);
+        var g = config.Compand(gLinear);
+        var b = config.Compand(bLinear);
+
+        return new Rgb(r, g, b, config);
+    }
+    
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
     public static Lab XyzToLab(Xyz xyz, Configuration config)
     {
@@ -136,17 +160,30 @@ internal static class Conversion
         var xRatio = x * 100 / referenceWhite.X;
         var yRatio = y * 100 / referenceWhite.Y;
         var zRatio = z * 100 / referenceWhite.Z;
-
-        /*
-         * --- delta = 6 / 29
-         * --- 0.008856 = delta ^ 3
-         * --- t * 7.787037 = t / 0.128419 = t / 3delta^2 [1 / 0.128419 = 7.787037]
-         */
-        double F(double t) => t > 0.008856 ? Math.Pow(t, 1 / 3.0) : (t * 7.787037) + (4.0 / 29.0);
+        
+        var delta = 6.0 / 29.0;
+        double F(double t) => t > Math.Pow(delta, 3) ? Math.Pow(t, 1 / 3.0) : t * (1 / 3.0) * Math.Pow(delta, -2) + 4.0 / 29.0;
         var l = 116 * F(yRatio) - 16;
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));
 
         return new Lab(l, a, b);
+    }
+    
+    // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
+    public static Xyz LabToXyz(Lab lab, Configuration config)
+    {
+        var l = lab.L;
+        var a = lab.A;
+        var b = lab.B;
+        
+        var referenceWhite = config.XyzWhitePoint;
+        var delta = 6.0 / 29.0;
+        double F(double t) => t > delta ? Math.Pow(t, 3.0) : 3 * Math.Pow(delta, 2) * (t - 4.0 / 29.0);
+        var x = referenceWhite.X / 100.0 * F((l + 16) / 116.0 + a / 500.0);
+        var y = referenceWhite.Y / 100.0 * F((l + 16) / 116.0);
+        var z = referenceWhite.Z / 100.0 * F((l + 16) / 116.0 - b / 200.0);
+
+        return new Xyz(x, y, z);
     }
 }

@@ -14,36 +14,42 @@ FontCollection collection = new();
 var fontFamily = collection.Add("Inconsolata-Regular.ttf");
 var font = fontFamily.CreateFont(32);
 
-var gradientWidth = 1000;
+var gradientWidth = 1600;
 var gradientHeight = 200;
 
-var image = new Image<Rgba32>(gradientWidth, gradientHeight * 3);
+var image = new Image<Rgba32>(gradientWidth, gradientHeight * 5);
 image.Mutate(x => x.BackgroundColor(backgroundRgba32));
 
 for (var x = 0; x < gradientWidth; x++)
 {
     var distance = x / (double)(gradientWidth - 1);
-    var interpolatedRgb = startColour.InterpolateRgb(endColour, distance);
-    var interpolatedHsb = startColour.InterpolateHsb(endColour, distance);
-    var interpolatedHsl = startColour.InterpolateHsl(endColour, distance);
-    SetPixels(x, interpolatedRgb, interpolatedHsb, interpolatedHsl);
+    var viaRgb = startColour.InterpolateRgb(endColour, distance);
+    var viaHsb = startColour.InterpolateHsb(endColour, distance);
+    var viaHsl = startColour.InterpolateHsl(endColour, distance);
+    var viaXyz = startColour.InterpolateXyz(endColour, distance);
+    var viaLab = startColour.InterpolateLab(endColour, distance);
+    SetPixels(x, viaRgb, viaHsb, viaHsl, viaXyz, viaLab);
 }
 
 image.Save("gradients.png");
 
-void SetPixels(int x, Unicolour viaRgb, Unicolour viaHsb, Unicolour viaHsl)
+void SetPixels(int x, Unicolour viaRgb, Unicolour viaHsb, Unicolour viaHsl, Unicolour viaXyz, Unicolour viaLab)
 {
     for (var y = 0; y < gradientHeight; y++)
     {
         image[x, y] = AsRgba32(viaRgb);
         image[x, y + 200] = AsRgba32(viaHsb);
         image[x, y + 400] = AsRgba32(viaHsl);
+        image[x, y + 600] = AsRgba32(viaXyz);
+        image[x, y + 800] = AsRgba32(viaLab);
     }
 
-    PointF TextLocation(float targetY) => new(24, targetY + 24);
+    PointF TextLocation(float targetY) => new(16, targetY + 16);
     image.Mutate(context => context.DrawText("RGB", font, textRgba32, TextLocation(0)));
     image.Mutate(context => context.DrawText("HSB", font, textRgba32, TextLocation(200)));
     image.Mutate(context => context.DrawText("HSL", font, textRgba32, TextLocation(400)));
+    image.Mutate(context => context.DrawText("XYZ", font, textRgba32, TextLocation(600)));
+    image.Mutate(context => context.DrawText("LAB", font, textRgba32, TextLocation(800)));
 }
 
 Rgba32 AsRgba32(Unicolour unicolour)

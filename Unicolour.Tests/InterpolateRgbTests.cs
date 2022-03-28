@@ -1,6 +1,5 @@
 namespace Wacton.Unicolour.Tests;
 
-using System;
 using NUnit.Framework;
 
 public class InterpolateRgbTests

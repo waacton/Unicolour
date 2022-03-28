@@ -95,18 +95,18 @@ public class InterpolateMonochromeTests
         AssertHsb(blackToGrey.Hsb, (50, 0, 0.25));
         AssertHsb(whiteToGrey.Hsb, (20, 0, 0.75));
     }
-
-    private static void AssertHsb(Hsb actualHsb, (double h, double s, double b) expectedHsb)
-    {
-        Assert.That(actualHsb.H, Is.EqualTo(expectedHsb.h).Within(0.00000000005));
-        Assert.That(actualHsb.S, Is.EqualTo(expectedHsb.s).Within(0.00000000005));
-        Assert.That(actualHsb.B, Is.EqualTo(expectedHsb.b).Within(0.00000000005));
-    }
     
     private static void AssertRgb(Rgb actualRgb, (double r, double g, double b) expectedRgb)
     {
         Assert.That(actualRgb.R, Is.EqualTo(expectedRgb.r).Within(0.00000000005));
         Assert.That(actualRgb.G, Is.EqualTo(expectedRgb.g).Within(0.00000000005));
         Assert.That(actualRgb.B, Is.EqualTo(expectedRgb.b).Within(0.00000000005));
+    }
+
+    private static void AssertHsb(Hsb actualHsb, (double h, double s, double b) expectedHsb)
+    {
+        Assert.That(actualHsb.H, Is.EqualTo(expectedHsb.h).Within(0.00000000005));
+        Assert.That(actualHsb.S, Is.EqualTo(expectedHsb.s).Within(0.00000000005));
+        Assert.That(actualHsb.B, Is.EqualTo(expectedHsb.b).Within(0.00000000005));
     }
 }

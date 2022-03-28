@@ -112,36 +112,12 @@ public class EqualityTests
         AssertNotEqual(config1, config2);
     }
     
-    private static Unicolour GetRandomRgbUnicolour()
-    {
-        var (r, g, b) = TestColours.GetRandomRgb();
-        return Unicolour.FromRgb(r, g, b, TestColours.GetRandomAlpha());
-    }
-    
-    private static Unicolour GetRandomHsbUnicolour()
-    {
-        var (h, s, b) = TestColours.GetRandomHsb();
-        return Unicolour.FromHsb(h, s, b, TestColours.GetRandomAlpha());
-    }
-    
-    private static Unicolour GetRandomHslUnicolour()
-    {
-        var (h, s, l) = TestColours.GetRandomHsl();
-        return Unicolour.FromHsl(h, s, l, TestColours.GetRandomAlpha());
-    }
-    
-    private static Unicolour GetRandomXyzUnicolour()
-    {
-        var (x, y, z) = TestColours.GetRandomXyz();
-        return Unicolour.FromXyz(x, y, z, TestColours.GetRandomAlpha());
-    }
-    
-    private static Unicolour GetRandomLabUnicolour()
-    {
-        var (l, a, b) = TestColours.GetRandomLab();
-        return Unicolour.FromLab(l, a, b, TestColours.GetRandomAlpha());
-    }
-    
+    private static Unicolour GetRandomRgbUnicolour() => Unicolour.FromRgb(TestColours.GetRandomRgb().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomHsbUnicolour() => Unicolour.FromHsb(TestColours.GetRandomHsb().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomHslUnicolour() => Unicolour.FromHsl(TestColours.GetRandomHsl().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomXyzUnicolour() => Unicolour.FromXyz(TestColours.GetRandomXyz().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomLabUnicolour() => Unicolour.FromLab(TestColours.GetRandomLab().Tuple, TestColours.GetRandomAlpha());
+
     private static void AssertUnicoloursEqual(Unicolour unicolour1, Unicolour unicolour2)
     {
         AssertEqual(unicolour1.Rgb, unicolour2.Rgb);

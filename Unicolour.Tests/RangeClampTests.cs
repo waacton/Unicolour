@@ -12,8 +12,8 @@ public static class RangeClampTests
         Range bRange = new(0.0, 1.0);
         var beyondMax = new Rgb(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax, Configuration.Default);
         var beyondMin = new Rgb(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin, Configuration.Default);
-        AssertClamped(beyondMax.ClampedTuple, beyondMax.Tuple);
-        AssertClamped(beyondMin.Tuple, beyondMin.ClampedTuple);
+        AssertClamped(beyondMax.ClampedTriplet, beyondMax.Triplet);
+        AssertClamped(beyondMin.Triplet, beyondMin.ClampedTriplet);
     }
 
     [Test]
@@ -24,8 +24,8 @@ public static class RangeClampTests
         Range bRange = new(0.0, 1.0);
         var beyondMax = new Hsb(hRange.BeyondMax, sRange.BeyondMax, bRange.BeyondMax);
         var beyondMin = new Hsb(hRange.BeyondMin, sRange.BeyondMin, bRange.BeyondMin);
-        AssertClamped(beyondMax.ClampedTuple, beyondMax.Tuple);
-        AssertClamped(beyondMin.Tuple, beyondMin.ClampedTuple);
+        AssertClamped(beyondMax.ClampedTriplet, beyondMax.Triplet);
+        AssertClamped(beyondMin.Triplet, beyondMin.ClampedTriplet);
     }
     
     [Test]
@@ -36,11 +36,11 @@ public static class RangeClampTests
         Range lRange = new(0.0, 1.0);
         var beyondMax = new Hsl(hRange.BeyondMax, sRange.BeyondMax, lRange.BeyondMax);
         var beyondMin = new Hsl(hRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
-        AssertClamped(beyondMax.ClampedTuple, beyondMax.Tuple);
-        AssertClamped(beyondMin.Tuple, beyondMin.ClampedTuple);
+        AssertClamped(beyondMax.ClampedTriplet, beyondMax.Triplet);
+        AssertClamped(beyondMin.Triplet, beyondMin.ClampedTriplet);
     }
 
-    private static void AssertClamped(ColourTuple lesser, ColourTuple greater)
+    private static void AssertClamped(ColourTriplet lesser, ColourTriplet greater)
     {
         Assert.That(lesser.First, Is.LessThan(greater.First));
         Assert.That(lesser.Second, Is.LessThan(greater.Second));

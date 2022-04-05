@@ -7,12 +7,12 @@ internal class TestColour
 {
     public string? Name { get; init; }
     public string? Hex { get; init; }
-    public ColourTuple? Rgb { get; init; }
-    public ColourTuple? RgbLinear { get; init; }
-    public ColourTuple? Hsl { get; init; }
-    public ColourTuple? Hsb { get; init; }
-    public ColourTuple? Xyz { get; init; }
-    public ColourTuple? Lab { get; init; }
+    public ColourTriplet? Rgb { get; init; }
+    public ColourTriplet? RgbLinear { get; init; }
+    public ColourTriplet? Hsl { get; init; }
+    public ColourTriplet? Hsb { get; init; }
+    public ColourTriplet? Xyz { get; init; }
+    public ColourTriplet? Lab { get; init; }
     public Tolerances? Tolerances { get; init; }
 
     /*

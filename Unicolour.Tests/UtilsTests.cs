@@ -1,18 +1,41 @@
 namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using static Wacton.Unicolour.Utils;
 
 public class UtilsTests
 {
     [Test]
-    public void Clamp()
+    public void ClampWithinRange()
     {
         Assert.That(0.5.Clamp(0, 1), Is.EqualTo(0.5));
-        Assert.That(1.00001.Clamp(0, 1), Is.EqualTo(1.0));
         Assert.That(1.0.Clamp(0, 1), Is.EqualTo(1.0));
         Assert.That(0.0.Clamp(0, 1), Is.EqualTo(0.0));
+    }
+    
+    [Test]
+    public void ClampOutwithRange()
+    {
+        Assert.That(1.00001.Clamp(0, 1), Is.EqualTo(1.0));
         Assert.That((-0.00001).Clamp(0, 1), Is.EqualTo(0.0));
     }
+
+    [Test]
+    public void CubeRootPositive()
+    {
+        Assert.That(CubeRoot(8), Is.EqualTo(2));
+        Assert.That(CubeRoot(0.027), Is.EqualTo(0.3).Within(0.0000000000000001));
+    }
+
+    [Test]
+    public void CubeRootNegative()
+    {
+        Assert.That(CubeRoot(-8), Is.EqualTo(-2));
+        Assert.That(CubeRoot(-0.027), Is.EqualTo(-0.3).Within(0.0000000000000001));
+    }
+    
+    [Test]
+    public void CubeRootZero() => Assert.That(CubeRoot(0), Is.EqualTo(0));
 
     [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)

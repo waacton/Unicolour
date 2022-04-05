@@ -5,7 +5,7 @@ public record Lab(double L, double A, double B)
     public double L { get; } = L;
     public double A { get; } = A;
     public double B { get; } = B;
-    public ColourTuple Tuple => new(L, A, B);
+    public ColourTriplet Triplet => new(L, A, B);
 
     public override string ToString()
     {

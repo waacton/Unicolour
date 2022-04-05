@@ -5,52 +5,65 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Wacton.Unicolour;
 
-var startColour = Unicolour.FromHsb(260, 1.0, 0.33);
-var endColour = Unicolour.FromHsb(30, 0.66, 1.0);
-var backgroundRgba32 = AsRgba32(Unicolour.FromHex("#404046"));
-var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
+const int gradientWidth = 800;
+const int gradientHeight = 100;
 
 FontCollection collection = new();
 var fontFamily = collection.Add("Inconsolata-Regular.ttf");
-var font = fontFamily.CreateFont(32);
+var font = fontFamily.CreateFont(24);
+var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
 
-var gradientWidth = 1600;
-var gradientHeight = 200;
+var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "OKLAB"};
+var purple = Unicolour.FromHsb(260, 1.0, 0.33);
+var orange = Unicolour.FromHsb(30, 0.66, 1.0);
+var black = Unicolour.FromRgb(0, 0, 0);
+var cyan = Unicolour.FromRgb255(0, 255, 255);
 
-var image = new Image<Rgba32>(gradientWidth, gradientHeight * 5);
-image.Mutate(x => x.BackgroundColor(backgroundRgba32));
+var image = new Image<Rgba32>(gradientWidth * 2, gradientHeight * labels.Count);
+Draw(purple, orange, 0);
+Draw(black, cyan, 1);
 
-for (var x = 0; x < gradientWidth; x++)
+void Draw(Unicolour start, Unicolour end, int column)
 {
-    var distance = x / (double)(gradientWidth - 1);
-    var viaRgb = startColour.InterpolateRgb(endColour, distance);
-    var viaHsb = startColour.InterpolateHsb(endColour, distance);
-    var viaHsl = startColour.InterpolateHsl(endColour, distance);
-    var viaXyz = startColour.InterpolateXyz(endColour, distance);
-    var viaLab = startColour.InterpolateLab(endColour, distance);
-    SetPixels(x, viaRgb, viaHsb, viaHsl, viaXyz, viaLab);
+    for (var pixelIndex = 0; pixelIndex < gradientWidth; pixelIndex++)
+    {
+        var distance = pixelIndex / (double)(gradientWidth - 1);
+        var unicolours = new List<Unicolour>
+        {
+            start.InterpolateRgb(end, distance),
+            start.InterpolateHsb(end, distance),
+            start.InterpolateHsl(end, distance),
+            start.InterpolateXyz(end, distance),
+            start.InterpolateLab(end, distance),
+            start.InterpolateOklab(end, distance)
+        };
+    
+        SetPixels(column, pixelIndex, unicolours);
+    }
+    
+    for (var i = 0; i < labels.Count; i++)
+    {
+        var label = labels[i];
+        var textLocation = TextLocation(column, i);
+        image.Mutate(context => context.DrawText(label, font, textRgba32, textLocation));
+    }
 }
 
 image.Save("gradients.png");
 
-void SetPixels(int x, Unicolour viaRgb, Unicolour viaHsb, Unicolour viaHsl, Unicolour viaXyz, Unicolour viaLab)
+void SetPixels(int column, int pixelIndex, List<Unicolour> unicolours)
 {
     for (var y = 0; y < gradientHeight; y++)
     {
-        image[x, y] = AsRgba32(viaRgb);
-        image[x, y + 200] = AsRgba32(viaHsb);
-        image[x, y + 400] = AsRgba32(viaHsl);
-        image[x, y + 600] = AsRgba32(viaXyz);
-        image[x, y + 800] = AsRgba32(viaLab);
+        for (var i = 0; i < unicolours.Count; i++)
+        {
+            var x = gradientWidth * column + pixelIndex;
+            image[x, y + gradientHeight * i] = AsRgba32(unicolours[i]);
+        }
     }
-
-    PointF TextLocation(float targetY) => new(16, targetY + 16);
-    image.Mutate(context => context.DrawText("RGB", font, textRgba32, TextLocation(0)));
-    image.Mutate(context => context.DrawText("HSB", font, textRgba32, TextLocation(200)));
-    image.Mutate(context => context.DrawText("HSL", font, textRgba32, TextLocation(400)));
-    image.Mutate(context => context.DrawText("XYZ", font, textRgba32, TextLocation(600)));
-    image.Mutate(context => context.DrawText("LAB", font, textRgba32, TextLocation(800)));
 }
+
+PointF TextLocation(float column, float row) => new(gradientWidth * column + 16, gradientHeight * row + 16);
 
 Rgba32 AsRgba32(Unicolour unicolour)
 {

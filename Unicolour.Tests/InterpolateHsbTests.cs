@@ -14,10 +14,10 @@ public class InterpolateHsbTests
         var interpolated3 = unicolour1.InterpolateHsb(unicolour2, 0.75);
         var interpolated4 = unicolour2.InterpolateHsb(unicolour1, 0.25);
         
-        AssertHsba(interpolated1, (180, 0.25, 0.75, 0.5));
-        AssertHsba(interpolated2, (180, 0.25, 0.75, 0.5));
-        AssertHsba(interpolated3, (180, 0.25, 0.75, 0.5));
-        AssertHsba(interpolated4, (180, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated1, (180, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated2, (180, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated3, (180, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated4, (180, 0.25, 0.75, 0.5));
     }
 
     [Test]
@@ -28,8 +28,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.5);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.5);
         
-        AssertHsba(interpolated1, (90, 0.5, 0.5, 0.5));
-        AssertHsba(interpolated2, (90, 0.5, 0.5, 0.5));
+        AssertInterpolated(interpolated1, (90, 0.5, 0.5, 0.5));
+        AssertInterpolated(interpolated2, (90, 0.5, 0.5, 0.5));
     }
     
     [Test]
@@ -40,8 +40,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.5);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.5);
         
-        AssertHsba(interpolated1, (350, 0.25, 0.4, 0.1));
-        AssertHsba(interpolated2, (350, 0.25, 0.4, 0.1));
+        AssertInterpolated(interpolated1, (350, 0.25, 0.4, 0.1));
+        AssertInterpolated(interpolated2, (350, 0.25, 0.4, 0.1));
     }
     
     [Test]
@@ -52,8 +52,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.75);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.75);
 
-        AssertHsba(interpolated1, (135, 0.25, 0.75, 0.625));
-        AssertHsba(interpolated2, (45, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated1, (135, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated2, (45, 0.75, 0.25, 0.875));
     }
     
     [Test]
@@ -64,8 +64,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.75);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.75);
 
-        AssertHsba(interpolated1, (30, 0.25, 0.75, 0.625));
-        AssertHsba(interpolated2, (330, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated1, (30, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated2, (330, 0.75, 0.25, 0.875));
     }
     
     [Test]
@@ -76,8 +76,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.25);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.25);
         
-        AssertHsba(interpolated1, (45, 0.75, 0.25, 0.875));
-        AssertHsba(interpolated2, (135, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated1, (45, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated2, (135, 0.25, 0.75, 0.625));
     }
     
     [Test]
@@ -88,8 +88,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 0.25);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 0.25);
         
-        AssertHsba(interpolated1, (330, 0.75, 0.25, 0.875));
-        AssertHsba(interpolated2, (30, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated1, (330, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated2, (30, 0.25, 0.75, 0.625));
     }
     
     [Test]
@@ -100,8 +100,8 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, 1.5);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, 1.5);
 
-        AssertHsba(interpolated1, (135, 0.7, 0.3, 0.95));
-        AssertHsba(interpolated2, (315, 0.3, 0.7, 0.75));
+        AssertInterpolated(interpolated1, (135, 0.7, 0.3, 0.95));
+        AssertInterpolated(interpolated2, (315, 0.3, 0.7, 0.75));
     }
     
     [Test]
@@ -112,11 +112,11 @@ public class InterpolateHsbTests
         var interpolated1 = unicolour1.InterpolateHsb(unicolour2, -0.5);
         var interpolated2 = unicolour2.InterpolateHsb(unicolour1, -0.5);
 
-        AssertHsba(interpolated1, (315, 0.3, 0.7, 0.75));
-        AssertHsba(interpolated2, (135, 0.7, 0.3, 0.95));
+        AssertInterpolated(interpolated1, (315, 0.3, 0.7, 0.75));
+        AssertInterpolated(interpolated2, (135, 0.7, 0.3, 0.95));
     }
 
-    private static void AssertHsba(Unicolour unicolour, (double h, double s, double b, double alpha) expected)
+    private static void AssertInterpolated(Unicolour unicolour, (double h, double s, double b, double alpha) expected)
     {
         var actualHsb = unicolour.Hsb;
         var actualAlpha = unicolour.Alpha;

@@ -6,12 +6,12 @@ public record Hsl
     public double H { get; }
     public double S { get; }
     public double L { get; }
-    public ColourTuple Tuple => new(H, S, L);
+    public ColourTriplet Triplet => new(H, S, L);
     
     public double ClampedH => H.Clamp(0.0, 360.0);
     public double ClampedS => S.Clamp(0.0, 1.0);
     public double ClampedL => L.Clamp(0.0, 1.0);
-    public ColourTuple ClampedTuple => new(ClampedH, ClampedS, ClampedL);
+    public ColourTriplet ClampedTriplet => new(ClampedH, ClampedS, ClampedL);
     
     public bool HasHue => explicitHue || S > 0.0 && L is > 0.0 and < 1.0;
     

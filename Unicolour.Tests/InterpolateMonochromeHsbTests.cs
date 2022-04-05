@@ -2,7 +2,7 @@ namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
 
-public class InterpolateMonochromeTests
+public class InterpolateMonochromeHsbTests
 {
     [Test]
     // monochrome RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
@@ -13,19 +13,19 @@ public class InterpolateMonochromeTests
         var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
         var hsbBlack = Unicolour.FromHsb(180, 1, 0); // no brightness = black
         var hsbWhite = Unicolour.FromHsb(180, 0, 1); // no saturation = greyscale
-        var green = Unicolour.FromHsb(120, 1, 1);
         
-        var interpolatedFromRgbBlack = rgbBlack.InterpolateHsb(green, 0.5);
-        var interpolatedFromRgbWhite = rgbWhite.InterpolateHsb(green, 0.5);
-        var interpolatedFromHsbBlack = hsbBlack.InterpolateHsb(green, 0.5);
-        var interpolatedFromHsbWhite = hsbWhite.InterpolateHsb(green, 0.5);
+        var green = Unicolour.FromHsb(120, 1, 1);
+        var fromRgbBlack = rgbBlack.InterpolateHsb(green, 0.5);
+        var fromRgbWhite = rgbWhite.InterpolateHsb(green, 0.5);
+        var fromHsbBlack = hsbBlack.InterpolateHsb(green, 0.5);
+        var fromHsbWhite = hsbWhite.InterpolateHsb(green, 0.5);
 
         // note that "RGB black" interpolates differently to the "HSB black"
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
-        AssertHsb(interpolatedFromRgbBlack.Hsb, (120, 0.5, 0.5));
-        AssertHsb(interpolatedFromRgbWhite.Hsb, (120, 0.5, 1));
-        AssertHsb(interpolatedFromHsbBlack.Hsb, (150, 1, 0.5));
-        AssertHsb(interpolatedFromHsbWhite.Hsb, (150, 0.5, 1));
+        AssertHsb(fromRgbBlack.Hsb, (120, 0.5, 0.5));
+        AssertHsb(fromRgbWhite.Hsb, (120, 0.5, 1));
+        AssertHsb(fromHsbBlack.Hsb, (150, 1, 0.5));
+        AssertHsb(fromHsbWhite.Hsb, (150, 0.5, 1));
     }
     
     [Test]
@@ -37,19 +37,19 @@ public class InterpolateMonochromeTests
         var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
         var hsbBlack = Unicolour.FromHsb(180, 1, 0); // no brightness = black
         var hsbWhite = Unicolour.FromHsb(180, 0, 1); // no saturation = greyscale
-        var blue = Unicolour.FromHsb(240, 1, 1);
         
-        var interpolatedToRgbBlack = blue.InterpolateHsb(rgbBlack, 0.5);
-        var interpolatedToRgbWhite = blue.InterpolateHsb(rgbWhite, 0.5);
-        var interpolatedToHsbBlack = blue.InterpolateHsb(hsbBlack, 0.5);
-        var interpolatedToHsbWhite = blue.InterpolateHsb(hsbWhite, 0.5);
+        var blue = Unicolour.FromHsb(240, 1, 1);
+        var toRgbBlack = blue.InterpolateHsb(rgbBlack, 0.5);
+        var toRgbWhite = blue.InterpolateHsb(rgbWhite, 0.5);
+        var toHsbBlack = blue.InterpolateHsb(hsbBlack, 0.5);
+        var toHsbWhite = blue.InterpolateHsb(hsbWhite, 0.5);
 
         // note that "RGB black" interpolates differently to the "HSB black"
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
-        AssertHsb(interpolatedToRgbBlack.Hsb, (240, 0.5, 0.5));
-        AssertHsb(interpolatedToRgbWhite.Hsb, (240, 0.5, 1));
-        AssertHsb(interpolatedToHsbBlack.Hsb, (210, 1, 0.5));
-        AssertHsb(interpolatedToHsbWhite.Hsb, (210, 0.5, 1));
+        AssertHsb(toRgbBlack.Hsb, (240, 0.5, 0.5));
+        AssertHsb(toRgbWhite.Hsb, (240, 0.5, 1));
+        AssertHsb(toHsbBlack.Hsb, (210, 1, 0.5));
+        AssertHsb(toHsbWhite.Hsb, (210, 0.5, 1));
     }
     
     [Test]

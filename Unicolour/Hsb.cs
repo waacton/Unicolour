@@ -6,12 +6,12 @@ public record Hsb
     public double H { get; }
     public double S { get; }
     public double B { get; }
-    public ColourTuple Tuple => new(H, S, B);
+    public ColourTriplet Triplet => new(H, S, B);
     
     public double ClampedH => H.Clamp(0.0, 360.0);
     public double ClampedS => S.Clamp(0.0, 1.0);
     public double ClampedB => B.Clamp(0.0, 1.0);
-    public ColourTuple ClampedTuple => new(ClampedH, ClampedS, ClampedB);
+    public ColourTriplet ClampedTriplet => new(ClampedH, ClampedS, ClampedB);
     
     // RGB(0,0,0) is black, but has no explicit hue (and don't want to assume red)
     // HSB(0,0,0) is black, but want to acknowledge the explicit red hue of 0

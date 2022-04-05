@@ -59,12 +59,21 @@ public static class SmokeTests
         AssertLab((100, 128, 128));
         AssertLab((50, -1, 1));
     }
+    
+    [Test]
+    public static void UnicolourOklab()
+    {
+        AssertOklab((0, 0, 0));
+        AssertOklab((1, 1, 1));
+        AssertOklab((0.4, 0.5, 0.6));
+    }
 
     private static void AssertRgb((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb);
     private static void AssertHsb((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb);
     private static void AssertHsl((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl);
     private static void AssertXyz((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz);
     private static void AssertLab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab);
+    private static void AssertOklab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab);
 
     private delegate Unicolour FromValues(double first, double second, double third, double alpha = 1.0);
     private delegate Unicolour FromValuesWithConfig(Configuration config, double first, double second, double third, double alpha = 1.0);

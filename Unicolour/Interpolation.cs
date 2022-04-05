@@ -6,7 +6,7 @@ public static class Interpolation
     {
         GuardConfiguration(startColour, endColour);
         
-        var (r, g, b) = InterpolateTuple(startColour.Rgb.Tuple, endColour.Rgb.Tuple, distance);
+        var (r, g, b) = InterpolateTriplet(startColour.Rgb.Triplet, endColour.Rgb.Triplet, distance);
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
         return Unicolour.FromRgb(startColour.Config, r, g, b, alpha);
     }
@@ -17,8 +17,8 @@ public static class Interpolation
         var startHsb = startColour.Hsb;
         var endHsb = endColour.Hsb;
         
-        var (start, end) = GetHueBasedTuples((startHsb.HasHue, startHsb.Tuple), (endHsb.HasHue, endHsb.Tuple));
-        var (h,s, b) = InterpolateTuple(start, end, distance);
+        var (start, end) = GetHueBasedTriplets((startHsb.HasHue, startHsb.Triplet), (endHsb.HasHue, endHsb.Triplet));
+        var (h,s, b) = InterpolateTriplet(start, end, distance);
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
         return Unicolour.FromHsb(startColour.Config, h.Modulo(360), s, b, alpha);
     }
@@ -29,17 +29,17 @@ public static class Interpolation
         var startHsl = startColour.Hsl;
         var endHsl = endColour.Hsl;
 
-        var (start, end) = GetHueBasedTuples((startHsl.HasHue, startHsl.Tuple), (endHsl.HasHue, endHsl.Tuple));
-        var (h,s, l) = InterpolateTuple(start, end, distance);
+        var (start, end) = GetHueBasedTriplets((startHsl.HasHue, startHsl.Triplet), (endHsl.HasHue, endHsl.Triplet));
+        var (h,s, l) = InterpolateTriplet(start, end, distance);
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
         return Unicolour.FromHsl(startColour.Config, h.Modulo(360), s, l, alpha);
     }
-    
+
     public static Unicolour InterpolateXyz(this Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);
         
-        var (x, y, z) = InterpolateTuple(startColour.Xyz.Tuple, endColour.Xyz.Tuple, distance);
+        var (x, y, z) = InterpolateTriplet(startColour.Xyz.Triplet, endColour.Xyz.Triplet, distance);
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
         return Unicolour.FromXyz(startColour.Config, x, y, z, alpha);
     }
@@ -48,23 +48,32 @@ public static class Interpolation
     {
         GuardConfiguration(startColour, endColour);
         
-        var (l, a, b) = InterpolateTuple(startColour.Lab.Tuple, endColour.Lab.Tuple, distance);
+        var (l, a, b) = InterpolateTriplet(startColour.Lab.Triplet, endColour.Lab.Triplet, distance);
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
         return Unicolour.FromLab(startColour.Config, l, a, b, alpha);
     }
-
-    private static (ColourTuple startHue, ColourTuple endHue) GetHueBasedTuples((bool hasHue, ColourTuple tuple) start, (bool hasHue, ColourTuple tuple) end)
+    
+    public static Unicolour InterpolateOklab(this Unicolour startColour, Unicolour endColour, double distance)
     {
-        double Hue(ColourTuple tuple) => tuple.First;
+        GuardConfiguration(startColour, endColour);
+        
+        var (l, a, b) = InterpolateTriplet(startColour.Oklab.Triplet, endColour.Oklab.Triplet, distance);
+        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
+        return Unicolour.FromOklab(startColour.Config, l, a, b, alpha);
+    }
 
-        (ColourTuple, ColourTuple) Result(double startHue, double endHue) => (
-            new(startHue, start.tuple.Second, start.tuple.Third), 
-            new(endHue, end.tuple.Second, end.tuple.Third));
+    private static (ColourTriplet startHue, ColourTriplet endHue) GetHueBasedTriplets((bool hasHue, ColourTriplet triplet) start, (bool hasHue, ColourTriplet triplet) end)
+    {
+        double Hue(ColourTriplet triplet) => triplet.First;
+
+        (ColourTriplet, ColourTriplet) Result(double startHue, double endHue) => (
+            new(startHue, start.triplet.Second, start.triplet.Third), 
+            new(endHue, end.triplet.Second, end.triplet.Third));
         
         // don't use hue if one colour is monochrome (e.g. black n/a° to green 120° should always stay at hue 120°)
         var noHue = !start.hasHue && !end.hasHue;
-        var startHue = noHue || start.hasHue ? Hue(start.tuple) : Hue(end.tuple);
-        var endHue = noHue || end.hasHue ? Hue(end.tuple) : Hue(start.tuple);
+        var startHue = noHue || start.hasHue ? Hue(start.triplet) : Hue(end.triplet);
+        var endHue = noHue || end.hasHue ? Hue(end.triplet) : Hue(start.triplet);
     
         if (startHue > endHue)
         {
@@ -83,7 +92,7 @@ public static class Interpolation
         return Result(startHue, endHue);
     }
 
-    private static ColourTuple InterpolateTuple(ColourTuple start, ColourTuple end, double distance)
+    private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
     {
         var first = Interpolate(start.First, end.First, distance);
         var second = Interpolate(start.Second, end.Second, distance);

@@ -7,6 +7,7 @@ public partial class Unicolour
     private Unicolour(Configuration config, Hsl hsl, Alpha alpha) : this(config, alpha, ColourSpace.Hsl) => this.hsl = hsl;
     private Unicolour(Configuration config, Xyz xyz, Alpha alpha) : this(config, alpha, ColourSpace.Xyz) => this.xyz = xyz;
     private Unicolour(Configuration config, Lab lab, Alpha alpha) : this(config, alpha, ColourSpace.Lab) => this.lab = lab;
+    private Unicolour(Configuration config, Oklab oklab, Alpha alpha) : this(config, alpha, ColourSpace.Oklab) => this.oklab = oklab;
     
     public static Unicolour FromHex(string hex) => FromHex(Configuration.Default, hex);
     public static Unicolour FromHex(Configuration config, string hex)
@@ -44,4 +45,9 @@ public partial class Unicolour
     public static Unicolour FromLab(Configuration config, (double l, double a, double b) tuple, double alpha = 1.0) => FromLab(config, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromLab(double l, double a, double b, double alpha = 1.0) => FromLab(Configuration.Default, l, a, b, alpha);
     public static Unicolour FromLab(Configuration config, double l, double a, double b, double alpha = 1.0) => new(config, new Lab(l, a, b), new Alpha(alpha));
+    
+    public static Unicolour FromOklab((double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(Configuration.Default, tuple.l, tuple.a, tuple.b, alpha);
+    public static Unicolour FromOklab(Configuration config, (double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(config, tuple.l, tuple.a, tuple.b, alpha);
+    public static Unicolour FromOklab(double l, double a, double b, double alpha = 1.0) => FromOklab(Configuration.Default, l, a, b, alpha);
+    public static Unicolour FromOklab(Configuration config, double l, double a, double b, double alpha = 1.0) => new(config, new Oklab(l, a, b), new Alpha(alpha));
 }

@@ -10,9 +10,6 @@ public class Configuration
     public Func<double, double> Compand { get; }
     public Func<double, double> InverseCompand { get; }
     
-    internal Matrix RgbToXyzMatrix { get; }
-    internal Matrix XyzToRgbMatrix { get; }
-    
     // default is sRGB model (defined by these chromaticities, illuminant/observer, and sRGB linear correction)
     // and will transform into D65-based XYZ colour space
     public static readonly Configuration Default = new(
@@ -35,8 +32,6 @@ public class Configuration
         InverseCompand = inverseCompand;
         RgbWhitePoint = rgbWhitePoint;
         XyzWhitePoint = xyzWhitePoint;
-        RgbToXyzMatrix = Matrices.RgbToXyzMatrix(this);
-        XyzToRgbMatrix = RgbToXyzMatrix.Inverse();
     }
 
     public override string ToString() => $"RGB {RgbWhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB} -> XYZ {XyzWhitePoint} ";

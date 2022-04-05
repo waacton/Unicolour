@@ -8,12 +8,14 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Hsl? hsl;
     private Xyz? xyz;
     private Lab? lab;
+    private Oklab? oklab;
 
     public Rgb Rgb => Get(() => rgb, ColourSpace.Rgb)!;
     public Hsb Hsb => Get(() => hsb, ColourSpace.Hsb)!;
     public Hsl Hsl => Get(() => hsl, ColourSpace.Hsl)!;
     public Xyz Xyz => Get(() => xyz, ColourSpace.Xyz)!;
     public Lab Lab => Get(() => lab, ColourSpace.Lab)!;
+    public Oklab Oklab => Get(() => oklab, ColourSpace.Oklab)!;
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
@@ -55,6 +57,7 @@ public partial class Unicolour : IEquatable<Unicolour>
             ColourSpace.Hsl => Hsl.Equals(other.Hsl),
             ColourSpace.Xyz => Xyz.Equals(other.Xyz),
             ColourSpace.Lab => Lab.Equals(other.Lab),
+            ColourSpace.Oklab => Oklab.Equals(other.Oklab),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -70,6 +73,7 @@ public partial class Unicolour : IEquatable<Unicolour>
                 ColourSpace.Hsl => Hsl.GetHashCode() * 397,
                 ColourSpace.Xyz => Xyz.GetHashCode() * 397,
                 ColourSpace.Lab => Lab.GetHashCode() * 397,
+                ColourSpace.Oklab => Oklab.GetHashCode() * 397,
                 _ => throw new ArgumentOutOfRangeException()
             };
 

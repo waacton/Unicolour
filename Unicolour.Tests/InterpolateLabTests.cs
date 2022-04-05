@@ -14,10 +14,10 @@ public class InterpolateLabTests
         var interpolated3 = unicolour1.InterpolateLab(unicolour2, 0.75);
         var interpolated4 = unicolour2.InterpolateLab(unicolour1, 0.25);
         
-        AssertLaba(interpolated1, (50, -64, 64, 0.5));
-        AssertLaba(interpolated2, (50, -64, 64, 0.5));
-        AssertLaba(interpolated3, (50, -64, 64, 0.5));
-        AssertLaba(interpolated4, (50, -64, 64, 0.5));
+        AssertInterpolated(interpolated1, (50, -64, 64, 0.5));
+        AssertInterpolated(interpolated2, (50, -64, 64, 0.5));
+        AssertInterpolated(interpolated3, (50, -64, 64, 0.5));
+        AssertInterpolated(interpolated4, (50, -64, 64, 0.5));
     }
     
     [Test]
@@ -28,8 +28,8 @@ public class InterpolateLabTests
         var interpolated1 = unicolour1.InterpolateLab(unicolour2, 0.5);
         var interpolated2 = unicolour2.InterpolateLab(unicolour1, 0.5);
         
-        AssertLaba(interpolated1, (25, 0, 0, 0.5));
-        AssertLaba(interpolated2, (25, 0, 0, 0.5));
+        AssertInterpolated(interpolated1, (25, 0, 0, 0.5));
+        AssertInterpolated(interpolated2, (25, 0, 0, 0.5));
     }
     
     [Test]
@@ -40,8 +40,8 @@ public class InterpolateLabTests
         var interpolated1 = unicolour1.InterpolateLab(unicolour2, 0.75);
         var interpolated2 = unicolour2.InterpolateLab(unicolour1, 0.75);
 
-        AssertLaba(interpolated1, (60, -64, 64, 0.625));
-        AssertLaba(interpolated2, (20, 64, -64, 0.875));
+        AssertInterpolated(interpolated1, (60, -64, 64, 0.625));
+        AssertInterpolated(interpolated2, (20, 64, -64, 0.875));
     }
     
     [Test]
@@ -52,8 +52,8 @@ public class InterpolateLabTests
         var interpolated1 = unicolour1.InterpolateLab(unicolour2, 0.25);
         var interpolated2 = unicolour2.InterpolateLab(unicolour1, 0.25);
         
-        AssertLaba(interpolated1, (20, 64, -64, 0.875));
-        AssertLaba(interpolated2, (60, -64, 64, 0.625));
+        AssertInterpolated(interpolated1, (20, 64, -64, 0.875));
+        AssertInterpolated(interpolated2, (60, -64, 64, 0.625));
     }
     
     [Test]
@@ -64,8 +64,8 @@ public class InterpolateLabTests
         var interpolated1 = unicolour1.InterpolateLab(unicolour2, 1.5);
         var interpolated2 = unicolour2.InterpolateLab(unicolour1, 1.5);
 
-        AssertLaba(interpolated1, (35, 51.2, -51.2, 0.95));
-        AssertLaba(interpolated2, (15, -51.2, 51.2, 0.75));
+        AssertInterpolated(interpolated1, (35, 51.2, -51.2, 0.95));
+        AssertInterpolated(interpolated2, (15, -51.2, 51.2, 0.75));
     }
     
     [Test]
@@ -76,11 +76,11 @@ public class InterpolateLabTests
         var interpolated1 = unicolour1.InterpolateLab(unicolour2, -0.5);
         var interpolated2 = unicolour2.InterpolateLab(unicolour1, -0.5);
 
-        AssertLaba(interpolated1, (15, -51.2, 51.2, 0.75));
-        AssertLaba(interpolated2, (35, 51.2, -51.2, 0.95));
+        AssertInterpolated(interpolated1, (15, -51.2, 51.2, 0.75));
+        AssertInterpolated(interpolated2, (35, 51.2, -51.2, 0.95));
     }
 
-    private static void AssertLaba(Unicolour unicolour, (double l, double a, double b, double alpha) expected)
+    private static void AssertInterpolated(Unicolour unicolour, (double l, double a, double b, double alpha) expected)
     {
         var actualLab = unicolour.Lab;
         var actualAlpha = unicolour.Alpha;

@@ -5,6 +5,8 @@ using System.Globalization;
 internal static class Utils
 {
     public static double Clamp(this double value, double min, double max) => value < min ? min : value > max ? max : value;
+    
+    public static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
 
     public static double Modulo(this double value, double modulus)
     {

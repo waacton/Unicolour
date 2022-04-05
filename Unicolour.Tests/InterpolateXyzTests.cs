@@ -14,10 +14,10 @@ public class InterpolateXyzTests
         var interpolated3 = unicolour1.InterpolateXyz(unicolour2, 0.75);
         var interpolated4 = unicolour2.InterpolateXyz(unicolour1, 0.25);
         
-        AssertXyza(interpolated1, (0.5, 0.25, 0.75, 0.5));
-        AssertXyza(interpolated2, (0.5, 0.25, 0.75, 0.5));
-        AssertXyza(interpolated3, (0.5, 0.25, 0.75, 0.5));
-        AssertXyza(interpolated4, (0.5, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated1, (0.5, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated2, (0.5, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated3, (0.5, 0.25, 0.75, 0.5));
+        AssertInterpolated(interpolated4, (0.5, 0.25, 0.75, 0.5));
     }
     
     [Test]
@@ -28,8 +28,8 @@ public class InterpolateXyzTests
         var interpolated1 = unicolour1.InterpolateXyz(unicolour2, 0.5);
         var interpolated2 = unicolour2.InterpolateXyz(unicolour1, 0.5);
         
-        AssertXyza(interpolated1, (0.25, 0.5, 0.5, 0.5));
-        AssertXyza(interpolated2, (0.25, 0.5, 0.5, 0.5));
+        AssertInterpolated(interpolated1, (0.25, 0.5, 0.5, 0.5));
+        AssertInterpolated(interpolated2, (0.25, 0.5, 0.5, 0.5));
     }
     
     [Test]
@@ -40,8 +40,8 @@ public class InterpolateXyzTests
         var interpolated1 = unicolour1.InterpolateXyz(unicolour2, 0.75);
         var interpolated2 = unicolour2.InterpolateXyz(unicolour1, 0.75);
 
-        AssertXyza(interpolated1, (0.6, 0.25, 0.75, 0.625));
-        AssertXyza(interpolated2, (0.2, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated1, (0.6, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated2, (0.2, 0.75, 0.25, 0.875));
     }
     
     [Test]
@@ -52,8 +52,8 @@ public class InterpolateXyzTests
         var interpolated1 = unicolour1.InterpolateXyz(unicolour2, 0.25);
         var interpolated2 = unicolour2.InterpolateXyz(unicolour1, 0.25);
         
-        AssertXyza(interpolated1, (0.2, 0.75, 0.25, 0.875));
-        AssertXyza(interpolated2, (0.6, 0.25, 0.75, 0.625));
+        AssertInterpolated(interpolated1, (0.2, 0.75, 0.25, 0.875));
+        AssertInterpolated(interpolated2, (0.6, 0.25, 0.75, 0.625));
     }
     
     [Test]
@@ -64,8 +64,8 @@ public class InterpolateXyzTests
         var interpolated1 = unicolour1.InterpolateXyz(unicolour2, 1.5);
         var interpolated2 = unicolour2.InterpolateXyz(unicolour1, 1.5);
 
-        AssertXyza(interpolated1, (0.35, 0.7, 0.3, 0.95));
-        AssertXyza(interpolated2, (0.15, 0.3, 0.7, 0.75));
+        AssertInterpolated(interpolated1, (0.35, 0.7, 0.3, 0.95));
+        AssertInterpolated(interpolated2, (0.15, 0.3, 0.7, 0.75));
     }
     
     [Test]
@@ -76,11 +76,11 @@ public class InterpolateXyzTests
         var interpolated1 = unicolour1.InterpolateXyz(unicolour2, -0.5);
         var interpolated2 = unicolour2.InterpolateXyz(unicolour1, -0.5);
 
-        AssertXyza(interpolated1, (0.15, 0.3, 0.7, 0.75));
-        AssertXyza(interpolated2, (0.35, 0.7, 0.3, 0.95));
+        AssertInterpolated(interpolated1, (0.15, 0.3, 0.7, 0.75));
+        AssertInterpolated(interpolated2, (0.35, 0.7, 0.3, 0.95));
     }
 
-    private static void AssertXyza(Unicolour unicolour, (double x, double y, double z, double alpha) expected)
+    private static void AssertInterpolated(Unicolour unicolour, (double x, double y, double z, double alpha) expected)
     {
         var actualXyz = unicolour.Xyz;
         var actualAlpha = unicolour.Alpha;

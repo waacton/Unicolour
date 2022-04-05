@@ -4,9 +4,23 @@ internal static class Matrices
 {
     private static readonly Matrix Bradford = new(new[,]
     {
-        {0.8951, 0.2664, -0.1614},
-        {-0.7502, 1.7135, 0.0367},
-        {0.0389, -0.0685, 1.0296}
+        {+0.8951, +0.2664, -0.1614},
+        {-0.7502, +1.7135, +0.0367},
+        {+0.0389, -0.0685, +1.0296}
+    });
+
+    public static readonly Matrix OklabM1 = new(new[,]
+    {
+        {+0.8189330101, +0.3618667424, -0.1288597137},
+        {+0.0329845436, +0.9293118715, +0.0361456387},
+        {+0.0482003018, +0.2643662691, +0.6338517070}
+    });
+    
+    public static readonly Matrix OklabM2 = new(new[,]
+    {
+        {+0.2104542553, +0.7936177850, -0.0040720468},
+        {+1.9779984951, -2.4285922050, +0.4505937099},
+        {+0.0259040371, +0.7827717662, -0.8086757660}
     });
     
     // based on http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
@@ -47,12 +61,18 @@ internal static class Matrices
             {sr * zr, sg * zg, sb * zb}
         });
 
-        if (rgbWhitePoint == xyzWhitePoint)
+        var adaptedMatrix = AdaptForWhitePoint(matrix, rgbWhitePoint, xyzWhitePoint);
+        return adaptedMatrix;
+    }
+
+    public static Matrix AdaptForWhitePoint(Matrix matrix, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
+    {
+        if (sourceWhitePoint == destinationWhitePoint)
         {
             return matrix;
         }
-    
-        var adaptedBradford = AdaptedBradfordMatrix(rgbWhitePoint, xyzWhitePoint);
+        
+        var adaptedBradford = AdaptedBradfordMatrix(sourceWhitePoint, destinationWhitePoint);
         return adaptedBradford.Multiply(matrix);
     }
     

@@ -21,8 +21,6 @@ public static class ConfigurationTests
     [Test]
     public static void StandardRgbD65ToXyzD65()
     {
-        var rgbToXyzMatrix = Configuration.Default.RgbToXyzMatrix;
-        
         // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
         var expectedMatrixA = new[,]
         {
@@ -39,6 +37,7 @@ public static class ConfigurationTests
             {0.0193339, 0.1191920, 0.9503041}
         };
         
+        var rgbToXyzMatrix = Matrices.RgbToXyzMatrix(Configuration.Default);
         var unicolourNoConfig = Unicolour.FromRgb(0.5, 0.25, 0.75);
         var unicolourWithConfig = Unicolour.FromRgb(Configuration.Default, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
@@ -57,8 +56,6 @@ public static class ConfigurationTests
     [Test]
     public static void XyzD65ToStandardRgbD65()
     {
-        var xyzToRgbMatrix = Configuration.Default.XyzToRgbMatrix;
-        
         // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
         var expectedMatrixA = new[,]
         {
@@ -75,6 +72,7 @@ public static class ConfigurationTests
             {0.0556434, -0.2040259,  1.0572252}
         };
         
+        var xyzToRgbMatrix = Matrices.RgbToXyzMatrix(Configuration.Default).Inverse();
         var unicolourXyzNoConfig = Unicolour.FromXyz(0.200757, 0.119618, 0.506757);
         var unicolourXyzWithConfig = Unicolour.FromXyz(Configuration.Default, 0.200757, 0.119618, 0.506757);
         var unicolourLabNoConfig = Unicolour.FromLab(41.1553, 51.4108, -56.4485);
@@ -109,6 +107,7 @@ public static class ConfigurationTests
             {0.0139322, 0.0971045, 0.7141733}
         };
         
+        var rgbToXyzMatrix = Matrices.RgbToXyzMatrix(configuration);
         var unicolour = Unicolour.FromRgb(configuration, 0.5, 0.25, 0.75);
         var expectedColour = new TestColour
         {
@@ -117,7 +116,7 @@ public static class ConfigurationTests
             // Luv = new(40.5359, 18.7523, -78.2057)
         };
         
-        Assert.That(configuration.RgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
+        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
         AssertColour(unicolour, expectedColour);
     }
     
@@ -141,11 +140,12 @@ public static class ConfigurationTests
             { 0.0719453, -0.2289914, 1.4052427}
         };
         
+        var xyzToRgbMatrix = Matrices.RgbToXyzMatrix(configuration).Inverse();
         var unicolourXyz = Unicolour.FromXyz(configuration, 0.187691, 0.115771, 0.381093);
         var unicolourLab = Unicolour.FromLab(configuration, 40.5359, 46.0847, -57.1158);
         var expectedColour = new TestColour { Rgb = new(0.5, 0.25, 0.75) };
 
-        Assert.That(configuration.XyzToRgbMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
+        Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
         AssertColour(unicolourXyz, expectedColour);
         AssertColour(unicolourLab, expectedColour);
     }
@@ -324,8 +324,8 @@ public static class ConfigurationTests
 
     private static void AssertColour(Unicolour unicolour, TestColour expected)
     {
-        if (expected.Rgb != null) AssertUtils.AssertColourTuple(unicolour.Rgb.Tuple, expected.Rgb!, 0.01);
-        if (expected.Xyz != null) AssertUtils.AssertColourTuple(unicolour.Xyz.Tuple, expected.Xyz!, 0.001);
-        if (expected.Lab != null) AssertUtils.AssertColourTuple(unicolour.Lab.Tuple, expected.Lab!, 0.05);
+        if (expected.Rgb != null) AssertUtils.AssertColourTriplet(unicolour.Rgb.Triplet, expected.Rgb!, 0.01);
+        if (expected.Xyz != null) AssertUtils.AssertColourTriplet(unicolour.Xyz.Triplet, expected.Xyz!, 0.001);
+        if (expected.Lab != null) AssertUtils.AssertColourTriplet(unicolour.Lab.Triplet, expected.Lab!, 0.05);
     }
 }

@@ -1,5 +1,6 @@
 namespace Wacton.Unicolour.Tests;
 
+using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -46,39 +47,65 @@ public class EqualityTests
     }
     
     [Test]
+    public void EqualOklabGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomOklabUnicolour();
+        var unicolour2 = Unicolour.FromOklab(unicolour1.Oklab.L, unicolour1.Oklab.A, unicolour1.Oklab.B, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+
+    [Test]
     public void NotEqualRgbGivesNotEqualObjects()
     {
         var unicolour1 = GetRandomRgbUnicolour();
-        var unicolour2 = Unicolour.FromRgb(
-            (unicolour1.Rgb.R + 0.1).Modulo(1),
-            (unicolour1.Rgb.G + 0.1).Modulo(1),
-            (unicolour1.Rgb.B + 0.1).Modulo(1),
-            (unicolour1.Alpha.A + 0.1).Modulo(1));
-        AssertUnicoloursNotEqual(unicolour1, unicolour2);
+        var differentTuple = GetDifferent(unicolour1.Rgb.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromRgb(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Rgb.Triplet);
     }
     
     [Test]
     public void NotEqualHsbGivesNotEqualObjects()
     {
         var unicolour1 = GetRandomHsbUnicolour();
-        var unicolour2 = Unicolour.FromHsb(
-            (unicolour1.Hsb.H + 0.1).Modulo(360),
-            (unicolour1.Hsb.S + 0.1).Modulo(1),
-            (unicolour1.Hsb.B + 0.1).Modulo(1),
-            (unicolour1.Alpha.A + 0.1).Modulo(1));
-        AssertUnicoloursNotEqual(unicolour1, unicolour2);
+        var differentTuple = GetDifferent(unicolour1.Hsb.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromHsb(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsb.Triplet);
     }
     
     [Test]
     public void NotEqualHslGivesNotEqualObjects()
     {
         var unicolour1 = GetRandomHslUnicolour();
-        var unicolour2 = Unicolour.FromHsl(
-            (unicolour1.Hsl.H + 0.1).Modulo(360),
-            (unicolour1.Hsl.S + 0.1).Modulo(1),
-            (unicolour1.Hsl.L + 0.1).Modulo(1),
-            (unicolour1.Alpha.A + 0.1).Modulo(1));
-        AssertUnicoloursNotEqual(unicolour1, unicolour2);
+        var differentTuple = GetDifferent(unicolour1.Hsl.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromHsl(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsl.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualXyzGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomXyzUnicolour();
+        var differentTuple = GetDifferent(unicolour1.Xyz.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromXyz(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Xyz.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualLabGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomLabUnicolour();
+        var differentTuple = GetDifferent(unicolour1.Lab.Triplet, 1.0).Tuple;
+        var unicolour2 = Unicolour.FromLab(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Lab.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualOklabGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomOklabUnicolour();
+        var differentTuple = GetDifferent(unicolour1.Oklab.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromOklab(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Oklab.Triplet);
     }
     
     [Test]
@@ -117,6 +144,8 @@ public class EqualityTests
     private static Unicolour GetRandomHslUnicolour() => Unicolour.FromHsl(TestColours.GetRandomHsl().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomXyzUnicolour() => Unicolour.FromXyz(TestColours.GetRandomXyz().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomLabUnicolour() => Unicolour.FromLab(TestColours.GetRandomLab().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomOklabUnicolour() => Unicolour.FromOklab(TestColours.GetRandomOklab().Tuple, TestColours.GetRandomAlpha());
+    private static ColourTriplet GetDifferent(ColourTriplet triplet, double diff = 0.1) => new(triplet.First + diff, triplet.Second + diff, triplet.Third + diff);
 
     private static void AssertUnicoloursEqual(Unicolour unicolour1, Unicolour unicolour2)
     {
@@ -125,17 +154,15 @@ public class EqualityTests
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Lab, unicolour2.Lab);
+        AssertEqual(unicolour1.Oklab, unicolour2.Oklab);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Luminance, unicolour2.Luminance);
         AssertEqual(unicolour1, unicolour2);
     }
 
-    private static void AssertUnicoloursNotEqual(Unicolour unicolour1, Unicolour unicolour2)
+    private static void AssertUnicoloursNotEqual(Unicolour unicolour1, Unicolour unicolour2, Func<Unicolour, ColourTriplet> getTriplet)
     {
-        AssertNotEqual(unicolour1.Rgb, unicolour2.Rgb);
-        AssertNotEqual(unicolour1.Hsb, unicolour2.Hsb);
-        AssertNotEqual(unicolour1.Xyz, unicolour2.Xyz);
-        AssertNotEqual(unicolour1.Lab, unicolour2.Lab);
+        AssertNotEqual(getTriplet(unicolour1), getTriplet(unicolour2));
         AssertNotEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertNotEqual(unicolour1.Luminance, unicolour2.Luminance);
         AssertNotEqual(unicolour1, unicolour2);

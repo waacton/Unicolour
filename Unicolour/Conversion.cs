@@ -1,5 +1,7 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Wacton.Unicolour.Utils;
+
 internal static class Conversion
 {
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
@@ -115,7 +117,7 @@ internal static class Conversion
             {rgb.BLinear}
         });
 
-        var transformationMatrix = config.RgbToXyzMatrix;
+        var transformationMatrix = Matrices.RgbToXyzMatrix(config);
         var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
 
         var x = xyzMatrix[0, 0];
@@ -135,7 +137,7 @@ internal static class Conversion
             {xyz.Z}
         });
 
-        var transformationMatrix = config.XyzToRgbMatrix;
+        var transformationMatrix = Matrices.RgbToXyzMatrix(config).Inverse();
         var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
 
         var rLinear = rgbLinearMatrix[0, 0];
@@ -162,7 +164,7 @@ internal static class Conversion
         var zRatio = z * 100 / referenceWhite.Z;
         
         var delta = 6.0 / 29.0;
-        double F(double t) => t > Math.Pow(delta, 3) ? Math.Pow(t, 1 / 3.0) : t * (1 / 3.0) * Math.Pow(delta, -2) + 4.0 / 29.0;
+        double F(double t) => t > Math.Pow(delta, 3) ? CubeRoot(t) : t * (1 / 3.0) * Math.Pow(delta, -2) + 4.0 / 29.0;
         var l = 116 * F(yRatio) - 16;
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));
@@ -184,6 +186,60 @@ internal static class Conversion
         var y = referenceWhite.Y / 100.0 * F((l + 16) / 116.0);
         var z = referenceWhite.Z / 100.0 * F((l + 16) / 116.0 - b / 200.0);
 
+        return new Xyz(x, y, z);
+    }
+    
+    // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+    public static Oklab XyzToOklab(Xyz xyz, Configuration config)
+    {
+        var xyzMatrix = new Matrix(new[,]
+        {
+            {xyz.X},
+            {xyz.Y},
+            {xyz.Z}
+        });
+
+        var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
+        var lmsMatrix = Matrices.OklabM1.Multiply(adaptedXyz);
+        var lmsNonLinearMatrix = new Matrix(new[,]
+        {
+            {CubeRoot(lmsMatrix[0, 0])},
+            {CubeRoot(lmsMatrix[1, 0])},
+            {CubeRoot(lmsMatrix[2, 0])}
+        });
+        
+        var labMatrix = Matrices.OklabM2.Multiply(lmsNonLinearMatrix);
+        
+        var l = labMatrix[0, 0];
+        var a = labMatrix[1, 0];
+        var b = labMatrix[2, 0];
+        return new Oklab(l, a, b);
+    }
+    
+    // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+    public static Xyz OklabToXyz(Oklab oklab, Configuration config)
+    {
+        var labMatrix = new Matrix(new[,]
+        {
+            {oklab.L},
+            {oklab.A},
+            {oklab.B}
+        });
+
+        var lmsNonLinearMatrix = Matrices.OklabM2.Inverse().Multiply(labMatrix);
+        var lmsMatrix = new Matrix(new[,]
+        {
+            {Math.Pow(lmsNonLinearMatrix[0, 0], 3)},
+            {Math.Pow(lmsNonLinearMatrix[1, 0], 3)},
+            {Math.Pow(lmsNonLinearMatrix[2, 0], 3)}
+        });
+
+        var xyzMatrix = Matrices.OklabM1.Inverse().Multiply(lmsMatrix);
+        var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
+        
+        var x = adaptedXyz[0, 0];
+        var y = adaptedXyz[1, 0];
+        var z = adaptedXyz[2, 0];
         return new Xyz(x, y, z);
     }
 }

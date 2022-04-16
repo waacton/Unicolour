@@ -8,10 +8,10 @@ public record Hsl
     public double L { get; }
     public ColourTriplet Triplet => new(H, S, L);
     
-    public double ClampedH => H.Clamp(0.0, 360.0);
-    public double ClampedS => S.Clamp(0.0, 1.0);
-    public double ClampedL => L.Clamp(0.0, 1.0);
-    public ColourTriplet ClampedTriplet => new(ClampedH, ClampedS, ClampedL);
+    public double ConstrainedH => H.Modulo(360.0);
+    public double ConstrainedS => S.Clamp(0.0, 1.0);
+    public double ConstrainedL => L.Clamp(0.0, 1.0);
+    public ColourTriplet ConstrainedTriplet => new(ConstrainedH, ConstrainedS, ConstrainedL);
     
     public bool HasHue => explicitHue || S > 0.0 && L is > 0.0 and < 1.0;
     

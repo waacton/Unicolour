@@ -14,6 +14,9 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - HSL
 - CIE XYZ
 - CIE LAB
+- CIE LUV
+- ~~CIE LCHab~~ _(coming soon)_
+- ~~CIE LCHuv~~ _(coming soon)_
 - Oklab
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
@@ -42,6 +45,7 @@ var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
 var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
 var unicolour = Unicolour.FromXyz(0.47, 0.24, 0.3);
 var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
+var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 ```
 
@@ -52,6 +56,7 @@ var hsb = unicolour.Hsb;
 var hsl = unicolour.Hsl;
 var xyz = unicolour.Xyz;
 var lab = unicolour.Lab;
+var luv = unicolour.Luv;
 var oklab = unicolour.Oklab;
 ```
 
@@ -62,6 +67,7 @@ var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsl(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateXyz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLab(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 ```
 

@@ -13,15 +13,19 @@ var fontFamily = collection.Add("Inconsolata-Regular.ttf");
 var font = fontFamily.CreateFont(24);
 var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
 
-var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "OKLAB"};
+var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LUV", "OKLAB"};
 var purple = Unicolour.FromHsb(260, 1.0, 0.33);
 var orange = Unicolour.FromHsb(30, 0.66, 1.0);
-var black = Unicolour.FromRgb(0, 0, 0);
+var pink = Unicolour.FromHex("#FF1493");
 var cyan = Unicolour.FromRgb255(0, 255, 255);
+var black = Unicolour.FromRgb(0, 0, 0);
+var green = Unicolour.FromRgb(0, 1, 0);
 
-var image = new Image<Rgba32>(gradientWidth * 2, gradientHeight * labels.Count);
+var image = new Image<Rgba32>(gradientWidth * 3, gradientHeight * labels.Count);
 Draw(purple, orange, 0);
-Draw(black, cyan, 1);
+Draw(pink, cyan, 1);
+Draw(black, green, 2);
+image.Save("gradients.png");
 
 void Draw(Unicolour start, Unicolour end, int column)
 {
@@ -35,6 +39,7 @@ void Draw(Unicolour start, Unicolour end, int column)
             start.InterpolateHsl(end, distance),
             start.InterpolateXyz(end, distance),
             start.InterpolateLab(end, distance),
+            start.InterpolateLuv(end, distance),
             start.InterpolateOklab(end, distance)
         };
     
@@ -48,8 +53,6 @@ void Draw(Unicolour start, Unicolour end, int column)
         image.Mutate(context => context.DrawText(label, font, textRgba32, textLocation));
     }
 }
-
-image.Save("gradients.png");
 
 void SetPixels(int column, int pixelIndex, List<Unicolour> unicolours)
 {

@@ -12,18 +12,17 @@ using SixLaborsHsb = SixLabors.ImageSharp.ColorSpaces.Hsv;
 using SixLaborsHsl = SixLabors.ImageSharp.ColorSpaces.Hsl;
 using SixLaborsXyz = SixLabors.ImageSharp.ColorSpaces.CieXyz;
 using SixLaborsLab = SixLabors.ImageSharp.ColorSpaces.CieLab;
+using SixLaborsLuv = SixLabors.ImageSharp.ColorSpaces.CieLuv;
 using SixLaborsIlluminants = SixLabors.ImageSharp.ColorSpaces.Illuminants;
 
+/*
+ * SixLabors doesn't do a great job of converting to or from LAB / LUV
+ * SixLabors doesn't handle very small RGB -> HSB / HSL
+ * SixLabors produces unexpected results for XYZ -> HSB / HSL due to clamping RGB during conversion
+ */
 internal class SixLaborsFactory : ITestColourFactory
 {
-    /*
-     * SixLabors doesn't seem to do a great job of converting to LAB
-     * and does a poor job of converting from decimal RGB -> HSB / HSL
-     */
-    private static readonly Tolerances BaseTolerances = new() { Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Lab = 0.1 };
-    private static readonly Tolerances FromRgbTolerances = BaseTolerances with { Hsb = 0.05, Hsl = 0.05 };
-    private static readonly Tolerances FromHsbTolerances = BaseTolerances with { Hsl = 0.00005, Lab = 0.125 };
-    private static readonly Tolerances FromHslTolerances = BaseTolerances with { Rgb = 0.05, Hsb = 0.00005, Lab = 0.175 };
+    private static readonly Tolerances Tolerances = new() { Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Lab = 0.1, Luv = 0.2 };
 
     private static readonly ColorSpaceConverter Converter = new(new ColorSpaceConverterOptions
     {
@@ -36,13 +35,13 @@ internal class SixLaborsFactory : ITestColourFactory
         var g = g255 / 255.0;
         var b = b255 / 255.0;
         var rgb = new SixLaborsRgb((float) r, (float) g, (float) b, RgbWorkingSpaces.SRgb);
-        return FromRgb(rgb, name, BaseTolerances);
+        return FromRgb(rgb, name, Tolerances);
     }
 
     public TestColour FromRgb(double r, double g, double b, string name)
     {
         var rgb = new SixLaborsRgb((float) r, (float) g, (float) b, RgbWorkingSpaces.SRgb);
-        return FromRgb(rgb, name, FromRgbTolerances);
+        return FromRgb(rgb, name, Tolerances with {Hsb = 0.05, Hsl = 0.05});
     }
 
     private static TestColour FromRgb(SixLaborsRgb rgb, string name, Tolerances tolerances)
@@ -52,7 +51,8 @@ internal class SixLaborsFactory : ITestColourFactory
         var hsl = Converter.ToHsl(rgb);
         var xyz = Converter.ToCieXyz(rgb);
         var lab = Converter.ToCieLab(rgb);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, tolerances);
+        var luv = Converter.ToCieLuv(rgb);
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, tolerances);
     }
 
     public TestColour FromHsb(double h, double s, double b, string name)
@@ -63,7 +63,8 @@ internal class SixLaborsFactory : ITestColourFactory
         var hsl = Converter.ToHsl(hsb);
         var xyz = Converter.ToCieXyz(hsb);
         var lab = Converter.ToCieLab(hsb);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, FromHsbTolerances);
+        var luv = Converter.ToCieLuv(hsb);
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, Tolerances with {Hsl = 0.00005, Lab = 0.125});
     }
 
     public TestColour FromHsl(double h, double s, double l, string name)
@@ -74,10 +75,32 @@ internal class SixLaborsFactory : ITestColourFactory
         var hsb = Converter.ToHsv(hsl);
         var xyz = Converter.ToCieXyz(hsl);
         var lab = Converter.ToCieLab(hsl);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, FromHslTolerances);
+        var luv = Converter.ToCieLuv(hsl);
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, Tolerances with {Rgb = 0.05, Hsb = 0.00005, Lab = 0.175});
     }
 
-    private static TestColour Create(string name, SixLaborsRgb rgb, SixLaborsRgbLinear rgbLinear, SixLaborsHsb hsb, SixLaborsHsl hsl, SixLaborsXyz xyz, SixLaborsLab lab, Tolerances tolerances)
+    // SixLabors XYZ -> HSB / HSL uses a clamped version of RGB during conversion
+    // which significantly affects the result when transforming to the hue-based cylindrical model
+    // for this reason, not comparing hue-based values here
+    public TestColour FromXyz(double x, double y, double z, string name)
+    {
+        var xyz = new SixLaborsXyz((float) x, (float) y, (float) z);
+        var rgb = Converter.ToRgb(xyz);
+        var rgbLinear = Converter.ToLinearRgb(xyz);
+        var lab = Converter.ToCieLab(xyz);
+        var luv = Converter.ToCieLuv(xyz);
+        return CreateWithoutHue(name, rgb, rgbLinear, xyz, lab, luv, Tolerances);
+    }
+
+    // SixLabors doesn't do a good job of converting from LAB / LUV even when specifying D65 illuminant
+    // potentially due to clamping XYZ values during conversion (e.g. LAB -> XYZ -> RGB)
+    public TestColour FromLab(double l, double a, double b, string name) => throw new NotImplementedException();
+    public TestColour FromLuv(double l, double u, double v, string name) => throw new NotImplementedException();
+    
+    private static TestColour Create(string name, 
+        SixLaborsRgb rgb, SixLaborsRgbLinear rgbLinear, SixLaborsHsb hsb, SixLaborsHsl hsl,
+        SixLaborsXyz xyz, SixLaborsLab lab, SixLaborsLuv luv,
+        Tolerances tolerances)
     {
         var hueExclusions = new List<string>();
         if (HasInconsistentHue(hsb, hsl)) hueExclusions.Add("SixLabors converts via RGB and loses hue when greyscale");
@@ -92,6 +115,28 @@ internal class SixLaborsFactory : ITestColourFactory
             Hsl = new(hsl.H, hsl.S, hsl.L),
             Xyz = new(xyz.X, xyz.Y, xyz.Z),
             Lab = new(lab.L, lab.A, lab.B),
+            Luv = new(luv.L, luv.U, luv.V),
+            Tolerances = tolerances,
+            ExcludeFromHueBasedTestReasons = hueExclusions
+        };
+    }
+    
+    private static TestColour CreateWithoutHue(string name, 
+        SixLaborsRgb rgb, SixLaborsRgbLinear rgbLinear,
+        SixLaborsXyz xyz, SixLaborsLab lab, SixLaborsLuv luv,
+        Tolerances tolerances)
+    {
+        var hueExclusions = new List<string>();
+        if (HasLowChroma(rgb)) hueExclusions.Add("SixLabors converts via RGB and does not handle low RGB chroma");
+        
+        return new TestColour
+        {
+            Name = name,
+            Rgb = new(rgb.R, rgb.G, rgb.B),
+            RgbLinear = new(rgbLinear.R, rgbLinear.G, rgbLinear.B),
+            Xyz = new(xyz.X, xyz.Y, xyz.Z),
+            Lab = new(lab.L, lab.A, lab.B),
+            Luv = new(luv.L, luv.U, luv.V),
             Tolerances = tolerances,
             ExcludeFromHueBasedTestReasons = hueExclusions
         };

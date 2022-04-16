@@ -14,7 +14,7 @@ internal static class OpenCvCsvFactory
 
     static OpenCvCsvFactory()
     {
-        ColoursFromCsv = File.ReadAllLines(Path.Combine("Utils", "OpenCvColours.csv")).Select(FromCsvRow).ToList();
+        ColoursFromCsv = File.ReadAllLines(Path.Combine("Utils", "OpenCvColours.csv")).Select(FromCsvRow).Skip(1).ToList();
     }
 
     public static TestColour FromName(string name) => ColoursFromCsv.Single(x => x.Name == name);
@@ -29,6 +29,7 @@ internal static class OpenCvCsvFactory
             Hsl = new(FromText(items[7]), FromText(items[8]), FromText(items[9])),
             Xyz = new(FromText(items[10]), FromText(items[11]), FromText(items[12])),
             Lab = new(FromText(items[13]), FromText(items[14]), FromText(items[15])),
+            Luv = new(FromText(items[16]), FromText(items[17]), FromText(items[18])),
             Tolerances = OpenCvFactory.Tolerances
         };
     }
@@ -38,6 +39,18 @@ internal static class OpenCvCsvFactory
     private static void GenerateCsvFile()
     {
         var rows = new List<string>();
+        var headerRow = new List<string>
+        {
+            "Name",
+            "RGB - R", "RGB - G", "RGB - B",
+            "HSB - H", "HSB - S", "HSB - B",
+            "HSL - H", "HSL - S", "HSL - L",
+            "XYZ - X", "XYZ - Y", "XYZ - Z",
+            "LAB - L", "LAB - A", "LAB - B",
+            "LUV - L", "LUV - U", "LUV - V",
+        };
+        rows.Add(string.Join(", ", headerRow));
+       
         foreach (var namedColour in TestColours.NamedColours)
         {
             var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
@@ -52,8 +65,10 @@ internal static class OpenCvCsvFactory
                 testColour.Name!, 
                 Stringify(testColour.Rgb!.First), Stringify(testColour.Rgb.Second), Stringify(testColour.Rgb.Third),
                 Stringify(testColour.Hsb!.First), Stringify(testColour.Hsb.Second), Stringify(testColour.Hsb.Third),
+                Stringify(testColour.Hsl!.First), Stringify(testColour.Hsl.Second), Stringify(testColour.Hsl.Third),
                 Stringify(testColour.Xyz!.First), Stringify(testColour.Xyz.Second), Stringify(testColour.Xyz.Third),
-                Stringify(testColour.Lab!.First), Stringify(testColour.Lab.Second), Stringify(testColour.Lab.Third)
+                Stringify(testColour.Lab!.First), Stringify(testColour.Lab.Second), Stringify(testColour.Lab.Third),
+                Stringify(testColour.Luv!.First), Stringify(testColour.Luv.Second), Stringify(testColour.Luv.Third)
             };
             
             rows.Add(string.Join(", ", row));

@@ -12,6 +12,7 @@ public class ConversionTests
     private const double HslTolerance = 0.00000001;
     private const double XyzTolerance = 0.00000001;
     private const double LabTolerance = 0.00000001;
+    private const double LuvTolerance = 0.00000001;
     private const double OklabTolerance = 0.000001;
     
     [Test]
@@ -47,6 +48,9 @@ public class ConversionTests
     public void LabSameAfterDeconversion() => AssertUtils.AssertRandomLabColours(AssertLabDeconversion);
     
     [Test]
+    public void LuvSameAfterDeconversion() => AssertUtils.AssertRandomLuvColours(AssertLuvDeconversion);
+    
+    [Test]
     public void OklabSameAfterDeconversion() => AssertUtils.AssertRandomOklabColours(AssertOklabDeconversion);
 
     private static void AssertRgbConversion(TestColour namedColour)
@@ -54,7 +58,7 @@ public class ConversionTests
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
         var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, Configuration.Default);
         var hsb = Conversion.RgbToHsb(rgb);
-        var hsl = Conversion.RgbToHsl(rgb);
+        var hsl = Conversion.HsbToHsl(hsb);
         
         var expectedRoundedHsb = namedColour.Hsb;
         var expectedRoundedHsl = namedColour.Hsl;
@@ -100,7 +104,7 @@ public class ConversionTests
     private static void AssertHslDeconversion(ColourTriplet triplet) => AssertHslDeconversion(new Hsl(triplet.First, triplet.Second, triplet.Third));
     private static void AssertHslDeconversion(Hsl original)
     {
-        var deconverted = Conversion.RgbToHsl(Conversion.HsbToRgb(Conversion.HslToHsb(original), Configuration.Default));
+        var deconverted = Conversion.HsbToHsl(Conversion.HslToHsb(original));
         AssertUtils.AssertColourTriplet(deconverted.Triplet, original.Triplet, HslTolerance, true);
     }
     
@@ -108,8 +112,14 @@ public class ConversionTests
     private static void AssertXyzDeconversion(Xyz original)
     {
         // note: cannot test deconversion via RGB space as XYZ <-> RGB is not 1:1
-        var deconverted = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
-        AssertUtils.AssertColourTriplet(deconverted.Triplet, original.Triplet, XyzTolerance);
+        var deconvertedViaLab = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(deconvertedViaLab.Triplet, original.Triplet, XyzTolerance);
+        
+        var deconvertedViaLuv = Conversion.LuvToXyz(Conversion.XyzToLuv(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(deconvertedViaLuv.Triplet, original.Triplet, XyzTolerance);
+        
+        var deconvertedViaOklab = Conversion.OklabToXyz(Conversion.XyzToOklab(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(deconvertedViaOklab.Triplet, original.Triplet, XyzTolerance);
     }
     
     private static void AssertLabDeconversion(ColourTriplet triplet) => AssertLabDeconversion(new Lab(triplet.First, triplet.Second, triplet.Third));
@@ -118,6 +128,14 @@ public class ConversionTests
         // note: cannot test deconversion via RGB space as XYZ <-> RGB is not 1:1
         var deconverted = Conversion.XyzToLab(Conversion.LabToXyz(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(deconverted.Triplet, original.Triplet, LabTolerance);
+    }
+    
+    private static void AssertLuvDeconversion(ColourTriplet triplet) => AssertLuvDeconversion(new Luv(triplet.First, triplet.Second, triplet.Third));
+    private static void AssertLuvDeconversion(Luv original)
+    {
+        // note: cannot test deconversion via RGB space as XYZ <-> RGB is not 1:1
+        var deconverted = Conversion.XyzToLuv(Conversion.LuvToXyz(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(deconverted.Triplet, original.Triplet, LuvTolerance);
     }
     
     private static void AssertOklabDeconversion(ColourTriplet triplet) => AssertOklabDeconversion(new Oklab(triplet.First, triplet.Second, triplet.Third));

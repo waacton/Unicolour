@@ -13,7 +13,10 @@ internal class TestColour
     public ColourTriplet? Hsb { get; init; }
     public ColourTriplet? Xyz { get; init; }
     public ColourTriplet? Lab { get; init; }
+    public ColourTriplet? Luv { get; init; }
     public Tolerances? Tolerances { get; init; }
+    public bool IsRgbConstrained { get; init; } = true;
+    public bool IsRgbLinearConstrained { get; init; } = true;
 
     /*
      * both ColorMine and SixLabors behave strangely with HSL
@@ -32,5 +35,5 @@ internal class TestColour
 
 internal record Tolerances 
 {
-    public double Rgb, RgbLinear, Hsb, Hsl, Xyz, Lab;
+    public double Rgb, RgbLinear, Hsb, Hsl, Xyz, Lab, Luv;
 }

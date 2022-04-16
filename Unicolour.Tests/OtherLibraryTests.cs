@@ -7,24 +7,31 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class OtherLibraryTests
 {
-    private static readonly OpenCvFactory OpenCvFactory = new();
-    private static readonly ColourfulFactory ColourfulFactory = new();
-    private static readonly ColorMineFactory ColorMineFactory = new();
-    private static readonly SixLaborsFactory SixLaborsFactory = new();
+    private static readonly ITestColourFactory OpenCvFactory = new OpenCvFactory();
+    private static readonly ITestColourFactory ColourfulFactory = new ColourfulFactory();
+    private static readonly ITestColourFactory ColorMineFactory = new ColorMineFactory();
+    private static readonly ITestColourFactory SixLaborsFactory = new SixLaborsFactory();
     
     private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
+    
+    private delegate Unicolour UnicolourFromTuple((double first, double second, double third) tuple, double alpha = 1.0);
+    private delegate TestColour TestColourFromTuple(ColourTriplet triplet);
 
     [Test] 
     public void OpenCvWindows()
     {
         // I've given up trying to make OpenCvSharp work in a dockerised unix environment...
         Assume.That(IsWindows());
+        
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, OpenCvFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, OpenCvFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, OpenCvFactory));
-        AssertUtils.AssertRandomRgbColours(triplet => AssertFromRgb(triplet, OpenCvFactory));
-        AssertUtils.AssertRandomHsbColours(triplet => AssertFromHsb(triplet, OpenCvFactory)); 
-        AssertUtils.AssertRandomHslColours(triplet => AssertFromHsl(triplet, OpenCvFactory)); 
+        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, OpenCvFactory.FromRgb));
+        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, OpenCvFactory.FromHsb));
+        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, OpenCvFactory.FromHsl));
+        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, OpenCvFactory.FromXyz)); 
+        AssertUtils.AssertRandomLabColours(triplet => AssertTriplet(triplet, Unicolour.FromLab, OpenCvFactory.FromLab));
+        AssertUtils.AssertRandomLuvColours(triplet => AssertTriplet(triplet, Unicolour.FromLuv, OpenCvFactory.FromLuv));
     }
     
     [Test] 
@@ -37,85 +44,75 @@ public class OtherLibraryTests
     [Test]
     public void Colourful()
     {
-        // no asserting random HSB colours because Colourful doesn't support HSB/HSL
+        // not asserting random HSB colours because Colourful doesn't support HSB/HSL
+        // and not testing from LUV because it appears to give wrong values
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColourfulFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColourfulFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColourfulFactory));
-        AssertUtils.AssertRandomRgbColours(triplet => AssertFromRgb(triplet, ColourfulFactory));
+        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, ColourfulFactory.FromRgb));
+        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz)); 
+        AssertUtils.AssertRandomLabColours(triplet => AssertTriplet(triplet, Unicolour.FromLab, ColourfulFactory.FromLab));
     }
     
     [Test]
     public void ColorMine()
     {
-        // no asserting random RGB 0-1 colours because ColorMine only accepts RGB 255
+        // not asserting random RGB 0-1 colours because ColorMine only accepts RGB 255
+        // and not testing from XYZ / LAB / LUV because it does a terrible job
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColorMineFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColorMineFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColorMineFactory)); 
-        AssertUtils.AssertRandomHsbColours(triplet => AssertFromHsb(triplet, ColorMineFactory)); 
-        AssertUtils.AssertRandomHslColours(triplet => AssertFromHsl(triplet, ColorMineFactory)); 
+        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColorMineFactory));
+        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, ColorMineFactory.FromHsb));
+        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, ColorMineFactory.FromHsl));
     }
     
     [Test]
     public void SixLabors()
     {
+        // not testing from LAB / LUV as SixLabors does not handle it well
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, SixLaborsFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, SixLaborsFactory)); 
-        AssertUtils.AssertRandomRgbColours(triplet => AssertFromRgb(triplet, SixLaborsFactory));
-        AssertUtils.AssertRandomHsbColours(triplet => AssertFromHsb(triplet, SixLaborsFactory)); 
-        AssertUtils.AssertRandomHslColours(triplet => AssertFromHsl(triplet, SixLaborsFactory)); 
+        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, SixLaborsFactory));
+        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, SixLaborsFactory.FromRgb));
+        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, SixLaborsFactory.FromHsb));
+        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, SixLaborsFactory.FromHsl));
+        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, SixLaborsFactory.FromXyz)); 
     }
     
+    private static void AssertTriplet(ColourTriplet triplet, UnicolourFromTuple getUnicolour, TestColourFromTuple getTestColour)
+    {
+        var unicolour = getUnicolour(triplet.Tuple);
+        var testColour = getTestColour(triplet);
+        AssertTestColour(unicolour, testColour);
+    }
+
     private static void AssertFromHex(string hex, ITestColourFactory testColourFactory)
     {
+        hex = "#FF7F50";
         var unicolour = Unicolour.FromHex(hex);
         var (r255, g255, b255, _) = SystemColorUtils.HexToRgb255(hex);
-        var testColour = testColourFactory.FromRgb255(r255, g255, b255);
+        var testColour = testColourFactory.FromRgb255(r255, g255, b255, $"HEX [{hex}]");
         AssertHex(unicolour, hex);
-        AssertTestColour(unicolour, testColour, $"HEX [{hex}]");
+        AssertTestColour(unicolour, testColour);
     }
     
     private static void AssertFromRgb255(ColourTriplet triplet, ITestColourFactory testColourFactory)
     {
         var (first, second, third) = triplet;
-        var r255 = (int)(first / 255.0);
-        var g255 = (int)(second / 255.0);
-        var b255 = (int)(third / 255.0);
+        var r255 = (int)first;
+        var g255 = (int)second;
+        var b255 = (int)third;
         var unicolour = Unicolour.FromRgb255(r255, g255, b255);
         var testColour = testColourFactory.FromRgb255(r255, g255, b255);
-        AssertTestColour(unicolour, testColour, $"RGB [{unicolour.Rgb.Triplet255}]");
+        AssertTestColour(unicolour, testColour);
     }
-    
-    private static void AssertFromRgb(ColourTriplet triplet, ITestColourFactory testColourFactory)
-    {
-        var (r, g, b) = triplet;
-        var unicolour = Unicolour.FromRgb(r, g, b);
-        var testColour = testColourFactory.FromRgb(r, g, b);
-        AssertTestColour(unicolour, testColour, $"RGB [{unicolour.Rgb}]");
-    }
-    
-    private static void AssertFromHsb(ColourTriplet triplet, ITestColourFactory testColourFactory)
-    {
-        var (h, s, b) = triplet;
-        var unicolour = Unicolour.FromHsb(h, s, b);
-        var testColour = testColourFactory.FromHsb(h, s, b);
-        AssertTestColour(unicolour, testColour, $"HSB [{unicolour.Hsb}]");
-    }
-    
-    private static void AssertFromHsl(ColourTriplet triplet, ITestColourFactory testColourFactory)
-    {
-        var (h, s, l) = triplet;
-        var unicolour = Unicolour.FromHsl(h, s, l);
-        var testColour = testColourFactory.FromHsl(h, s, l);
-        AssertTestColour(unicolour, testColour, $"HSL [{unicolour.Hsl}]");
-    }
-    
+
     private static void AssertFromCsvData(string hex, string name)
     {
         var unicolour = Unicolour.FromHex(hex);
         var otherLibColour = OpenCvCsvFactory.FromName(name);
         AssertHex(unicolour, hex);
-        AssertTestColour(unicolour, otherLibColour, $"NAME [{name}]");
+        AssertTestColour(unicolour, otherLibColour);
     }
 
     private static void AssertHex(Unicolour unicolour, string hex)
@@ -127,32 +124,35 @@ public class OtherLibraryTests
         Assert.That(unicolour.Alpha.Hex, Is.EqualTo(expectedA.ToUpper()));
     }
     
-    private static void AssertTestColour(Unicolour unicolour, TestColour testColour, string source)
+    private static void AssertTestColour(Unicolour unicolour, TestColour testColour)
     {
         var colourName = testColour.Name;
         var tolerances = testColour.Tolerances;
         if (colourName == null) throw new ArgumentException("Malformed test colour: no name");
         if (tolerances == null) throw new ArgumentException("Malformed test colour: no tolerances");
 
-        AssertColourTriplet(unicolour.Rgb.Triplet, testColour.Rgb, tolerances.Rgb, $"{source} -> RGB");
-        AssertColourTriplet(unicolour.Rgb.TripletLinear, testColour.RgbLinear, tolerances.RgbLinear, $"{source} -> RGB Linear");
-        AssertColourTriplet(unicolour.Xyz.Triplet, testColour.Xyz, tolerances.Xyz, $"{source} -> XYZ");
-        AssertColourTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{source} -> LAB");
+        var unicolourRgb = testColour.IsRgbConstrained ? unicolour.Rgb.ConstrainedTriplet : unicolour.Rgb.Triplet;
+        var unicolourRgbLinear = testColour.IsRgbLinearConstrained ? unicolour.Rgb.ConstrainedTripletLinear : unicolour.Rgb.TripletLinear;
+        AssertColourTriplet(unicolourRgb, testColour.Rgb, tolerances.Rgb, $"{colourName} -> RGB");
+        AssertColourTriplet(unicolourRgbLinear, testColour.RgbLinear, tolerances.RgbLinear, $"{colourName} -> RGB Linear");
+        AssertColourTriplet(unicolour.Xyz.Triplet, testColour.Xyz, tolerances.Xyz, $"{colourName} -> XYZ");
+        AssertColourTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{colourName} -> LAB");
+        AssertColourTriplet(unicolour.Luv.Triplet, testColour.Luv, tolerances.Luv, $"{colourName} -> LUV");
 
         if (testColour.ExcludeFromHueBasedTest)
         {
             var reasons = string.Join(", ", testColour.ExcludeFromHueBasedTestReasons);
-            Console.WriteLine($"Excluded test colour {source} -> HSB [{unicolour.Hsb}] / HSL [{unicolour.Hsl}] because: {reasons}");
+            Console.WriteLine($"Excluded test colour {colourName} -> HSB [{unicolour.Hsb}] / HSL [{unicolour.Hsl}] because: {reasons}");
             return;
         }
         
-        AssertColourTriplet(unicolour.Hsb.Triplet, testColour.Hsb, tolerances.Hsb, $"{source} -> HSB", true);
-        AssertColourTriplet(unicolour.Hsl.Triplet, testColour.Hsl, tolerances.Hsl, $"{source} -> HSL", true);
+        AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB", true);
+        AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL", true);
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string details, bool hasHue = false)
+    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info, bool hasHue = false)
     {
         if (expected == null) return;
-        AssertUtils.AssertColourTriplet(actual, expected, tolerance, hasHue, details);
+        AssertUtils.AssertColourTriplet(actual, expected, tolerance, hasHue, info);
     }
 }

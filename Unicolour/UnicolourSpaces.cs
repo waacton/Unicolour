@@ -2,7 +2,7 @@
 
 public partial class Unicolour
 {
-    private enum ColourSpace { Rgb, Hsb, Hsl, Xyz, Lab, Oklab }
+    private enum ColourSpace { Rgb, Hsb, Hsl, Xyz, Lab, Luv, Oklab }
 
     private readonly Dictionary<ColourSpace, Dictionary<ColourSpace, Action>> conversions = new();
 
@@ -14,6 +14,7 @@ public partial class Unicolour
             {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
             {ColourSpace.Xyz, () => xyz = Conversion.RgbToXyz(Rgb, Config)},
             {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)},
             {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
         });
         
@@ -23,6 +24,7 @@ public partial class Unicolour
             {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
             {ColourSpace.Xyz, () => xyz = Conversion.RgbToXyz(Rgb, Config)},
             {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)},
             {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
         });
         
@@ -32,6 +34,7 @@ public partial class Unicolour
             {ColourSpace.Hsb, () => hsb = Conversion.HslToHsb(Hsl)},
             {ColourSpace.Xyz, () => xyz = Conversion.RgbToXyz(Rgb, Config)},
             {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)},
             {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
         });
         
@@ -41,6 +44,7 @@ public partial class Unicolour
             {ColourSpace.Hsb, () => hsb = Conversion.RgbToHsb(Rgb)},
             {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
             {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)},
             {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
         });
         
@@ -50,6 +54,17 @@ public partial class Unicolour
             {ColourSpace.Hsb, () => hsb = Conversion.RgbToHsb(Rgb)},
             {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
             {ColourSpace.Xyz, () => xyz = Conversion.LabToXyz(Lab, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)},
+            {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
+        });
+        
+        conversions.Add(ColourSpace.Luv, new Dictionary<ColourSpace, Action>
+        {
+            {ColourSpace.Rgb, () => rgb = Conversion.XyzToRgb(Xyz, Config)},
+            {ColourSpace.Hsb, () => hsb = Conversion.RgbToHsb(Rgb)},
+            {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
+            {ColourSpace.Xyz, () => xyz = Conversion.LuvToXyz(Luv, Config)},
+            {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
             {ColourSpace.Oklab, () => oklab = Conversion.XyzToOklab(Xyz, Config)}
         });
         
@@ -59,7 +74,8 @@ public partial class Unicolour
             {ColourSpace.Hsb, () => hsb = Conversion.RgbToHsb(Rgb)},
             {ColourSpace.Hsl, () => hsl = Conversion.HsbToHsl(Hsb)},
             {ColourSpace.Xyz, () => xyz = Conversion.OklabToXyz(Oklab, Config)},
-            {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)}
+            {ColourSpace.Lab, () => lab = Conversion.XyzToLab(Xyz, Config)},
+            {ColourSpace.Luv, () => luv = Conversion.XyzToLuv(Xyz, Config)}
         });
     }
 

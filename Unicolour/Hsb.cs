@@ -7,11 +7,11 @@ public record Hsb
     public double S { get; }
     public double B { get; }
     public ColourTriplet Triplet => new(H, S, B);
-    
-    public double ClampedH => H.Clamp(0.0, 360.0);
-    public double ClampedS => S.Clamp(0.0, 1.0);
-    public double ClampedB => B.Clamp(0.0, 1.0);
-    public ColourTriplet ClampedTriplet => new(ClampedH, ClampedS, ClampedB);
+
+    public double ConstrainedH => H.Modulo(360.0);
+    public double ConstrainedS => S.Clamp(0.0, 1.0);
+    public double ConstrainedB => B.Clamp(0.0, 1.0);
+    public ColourTriplet ConstrainedTriplet => new(ConstrainedH, ConstrainedS, ConstrainedB);
     
     // RGB(0,0,0) is black, but has no explicit hue (and don't want to assume red)
     // HSB(0,0,0) is black, but want to acknowledge the explicit red hue of 0

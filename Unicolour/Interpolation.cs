@@ -53,6 +53,15 @@ public static class Interpolation
         return Unicolour.FromLab(startColour.Config, l, a, b, alpha);
     }
     
+    public static Unicolour InterpolateLuv(this Unicolour startColour, Unicolour endColour, double distance)
+    {
+        GuardConfiguration(startColour, endColour);
+        
+        var (l, u, v) = InterpolateTriplet(startColour.Luv.Triplet, endColour.Luv.Triplet, distance);
+        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
+        return Unicolour.FromLuv(startColour.Config, l, u, v, alpha);
+    }
+    
     public static Unicolour InterpolateOklab(this Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);

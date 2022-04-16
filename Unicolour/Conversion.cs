@@ -7,9 +7,11 @@ internal static class Conversion
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
     public static Hsb RgbToHsb(Rgb rgb)
     {
-        var r = rgb.R;
-        var g = rgb.G;
-        var b = rgb.B;
+        // this is just a transformation from Cartesian coordinates to cylindrical coordinates
+        // so ensure values are within the mappable range
+        var r = rgb.ConstrainedR;
+        var g = rgb.ConstrainedG;
+        var b = rgb.ConstrainedB;
 
         var components = new[] {r, g, b};
         var xMax = components.Max();
@@ -27,40 +29,15 @@ internal static class Conversion
         var saturation = brightness == 0 ? 0 : chroma / brightness;
         return new Hsb(hue, saturation, brightness, false);
     }
-    
-    // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
-    public static Hsl RgbToHsl(Rgb rgb)
-    {
-        var r = rgb.R;
-        var g = rgb.G;
-        var b = rgb.B;
 
-        var components = new[] {r, g, b};
-        var xMax = components.Max();
-        var xMin = components.Min();
-        var chroma = xMax - xMin;
-        var lightness = (xMax + xMin) / 2.0;
-
-        double hue;
-        if (chroma == 0.0) hue = 0;
-        else if (xMax == r) hue = 60 * (0 + ((g - b) / chroma));
-        else if (xMax == g) hue = 60 * (2 + ((b - r) / chroma));
-        else if (xMax == b) hue = 60 * (4 + ((r - g) / chroma));
-        else throw new InvalidOperationException();
-        hue = hue < 0 ? 360 + hue : hue;
-        var saturation = lightness > 0.0 && lightness < 1.0
-            ? (xMax - lightness) / Math.Min(lightness, 1 - lightness)
-            : 0.0;
-        
-        return new Hsl(hue, saturation, lightness, false);
-    }
-    
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
     public static Rgb HsbToRgb(Hsb hsb, Configuration config)
     {
-        var hue = hsb.H;
-        var saturation = hsb.S;
-        var brightness = hsb.B;
+        // this is just a transformation from cylindrical coordinates to Cartesian coordinates
+        // so ensure values are within the mappable range
+        var hue = hsb.ConstrainedH;
+        var saturation = hsb.ConstrainedS;
+        var brightness = hsb.ConstrainedB;
         
         var chroma = brightness * saturation;
         var h = hue / 60;
@@ -85,10 +62,15 @@ internal static class Conversion
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
     public static Hsl HsbToHsl(Hsb hsb)
     {
-        var hue = hsb.H;
-        var lightness = hsb.B * (1 - hsb.S / 2);
+        // this is just a transformation between 2 different cylindrical coordinates systems
+        // so ensure values are within the mappable range
+        var hue = hsb.ConstrainedH;
+        var hsbSaturation = hsb.ConstrainedS;
+        var brightness = hsb.ConstrainedB;
+        
+        var lightness = brightness * (1 - hsbSaturation / 2);
         var saturation = lightness is > 0.0 and < 1.0
-            ? (hsb.B - lightness) / Math.Min(lightness, 1 - lightness)
+            ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
             : 0;
 
         return new Hsl(hue, saturation, lightness, hsb.HasHue);
@@ -97,9 +79,13 @@ internal static class Conversion
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
     public static Hsb HslToHsb(Hsl hsl)
     {
-        var hue = hsl.H;
-        var lightness = hsl.L;
-        var brightness = lightness + hsl.S * Math.Min(lightness, 1 - lightness);
+        // this is just a transformation between 2 different cylindrical coordinates systems
+        // so ensure values are within the mappable range
+        var hue = hsl.ConstrainedH;
+        var hslSaturation = hsl.ConstrainedS;
+        var lightness = hsl.ConstrainedL;
+        
+        var brightness = lightness + hslSaturation * Math.Min(lightness, 1 - lightness);
         var saturation = brightness > 0.0
             ? 2 * (1 - lightness / brightness)
             : 0;
@@ -189,6 +175,51 @@ internal static class Conversion
         return new Xyz(x, y, z);
     }
     
+    // https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation
+    public static Luv XyzToLuv(Xyz xyz, Configuration config)
+    {
+        double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
+        double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
+            
+        var (xRef, yRef, zRef) = config.XyzWhitePoint;
+        var uPrime = U(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
+        var uPrimeRef = U(xRef, yRef, zRef);
+        var vPrime = V(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
+        var vPrimeRef = V(xRef, yRef, zRef);
+        
+        var yRatio = xyz.Y * 100 / yRef;
+        var l = yRatio > Math.Pow(6.0 / 29.0, 3) ? 116 * CubeRoot(yRatio) - 16 : Math.Pow(29 / 3.0, 3) * yRatio;
+        var u = 13 * l * (uPrime - uPrimeRef);
+        var v = 13 * l * (vPrime - vPrimeRef);
+        
+        double ZeroNaN(double value) => double.IsNaN(value) ? 0.0 : value;
+        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v));
+    }
+    
+    // https://en.wikipedia.org/wiki/CIELUV#The_reverse_transformation
+    public static Xyz LuvToXyz(Luv luv, Configuration config)
+    {
+        var l = luv.L;
+        var u = luv.U;
+        var v = luv.V;
+        
+        double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
+        double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
+
+        var (xRef, yRef, zRef) = config.XyzWhitePoint;
+        var uPrimeRef = U(xRef, yRef, zRef);
+        var uPrime = u / (13 * l) + uPrimeRef;
+        var vPrimeRef = V(xRef, yRef, zRef);
+        var vPrime = v / (13 * l) + vPrimeRef;
+
+        var y = (l > 8 ? yRef * Math.Pow((l + 16) / 116.0, 3) : yRef * l * Math.Pow(3 / 29.0, 3)) / 100.0;
+        var x = y * ((9 * uPrime) / (4 * vPrime));
+        var z = y * ((12 - 3 * uPrime - 20 * vPrime) / (4 * vPrime));
+        
+        double ZeroNaN(double value) => double.IsNaN(value) || double.IsInfinity(value) ? 0.0 : value;
+        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z));
+    }
+
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
     public static Oklab XyzToOklab(Xyz xyz, Configuration config)
     {

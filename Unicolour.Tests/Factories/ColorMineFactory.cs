@@ -8,14 +8,16 @@ using ColorMineHsb = ColorMine.ColorSpaces.Hsb;
 using ColorMineHsl = ColorMine.ColorSpaces.Hsl;
 using ColorMineXyz = ColorMine.ColorSpaces.Xyz;
 using ColorMineLab = ColorMine.ColorSpaces.Lab;
+using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 
+/*
+ * ColorMine doesn't expose linear RGB
+ * ColorMine does a bad job of converting to HSL
+ * ColorMine does a terrible job of converting from XYZ / LAB / LUV
+ */
 internal class ColorMineFactory : ITestColourFactory
 {
-    /*
-     * ColorMine doesn't expose linear RGB and does a bad job of converting to HSL
-     */
-    private static readonly Tolerances BaseTolerances = new() { Rgb = 0.00000000001, Hsb = 0.0000005, Hsl = 0.0125, Xyz = 0.0005, Lab = 0.05 };
-    private static readonly Tolerances FromHslTolerances = BaseTolerances with { Rgb = 0.0005, Hsb = 0.00005 };
+    private static readonly Tolerances Tolerances = new() { Rgb = 0.0005, Hsb = 0.00005, Hsl = 0.0125, Xyz = 0.0005, Lab = 0.05, Luv = 0.05 };
 
     public TestColour FromRgb(double r, double g, double b, string name)
     {
@@ -32,7 +34,8 @@ internal class ColorMineFactory : ITestColourFactory
         var hsl = rgb.To<ColorMineHsl>();
         var xyz = rgb.To<ColorMineXyz>();
         var lab = rgb.To<ColorMineLab>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, BaseTolerances);
+        var luv = rgb.To<ColorMineLuv>();
+        return Create(name, rgb, hsb, hsl, xyz, lab, luv, Tolerances);
     }
 
     public TestColour FromHsb(double h, double s, double b, string name)
@@ -42,10 +45,11 @@ internal class ColorMineFactory : ITestColourFactory
         var hsl = hsb.To<ColorMineHsl>();
         var xyz = hsb.To<ColorMineXyz>();
         var lab = hsb.To<ColorMineLab>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, BaseTolerances);
+        var luv = hsb.To<ColorMineLuv>();
+        return Create(name, rgb, hsb, hsl, xyz, lab, luv, Tolerances);
     }
 
-    // for some reason HSL uses 0-100 despite HSB using 0-1
+    // ColorMine HSL for some reason uses 0-100 despite HSB using 0-1
     public TestColour FromHsl(double h, double s, double l, string name)
     {
         var hsl = new ColorMineHsl {H = h, S = s * 100, L = l * 100};
@@ -53,10 +57,19 @@ internal class ColorMineFactory : ITestColourFactory
         var hsb = hsl.To<ColorMineHsb>();
         var xyz = hsl.To<ColorMineXyz>();
         var lab = hsl.To<ColorMineLab>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, FromHslTolerances);
+        var luv = hsl.To<ColorMineLuv>();
+        return Create(name, rgb, hsb, hsl, xyz, lab, luv, Tolerances);
     }
 
-    private static TestColour Create(string name, ColorMineRgb rgb, ColorMineHsb hsb, ColorMineHsl hsl, ColorMineXyz xyz, ColorMineLab lab, Tolerances tolerances)
+    // ColorMine from XYZ, LAB & LUV is so bad for most conversions, it's not worth testing
+    public TestColour FromXyz(double x, double y, double z, string name) => throw new NotImplementedException();
+    public TestColour FromLab(double l, double a, double b, string name) => throw new NotImplementedException();
+    public TestColour FromLuv(double l, double u, double v, string name) => throw new NotImplementedException();
+
+    private static TestColour Create(string name, 
+        ColorMineRgb rgb, ColorMineHsb hsb, ColorMineHsl hsl, 
+        ColorMineXyz xyz, ColorMineLab lab, ColorMineLuv luv, 
+        Tolerances tolerances)
     {
         var hueExclusions = new List<string>();
         if (HasInconsistentHue(hsb, hsl)) hueExclusions.Add("ColorMine converts via RGB and loses hue when greyscale");
@@ -71,6 +84,7 @@ internal class ColorMineFactory : ITestColourFactory
             Hsl = new(hsl.H, hsl.S / 100.0, hsl.L / 100.0),
             Xyz = new(xyz.X / 100.0, xyz.Y / 100.0, xyz.Z / 100.0),
             Lab = new(lab.L, lab.A, lab.B),
+            Luv = new(luv.L, luv.U, luv.V),
             Tolerances = tolerances,
             ExcludeFromHueBasedTestReasons = hueExclusions
         };

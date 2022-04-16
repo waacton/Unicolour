@@ -14,6 +14,7 @@ internal static class AssertUtils
     public static void AssertRandomHslColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomHslColours, action);
     public static void AssertRandomXyzColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomXyzColours, action);
     public static void AssertRandomLabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLabColours, action);
+    public static void AssertRandomLuvColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLuvColours, action);
     public static void AssertRandomOklabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomOklabColours, action);
     
     private static void AssertItems<T>(List<T> itemsToAssert, Action<T> assertAction)
@@ -24,11 +25,12 @@ internal static class AssertUtils
         }
     }
 
-    public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, bool hasHue = false, string? details = null)
+    public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, bool hasHue = false, string? info = null)
     {
         double NormalisedFirst(double value) => hasHue ? value / 360.0 : value;
-        
-        string FailMessage(string channel) => $"{channel}{(details == null ? string.Empty : $" ({details})")}";
+
+        var details = $"Expected --- {expected}\nActual ----- {actual}";
+        string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
         Assert.That(NormalisedFirst(actual.First), Is.EqualTo(NormalisedFirst(expected.First)).Within(tolerance), FailMessage("Channel 1"));
         Assert.That(actual.Second, Is.EqualTo(expected.Second).Within(tolerance), FailMessage("Channel 2"));
         Assert.That(actual.Third, Is.EqualTo(expected.Third).Within(tolerance), FailMessage("Channel 3"));

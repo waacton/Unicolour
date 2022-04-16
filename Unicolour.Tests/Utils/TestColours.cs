@@ -18,13 +18,14 @@ internal static class TestColours
     public static readonly List<ColourTriplet> RandomHslColours = new();
     public static readonly List<ColourTriplet> RandomXyzColours = new();
     public static readonly List<ColourTriplet> RandomLabColours = new();
+    public static readonly List<ColourTriplet> RandomLuvColours = new();
     public static readonly List<ColourTriplet> RandomOklabColours = new();
     
     static TestColours()
     {
         NamedColours = File.ReadAllLines(Path.Combine("Utils", "NamedColours.csv"))
             .Skip(1).Select(CreateNamedColour).ToList();
-
+        
         for (var i = 0; i < 1000; i++)
         {
             RandomHexColours.Add(GenerateRandomHex());
@@ -34,6 +35,7 @@ internal static class TestColours
             RandomHslColours.Add(GetRandomHsl());
             RandomXyzColours.Add(GetRandomXyz());
             RandomLabColours.Add(GetRandomLab());
+            RandomLuvColours.Add(GetRandomLuv());
             RandomOklabColours.Add(GetRandomOklab());
         }
     }
@@ -44,7 +46,9 @@ internal static class TestColours
     internal static ColourTriplet GetRandomHsl() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
     internal static ColourTriplet GetRandomXyz() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
     internal static ColourTriplet GetRandomLab() => new(Random.NextDouble() * 100, Random.NextDouble() * 256 - 128, Random.NextDouble() * 256 - 128);
+    internal static ColourTriplet GetRandomLuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 200 - 100, Random.NextDouble() * 200 - 100);
     internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+
     internal static double GetRandomAlpha() => Random.NextDouble();
 
 

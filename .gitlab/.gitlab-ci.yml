@@ -41,3 +41,7 @@ sast:
     stage: security-test
 include:
     - template: Security/SAST.gitlab-ci.yml
+# https://gitlab.com/-/snippets/2223915
+security-code-scan-sast:
+    variables:
+        SAST_ANALYZER_IMAGE_TAG: 3 

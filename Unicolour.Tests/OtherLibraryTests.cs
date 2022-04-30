@@ -12,10 +12,10 @@ public class OtherLibraryTests
     private static readonly ITestColourFactory ColorMineFactory = new ColorMineFactory();
     private static readonly ITestColourFactory SixLaborsFactory = new SixLaborsFactory();
     
-    private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
-    
     private delegate Unicolour UnicolourFromTuple((double first, double second, double third) tuple, double alpha = 1.0);
     private delegate TestColour TestColourFromTuple(ColourTriplet triplet);
+    
+    private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
 
     [Test] 
     public void OpenCvWindows()
@@ -23,6 +23,7 @@ public class OtherLibraryTests
         // I've given up trying to make OpenCvSharp work in a dockerised unix environment...
         Assume.That(IsWindows());
         
+        // not testing from LCHab / LCHuv because OpenCV does not support them
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, OpenCvFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, OpenCvFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, OpenCvFactory));
@@ -34,31 +35,29 @@ public class OtherLibraryTests
         AssertUtils.AssertRandomLuvColours(triplet => AssertTriplet(triplet, Unicolour.FromLuv, OpenCvFactory.FromLuv));
     }
     
-    [Test] 
-    public void OpenCvCrossPlatform()
-    {
-        // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
-        AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
-    }
+    [Test] // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
+    public void OpenCvCrossPlatform() => AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
 
     [Test]
     public void Colourful()
     {
-        // not asserting random HSB colours because Colourful doesn't support HSB/HSL
-        // and not testing from LUV because it appears to give wrong values
+        // not testing from HSB / HSL because Colourful doesn't support them
+        // not testing from LUV / LCHuv because Colourful appears to give wrong values (XYZ clamping?)
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColourfulFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColourfulFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColourfulFactory));
         AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, ColourfulFactory.FromRgb));
         AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz)); 
         AssertUtils.AssertRandomLabColours(triplet => AssertTriplet(triplet, Unicolour.FromLab, ColourfulFactory.FromLab));
+        AssertUtils.AssertRandomLchabColours(triplet => AssertTriplet(triplet, Unicolour.FromLchab, ColourfulFactory.FromLchab));
     }
     
     [Test]
     public void ColorMine()
     {
-        // not asserting random RGB 0-1 colours because ColorMine only accepts RGB 255
-        // and not testing from XYZ / LAB / LUV because it does a terrible job
+        // not testing from RGB [0-1] because ColorMine RGB only accepts 0-255
+        // not testing from XYZ / LAB / LCHab / LUV because ColorMine does a terrible job
+        // not testing from LCHuv because ColorMine does not support it
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColorMineFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColorMineFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColorMineFactory));
@@ -69,7 +68,8 @@ public class OtherLibraryTests
     [Test]
     public void SixLabors()
     {
-        // not testing from LAB / LUV as SixLabors does not handle it well
+        // not testing from LAB / LUV / LCHuv because SixLabors appears to give wrong values (XYZ clamping?)
+        // not testing from LCHab because SixLabors does not support it
         AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsFactory));
         AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, SixLaborsFactory));
         AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, SixLaborsFactory));
@@ -88,7 +88,6 @@ public class OtherLibraryTests
 
     private static void AssertFromHex(string hex, ITestColourFactory testColourFactory)
     {
-        hex = "#FF7F50";
         var unicolour = Unicolour.FromHex(hex);
         var (r255, g255, b255, _) = SystemColorUtils.HexToRgb255(hex);
         var testColour = testColourFactory.FromRgb255(r255, g255, b255, $"HEX [{hex}]");
@@ -138,21 +137,33 @@ public class OtherLibraryTests
         AssertColourTriplet(unicolour.Xyz.Triplet, testColour.Xyz, tolerances.Xyz, $"{colourName} -> XYZ");
         AssertColourTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{colourName} -> LAB");
         AssertColourTriplet(unicolour.Luv.Triplet, testColour.Luv, tolerances.Luv, $"{colourName} -> LUV");
-
-        if (testColour.ExcludeFromHueBasedTest)
+        
+        if (testColour.ExcludeFromHsxTests)
         {
-            var reasons = string.Join(", ", testColour.ExcludeFromHueBasedTestReasons);
-            Console.WriteLine($"Excluded test colour {colourName} -> HSB [{unicolour.Hsb}] / HSL [{unicolour.Hsl}] because: {reasons}");
-            return;
+            var reasons = string.Join(", ", testColour.ExcludeFromHsxTestReasons);
+            Console.WriteLine($"Excluded test colour {colourName} -> HSB/HSL because: {reasons}");
+        }
+        else
+        {
+            AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB", 0);
+            AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL", 0);
         }
         
-        AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB", true);
-        AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL", true);
+        if (testColour.ExcludeFromLchTests)
+        {
+            var reasons = string.Join(", ", testColour.ExcludeFromLchTestReasons);
+            Console.WriteLine($"Excluded test colour {colourName} -> LCH because: {reasons}");
+        }
+        else
+        {
+            AssertColourTriplet(unicolour.Lchab.ConstrainedTriplet, testColour.Lchab, tolerances.Lchab, $"{colourName} -> LCHab", 2);
+            AssertColourTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv", 2);
+        }
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info, bool hasHue = false)
+    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info, int? hueIndex = null)
     {
         if (expected == null) return;
-        AssertUtils.AssertColourTriplet(actual, expected, tolerance, hasHue, info);
+        AssertUtils.AssertColourTriplet(actual, expected, tolerance, hueIndex, info);
     }
 }

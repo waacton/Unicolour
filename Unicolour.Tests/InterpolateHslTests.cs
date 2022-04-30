@@ -33,7 +33,7 @@ public class InterpolateHslTests
     }
     
     [Test]
-    public void EquidistantViaRed()
+    public void EquidistantViaZero()
     {
         var unicolour1 = Unicolour.FromHsl(0, 0, 0, 0);
         var unicolour2 = Unicolour.FromHsl(340, 0.5, 0.8, 0.2);
@@ -57,7 +57,7 @@ public class InterpolateHslTests
     }
     
     [Test]
-    public void CloserToEndColourViaRed()
+    public void CloserToEndColourViaZero()
     {
         var unicolour1 = Unicolour.FromHsl(300, 1, 0);
         var unicolour2 = Unicolour.FromHsl(60, 0, 1, 0.5);
@@ -81,7 +81,7 @@ public class InterpolateHslTests
     }
     
     [Test]
-    public void CloserToStartColourViaRed()
+    public void CloserToStartColourViaZero()
     {
         var unicolour1 = Unicolour.FromHsl(300, 1, 0);
         var unicolour2 = Unicolour.FromHsl(60, 0, 1, 0.5);

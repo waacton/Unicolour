@@ -39,14 +39,46 @@ public static class RangeClampTests
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
     }
+    
+    [Test]
+    public static void LchabRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Lchab(100, 230, hRange.BeyondMax);
+        var beyondMin = new Lchab(0, 0, hRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
+        AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
+    public static void LchuvRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Lchuv(100, 230, hRange.BeyondMax);
+        var beyondMin = new Lchuv(0, 0, hRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
+        AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
+    public static void OklchRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Oklch(100, 230, hRange.BeyondMax);
+        var beyondMin = new Oklch(0, 0, hRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
+        AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
+    }
 
     private static void AssertConstrained(ColourTriplet lesser, ColourTriplet greater)
     {
-        Assert.That(lesser.First, Is.LessThan(greater.First));
-        Assert.That(lesser.Second, Is.LessThan(greater.Second));
-        Assert.That(lesser.Third, Is.LessThan(greater.Third));
+        AssertConstrained(lesser.First, greater.First);
+        AssertConstrained(lesser.Second, greater.Second);
+        AssertConstrained(lesser.Third, greater.Third);
     }
-    
+
+    private static void AssertConstrained(double lesser, double greater) => Assert.That(lesser, Is.LessThan(greater));
+
     private record Range(double Min, double Max)
     {
         public double BeyondMax => Max + 0.0001;

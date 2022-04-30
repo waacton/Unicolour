@@ -30,12 +30,20 @@ public record Rgb
 
     public string Hex => $"#{R255:X2}{G255:X2}{B255:X2}";
 
-    public Rgb(double r, double g, double b, Configuration config) 
+    // TODO: move this detail (and anything similar) to readme?
+    // not using a precision-based tolerance comparison because initial values are always provided by external code
+    // and do not want to make assumptions about the intentions of those values (e.g. R set to 1/3.0 and G set to 0.33333333, won't assume they "should" be the same)
+    internal bool IsMonochrome => ConvertedFromMonochrome || ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
+    internal bool ConvertedFromMonochrome { get; }
+
+    public Rgb(double r, double g, double b, Configuration config): this(r, g, b, config, false) {}
+    internal Rgb(double r, double g, double b, Configuration config, bool convertedFromMonochrome)
     {
         R = r;
         G = g;
         B = b;
         inverseCompand = config.InverseCompand;
+        ConvertedFromMonochrome = convertedFromMonochrome;
     }
     
     public override string ToString() => $"{R255} {G255} {B255}";

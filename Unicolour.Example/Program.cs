@@ -13,7 +13,7 @@ var fontFamily = collection.Add("Inconsolata-Regular.ttf");
 var font = fontFamily.CreateFont(24);
 var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
 
-var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LUV", "OKLAB"};
+var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LCHab", "LUV", "LCHuv", "OKLAB", "OKLCH"};
 var purple = Unicolour.FromHsb(260, 1.0, 0.33);
 var orange = Unicolour.FromHsb(30, 0.66, 1.0);
 var pink = Unicolour.FromHex("#FF1493");
@@ -39,8 +39,11 @@ void Draw(Unicolour start, Unicolour end, int column)
             start.InterpolateHsl(end, distance),
             start.InterpolateXyz(end, distance),
             start.InterpolateLab(end, distance),
+            start.InterpolateLchab(end, distance),
             start.InterpolateLuv(end, distance),
-            start.InterpolateOklab(end, distance)
+            start.InterpolateLchuv(end, distance),
+            start.InterpolateOklab(end, distance),
+            start.InterpolateOklch(end, distance)
         };
     
         SetPixels(column, pixelIndex, unicolours);

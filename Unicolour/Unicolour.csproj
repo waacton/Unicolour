@@ -15,9 +15,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageVersion>1.4.0</PackageVersion>
-        <PackageTags>colour color converter RGB HSB HSV HSL XYZ LAB LUV Oklab color-spaces colour-spaces interpolation comparison contrast luminance deltaE</PackageTags>
-        <PackageReleaseNotes>Add LUV support</PackageReleaseNotes>
+        <PackageVersion>1.5.0</PackageVersion>
+        <PackageTags>colour color converter RGB HSB HSV HSL XYZ LAB LUV LCH LCHab LCHuv Oklab Oklch color-spaces colour-spaces interpolation comparison contrast luminance deltaE</PackageTags>
+        <PackageReleaseNotes>Add LCH support (LCHab, LCHuv, Oklch)</PackageReleaseNotes>
         <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>

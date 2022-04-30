@@ -7,8 +7,6 @@ internal static class Conversion
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
     public static Hsb RgbToHsb(Rgb rgb)
     {
-        // this is just a transformation from Cartesian coordinates to cylindrical coordinates
-        // so ensure values are within the mappable range
         var r = rgb.ConstrainedR;
         var g = rgb.ConstrainedG;
         var b = rgb.ConstrainedB;
@@ -24,17 +22,14 @@ internal static class Conversion
         else if (xMax == g) hue = 60 * (2 + ((b - r) / chroma));
         else if (xMax == b) hue = 60 * (4 + ((r - g) / chroma));
         else throw new InvalidOperationException();
-        hue = hue < 0 ? 360 + hue : hue;
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
-        return new Hsb(hue, saturation, brightness, false);
+        return new Hsb(hue.Modulo(360.0), saturation, brightness, false, rgb.IsMonochrome);
     }
 
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
     public static Rgb HsbToRgb(Hsb hsb, Configuration config)
     {
-        // this is just a transformation from cylindrical coordinates to Cartesian coordinates
-        // so ensure values are within the mappable range
         var hue = hsb.ConstrainedH;
         var saturation = hsb.ConstrainedS;
         var brightness = hsb.ConstrainedB;
@@ -56,14 +51,12 @@ internal static class Conversion
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, config);
+        return new Rgb(red, green, blue, config, hsb.IsMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
     public static Hsl HsbToHsl(Hsb hsb)
     {
-        // this is just a transformation between 2 different cylindrical coordinates systems
-        // so ensure values are within the mappable range
         var hue = hsb.ConstrainedH;
         var hsbSaturation = hsb.ConstrainedS;
         var brightness = hsb.ConstrainedB;
@@ -73,14 +66,12 @@ internal static class Conversion
             ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
             : 0;
 
-        return new Hsl(hue, saturation, lightness, hsb.HasHue);
+        return new Hsl(hue, saturation, lightness, hsb.HasExplicitHue, hsb.IsMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
     public static Hsb HslToHsb(Hsl hsl)
     {
-        // this is just a transformation between 2 different cylindrical coordinates systems
-        // so ensure values are within the mappable range
         var hue = hsl.ConstrainedH;
         var hslSaturation = hsl.ConstrainedS;
         var lightness = hsl.ConstrainedL;
@@ -90,7 +81,7 @@ internal static class Conversion
             ? 2 * (1 - lightness / brightness)
             : 0;
 
-        return new Hsb(hue, saturation, brightness);
+        return new Hsb(hue, saturation, brightness, hsl.HasExplicitHue, hsl.IsMonochrome);
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
@@ -110,7 +101,7 @@ internal static class Conversion
         var y = xyzMatrix[1, 0];
         var z = xyzMatrix[2, 0];
 
-        return new Xyz(x, y, z);
+        return new Xyz(x, y, z, rgb.IsMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
@@ -134,7 +125,7 @@ internal static class Conversion
         var g = config.Compand(gLinear);
         var b = config.Compand(bLinear);
 
-        return new Rgb(r, g, b, config);
+        return new Rgb(r, g, b, config, xyz.ConvertedFromMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
@@ -155,7 +146,7 @@ internal static class Conversion
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));
 
-        return new Lab(l, a, b);
+        return new Lab(l, a, b, xyz.ConvertedFromMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
@@ -172,7 +163,19 @@ internal static class Conversion
         var y = referenceWhite.Y / 100.0 * F((l + 16) / 116.0);
         var z = referenceWhite.Z / 100.0 * F((l + 16) / 116.0 - b / 200.0);
 
-        return new Xyz(x, y, z);
+        return new Xyz(x, y, z, lab.IsMonochrome);
+    }
+    
+    public static Lchab LabToLchab(Lab lab)
+    {
+        var (l, c, h) = ToLchTriplet(lab.L, lab.A, lab.B);
+        return new Lchab(l, c, h, false, lab.IsMonochrome);
+    }
+    
+    public static Lab LchabToLab(Lchab lchab)
+    {
+        var (l, a, b) = FromLchTriplet(lchab.ConstrainedTriplet);
+        return new Lab(l, a, b, lchab.IsMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation
@@ -193,7 +196,7 @@ internal static class Conversion
         var v = 13 * l * (vPrime - vPrimeRef);
         
         double ZeroNaN(double value) => double.IsNaN(value) ? 0.0 : value;
-        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v));
+        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v), xyz.ConvertedFromMonochrome);
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_reverse_transformation
@@ -217,7 +220,19 @@ internal static class Conversion
         var z = y * ((12 - 3 * uPrime - 20 * vPrime) / (4 * vPrime));
         
         double ZeroNaN(double value) => double.IsNaN(value) || double.IsInfinity(value) ? 0.0 : value;
-        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z));
+        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z), luv.IsMonochrome);
+    }
+
+    public static Lchuv LuvToLchuv(Luv luv)
+    {
+        var (l, c, h) = ToLchTriplet(luv.L, luv.U, luv.V);
+        return new Lchuv(l, c, h, false, luv.IsMonochrome);
+    }
+    
+    public static Luv LchuvToLuv(Lchuv lchuv)
+    {
+        var (l, u, v) = FromLchTriplet(lchuv.ConstrainedTriplet);
+        return new Luv(l, u, v, lchuv.IsMonochrome);
     }
 
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -244,7 +259,7 @@ internal static class Conversion
         var l = labMatrix[0, 0];
         var a = labMatrix[1, 0];
         var b = labMatrix[2, 0];
-        return new Oklab(l, a, b);
+        return new Oklab(l, a, b, xyz.ConvertedFromMonochrome);
     }
     
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -271,6 +286,36 @@ internal static class Conversion
         var x = adaptedXyz[0, 0];
         var y = adaptedXyz[1, 0];
         var z = adaptedXyz[2, 0];
-        return new Xyz(x, y, z);
+        return new Xyz(x, y, z, oklab.IsMonochrome);
     }
+    
+    public static Oklch OklabToOklch(Oklab oklab)
+    {
+        var (l, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
+        return new Oklch(l, c, h, false, oklab.IsMonochrome);
+    }
+    
+    public static Oklab OklchToOklab(Oklch oklch)
+    {
+        var (l, a, b) = FromLchTriplet(oklch.ConstrainedTriplet);
+        return new Oklab(l, a, b, oklch.IsMonochrome);
+    }
+    
+    private static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
+    {
+        var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
+        var hue = ToDegrees(Math.Atan2(axis2, axis1));
+        return new(lightness, chroma, hue.Modulo(360.0));
+    }
+    
+    private static ColourTriplet FromLchTriplet(ColourTriplet lchTriplet)
+    {
+        var (l, c, h) = lchTriplet;
+        var axis1 = c * Math.Cos(ToRadians(h));
+        var axis2 = c * Math.Sin(ToRadians(h));
+        return new ColourTriplet(l, axis1, axis2);
+    }
+
+    private static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
+    private static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
 }

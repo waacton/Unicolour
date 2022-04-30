@@ -18,8 +18,11 @@ internal static class TestColours
     public static readonly List<ColourTriplet> RandomHslColours = new();
     public static readonly List<ColourTriplet> RandomXyzColours = new();
     public static readonly List<ColourTriplet> RandomLabColours = new();
+    public static readonly List<ColourTriplet> RandomLchabColours = new();
     public static readonly List<ColourTriplet> RandomLuvColours = new();
+    public static readonly List<ColourTriplet> RandomLchuvColours = new();
     public static readonly List<ColourTriplet> RandomOklabColours = new();
+    public static readonly List<ColourTriplet> RandomOklchColours = new();
     
     static TestColours()
     {
@@ -35,8 +38,11 @@ internal static class TestColours
             RandomHslColours.Add(GetRandomHsl());
             RandomXyzColours.Add(GetRandomXyz());
             RandomLabColours.Add(GetRandomLab());
+            RandomLchabColours.Add(GetRandomLchab());
             RandomLuvColours.Add(GetRandomLuv());
+            RandomLchuvColours.Add(GetRandomLchuv());
             RandomOklabColours.Add(GetRandomOklab());
+            RandomOklchColours.Add(GetRandomOklch());
         }
     }
 
@@ -46,9 +52,11 @@ internal static class TestColours
     internal static ColourTriplet GetRandomHsl() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
     internal static ColourTriplet GetRandomXyz() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
     internal static ColourTriplet GetRandomLab() => new(Random.NextDouble() * 100, Random.NextDouble() * 256 - 128, Random.NextDouble() * 256 - 128);
+    internal static ColourTriplet GetRandomLchab() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
     internal static ColourTriplet GetRandomLuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 200 - 100, Random.NextDouble() * 200 - 100);
+    internal static ColourTriplet GetRandomLchuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
     internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-
+    internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
     internal static double GetRandomAlpha() => Random.NextDouble();
 
 

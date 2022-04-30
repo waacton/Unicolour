@@ -28,6 +28,12 @@ internal interface ITestColourFactory
     TestColour FromLab(ColourTriplet triplet) => FromLab(triplet.First, triplet.Second, triplet.Third, $"LAB {triplet}");
     TestColour FromLab(double l, double a, double b, string name);
     
+    TestColour FromLchab(ColourTriplet triplet) => FromLchab(triplet.First, triplet.Second, triplet.Third, $"LCHab {triplet}");
+    TestColour FromLchab(double l, double c, double h, string name);
+    
     TestColour FromLuv(ColourTriplet triplet) => FromLuv(triplet.First, triplet.Second, triplet.Third, $"LUV {triplet}");
     TestColour FromLuv(double l, double u, double v, string name);
+    
+    TestColour FromLchuv(ColourTriplet triplet) => FromLchuv(triplet.First, triplet.Second, triplet.Third, $"LCHuv {triplet}");
+    TestColour FromLchuv(double l, double c, double h, string name);
 }

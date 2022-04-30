@@ -8,20 +8,26 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Hsl? hsl;
     private Xyz? xyz;
     private Lab? lab;
+    private Lchab? lchab;
     private Luv? luv;
+    private Lchuv? lchuv;
     private Oklab? oklab;
+    private Oklch? oklch;
 
     public Rgb Rgb => Get(() => rgb, ColourSpace.Rgb)!;
     public Hsb Hsb => Get(() => hsb, ColourSpace.Hsb)!;
     public Hsl Hsl => Get(() => hsl, ColourSpace.Hsl)!;
     public Xyz Xyz => Get(() => xyz, ColourSpace.Xyz)!;
     public Lab Lab => Get(() => lab, ColourSpace.Lab)!;
+    public Lchab Lchab => Get(() => lchab, ColourSpace.Lchab)!;
     public Luv Luv => Get(() => luv, ColourSpace.Luv)!;
+    public Lchuv Lchuv => Get(() => lchuv, ColourSpace.Lchuv)!;
     public Oklab Oklab => Get(() => oklab, ColourSpace.Oklab)!;
+    public Oklch Oklch => Get(() => oklch, ColourSpace.Oklch)!;
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public double Luminance => this.Luminance();
+    public double RelativeLuminance => this.RelativeLuminance();
 
     private Unicolour(Configuration config, Alpha alpha, ColourSpace colourSpace)
     {
@@ -59,8 +65,11 @@ public partial class Unicolour : IEquatable<Unicolour>
             ColourSpace.Hsl => Hsl.Equals(other.Hsl),
             ColourSpace.Xyz => Xyz.Equals(other.Xyz),
             ColourSpace.Lab => Lab.Equals(other.Lab),
+            ColourSpace.Lchab => Lchab.Equals(other.Lchab),
             ColourSpace.Luv => Luv.Equals(other.Luv),
+            ColourSpace.Lchuv => Lchuv.Equals(other.Lchuv),
             ColourSpace.Oklab => Oklab.Equals(other.Oklab),
+            ColourSpace.Oklch => Oklch.Equals(other.Oklch),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -76,8 +85,11 @@ public partial class Unicolour : IEquatable<Unicolour>
                 ColourSpace.Hsl => Hsl.GetHashCode() * 397,
                 ColourSpace.Xyz => Xyz.GetHashCode() * 397,
                 ColourSpace.Lab => Lab.GetHashCode() * 397,
+                ColourSpace.Lchab => Lchab.GetHashCode() * 397,
                 ColourSpace.Luv => Luv.GetHashCode() * 397,
+                ColourSpace.Lchuv => Lchuv.GetHashCode() * 397,
                 ColourSpace.Oklab => Oklab.GetHashCode() * 397,
+                ColourSpace.Oklch => Oklch.GetHashCode() * 397,
                 _ => throw new ArgumentOutOfRangeException()
             };
 

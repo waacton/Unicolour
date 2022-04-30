@@ -2,10 +2,12 @@
 
 internal static class Measurement
 {
-    public static double Luminance(this Unicolour colour)
+    // https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+    public static double RelativeLuminance(this Unicolour colour)
     {
-        var rgb = colour.Rgb;
-        double F(double channel) => channel <= 0.03928 ? channel / 12.92 : Math.Pow((channel + 0.055) / 1.055, 2.4);
-        return 0.2126 * F(rgb.R) + 0.7152 * F(rgb.G) + 0.0722 * F(rgb.B);
+        var (r, g, b) = colour.Rgb.TripletLinear;
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
+    
+    // TODO: excitation purity? https://en.wikipedia.org/wiki/Colorfulness#Excitation_purity
 }

@@ -2,11 +2,11 @@ namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
 
+// monochrome RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
 public class InterpolateMonochromeHsbTests
 {
     [Test]
-    // monochrome RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-    // monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
     public void MonochromeStartColour()
     {
         var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
@@ -19,8 +19,8 @@ public class InterpolateMonochromeHsbTests
         var fromRgbWhite = rgbWhite.InterpolateHsb(green, 0.5);
         var fromHsbBlack = hsbBlack.InterpolateHsb(green, 0.5);
         var fromHsbWhite = hsbWhite.InterpolateHsb(green, 0.5);
-
-        // note that "RGB black" interpolates differently to the "HSB black"
+        
+        // monochrome interpolates differently depending on the initial colour space
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
         AssertHsb(fromRgbBlack.Hsb, (120, 0.5, 0.5));
         AssertHsb(fromRgbWhite.Hsb, (120, 0.5, 1));
@@ -29,8 +29,6 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    // monochrome RGB has no hue - shouldn't assume to end at red (0 degrees) when interpolating
-    // monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
     public void MonochromeEndColour()
     {
         var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
@@ -44,7 +42,7 @@ public class InterpolateMonochromeHsbTests
         var toHsbBlack = blue.InterpolateHsb(hsbBlack, 0.5);
         var toHsbWhite = blue.InterpolateHsb(hsbWhite, 0.5);
 
-        // note that "RGB black" interpolates differently to the "HSB black"
+        // monochrome interpolates differently depending on the initial colour space
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
         AssertHsb(toRgbBlack.Hsb, (240, 0.5, 0.5));
         AssertHsb(toRgbWhite.Hsb, (240, 0.5, 1));
@@ -53,7 +51,6 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    // monochrome RGB has no hue, so it should be ignored when interpolating
     public void MonochromeBothRgbColours()
     {
         var black = Unicolour.FromRgb(0.0, 0.0, 0.0);
@@ -75,7 +72,6 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    // monochrome HSB has a hue so it should be used when interpolating
     public void MonochromeBothHsbColours()
     {
         var black = Unicolour.FromHsb(0, 0, 0);

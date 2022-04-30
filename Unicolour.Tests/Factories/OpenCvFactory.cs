@@ -12,10 +12,11 @@ using Wacton.Unicolour.Tests.Utils;
  * OpenCV XYZ -> RGB actually converts to linear RGB (not companded)
  * OpenCV LAB / LUV -> RGB clamps values, causing errors in subsequent conversions (e.g. LAB -> RGB -> XYZ / LUV)
  * OpenCV RGB -> LUV doesn't seem to work when LUV contains negative values
+ * OpenCV doesn't support any LCH format
  */
 internal class OpenCvFactory : ITestColourFactory
 {
-    public static readonly Tolerances Tolerances = new() {Rgb = 0.05, Hsb = 0.0125, Hsl = 0.01, Xyz = 0.0005, Lab = 1.0, Luv = 1.0};
+    public static readonly Tolerances Tolerances = new() {Rgb = 0.05, Hsb = 0.05, Hsl = 0.01, Xyz = 0.0005, Lab = 1.0, Luv = 1.0};
     
     public TestColour FromRgb(double r, double g, double b, string name)
     {
@@ -97,29 +98,36 @@ internal class OpenCvFactory : ITestColourFactory
         
         var hsb = GetConvertedVec(rgb, ColorConversionCodes.RGB2HSV_FULL);
         var hls = GetConvertedVec(rgb, ColorConversionCodes.RGB2HLS_FULL);
-        return Create(name, rgb, hsb, hls, null, null, luv, Tolerances);
+        return Create(name, rgb, hsb, hls, null, null, luv, Tolerances with {Rgb = 0.075, Hsb = 0.075, Hsl = 0.025});
     }
+    
+    public TestColour FromLchab(double l, double c, double h, string name) => throw new NotImplementedException();
+    public TestColour FromLchuv(double l, double c, double h, string name) => throw new NotImplementedException();
     
     private static TestColour Create(string name, 
         Vec3f rgb, Vec3f hsb, Vec3f hls,
         Vec3f? xyz, Vec3f? lab, Vec3f? luv,
         Tolerances tolerances)
     {
-        var hueExclusions = new List<string>();
-        if (HasLowChroma(rgb)) hueExclusions.Add("OpenCV converts via RGB and does not handle low RGB chroma");
-        
         return new TestColour
         {
             Name = name,
             Rgb = new(rgb.Item0, rgb.Item1, rgb.Item2),
             Hsb = new(hsb.Item0, hsb.Item1, hsb.Item2),
             Hsl = new(hls.Item0, hls.Item2, hls.Item1),
-            Xyz = xyz != null ? new(xyz.Value.Item0, xyz.Value.Item1, xyz.Value.Item2) : null,
-            Lab = lab != null ? new(lab.Value.Item0, lab.Value.Item1, lab.Value.Item2) : null,
-            Luv = luv != null ? new(luv.Value.Item0, luv.Value.Item1, luv.Value.Item2) : null,
+            Xyz = xyz == null ? null : new(xyz.Value.Item0, xyz.Value.Item1, xyz.Value.Item2),
+            Lab = lab == null ? null : new(lab.Value.Item0, lab.Value.Item1, lab.Value.Item2),
+            Luv = luv == null ? null : new(luv.Value.Item0, luv.Value.Item1, luv.Value.Item2),
             Tolerances = tolerances,
-            ExcludeFromHueBasedTestReasons = hueExclusions
+            ExcludeFromHsxTestReasons = HsxExclusions(rgb)
         };
+    }
+    
+    private static List<string> HsxExclusions(Vec3f rgb)
+    {
+        var exclusions = new List<string>();
+        if (HasLowChroma(rgb)) exclusions.Add("OpenCV converts via RGB and does not handle low RGB chroma");
+        return exclusions;
     }
 
     private static Vec3f GetInputVec(Vec3f input)

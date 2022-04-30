@@ -7,8 +7,11 @@ public partial class Unicolour
     private Unicolour(Configuration config, Hsl hsl, Alpha alpha) : this(config, alpha, ColourSpace.Hsl) => this.hsl = hsl;
     private Unicolour(Configuration config, Xyz xyz, Alpha alpha) : this(config, alpha, ColourSpace.Xyz) => this.xyz = xyz;
     private Unicolour(Configuration config, Lab lab, Alpha alpha) : this(config, alpha, ColourSpace.Lab) => this.lab = lab;
+    private Unicolour(Configuration config, Lchab lchab, Alpha alpha) : this(config, alpha, ColourSpace.Lchab) => this.lchab = lchab;
     private Unicolour(Configuration config, Luv luv, Alpha alpha) : this(config, alpha, ColourSpace.Luv) => this.luv = luv;
+    private Unicolour(Configuration config, Lchuv lchuv, Alpha alpha) : this(config, alpha, ColourSpace.Lchuv) => this.lchuv = lchuv;
     private Unicolour(Configuration config, Oklab oklab, Alpha alpha) : this(config, alpha, ColourSpace.Oklab) => this.oklab = oklab;
+    private Unicolour(Configuration config, Oklch oklch, Alpha alpha) : this(config, alpha, ColourSpace.Oklch) => this.oklch = oklch;
     
     public static Unicolour FromHex(string hex) => FromHex(Configuration.Default, hex);
     public static Unicolour FromHex(Configuration config, string hex)
@@ -47,13 +50,28 @@ public partial class Unicolour
     public static Unicolour FromLab(double l, double a, double b, double alpha = 1.0) => FromLab(Configuration.Default, l, a, b, alpha);
     public static Unicolour FromLab(Configuration config, double l, double a, double b, double alpha = 1.0) => new(config, new Lab(l, a, b), new Alpha(alpha));
     
+    public static Unicolour FromLchab((double l, double c, double h) tuple, double alpha = 1.0) => FromLchab(Configuration.Default, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromLchab(Configuration config, (double l, double c, double h) tuple, double alpha = 1.0) => FromLchab(config, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromLchab(double l, double c, double h, double alpha = 1.0) => FromLchab(Configuration.Default, l, c, h, alpha);
+    public static Unicolour FromLchab(Configuration config, double l, double c, double h, double alpha = 1.0) => new(config, new Lchab(l, c, h), new Alpha(alpha));
+    
     public static Unicolour FromLuv((double l, double u, double v) tuple, double alpha = 1.0) => FromLuv(Configuration.Default, tuple.l, tuple.u, tuple.v, alpha);
     public static Unicolour FromLuv(Configuration config, (double l, double u, double v) tuple, double alpha = 1.0) => FromLuv(config, tuple.l, tuple.u, tuple.v, alpha);
     public static Unicolour FromLuv(double l, double u, double v, double alpha = 1.0) => FromLuv(Configuration.Default, l, u, v, alpha);
     public static Unicolour FromLuv(Configuration config, double l, double u, double v, double alpha = 1.0) => new(config, new Luv(l, u, v), new Alpha(alpha));
     
+    public static Unicolour FromLchuv((double l, double c, double h) tuple, double alpha = 1.0) => FromLchuv(Configuration.Default, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromLchuv(Configuration config, (double l, double c, double h) tuple, double alpha = 1.0) => FromLchuv(config, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromLchuv(double l, double c, double h, double alpha = 1.0) => FromLchuv(Configuration.Default, l, c, h, alpha);
+    public static Unicolour FromLchuv(Configuration config, double l, double c, double h, double alpha = 1.0) => new(config, new Lchuv(l, c, h), new Alpha(alpha));
+    
     public static Unicolour FromOklab((double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(Configuration.Default, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromOklab(Configuration config, (double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(config, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromOklab(double l, double a, double b, double alpha = 1.0) => FromOklab(Configuration.Default, l, a, b, alpha);
     public static Unicolour FromOklab(Configuration config, double l, double a, double b, double alpha = 1.0) => new(config, new Oklab(l, a, b), new Alpha(alpha));
+    
+    public static Unicolour FromOklch((double l, double c, double h) tuple, double alpha = 1.0) => FromOklch(Configuration.Default, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromOklch(Configuration config, (double l, double c, double h) tuple, double alpha = 1.0) => FromOklch(config, tuple.l, tuple.c, tuple.h, alpha);
+    public static Unicolour FromOklch(double l, double c, double h, double alpha = 1.0) => FromOklch(Configuration.Default, l, c, h, alpha);
+    public static Unicolour FromOklch(Configuration config, double l, double c, double h, double alpha = 1.0) => new(config, new Oklch(l, c, h), new Alpha(alpha));
 }

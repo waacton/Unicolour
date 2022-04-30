@@ -27,6 +27,7 @@ test:
         - 'dotnet tool install -g dotnet-reportgenerator-globaltool'
         - 'reportgenerator "-reports:./**/coverage.cobertura.xml" "-targetdir:./artifacts/report" "-reporttypes:Html;TextSummary"'
         - 'cat ./artifacts/report/Summary.txt'
+    coverage: '/Line coverage: \d+\.\d+%/'
 
     artifacts:
         when: always

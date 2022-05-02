@@ -27,7 +27,7 @@ This library was initially written for personal projects since existing librarie
 The goal of this library is to be accurate, intuitive, and easy to use; performance is not a priority.
 It is also [extensively tested](Unicolour.Tests) against known colour values and other .NET libraries.
 
-Targets .NET Standard 2.0 for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
+Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 ## How to use 🎨
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)

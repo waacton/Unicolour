@@ -2,7 +2,7 @@
 
 using static Wacton.Unicolour.Utils;
 
-internal static class Conversion
+public static class Conversion
 {
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
     public static Hsb RgbToHsb(Rgb rgb)

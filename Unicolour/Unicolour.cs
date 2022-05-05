@@ -27,6 +27,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
+    public string Hex => CanBeDisplayed ? this.GetHex() : "-";
+    public bool CanBeDisplayed => this.CanBeDisplayed();
     public double RelativeLuminance => this.RelativeLuminance();
 
     private Unicolour(Configuration config, Alpha alpha, ColourSpace colourSpace)
@@ -37,7 +39,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         initialSpace = colourSpace;
     }
 
-    public override string ToString() => $"RGB:[{Rgb}] Hex:{Rgb.Hex} HSB:[{Hsb}] A:{Alpha.A}";
+    public override string ToString() => $"RGB:[{Rgb}] Hex:{Hex} XYZ:[{Xyz}] A:{Alpha.A}";
 
     // ----- the following is based on auto-generated code -----
 

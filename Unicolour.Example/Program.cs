@@ -73,7 +73,7 @@ PointF TextLocation(float column, float row) => new(gradientWidth * column + 16,
 
 Rgba32 AsRgba32(Unicolour unicolour)
 {
-    var rgb = unicolour.Rgb;
-    return new Rgba32((byte) rgb.R255, (byte) rgb.G255, (byte) rgb.B255);
+    var (r, g, b) = unicolour.Rgb.ConstrainedTriplet255;
+    return new Rgba32((byte) r, (byte) g, (byte) b);
 }
 

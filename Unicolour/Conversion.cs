@@ -315,7 +315,4 @@ internal static class Conversion
         var axis2 = c * Math.Sin(ToRadians(h));
         return new ColourTriplet(l, axis1, axis2);
     }
-
-    private static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
-    private static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
 }

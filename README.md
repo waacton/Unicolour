@@ -85,6 +85,8 @@ var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
+var difference = unicolour1.DeltaE94(unicolour2);
+var difference = unicolour1.DeltaE00(unicolour2);
 ```
 
 See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:

@@ -24,6 +24,18 @@ public static class ContrastTests
         AssertKnownContrast(blue, red, 2.15);
         AssertKnownContrast(random, random, 1);
     }
+
+    [Test]
+    public static void UnconstrainedRgbLuminance()
+    {
+        var black = ColourLimits.Rgb["black"];
+        var white = ColourLimits.Rgb["white"];
+        var beyondMinRgb = Unicolour.FromRgb(-0.25, -0.5, -0.75);
+        var beyondMaxRgb = Unicolour.FromRgb(1.25, 1.5, 1.75);
+        
+        Assert.That(beyondMinRgb.RelativeLuminance, Is.EqualTo(black.RelativeLuminance));
+        Assert.That(beyondMaxRgb.RelativeLuminance, Is.EqualTo(white.RelativeLuminance));
+    }
     
     private static void AssertKnownContrast(Unicolour colour1, Unicolour colour2, double expectedContrast)
     {

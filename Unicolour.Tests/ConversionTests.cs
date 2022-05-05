@@ -88,13 +88,19 @@ public class ConversionTests
     {
         var deconvertedViaHsb = Conversion.HsbToRgb(Conversion.RgbToHsb(original), Configuration.Default);
         AssertUtils.AssertColourTriplet(deconvertedViaHsb.Triplet, original.Triplet, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaHsb.ConstrainedTriplet, original.ConstrainedTriplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(deconvertedViaHsb.TripletLinear, original.TripletLinear, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaHsb.ConstrainedTripletLinear, original.ConstrainedTripletLinear, RbgTolerance);
         AssertUtils.AssertColourTriplet(deconvertedViaHsb.Triplet255, original.Triplet255, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaHsb.ConstrainedTriplet255, original.ConstrainedTriplet255, RbgTolerance);
         
         var deconvertedViaXyz = Conversion.XyzToRgb(Conversion.RgbToXyz(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(deconvertedViaXyz.Triplet, original.Triplet, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaXyz.ConstrainedTriplet, original.ConstrainedTriplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(deconvertedViaXyz.TripletLinear, original.TripletLinear, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaXyz.ConstrainedTripletLinear, original.ConstrainedTripletLinear, RbgTolerance);
         AssertUtils.AssertColourTriplet(deconvertedViaXyz.Triplet255, original.Triplet255, RbgTolerance);
+        AssertUtils.AssertColourTriplet(deconvertedViaXyz.ConstrainedTriplet255, original.ConstrainedTriplet255, RbgTolerance);
     }
 
     private static void AssertHsbDeconversion(TestColour namedColour) => AssertHsbDeconversion(namedColour.Hsb!);

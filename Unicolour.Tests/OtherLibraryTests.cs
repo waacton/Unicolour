@@ -117,9 +117,9 @@ public class OtherLibraryTests
     private static void AssertHex(Unicolour unicolour, string hex)
     {
         var hasAlpha = hex.Length is 8 or 9;
-        var expectedRgb = hasAlpha ? hex[..^2] : hex;
+        var expectedHex = hasAlpha ? hex[..^2] : hex;
         var expectedA = hasAlpha ? hex.Substring(hex.Length - 2, 2) : "FF";
-        Assert.That(unicolour.Rgb.Hex.Contains(expectedRgb.ToUpper()));
+        Assert.That(unicolour.Hex.Contains(expectedHex.ToUpper()));
         Assert.That(unicolour.Alpha.Hex, Is.EqualTo(expectedA.ToUpper()));
     }
     

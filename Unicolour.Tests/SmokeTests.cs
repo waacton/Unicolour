@@ -87,17 +87,17 @@ public static class SmokeTests
     [Test]
     public static void UnicolourOklab()
     {
-        AssertOklab((0, 0, 0));
-        AssertOklab((1, 1, 1));
-        AssertOklab((0.4, 0.5, 0.6));
+        AssertOklab((0, -0.5, -0.5));
+        AssertOklab((1, 0.5, 0.5));
+        AssertOklab((0.5, -0.001, 0.001));
     }
     
     [Test]
     public static void UnicolourOklch()
     {
         AssertOklch((0, 0, 0));
-        AssertOklch((100, 230, 360));
-        AssertOklch((50, 115, 180));
+        AssertOklch((1, 0.5, 360));
+        AssertOklch((0.5, 0.25, 180));
     }
 
     private static void AssertRgb((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb);
@@ -183,6 +183,7 @@ public static class SmokeTests
         Assert.DoesNotThrow(() => _ = unicolour.Oklch);
         Assert.DoesNotThrow(() => _ = unicolour.Alpha);
         Assert.DoesNotThrow(() => _ = unicolour.Config);
+        Assert.DoesNotThrow(() => _ = unicolour.CanBeDisplayed);
         Assert.DoesNotThrow(() => _ = unicolour.RelativeLuminance);
     }
 }

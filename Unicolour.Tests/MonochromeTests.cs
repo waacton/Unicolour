@@ -153,12 +153,12 @@ public static class MonochromeTests
     [TestCase(0.5, 0.0, 180.0, true)]
     [TestCase(0.5, -0.00000000001, 180.0, true)]
     [TestCase(0.5, 0.00000000001, 180.0, false)]
-    [TestCase(0.0, 50.0, 180.0, true)]
-    [TestCase(-0.00000000001, 50.0, 180.0, true)]
-    [TestCase(0.00000000001, 50.0, 180.0, false)]
-    [TestCase(1.0, 50.0, 180.0, true)]
-    [TestCase(1.00000000001, 50.0, 180.0, true)]
-    [TestCase(0.99999999999, 50.0, 180.0, false)]
+    [TestCase(0.0, 0.25, 180.0, true)]
+    [TestCase(-0.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.00000000001, 0.25, 180.0, false)]
+    [TestCase(1.0, 0.25, 180.0, true)]
+    [TestCase(1.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.99999999999, 0.25, 180.0, false)]
     public static void MonochromeOklch(double l, double c, double h, bool expected)
     {
         var oklch = new Oklch(l, c, h);

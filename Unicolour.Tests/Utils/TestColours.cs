@@ -46,6 +46,7 @@ internal static class TestColours
         }
     }
 
+    // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     internal static ColourTriplet GetRandomRgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
     internal static ColourTriplet GetRandomRgb() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
     internal static ColourTriplet GetRandomHsb() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
@@ -55,8 +56,8 @@ internal static class TestColours
     internal static ColourTriplet GetRandomLchab() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
     internal static ColourTriplet GetRandomLuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 200 - 100, Random.NextDouble() * 200 - 100);
     internal static ColourTriplet GetRandomLchuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
-    internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-    internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
+    internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5);
+    internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360);
     internal static double GetRandomAlpha() => Random.NextDouble();
 
 

@@ -21,6 +21,8 @@ internal static class TestColours
     public static readonly List<ColourTriplet> RandomLchabColours = new();
     public static readonly List<ColourTriplet> RandomLuvColours = new();
     public static readonly List<ColourTriplet> RandomLchuvColours = new();
+    public static readonly List<ColourTriplet> RandomJzazbzColours = new();
+    public static readonly List<ColourTriplet> RandomJzczhzColours = new();
     public static readonly List<ColourTriplet> RandomOklabColours = new();
     public static readonly List<ColourTriplet> RandomOklchColours = new();
     
@@ -41,6 +43,8 @@ internal static class TestColours
             RandomLchabColours.Add(GetRandomLchab());
             RandomLuvColours.Add(GetRandomLuv());
             RandomLchuvColours.Add(GetRandomLchuv());
+            RandomJzazbzColours.Add(GetRandomJzazbz());
+            RandomJzczhzColours.Add(GetRandomJzczhz());
             RandomOklabColours.Add(GetRandomOklab());
             RandomOklchColours.Add(GetRandomOklch());
         }
@@ -58,6 +62,8 @@ internal static class TestColours
     internal static ColourTriplet GetRandomLchuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
     internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5);
     internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360);
+    internal static ColourTriplet GetRandomJzazbz() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5); // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    internal static ColourTriplet GetRandomJzczhz() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360); // TODO: check range
     internal static double GetRandomAlpha() => Random.NextDouble();
 
 

@@ -234,6 +234,106 @@ internal static class Conversion
         var (l, u, v) = FromLchTriplet(lchuv.ConstrainedTriplet);
         return new Luv(l, u, v, lchuv.IsMonochrome);
     }
+    
+    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    public static Jzazbz XyzToJzazbz(Xyz xyz, Configuration config)
+    {
+        var b = 1.15;
+        var g = 0.66;
+        var c1 = 3424 / Math.Pow(2, 12);
+        var c2 = 2413 / Math.Pow(2, 7);
+        var c3 = 2392 / Math.Pow(2, 7);
+        var n = 2610 / Math.Pow(2, 14);
+        var p = 1.7 * 2523 / Math.Pow(2, 5);
+        var d = -0.56;
+        var d0 = 1.6295499532821566e-11;
+
+        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
+        var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
+        var x65 = adaptedXyz[0, 0];
+        var y65 = adaptedXyz[1, 0];
+        var z65 = adaptedXyz[2, 0];
+
+        var x65Prime = b * x65 - (b - 1) * z65;
+        var y65Prime = g * y65 - (g - 1) * x65;
+        var xyz65PrimeMatrix = Matrix.FromTriplet(new(x65Prime, y65Prime, z65));
+        var lmsMatrix = Matrices.Jzazbz1.Multiply(xyz65PrimeMatrix);
+
+        double F(double value)
+        {
+            var powerN = Power(value / 10000.0, n);
+            var rootN = Root(value / 10000.0, 1 / n);
+            var a = Power((c1 + c2 * powerN) / (1 + c3 * powerN), p);
+            var b = Root((c1 + c2 * rootN) / (1 + c3 * rootN), 1 / p);
+            return a;
+        }
+
+        var lmsPrimeMatrix = new Matrix(new[,]
+        {
+            {F(lmsMatrix[0, 0])},
+            {F(lmsMatrix[1, 0])},
+            {F(lmsMatrix[2, 0])}
+        });
+        
+        var izazbzMatrix = Matrices.Jzazbz2.Multiply(lmsPrimeMatrix);
+        var iz = izazbzMatrix[0, 0];
+        var az = izazbzMatrix[1, 0];
+        var bz = izazbzMatrix[2, 0];
+        var jz = (1 + d) * iz / (1 + d * iz) - d0;
+
+        return new Jzazbz(jz, az, bz, xyz.ConvertedFromMonochrome);
+    }
+    
+    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    public static Xyz JzazbzToXyz(Jzazbz jzazbz, Configuration config)
+    {
+        var b = 1.15;
+        var g = 0.66;
+        var c1 = 3424 / Math.Pow(2, 12);
+        var c2 = 2413 / Math.Pow(2, 7);
+        var c3 = 2392 / Math.Pow(2, 7);
+        var n = 2610 / Math.Pow(2, 14);
+        var p = 1.7 * 2523 / Math.Pow(2, 5);
+        var d = -0.56;
+        var d0 = 1.6295499532821566e-11;
+        
+        var jz = jzazbz.J;
+        var az = jzazbz.A;
+        var bz = jzazbz.B;
+        var iz = (jz + d0) / (1 + d - d * (jz + d0));
+        var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
+        var lmsPrimeMatrix = Matrices.Jzazbz2.Inverse().Multiply(izazbzMatrix);
+        
+        double F(double value)
+        {
+            var rootP = Root(value, p);
+            return 10000 * Root((c1 - rootP) / (c3 * rootP - c2), n);
+        }
+        
+        var lmsMatrix = new Matrix(new[,]
+        {
+            {F(lmsPrimeMatrix[0, 0])},
+            {F(lmsPrimeMatrix[1, 0])},
+            {F(lmsPrimeMatrix[2, 0])}
+        });
+
+        var xyz65PrimeMatrix = Matrices.Jzazbz1.Inverse().Multiply(lmsMatrix);
+        var x65Prime = xyz65PrimeMatrix[0, 0];
+        var y65Prime = xyz65PrimeMatrix[1, 0];
+        var z65Prime = xyz65PrimeMatrix[2, 0];
+
+        var x65 = (x65Prime + (b - 1) * z65Prime) / b;
+        var y65 = (y65Prime + (g - 1) * x65) / g;
+        var z65 = z65Prime;
+
+        var xyzMatrix = Matrix.FromTriplet(new(x65, y65, z65));
+        var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
+        
+        var x = adaptedXyz[0, 0];
+        var y = adaptedXyz[1, 0];
+        var z = adaptedXyz[2, 0];
+        return new Xyz(x, y, z, jzazbz.IsMonochrome);
+    }
 
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
     public static Oklab XyzToOklab(Xyz xyz, Configuration config)

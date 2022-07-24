@@ -17,6 +17,8 @@ internal static class AssertUtils
     public static void AssertRandomLchabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLchabColours, action);
     public static void AssertRandomLuvColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLuvColours, action);
     public static void AssertRandomLchuvColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLchuvColours, action);
+    public static void AssertRandomJzazbzColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomJzazbzColours, action);
+    public static void AssertRandomJzczhzColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomJzczhzColours, action);
     public static void AssertRandomOklabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomOklabColours, action);
     public static void AssertRandomOklchColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomOklchColours, action);
     

@@ -78,5 +78,15 @@ internal class Matrix
         return new Matrix(inverse);
     }
 
+    public static Matrix FromTriplet(ColourTriplet triplet)
+    {
+        return new Matrix(new[,]
+        {
+            {triplet.First},
+            {triplet.Second},
+            {triplet.Third}
+        });
+    }
+
     public override string ToString() => $"{Rows}x{Cols}";
 }

@@ -315,4 +315,35 @@ internal static class Conversion
         var axis2 = c * Math.Sin(ToRadians(h));
         return new ColourTriplet(l, axis1, axis2);
     }
+
+    public static Cam02 XyzToCam02(Xyz xyz, Configuration config)
+    {
+        // average surround condition
+        var f = 1.0; // "factor for degree of adaptation"
+        var c = 0.69; // "impact of surround"
+        var nc = 1.0; // "chromatic induction factor"
+        
+        var xyzMatrix = new Matrix(new[,]
+        {
+            {xyz.X},
+            {xyz.Y},
+            {xyz.Z}
+        });
+
+        var referenceWhite = config.XyzWhitePoint;
+
+        var yb = 1; // relative luminance of background
+        var lw = 1; // absolute luminance of reference white in cd/m^2
+        var ew = 1; // illuminance of reference white in lux
+        var yw = 1; // relative luminance of reference white in the adapting field (if unknown, can be assumed to have average reflectance Lw / 5.0)
+        var la = (lw * yb) / yw; // absolute luminance of the adapting field
+
+        var rgbCat02 = Matrices.Cat02.Multiply(xyzMatrix);
+
+        var d = f * (1 - 1 / 3.6 * Math.Exp(-la * -42 / 92.0));
+
+        double chromaticAdaptation(double value, double whitePoint) => (yw * (d / whitePoint) + (1 - d)) * value;
+
+        return null;
+    }
 }

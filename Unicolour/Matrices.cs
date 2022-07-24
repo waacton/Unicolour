@@ -23,6 +23,13 @@ internal static class Matrices
         {+0.0259040371, +0.7827717662, -0.8086757660}
     });
     
+    public static readonly Matrix Cat02 = new(new[,]
+    {
+        {+0.7328, +0.4296, -0.1624},
+        {-0.7036, +1.6975, +0.0061},
+        {+0.0030, +0.0136, +0.9834}
+    });
+    
     // based on http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
     public static Matrix RgbToXyzMatrix(Configuration config)
     {

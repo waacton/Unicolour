@@ -3,7 +3,7 @@ image: mcr.microsoft.com/dotnet/sdk:6.0
 stages:
     - build
     - test
-    - security-test
+    - security-scan
 
 build:
     stage: build
@@ -16,7 +16,7 @@ build:
 # dotnet test generates JUnit format logs for GitLab test reporting (https://docs.gitlab.com/ee/ci/unit_test_reports.html#net-example)
 # and collects code coverage report (https://github.com/coverlet-coverage/coverlet)
 # however coverage report is not in a useful format, so create a report from it (https://github.com/danielpalme/ReportGenerator) which requires installing as a tool
-# finally, cat the coverage report summary so it is displayed in the job log - which can then be regex'd from gitlab (https://gitlab.com/Wacton/Unicolour/-/settings/ci_cd)
+# finally, cat the coverage report summary so it is displayed in the job log - which can then be regex'd from gitlab (https://docs.gitlab.com/ee/ci/yaml/index.html#coverage)
 test:
     stage: test
     script:
@@ -36,13 +36,26 @@ test:
         reports:
             junit:
                 - ./**/*test-result.xml
-            cobertura: ./**/coverage.cobertura.xml
+            coverage_report:
+                coverage_format: cobertura
+                path: ./**/coverage.cobertura.xml
 
-sast:
-    stage: security-test
+# security scanning
+# https://docs.gitlab.com/ee/user/application_security/#security-scanning-without-auto-devops
 include:
+    - template: Security/Dependency-Scanning.gitlab-ci.yml
+    - template: Security/License-Scanning.gitlab-ci.yml
     - template: Security/SAST.gitlab-ci.yml
-# https://gitlab.com/-/snippets/2223915
-security-code-scan-sast:
-    variables:
-        SAST_ANALYZER_IMAGE_TAG: 3 
+    - template: Security/Secret-Detection.gitlab-ci.yml
+
+dependency_scanning:
+    stage: security-scan
+
+license_scanning:
+    stage: security-scan
+    
+sast:
+    stage: security-scan
+
+.secret-analyzer:
+    stage: security-scan

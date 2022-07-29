@@ -4,13 +4,11 @@ using System.Globalization;
 
 internal static class Utils
 {
-    public static double Clamp(this double value, double min, double max) => value < min ? min : value > max ? max : value;
-    // TODO: test power and root if deciding to use them
-    public static double Power(double x, double power) => power < 1 || x < 0 ? Root(x, 1 / power) : Math.Pow(x, power);
-    public static double Root(double x, double root) => x < 0 ? -Math.Pow(-x, 1 / root) : Math.Pow(x, 1 / root);
-    public static double CubeRoot(double x) => Root(x, 3);
+    public static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
+    public static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
     public static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     public static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
+    public static string Signed(double x) => $"{(x > 0 ? "+" : string.Empty)}{x}";
 
     public static double Modulo(this double value, double modulus)
     {

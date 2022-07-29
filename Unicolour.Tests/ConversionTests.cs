@@ -59,8 +59,8 @@ public class ConversionTests
     [Test]
     public void JzazbzSameAfterRoundTripConversion() => AssertUtils.AssertRandomJzazbzColours(AssertJzazbzRoundTrip);
     
-    // [Test] TODO:
-    // public void JzczhzSameAfterRoundTripConversion() => AssertUtils.AssertRandomJzczhzColours(AssertJzczhzRoundTrip);
+    [Test]
+    public void JzczhzSameAfterRoundTripConversion() => AssertUtils.AssertRandomJzczhzColours(AssertJzczhzRoundTrip);
     
     [Test]
     public void OklabSameAfterRoundTripConversion() => AssertUtils.AssertRandomOklabColours(AssertOklabRoundTrip);
@@ -139,6 +139,9 @@ public class ConversionTests
         var viaLuv = Conversion.LuvToXyz(Conversion.XyzToLuv(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaLuv.Triplet, original.Triplet, XyzTolerance);
         
+        var viaJzazbz = Conversion.JzazbzToXyz(Conversion.XyzToJzazbz(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(viaJzazbz.Triplet, viaJzazbz.Triplet, XyzTolerance);
+        
         var viaOklab = Conversion.OklabToXyz(Conversion.XyzToOklab(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaOklab.Triplet, original.Triplet, XyzTolerance);
     }
@@ -181,13 +184,16 @@ public class ConversionTests
     private static void AssertJzazbzRoundTrip(ColourTriplet triplet) => AssertJzazbzRoundTrip(new Jzazbz(triplet.First, triplet.Second, triplet.Third));
     private static void AssertJzazbzRoundTrip(Jzazbz original)
     {
-        // original = new Jzazbz(0.00759303570167702, 0.009027460693528888, 0.09700075167110256);
-        var viaXyz = Conversion.XyzToJzazbz(Conversion.JzazbzToXyz(original, Configuration.Default), Configuration.Default);
-        AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, JzazbzTolerance);
-
-        // TODO:
-        // var viaOklch = Conversion.OklchToOklab(Conversion.OklabToOklch(original));
-        // AssertUtils.AssertColourTriplet(viaOklch.Triplet, original.Triplet, OklabTolerance);
+        // note: cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1 (i.e. when Jzazbz produces negative XYZ values)
+        var viaJzczhz = Conversion.JzczhzToJzazbz(Conversion.JzazbzToJzczhz(original));
+        AssertUtils.AssertColourTriplet(viaJzczhz.Triplet, original.Triplet, JzazbzTolerance);
+    }
+    
+    private static void AssertJzczhzRoundTrip(ColourTriplet triplet) => AssertJzczhzRoundTrip(new Jzczhz(triplet.First, triplet.Second, triplet.Third));
+    private static void AssertJzczhzRoundTrip(Jzczhz original)
+    {
+        var viaJzazbz = Conversion.JzazbzToJzczhz(Conversion.JzczhzToJzazbz(original));
+        AssertUtils.AssertColourTriplet(viaJzazbz.Triplet, original.Triplet, DefaultTolerance);
     }
     
     private static void AssertOklabRoundTrip(ColourTriplet triplet) => AssertOklabRoundTrip(new Oklab(triplet.First, triplet.Second, triplet.Third));

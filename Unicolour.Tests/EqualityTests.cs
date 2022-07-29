@@ -62,6 +62,8 @@ public class EqualityTests
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
+    // TODO: Jz* tests
+    
     [Test]
     public void EqualLchuvGivesEqualObjects()
     {

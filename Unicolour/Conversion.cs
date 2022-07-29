@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-using static Wacton.Unicolour.Utils;
+using static Utils;
 
 internal static class Conversion
 {
@@ -18,9 +18,9 @@ internal static class Conversion
 
         double hue;
         if (chroma == 0.0) hue = 0;
-        else if (xMax == r) hue = 60 * (0 + ((g - b) / chroma));
-        else if (xMax == g) hue = 60 * (2 + ((b - r) / chroma));
-        else if (xMax == b) hue = 60 * (4 + ((r - g) / chroma));
+        else if (xMax == r) hue = 60 * (0 + (g - b) / chroma);
+        else if (xMax == g) hue = 60 * (2 + (b - r) / chroma);
+        else if (xMax == b) hue = 60 * (4 + (r - g) / chroma);
         else throw new InvalidOperationException();
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
@@ -168,13 +168,13 @@ internal static class Conversion
     
     public static Lchab LabToLchab(Lab lab)
     {
-        var (l, c, h) = ToLchTriplet(lab.L, lab.A, lab.B);
+        var (l, c, h) = ToChromaHueTriplet(lab.L, lab.A, lab.B);
         return new Lchab(l, c, h, false, lab.IsMonochrome);
     }
     
     public static Lab LchabToLab(Lchab lchab)
     {
-        var (l, a, b) = FromLchTriplet(lchab.ConstrainedTriplet);
+        var (l, a, b) = FromChromaHueTriplet(lchab.ConstrainedTriplet);
         return new Lab(l, a, b, lchab.IsMonochrome);
     }
     
@@ -225,17 +225,18 @@ internal static class Conversion
 
     public static Lchuv LuvToLchuv(Luv luv)
     {
-        var (l, c, h) = ToLchTriplet(luv.L, luv.U, luv.V);
+        var (l, c, h) = ToChromaHueTriplet(luv.L, luv.U, luv.V);
         return new Lchuv(l, c, h, false, luv.IsMonochrome);
     }
     
     public static Luv LchuvToLuv(Lchuv lchuv)
     {
-        var (l, u, v) = FromLchTriplet(lchuv.ConstrainedTriplet);
+        var (l, u, v) = FromChromaHueTriplet(lchuv.ConstrainedTriplet);
         return new Luv(l, u, v, lchuv.IsMonochrome);
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    // https://opticapublishing.figshare.com/articles/software/JzAzBz_m/5016299
     public static Jzazbz XyzToJzazbz(Xyz xyz, Configuration config)
     {
         var b = 1.15;
@@ -250,22 +251,19 @@ internal static class Conversion
 
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
-        var x65 = adaptedXyz[0, 0];
-        var y65 = adaptedXyz[1, 0];
-        var z65 = adaptedXyz[2, 0];
+        var x65 = Math.Max(adaptedXyz[0, 0], 0);
+        var y65 = Math.Max(adaptedXyz[1, 0], 0);
+        var z65 = Math.Max(adaptedXyz[2, 0], 0);
 
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
         var xyz65PrimeMatrix = Matrix.FromTriplet(new(x65Prime, y65Prime, z65));
-        var lmsMatrix = Matrices.Jzazbz1.Multiply(xyz65PrimeMatrix);
+        var lmsMatrix = Matrices.JzazbzM1.Multiply(xyz65PrimeMatrix);
 
         double F(double value)
         {
-            var powerN = Power(value / 10000.0, n);
-            var rootN = Root(value / 10000.0, 1 / n);
-            var a = Power((c1 + c2 * powerN) / (1 + c3 * powerN), p);
-            var b = Root((c1 + c2 * rootN) / (1 + c3 * rootN), 1 / p);
-            return a;
+            var powerN = Math.Pow(value / 10000.0, n);
+            return Math.Pow((c1 + c2 * powerN) / (1 + c3 * powerN), p);
         }
 
         var lmsPrimeMatrix = new Matrix(new[,]
@@ -275,7 +273,7 @@ internal static class Conversion
             {F(lmsMatrix[2, 0])}
         });
         
-        var izazbzMatrix = Matrices.Jzazbz2.Multiply(lmsPrimeMatrix);
+        var izazbzMatrix = Matrices.JzazbzM2.Multiply(lmsPrimeMatrix);
         var iz = izazbzMatrix[0, 0];
         var az = izazbzMatrix[1, 0];
         var bz = izazbzMatrix[2, 0];
@@ -284,6 +282,7 @@ internal static class Conversion
         return new Jzazbz(jz, az, bz, xyz.ConvertedFromMonochrome);
     }
     
+    // TODO: figure out if XYZ inputs are in expected range (e.g. should XYZ not be ~0-1? https://github.com/nschloe/colorio/issues/41)
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
     public static Xyz JzazbzToXyz(Jzazbz jzazbz, Configuration config)
     {
@@ -302,12 +301,14 @@ internal static class Conversion
         var bz = jzazbz.B;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
         var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
-        var lmsPrimeMatrix = Matrices.Jzazbz2.Inverse().Multiply(izazbzMatrix);
+        var lmsPrimeMatrix = Matrices.JzazbzM2.Inverse().Multiply(izazbzMatrix);
         
         double F(double value)
         {
-            var rootP = Root(value, p);
-            return 10000 * Root((c1 - rootP) / (c3 * rootP - c2), n);
+            // TODO: this is a source of downstream NaNs and can cause crashes due to negative to fractional power
+            // e.g. when az = -0.5 (which paper suggests is the lower end of az range)
+            var rootP = Math.Pow(value, 1 / p);
+            return 10000 * Math.Pow((c1 - rootP) / (c3 * rootP - c2), 1 / n);
         }
         
         var lmsMatrix = new Matrix(new[,]
@@ -317,7 +318,7 @@ internal static class Conversion
             {F(lmsPrimeMatrix[2, 0])}
         });
 
-        var xyz65PrimeMatrix = Matrices.Jzazbz1.Inverse().Multiply(lmsMatrix);
+        var xyz65PrimeMatrix = Matrices.JzazbzM1.Inverse().Multiply(lmsMatrix);
         var x65Prime = xyz65PrimeMatrix[0, 0];
         var y65Prime = xyz65PrimeMatrix[1, 0];
         var z65Prime = xyz65PrimeMatrix[2, 0];
@@ -333,6 +334,18 @@ internal static class Conversion
         var y = adaptedXyz[1, 0];
         var z = adaptedXyz[2, 0];
         return new Xyz(x, y, z, jzazbz.IsMonochrome);
+    }
+    
+    public static Jzczhz JzazbzToJzczhz(Jzazbz jazabz)
+    {
+        var (jz, cz, hz) = ToChromaHueTriplet(jazabz.J, jazabz.A, jazabz.B);
+        return new Jzczhz(jz, cz, hz, false, jazabz.IsMonochrome);
+    }
+    
+    public static Jzazbz JzczhzToJzazbz(Jzczhz jzczhz)
+    {
+        var (jz, az, bz) = FromChromaHueTriplet(jzczhz.ConstrainedTriplet);
+        return new Jzazbz(jz, az, bz, jzczhz.IsMonochrome);
     }
 
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -391,24 +404,24 @@ internal static class Conversion
     
     public static Oklch OklabToOklch(Oklab oklab)
     {
-        var (l, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
+        var (l, c, h) = ToChromaHueTriplet(oklab.L, oklab.A, oklab.B);
         return new Oklch(l, c, h, false, oklab.IsMonochrome);
     }
     
     public static Oklab OklchToOklab(Oklch oklch)
     {
-        var (l, a, b) = FromLchTriplet(oklch.ConstrainedTriplet);
+        var (l, a, b) = FromChromaHueTriplet(oklch.ConstrainedTriplet);
         return new Oklab(l, a, b, oklch.IsMonochrome);
     }
     
-    private static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
+    private static ColourTriplet ToChromaHueTriplet(double lightness, double axis1, double axis2)
     {
         var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
         var hue = ToDegrees(Math.Atan2(axis2, axis1));
         return new(lightness, chroma, hue.Modulo(360.0));
     }
     
-    private static ColourTriplet FromLchTriplet(ColourTriplet lchTriplet)
+    private static ColourTriplet FromChromaHueTriplet(ColourTriplet lchTriplet)
     {
         var (l, c, h) = lchTriplet;
         var axis1 = c * Math.Cos(ToRadians(h));

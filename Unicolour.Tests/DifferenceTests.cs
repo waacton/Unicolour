@@ -100,6 +100,31 @@ public static class DifferenceTests
             Assert.That(reference.DeltaE00(sample), Is.EqualTo(sample.DeltaE00(reference)));
         }
     }
+    
+    [Test]
+    public static void KnownDeltaEz()
+    {
+        var black = ColourLimits.Rgb["black"];
+        var white = ColourLimits.Rgb["white"];
+        var red = ColourLimits.Rgb["red"];
+        var green = ColourLimits.Rgb["green"];
+        var blue = ColourLimits.Rgb["blue"];
+        var random = GetRandomColour();
+        
+        // delta-Ez colour differences are symmetric, i.e. green from red == red from green
+        AssertKnownDeltaEz(black, white, 0.017580);
+        AssertKnownDeltaEz(red, green, 0.033092);
+        AssertKnownDeltaEz(green, blue, 0.044828);
+        AssertKnownDeltaEz(blue, red, 0.040414);
+        AssertKnownDeltaEz(random, random, 0.000000);
+
+        for (var i = 0; i < 1000; i++)
+        {
+            var reference = GetRandomColour();
+            var sample = GetRandomColour();
+            Assert.That(reference.DeltaE76(sample), Is.EqualTo(sample.DeltaE76(reference)));
+        }
+    }
 
     [Test]
     public static void RelativeDeltaE76() => AssertRelativeDeltas(Comparison.DeltaE76);
@@ -112,6 +137,9 @@ public static class DifferenceTests
     
     [Test]
     public static void RelativeDeltaE00() => AssertRelativeDeltas((reference, sample) => reference.DeltaE00(sample));
+    
+    // [Test] TODO: relative deltas appear to behave differently than the LAB-based colours
+    // public static void RelativeDeltaEz() => AssertRelativeDeltas(Comparison.DeltaEz);
     
     private static void AssertKnownDeltaE76(Unicolour reference, Unicolour sample, double expectedDelta)
     {
@@ -132,6 +160,14 @@ public static class DifferenceTests
         var delta = reference.DeltaE00(sample);
         var symmetricDelta = sample.DeltaE00(reference);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.0005));
+        Assert.That(symmetricDelta, Is.EqualTo(delta));
+    }
+    
+    private static void AssertKnownDeltaEz(Unicolour reference, Unicolour sample, double expectedDelta)
+    {
+        var delta = reference.DeltaEz(sample);
+        var symmetricDelta = sample.DeltaEz(reference);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.00005));
         Assert.That(symmetricDelta, Is.EqualTo(delta));
     }
 

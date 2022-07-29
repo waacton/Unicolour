@@ -1,5 +1,7 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Utils;
+
 public record Jzazbz
 {
     public double J { get; }
@@ -20,10 +22,5 @@ public record Jzazbz
         ConvertedFromMonochrome = convertedFromMonochrome;
     }
 
-    // TODO:
-    public override string ToString()
-    {
-        string Prefix(double value) => value > 0 ? "+" : string.Empty;
-        return $"{Math.Round(J, 2)}% {Prefix(A)}{Math.Round(A, 2)} {Prefix(B)}{Math.Round(B, 2)}";
-    }
+    public override string ToString() => $"{Math.Round(J, 5)} {Signed(Math.Round(A, 5))} {Signed(Math.Round(B, 5))}";
 }

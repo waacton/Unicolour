@@ -38,7 +38,7 @@ public class OtherLibraryTests
     [Test] // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
     public void OpenCvCrossPlatform() => AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
 
-    [Test]
+    [Test] // TODO: include Jz* tests
     public void Colourful()
     {
         // not testing from HSB / HSL because Colourful doesn't support them

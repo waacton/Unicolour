@@ -63,7 +63,7 @@ internal static class TestColours
     internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5);
     internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360);
     internal static ColourTriplet GetRandomJzazbz() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5); // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
-    internal static ColourTriplet GetRandomJzczhz() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360); // TODO: check range
+    internal static ColourTriplet GetRandomJzczhz() => new(Random.NextDouble() * 0.01758, Random.NextDouble() * 0.02497, Random.NextDouble() * 360); // TODO: from own testing of RGB values; get more info...
     internal static double GetRandomAlpha() => Random.NextDouble();
 
 

@@ -16,7 +16,6 @@ var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
 
 var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LCHab", "LUV", "LCHuv", "JzAzBz", "JzCzHz", "OKLAB", "OKLCH" };
 var purple = Unicolour.FromHsb(260, 1.0, 0.33);
-// var purple = Unicolour.FromHex("d7b7fb");
 var orange = Unicolour.FromHsb(30, 0.66, 1.0);
 var pink = Unicolour.FromHex("#FF1493");
 var cyan = Unicolour.FromRgb255(0, 255, 255);

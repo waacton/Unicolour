@@ -132,7 +132,9 @@ public class ConversionTests
     private static void AssertXyzRoundTrip(ColourTriplet triplet) => AssertXyzRoundTrip(new Xyz(triplet.First, triplet.Second, triplet.Third));
     private static void AssertXyzRoundTrip(Xyz original)
     {
-        // note: cannot test round trip of RGB space as XYZ <-> RGB is not 1:1
+        var viaRgb = Conversion.RgbToXyz(Conversion.XyzToRgb(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(viaRgb.Triplet, original.Triplet, XyzTolerance);
+
         var viaLab = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaLab.Triplet, original.Triplet, XyzTolerance);
         
@@ -166,7 +168,6 @@ public class ConversionTests
     private static void AssertLuvRoundTrip(ColourTriplet triplet) => AssertLuvRoundTrip(new Luv(triplet.First, triplet.Second, triplet.Third));
     private static void AssertLuvRoundTrip(Luv original)
     {
-        // note: cannot test round trip via RGB space as XYZ <-> RGB is not 1:1
         var viaXyz = Conversion.XyzToLuv(Conversion.LuvToXyz(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, LuvTolerance);
         
@@ -184,7 +185,11 @@ public class ConversionTests
     private static void AssertJzazbzRoundTrip(ColourTriplet triplet) => AssertJzazbzRoundTrip(new Jzazbz(triplet.First, triplet.Second, triplet.Third));
     private static void AssertJzazbzRoundTrip(Jzazbz original)
     {
-        // note: cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1 (i.e. when Jzazbz produces negative XYZ values)
+        // note: cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1, e.g.
+        // - when Jzazbz inputs produces negative XYZ values, which are clamped during XYZ -> Jzazbz
+        // - when Jzazbz negative inputs trigger a negative number to a fractional power, resulting in XYZ containing NaNs
+        // var viaXyz = Conversion.XyzToJzazbz(Conversion.JzazbzToXyz(original, Configuration.Default), Configuration.Default);
+        
         var viaJzczhz = Conversion.JzczhzToJzazbz(Conversion.JzazbzToJzczhz(original));
         AssertUtils.AssertColourTriplet(viaJzczhz.Triplet, original.Triplet, JzazbzTolerance);
     }

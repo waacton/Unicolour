@@ -85,6 +85,22 @@ public static class SmokeTests
     }
     
     [Test]
+    public static void UnicolourJzazbz()
+    {
+        AssertJzazbz((0, -0.10, -0.16));
+        AssertJzazbz((0.17, 0.11, 0.12));
+        AssertJzazbz((0.085, -0.0001, 0.0001));
+    }
+    
+    [Test]
+    public static void UnicolourJzczhz()
+    {
+        AssertJzczhz((0, 0, 0));
+        AssertJzczhz((0.17, 0.16, 360));
+        AssertJzczhz((0.085, 0.08, 180));
+    }
+    
+    [Test]
     public static void UnicolourOklab()
     {
         AssertOklab((0, -0.5, -0.5));
@@ -108,6 +124,8 @@ public static class SmokeTests
     private static void AssertLchab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab);
     private static void AssertLuv((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv);
     private static void AssertLchuv((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv);
+    private static void AssertJzazbz((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromJzazbz, Unicolour.FromJzazbz, Unicolour.FromJzazbz, Unicolour.FromJzazbz);
+    private static void AssertJzczhz((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromJzczhz, Unicolour.FromJzczhz, Unicolour.FromJzczhz, Unicolour.FromJzczhz);
     private static void AssertOklab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab);
     private static void AssertOklch((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch);
 

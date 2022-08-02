@@ -21,7 +21,7 @@ internal static class Conversion
         else if (xMax == r) hue = 60 * (0 + (g - b) / chroma);
         else if (xMax == g) hue = 60 * (2 + (b - r) / chroma);
         else if (xMax == b) hue = 60 * (4 + (r - g) / chroma);
-        else throw new InvalidOperationException();
+        else hue = double.NaN;
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
         return new Hsb(hue.Modulo(360.0), saturation, brightness, false, rgb.IsMonochrome);
@@ -251,9 +251,9 @@ internal static class Conversion
 
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
-        var x65 = Math.Max(adaptedXyz[0, 0], 0);
-        var y65 = Math.Max(adaptedXyz[1, 0], 0);
-        var z65 = Math.Max(adaptedXyz[2, 0], 0);
+        var x65 = Math.Max(adaptedXyz[0, 0] * 100, 0);
+        var y65 = Math.Max(adaptedXyz[1, 0] * 100, 0);
+        var z65 = Math.Max(adaptedXyz[2, 0] * 100, 0);
 
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
@@ -282,7 +282,6 @@ internal static class Conversion
         return new Jzazbz(jz, az, bz, xyz.ConvertedFromMonochrome);
     }
     
-    // TODO: figure out if XYZ inputs are in expected range (e.g. should XYZ not be ~0-1? https://github.com/nschloe/colorio/issues/41)
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
     public static Xyz JzazbzToXyz(Jzazbz jzazbz, Configuration config)
     {
@@ -305,8 +304,6 @@ internal static class Conversion
         
         double F(double value)
         {
-            // TODO: this is a source of downstream NaNs and can cause crashes due to negative to fractional power
-            // e.g. when az = -0.5 (which paper suggests is the lower end of az range)
             var rootP = Math.Pow(value, 1 / p);
             return 10000 * Math.Pow((c1 - rootP) / (c3 * rootP - c2), 1 / n);
         }
@@ -330,9 +327,9 @@ internal static class Conversion
         var xyzMatrix = Matrix.FromTriplet(new(x65, y65, z65));
         var adaptedXyz = Matrices.AdaptForWhitePoint(xyzMatrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
         
-        var x = adaptedXyz[0, 0];
-        var y = adaptedXyz[1, 0];
-        var z = adaptedXyz[2, 0];
+        var x = adaptedXyz[0, 0] / 100.0;
+        var y = adaptedXyz[1, 0] / 100.0;
+        var z = adaptedXyz[2, 0] / 100.0;
         return new Xyz(x, y, z, jzazbz.IsMonochrome);
     }
     

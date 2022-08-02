@@ -17,6 +17,8 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIE LCHab
 - CIE LUV
 - CIE LCHuv
+- JzAzBz
+- JzCzHz
 - Oklab
 - Oklch
 
@@ -49,6 +51,8 @@ var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
 var unicolour = Unicolour.FromLchab(55.96, 84.73, 356.1);
 var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
+var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
+var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
 ```
@@ -63,6 +67,8 @@ var lab = unicolour.Lab;
 var lchab = unicolour.Lchab;
 var luv = unicolour.Luv;
 var lchuv = unicolour.Lchuv;
+var jzazbz = unicolour.Jzazbz;
+var jzczhz = unicolour.Jzczhz;
 var oklab = unicolour.Oklab;
 var oklch = unicolour.Oklch;
 ```
@@ -77,6 +83,8 @@ var interpolated = unicolour1.InterpolateLab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchuv(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateJzazbz(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateJzczhz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```
@@ -85,8 +93,9 @@ var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
-var difference = unicolour1.DeltaE94(unicolour2);
+~~var difference = unicolour1.DeltaE94(unicolour2);~~
 var difference = unicolour1.DeltaE00(unicolour2);
+var difference = unicolour1.DeltaEz(unicolour2); // Jzczhz-based
 ```
 
 See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:

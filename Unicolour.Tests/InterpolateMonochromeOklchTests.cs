@@ -11,14 +11,14 @@ public class InterpolateMonochromeOklchTests
     {
         var oklabBlack = Unicolour.FromOklab(0, 0, 0);
         var oklabWhite = Unicolour.FromOklab(1, 0, 0);
-        var lchuvBlack = Unicolour.FromOklch(0, 0.5, 180); // no lightness = black
-        var lchuvWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
+        var oklchBlack = Unicolour.FromOklch(0, 0.5, 180); // no lightness = black
+        var oklchWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
         
         var green = Unicolour.FromOklch(0.5, 0.5, 120);
         var fromOklabBlack = oklabBlack.InterpolateOklch(green, 0.5);
         var fromOklabWhite = oklabWhite.InterpolateOklch(green, 0.5);
-        var fromOklchBlack = lchuvBlack.InterpolateOklch(green, 0.5);
-        var fromOklchWhite = lchuvWhite.InterpolateOklch(green, 0.5);
+        var fromOklchBlack = oklchBlack.InterpolateOklch(green, 0.5);
+        var fromOklchWhite = oklchWhite.InterpolateOklch(green, 0.5);
 
         // monochrome interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
@@ -33,14 +33,14 @@ public class InterpolateMonochromeOklchTests
     {
         var oklabBlack = Unicolour.FromOklab(0, 0, 0);
         var oklabWhite = Unicolour.FromOklab(1, 0, 0);
-        var lchuvBlack = Unicolour.FromOklch(0, 0.5, 180); // no lightness = black
-        var lchuvWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
+        var oklchBlack = Unicolour.FromOklch(0, 0.5, 180); // no lightness = black
+        var oklchWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
         
         var blue = Unicolour.FromOklch(0.5, 0.5, 240);
         var toOklabBlack = blue.InterpolateOklch(oklabBlack, 0.5);
         var toOklabWhite = blue.InterpolateOklch(oklabWhite, 0.5);
-        var toOklchBlack = blue.InterpolateOklch(lchuvBlack, 0.5);
-        var toOklchWhite = blue.InterpolateOklch(lchuvWhite, 0.5);
+        var toOklchBlack = blue.InterpolateOklch(oklchBlack, 0.5);
+        var toOklchWhite = blue.InterpolateOklch(oklchWhite, 0.5);
 
         // monochrome interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)

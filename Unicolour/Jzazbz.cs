@@ -9,7 +9,8 @@ public record Jzazbz
     public double B { get; }
     public ColourTriplet Triplet => new(J, A, B);
     
-    // TODO:
+    // based on the figures from the paper, monochrome behaviour is the same as LAB
+    // i.e. non-lightness axes are zero
     internal bool IsMonochrome => ConvertedFromMonochrome || A.Equals(0.0) && B.Equals(0.0);
     internal bool ConvertedFromMonochrome { get; }
     
@@ -22,5 +23,5 @@ public record Jzazbz
         ConvertedFromMonochrome = convertedFromMonochrome;
     }
 
-    public override string ToString() => $"{Math.Round(J, 5)} {Signed(Math.Round(A, 5))} {Signed(Math.Round(B, 5))}";
+    public override string ToString() => $"{Math.Round(J, 3)} {Signed(Math.Round(A, 3))} {Signed(Math.Round(B, 3))}";
 }

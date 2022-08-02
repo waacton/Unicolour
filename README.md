@@ -93,7 +93,7 @@ var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
-~~var difference = unicolour1.DeltaE94(unicolour2);~~
+var difference = unicolour1.DeltaE94(unicolour2);
 var difference = unicolour1.DeltaE00(unicolour2);
 var difference = unicolour1.DeltaEz(unicolour2); // Jzczhz-based
 ```

@@ -12,13 +12,13 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - RGB
 - HSB/HSV
 - HSL
-- CIE XYZ
-- CIE LAB
-- CIE LCHab
-- CIE LUV
-- CIE LCHuv
-- JzAzBz
-- JzCzHz
+- CIEXYZ
+- CIELAB
+- CIELCh<sub>ab</sub>
+- CIELUV
+- CIELCh<sub>uv</sub>
+- J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
+- J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
 - Oklab
 - Oklch
 
@@ -95,7 +95,7 @@ var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
 var difference = unicolour1.DeltaE94(unicolour2);
 var difference = unicolour1.DeltaE00(unicolour2);
-var difference = unicolour1.DeltaEz(unicolour2); // Jzczhz-based
+var difference = unicolour1.DeltaEz(unicolour2);
 ```
 
 See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:
@@ -114,9 +114,9 @@ var config = new Configuration(
     new(0.7347, 0.2653), // RGB red chromaticity coordinates
     new(0.1152, 0.8264), // RGB green chromaticity coordinates
     new(0.1566, 0.0177), // RGB blue chromaticity coordinates
-    value => Companding.Gamma(value, 2.2), // RGB companding function
+    value => Companding.Gamma(value, 2.2),        // RGB companding function
     value => Companding.InverseGamma(value, 2.2), // RGB inverse companding function
-    WhitePoint.From(Illuminant.D50), // RGB white point
+    WhitePoint.From(Illuminant.D50),  // RGB white point
     WhitePoint.From(Illuminant.D50)); // XYZ white point
     
 var unicolour = Unicolour.FromRgb(config, 255, 20, 147);

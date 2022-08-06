@@ -1,6 +1,7 @@
 namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 // monochrome LAB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
 // monochrome LCHab has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
@@ -22,10 +23,10 @@ public class InterpolateMonochromeLchabTests
 
         // monochrome interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
-        AssertLchab(fromLabBlack.Lchab, (25, 50, 120));
-        AssertLchab(fromLabWhite.Lchab, (75, 50, 120));
-        AssertLchab(fromLchabBlack.Lchab, (25, 100, 150));
-        AssertLchab(fromLchabWhite.Lchab, (75, 100, 150));
+        AssertColourTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
+        AssertColourTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
+        AssertColourTriplet(fromLchabBlack.Lchab.Triplet, new(25, 100, 150));
+        AssertColourTriplet(fromLchabWhite.Lchab.Triplet, new(75, 100, 150));
     }
     
     [Test]
@@ -44,10 +45,10 @@ public class InterpolateMonochromeLchabTests
 
         // monochrome interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
-        AssertLchab(toLabBlack.Lchab, (25, 50, 240));
-        AssertLchab(toLabWhite.Lchab, (75, 50, 240));
-        AssertLchab(toLchabBlack.Lchab, (25, 100, 210));
-        AssertLchab(toLchabWhite.Lchab, (75, 100, 210));
+        AssertColourTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
+        AssertColourTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
+        AssertColourTriplet(toLchabBlack.Lchab.Triplet, new(25, 100, 210));
+        AssertColourTriplet(toLchabWhite.Lchab.Triplet, new(75, 100, 210));
     }
     
     [Test]
@@ -61,14 +62,14 @@ public class InterpolateMonochromeLchabTests
         var blackToGrey = black.InterpolateLchab(grey, 0.5);
         var whiteToGrey = white.InterpolateLchab(grey, 0.5);
         
-        AssertLab(blackToWhite.Lab, (50, 0, 0));
-        AssertLab(blackToGrey.Lab, (25, 0, 0));
-        AssertLab(whiteToGrey.Lab, (75, 0, 0));
+        AssertColourTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
+        AssertColourTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
+        AssertColourTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
         
         // colours created from LAB therefore hue does not change
-        AssertLchab(blackToWhite.Lchab, (50, 0, 0));
-        AssertLchab(blackToGrey.Lchab, (25, 0, 0));
-        AssertLchab(whiteToGrey.Lchab, (75, 0, 0));
+        AssertColourTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 0));
+        AssertColourTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 0));
+        AssertColourTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 0));
     }
     
     [Test]
@@ -82,27 +83,18 @@ public class InterpolateMonochromeLchabTests
         var blackToGrey = black.InterpolateLchab(grey, 0.5);
         var whiteToGrey = white.InterpolateLchab(grey, 0.5);
         
-        AssertLab(blackToWhite.Lab, (50, 0, 0));
-        AssertLab(blackToGrey.Lab, (25, 0, 0));
-        AssertLab(whiteToGrey.Lab, (75, 0, 0));
+        AssertColourTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
+        AssertColourTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
+        AssertColourTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
         
         // colours created from LCHab therefore hue changes
-        AssertLchab(blackToWhite.Lchab, (50, 0, 330));
-        AssertLchab(blackToGrey.Lchab, (25, 0, 50));
-        AssertLchab(whiteToGrey.Lchab, (75, 0, 20));
+        AssertColourTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 330));
+        AssertColourTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 50));
+        AssertColourTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 20));
     }
     
-    private static void AssertLab(Lab actualLab, (double l, double a, double b) expectedLab)
+    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        Assert.That(actualLab.L, Is.EqualTo(expectedLab.l).Within(0.00000000005));
-        Assert.That(actualLab.A, Is.EqualTo(expectedLab.a).Within(0.00000000005));
-        Assert.That(actualLab.B, Is.EqualTo(expectedLab.b).Within(0.00000000005));
-    }
-
-    private static void AssertLchab(Lchab actualLchab, (double l, double c, double h) expectedLchab)
-    {
-        Assert.That(actualLchab.L, Is.EqualTo(expectedLchab.l).Within(0.00000000005));
-        Assert.That(actualLchab.C, Is.EqualTo(expectedLchab.c).Within(0.00000000005));
-        Assert.That(actualLchab.H, Is.EqualTo(expectedLchab.h).Within(0.00000000005));
+        AssertUtils.AssertColourTriplet(actual, expected, AssertUtils.InterpolationTolerance);
     }
 }

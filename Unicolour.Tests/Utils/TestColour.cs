@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-internal class TestColour
+public class TestColour
 {
     public string? Name { get; init; }
     public string? Hex { get; init; }
@@ -44,7 +44,7 @@ internal class TestColour
     public override string ToString() => $"Name:[{Name}] · Hex[{Hex}]";
 }
 
-internal record Tolerances 
+public record Tolerances 
 {
     public double Rgb, RgbLinear, Hsb, Hsl, Xyz, Lab, Lchab, Luv, Lchuv;
 }

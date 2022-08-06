@@ -10,6 +10,8 @@ public partial class Unicolour
     private Unicolour(Configuration config, Lchab lchab, Alpha alpha) : this(config, alpha, ColourSpace.Lchab) => this.lchab = lchab;
     private Unicolour(Configuration config, Luv luv, Alpha alpha) : this(config, alpha, ColourSpace.Luv) => this.luv = luv;
     private Unicolour(Configuration config, Lchuv lchuv, Alpha alpha) : this(config, alpha, ColourSpace.Lchuv) => this.lchuv = lchuv;
+    private Unicolour(Configuration config, Jzazbz jzazbz, Alpha alpha) : this(config, alpha, ColourSpace.Jzazbz) => this.jzazbz = jzazbz;
+    private Unicolour(Configuration config, Jzczhz jzczhz, Alpha alpha) : this(config, alpha, ColourSpace.Jzczhz) => this.jzczhz = jzczhz;
     private Unicolour(Configuration config, Oklab oklab, Alpha alpha) : this(config, alpha, ColourSpace.Oklab) => this.oklab = oklab;
     private Unicolour(Configuration config, Oklch oklch, Alpha alpha) : this(config, alpha, ColourSpace.Oklch) => this.oklch = oklch;
     
@@ -64,6 +66,16 @@ public partial class Unicolour
     public static Unicolour FromLchuv(Configuration config, (double l, double c, double h) tuple, double alpha = 1.0) => FromLchuv(config, tuple.l, tuple.c, tuple.h, alpha);
     public static Unicolour FromLchuv(double l, double c, double h, double alpha = 1.0) => FromLchuv(Configuration.Default, l, c, h, alpha);
     public static Unicolour FromLchuv(Configuration config, double l, double c, double h, double alpha = 1.0) => new(config, new Lchuv(l, c, h), new Alpha(alpha));
+    
+    public static Unicolour FromJzazbz((double jz, double az, double bz) tuple, double alpha = 1.0) => FromJzazbz(Configuration.Default, tuple.jz, tuple.az, tuple.bz, alpha);
+    public static Unicolour FromJzazbz(Configuration config, (double jz, double az, double bz) tuple, double alpha = 1.0) => FromJzazbz(config, tuple.jz, tuple.az, tuple.bz, alpha);
+    public static Unicolour FromJzazbz(double jz, double az, double bz, double alpha = 1.0) => FromJzazbz(Configuration.Default, jz, az, bz, alpha);
+    public static Unicolour FromJzazbz(Configuration config, double jz, double az, double bz, double alpha = 1.0) => new(config, new Jzazbz(jz, az, bz), new Alpha(alpha));
+    
+    public static Unicolour FromJzczhz((double jz, double cz, double hz) tuple, double alpha = 1.0) => FromJzczhz(Configuration.Default, tuple.jz, tuple.cz, tuple.hz, alpha);
+    public static Unicolour FromJzczhz(Configuration config, (double jz, double cz, double hz) tuple, double alpha = 1.0) => FromJzczhz(config, tuple.jz, tuple.cz, tuple.hz, alpha);
+    public static Unicolour FromJzczhz(double jz, double cz, double hz, double alpha = 1.0) => FromJzczhz(Configuration.Default, jz, cz, hz, alpha);
+    public static Unicolour FromJzczhz(Configuration config, double jz, double cz, double hz, double alpha = 1.0) => new(config, new Jzczhz(jz, cz, hz), new Alpha(alpha));
     
     public static Unicolour FromOklab((double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(Configuration.Default, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromOklab(Configuration config, (double l, double a, double b) tuple, double alpha = 1.0) => FromOklab(config, tuple.l, tuple.a, tuple.b, alpha);

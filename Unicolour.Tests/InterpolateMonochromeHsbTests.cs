@@ -1,6 +1,7 @@
 namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 // monochrome RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
 // monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
@@ -22,10 +23,10 @@ public class InterpolateMonochromeHsbTests
         
         // monochrome interpolates differently depending on the initial colour space
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
-        AssertHsb(fromRgbBlack.Hsb, (120, 0.5, 0.5));
-        AssertHsb(fromRgbWhite.Hsb, (120, 0.5, 1));
-        AssertHsb(fromHsbBlack.Hsb, (150, 1, 0.5));
-        AssertHsb(fromHsbWhite.Hsb, (150, 0.5, 1));
+        AssertColourTriplet(fromRgbBlack.Hsb.Triplet, new(120, 0.5, 0.5));
+        AssertColourTriplet(fromRgbWhite.Hsb.Triplet, new(120, 0.5, 1));
+        AssertColourTriplet(fromHsbBlack.Hsb.Triplet, new(150, 1, 0.5));
+        AssertColourTriplet(fromHsbWhite.Hsb.Triplet, new(150, 0.5, 1));
     }
     
     [Test]
@@ -44,10 +45,10 @@ public class InterpolateMonochromeHsbTests
 
         // monochrome interpolates differently depending on the initial colour space
         // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
-        AssertHsb(toRgbBlack.Hsb, (240, 0.5, 0.5));
-        AssertHsb(toRgbWhite.Hsb, (240, 0.5, 1));
-        AssertHsb(toHsbBlack.Hsb, (210, 1, 0.5));
-        AssertHsb(toHsbWhite.Hsb, (210, 0.5, 1));
+        AssertColourTriplet(toRgbBlack.Hsb.Triplet, new(240, 0.5, 0.5));
+        AssertColourTriplet(toRgbWhite.Hsb.Triplet, new(240, 0.5, 1));
+        AssertColourTriplet(toHsbBlack.Hsb.Triplet, new(210, 1, 0.5));
+        AssertColourTriplet(toHsbWhite.Hsb.Triplet, new(210, 0.5, 1));
     }
     
     [Test]
@@ -61,14 +62,14 @@ public class InterpolateMonochromeHsbTests
         var blackToGrey = black.InterpolateHsb(grey, 0.5);
         var whiteToGrey = white.InterpolateHsb(grey, 0.5);
         
-        AssertRgb(blackToWhite.Rgb, (0.5, 0.5, 0.5));
-        AssertRgb(blackToGrey.Rgb, (0.25, 0.25, 0.25));
-        AssertRgb(whiteToGrey.Rgb, (0.75, 0.75, 0.75));
+        AssertColourTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
+        AssertColourTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));
+        AssertColourTriplet(whiteToGrey.Rgb.Triplet, new(0.75, 0.75, 0.75));
         
         // colours created from RGB therefore hue does not change
-        AssertHsb(blackToWhite.Hsb, (0, 0, 0.5));
-        AssertHsb(blackToGrey.Hsb, (0, 0, 0.25));
-        AssertHsb(whiteToGrey.Hsb, (0, 0, 0.75));
+        AssertColourTriplet(blackToWhite.Hsb.Triplet, new(0, 0, 0.5));
+        AssertColourTriplet(blackToGrey.Hsb.Triplet, new(0, 0, 0.25));
+        AssertColourTriplet(whiteToGrey.Hsb.Triplet, new(0, 0, 0.75));
     }
     
     [Test]
@@ -82,27 +83,18 @@ public class InterpolateMonochromeHsbTests
         var blackToGrey = black.InterpolateHsb(grey, 0.5);
         var whiteToGrey = white.InterpolateHsb(grey, 0.5);
         
-        AssertRgb(blackToWhite.Rgb, (0.5, 0.5, 0.5));
-        AssertRgb(blackToGrey.Rgb, (0.25, 0.25, 0.25));
-        AssertRgb(whiteToGrey.Rgb, (0.75, 0.75, 0.75));
+        AssertColourTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
+        AssertColourTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));
+        AssertColourTriplet(whiteToGrey.Rgb.Triplet, new(0.75, 0.75, 0.75));
         
         // colours created from HSB therefore hue changes
-        AssertHsb(blackToWhite.Hsb, (330, 0, 0.5));
-        AssertHsb(blackToGrey.Hsb, (50, 0, 0.25));
-        AssertHsb(whiteToGrey.Hsb, (20, 0, 0.75));
+        AssertColourTriplet(blackToWhite.Hsb.Triplet, new(330, 0, 0.5));
+        AssertColourTriplet(blackToGrey.Hsb.Triplet, new(50, 0, 0.25));
+        AssertColourTriplet(whiteToGrey.Hsb.Triplet, new(20, 0, 0.75));
     }
     
-    private static void AssertRgb(Rgb actualRgb, (double r, double g, double b) expectedRgb)
+    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        Assert.That(actualRgb.R, Is.EqualTo(expectedRgb.r).Within(0.00000000005));
-        Assert.That(actualRgb.G, Is.EqualTo(expectedRgb.g).Within(0.00000000005));
-        Assert.That(actualRgb.B, Is.EqualTo(expectedRgb.b).Within(0.00000000005));
-    }
-
-    private static void AssertHsb(Hsb actualHsb, (double h, double s, double b) expectedHsb)
-    {
-        Assert.That(actualHsb.H, Is.EqualTo(expectedHsb.h).Within(0.00000000005));
-        Assert.That(actualHsb.S, Is.EqualTo(expectedHsb.s).Within(0.00000000005));
-        Assert.That(actualHsb.B, Is.EqualTo(expectedHsb.b).Within(0.00000000005));
+        AssertUtils.AssertColourTriplet(actual, expected, AssertUtils.InterpolationTolerance);
     }
 }

@@ -61,6 +61,16 @@ public static class RangeClampTests
     }
     
     [Test]
+    public static void JzczhzRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Jzczhz(1, 0.1, hRange.BeyondMax);
+        var beyondMin = new Jzczhz(0, 0, hRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
+        AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
     public static void OklchRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);

@@ -21,9 +21,11 @@ internal static class TestColours
     public static readonly List<ColourTriplet> RandomLchabColours = new();
     public static readonly List<ColourTriplet> RandomLuvColours = new();
     public static readonly List<ColourTriplet> RandomLchuvColours = new();
+    public static readonly List<ColourTriplet> RandomJzazbzColours = new();
+    public static readonly List<ColourTriplet> RandomJzczhzColours = new();
     public static readonly List<ColourTriplet> RandomOklabColours = new();
     public static readonly List<ColourTriplet> RandomOklchColours = new();
-    
+
     static TestColours()
     {
         NamedColours = File.ReadAllLines(Path.Combine("Utils", "NamedColours.csv"))
@@ -41,6 +43,8 @@ internal static class TestColours
             RandomLchabColours.Add(GetRandomLchab());
             RandomLuvColours.Add(GetRandomLuv());
             RandomLchuvColours.Add(GetRandomLchuv());
+            RandomJzazbzColours.Add(GetRandomJzazbz());
+            RandomJzczhzColours.Add(GetRandomJzczhz());
             RandomOklabColours.Add(GetRandomOklab());
             RandomOklchColours.Add(GetRandomOklch());
         }
@@ -48,18 +52,22 @@ internal static class TestColours
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     internal static ColourTriplet GetRandomRgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
-    internal static ColourTriplet GetRandomRgb() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-    internal static ColourTriplet GetRandomHsb() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
-    internal static ColourTriplet GetRandomHsl() => new(Random.NextDouble() * 360, Random.NextDouble(), Random.NextDouble());
-    internal static ColourTriplet GetRandomXyz() => new(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
-    internal static ColourTriplet GetRandomLab() => new(Random.NextDouble() * 100, Random.NextDouble() * 256 - 128, Random.NextDouble() * 256 - 128);
-    internal static ColourTriplet GetRandomLchab() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
-    internal static ColourTriplet GetRandomLuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 200 - 100, Random.NextDouble() * 200 - 100);
-    internal static ColourTriplet GetRandomLchuv() => new(Random.NextDouble() * 100, Random.NextDouble() * 230, Random.NextDouble() * 360);
-    internal static ColourTriplet GetRandomOklab() => new(Random.NextDouble(), Random.NextDouble() * 1.0 - 0.5, Random.NextDouble() * 1.0 - 0.5);
-    internal static ColourTriplet GetRandomOklch() => new(Random.NextDouble(), Random.NextDouble() * 0.5, Random.NextDouble() * 360);
+    internal static ColourTriplet GetRandomRgb() => new(GetRandom(), GetRandom(), GetRandom());
+    internal static ColourTriplet GetRandomHsb() => new(GetRandom(0, 360), GetRandom(), GetRandom());
+    internal static ColourTriplet GetRandomHsl() => new(GetRandom(0, 360), GetRandom(), GetRandom());
+    internal static ColourTriplet GetRandomXyz() => new(GetRandom(), GetRandom(), GetRandom());
+    internal static ColourTriplet GetRandomLab() => new(GetRandom(0, 100), GetRandom(-128, 128), GetRandom(-128, 128));
+    internal static ColourTriplet GetRandomLchab() => new(GetRandom(0, 100), GetRandom(0, 230), GetRandom(0, 360));
+    internal static ColourTriplet GetRandomLuv() => new(GetRandom(0, 100), GetRandom(-100, 100), GetRandom(-100, 100));
+    internal static ColourTriplet GetRandomLchuv() => new(GetRandom(0, 100), GetRandom(0, 230), GetRandom(0, 360));
+    internal static ColourTriplet GetRandomOklab() => new(GetRandom(), GetRandom(-0.5, 0.5), GetRandom(-0.5, 0.5));
+    internal static ColourTriplet GetRandomOklch() => new(GetRandom(), GetRandom(0, 0.5), GetRandom(0, 360));
+    internal static ColourTriplet GetRandomJzazbz() => new(GetRandom(0, 0.17), GetRandom(-0.10, 0.11), GetRandom(-0.16, 0.12)); // from own test values since ranges suggested by paper (0>1, -0.5>0.5, -0.5>0.5) easily produce XYZ with NaNs [https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272]
+    internal static ColourTriplet GetRandomJzczhz() => new(GetRandom(0, 0.17), GetRandom(0, 0.16), GetRandom(0, 360)); // from own test values since
     internal static double GetRandomAlpha() => Random.NextDouble();
 
+    private static double GetRandom() => Random.NextDouble();
+    private static double GetRandom(double min, double max) => Random.NextDouble() * (max - min) + min;
 
     private static TestColour CreateNamedColour(string csvRow)
     {

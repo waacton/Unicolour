@@ -5,37 +5,35 @@ using static Wacton.Unicolour.Utils;
 
 public class UtilsTests
 {
-    [Test]
-    public void ClampWithinRange()
-    {
-        Assert.That(0.5.Clamp(0, 1), Is.EqualTo(0.5));
-        Assert.That(1.0.Clamp(0, 1), Is.EqualTo(1.0));
-        Assert.That(0.0.Clamp(0, 1), Is.EqualTo(0.0));
-    }
-    
-    [Test]
-    public void ClampOutwithRange()
-    {
-        Assert.That(1.00001.Clamp(0, 1), Is.EqualTo(1.0));
-        Assert.That((-0.00001).Clamp(0, 1), Is.EqualTo(0.0));
-    }
+    [TestCase(0.5)]
+    [TestCase(0.0)]
+    [TestCase(1.0)]
+    public void ClampWithinRange(double value) => Assert.That(value.Clamp(0, 1), Is.EqualTo(value));
+
+    [TestCase(1.00001, 1.0)]
+    [TestCase(-0.00001, 0.0)]
+    public void ClampOutwithRange(double value, double clamped) => Assert.That(value.Clamp(0, 1), Is.EqualTo(clamped));
+
+    [TestCase(8, 2)]
+    [TestCase(0.027, 0.3)]
+
+    public void CubeRootPositive(double value, double result) => AssertCubeRoot(value, result);
+
+    [TestCase(-8, -2)]
+    [TestCase(-0.027, -0.3)]
+    public void CubeRootNegative(double value, double result) => AssertCubeRoot(value, result);
 
     [Test]
-    public void CubeRootPositive()
-    {
-        Assert.That(CubeRoot(8), Is.EqualTo(2));
-        Assert.That(CubeRoot(0.027), Is.EqualTo(0.3).Within(0.0000000000000001));
-    }
-
-    [Test]
-    public void CubeRootNegative()
-    {
-        Assert.That(CubeRoot(-8), Is.EqualTo(-2));
-        Assert.That(CubeRoot(-0.027), Is.EqualTo(-0.3).Within(0.0000000000000001));
-    }
+    public void CubeRootZero() => AssertCubeRoot(0, 0);
     
     [Test]
-    public void CubeRootZero() => Assert.That(CubeRoot(0), Is.EqualTo(0));
+    public void SignedPositive() => Assert.That(Signed(0.0001), Is.EqualTo("+0.0001"));
+    
+    [Test]
+    public void SignedNegative() => Assert.That(Signed(-0.0001), Is.EqualTo("-0.0001"));
+    
+    [Test]
+    public void SignedZero() => Assert.That(Signed(0), Is.EqualTo("0"));
 
     [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)
@@ -122,6 +120,8 @@ public class UtilsTests
     {
         AssertModulo(dividend, modulus, expected);
     }
+    
+    private static void AssertCubeRoot(double value, double result) => Assert.That(CubeRoot(value), Is.EqualTo(result).Within(0.0000000000000001));
 
     private static void AssertModulo(double dividend, double modulus, double expected)
     {

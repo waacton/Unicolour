@@ -12,10 +12,10 @@ using ColorMineLchab = ColorMine.ColorSpaces.Lch;
 using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 
 /*
- * ColorMine doesn't expose linear RGB
+ * ColorMine does not support LCHuv / Jzazbz / Jzczhz / Oklab / Oklch
+ * ColorMine does not expose linear RGB
  * ColorMine does a bad job of converting to HSL
  * ColorMine does a terrible job of converting from XYZ / LAB / LCHab / LUV
- * ColorMine does not support LCHuv
  */
 internal class ColorMineFactory : ITestColourFactory
 {

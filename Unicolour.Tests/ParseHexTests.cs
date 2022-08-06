@@ -1,20 +1,21 @@
 namespace Wacton.Unicolour.Tests;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 public class ParseHexTests
 {
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void NamedHexSameRgbAsSystem(TestColour namedColour) => AssertHexParse(namedColour.Hex!);
+
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    public void HexSameRgbAsSystem(string hex) => AssertHexParse(hex);
+
     [Test]
-    public void ParsedHexSameRgbAsSystem()
-    {
-        AssertUtils.AssertNamedColours(namedColour => AssertHexParse(namedColour.Hex!));
-        AssertUtils.AssertRandomHexColours(AssertHexParse);
-    }
-    
-    [Test]
-    public void ParseThrowsExceptionWhenInvalidLength()
+    public void ThrowsExceptionWhenInvalidLength() 
     {
         Assert.Throws<NullReferenceException>(() => ParseColourHex(null!));
         Assert.Throws<ArgumentException>(() => ParseColourHex(string.Empty));
@@ -29,10 +30,23 @@ public class ParseHexTests
         Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(9)));
         Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(10)));
     }
-    
-    [Test]
-    public void ParseThrowsExceptionWhenInvalidCharacter()
+
+    [TestCaseSource(nameof(GeneratePotentialHexStrings))]
+    public void ThrowsExceptionWhenInvalidCharacter(string potentialHex)
     {
+        if (potentialHex.All(Uri.IsHexDigit))
+        {
+            Assert.DoesNotThrow(() => ParseColourHex(potentialHex));
+        }
+        else
+        {
+            Assert.Throws<ArgumentException>(() => ParseColourHex(potentialHex));
+        }
+    }
+
+    private static List<string> GeneratePotentialHexStrings()
+    {
+        var result = new List<string>();
         for (var charValue = 0; charValue < 128; charValue++)
         {
             for (var i = 0; i < 8; i++)
@@ -40,18 +54,11 @@ public class ParseHexTests
                 var character = (char) charValue;
                 var chars = GetChars(8);
                 chars[i] = character;
-                var hex = new string(chars);
-
-                if (Uri.IsHexDigit(character))
-                {
-                    Assert.DoesNotThrow(() => ParseColourHex(hex));
-                }
-                else
-                {
-                    Assert.Throws<ArgumentException>(() => ParseColourHex(hex));
-                }
+                result.Add(new string(chars));
             }
         }
+
+        return result;
     }
 
     private static void AssertHexParse(string hex)

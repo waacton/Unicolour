@@ -142,6 +142,36 @@ public static class MonochromeTests
     [TestCase(0.5, -0.00000000001, 0.0, false)]
     [TestCase(0.5, 0.0, 0.00000000001, false)]
     [TestCase(0.5, 0.0, -0.00000000001, false)]
+    public static void MonochromeJzazbz(double jz, double az, double bz, bool expected)
+    {
+        var jzazbz = new Jzazbz(jz, az, bz);
+        Assert.That(jzazbz.IsMonochrome, Is.EqualTo(expected));
+        Assert.False(jzazbz.ConvertedFromMonochrome);
+        AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz), expected);
+    }
+
+    [TestCase(0.5, 0.0, 180.0, true)]
+    [TestCase(0.5, -0.00000000001, 180.0, true)]
+    [TestCase(0.5, 0.00000000001, 180.0, false)]
+    [TestCase(0.0, 0.1, 180.0, true)]
+    [TestCase(-0.00000000001, 0.1, 180.0, true)]
+    [TestCase(0.00000000001, 0.05, 180.0, false)]
+    [TestCase(1.0, 0.1, 180.0, true)]
+    [TestCase(1.00000000001, 0.1, 180.0, true)]
+    [TestCase(0.99999999999, 0.1, 180.0, false)]
+    public static void MonochromeJzczhz(double jz, double cz, double hz, bool expected)
+    {
+        var jzczhz = new Jzczhz(jz, cz, hz);
+        Assert.That(jzczhz.IsMonochrome, Is.EqualTo(expected));
+        Assert.False(jzczhz.ConvertedFromMonochrome);
+        AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz), expected);
+    }
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
     public static void MonochromeOklab(double l, double a, double b, bool expected)
     {
         var oklab = new Oklab(l, a, b);
@@ -173,7 +203,10 @@ public static class MonochromeTests
         var convertedFromMonochromeList = GetConvertedFromMonochromeList(unicolour);
         
         Assert.That(isMonochromeList, isMonochrome ? Has.All.EqualTo(isMonochrome) : Has.Some.EqualTo(false));
-        Assert.That(convertedFromMonochromeList, isMonochrome ? Has.One.EqualTo(false) : Has.All.False);
+        Assert.That(convertedFromMonochromeList, isMonochrome ? Has.One.EqualTo(false) : Has.Some.EqualTo(false));
+        // can't ensure `convertedFromMonochromeList` Has.All.False when `!isMonochrome`
+        // because Jz* colour spaces easily result in NaNs during conversion, causing inconsistency in downstream models
+        // e.g. LUV assumes NaNs mean 0, and RGB treats all channels the same to mean monochrome (even if all channels are NaN)
     }
     
     private static List<bool> GetIsMonochromeList(Unicolour unicolour)
@@ -188,6 +221,8 @@ public static class MonochromeTests
             unicolour.Lchab.IsMonochrome,
             unicolour.Luv.IsMonochrome,
             unicolour.Lchuv.IsMonochrome,
+            unicolour.Jzazbz.IsMonochrome,
+            unicolour.Jzczhz.IsMonochrome,
             unicolour.Oklab.IsMonochrome,
             unicolour.Oklch.IsMonochrome
         };
@@ -205,6 +240,8 @@ public static class MonochromeTests
             unicolour.Lchab.ConvertedFromMonochrome,
             unicolour.Luv.ConvertedFromMonochrome,
             unicolour.Lchuv.ConvertedFromMonochrome,
+            unicolour.Jzazbz.ConvertedFromMonochrome,
+            unicolour.Jzczhz.ConvertedFromMonochrome,
             unicolour.Oklab.ConvertedFromMonochrome,
             unicolour.Oklch.ConvertedFromMonochrome
         };

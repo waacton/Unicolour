@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-using static Wacton.Unicolour.Utils;
+using static Utils;
 
 public static class Comparison
 {
@@ -125,5 +125,16 @@ public static class Comparison
             Power2(ratioC) +
             Power2(ratioH) +
             rt * ratioC * ratioH);
+    }
+    
+    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    public static double DeltaEz(this Unicolour reference, Unicolour sample)
+    {
+        var deltaHz = reference.Jzczhz.H - sample.Jzczhz.H;
+        deltaHz = 2 * Math.Sqrt(reference.Jzczhz.C * sample.Jzczhz.C) * Math.Sin(ToRadians(deltaHz / 2.0));
+        var squaredDiffJz = Math.Pow(reference.Jzczhz.J - sample.Jzczhz.J, 2);
+        var squaredDiffCz = Math.Pow(reference.Jzczhz.C - sample.Jzczhz.C, 2);
+        var squaredDiffHz = Math.Pow(deltaHz, 2);
+        return Math.Sqrt(squaredDiffJz + squaredDiffCz + squaredDiffHz);
     }
 }

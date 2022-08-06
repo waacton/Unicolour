@@ -69,6 +69,13 @@ public class CoordinateSpaceTests
     }
     
     [Test]
+    public void CylindricalJzczhzCartesianJzazbz()
+    {
+        AssertJzczhzToJzazbz(HueUpperInRange, HueUpperOutRange);
+        AssertJzczhzToJzazbz(HueLowerInRange, HueLowerOutRange);
+    }
+    
+    [Test]
     public void CylindricalOklchCartesianOklab()
     {
         AssertOklchToOklab(HueUpperInRange, HueUpperOutRange);
@@ -135,6 +142,16 @@ public class CoordinateSpaceTests
         AssertTriplet(luvFromOutRange.Triplet, luvFromInRange.Triplet);
     }
     
+    private static void AssertJzczhzToJzazbz(double hueInRange, double hueOutRange)
+    {
+        var jzczhzInRange = new Jzczhz(0.5, 0.25, hueInRange);
+        var jzczhzOutRange = new Jzczhz(0.5, 0.25, hueOutRange);
+        var jzazbzFromInRange = Conversion.JzczhzToJzazbz(jzczhzInRange);
+        var jzazbzFromOutRange = Conversion.JzczhzToJzazbz(jzczhzOutRange);
+        AssertSourceTriplets(AsTriplets(jzczhzInRange), AsTriplets(jzczhzOutRange));
+        AssertTriplet(jzazbzFromOutRange.Triplet, jzazbzFromInRange.Triplet);
+    }
+    
     private static void AssertOklchToOklab(double hueInRange, double hueOutRange)
     {
         var oklchInRange = new Oklch(0.5, 1, hueInRange);
@@ -166,6 +183,7 @@ public class CoordinateSpaceTests
     private static Triplets AsTriplets(Hsl hsl) => new(hsl.Triplet, hsl.ConstrainedTriplet);
     private static Triplets AsTriplets(Lchab lchab) => new(lchab.Triplet, lchab.ConstrainedTriplet);
     private static Triplets AsTriplets(Lchuv lchuv) => new(lchuv.Triplet, lchuv.ConstrainedTriplet);
+    private static Triplets AsTriplets(Jzczhz jzczhz) => new(jzczhz.Triplet, jzczhz.ConstrainedTriplet);
     private static Triplets AsTriplets(Oklch oklch) => new(oklch.Triplet, oklch.ConstrainedTriplet);
 
     private record Triplets(ColourTriplet Unconstrained, ColourTriplet Constrained);

@@ -1,127 +1,90 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 public static class SmokeTests
 {
-    [Test]
-    public static void UnicolourHex()
-    {
-        AssertHex("000000");
-        AssertHex("FFFFFF");
-        AssertHex("667788");
-    }
+    [TestCase("000000")]
+    [TestCase("FFFFFF")]
+    [TestCase("667788")]
+    public static void UnicolourHex(string hex) => AssertHex(hex);
 
-    [Test]
-    public static void UnicolourRgb255()
-    {
-        AssertRgb255((0, 0, 0));
-        AssertRgb255((255, 255, 255));
-        AssertRgb255((124, 125, 126));
-    }
-    
-    [Test]
-    public static void UnicolourRgb()
-    {
-        AssertRgb((0, 0, 0));
-        AssertRgb((1, 1, 1));
-        AssertRgb((0.4, 0.5, 0.6));
-    }
+    [TestCase(0, 0, 0)]
+    [TestCase(255, 255, 255)]
+    [TestCase(124, 125, 126)]
+    public static void UnicolourRgb255(int r, int g, int b) => AssertRgb255(r, g, b);
 
-    [Test]
-    public static void UnicolourHsb()
-    {
-        AssertHsb((0, 0, 0));
-        AssertHsb((360, 1, 1));
-        AssertHsb((180, 0.4, 0.6));
-    }
-    
-    [Test]
-    public static void UnicolourHsl()
-    {
-        AssertHsl((0, 0, 0));
-        AssertHsl((360, 1, 1));
-        AssertHsl((180, 0.4, 0.6));
-    }
-    
-    [Test]
-    public static void UnicolourXyz()
-    {
-        AssertXyz((0, 0, 0));
-        AssertXyz((1, 1, 1));
-        AssertXyz((0.4, 0.5, 0.6));
-    }
-    
-    [Test]
-    public static void UnicolourLab()
-    {
-        AssertLab((0, -128, -128));
-        AssertLab((100, 128, 128));
-        AssertLab((50, -1, 1));
-    }
-    
-    [Test]
-    public static void UnicolourLchab()
-    {
-        AssertLchab((0, 0, 0));
-        AssertLchab((100, 230, 360));
-        AssertLchab((50, 115, 180));
-    }
+    [TestCase(0, 0, 0)]
+    [TestCase(1, 1, 1)]
+    [TestCase(0.4, 0.5, 0.6)]
+    public static void UnicolourRgb(double r, double g, double b) => AssertInit(r, g, b, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb);
 
-    [Test]
-    public static void UnicolourLuv()
-    {
-        AssertLuv((0, -100, -100));
-        AssertLuv((100, 100, 100));
-        AssertLuv((50, -1, 1));
-    }
-    
-    [Test]
-    public static void UnicolourLchuv()
-    {
-        AssertLchuv((0, 0, 0));
-        AssertLchuv((100, 230, 360));
-        AssertLchuv((50, 115, 180));
-    }
-    
-    [Test]
-    public static void UnicolourOklab()
-    {
-        AssertOklab((0, -0.5, -0.5));
-        AssertOklab((1, 0.5, 0.5));
-        AssertOklab((0.5, -0.001, 0.001));
-    }
-    
-    [Test]
-    public static void UnicolourOklch()
-    {
-        AssertOklch((0, 0, 0));
-        AssertOklch((1, 0.5, 360));
-        AssertOklch((0.5, 0.25, 180));
-    }
+    [TestCase(0, 0, 0)]
+    [TestCase(360, 1, 1)]
+    [TestCase(180, 0.4, 0.6)]
+    public static void UnicolourHsb(double h, double s, double b) => AssertInit(h, s, b, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb);
 
-    private static void AssertRgb((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb, Unicolour.FromRgb);
-    private static void AssertHsb((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb, Unicolour.FromHsb);
-    private static void AssertHsl((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl);
-    private static void AssertXyz((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz);
-    private static void AssertLab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab);
-    private static void AssertLchab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab);
-    private static void AssertLuv((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv);
-    private static void AssertLchuv((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv);
-    private static void AssertOklab((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab);
-    private static void AssertOklch((double, double, double) tuple) => AssertInit(tuple, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch);
+    [TestCase(0, 0, 0)]
+    [TestCase(360, 1, 1)]
+    [TestCase(180, 0.4, 0.6)]
+    public static void UnicolourHsl(double h, double s, double l) => AssertInit(h, s, l, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl);
+
+    [TestCase(0, 0, 0)]
+    [TestCase(1, 1, 1)]
+    [TestCase(0.4, 0.5, 0.6)]
+    public static void UnicolourXyz(double x, double y, double z) => AssertInit(x, y, z, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz);
+    
+    [TestCase(0, -128, -128)]
+    [TestCase(100, 128, 128)]
+    [TestCase(50, -1, 1)]
+    public static void UnicolourLab(double l, double a, double b) => AssertInit(l, a, b, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab, Unicolour.FromLab);
+    
+    [TestCase(0, 0, 0)]
+    [TestCase(100, 230, 360)]
+    [TestCase(50, 115, 180)]
+    public static void UnicolourLchab(double l, double c, double h) => AssertInit(l, c, h, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab, Unicolour.FromLchab);
+
+    [TestCase(0, -100, -100)]
+    [TestCase(100, 100, 100)]
+    [TestCase(50, -1, 1)]
+    public static void UnicolourLuv(double l, double u, double v) => AssertInit(l, u, v, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv, Unicolour.FromLuv);
+    
+    [TestCase(0, 0, 0)]
+    [TestCase(100, 230, 360)]
+    [TestCase(50, 115, 180)]
+    public static void UnicolourLchuv(double l, double c, double h) => AssertInit(l, c, h, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv, Unicolour.FromLchuv);
+    
+    [TestCase(0, -0.10, -0.16)]
+    [TestCase(0.17, 0.11, 0.12)]
+    [TestCase(0.085, -0.0001, 0.0001)]
+    public static void UnicolourJzazbz(double j, double a, double b) => AssertInit(j, a, b, Unicolour.FromJzazbz, Unicolour.FromJzazbz, Unicolour.FromJzazbz, Unicolour.FromJzazbz);
+    
+    [TestCase(0, 0, 0)]
+    [TestCase(0.17, 0.16, 360)]
+    [TestCase(0.085, 0.08, 180)]
+    public static void UnicolourJzczhz(double j, double c, double h) => AssertInit(j, c, h, Unicolour.FromJzczhz, Unicolour.FromJzczhz, Unicolour.FromJzczhz, Unicolour.FromJzczhz);
+    
+    [TestCase(0, -0.5, -0.5)]
+    [TestCase(1, 0.5, 0.5)]
+    [TestCase(0.5, -0.001, 0.001)]
+    public static void UnicolourOklab(double l, double a, double b) => AssertInit(l, a, b, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab, Unicolour.FromOklab);
+    
+    [TestCase(0, 0, 0)]
+    [TestCase(1, 0.5, 360)]
+    [TestCase(0.5, 0.25, 180)]
+    public static void UnicolourOklch(double l, double c, double h) => AssertInit(l, c, h, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch);
 
     private delegate Unicolour FromValues(double first, double second, double third, double alpha = 1.0);
     private delegate Unicolour FromValuesWithConfig(Configuration config, double first, double second, double third, double alpha = 1.0);
     private delegate Unicolour FromTuple((double first, double second, double third) tuple, double alpha = 1.0);
     private delegate Unicolour FromTupleWithConfig(Configuration config, (double first, double second, double third) tuple, double alpha = 1.0);
     
-    private static void AssertInit((double first, double second, double third) tuple, 
+    private static void AssertInit(double first, double second, double third, 
         FromValues fromValues, FromValuesWithConfig fromValuesWithConfig,
         FromTuple fromTuple, FromTupleWithConfig fromTupleWithConfig)
     {
-        var (first, second, third) = tuple;
-        
+        var tuple = (first, second, third);
         var expected = fromValues(first, second, third);
         AssertNoError(expected, fromValues(first, second, third));
         AssertNoError(expected, fromValues(first, second, third, 1.0));
@@ -134,10 +97,9 @@ public static class SmokeTests
     }
     
     // dedicated method due to using ints instead of doubles
-    private static void AssertRgb255((int first, int second, int third) tuple)
+    private static void AssertRgb255(int first, int second, int third)
     {
-        var (first, second, third) = tuple;
-        
+        var tuple = (first, second, third);
         var expected = Unicolour.FromRgb255(first, second, third);
         AssertNoError(expected, Unicolour.FromRgb255(first, second, third));
         AssertNoError(expected, Unicolour.FromRgb255(first, second, third, 255));
@@ -165,26 +127,8 @@ public static class SmokeTests
 
     private static void AssertNoError(Unicolour expected, Unicolour unicolour)
     {
-        AssertNoError(unicolour);
+        AssertUtils.AssertNoPropertyError(unicolour);
         Assert.That(unicolour, Is.EqualTo(expected));
-    }
-    
-    private static void AssertNoError(Unicolour unicolour)
-    {
-        Assert.DoesNotThrow(() => _ = unicolour.Rgb);
-        Assert.DoesNotThrow(() => _ = unicolour.Hsb);
-        Assert.DoesNotThrow(() => _ = unicolour.Hsl);
-        Assert.DoesNotThrow(() => _ = unicolour.Xyz);
-        Assert.DoesNotThrow(() => _ = unicolour.Lab);
-        Assert.DoesNotThrow(() => _ = unicolour.Lchab);
-        Assert.DoesNotThrow(() => _ = unicolour.Luv);
-        Assert.DoesNotThrow(() => _ = unicolour.Lchuv);
-        Assert.DoesNotThrow(() => _ = unicolour.Oklab);
-        Assert.DoesNotThrow(() => _ = unicolour.Oklch);
-        Assert.DoesNotThrow(() => _ = unicolour.Alpha);
-        Assert.DoesNotThrow(() => _ = unicolour.Config);
-        Assert.DoesNotThrow(() => _ = unicolour.CanBeDisplayed);
-        Assert.DoesNotThrow(() => _ = unicolour.RelativeLuminance);
     }
 }
 

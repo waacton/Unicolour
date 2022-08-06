@@ -1,6 +1,7 @@
 namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 public class InterpolateXyzTests
 {
@@ -80,14 +81,8 @@ public class InterpolateXyzTests
         AssertInterpolated(interpolated2, (0.35, 0.7, 0.3, 0.95));
     }
 
-    private static void AssertInterpolated(Unicolour unicolour, (double x, double y, double z, double alpha) expected)
+    private static void AssertInterpolated(Unicolour unicolour, (double first, double second, double third, double alpha) expected)
     {
-        var actualXyz = unicolour.Xyz;
-        var actualAlpha = unicolour.Alpha;
-        
-        Assert.That(actualXyz.X, Is.EqualTo(expected.x).Within(0.00000000005));
-        Assert.That(actualXyz.Y, Is.EqualTo(expected.y).Within(0.00000000005));
-        Assert.That(actualXyz.Z, Is.EqualTo(expected.z).Within(0.00000000005));
-        Assert.That(actualAlpha.A, Is.EqualTo(expected.alpha).Within(0.00000000005));
+        AssertUtils.AssertInterpolated(unicolour.Xyz.Triplet, unicolour.Alpha.A, expected);
     }
 }

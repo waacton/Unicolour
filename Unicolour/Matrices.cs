@@ -23,6 +23,20 @@ internal static class Matrices
         {+0.0259040371, +0.7827717662, -0.8086757660}
     });
     
+    public static readonly Matrix JzazbzM1 = new(new[,]
+    {
+        {+0.41478972, +0.579999, +0.0146480},
+        {-0.2015100, +1.120649, +0.0531008},
+        {-0.0166008, +0.264800, +0.6684799}
+    });
+    
+    public static readonly Matrix JzazbzM2 = new(new[,]
+    {
+        {+0.5, +0.5, 0},
+        {+3.524000, -4.066708, +0.542708},
+        {+0.199076, +1.096799, -1.295875}
+    });
+    
     // based on http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
     public static Matrix RgbToXyzMatrix(Configuration config)
     {

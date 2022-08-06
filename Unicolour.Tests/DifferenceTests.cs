@@ -1,6 +1,8 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -100,19 +102,47 @@ public static class DifferenceTests
             Assert.That(reference.DeltaE00(sample), Is.EqualTo(sample.DeltaE00(reference)));
         }
     }
+    
+    [Test]
+    public static void KnownDeltaEz()
+    {
+        var black = ColourLimits.Rgb["black"];
+        var white = ColourLimits.Rgb["white"];
+        var red = ColourLimits.Rgb["red"];
+        var green = ColourLimits.Rgb["green"];
+        var blue = ColourLimits.Rgb["blue"];
+        var random = GetRandomColour();
+        
+        // delta-Ez colour differences are symmetric, i.e. green from red == red from green
+        AssertKnownDeltaEz(black, white, 0.167174);
+        AssertKnownDeltaEz(red, green, 0.195524);
+        AssertKnownDeltaEz(green, blue, 0.271571);
+        AssertKnownDeltaEz(blue, red, 0.281457);
+        AssertKnownDeltaEz(random, random, 0.000000);
+
+        for (var i = 0; i < 1000; i++)
+        {
+            var reference = GetRandomColour();
+            var sample = GetRandomColour();
+            Assert.That(reference.DeltaEz(sample), Is.EqualTo(sample.DeltaEz(reference)));
+        }
+    }
 
     [Test]
-    public static void RelativeDeltaE76() => AssertRelativeDeltas(Comparison.DeltaE76);
+    public static void RelativeDeltaE76() => AssertRelativeLabBasedDeltas(Comparison.DeltaE76);
     
     [Test]
-    public static void RelativeDeltaE94ForGraphics() => AssertRelativeDeltas((reference, sample) => reference.DeltaE94(sample));
+    public static void RelativeDeltaE94ForGraphics() => AssertRelativeLabBasedDeltas((reference, sample) => reference.DeltaE94(sample));
     
     [Test]
-    public static void RelativeDeltaE94ForTextiles() => AssertRelativeDeltas((reference, sample) => reference.DeltaE94(sample, true));
+    public static void RelativeDeltaE94ForTextiles() => AssertRelativeLabBasedDeltas((reference, sample) => reference.DeltaE94(sample, true));
     
     [Test]
-    public static void RelativeDeltaE00() => AssertRelativeDeltas((reference, sample) => reference.DeltaE00(sample));
-    
+    public static void RelativeDeltaE00() => AssertRelativeLabBasedDeltas((reference, sample) => reference.DeltaE00(sample));
+
+    [Test]
+    public static void RelativeDeltaEz() => AssertRelativeJchBasedDeltas();
+
     private static void AssertKnownDeltaE76(Unicolour reference, Unicolour sample, double expectedDelta)
     {
         var delta = reference.DeltaE76(sample);
@@ -134,8 +164,16 @@ public static class DifferenceTests
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.0005));
         Assert.That(symmetricDelta, Is.EqualTo(delta));
     }
+    
+    private static void AssertKnownDeltaEz(Unicolour reference, Unicolour sample, double expectedDelta)
+    {
+        var delta = reference.DeltaEz(sample);
+        var symmetricDelta = sample.DeltaEz(reference);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.00005));
+        Assert.That(symmetricDelta, Is.EqualTo(delta));
+    }
 
-    private static void AssertRelativeDeltas(Func<Unicolour, Unicolour, double> getDelta)
+    private static void AssertRelativeLabBasedDeltas(Func<Unicolour, Unicolour, double> getDelta)
     {
         var red = ColourLimits.Lab["red"];
         var green = ColourLimits.Lab["green"];
@@ -195,5 +233,70 @@ public static class DifferenceTests
         Assert.That(yellowBlueDelta, Is.GreaterThan(redYellowDelta));
         Assert.That(yellowBlueDelta, Is.GreaterThan(yellowGreenDelta));
         Assert.That(yellowBlueDelta, Is.GreaterThan(greenYellowDelta));
+    }
+    
+    private static void AssertRelativeJchBasedDeltas()
+    {
+        for (var i = 0; i < 100; i++)
+        {
+            AssertRelativeJchBasedDeltas(TestColours.GetRandomJzczhz(), TestColours.GetRandomJzczhz(), TestColours.GetRandomJzczhz());
+        }
+    }
+
+    private static void AssertRelativeJchBasedDeltas(ColourTriplet triplet1, ColourTriplet triplet2, ColourTriplet triplet3)
+    {
+        var jzczhzTriplets = new List<ColourTriplet> {triplet1, triplet2, triplet3};
+        var js = jzczhzTriplets.Select(x => x.First).OrderBy(x => x).ToList();
+        var cs = jzczhzTriplets.Select(x => x.Second).OrderBy(x => x).ToList();
+        var hs = jzczhzTriplets.Select(x => x.Third).OrderBy(x => x).ToList();
+
+        void AssertChangesInJ()
+        {
+            var uni1 = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
+            var uni2 = Unicolour.FromJzczhz(js[1], cs[0], hs[0]);
+            var uni3 = Unicolour.FromJzczhz(js[2], cs[0], hs[0]);
+
+            var minMidDelta = uni1.DeltaEz(uni2);
+            var midMaxDelta = uni2.DeltaEz(uni3);
+            var minMaxDelta = uni1.DeltaEz(uni3);
+
+            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
+            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
+        }
+
+        void AssertChangesInC()
+        {
+            var uni1 = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
+            var uni2 = Unicolour.FromJzczhz(js[0], cs[1], hs[0]);
+            var uni3 = Unicolour.FromJzczhz(js[0], cs[2], hs[0]);
+
+            var minMidDelta = uni1.DeltaEz(uni2);
+            var midMaxDelta = uni2.DeltaEz(uni3);
+            var minMaxDelta = uni1.DeltaEz(uni3);
+
+            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
+            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
+        }
+
+        void AssertChangesInH()
+        {
+            double Distance(double lowHue, double highHue) => Math.Min(highHue - lowHue, lowHue + 360 - highHue);
+            var isInHueOrder = Distance(hs[0], hs[1]) < Distance(hs[0], hs[2]);
+            var nearHue = isInHueOrder ? hs[1] : hs[2];
+            var farHue = isInHueOrder ? hs[2] : hs[1];
+
+            var startColour = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
+            var nearColour = Unicolour.FromJzczhz(js[0], cs[0], nearHue);
+            var farColour = Unicolour.FromJzczhz(js[0], cs[0], farHue);
+
+            var smallerDelta = startColour.DeltaEz(nearColour);
+            var largerDelta = startColour.DeltaEz(farColour);
+
+            Assert.That(smallerDelta, Is.LessThan(largerDelta));
+        }
+
+        AssertChangesInJ();
+        AssertChangesInC();
+        AssertChangesInH();
     }
 }

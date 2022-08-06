@@ -1,32 +1,11 @@
 ﻿namespace Wacton.Unicolour.Tests.Utils;
 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 
 internal static class AssertUtils
 {
-    public static void AssertNamedColours(Action<TestColour> action) => AssertItems(TestColours.NamedColours, action);
-    public static void AssertRandomHexColours(Action<string> action) => AssertItems(TestColours.RandomHexColours, action);
-    public static void AssertRandomRgb255Colours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomRgb255Colours, action);
-    public static void AssertRandomRgbColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomRgbColours, action);
-    public static void AssertRandomHsbColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomHsbColours, action);
-    public static void AssertRandomHslColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomHslColours, action);
-    public static void AssertRandomXyzColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomXyzColours, action);
-    public static void AssertRandomLabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLabColours, action);
-    public static void AssertRandomLchabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLchabColours, action);
-    public static void AssertRandomLuvColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLuvColours, action);
-    public static void AssertRandomLchuvColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomLchuvColours, action);
-    public static void AssertRandomOklabColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomOklabColours, action);
-    public static void AssertRandomOklchColours(Action<ColourTriplet> action) => AssertItems(TestColours.RandomOklchColours, action);
-    
-    private static void AssertItems<T>(List<T> itemsToAssert, Action<T> assertAction)
-    {
-        foreach (var itemToAssert in itemsToAssert)
-        {
-            assertAction(itemToAssert);
-        }
-    }
+    public const double InterpolationTolerance = 0.00000000005;
 
     public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, int? hueIndex = null, string? info = null)
     {
@@ -55,5 +34,44 @@ internal static class AssertUtils
             .Or.EqualTo(expectedPlus360).Within(tolerance)
             .Or.EqualTo(expectedMinus360).Within(tolerance), 
             failMessage);
+    }
+
+    public static void AssertInterpolated(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
+    {
+        Assert.That(triplet.First, Is.EqualTo(expected.first).Within(InterpolationTolerance));
+        Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(InterpolationTolerance));
+        Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(InterpolationTolerance));
+        Assert.That(alpha, Is.EqualTo(expected.alpha).Within(InterpolationTolerance));
+    }
+
+    public static void AssertNoPropertyError(Unicolour unicolour)
+    {
+        void AccessProperty(Func<object> getProperty)
+        {
+            var _ = getProperty();
+        }
+
+        void AccessProperties()
+        {
+            AccessProperty(() => unicolour.Alpha);
+            AccessProperty(() => unicolour.CanBeDisplayed);
+            AccessProperty(() => unicolour.Config);
+            AccessProperty(() => unicolour.Hex);
+            AccessProperty(() => unicolour.Hsb);
+            AccessProperty(() => unicolour.Hsl);
+            AccessProperty(() => unicolour.Jzazbz);
+            AccessProperty(() => unicolour.Jzczhz);
+            AccessProperty(() => unicolour.Lab);
+            AccessProperty(() => unicolour.Lchab);
+            AccessProperty(() => unicolour.Lchuv);
+            AccessProperty(() => unicolour.Luv);
+            AccessProperty(() => unicolour.Oklab);
+            AccessProperty(() => unicolour.Oklch);
+            AccessProperty(() => unicolour.Rgb);
+            AccessProperty(() => unicolour.RelativeLuminance);
+            AccessProperty(() => unicolour.Xyz);
+        }
+        
+        Assert.DoesNotThrow(AccessProperties);
     }
 }

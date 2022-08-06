@@ -33,7 +33,6 @@ public record Rgb
     public double ConstrainedBLinear => BLinear.Clamp(0.0, 1.0);
     public ColourTriplet ConstrainedTripletLinear => new(ConstrainedRLinear, ConstrainedGLinear, ConstrainedBLinear);
     
-    // TODO: move this detail (and anything similar) to readme?
     // not using a precision-based tolerance comparison because initial values are always provided by external code
     // and do not want to make assumptions about the intentions of those values (e.g. R set to 1/3.0 and G set to 0.33333333, won't assume they "should" be the same)
     internal bool IsMonochrome => ConvertedFromMonochrome || ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
@@ -49,5 +48,5 @@ public record Rgb
         ConvertedFromMonochrome = convertedFromMonochrome;
     }
     
-    public override string ToString() => $"{R255} {G255} {B255}";
+    public override string ToString() => $"{Math.Round(R, 2)} {Math.Round(G, 2)} {Math.Round(B, 2)} / {R255} {G255} {B255}";
 }

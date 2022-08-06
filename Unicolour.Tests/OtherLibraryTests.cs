@@ -15,68 +15,121 @@ public class OtherLibraryTests
     private delegate Unicolour UnicolourFromTuple((double first, double second, double third) tuple, double alpha = 1.0);
     private delegate TestColour TestColourFromTuple(ColourTriplet triplet);
     
-    private static bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
+    /*
+     * OPENCV:
+     * not testing from LCHab / LCHuv / JzAzBz / JzCzHz --- does not support them
+     * (also I've given up trying to make OpenCvSharp work in a dockerised unix environment...)
+     */
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void OpenCvWindowsNamed(TestColour namedColour) => RunIfWindows(() => AssertFromHex(namedColour.Hex!, OpenCvFactory));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    public void OpenCvWindowsHex(string hex) => RunIfWindows(() => AssertFromHex(hex, OpenCvFactory));
 
-    [Test] 
-    public void OpenCvWindows()
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgb255Colours))]
+    public void OpenCvWindowsRgb255(ColourTriplet triplet) => RunIfWindows(() => AssertFromRgb255(triplet, OpenCvFactory));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgbColours))] 
+    public void OpenCvWindowsRgb(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromRgb, OpenCvFactory.FromRgb));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHsbColours))] 
+    public void OpenCvWindowsHsb(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromHsb, OpenCvFactory.FromHsb));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHslColours))] 
+    public void OpenCvWindowsHsl(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromHsl, OpenCvFactory.FromHsl));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomXyzColours))] 
+    public void OpenCvWindowsXyz(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromXyz, OpenCvFactory.FromXyz)); 
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomLabColours))] 
+    public void OpenCvWindowsLab(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromLab, OpenCvFactory.FromLab));
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomLuvColours))] 
+    public void OpenCvWindowsLuv(ColourTriplet triplet) => RunIfWindows(() => AssertTriplet(triplet, Unicolour.FromLuv, OpenCvFactory.FromLuv));
+
+    // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void OpenCvCrossPlatform(TestColour namedColour) => AssertFromCsvData(namedColour.Hex!, namedColour.Name!);
+    
+    /*
+     * COLOURFUL:
+     * not testing from HSB / HSL / Oklab / Oklch --- doesn't support them
+     * not testing from LUV / LCHuv --- appears to give wrong values (XYZ clamping?)
+     * not testing JzAzBz / JzCzHz --- generates different values, due to multiplying XYZ by different values
+     * (Jzazbz paper is ambiguous about XYZ input, more details here https://github.com/nschloe/colorio/issues/41 - Unicolour aims to match plots of colour datasets like Colorio)
+     */
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void ColourfulNamed(TestColour namedColour) => AssertFromHex(namedColour.Hex!, ColourfulFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    public void ColourfulHex(string hex) => AssertFromHex(hex, ColourfulFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgb255Colours))]
+    public void ColourfulRgb255(ColourTriplet triplet) => AssertFromRgb255(triplet, ColourfulFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgbColours))]
+    public void ColourfulRgb(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromRgb, ColourfulFactory.FromRgb);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomXyzColours))]
+    public void ColourfulXyz(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz); 
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomLabColours))]
+    public void ColourfulLab(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromLab, ColourfulFactory.FromLab);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomLchabColours))]
+    public void ColourfulLchab(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromLchab, ColourfulFactory.FromLchab);
+    
+    /* COLORMINE:
+     * not testing from LCHuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from RGB [0-1] --- RGB only accepts 0-255
+     * not testing from XYZ / LAB / LCHab / LUV --- does a terrible job
+     */
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void ColorMineNamed(TestColour namedColour) => AssertFromHex(namedColour.Hex!, ColorMineFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    public void ColorMineHex(string hex) => AssertFromHex(hex, ColorMineFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgb255Colours))]
+    public void ColorMineRgb255(ColourTriplet triplet) => AssertFromRgb255(triplet, ColorMineFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHsbColours))] 
+    public void ColorMineHsb(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromHsb, ColorMineFactory.FromHsb);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHslColours))] 
+    public void ColorMineHsl(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromHsl, ColorMineFactory.FromHsl);
+    
+    /*
+     * SIXLABORS:
+     * not testing from LCHab / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from LAB / LUV / LCHuv --- appears to give wrong values (XYZ clamping?)
+     */
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    public void SixLaborsNamed(TestColour namedColour) => AssertFromHex(namedColour.Hex!, SixLaborsFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    public void SixLaborsHex(string hex) => AssertFromHex(hex, SixLaborsFactory);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgb255Colours))]
+    public void SixLaborsRgb255(ColourTriplet triplet) => AssertFromRgb255(triplet, SixLaborsFactory);
+
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomRgbColours))]
+    public void SixLaborsRgb(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromRgb, SixLaborsFactory.FromRgb);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHsbColours))]
+    public void SixLaborsHsb(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromHsb, SixLaborsFactory.FromHsb);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHslColours))]
+    public void SixLaborsHsl(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromHsl, SixLaborsFactory.FromHsl);
+    
+    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomXyzColours))]
+    public void SixLaborsXyz(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyz, SixLaborsFactory.FromXyz);
+
+    private static void RunIfWindows(Action action)
     {
-        // I've given up trying to make OpenCvSharp work in a dockerised unix environment...
+        bool IsWindows() => Environment.OSVersion.Platform == PlatformID.Win32NT;
         Assume.That(IsWindows());
-        
-        // not testing from LCHab / LCHuv because OpenCV does not support them
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, OpenCvFactory));
-        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, OpenCvFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, OpenCvFactory));
-        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, OpenCvFactory.FromRgb));
-        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, OpenCvFactory.FromHsb));
-        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, OpenCvFactory.FromHsl));
-        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, OpenCvFactory.FromXyz)); 
-        AssertUtils.AssertRandomLabColours(triplet => AssertTriplet(triplet, Unicolour.FromLab, OpenCvFactory.FromLab));
-        AssertUtils.AssertRandomLuvColours(triplet => AssertTriplet(triplet, Unicolour.FromLuv, OpenCvFactory.FromLuv));
-    }
-    
-    [Test] // in order to test OpenCV in a non-windows environment, this looks up a stored precomputed value
-    public void OpenCvCrossPlatform() => AssertUtils.AssertNamedColours(namedColour => AssertFromCsvData(namedColour.Hex!, namedColour.Name!));
-
-    [Test]
-    public void Colourful()
-    {
-        // not testing from HSB / HSL because Colourful doesn't support them
-        // not testing from LUV / LCHuv because Colourful appears to give wrong values (XYZ clamping?)
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColourfulFactory));
-        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColourfulFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColourfulFactory));
-        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, ColourfulFactory.FromRgb));
-        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz)); 
-        AssertUtils.AssertRandomLabColours(triplet => AssertTriplet(triplet, Unicolour.FromLab, ColourfulFactory.FromLab));
-        AssertUtils.AssertRandomLchabColours(triplet => AssertTriplet(triplet, Unicolour.FromLchab, ColourfulFactory.FromLchab));
-    }
-    
-    [Test]
-    public void ColorMine()
-    {
-        // not testing from RGB [0-1] because ColorMine RGB only accepts 0-255
-        // not testing from XYZ / LAB / LCHab / LUV because ColorMine does a terrible job
-        // not testing from LCHuv because ColorMine does not support it
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, ColorMineFactory));
-        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, ColorMineFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, ColorMineFactory));
-        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, ColorMineFactory.FromHsb));
-        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, ColorMineFactory.FromHsl));
-    }
-    
-    [Test]
-    public void SixLabors()
-    {
-        // not testing from LAB / LUV / LCHuv because SixLabors appears to give wrong values (XYZ clamping?)
-        // not testing from LCHab because SixLabors does not support it
-        AssertUtils.AssertNamedColours(namedColour => AssertFromHex(namedColour.Hex!, SixLaborsFactory));
-        AssertUtils.AssertRandomHexColours(hex => AssertFromHex(hex, SixLaborsFactory));
-        AssertUtils.AssertRandomRgb255Colours(triplet => AssertFromRgb255(triplet, SixLaborsFactory));
-        AssertUtils.AssertRandomRgbColours(triplet => AssertTriplet(triplet, Unicolour.FromRgb, SixLaborsFactory.FromRgb));
-        AssertUtils.AssertRandomHsbColours(triplet => AssertTriplet(triplet, Unicolour.FromHsb, SixLaborsFactory.FromHsb));
-        AssertUtils.AssertRandomHslColours(triplet => AssertTriplet(triplet, Unicolour.FromHsl, SixLaborsFactory.FromHsl));
-        AssertUtils.AssertRandomXyzColours(triplet => AssertTriplet(triplet, Unicolour.FromXyz, SixLaborsFactory.FromXyz)); 
+        action();
     }
     
     private static void AssertTriplet(ColourTriplet triplet, UnicolourFromTuple getUnicolour, TestColourFromTuple getTestColour)

@@ -14,8 +14,10 @@ using ColourfulLchuv = Colourful.LChuvColor;
 using ColourfulIlluminants = Colourful.Illuminants;
 
 /*
- * Colourful doesn't support HSB / HSL
+ * Colourful does not support HSB / HSL / Oklab / Oklch
  * Colourful appears to behave oddly converting from LUV / LCHuv
+ * Colourful handles XYZ -> JzAzBz / JzCzHz differently to Unicolour (related to https://github.com/nschloe/colorio/issues/41 and inconsistent ranges in the plots from the paper)
+ * --- which results in wildly different Jz* values and makes comparing them pointless
  */
 internal class ColourfulFactory : ITestColourFactory
 {

@@ -1,5 +1,7 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Utils;
+
 public record Lab
 {
     public double L { get; }
@@ -19,9 +21,5 @@ public record Lab
         ConvertedFromMonochrome = convertedFromMonochrome;
     }
 
-    public override string ToString()
-    {
-        string Prefix(double value) => value > 0 ? "+" : string.Empty;
-        return $"{Math.Round(L, 2)}% {Prefix(A)}{Math.Round(A, 2)} {Prefix(B)}{Math.Round(B, 2)}";
-    }
+    public override string ToString() => $"{Math.Round(L, 2)} {Signed(Math.Round(A, 2))} {Signed(Math.Round(B, 2))}";
 }

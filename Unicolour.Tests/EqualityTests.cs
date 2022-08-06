@@ -71,6 +71,22 @@ public class EqualityTests
     }
     
     [Test]
+    public void EqualJzazbzGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomJzazbzUnicolour();
+        var unicolour2 = Unicolour.FromJzazbz(unicolour1.Jzazbz.J, unicolour1.Jzazbz.A, unicolour1.Jzazbz.B, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualJzczhzGivesEqualObjects()
+    {
+        var unicolour1 = GetRandomJzczhzUnicolour();
+        var unicolour2 = Unicolour.FromJzczhz(unicolour1.Jzczhz.J, unicolour1.Jzczhz.C, unicolour1.Jzczhz.H, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
     public void EqualOklabGivesEqualObjects()
     {
         var unicolour1 = GetRandomOklabUnicolour();
@@ -159,6 +175,24 @@ public class EqualityTests
     }
     
     [Test]
+    public void NotEqualJzazbzGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomJzazbzUnicolour();
+        var differentTuple = GetDifferent(unicolour1.Jzazbz.Triplet, 0.001).Tuple;
+        var unicolour2 = Unicolour.FromJzazbz(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Jzazbz.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualJzczhzGivesNotEqualObjects()
+    {
+        var unicolour1 = GetRandomJzczhzUnicolour();
+        var differentTuple = GetDifferent(unicolour1.Jzczhz.Triplet, 0.001).Tuple;
+        var unicolour2 = Unicolour.FromJzczhz(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Jzczhz.Triplet);
+    }
+    
+    [Test]
     public void NotEqualOklabGivesNotEqualObjects()
     {
         var unicolour1 = GetRandomOklabUnicolour();
@@ -215,6 +249,8 @@ public class EqualityTests
     private static Unicolour GetRandomLchabUnicolour() => Unicolour.FromLchab(TestColours.GetRandomLchab().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomLuvUnicolour() => Unicolour.FromLuv(TestColours.GetRandomLuv().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomLchuvUnicolour() => Unicolour.FromLchuv(TestColours.GetRandomLchuv().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomJzazbzUnicolour() => Unicolour.FromJzazbz(TestColours.GetRandomJzazbz().Tuple, TestColours.GetRandomAlpha());
+    private static Unicolour GetRandomJzczhzUnicolour() => Unicolour.FromJzczhz(TestColours.GetRandomJzczhz().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomOklabUnicolour() => Unicolour.FromOklab(TestColours.GetRandomOklab().Tuple, TestColours.GetRandomAlpha());
     private static Unicolour GetRandomOklchUnicolour() => Unicolour.FromOklch(TestColours.GetRandomOklch().Tuple, TestColours.GetRandomAlpha());
     private static ColourTriplet GetDifferent(ColourTriplet triplet, double diff = 0.1) => new(triplet.First + diff, triplet.Second + diff, triplet.Third + diff);
@@ -229,6 +265,8 @@ public class EqualityTests
         AssertEqual(unicolour1.Lchab, unicolour2.Lchab);
         AssertEqual(unicolour1.Luv, unicolour2.Luv);
         AssertEqual(unicolour1.Lchuv, unicolour2.Lchuv);
+        AssertEqual(unicolour1.Jzazbz, unicolour2.Jzazbz);
+        AssertEqual(unicolour1.Jzczhz, unicolour2.Jzczhz);
         AssertEqual(unicolour1.Oklab, unicolour2.Oklab);
         AssertEqual(unicolour1.Oklch, unicolour2.Oklch);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);

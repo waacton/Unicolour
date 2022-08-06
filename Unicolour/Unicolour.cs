@@ -11,6 +11,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Lchab? lchab;
     private Luv? luv;
     private Lchuv? lchuv;
+    private Jzazbz? jzazbz;
+    private Jzczhz? jzczhz;
     private Oklab? oklab;
     private Oklch? oklch;
 
@@ -22,6 +24,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Lchab Lchab => Get(() => lchab, ColourSpace.Lchab)!;
     public Luv Luv => Get(() => luv, ColourSpace.Luv)!;
     public Lchuv Lchuv => Get(() => lchuv, ColourSpace.Lchuv)!;
+    public Jzazbz Jzazbz => Get(() => jzazbz, ColourSpace.Jzazbz)!;
+    public Jzczhz Jzczhz => Get(() => jzczhz, ColourSpace.Jzczhz)!;
     public Oklab Oklab => Get(() => oklab, ColourSpace.Oklab)!;
     public Oklch Oklch => Get(() => oklch, ColourSpace.Oklch)!;
     public Alpha Alpha { get; }
@@ -70,6 +74,8 @@ public partial class Unicolour : IEquatable<Unicolour>
             ColourSpace.Lchab => Lchab.Equals(other.Lchab),
             ColourSpace.Luv => Luv.Equals(other.Luv),
             ColourSpace.Lchuv => Lchuv.Equals(other.Lchuv),
+            ColourSpace.Jzazbz => Jzazbz.Equals(other.Jzazbz),
+            ColourSpace.Jzczhz => Jzczhz.Equals(other.Jzczhz),
             ColourSpace.Oklab => Oklab.Equals(other.Oklab),
             ColourSpace.Oklch => Oklch.Equals(other.Oklch),
             _ => throw new ArgumentOutOfRangeException()
@@ -90,6 +96,8 @@ public partial class Unicolour : IEquatable<Unicolour>
                 ColourSpace.Lchab => Lchab.GetHashCode() * 397,
                 ColourSpace.Luv => Luv.GetHashCode() * 397,
                 ColourSpace.Lchuv => Lchuv.GetHashCode() * 397,
+                ColourSpace.Jzazbz => Jzazbz.GetHashCode() * 397,
+                ColourSpace.Jzczhz => Jzczhz.GetHashCode() * 397,
                 ColourSpace.Oklab => Oklab.GetHashCode() * 397,
                 ColourSpace.Oklch => Oklch.GetHashCode() * 397,
                 _ => throw new ArgumentOutOfRangeException()

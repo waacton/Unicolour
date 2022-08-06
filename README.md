@@ -1,6 +1,7 @@
 # <img src="https://gitlab.com/Wacton/Unicolour/-/raw/main/Unicolour/Resources/Unicolour.png" width="32" height="32"> Unicolour
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
+[![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/https/waacton.npkn.net/gitlab-test-badge/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 
 Unicolour is a small set of utilities for working with colour:
@@ -12,11 +13,13 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - RGB
 - HSB/HSV
 - HSL
-- CIE XYZ
-- CIE LAB
-- CIE LCHab
-- CIE LUV
-- CIE LCHuv
+- CIEXYZ
+- CIELAB
+- CIELCh<sub>ab</sub>
+- CIELUV
+- CIELCh<sub>uv</sub>
+- J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
+- J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
 - Oklab
 - Oklch
 
@@ -49,6 +52,8 @@ var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
 var unicolour = Unicolour.FromLchab(55.96, 84.73, 356.1);
 var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
+var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
+var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
 ```
@@ -63,6 +68,8 @@ var lab = unicolour.Lab;
 var lchab = unicolour.Lchab;
 var luv = unicolour.Luv;
 var lchuv = unicolour.Lchuv;
+var jzazbz = unicolour.Jzazbz;
+var jzczhz = unicolour.Jzczhz;
 var oklab = unicolour.Oklab;
 var oklch = unicolour.Oklch;
 ```
@@ -77,6 +84,8 @@ var interpolated = unicolour1.InterpolateLab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchuv(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateJzazbz(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateJzczhz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```
@@ -87,6 +96,7 @@ var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
 var difference = unicolour1.DeltaE94(unicolour2);
 var difference = unicolour1.DeltaE00(unicolour2);
+var difference = unicolour1.DeltaEz(unicolour2);
 ```
 
 See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:
@@ -105,9 +115,9 @@ var config = new Configuration(
     new(0.7347, 0.2653), // RGB red chromaticity coordinates
     new(0.1152, 0.8264), // RGB green chromaticity coordinates
     new(0.1566, 0.0177), // RGB blue chromaticity coordinates
-    value => Companding.Gamma(value, 2.2), // RGB companding function
+    value => Companding.Gamma(value, 2.2),        // RGB companding function
     value => Companding.InverseGamma(value, 2.2), // RGB inverse companding function
-    WhitePoint.From(Illuminant.D50), // RGB white point
+    WhitePoint.From(Illuminant.D50),  // RGB white point
     WhitePoint.From(Illuminant.D50)); // XYZ white point
     
 var unicolour = Unicolour.FromRgb(config, 255, 20, 147);

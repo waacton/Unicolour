@@ -7,12 +7,12 @@ using OpenCvSharp;
 using Wacton.Unicolour.Tests.Utils;
 
 /*
- * OpenCV doesn't expose linear RGB
+ * OpenCV does not support LCHab / LCHuv / Jzazbz / Jzczhz / Oklab / Oklch
+ * OpenCV does not expose linear RGB
  * OpenCV RGB -> XYZ expects to linear RGB values (that have not been companded)
  * OpenCV XYZ -> RGB actually converts to linear RGB (not companded)
  * OpenCV LAB / LUV -> RGB clamps values, causing errors in subsequent conversions (e.g. LAB -> RGB -> XYZ / LUV)
  * OpenCV RGB -> LUV doesn't seem to work when LUV contains negative values
- * OpenCV doesn't support any LCH format
  */
 internal class OpenCvFactory : ITestColourFactory
 {

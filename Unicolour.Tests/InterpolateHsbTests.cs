@@ -1,6 +1,7 @@
 namespace Wacton.Unicolour.Tests;
 
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
 public class InterpolateHsbTests
 {
@@ -116,14 +117,8 @@ public class InterpolateHsbTests
         AssertInterpolated(interpolated2, (135, 0.7, 0.3, 0.95));
     }
 
-    private static void AssertInterpolated(Unicolour unicolour, (double h, double s, double b, double alpha) expected)
+    private static void AssertInterpolated(Unicolour unicolour, (double first, double second, double third, double alpha) expected)
     {
-        var actualHsb = unicolour.Hsb;
-        var actualAlpha = unicolour.Alpha;
-        
-        Assert.That(actualHsb.H, Is.EqualTo(expected.h).Within(0.00000000005));
-        Assert.That(actualHsb.S, Is.EqualTo(expected.s).Within(0.00000000005));
-        Assert.That(actualHsb.B, Is.EqualTo(expected.b).Within(0.00000000005));
-        Assert.That(actualAlpha.A, Is.EqualTo(expected.alpha).Within(0.00000000005));
+        AssertUtils.AssertInterpolated(unicolour.Hsb.Triplet, unicolour.Alpha.A, expected);
     }
 }

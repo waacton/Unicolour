@@ -17,7 +17,7 @@ using SixLaborsLchuv = SixLabors.ImageSharp.ColorSpaces.CieLchuv;
 using SixLaborsIlluminants = SixLabors.ImageSharp.ColorSpaces.Illuminants;
 
 /*
- * SixLabors does not support Jzazbz / Jzczhz / Oklab / Oklch
+ * SixLabors does not support HSLuv / HPLuv / Jzazbz / Jzczhz / Oklab / Oklch
  * SixLabors does not do a great job of converting to or from LAB / LUV
  * SixLabors does not handle very small RGB -> HSB / HSL
  * SixLabors produces unexpected results for XYZ -> HSB / HSL due to clamping RGB during conversion
@@ -154,14 +154,14 @@ internal class SixLaborsFactory : ITestColourFactory
         var exclusions = new List<string>();
         if (HasLowChroma(rgb)) exclusions.Add("SixLabors converts via RGB and does not handle low RGB chroma");
         if (!hsb.HasValue || !hsl.HasValue) return exclusions;
-        if (HasInconsistentHue(hsb.Value, hsl.Value)) exclusions.Add("SixLabors converts via RGB and loses hue due to rounding to monochrome");
+        if (HasInconsistentHue(hsb.Value, hsl.Value)) exclusions.Add("SixLabors converts via RGB and loses hue due to rounding to greyscale");
         return exclusions;
     }
     
     private static List<string> LchExclusions(SixLaborsRgb rgb, SixLaborsLuv luv, SixLaborsLchuv lchuv)
     {
         var exclusions = new List<string>();
-        if (IsMonochrome(rgb)) exclusions.Add("SixLabors calculates hue differently value when RGB is monochrome");
+        if (IsGreyscale(rgb)) exclusions.Add("SixLabors calculates hue differently value when RGB is greyscale");
         if (HasClampedChroma(luv, lchuv)) exclusions.Add("SixLabors clamps LCH chroma");
         return exclusions;
     }
@@ -178,6 +178,6 @@ internal class SixLaborsFactory : ITestColourFactory
         return chroma < 0.01;
     }
     
-    private static bool IsMonochrome(SixLaborsRgb rgb) => Math.Abs(rgb.R - rgb.G) < 0.000001 && Math.Abs(rgb.G - rgb.B) < 0.000001;
+    private static bool IsGreyscale(SixLaborsRgb rgb) => Math.Abs(rgb.R - rgb.G) < 0.000001 && Math.Abs(rgb.G - rgb.B) < 0.000001;
     private static bool HasClampedChroma(SixLaborsLuv luv, SixLaborsLchuv lchuv) => lchuv.C >= 200 && Math.Abs(luv.U - lchuv.C) > 0.0001;
 }

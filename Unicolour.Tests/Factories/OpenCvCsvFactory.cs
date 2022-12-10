@@ -51,7 +51,7 @@ internal static class OpenCvCsvFactory
         };
         rows.Add(string.Join(", ", headerRow));
        
-        foreach (var namedColour in TestColours.NamedColours)
+        foreach (var namedColour in NamedColours.All)
         {
             var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
             var (r255, g255, b255) = (systemColour.R, systemColour.G, systemColour.B);

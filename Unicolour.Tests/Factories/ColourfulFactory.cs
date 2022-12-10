@@ -14,7 +14,7 @@ using ColourfulLchuv = Colourful.LChuvColor;
 using ColourfulIlluminants = Colourful.Illuminants;
 
 /*
- * Colourful does not support HSB / HSL / Oklab / Oklch
+ * Colourful does not support HSB / HSL / HSLuv / HPLuv / Oklab / Oklch
  * Colourful appears to behave oddly converting from LUV / LCHuv
  * Colourful handles XYZ -> JzAzBz / JzCzHz differently to Unicolour (related to https://github.com/nschloe/colorio/issues/41 and inconsistent ranges in the plots from the paper)
  * --- which results in wildly different Jz* values and makes comparing them pointless
@@ -134,9 +134,9 @@ internal class ColourfulFactory : ITestColourFactory
     private static List<string> LchExclusions(ColourfulRgb rgb)
     {
         var exclusions = new List<string>();
-        if (IsMonochrome(rgb)) exclusions.Add("Colourful calculates hue differently value when RGB is monochrome");
+        if (IsGreyscale(rgb)) exclusions.Add("Colourful calculates hue differently value when RGB is greyscale");
         return exclusions;
     }
 
-    private static bool IsMonochrome(ColourfulRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
+    private static bool IsGreyscale(ColourfulRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
 }

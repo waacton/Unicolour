@@ -8,10 +8,10 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class ParseHexTests
 {
-    [TestCaseSource(typeof(TestColours), nameof(TestColours.NamedColours))]
+    [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
     public void NamedHexSameRgbAsSystem(TestColour namedColour) => AssertHexParse(namedColour.Hex!);
 
-    [TestCaseSource(typeof(TestColours), nameof(TestColours.RandomHexColours))]
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HexStrings))]
     public void HexSameRgbAsSystem(string hex) => AssertHexParse(hex);
 
     [Test]

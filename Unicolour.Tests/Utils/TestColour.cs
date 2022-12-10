@@ -16,6 +16,8 @@ public class TestColour
     public ColourTriplet? Lchab { get; init; }
     public ColourTriplet? Luv { get; init; }
     public ColourTriplet? Lchuv { get; init; }
+    public ColourTriplet? Hsluv { get; init; }
+    public ColourTriplet? Hpluv { get; init; }
     public Tolerances? Tolerances { get; init; }
     public bool IsRgbConstrained { get; init; } = true;
     public bool IsRgbLinearConstrained { get; init; } = true;
@@ -24,12 +26,12 @@ public class TestColour
      * ColorMine and SixLabors behave strangely with HSL
      * from what I can tell, they almost certainly convert HSB -> RGB -> HSL
      * and as a result they have some oddities:
-     * 1) they set hue to 0 if there is no HSB saturation (since the intermediate RGB gets rounded to monochrome, the hue gets lost in conversion)
+     * 1) they set hue to 0 if there is no HSB saturation (since the intermediate RGB gets rounded to greyscale, the hue gets lost in conversion)
      * 2) SixLabors sets saturation to 0 if RGB chroma (max - min) is < 0.001
      * 3) ColorMine truncates intermediate RGB 255 values during conversion, resulting in full saturation if any RGB 255 value is < 1 (truncated to 0)
      * --- no point in trying to compensate for their lossy conversions, just ignore them in the test
      *
-     * ColorMine, SixLabors, and Colourful all behave slightly differently when converting monochrome RGB -> LCH
+     * ColorMine, SixLabors, and Colourful all behave slightly differently when converting greyscale RGB -> LCH
      * which is understandable; the hue to use when there is no actual hue is somewhat arbitrary
      */
     public bool ExcludeFromHsxTests => ExcludeFromHsxTestReasons.Any();
@@ -41,7 +43,7 @@ public class TestColour
     public bool ExcludeFromLchTests => ExcludeFromLchTestReasons.Any();
     public List<string> ExcludeFromLchTestReasons { get; init; } = new();
 
-    public override string ToString() => $"Name:[{Name}] · Hex[{Hex}]";
+    public override string ToString() => string.Join(" · ", new[] {Hex, Name}.Where(x => !string.IsNullOrEmpty(x)));
 }
 
 public record Tolerances 

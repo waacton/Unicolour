@@ -14,7 +14,7 @@ var fontFamily = collection.Add("Inconsolata-Regular.ttf");
 var font = fontFamily.CreateFont(24);
 var textRgba32 = AsRgba32(Unicolour.FromHex("#E8E8FF"));
 
-var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LCHab", "LUV", "LCHuv", "JzAzBz", "JzCzHz", "OKLAB", "OKLCH" };
+var labels = new List<string> {"RGB", "HSB", "HSL", "XYZ", "LAB", "LCHab", "LUV", "LCHuv", "HSLuv", "HPLuv", "JzAzBz", "JzCzHz", "OKLAB", "OKLCH" };
 var purple = Unicolour.FromHsb(260, 1.0, 0.33);
 var orange = Unicolour.FromHsb(30, 0.66, 1.0);
 var pink = Unicolour.FromHex("#FF1493");
@@ -43,6 +43,8 @@ void Draw(Unicolour start, Unicolour end, int column)
             start.InterpolateLchab(end, distance),
             start.InterpolateLuv(end, distance),
             start.InterpolateLchuv(end, distance),
+            start.InterpolateHsluv(end, distance),
+            start.InterpolateHpluv(end, distance),
             start.InterpolateJzazbz(end, distance),
             start.InterpolateJzczhz(end, distance),
             start.InterpolateOklab(end, distance),
@@ -76,8 +78,7 @@ PointF TextLocation(float column, float row) => new(gradientWidth * column + 16,
 
 Rgba32 AsRgba32(Unicolour unicolour)
 {
-    var (r, g, b) = unicolour.Rgb.ConstrainedTriplet255;
-    var a = constrainUndisplayableColours || unicolour.CanBeDisplayed ? 255 : 0;
+    var (r, g, b) = unicolour.Rgb.Byte255.ConstrainedTriplet;
+    var a = constrainUndisplayableColours || unicolour.IsDisplayable ? 255 : 0;
     return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
 }
-

@@ -3,12 +3,12 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// monochrome LAB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-// monochrome LCHab has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
-public class InterpolateMonochromeLchabTests
+// greyscale LAB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// greyscale LCHab has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
+public class InterpolateGreyscaleLchabTests
 {
     [Test]
-    public void MonochromeStartColour()
+    public void GreyscaleStartColour()
     {
         var labBlack = Unicolour.FromLab(0, 0, 0);
         var labWhite = Unicolour.FromLab(100, 0, 0);
@@ -21,7 +21,7 @@ public class InterpolateMonochromeLchabTests
         var fromLchabBlack = lchabBlack.InterpolateLchab(green, 0.5);
         var fromLchabWhite = lchabWhite.InterpolateLchab(green, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
         AssertColourTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
@@ -30,7 +30,7 @@ public class InterpolateMonochromeLchabTests
     }
     
     [Test]
-    public void MonochromeEndColour()
+    public void GreyscaleEndColour()
     {
         var labBlack = Unicolour.FromLab(0, 0, 0);
         var labWhite = Unicolour.FromLab(100, 0, 0);
@@ -43,7 +43,7 @@ public class InterpolateMonochromeLchabTests
         var toLchabBlack = blue.InterpolateLchab(lchabBlack, 0.5);
         var toLchabWhite = blue.InterpolateLchab(lchabWhite, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
         AssertColourTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
@@ -52,7 +52,7 @@ public class InterpolateMonochromeLchabTests
     }
     
     [Test]
-    public void MonochromeBothLabColours()
+    public void GreyscaleBothLabColours()
     {
         var black = Unicolour.FromLab(0, 0, 0);
         var white = Unicolour.FromLab(100, 0, 0);
@@ -73,7 +73,7 @@ public class InterpolateMonochromeLchabTests
     }
     
     [Test]
-    public void MonochromeBothLchabColours()
+    public void GreyscaleBothLchabColours()
     {
         var black = Unicolour.FromLchab(0, 0, 0);
         var white = Unicolour.FromLchab(100, 0, 300);

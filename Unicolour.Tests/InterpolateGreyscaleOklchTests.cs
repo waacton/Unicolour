@@ -3,12 +3,12 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// monochrome Oklab has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-// monochrome Oklch has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
-public class InterpolateMonochromeOklchTests
+// greyscale Oklab has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// greyscale Oklch has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
+public class InterpolateGreyscaleOklchTests
 {
     [Test]
-    public void MonochromeStartColour()
+    public void GreyscaleStartColour()
     {
         var oklabBlack = Unicolour.FromOklab(0, 0, 0);
         var oklabWhite = Unicolour.FromOklab(1, 0, 0);
@@ -21,7 +21,7 @@ public class InterpolateMonochromeOklchTests
         var fromOklchBlack = oklchBlack.InterpolateOklch(green, 0.5);
         var fromOklchWhite = oklchWhite.InterpolateOklch(green, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
         AssertColourTriplet(fromOklabWhite.Oklch.Triplet, new(0.75, 0.25, 120));
@@ -30,7 +30,7 @@ public class InterpolateMonochromeOklchTests
     }
     
     [Test]
-    public void MonochromeEndColour()
+    public void GreyscaleEndColour()
     {
         var oklabBlack = Unicolour.FromOklab(0, 0, 0);
         var oklabWhite = Unicolour.FromOklab(1, 0, 0);
@@ -43,7 +43,7 @@ public class InterpolateMonochromeOklchTests
         var toOklchBlack = blue.InterpolateOklch(oklchBlack, 0.5);
         var toOklchWhite = blue.InterpolateOklch(oklchWhite, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
         AssertColourTriplet(toOklabWhite.Oklch.Triplet, new(0.75, 0.25, 240));
@@ -52,7 +52,7 @@ public class InterpolateMonochromeOklchTests
     }
     
     [Test]
-    public void MonochromeBothOklabColours()
+    public void GreyscaleBothOklabColours()
     {
         var black = Unicolour.FromOklab(0, 0, 0);
         var white = Unicolour.FromOklab(1, 0, 0);
@@ -73,7 +73,7 @@ public class InterpolateMonochromeOklchTests
     }
     
     [Test]
-    public void MonochromeBothOklchColours()
+    public void GreyscaleBothOklchColours()
     {
         var black = Unicolour.FromOklch(0, 0, 0);
         var white = Unicolour.FromOklch(1, 0, 300);

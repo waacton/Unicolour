@@ -21,7 +21,7 @@ test:
     stage: test
     script:
         - 'dotnet test 
-            --test-adapter-path:. --logger:"nunit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+            --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
             --collect:"XPlat Code Coverage" --results-directory:".\artifacts"'
         - 'export PATH="$PATH:/root/.dotnet/tools"'
         - 'dotnet tool install -g dotnet-reportgenerator-globaltool'

@@ -7,10 +7,7 @@ internal static class Conversion
     // https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
     public static Hsb RgbToHsb(Rgb rgb)
     {
-        var r = rgb.ConstrainedR;
-        var g = rgb.ConstrainedG;
-        var b = rgb.ConstrainedB;
-
+        var (r, g, b) = rgb.ConstrainedTriplet;
         var components = new[] {r, g, b};
         var xMax = components.Max();
         var xMin = components.Min();
@@ -24,16 +21,13 @@ internal static class Conversion
         else hue = double.NaN;
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
-        return new Hsb(hue.Modulo(360.0), saturation, brightness, false, rgb.IsMonochrome);
+        return new Hsb(hue.Modulo(360.0), saturation, brightness, ColourMode.FromRepresentation(rgb));
     }
 
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
     public static Rgb HsbToRgb(Hsb hsb, Configuration config)
     {
-        var hue = hsb.ConstrainedH;
-        var saturation = hsb.ConstrainedS;
-        var brightness = hsb.ConstrainedB;
-        
+        var (hue, saturation, brightness) = hsb.ConstrainedTriplet;
         var chroma = brightness * saturation;
         var h = hue / 60;
         var x = chroma * (1 - Math.Abs(((h % 2) - 1)));
@@ -51,43 +45,37 @@ internal static class Conversion
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, config, hsb.IsMonochrome);
+        return new Rgb(red, green, blue, config, ColourMode.FromRepresentation(hsb));
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
     public static Hsl HsbToHsl(Hsb hsb)
     {
-        var hue = hsb.ConstrainedH;
-        var hsbSaturation = hsb.ConstrainedS;
-        var brightness = hsb.ConstrainedB;
-        
+        var (hue, hsbSaturation, brightness) = hsb.ConstrainedTriplet;
         var lightness = brightness * (1 - hsbSaturation / 2);
         var saturation = lightness is > 0.0 and < 1.0
             ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
             : 0;
 
-        return new Hsl(hue, saturation, lightness, hsb.HasExplicitHue, hsb.IsMonochrome);
+        return new Hsl(hue, saturation, lightness, ColourMode.FromRepresentation(hsb));
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
     public static Hsb HslToHsb(Hsl hsl)
     {
-        var hue = hsl.ConstrainedH;
-        var hslSaturation = hsl.ConstrainedS;
-        var lightness = hsl.ConstrainedL;
-        
+        var (hue, hslSaturation, lightness) = hsl.ConstrainedTriplet;
         var brightness = lightness + hslSaturation * Math.Min(lightness, 1 - lightness);
         var saturation = brightness > 0.0
             ? 2 * (1 - lightness / brightness)
             : 0;
 
-        return new Hsb(hue, saturation, brightness, hsl.HasExplicitHue, hsl.IsMonochrome);
+        return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hsl));
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
     public static Xyz RgbToXyz(Rgb rgb, Configuration config)
     {
-        var rgbLinearMatrix = Matrix.FromTriplet(rgb.TripletLinear);
+        var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
         var transformationMatrix = Matrices.RgbToXyzMatrix(config);
         var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
 
@@ -95,7 +83,7 @@ internal static class Conversion
         var y = xyzMatrix[1, 0];
         var z = xyzMatrix[2, 0];
 
-        return new Xyz(x, y, z, rgb.IsMonochrome);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(rgb));
     }
     
     // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
@@ -113,16 +101,13 @@ internal static class Conversion
         var g = config.Compand(gLinear);
         var b = config.Compand(bLinear);
 
-        return new Rgb(r, g, b, config, xyz.ConvertedFromMonochrome);
+        return new Rgb(r, g, b, config, ColourMode.FromRepresentation(xyz));
     }
     
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
     public static Lab XyzToLab(Xyz xyz, Configuration config)
     {
-        var x = xyz.X;
-        var y = xyz.Y;
-        var z = xyz.Z;
-
+        var (x, y, z) = xyz.Triplet;
         var referenceWhite = config.XyzWhitePoint;
         var xRatio = x * 100 / referenceWhite.X;
         var yRatio = y * 100 / referenceWhite.Y;
@@ -134,16 +119,13 @@ internal static class Conversion
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));
 
-        return new Lab(l, a, b, xyz.ConvertedFromMonochrome);
+        return new Lab(l, a, b, ColourMode.FromRepresentation(xyz));
     }
-    
+
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
     public static Xyz LabToXyz(Lab lab, Configuration config)
     {
-        var l = lab.L;
-        var a = lab.A;
-        var b = lab.B;
-        
+        var (l, a, b) = lab.Triplet;
         var referenceWhite = config.XyzWhitePoint;
         var delta = 6.0 / 29.0;
         double F(double t) => t > delta ? Math.Pow(t, 3.0) : 3 * Math.Pow(delta, 2) * (t - 4.0 / 29.0);
@@ -151,49 +133,47 @@ internal static class Conversion
         var y = referenceWhite.Y / 100.0 * F((l + 16) / 116.0);
         var z = referenceWhite.Z / 100.0 * F((l + 16) / 116.0 - b / 200.0);
 
-        return new Xyz(x, y, z, lab.IsMonochrome);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(lab));
     }
     
     public static Lchab LabToLchab(Lab lab)
     {
         var (l, c, h) = ToChromaHueTriplet(lab.L, lab.A, lab.B);
-        return new Lchab(l, c, h, false, lab.IsMonochrome);
+        return new Lchab(l, c, h, ColourMode.FromRepresentation(lab));
     }
     
     public static Lab LchabToLab(Lchab lchab)
     {
         var (l, a, b) = FromChromaHueTriplet(lchab.ConstrainedTriplet);
-        return new Lab(l, a, b, lchab.IsMonochrome);
+        return new Lab(l, a, b, ColourMode.FromRepresentation(lchab));
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation
     public static Luv XyzToLuv(Xyz xyz, Configuration config)
     {
-        double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
-        double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
-            
+        var (x, y, z) = xyz.Triplet;
         var (xRef, yRef, zRef) = config.XyzWhitePoint;
-        var uPrime = U(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
+
+        double U(double xu, double yu, double zu) => 4 * xu / (xu + 15 * yu + 3 * zu);
+        double V(double xv, double yv, double zv) => 9 * yv / (xv + 15 * yv + 3 * zv);
+        var uPrime = U(x * 100, y * 100, z * 100);
         var uPrimeRef = U(xRef, yRef, zRef);
-        var vPrime = V(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
+        var vPrime = V(x * 100, y * 100, z * 100);
         var vPrimeRef = V(xRef, yRef, zRef);
         
-        var yRatio = xyz.Y * 100 / yRef;
+        var yRatio = y * 100 / yRef;
         var l = yRatio > Math.Pow(6.0 / 29.0, 3) ? 116 * CubeRoot(yRatio) - 16 : Math.Pow(29 / 3.0, 3) * yRatio;
         var u = 13 * l * (uPrime - uPrimeRef);
         var v = 13 * l * (vPrime - vPrimeRef);
         
         double ZeroNaN(double value) => double.IsNaN(value) ? 0.0 : value;
-        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v), xyz.ConvertedFromMonochrome);
+        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v), ColourMode.FromRepresentation(xyz));
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_reverse_transformation
     public static Xyz LuvToXyz(Luv luv, Configuration config)
     {
-        var l = luv.L;
-        var u = luv.U;
-        var v = luv.V;
-        
+        var (l, u, v) = luv.Triplet;
         double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
         double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
 
@@ -208,19 +188,139 @@ internal static class Conversion
         var z = y * ((12 - 3 * uPrime - 20 * vPrime) / (4 * vPrime));
         
         double ZeroNaN(double value) => double.IsNaN(value) || double.IsInfinity(value) ? 0.0 : value;
-        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z), luv.IsMonochrome);
+        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z), ColourMode.FromRepresentation(luv));
     }
 
     public static Lchuv LuvToLchuv(Luv luv)
     {
         var (l, c, h) = ToChromaHueTriplet(luv.L, luv.U, luv.V);
-        return new Lchuv(l, c, h, false, luv.IsMonochrome);
+        return new Lchuv(l, c, h, ColourMode.FromRepresentation(luv));
     }
     
     public static Luv LchuvToLuv(Lchuv lchuv)
     {
         var (l, u, v) = FromChromaHueTriplet(lchuv.ConstrainedTriplet);
-        return new Luv(l, u, v, lchuv.IsMonochrome);
+        return new Luv(l, u, v, ColourMode.FromRepresentation(lchuv));
+    }
+    
+    // https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L363
+    public static Hsluv LchuvToHsluv(Lchuv lchuv)
+    {
+        var (lchLightness, chroma, hue) = lchuv.ConstrainedTriplet;
+        double saturation;
+        double lightness;
+
+        switch (lchLightness)
+        {
+            case > 99.9999999:
+                saturation = 0.0;
+                lightness = 100.0;
+                break;
+            case < 0.00000001:
+                saturation = 0.0;
+                lightness = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(lchLightness, hue);
+                saturation = chroma / maxChroma * 100;
+                lightness = lchLightness;
+                break;
+            }
+        }
+        
+        return new(hue, saturation, lightness, ColourMode.FromRepresentation(lchuv));
+    }
+    
+    // https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L346
+    public static Lchuv HsluvToLchuv(Hsluv hsluv)
+    {
+        var hue = hsluv.ConstrainedH;
+        var saturation = hsluv.S;
+        var hslLightness = hsluv.L;
+        double lightness;
+        double chroma;
+
+        switch (hslLightness)
+        {
+            case > 99.9999999:
+                lightness = 100.0;
+                chroma = 0.0;
+                break;
+            case < 0.00000001:
+                lightness = 0.0;
+                chroma = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(hslLightness, hue);
+                chroma = maxChroma / 100 * saturation;
+                lightness = hslLightness;
+                break;
+            }
+        }
+        
+        return new(lightness, chroma, hue, ColourMode.FromRepresentation(hsluv));
+    }
+    
+    // https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L397
+    public static Hpluv LchuvToHpluv(Lchuv lchuv)
+    {
+        var (lchLightness, chroma, hue) = lchuv.ConstrainedTriplet;
+        double saturation;
+        double lightness;
+
+        switch (lchLightness)
+        {
+            case > 99.9999999:
+                saturation = 0.0;
+                lightness = 100.0;
+                break;
+            case < 0.00000001:
+                saturation = 0.0;
+                lightness = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(lchLightness);
+                saturation = chroma / maxChroma * 100;
+                lightness = lchLightness;
+                break;
+            }
+        }
+        
+        return new(hue, saturation, lightness, ColourMode.FromRepresentation(lchuv));
+    }
+    
+    // https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L380
+    public static Lchuv HpluvToLchuv(Hpluv hpluv)
+    {
+        var hue = hpluv.ConstrainedH;
+        var saturation = hpluv.S;
+        var hslLightness = hpluv.L;
+        double lightness;
+        double chroma;
+
+        switch (hslLightness)
+        {
+            case > 99.9999999:
+                lightness = 100.0;
+                chroma = 0.0;
+                break;
+            case < 0.00000001:
+                lightness = 0.0;
+                chroma = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(hslLightness);
+                chroma = maxChroma / 100 * saturation;
+                lightness = hslLightness;
+                break;
+            }
+        }
+        
+        return new(lightness, chroma, hue, ColourMode.FromRepresentation(hpluv));
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
@@ -267,7 +367,7 @@ internal static class Conversion
         var bz = izazbzMatrix[2, 0];
         var jz = (1 + d) * iz / (1 + d * iz) - d0;
 
-        return new Jzazbz(jz, az, bz, xyz.ConvertedFromMonochrome);
+        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(xyz));
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
@@ -282,10 +382,8 @@ internal static class Conversion
         var p = 1.7 * 2523 / Math.Pow(2, 5);
         var d = -0.56;
         var d0 = 1.6295499532821566e-11;
-        
-        var jz = jzazbz.J;
-        var az = jzazbz.A;
-        var bz = jzazbz.B;
+
+        var (jz, az, bz) = jzazbz.Triplet;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
         var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
         var lmsPrimeMatrix = Matrices.JzazbzM2.Inverse().Multiply(izazbzMatrix);
@@ -318,19 +416,19 @@ internal static class Conversion
         var x = adaptedXyz[0, 0] / 100.0;
         var y = adaptedXyz[1, 0] / 100.0;
         var z = adaptedXyz[2, 0] / 100.0;
-        return new Xyz(x, y, z, jzazbz.IsMonochrome);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(jzazbz));
     }
     
     public static Jzczhz JzazbzToJzczhz(Jzazbz jazabz)
     {
         var (jz, cz, hz) = ToChromaHueTriplet(jazabz.J, jazabz.A, jazabz.B);
-        return new Jzczhz(jz, cz, hz, false, jazabz.IsMonochrome);
+        return new Jzczhz(jz, cz, hz, ColourMode.FromRepresentation(jazabz));
     }
     
     public static Jzazbz JzczhzToJzazbz(Jzczhz jzczhz)
     {
         var (jz, az, bz) = FromChromaHueTriplet(jzczhz.ConstrainedTriplet);
-        return new Jzazbz(jz, az, bz, jzczhz.IsMonochrome);
+        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(jzczhz));
     }
 
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -351,7 +449,7 @@ internal static class Conversion
         var l = labMatrix[0, 0];
         var a = labMatrix[1, 0];
         var b = labMatrix[2, 0];
-        return new Oklab(l, a, b, xyz.ConvertedFromMonochrome);
+        return new Oklab(l, a, b, ColourMode.FromRepresentation(xyz));
     }
     
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
@@ -372,19 +470,19 @@ internal static class Conversion
         var x = adaptedXyz[0, 0];
         var y = adaptedXyz[1, 0];
         var z = adaptedXyz[2, 0];
-        return new Xyz(x, y, z, oklab.IsMonochrome);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(oklab));
     }
     
     public static Oklch OklabToOklch(Oklab oklab)
     {
         var (l, c, h) = ToChromaHueTriplet(oklab.L, oklab.A, oklab.B);
-        return new Oklch(l, c, h, false, oklab.IsMonochrome);
+        return new Oklch(l, c, h, ColourMode.FromRepresentation(oklab));
     }
     
     public static Oklab OklchToOklab(Oklch oklch)
     {
         var (l, a, b) = FromChromaHueTriplet(oklch.ConstrainedTriplet);
-        return new Oklab(l, a, b, oklch.IsMonochrome);
+        return new Oklab(l, a, b, ColourMode.FromRepresentation(oklch));
     }
     
     private static ColourTriplet ToChromaHueTriplet(double lightness, double axis1, double axis2)

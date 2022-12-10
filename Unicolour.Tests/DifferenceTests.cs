@@ -8,7 +8,7 @@ using Wacton.Unicolour.Tests.Utils;
 
 public static class DifferenceTests
 {
-    private static Unicolour GetRandomColour() => Unicolour.FromRgb(TestColours.GetRandomRgb().Tuple);
+    private static Unicolour GetRandomColour() => Unicolour.FromRgb(RandomColours.Rgb().Tuple);
 
     [Test]
     public static void KnownDeltaE76()
@@ -239,7 +239,7 @@ public static class DifferenceTests
     {
         for (var i = 0; i < 100; i++)
         {
-            AssertRelativeJchBasedDeltas(TestColours.GetRandomJzczhz(), TestColours.GetRandomJzczhz(), TestColours.GetRandomJzczhz());
+            AssertRelativeJchBasedDeltas(RandomColours.Jzczhz(), RandomColours.Jzczhz(), RandomColours.Jzczhz());
         }
     }
 

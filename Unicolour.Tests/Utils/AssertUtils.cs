@@ -7,13 +7,13 @@ internal static class AssertUtils
 {
     public const double InterpolationTolerance = 0.00000000005;
 
-    public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, int? hueIndex = null, string? info = null)
+    public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
     {
         var details = $"Expected --- {expected}\nActual ----- {actual}";
         string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
-        AssertTripletValue(actual.First, expected.First, tolerance, FailMessage("Channel 1"), hueIndex == 0);
+        AssertTripletValue(actual.First, expected.First, tolerance, FailMessage("Channel 1"), actual.HueIndex == 0);
         AssertTripletValue(actual.Second, expected.Second, tolerance, FailMessage("Channel 2"));
-        AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), hueIndex == 2);
+        AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
     private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)
@@ -54,7 +54,7 @@ internal static class AssertUtils
         void AccessProperties()
         {
             AccessProperty(() => unicolour.Alpha);
-            AccessProperty(() => unicolour.CanBeDisplayed);
+            AccessProperty(() => unicolour.IsDisplayable);
             AccessProperty(() => unicolour.Config);
             AccessProperty(() => unicolour.Hex);
             AccessProperty(() => unicolour.Hsb);

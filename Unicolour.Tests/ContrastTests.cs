@@ -7,7 +7,7 @@ using Wacton.Unicolour.Tests.Utils;
 public static class ContrastTests
 {
     private static readonly Random Random = new();
-    
+
     [Test]
     public static void KnownContrasts()
     {
@@ -35,6 +35,17 @@ public static class ContrastTests
         
         Assert.That(beyondMinRgb.RelativeLuminance, Is.EqualTo(black.RelativeLuminance));
         Assert.That(beyondMaxRgb.RelativeLuminance, Is.EqualTo(white.RelativeLuminance));
+    }
+    
+    [Test]
+    public static void NaNContrast()
+    {
+        var notNumber = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
+        var grey = Unicolour.FromRgb(0.5, 0.5, 0.5);
+        
+        AssertKnownContrast(notNumber, grey, double.NaN);
+        AssertKnownContrast(grey, notNumber, double.NaN);
+        AssertKnownContrast(notNumber, notNumber, double.NaN);
     }
     
     private static void AssertKnownContrast(Unicolour colour1, Unicolour colour2, double expectedContrast)

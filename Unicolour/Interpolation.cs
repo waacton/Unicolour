@@ -2,182 +2,77 @@
 
 public static class Interpolation
 {
-    public static Unicolour InterpolateRgb(this Unicolour startColour, Unicolour endColour, double distance)
+    public static Unicolour InterpolateRgb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Rgb, start, end, distance);
+    public static Unicolour InterpolateHsb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsb, start, end, distance);
+    public static Unicolour InterpolateHsl(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsl, start, end, distance);
+    public static Unicolour InterpolateXyz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Xyz, start, end, distance);
+    public static Unicolour InterpolateLab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lab, start, end, distance);
+    public static Unicolour InterpolateLchab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchab, start, end, distance);
+    public static Unicolour InterpolateLuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Luv, start, end, distance);
+    public static Unicolour InterpolateLchuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchuv, start, end, distance);
+    public static Unicolour InterpolateHsluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsluv, start, end, distance);
+    public static Unicolour InterpolateHpluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hpluv, start, end, distance);
+    public static Unicolour InterpolateJzazbz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzazbz, start, end, distance);
+    public static Unicolour InterpolateJzczhz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzczhz, start, end, distance);
+    public static Unicolour InterpolateOklab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklab, start, end, distance);
+    public static Unicolour InterpolateOklch(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklch, start, end, distance);
+
+    private static Unicolour Interpolate(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);
         
-        var (r, g, b) = InterpolateTriplet(startColour.Rgb.Triplet, endColour.Rgb.Triplet, distance);
+        var startRepresentation = startColour.Representation(colourSpace);
+        var endRepresentation = endColour.Representation(colourSpace);
+        
+        var (start, end) = GetTriplets(startRepresentation, endRepresentation);
+        var triplet = InterpolateTriplet(start, end, distance).WithHueModulo();
+        var (first, second, third) = triplet;
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromRgb(startColour.Config, r, g, b, alpha);
+        
+        var explicitlyGreyscale = !startRepresentation.IsEffectivelyHued && !endRepresentation.IsEffectivelyHued;
+        var colourMode = explicitlyGreyscale ? ColourMode.ExplicitGreyscale : ColourMode.Default(triplet.HueIndex);
+        return UnicolourCreator(colourSpace).Invoke(startColour.Config, colourMode, first, second, third, alpha);
     }
 
-    public static Unicolour InterpolateHsb(this Unicolour startColour, Unicolour endColour, double distance)
+    private static (ColourTriplet start, ColourTriplet end) GetTriplets(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
     {
-        GuardConfiguration(startColour, endColour);
-        var startHsb = startColour.Hsb;
-        var endHsb = endColour.Hsb;
-        
-        var (start, end) = GetHueBasedTriplets((startHsb.HasHue, startHsb.Triplet), (endHsb.HasHue, endHsb.Triplet), 0);
-        var (h, s, b) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromHsb(startColour.Config, h.Modulo(360), s, b, alpha);
+        var startTriplet = startRepresentation.Triplet;
+        var endTriplet = endRepresentation.Triplet;
+        return startRepresentation.HasHueAxis ? GetTripletsWithHue(startRepresentation, endRepresentation) : (startTriplet, endTriplet);
     }
 
-    public static Unicolour InterpolateHsl(this Unicolour startColour, Unicolour endColour, double distance)
+    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startColourRepresentation, ColourRepresentation endColourRepresentation)
     {
-        GuardConfiguration(startColour, endColour);
-        var startHsl = startColour.Hsl;
-        var endHsl = endColour.Hsl;
+        var startTriplet = startColourRepresentation.Triplet;
+        var endTriplet = endColourRepresentation.Triplet;
+        
+        (ColourTriplet, ColourTriplet) HueResult(double startHue, double endHue) => (
+            startTriplet.WithHueOverride(startHue), 
+            endTriplet.WithHueOverride(endHue));
 
-        var (start, end) = GetHueBasedTriplets((startHsl.HasHue, startHsl.Triplet), (endHsl.HasHue, endHsl.Triplet), 0);
-        var (h, s, l) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromHsl(startColour.Config, h.Modulo(360), s, l, alpha);
-    }
-
-    public static Unicolour InterpolateXyz(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
+        var startHasHue = startColourRepresentation.IsEffectivelyHued;
+        var endHasHue = endColourRepresentation.IsEffectivelyHued;
+        var ignoreHue = !startHasHue && !endHasHue;
         
-        var (x, y, z) = InterpolateTriplet(startColour.Xyz.Triplet, endColour.Xyz.Triplet, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromXyz(startColour.Config, x, y, z, alpha);
-    }
-    
-    public static Unicolour InterpolateLab(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        
-        var (l, a, b) = InterpolateTriplet(startColour.Lab.Triplet, endColour.Lab.Triplet, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromLab(startColour.Config, l, a, b, alpha);
-    }
-    
-    public static Unicolour InterpolateLchab(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        var startLchab = startColour.Lchab;
-        var endLchab = endColour.Lchab;
-        
-        var (start, end) = GetHueBasedTriplets((startLchab.HasHue, startLchab.Triplet), (endLchab.HasHue, endLchab.Triplet), 2);
-        var (l, c, h) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromLchab(startColour.Config, l, c, h.Modulo(360), alpha);
-    }
-    
-    public static Unicolour InterpolateLuv(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        
-        var (l, u, v) = InterpolateTriplet(startColour.Luv.Triplet, endColour.Luv.Triplet, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromLuv(startColour.Config, l, u, v, alpha);
-    }
-    
-    public static Unicolour InterpolateLchuv(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        var startLchuv = startColour.Lchuv;
-        var endLchuv = endColour.Lchuv;
-        
-        var (start, end) = GetHueBasedTriplets((startLchuv.HasHue, startLchuv.Triplet), (endLchuv.HasHue, endLchuv.Triplet), 2);
-        var (l, c, h) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromLchuv(startColour.Config, l, c, h.Modulo(360), alpha);
-    }
-    
-    public static Unicolour InterpolateJzazbz(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        
-        var (jz, az, bz) = InterpolateTriplet(startColour.Jzazbz.Triplet, endColour.Jzazbz.Triplet, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromJzazbz(startColour.Config, jz, az, bz, alpha);
-    }
-    
-    public static Unicolour InterpolateJzczhz(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        var startJzczhz = startColour.Jzczhz;
-        var endJzczhz = endColour.Jzczhz;
-        
-        var (start, end) = GetHueBasedTriplets((startJzczhz.HasHue, startJzczhz.Triplet), (endJzczhz.HasHue, endJzczhz.Triplet), 2);
-        var (jz, cz, hz) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromJzczhz(startColour.Config, jz, cz, hz.Modulo(360), alpha);
-    }
-    
-    public static Unicolour InterpolateOklab(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        
-        var (l, a, b) = InterpolateTriplet(startColour.Oklab.Triplet, endColour.Oklab.Triplet, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromOklab(startColour.Config, l, a, b, alpha);
-    }
-    
-    public static Unicolour InterpolateOklch(this Unicolour startColour, Unicolour endColour, double distance)
-    {
-        GuardConfiguration(startColour, endColour);
-        var startOklch = startColour.Oklch;
-        var endOklch = endColour.Oklch;
-        
-        var (start, end) = GetHueBasedTriplets((startOklch.HasHue, startOklch.Triplet), (endOklch.HasHue, endOklch.Triplet), 2);
-        var (l, c, h) = InterpolateTriplet(start, end, distance);
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        return Unicolour.FromOklch(startColour.Config, l, c, h.Modulo(360), alpha);
-    }
-    
-    private static (ColourTriplet startHue, ColourTriplet endHue) GetHueBasedTriplets(
-        (bool hasHue, ColourTriplet triplet) start, 
-        (bool hasHue, ColourTriplet triplet) end,
-        int hueIndex)
-    {
-        double Hue(ColourTriplet triplet)
-        {
-            return hueIndex switch
-            {
-                0 => triplet.First,
-                2 => triplet.Third,
-                _ => throw new ArgumentException()
-            };
-        }
-
-        ColourTriplet TripletWithHue(ColourTriplet triplet, double hue)
-        {
-            var (first, second, third) = triplet;
-            return hueIndex switch
-            {
-                0 => new(hue, second, third),
-                2 => new(first, second, hue),
-                _ => throw new ArgumentException()
-            };
-        }
-        
-        (ColourTriplet, ColourTriplet) Result(double startHue, double endHue) => (
-            TripletWithHue(start.triplet, startHue), 
-            TripletWithHue(end.triplet, endHue));
-
-        // don't use hue if one colour is monochrome (e.g. black n/a° to green 120° should always stay at hue 120°)
-        var noHue = !start.hasHue && !end.hasHue;
-        var startHue = noHue || start.hasHue ? Hue(start.triplet) : Hue(end.triplet);
-        var endHue = noHue || end.hasHue ? Hue(end.triplet) : Hue(start.triplet);
+        // don't change hue if one colour is greyscale (e.g. black n/a° to green 120° should always stay at hue 120°)
+        var startHue = ignoreHue || startHasHue ? startTriplet.HueValue() : endTriplet.HueValue();
+        var endHue = ignoreHue || endHasHue ? endTriplet.HueValue() : startTriplet.HueValue();
     
         if (startHue > endHue)
         {
             var endViaZero = endHue + 360;
             var interpolateViaZero = Math.Abs(startHue - endViaZero) < Math.Abs(startHue - endHue);
-            return Result(startHue, interpolateViaZero ? endViaZero : endHue);
+            return HueResult(startHue, interpolateViaZero ? endViaZero : endHue);
         }
     
         if (endHue > startHue)
         {
             var startViaZero = startHue + 360;
             var interpolateViaZero = Math.Abs(endHue - startViaZero) < Math.Abs(endHue - startHue);
-            return Result(interpolateViaZero ? startViaZero : startHue, endHue);
+            return HueResult(interpolateViaZero ? startViaZero : startHue, endHue);
         }
     
-        return Result(startHue, endHue);
+        return HueResult(startHue, endHue);
     }
 
     private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
@@ -185,7 +80,7 @@ public static class Interpolation
         var first = Interpolate(start.First, end.First, distance);
         var second = Interpolate(start.Second, end.Second, distance);
         var third = Interpolate(start.Third, end.Third, distance);
-        return new(first, second, third);
+        return new(first, second, third, start.HueIndex);
     }
 
     private static double Interpolate(double startValue, double endValue, double distance)
@@ -194,11 +89,34 @@ public static class Interpolation
         return startValue + (difference * distance);
     }
     
-    private static void GuardConfiguration(Unicolour colour1, Unicolour colour2)
+    private static void GuardConfiguration(Unicolour unicolour1, Unicolour unicolour2)
     {
-        if (colour1.Config != colour2.Config)
+        if (unicolour1.Config != unicolour2.Config)
         {
             throw new InvalidOperationException("Can only interpolate unicolours with the same configuration reference");
         }
+    }
+
+    private delegate Unicolour CreateUnicolour(Configuration config, ColourMode colourMode, double first, double second, double third, double alpha = 1.0);
+    private static CreateUnicolour UnicolourCreator(ColourSpace colourSpace)
+    {
+        return colourSpace switch
+        {
+            ColourSpace.Rgb => Unicolour.FromRgb,
+            ColourSpace.Hsb => Unicolour.FromHsb,
+            ColourSpace.Hsl => Unicolour.FromHsl,
+            ColourSpace.Xyz => Unicolour.FromXyz,
+            ColourSpace.Lab => Unicolour.FromLab,
+            ColourSpace.Lchab => Unicolour.FromLchab,
+            ColourSpace.Luv => Unicolour.FromLuv,
+            ColourSpace.Lchuv => Unicolour.FromLchuv,
+            ColourSpace.Hsluv => Unicolour.FromHsluv,
+            ColourSpace.Hpluv => Unicolour.FromHpluv,
+            ColourSpace.Jzazbz => Unicolour.FromJzazbz,
+            ColourSpace.Jzczhz => Unicolour.FromJzczhz,
+            ColourSpace.Oklab => Unicolour.FromOklab,
+            ColourSpace.Oklch => Unicolour.FromOklch,
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
+        };
     }
 }

@@ -1,23 +1,19 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Oklab
+public record Oklab : ColourRepresentation
 {
-    public double L { get; }
-    public double A { get; }
-    public double B { get; }
-    public ColourTriplet Triplet => new(L, A, B);
-    
-    internal bool IsMonochrome => ConvertedFromMonochrome || A.Equals(0.0) && B.Equals(0.0);
-    internal bool ConvertedFromMonochrome { get; }
-    
-    public Oklab(double l, double a, double b) : this(l, a, b, false) {}
-    internal Oklab(double l, double a, double b, bool convertedFromMonochrome)
-    {
-        L = l;
-        A = a;
-        B = b;
-        ConvertedFromMonochrome = convertedFromMonochrome;
-    }
-    
-    public override string ToString() => $"{Math.Round(L, 2)} {Math.Round(A, 2)} {Math.Round(B, 2)}";
+    internal override ColourSpace ColourSpace => ColourSpace.Oklab;
+    protected override int? HueIndex => null;
+    public double L => First;
+    public double A => Second;
+    public double B => Third;
+    internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
+
+    public Oklab(double l, double a, double b) : this(l, a, b, ColourMode.Unset) {}
+    internal Oklab(double l, double a, double b, ColourMode colourMode) : base(l, a, b, colourMode) {}
+
+    protected override string FirstString => $"{Math.Round(L, 2)}";
+    protected override string SecondString => $"{Math.Round(A, 2)}";
+    protected override string ThirdString => $"{Math.Round(B, 2)}";
+    public override string ToString() => base.ToString();
 }

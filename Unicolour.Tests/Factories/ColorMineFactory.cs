@@ -12,7 +12,7 @@ using ColorMineLchab = ColorMine.ColorSpaces.Lch;
 using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 
 /*
- * ColorMine does not support LCHuv / Jzazbz / Jzczhz / Oklab / Oklch
+ * ColorMine does not support LCHuv / HSLuv / HPLuv / Jzazbz / Jzczhz / Oklab / Oklch
  * ColorMine does not expose linear RGB
  * ColorMine does a bad job of converting to HSL
  * ColorMine does a terrible job of converting from XYZ / LAB / LCHab / LUV
@@ -99,7 +99,7 @@ internal class ColorMineFactory : ITestColourFactory
     private static List<string> HsxExclusions(ColorMineRgb rgb, ColorMineHsb hsb, ColorMineHsl hsl)
     {
         var exclusions = new List<string>();
-        if (HasInconsistentHue(hsb, hsl)) exclusions.Add("ColorMine converts via RGB and loses hue due to rounding to monochrome");
+        if (HasInconsistentHue(hsb, hsl)) exclusions.Add("ColorMine converts via RGB and loses hue due to rounding to greyscale");
         if (HasRgbTruncationError(rgb)) exclusions.Add("ColorMine converts via RGB and has RGB truncation errors");
         if (HasLostSaturation(hsb, hsl)) exclusions.Add("ColorMine loses saturation due to rounding");
         return exclusions;
@@ -108,15 +108,15 @@ internal class ColorMineFactory : ITestColourFactory
     private static List<string> LchExclusions(ColorMineRgb rgb, ColorMineHsb hsb, ColorMineHsl hsl)
     {
         var exclusions = new List<string>();
-        if (IsMonochrome(rgb)) exclusions.Add("ColorMine calculates hue differently value when RGB is monochrome");
-        if (HasInconsistentHue(hsb, hsl)) exclusions.Add("ColorMine converts via RGB and loses hue due to rounding to monochrome");
+        if (IsGreyscale(rgb)) exclusions.Add("ColorMine calculates hue differently value when RGB is greyscale");
+        if (HasInconsistentHue(hsb, hsl)) exclusions.Add("ColorMine converts via RGB and loses hue due to rounding to greyscale");
         return exclusions;
     }
     
     private static bool HasInconsistentHue(ColorMineHsb hsb, ColorMineHsl hsl) => Math.Abs(hsb.H - hsl.H) > 0.01;
     private static bool HasRgbTruncationError(ColorMineRgb rgb) => HasTruncationError(rgb.R) || HasTruncationError(rgb.G) || HasTruncationError(rgb.B);
     private static bool HasLostSaturation(ColorMineHsb hsl, ColorMineHsl hsb) => hsl.S > 0.0 && hsb.S == 0.0 || hsb.S > 0.0 && hsl.S == 0.0;
-    private static bool IsMonochrome(ColorMineRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
+    private static bool IsGreyscale(ColorMineRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
 
     private static bool HasTruncationError(double value)
     {

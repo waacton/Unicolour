@@ -3,12 +3,12 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// monochrome RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-// monochrome HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
-public class InterpolateMonochromeHsbTests
+// greyscale RGB has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// greyscale HSB has a hue so it should be used (it just can't be seen until there is some saturation & brightness)
+public class InterpolateGreyscaleHsbTests
 {
     [Test]
-    public void MonochromeStartColour()
+    public void GreyscaleStartColour()
     {
         var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
         var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
@@ -21,8 +21,8 @@ public class InterpolateMonochromeHsbTests
         var fromHsbBlack = hsbBlack.InterpolateHsb(green, 0.5);
         var fromHsbWhite = hsbWhite.InterpolateHsb(green, 0.5);
         
-        // monochrome interpolates differently depending on the initial colour space
-        // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
+        // greyscale interpolates differently depending on the initial colour space
+        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertColourTriplet(fromRgbBlack.Hsb.Triplet, new(120, 0.5, 0.5));
         AssertColourTriplet(fromRgbWhite.Hsb.Triplet, new(120, 0.5, 1));
         AssertColourTriplet(fromHsbBlack.Hsb.Triplet, new(150, 1, 0.5));
@@ -30,7 +30,7 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    public void MonochromeEndColour()
+    public void GreyscaleEndColour()
     {
         var rgbBlack = Unicolour.FromRgb255(0, 0, 0);
         var rgbWhite = Unicolour.FromRgb255(255, 255, 255);
@@ -43,8 +43,8 @@ public class InterpolateMonochromeHsbTests
         var toHsbBlack = blue.InterpolateHsb(hsbBlack, 0.5);
         var toHsbWhite = blue.InterpolateHsb(hsbWhite, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
-        // since monochrome RGB assumes saturation of 0 (but saturation can be any value)
+        // greyscale interpolates differently depending on the initial colour space
+        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertColourTriplet(toRgbBlack.Hsb.Triplet, new(240, 0.5, 0.5));
         AssertColourTriplet(toRgbWhite.Hsb.Triplet, new(240, 0.5, 1));
         AssertColourTriplet(toHsbBlack.Hsb.Triplet, new(210, 1, 0.5));
@@ -52,7 +52,7 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    public void MonochromeBothRgbColours()
+    public void GreyscaleBothRgbColours()
     {
         var black = Unicolour.FromRgb(0.0, 0.0, 0.0);
         var white = Unicolour.FromRgb(1.0, 1.0, 1.0);
@@ -73,7 +73,7 @@ public class InterpolateMonochromeHsbTests
     }
     
     [Test]
-    public void MonochromeBothHsbColours()
+    public void GreyscaleBothHsbColours()
     {
         var black = Unicolour.FromHsb(0, 0, 0);
         var white = Unicolour.FromHsb(300, 0, 1.0);

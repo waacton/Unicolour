@@ -1,52 +1,35 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Rgb
+public record Rgb : ColourRepresentation
 {
-    public double R { get; }
-    public double G { get; }
-    public double B { get; }
-    public ColourTriplet Triplet => new(R, G, B);
-
-    public double ConstrainedR => R.Clamp(0.0, 1.0);
-    public double ConstrainedG => G.Clamp(0.0, 1.0);
-    public double ConstrainedB => B.Clamp(0.0, 1.0);
-    public ColourTriplet ConstrainedTriplet => new(ConstrainedR, ConstrainedG, ConstrainedB);
-
-    public int R255 => (int) Math.Round(R * 255);
-    public int G255 => (int) Math.Round(G * 255);
-    public int B255 => (int) Math.Round(B * 255);
-    public ColourTriplet Triplet255 => new(R255, G255, B255);
+    internal override ColourSpace ColourSpace => ColourSpace.Rgb;
+    protected override int? HueIndex => null;
+    public double R => First;
+    public double G => Second;
+    public double B => Third;
+    public double ConstrainedR => ConstrainedFirst;
+    public double ConstrainedG => ConstrainedSecond;
+    public double ConstrainedB => ConstrainedThird;
+    protected override double ConstrainedFirst => R.Clamp(0.0, 1.0);
+    protected override double ConstrainedSecond => G.Clamp(0.0, 1.0);
+    protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
+    internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
     
-    public int ConstrainedR255 => (int) Math.Round(ConstrainedR * 255);
-    public int ConstrainedG255 => (int) Math.Round(ConstrainedG * 255);
-    public int ConstrainedB255 => (int) Math.Round(ConstrainedB * 255);
-    public ColourTriplet ConstrainedTriplet255 => new(ConstrainedR255, ConstrainedG255, ConstrainedB255);
+    public RgbLinear Linear { get; }
+    public Rgb255 Byte255 { get; }
 
-    private readonly Func<double, double> inverseCompand;
-    public double RLinear => inverseCompand(R);
-    public double GLinear => inverseCompand(G);
-    public double BLinear => inverseCompand(B);
-    public ColourTriplet TripletLinear => new(RLinear, GLinear, BLinear);
-    
-    public double ConstrainedRLinear => RLinear.Clamp(0.0, 1.0);
-    public double ConstrainedGLinear => GLinear.Clamp(0.0, 1.0);
-    public double ConstrainedBLinear => BLinear.Clamp(0.0, 1.0);
-    public ColourTriplet ConstrainedTripletLinear => new(ConstrainedRLinear, ConstrainedGLinear, ConstrainedBLinear);
-    
-    // not using a precision-based tolerance comparison because initial values are always provided by external code
-    // and do not want to make assumptions about the intentions of those values (e.g. R set to 1/3.0 and G set to 0.33333333, won't assume they "should" be the same)
-    internal bool IsMonochrome => ConvertedFromMonochrome || ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
-    internal bool ConvertedFromMonochrome { get; }
-
-    public Rgb(double r, double g, double b, Configuration config): this(r, g, b, config, false) {}
-    internal Rgb(double r, double g, double b, Configuration config, bool convertedFromMonochrome)
+    public Rgb(double r, double g, double b, Configuration config) : this(r, g, b, config, ColourMode.Unset) {}
+    internal Rgb(double r, double g, double b, Configuration config, ColourMode colourMode) : base(r, g, b, colourMode)
     {
-        R = r;
-        G = g;
-        B = b;
-        inverseCompand = config.InverseCompand;
-        ConvertedFromMonochrome = convertedFromMonochrome;
+        double ToLinear(double value) => config.InverseCompand(value);
+        Linear = new RgbLinear(ToLinear(r), ToLinear(g), ToLinear(b), ColourMode.FromRepresentation(this));
+        
+        double To255(double value) => Math.Round(value * 255);
+        Byte255 = new Rgb255(To255(r), To255(g), To255(b), ColourMode.FromRepresentation(this));
     }
-    
-    public override string ToString() => $"{Math.Round(R, 2)} {Math.Round(G, 2)} {Math.Round(B, 2)} / {R255} {G255} {B255}";
+
+    protected override string FirstString => $"{Math.Round(R, 2)}";
+    protected override string SecondString => $"{Math.Round(G, 2)}";
+    protected override string ThirdString => $"{Math.Round(B, 2)}";
+    public override string ToString() => base.ToString();
 }

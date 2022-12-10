@@ -2,26 +2,23 @@
 
 using static Utils;
 
-public record Jzazbz
+public record Jzazbz : ColourRepresentation
 {
-    public double J { get; }
-    public double A { get; }
-    public double B { get; }
-    public ColourTriplet Triplet => new(J, A, B);
+    internal override ColourSpace ColourSpace => ColourSpace.Jzazbz;
+    protected override int? HueIndex => null;
+    public double J => First;
+    public double A => Second;
+    public double B => Third;
     
-    // based on the figures from the paper, monochrome behaviour is the same as LAB
+    // based on the figures from the paper, greyscale behaviour is the same as LAB
     // i.e. non-lightness axes are zero
-    internal bool IsMonochrome => ConvertedFromMonochrome || A.Equals(0.0) && B.Equals(0.0);
-    internal bool ConvertedFromMonochrome { get; }
+    internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
     
-    public Jzazbz(double j, double a, double b) : this(j, a, b, false) {}
-    internal Jzazbz(double j, double a, double b, bool convertedFromMonochrome)
-    {
-        J = j;
-        A = a;
-        B = b;
-        ConvertedFromMonochrome = convertedFromMonochrome;
-    }
+    public Jzazbz(double j, double a, double b) : this(j, a, b, ColourMode.Unset) {}
+    internal Jzazbz(double j, double a, double b, ColourMode colourMode) : base(j, a, b, colourMode) {}
 
-    public override string ToString() => $"{Math.Round(J, 3)} {Signed(Math.Round(A, 3))} {Signed(Math.Round(B, 3))}";
+    protected override string FirstString => $"{Math.Round(J, 3)}";
+    protected override string SecondString => $"{Signed(Math.Round(A, 3))}";
+    protected override string ThirdString => $"{Signed(Math.Round(B, 3))}";
+    public override string ToString() => base.ToString();
 }

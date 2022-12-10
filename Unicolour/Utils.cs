@@ -5,6 +5,7 @@ using System.Globalization;
 internal static class Utils
 {
     public static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
+    public static double Clamp(this int x, int min, int max) => x < min ? min : x > max ? max : x;
     public static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
     public static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     public static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
@@ -12,6 +13,11 @@ internal static class Utils
 
     public static double Modulo(this double value, double modulus)
     {
+        if (double.IsNaN(value))
+        {
+            return double.NaN;
+        }
+
         var remainder = value % modulus;
         if (remainder == 0.0)
         {

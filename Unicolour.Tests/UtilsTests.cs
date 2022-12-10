@@ -9,14 +9,22 @@ public class UtilsTests
     [TestCase(0.0)]
     [TestCase(1.0)]
     public void ClampWithinRange(double value) => Assert.That(value.Clamp(0, 1), Is.EqualTo(value));
+    
+    [TestCase(0)]
+    [TestCase(127)]
+    [TestCase(255)]
+    public void ClampWithinRange(int value) => Assert.That(value.Clamp(0, 255), Is.EqualTo(value));
 
     [TestCase(1.00001, 1.0)]
     [TestCase(-0.00001, 0.0)]
     public void ClampOutwithRange(double value, double clamped) => Assert.That(value.Clamp(0, 1), Is.EqualTo(clamped));
+    
+    [TestCase(256, 255)]
+    [TestCase(-1, 0)]
+    public void ClampOutwithRange(int value, int clamped) => Assert.That(value.Clamp(0, 255), Is.EqualTo(clamped));
 
     [TestCase(8, 2)]
     [TestCase(0.027, 0.3)]
-
     public void CubeRootPositive(double value, double result) => AssertCubeRoot(value, result);
 
     [TestCase(-8, -2)]
@@ -119,6 +127,21 @@ public class UtilsTests
     public void ModuloNegativeDividendAndModulus(double dividend, double modulus, double expected)
     {
         AssertModulo(dividend, modulus, expected);
+    }
+
+    [TestCase(1)]
+    [TestCase(-1)]
+    [TestCase(0.5)]
+    [TestCase(-0.5)]
+    [TestCase(double.Epsilon)]
+    [TestCase(double.MaxValue)]
+    [TestCase(double.MinValue)]
+    [TestCase(double.PositiveInfinity)]
+    [TestCase(double.NegativeInfinity)]
+    [TestCase(double.NaN)]
+    public void ModuloNotNumber(double modulus)
+    {
+        AssertModulo(double.NaN, modulus, double.NaN);
     }
     
     private static void AssertCubeRoot(double value, double result) => Assert.That(CubeRoot(value), Is.EqualTo(result).Within(0.0000000000000001));

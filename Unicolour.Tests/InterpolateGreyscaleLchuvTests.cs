@@ -3,12 +3,12 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// monochrome LUV has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-// monochrome LCHuv has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
-public class InterpolateMonochromeLchuvTests
+// greyscale LUV has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// greyscale LCHuv has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
+public class InterpolateGreyscaleLchuvTests
 {
     [Test]
-    public void MonochromeStartColour()
+    public void GreyscaleStartColour()
     {
         var luvBlack = Unicolour.FromLuv(0, 0, 0);
         var luvWhite = Unicolour.FromLuv(100, 0, 0);
@@ -21,7 +21,7 @@ public class InterpolateMonochromeLchuvTests
         var fromLchuvBlack = lchuvBlack.InterpolateLchuv(green, 0.5);
         var fromLchuvWhite = lchuvWhite.InterpolateLchuv(green, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since LUV black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(fromLuvBlack.Lchuv.Triplet, new(25, 50, 120));
         AssertColourTriplet(fromLuvWhite.Lchuv.Triplet, new(75, 50, 120));
@@ -30,7 +30,7 @@ public class InterpolateMonochromeLchuvTests
     }
     
     [Test]
-    public void MonochromeEndColour()
+    public void GreyscaleEndColour()
     {
         var luvBlack = Unicolour.FromLuv(0, 0, 0);
         var luvWhite = Unicolour.FromLuv(100, 0, 0);
@@ -43,7 +43,7 @@ public class InterpolateMonochromeLchuvTests
         var toLchuvBlack = blue.InterpolateLchuv(lchuvBlack, 0.5);
         var toLchuvWhite = blue.InterpolateLchuv(lchuvWhite, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since LUV black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(toLuvBlack.Lchuv.Triplet, new(25, 50, 240));
         AssertColourTriplet(toLuvWhite.Lchuv.Triplet, new(75, 50, 240));
@@ -52,7 +52,7 @@ public class InterpolateMonochromeLchuvTests
     }
     
     [Test]
-    public void MonochromeBothLuvColours()
+    public void GreyscaleBothLuvColours()
     {
         var black = Unicolour.FromLuv(0, 0, 0);
         var white = Unicolour.FromLuv(100, 0, 0);
@@ -73,7 +73,7 @@ public class InterpolateMonochromeLchuvTests
     }
     
     [Test]
-    public void MonochromeBothLchuvColours()
+    public void GreyscaleBothLchuvColours()
     {
         var black = Unicolour.FromLchuv(0, 0, 0);
         var white = Unicolour.FromLchuv(100, 0, 300);

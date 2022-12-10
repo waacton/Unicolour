@@ -3,12 +3,12 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// monochrome Jzazbz has no hue - shouldn't assume to start at red (0 degrees) when interpolating
-// monochrome Jzczhz has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
-public class InterpolateMonochromeJzczhzTests
+// greyscale Jzazbz has no hue - shouldn't assume to start at red (0 degrees) when interpolating
+// greyscale Jzczhz has a hue so it should be used (it just can't be seen until there is some lightness & chroma)
+public class InterpolateGreyscaleJzczhzTests
 {
     [Test]
-    public void MonochromeStartColour()
+    public void GreyscaleStartColour()
     {
         var jabBlack = Unicolour.FromJzazbz(0, 0, 0);
         var jabWhite = Unicolour.FromJzazbz(1, 0, 0);
@@ -21,7 +21,7 @@ public class InterpolateMonochromeJzczhzTests
         var fromJchBlack = jchBlack.InterpolateJzczhz(green, 0.5);
         var fromJchWhite = jchWhite.InterpolateJzczhz(green, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since Jzazbz black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(fromJabBlack.Jzczhz.Triplet, new(0.25, 0.25, 120));
         AssertColourTriplet(fromJabWhite.Jzczhz.Triplet, new(0.75, 0.25, 120));
@@ -30,7 +30,7 @@ public class InterpolateMonochromeJzczhzTests
     }
     
     [Test]
-    public void MonochromeEndColour()
+    public void GreyscaleEndColour()
     {
         var jabBlack = Unicolour.FromJzazbz(0, 0, 0);
         var jabWhite = Unicolour.FromJzazbz(1, 0, 0);
@@ -43,7 +43,7 @@ public class InterpolateMonochromeJzczhzTests
         var toJzczhzBlack = blue.InterpolateJzczhz(jchBlack, 0.5);
         var toJzczhzWhite = blue.InterpolateJzczhz(jcWhite, 0.5);
 
-        // monochrome interpolates differently depending on the initial colour space
+        // greyscale interpolates differently depending on the initial colour space
         // since Jzazbz black/white assumes chroma of 0 (but chroma can be any value)
         AssertColourTriplet(toJzazbzBlack.Jzczhz.Triplet, new(0.25, 0.25, 240));
         AssertColourTriplet(toJzazbzWhite.Jzczhz.Triplet, new(0.75, 0.25, 240));
@@ -52,7 +52,7 @@ public class InterpolateMonochromeJzczhzTests
     }
     
     [Test]
-    public void MonochromeBothJzazbzColours()
+    public void GreyscaleBothJzazbzColours()
     {
         var black = Unicolour.FromJzazbz(0, 0, 0);
         var white = Unicolour.FromJzazbz(1, 0, 0);
@@ -73,7 +73,7 @@ public class InterpolateMonochromeJzczhzTests
     }
     
     [Test]
-    public void MonochromeBothJzczhzColours()
+    public void GreyscaleBothJzczhzColours()
     {
         var black = Unicolour.FromJzczhz(0, 0, 0);
         var white = Unicolour.FromJzczhz(1, 0, 300);

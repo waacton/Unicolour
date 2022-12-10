@@ -85,10 +85,10 @@ public static class NotNumberTests
         var initial = unicolour.InitialRepresentation();
         
         Assert.That(initial.ColourMode, Is.EqualTo(ColourMode.ExplicitNaN));
-        Assert.That(initial.IsNaN, Is.EqualTo(true));
-        Assert.That(initial.IsEffectivelyNaN, Is.EqualTo(true));
-        Assert.That(initial.IsEffectivelyGreyscale, Is.EqualTo(false));
-        Assert.That(initial.IsEffectivelyHued, Is.EqualTo(false));
+        Assert.That(initial.IsNaN, Is.True);
+        Assert.That(initial.IsEffectivelyNaN, Is.True);
+        Assert.That(initial.IsEffectivelyGreyscale, Is.False);
+        Assert.That(initial.IsEffectivelyHued, Is.False);
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(unicolour.Hex, Is.EqualTo("-"));
         Assert.That(unicolour.IsDisplayable, Is.False);

@@ -191,7 +191,7 @@ public static class GreyscaleTests
         Assert.That(initial.IsGreyscale, Is.EqualTo(shouldBeGreyscale));
         Assert.That(initial.IsEffectivelyGreyscale, Is.EqualTo(shouldBeGreyscale));
         Assert.That(initial.IsEffectivelyHued, Is.EqualTo(initial.HasHueAxis));
-        Assert.That(initial.IsEffectivelyNaN, Is.EqualTo(false));
+        Assert.That(initial.IsEffectivelyNaN, Is.False);
     }
 
     private static void AssertGreyscaleDownstreamExceptJz(ColourSpace initialColourSpace, ColourModeData data)

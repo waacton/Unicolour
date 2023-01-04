@@ -12,8 +12,8 @@ public record Oklab : ColourRepresentation
     public Oklab(double l, double a, double b) : this(l, a, b, ColourMode.Unset) {}
     internal Oklab(double l, double a, double b, ColourMode colourMode) : base(l, a, b, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(L, 2)}";
-    protected override string SecondString => $"{Math.Round(A, 2)}";
-    protected override string ThirdString => $"{Math.Round(B, 2)}";
+    protected override string FirstString => $"{L:F2}";
+    protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
+    protected override string ThirdString => $"{B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
 }

@@ -42,6 +42,15 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public static void Xyy(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromXyy(first, second, third));
+    }
+    
+    [Test, Combinatorial]
     public static void Lab(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 

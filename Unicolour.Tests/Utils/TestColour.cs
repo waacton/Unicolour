@@ -12,6 +12,7 @@ public class TestColour
     public ColourTriplet? Hsl { get; init; }
     public ColourTriplet? Hsb { get; init; }
     public ColourTriplet? Xyz { get; init; }
+    public ColourTriplet? Xyy { get; init; }
     public ColourTriplet? Lab { get; init; }
     public ColourTriplet? Lchab { get; init; }
     public ColourTriplet? Luv { get; init; }
@@ -38,15 +39,29 @@ public class TestColour
     public List<string> ExcludeFromHsxTestReasons { get; init; } = new();
     
     /*
+     * ColorMine and Colourful treats xyY black as (0,0,0)
+     * whereas Unicolour uses white chromaticity with 0 lumninance for accurate interpolation
+     */
+    public bool ExcludeFromXyyTests => ExcludeFromXyyTestReasons.Any();
+    public List<string> ExcludeFromXyyTestReasons { get; init; } = new();
+    
+    /*
      * SixLabors clamps chroma, causing issues converting LUV -> LCH when LUV has extreme U values
      */
     public bool ExcludeFromLchTests => ExcludeFromLchTestReasons.Any();
     public List<string> ExcludeFromLchTestReasons { get; init; } = new();
+    
+    /*
+     * SixLabors uses fallback values when xyY y-chromaticity is < 0.001
+     * causing inaccurate conversion to XYZ and all subsequent downstream spaces
+     */
+    public bool ExcludeFromAllTests => ExcludeFromAllTestReasons.Any();
+    public List<string> ExcludeFromAllTestReasons { get; init; } = new();
 
     public override string ToString() => string.Join(" · ", new[] {Hex, Name}.Where(x => !string.IsNullOrEmpty(x)));
 }
 
 public record Tolerances 
 {
-    public double Rgb, RgbLinear, Hsb, Hsl, Xyz, Lab, Lchab, Luv, Lchuv;
+    public double Rgb, RgbLinear, Hsb, Hsl, Xyz, Xyy, Lab, Lchab, Luv, Lchuv;
 }

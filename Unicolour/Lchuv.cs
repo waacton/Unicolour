@@ -14,8 +14,8 @@ public record Lchuv : ColourRepresentation
     public Lchuv(double l, double c, double h) : this(l, c, h, ColourMode.Unset) {}
     internal Lchuv(double l, double c, double h, ColourMode colourMode) : base(l, c, h, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(L, 2)}";
-    protected override string SecondString => $"{Math.Round(C, 2)}";
-    protected override string ThirdString => $"{(IsEffectivelyHued ? Math.Round(H, 1) : "—")}°";
+    protected override string FirstString => $"{L:F2}";
+    protected override string SecondString => $"{C:F2}";
+    protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
 }

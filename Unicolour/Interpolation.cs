@@ -6,6 +6,7 @@ public static class Interpolation
     public static Unicolour InterpolateHsb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsb, start, end, distance);
     public static Unicolour InterpolateHsl(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsl, start, end, distance);
     public static Unicolour InterpolateXyz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Xyz, start, end, distance);
+    public static Unicolour InterpolateXyy(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Xyy, start, end, distance);
     public static Unicolour InterpolateLab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lab, start, end, distance);
     public static Unicolour InterpolateLchab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchab, start, end, distance);
     public static Unicolour InterpolateLuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Luv, start, end, distance);
@@ -106,6 +107,7 @@ public static class Interpolation
             ColourSpace.Hsb => Unicolour.FromHsb,
             ColourSpace.Hsl => Unicolour.FromHsl,
             ColourSpace.Xyz => Unicolour.FromXyz,
+            ColourSpace.Xyy => Unicolour.FromXyy,
             ColourSpace.Lab => Unicolour.FromLab,
             ColourSpace.Lchab => Unicolour.FromLchab,
             ColourSpace.Luv => Unicolour.FromLuv,

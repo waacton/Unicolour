@@ -14,8 +14,8 @@ public record Luv : ColourRepresentation
     public Luv(double l, double u, double v) : this(l, u, v, ColourMode.Unset) {}
     internal Luv(double l, double u, double v, ColourMode colourMode) : base(l, u, v, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(L, 2)}";
-    protected override string SecondString => $"{Signed(Math.Round(U, 2))}";
-    protected override string ThirdString => $"{Signed(Math.Round(V, 2))}";
+    protected override string FirstString => $"{L:F2}";
+    protected override string SecondString => $"{U:+0.00;-0.00;0.00}";
+    protected override string ThirdString => $"{V:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
 }

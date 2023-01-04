@@ -11,6 +11,7 @@ using SixLaborsRgbLinear = SixLabors.ImageSharp.ColorSpaces.LinearRgb;
 using SixLaborsHsb = SixLabors.ImageSharp.ColorSpaces.Hsv;
 using SixLaborsHsl = SixLabors.ImageSharp.ColorSpaces.Hsl;
 using SixLaborsXyz = SixLabors.ImageSharp.ColorSpaces.CieXyz;
+using SixLaborsXyy = SixLabors.ImageSharp.ColorSpaces.CieXyy;
 using SixLaborsLab = SixLabors.ImageSharp.ColorSpaces.CieLab;
 using SixLaborsLuv = SixLabors.ImageSharp.ColorSpaces.CieLuv;
 using SixLaborsLchuv = SixLabors.ImageSharp.ColorSpaces.CieLchuv;
@@ -25,7 +26,7 @@ using SixLaborsIlluminants = SixLabors.ImageSharp.ColorSpaces.Illuminants;
 internal class SixLaborsFactory : ITestColourFactory
 {
     private static readonly Tolerances Tolerances = new()
-        {Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Lab = 0.1, Luv = 0.2, Lchuv = 0.1};
+        {Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Xyy = 0.005, Lab = 0.1, Luv = 0.2, Lchuv = 0.1};
 
     private static readonly ColorSpaceConverter Converter = new(new ColorSpaceConverterOptions
     {
@@ -53,10 +54,11 @@ internal class SixLaborsFactory : ITestColourFactory
         var hsb = Converter.ToHsv(rgb);
         var hsl = Converter.ToHsl(rgb);
         var xyz = Converter.ToCieXyz(rgb);
+        var xyy = Converter.ToCieXyy(rgb);
         var lab = Converter.ToCieLab(rgb);
         var luv = Converter.ToCieLuv(rgb);
         var lchuv = Converter.ToCieLchuv(rgb);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, lchuv, tolerances);
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, xyy, lab, luv, lchuv, tolerances);
     }
 
     public TestColour FromHsb(double h, double s, double b, string name)
@@ -66,10 +68,11 @@ internal class SixLaborsFactory : ITestColourFactory
         var rgbLinear = Converter.ToLinearRgb(hsb);
         var hsl = Converter.ToHsl(hsb);
         var xyz = Converter.ToCieXyz(hsb);
+        var xyy = Converter.ToCieXyy(hsb);
         var lab = Converter.ToCieLab(hsb);
         var luv = Converter.ToCieLuv(hsb);
         var lchuv = Converter.ToCieLchuv(hsb);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, lchuv, Tolerances with {Hsl = 0.00005, Lab = 0.125});
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, xyy, lab, luv, lchuv, Tolerances with {Hsl = 0.00005, Lab = 0.125});
     }
 
     public TestColour FromHsl(double h, double s, double l, string name)
@@ -79,10 +82,11 @@ internal class SixLaborsFactory : ITestColourFactory
         var rgbLinear = Converter.ToLinearRgb(hsl);
         var hsb = Converter.ToHsv(hsl);
         var xyz = Converter.ToCieXyz(hsl);
+        var xyy = Converter.ToCieXyy(hsl);
         var lab = Converter.ToCieLab(hsl);
         var luv = Converter.ToCieLuv(hsl);
         var lchuv = Converter.ToCieLchuv(hsl);
-        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, lab, luv, lchuv, Tolerances with {Rgb = 0.05, Hsb = 0.00005, Lab = 0.2, Lchuv = 0.2});
+        return Create(name, rgb, rgbLinear, hsb, hsl, xyz, xyy, lab, luv, lchuv, Tolerances with {Rgb = 0.05, Hsb = 0.00005, Lab = 0.2, Lchuv = 0.2});
     }
 
     // SixLabors XYZ -> HSB / HSL uses a clamped version of RGB during conversion
@@ -93,10 +97,26 @@ internal class SixLaborsFactory : ITestColourFactory
         var xyz = new SixLaborsXyz((float) x, (float) y, (float) z);
         var rgb = Converter.ToRgb(xyz);
         var rgbLinear = Converter.ToLinearRgb(xyz);
+        var xyy = Converter.ToCieXyy(xyz);
         var lab = Converter.ToCieLab(xyz);
         var luv = Converter.ToCieLuv(xyz);
         var lchuv = Converter.ToCieLchuv(xyz);
-        return CreateWithoutHue(name, rgb, rgbLinear, xyz, lab, luv, lchuv, Tolerances);
+        return CreateWithoutHue(name, rgb, rgbLinear, xyz, xyy, lab, luv, lchuv, Tolerances);
+    }
+    
+    // SixLabors XYZ -> HSB / HSL uses a clamped version of RGB during conversion
+    // which significantly affects the result when transforming to the hue-based cylindrical model
+    // for this reason, not comparing hue-based values here
+    public TestColour FromXyy(double x, double y, double upperY, string name)
+    {
+        var xyy = new SixLaborsXyy((float) x, (float) y, (float) upperY);
+        var rgb = Converter.ToRgb(xyy);
+        var rgbLinear = Converter.ToLinearRgb(xyy);
+        var xyz = Converter.ToCieXyz(xyy);
+        var lab = Converter.ToCieLab(xyy);
+        var luv = Converter.ToCieLuv(xyy);
+        var lchuv = Converter.ToCieLchuv(xyy);
+        return CreateWithoutHue(name, rgb, rgbLinear, xyz, xyy, lab, luv, lchuv, Tolerances);
     }
 
     // SixLabors doesn't do a good job of converting from LAB / LUV / LCHuv even when specifying D65 illuminant
@@ -109,7 +129,7 @@ internal class SixLaborsFactory : ITestColourFactory
 
     private static TestColour Create(string name, 
         SixLaborsRgb rgb, SixLaborsRgbLinear rgbLinear, SixLaborsHsb hsb, SixLaborsHsl hsl,
-        SixLaborsXyz xyz, SixLaborsLab lab, SixLaborsLuv luv, SixLaborsLchuv lchuv,
+        SixLaborsXyz xyz, SixLaborsXyy xyy, SixLaborsLab lab, SixLaborsLuv luv, SixLaborsLchuv lchuv,
         Tolerances tolerances)
     {
         return new TestColour
@@ -120,18 +140,20 @@ internal class SixLaborsFactory : ITestColourFactory
             Hsb = new(hsb.H, hsb.S, hsb.V),
             Hsl = new(hsl.H, hsl.S, hsl.L),
             Xyz = new(xyz.X, xyz.Y, xyz.Z),
+            Xyy = new(xyy.X, xyy.Y, xyy.Yl),
             Lab = new(lab.L, lab.A, lab.B),
             Luv = new(luv.L, luv.U, luv.V),
             Lchuv = new(lchuv.L, lchuv.C, lchuv.H),
             Tolerances = tolerances,
             ExcludeFromHsxTestReasons = HsxExclusions(rgb, hsb, hsl),
-            ExcludeFromLchTestReasons = LchExclusions(rgb, luv, lchuv)
+            ExcludeFromLchTestReasons = LchExclusions(rgb, luv, lchuv),
+            ExcludeFromAllTestReasons = AllExclusions(xyy)
         };
     }
     
     private static TestColour CreateWithoutHue(string name, 
         SixLaborsRgb rgb, SixLaborsRgbLinear rgbLinear,
-        SixLaborsXyz xyz, SixLaborsLab lab, SixLaborsLuv luv, SixLaborsLchuv lchuv,
+        SixLaborsXyz xyz, SixLaborsXyy xyy, SixLaborsLab lab, SixLaborsLuv luv, SixLaborsLchuv lchuv,
         Tolerances tolerances)
     {
         return new TestColour
@@ -140,12 +162,14 @@ internal class SixLaborsFactory : ITestColourFactory
             Rgb = new(rgb.R, rgb.G, rgb.B),
             RgbLinear = new(rgbLinear.R, rgbLinear.G, rgbLinear.B),
             Xyz = new(xyz.X, xyz.Y, xyz.Z),
+            Xyy = new(xyy.X, xyy.Y, xyy.Yl),
             Lab = new(lab.L, lab.A, lab.B),
             Luv = new(luv.L, luv.U, luv.V),
             Lchuv = new(lchuv.L, lchuv.C, lchuv.H),
             Tolerances = tolerances,
             ExcludeFromHsxTestReasons = HsxExclusions(rgb),
-            ExcludeFromLchTestReasons = LchExclusions(rgb, luv, lchuv)
+            ExcludeFromLchTestReasons = LchExclusions(rgb, luv, lchuv),
+            ExcludeFromAllTestReasons = AllExclusions(xyy)
         };
     }
 
@@ -165,6 +189,13 @@ internal class SixLaborsFactory : ITestColourFactory
         if (HasClampedChroma(luv, lchuv)) exclusions.Add("SixLabors clamps LCH chroma");
         return exclusions;
     }
+
+    private static List<string> AllExclusions(SixLaborsXyy xyy)
+    {
+        var exclusions = new List<string>();
+        if (HasLowChromaticity(xyy)) exclusions.Add("SixLabors does not handle low y-chromaticity");
+        return exclusions;
+    }
     
     private static bool HasInconsistentHue(SixLaborsHsb hsb, SixLaborsHsl hsl) => Math.Abs(hsb.H - hsl.H) > 0.01;
 
@@ -177,7 +208,9 @@ internal class SixLaborsFactory : ITestColourFactory
         var chroma = components.Max() - components.Min();
         return chroma < 0.01;
     }
-    
+
+    private const double Epsilon = 0.001; // SixLabors tend to do a lot of rounding based on this threshold
     private static bool IsGreyscale(SixLaborsRgb rgb) => Math.Abs(rgb.R - rgb.G) < 0.000001 && Math.Abs(rgb.G - rgb.B) < 0.000001;
     private static bool HasClampedChroma(SixLaborsLuv luv, SixLaborsLchuv lchuv) => lchuv.C >= 200 && Math.Abs(luv.U - lchuv.C) > 0.0001;
+    private static bool HasLowChromaticity(SixLaborsXyy xyy) => xyy.Y < Epsilon;
 }

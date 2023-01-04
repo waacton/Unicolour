@@ -32,7 +32,7 @@ internal static class HsluvTestColour
     
     private static ColourTriplet ParseJson(JToken jToken, string lookup)
     {
-        var jArray = jToken[lookup] as JArray;
+        var jArray = (jToken[lookup] as JArray)!;
         var first = double.Parse(jArray[0].ToString());
         var second = double.Parse(jArray[1].ToString());
         var third = double.Parse(jArray[2].ToString());

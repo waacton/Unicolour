@@ -25,6 +25,9 @@ internal interface ITestColourFactory
     TestColour FromXyz(ColourTriplet triplet) => FromXyz(triplet.First, triplet.Second, triplet.Third, $"XYZ {triplet}");
     TestColour FromXyz(double x, double y, double z, string name);
     
+    TestColour FromXyy(ColourTriplet triplet) => FromXyy(triplet.First, triplet.Second, triplet.Third, $"xyY {triplet}");
+    TestColour FromXyy(double x, double y, double upperY, string name);
+    
     TestColour FromLab(ColourTriplet triplet) => FromLab(triplet.First, triplet.Second, triplet.Third, $"LAB {triplet}");
     TestColour FromLab(double l, double a, double b, string name);
     

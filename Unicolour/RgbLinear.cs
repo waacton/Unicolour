@@ -18,8 +18,8 @@ public record RgbLinear : ColourRepresentation
     public RgbLinear(double r, double g, double b) : this(r, g, b, ColourMode.Unset) {}
     internal RgbLinear(double r, double g, double b, ColourMode colourMode) : base(r, g, b, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(R, 2)}";
-    protected override string SecondString => $"{Math.Round(G, 2)}";
-    protected override string ThirdString => $"{Math.Round(B, 2)}";
+    protected override string FirstString => $"{R:F2}";
+    protected override string SecondString => $"{G:F2}";
+    protected override string ThirdString => $"{B:F2}";
     public override string ToString() => base.ToString();
 }

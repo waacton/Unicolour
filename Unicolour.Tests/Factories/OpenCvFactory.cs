@@ -7,7 +7,7 @@ using OpenCvSharp;
 using Wacton.Unicolour.Tests.Utils;
 
 /*
- * OpenCV does not support LCHab / LCHuv / HSLuv / HPLuv / Jzazbz / Jzczhz / Oklab / Oklch
+ * OpenCV does not support xyY / LCHab / LCHuv / HSLuv / HPLuv / Jzazbz / Jzczhz / Oklab / Oklch
  * OpenCV does not expose linear RGB
  * OpenCV RGB -> XYZ expects to linear RGB values (that have not been companded)
  * OpenCV XYZ -> RGB actually converts to linear RGB (not companded)
@@ -72,6 +72,8 @@ internal class OpenCvFactory : ITestColourFactory
             IsRgbLinearConstrained = false
         };
     }
+    
+    public TestColour FromXyy(double x, double y, double upperY, string name) => throw new NotImplementedException();
     
     // OpenCV LAB -> RGB clamps values, causing errors in subsequent conversions
     public TestColour FromLab(double l, double a, double b, string name)

@@ -38,6 +38,12 @@ public partial class Unicolour
     public static Unicolour FromXyz(Configuration config, double x, double y, double z, double alpha = 1.0) => new(config, new Xyz(x, y, z), new Alpha(alpha));
     internal static Unicolour FromXyz(Configuration config, ColourMode colourMode, double x, double y, double z, double alpha = 1.0) => new(config, new Xyz(x, y, z, colourMode), new Alpha(alpha));
 
+    public static Unicolour FromXyy((double x, double y, double upperY) tuple, double alpha = 1.0) => FromXyy(Configuration.Default, tuple.x, tuple.y, tuple.upperY, alpha);
+    public static Unicolour FromXyy(Configuration config, (double x, double y, double upperY) tuple, double alpha = 1.0) => FromXyy(config, tuple.x, tuple.y, tuple.upperY, alpha);
+    public static Unicolour FromXyy(double x, double y, double upperY, double alpha = 1.0) => FromXyy(Configuration.Default, x, y, upperY, alpha);
+    public static Unicolour FromXyy(Configuration config, double x, double y, double upperY, double alpha = 1.0) => new(config, new Xyy(x, y, upperY), new Alpha(alpha));
+    internal static Unicolour FromXyy(Configuration config, ColourMode colourMode, double x, double y, double upperY, double alpha = 1.0) => new(config, new Xyy(x, y, upperY, colourMode), new Alpha(alpha));
+    
     public static Unicolour FromLab((double l, double a, double b) tuple, double alpha = 1.0) => FromLab(Configuration.Default, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromLab(Configuration config, (double l, double a, double b) tuple, double alpha = 1.0) => FromLab(config, tuple.l, tuple.a, tuple.b, alpha);
     public static Unicolour FromLab(double l, double a, double b, double alpha = 1.0) => FromLab(Configuration.Default, l, a, b, alpha);

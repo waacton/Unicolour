@@ -59,6 +59,14 @@ public static class GreyscaleTests
     [TestCase(0.25, 0.5, 0.75)]
     [TestCase(0.95047, 1.0, 1.08883)]
     public static void GreyscaleXyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z), false);
+    
+    [TestCase(0.0, 0.0, 0.0, true)]
+    [TestCase(0.0, 0.0, -0.00000000001, true)]
+    [TestCase(0.0, 0.0, 0.00000000001, false)]
+    [TestCase(1.0, 1.0, 0.0, true)]
+    [TestCase(1.0, 1.0, -0.00000000001, true)]
+    [TestCase(1.0, 1.0, 0.00000000001, false)]
+    public static void GreyscaleXyy(double x, double y, double upperY, bool expected) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY), expected);
 
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]

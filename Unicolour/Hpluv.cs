@@ -18,8 +18,8 @@ public record Hpluv : ColourRepresentation
     public Hpluv(double h, double s, double l) : this(h, s, l, ColourMode.Unset) {}
     internal Hpluv(double h, double s, double l, ColourMode colourMode) : base(h, s, l, colourMode) {}
 
-    protected override string FirstString => $"{(IsEffectivelyHued ? Math.Round(H, 1) : "—")}°";
-    protected override string SecondString => $"{Math.Round(S, 1)}%";
-    protected override string ThirdString => $"{Math.Round(L, 1)}%";
+    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string SecondString => $"{S:F1}%";
+    protected override string ThirdString => $"{L:F1}%";
     public override string ToString() => base.ToString();
 }

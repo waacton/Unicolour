@@ -17,7 +17,7 @@ public class OtherLibraryTests
     
     /*
      * OPENCV:
-     * not testing from LCHab / LCHuv / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from xyY / LCHab / LCHuv / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
      * (also I've given up trying to make OpenCvSharp work in a dockerised unix environment...)
      */
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
@@ -71,7 +71,10 @@ public class OtherLibraryTests
     public void ColourfulRgb(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromRgb, ColourfulFactory.FromRgb);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
-    public void ColourfulXyz(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz); 
+    public void ColourfulXyz(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyz, ColourfulFactory.FromXyz);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void ColourfulXyy(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyy, ColourfulFactory.FromXyy);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LabTriplets))]
     public void ColourfulLab(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromLab, ColourfulFactory.FromLab);
@@ -82,7 +85,7 @@ public class OtherLibraryTests
     /* COLORMINE:
      * not testing from LCHuv / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
      * not testing from RGB [0-1] --- RGB only accepts 0-255
-     * not testing from XYZ / LAB / LCHab / LUV --- does a terrible job
+     * not testing from XYZ / xyY / LAB / LCHab / LUV --- does a terrible job
      */
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
     public void ColorMineNamed(TestColour namedColour) => AssertFromHex(namedColour.Hex!, ColorMineFactory);
@@ -124,6 +127,9 @@ public class OtherLibraryTests
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
     public void SixLaborsXyz(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyz, SixLaborsFactory.FromXyz);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void SixLaborsXyy(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromXyy, SixLaborsFactory.FromXyy);
 
     private static void RunIfWindows(Action action)
     {
@@ -182,6 +188,13 @@ public class OtherLibraryTests
         var tolerances = testColour.Tolerances;
         if (colourName == null) throw new ArgumentException("Malformed test colour: no name");
         if (tolerances == null) throw new ArgumentException("Malformed test colour: no tolerances");
+        
+        if (testColour.ExcludeFromAllTests)
+        {
+            var reasons = string.Join(", ", testColour.ExcludeFromAllTestReasons);
+            Console.WriteLine($"Excluded test colour {colourName} -> all colour spaces because: {reasons}");
+            return;
+        }
 
         var unicolourRgb = testColour.IsRgbConstrained ? unicolour.Rgb.ConstrainedTriplet : unicolour.Rgb.Triplet;
         var unicolourRgbLinear = testColour.IsRgbLinearConstrained ? unicolour.Rgb.Linear.ConstrainedTriplet : unicolour.Rgb.Linear.Triplet;
@@ -191,6 +204,16 @@ public class OtherLibraryTests
         AssertColourTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{colourName} -> LAB");
         AssertColourTriplet(unicolour.Luv.Triplet, testColour.Luv, tolerances.Luv, $"{colourName} -> LUV");
         
+        if (testColour.ExcludeFromXyyTests)
+        {
+            var reasons = string.Join(", ", testColour.ExcludeFromXyyTestReasons);
+            Console.WriteLine($"Excluded test colour {colourName} -> xyY because: {reasons}");
+        }
+        else
+        {
+            AssertColourTriplet(unicolour.Xyy.Triplet, testColour.Xyy, tolerances.Xyy, $"{colourName} -> xyY");
+        }
+
         if (testColour.ExcludeFromHsxTests)
         {
             var reasons = string.Join(", ", testColour.ExcludeFromHsxTestReasons);
@@ -198,8 +221,8 @@ public class OtherLibraryTests
         }
         else
         {
-            AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB", 0);
-            AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL", 0);
+            AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB");
+            AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL");
         }
         
         if (testColour.ExcludeFromLchTests)
@@ -209,12 +232,12 @@ public class OtherLibraryTests
         }
         else
         {
-            AssertColourTriplet(unicolour.Lchab.ConstrainedTriplet, testColour.Lchab, tolerances.Lchab, $"{colourName} -> LCHab", 2);
-            AssertColourTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv", 2);
+            AssertColourTriplet(unicolour.Lchab.ConstrainedTriplet, testColour.Lchab, tolerances.Lchab, $"{colourName} -> LCHab");
+            AssertColourTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv");
         }
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info, int? hueIndex = null)
+    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info)
     {
         if (expected == null) return;
         AssertUtils.AssertColourTriplet(actual, expected, tolerance, info);

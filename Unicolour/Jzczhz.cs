@@ -17,8 +17,8 @@ public record Jzczhz : ColourRepresentation
     public Jzczhz(double j, double c, double h) : this(j, c, h, ColourMode.Unset) {}
     internal Jzczhz(double j, double c, double h, ColourMode colourMode) : base(j, c, h, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(J, 3)}";
-    protected override string SecondString => $"{Math.Round(C, 3)}";
-    protected override string ThirdString => $"{(IsEffectivelyHued ? Math.Round(H, 1) : "—")}°";
+    protected override string FirstString => $"{J:F3}";
+    protected override string SecondString => $"{C:F3}";
+    protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
 }

@@ -138,11 +138,26 @@ public static class DifferenceTests
     public static void RelativeDeltaE94ForTextiles() => AssertRelativeLabBasedDeltas((reference, sample) => reference.DeltaE94(sample, true));
     
     [Test]
-    public static void RelativeDeltaE00() => AssertRelativeLabBasedDeltas((reference, sample) => reference.DeltaE00(sample));
+    public static void RelativeDeltaE00() => AssertRelativeLabBasedDeltas(Comparison.DeltaE00);
 
     [Test]
     public static void RelativeDeltaEz() => AssertRelativeJchBasedDeltas();
 
+    [Test]
+    public static void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76);
+    
+    [Test]
+    public static void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample));
+    
+    [Test]
+    public static void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true));
+    
+    [Test]
+    public static void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00);
+
+    [Test]
+    public static void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz);
+    
     private static void AssertKnownDeltaE76(Unicolour reference, Unicolour sample, double expectedDelta)
     {
         var delta = reference.DeltaE76(sample);
@@ -298,5 +313,12 @@ public static class DifferenceTests
         AssertChangesInJ();
         AssertChangesInC();
         AssertChangesInH();
+    }
+    
+    private static void AssertNotNumberDeltas(Func<Unicolour, Unicolour, double> getDelta)
+    {
+        var unicolour = Unicolour.FromLab(double.NaN, double.NaN, double.NaN);
+        var delta = getDelta(unicolour, unicolour);
+        Assert.That(delta, Is.NaN);
     }
 }

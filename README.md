@@ -14,6 +14,7 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - HSB/HSV
 - HSL
 - CIEXYZ
+- CIExyY
 - CIELAB
 - CIELCh<sub>ab</sub>
 - CIELUV
@@ -43,6 +44,7 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.InterpolateHsb()`    |
 | HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.InterpolateHsl()`    |
 | CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.InterpolateXyz()`    |
+| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.InterpolateXyy()`    |
 | CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.InterpolateLab()`    |
 | CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.InterpolateLchab()`  |
 | CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.InterpolateLuv()`    |
@@ -69,7 +71,8 @@ var unicolour = Unicolour.FromRgb255(255, 20, 147);
 var unicolour = Unicolour.FromRgb(1.0, 0.078, 0.576);
 var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
 var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
-var unicolour = Unicolour.FromXyz(0.47, 0.24, 0.3);
+var unicolour = Unicolour.FromXyz(0.4676, 0.2387, 0.2974);
+var unicolour = Unicolour.FromXyy(0.4658, 0.2378, 0.2387)
 var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
 var unicolour = Unicolour.FromLchab(55.96, 84.73, 356.1);
 var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
@@ -88,6 +91,7 @@ var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
 var hsl = unicolour.Hsl;
 var xyz = unicolour.Xyz;
+var xyy = unicolour.Xyy;
 var lab = unicolour.Lab;
 var lchab = unicolour.Lchab;
 var luv = unicolour.Luv;
@@ -106,6 +110,7 @@ var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsl(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateXyz(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateXyy(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);

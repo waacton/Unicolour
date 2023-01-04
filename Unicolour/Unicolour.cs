@@ -7,6 +7,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Hsb? hsb;
     private Hsl? hsl;
     private Xyz? xyz;
+    private Xyy? xyy;
     private Lab? lab;
     private Lchab? lchab;
     private Luv? luv;
@@ -18,20 +19,21 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Oklab? oklab;
     private Oklch? oklch;
     
-    public Rgb Rgb => Get(ColourSpace.Rgb, () => rgb)!;
-    public Hsb Hsb => Get(ColourSpace.Hsb, () => hsb)!;
-    public Hsl Hsl => Get(ColourSpace.Hsl, () => hsl)!;
-    public Xyz Xyz => Get(ColourSpace.Xyz, () => xyz)!;
-    public Lab Lab => Get(ColourSpace.Lab, () => lab)!;
-    public Lchab Lchab => Get(ColourSpace.Lchab, () => lchab)!;
-    public Luv Luv => Get(ColourSpace.Luv, () => luv)!;
-    public Lchuv Lchuv => Get(ColourSpace.Lchuv, () => lchuv)!;
-    public Hsluv Hsluv => Get(ColourSpace.Hsluv, () => hsluv)!;
-    public Hpluv Hpluv => Get(ColourSpace.Hpluv, () => hpluv)!;
-    public Jzazbz Jzazbz => Get(ColourSpace.Jzazbz, () => jzazbz)!;
-    public Jzczhz Jzczhz => Get(ColourSpace.Jzczhz, () => jzczhz)!;
-    public Oklab Oklab => Get(ColourSpace.Oklab, () => oklab)!;
-    public Oklch Oklch => Get(ColourSpace.Oklch, () => oklch)!;
+    public Rgb Rgb => Get<Rgb>(ColourSpace.Rgb);
+    public Hsb Hsb => Get<Hsb>(ColourSpace.Hsb);
+    public Hsl Hsl => Get<Hsl>(ColourSpace.Hsl);
+    public Xyz Xyz => Get<Xyz>(ColourSpace.Xyz);
+    public Xyy Xyy => Get<Xyy>(ColourSpace.Xyy);
+    public Lab Lab => Get<Lab>(ColourSpace.Lab);
+    public Lchab Lchab => Get<Lchab>(ColourSpace.Lchab);
+    public Luv Luv => Get<Luv>(ColourSpace.Luv);
+    public Lchuv Lchuv => Get<Lchuv>(ColourSpace.Lchuv);
+    public Hsluv Hsluv => Get<Hsluv>(ColourSpace.Hsluv);
+    public Hpluv Hpluv => Get<Hpluv>(ColourSpace.Hpluv);
+    public Jzazbz Jzazbz => Get<Jzazbz>(ColourSpace.Jzazbz);
+    public Jzczhz Jzczhz => Get<Jzczhz>(ColourSpace.Jzczhz);
+    public Oklab Oklab => Get<Oklab>(ColourSpace.Oklab);
+    public Oklch Oklch => Get<Oklch>(ColourSpace.Oklch);
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 

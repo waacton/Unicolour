@@ -43,6 +43,9 @@ public class ConversionTests
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
     public void XyzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertXyzRoundTrip(triplet);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void XyySameAfterRoundTripConversion(ColourTriplet triplet) => AssertXyyRoundTrip(triplet);
 
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LabTriplets))]
     public void LabSameAfterRoundTripConversion(ColourTriplet triplet) => AssertLabRoundTrip(triplet);
@@ -140,6 +143,9 @@ public class ConversionTests
     {
         var viaRgb = Conversion.RgbToXyz(Conversion.XyzToRgb(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaRgb.Triplet, original.Triplet, XyzTolerance);
+        
+        var viaXyy = Conversion.XyyToXyz(Conversion.XyzToXyy(original, Configuration.Default));
+        AssertUtils.AssertColourTriplet(viaXyy.Triplet, original.Triplet, XyzTolerance);
 
         var viaLab = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaLab.Triplet, original.Triplet, XyzTolerance);
@@ -152,6 +158,13 @@ public class ConversionTests
         
         var viaOklab = Conversion.OklabToXyz(Conversion.XyzToOklab(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaOklab.Triplet, original.Triplet, XyzTolerance);
+    }
+    
+    private static void AssertXyyRoundTrip(ColourTriplet triplet) => AssertXyyRoundTrip(new Xyy(triplet.First, triplet.Second, triplet.Third));
+    private static void AssertXyyRoundTrip(Xyy original)
+    {
+        var viaXyz = Conversion.XyzToXyy(Conversion.XyyToXyz(original), Configuration.Default);
+        AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, XyzTolerance);
     }
     
     private static void AssertLabRoundTrip(ColourTriplet triplet) => AssertLabRoundTrip(new Lab(triplet.First, triplet.Second, triplet.Third));

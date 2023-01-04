@@ -17,8 +17,8 @@ public record Jzazbz : ColourRepresentation
     public Jzazbz(double j, double a, double b) : this(j, a, b, ColourMode.Unset) {}
     internal Jzazbz(double j, double a, double b, ColourMode colourMode) : base(j, a, b, colourMode) {}
 
-    protected override string FirstString => $"{Math.Round(J, 3)}";
-    protected override string SecondString => $"{Signed(Math.Round(A, 3))}";
-    protected override string ThirdString => $"{Signed(Math.Round(B, 3))}";
+    protected override string FirstString => $"{J:F3}";
+    protected override string SecondString => $"{A:+0.000;-0.000;0.000}";
+    protected override string ThirdString => $"{B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
 }

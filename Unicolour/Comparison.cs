@@ -83,7 +83,7 @@ public static class Comparison
             <= 180 => h2Prime - h1Prime,
             > 180 when h2Prime <= h1Prime => h2Prime - h1Prime + 360,
             > 180 when h2Prime > h1Prime => h2Prime - h1Prime - 360,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => double.NaN
         };
         
         var avgHPrime = Math.Abs(h1Prime - h2Prime) switch
@@ -91,7 +91,7 @@ public static class Comparison
             <= 180 => (h1Prime + h2Prime) / 2.0,
             > 180 when h1Prime + h2Prime < 360 => (h1Prime + h2Prime + 360) / 2.0,
             > 180 when h1Prime + h2Prime >= 360 => (h1Prime + h2Prime - 360) / 2.0,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => double.NaN
         };
 
         var t = 1 -

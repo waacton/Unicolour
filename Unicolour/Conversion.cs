@@ -104,6 +104,34 @@ internal static class Conversion
         return new Rgb(r, g, b, config, ColourMode.FromRepresentation(xyz));
     }
     
+    // https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
+    public static Xyy XyzToXyy(Xyz xyz, Configuration config)
+    {
+        var (x, y, z) = xyz.Triplet;
+        var normalisation = x + y + z;
+        var isBlack = normalisation == 0.0;
+        
+        var chromaticityX = isBlack ? config.ChromaticityWhite.X : x / normalisation;
+        var chromaticityY = isBlack ? config.ChromaticityWhite.Y : y / normalisation;
+        var luminance = isBlack ? 0 : y;
+        
+        return new Xyy(chromaticityX, chromaticityY, luminance, ColourMode.FromRepresentation(xyz));
+    }
+    
+    // https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
+    public static Xyz XyyToXyz(Xyy xyy)
+    {
+        var chromaticity = xyy.ConstrainedChromaticity;
+        var luminance = xyy.ConstrainedLuminance;
+
+        var useZero = chromaticity.Y <= 0;
+        var factor = luminance / chromaticity.Y;
+        var x = useZero ? 0 : factor * chromaticity.X;
+        var y = useZero ? 0 : luminance;
+        var z = useZero ? 0 : factor * (1 - chromaticity.X - chromaticity.Y);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(xyy));
+    }
+    
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
     public static Lab XyzToLab(Xyz xyz, Configuration config)
     {

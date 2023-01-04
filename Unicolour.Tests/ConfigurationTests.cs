@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
+using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -320,6 +321,25 @@ public static class ConfigurationTests
         
         AssertColour(unicolourXyz, expectedColour);
         AssertColour(unicolourLab, expectedColour);
+    }
+
+    [TestCase(Illuminant.D65, 0.312727, 0.329023)]
+    [TestCase(Illuminant.D50, 0.345669, 0.358496)]
+    [TestCase(Illuminant.E, 0.333333, 0.333333)]
+    public static void WhiteChromaticity(Illuminant illuminant, double expectedX, double expectedY)
+    {
+        var configuration = new Configuration(
+            Chromaticity.StandardRgbR,
+            Chromaticity.StandardRgbG,
+            Chromaticity.StandardRgbB,
+            Companding.StandardRgb, 
+            Companding.InverseStandardRgb, 
+            WhitePoint.From(Illuminant.D65, Observer.Standard2), 
+            WhitePoint.From(illuminant, Observer.Standard2));
+
+        var chromaticity = configuration.ChromaticityWhite;
+        Assert.That(Math.Round(chromaticity.X, 6), Is.EqualTo(Math.Round(expectedX, 6)));
+        Assert.That(Math.Round(chromaticity.Y, 6), Is.EqualTo(Math.Round(expectedY, 6)));
     }
 
     private static void AssertColour(Unicolour unicolour, TestColour expected)

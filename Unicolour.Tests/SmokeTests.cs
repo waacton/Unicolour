@@ -35,6 +35,11 @@ public static class SmokeTests
     [TestCase(0.4, 0.5, 0.6)]
     public static void UnicolourXyz(double x, double y, double z) => AssertInit(x, y, z, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz, Unicolour.FromXyz);
     
+    [TestCase(0, 0, 0)]
+    [TestCase(1, 1, 1)]
+    [TestCase(0.4, 0.5, 0.6)]
+    public static void UnicolourXyy(double x, double y, double upperY) => AssertInit(x, y, upperY, Unicolour.FromXyy, Unicolour.FromXyy, Unicolour.FromXyy, Unicolour.FromXyy);
+    
     [TestCase(0, -128, -128)]
     [TestCase(100, 128, 128)]
     [TestCase(50, -1, 1)]

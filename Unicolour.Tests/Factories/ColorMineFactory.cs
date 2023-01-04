@@ -7,6 +7,7 @@ using ColorMineRgb = ColorMine.ColorSpaces.Rgb;
 using ColorMineHsb = ColorMine.ColorSpaces.Hsb;
 using ColorMineHsl = ColorMine.ColorSpaces.Hsl;
 using ColorMineXyz = ColorMine.ColorSpaces.Xyz;
+using ColorMineXyy = ColorMine.ColorSpaces.Yxy;
 using ColorMineLab = ColorMine.ColorSpaces.Lab;
 using ColorMineLchab = ColorMine.ColorSpaces.Lch;
 using ColorMineLuv = ColorMine.ColorSpaces.Luv;
@@ -20,7 +21,7 @@ using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 internal class ColorMineFactory : ITestColourFactory
 {
     private static readonly Tolerances Tolerances = new()
-        {Rgb = 0.0005, Hsb = 0.00005, Hsl = 0.0125, Xyz = 0.0005, Lab = 0.05, Lchab = 0.05, Luv = 0.05};
+        {Rgb = 0.0005, Hsb = 0.00005, Hsl = 0.0125, Xyz = 0.0005, Xyy = 0.0005, Lab = 0.05, Lchab = 0.05, Luv = 0.05};
 
     public TestColour FromRgb(double r, double g, double b, string name)
     {
@@ -36,10 +37,11 @@ internal class ColorMineFactory : ITestColourFactory
         var hsb = rgb.To<ColorMineHsb>();
         var hsl = rgb.To<ColorMineHsl>();
         var xyz = rgb.To<ColorMineXyz>();
+        var xyy = rgb.To<ColorMineXyy>();
         var lab = rgb.To<ColorMineLab>();
         var lchab = rgb.To<ColorMineLchab>();
         var luv = rgb.To<ColorMineLuv>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, lchab, luv, Tolerances);
+        return Create(name, rgb, hsb, hsl, xyz, xyy, lab, lchab, luv, Tolerances);
     }
 
     public TestColour FromHsb(double h, double s, double b, string name)
@@ -48,10 +50,11 @@ internal class ColorMineFactory : ITestColourFactory
         var rgb = hsb.To<ColorMineRgb>();
         var hsl = hsb.To<ColorMineHsl>();
         var xyz = hsb.To<ColorMineXyz>();
+        var xyy = hsb.To<ColorMineXyy>();
         var lab = hsb.To<ColorMineLab>();
         var lchab = hsb.To<ColorMineLchab>();
         var luv = hsb.To<ColorMineLuv>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, lchab, luv, Tolerances);
+        return Create(name, rgb, hsb, hsl, xyz, xyy, lab, lchab, luv, Tolerances);
     }
 
     // ColorMine HSL for some reason uses 0-100 despite HSB using 0-1
@@ -61,15 +64,17 @@ internal class ColorMineFactory : ITestColourFactory
         var rgb = hsl.To<ColorMineRgb>();
         var hsb = hsl.To<ColorMineHsb>();
         var xyz = hsl.To<ColorMineXyz>();
+        var xyy = hsl.To<ColorMineXyy>();
         var lab = hsl.To<ColorMineLab>();
         var lchab = hsl.To<ColorMineLchab>();
         var luv = hsl.To<ColorMineLuv>();
-        return Create(name, rgb, hsb, hsl, xyz, lab, lchab, luv, Tolerances);
+        return Create(name, rgb, hsb, hsl, xyz, xyy, lab, lchab, luv, Tolerances);
     }
 
-    // ColorMine from XYZ, LAB, LCHab & LUV is so bad for most conversions, it's not worth testing
+    // ColorMine from XYZ, xyY, LAB, LCHab & LUV is so bad for most conversions, it's not worth testing
     // ColorMine doesn't support LCHuv
     public TestColour FromXyz(double x, double y, double z, string name) => throw new NotImplementedException();
+    public TestColour FromXyy(double x, double y, double upperY, string name) => throw new NotImplementedException();
     public TestColour FromLab(double l, double a, double b, string name) => throw new NotImplementedException();
     public TestColour FromLchab(double l, double c, double h, string name) => throw new NotImplementedException();
     public TestColour FromLuv(double l, double u, double v, string name) => throw new NotImplementedException();
@@ -77,7 +82,7 @@ internal class ColorMineFactory : ITestColourFactory
 
     private static TestColour Create(string name, 
         ColorMineRgb rgb, ColorMineHsb hsb, ColorMineHsl hsl, 
-        ColorMineXyz xyz, ColorMineLab lab, ColorMineLchab lchab, ColorMineLuv luv,
+        ColorMineXyz xyz, ColorMineXyy xyy, ColorMineLab lab, ColorMineLchab lchab, ColorMineLuv luv,
         Tolerances tolerances)
     {
         return new TestColour
@@ -87,12 +92,14 @@ internal class ColorMineFactory : ITestColourFactory
             Hsb = new(hsb.H, hsb.S, hsb.B),
             Hsl = new(hsl.H, hsl.S / 100.0, hsl.L / 100.0),
             Xyz = new(xyz.X / 100.0, xyz.Y / 100.0, xyz.Z / 100.0),
+            Xyy = new(xyy.X, xyy.Y2, xyy.Y1 / 100.0), // ColorMine is Yxy, hence Y1 is luminance and Y2 is y-chromaticity
             Lab = new(lab.L, lab.A, lab.B),
             Lchab = new(lchab.L, lchab.C, lchab.H),
             Luv = new(luv.L, luv.U, luv.V),
             Tolerances = tolerances,
             ExcludeFromHsxTestReasons = HsxExclusions(rgb, hsb, hsl),
-            ExcludeFromLchTestReasons = LchExclusions(rgb, hsb, hsl)
+            ExcludeFromLchTestReasons = LchExclusions(rgb, hsb, hsl),
+            ExcludeFromXyyTestReasons = XyyExclusions(xyy)
         };
     }
     
@@ -113,10 +120,18 @@ internal class ColorMineFactory : ITestColourFactory
         return exclusions;
     }
     
+    private static List<string> XyyExclusions(ColorMineXyy xyy)
+    {
+        var exclusions = new List<string>();
+        if (HasNoChromaticityY(xyy)) exclusions.Add("ColorMine sets all values to 0 when xyY has no y-chromaticity");
+        return exclusions;
+    }
+    
     private static bool HasInconsistentHue(ColorMineHsb hsb, ColorMineHsl hsl) => Math.Abs(hsb.H - hsl.H) > 0.01;
     private static bool HasRgbTruncationError(ColorMineRgb rgb) => HasTruncationError(rgb.R) || HasTruncationError(rgb.G) || HasTruncationError(rgb.B);
     private static bool HasLostSaturation(ColorMineHsb hsl, ColorMineHsl hsb) => hsl.S > 0.0 && hsb.S == 0.0 || hsb.S > 0.0 && hsl.S == 0.0;
     private static bool IsGreyscale(ColorMineRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
+    private static bool HasNoChromaticityY(ColorMineXyy xyy) => xyy.Y2 <= 0.0;
 
     private static bool HasTruncationError(double value)
     {

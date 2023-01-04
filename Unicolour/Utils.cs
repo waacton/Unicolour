@@ -9,8 +9,7 @@ internal static class Utils
     public static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
     public static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     public static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
-    public static string Signed(double x) => $"{(x > 0 ? "+" : string.Empty)}{x}";
-
+    
     public static double Modulo(this double value, double modulus)
     {
         if (double.IsNaN(value))

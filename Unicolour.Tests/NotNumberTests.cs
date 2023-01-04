@@ -29,6 +29,9 @@ public static class NotNumberTests
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberXyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
+    
+    [TestCaseSource(nameof(notNumberTestCases))]
+    public static void NotNumberXyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberLab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
@@ -92,7 +95,7 @@ public static class NotNumberTests
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(unicolour.Hex, Is.EqualTo("-"));
         Assert.That(unicolour.IsDisplayable, Is.False);
-        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(double.NaN));
+        Assert.That(unicolour.RelativeLuminance, Is.NaN);
         Assert.That(unicolour.Description, Is.EqualTo("-"));
 
         var spaces = Enum.GetValues<ColourSpace>().ToList();

@@ -28,8 +28,8 @@ public record Rgb : ColourRepresentation
         Byte255 = new Rgb255(To255(r), To255(g), To255(b), ColourMode.FromRepresentation(this));
     }
 
-    protected override string FirstString => $"{Math.Round(R, 2)}";
-    protected override string SecondString => $"{Math.Round(G, 2)}";
-    protected override string ThirdString => $"{Math.Round(B, 2)}";
+    protected override string FirstString => $"{R:F2}";
+    protected override string SecondString => $"{G:F2}";
+    protected override string ThirdString => $"{B:F2}";
     public override string ToString() => base.ToString();
 }

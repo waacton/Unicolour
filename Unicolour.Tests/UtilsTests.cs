@@ -33,15 +33,6 @@ public class UtilsTests
 
     [Test]
     public void CubeRootZero() => AssertCubeRoot(0, 0);
-    
-    [Test]
-    public void SignedPositive() => Assert.That(Signed(0.0001), Is.EqualTo("+0.0001"));
-    
-    [Test]
-    public void SignedNegative() => Assert.That(Signed(-0.0001), Is.EqualTo("-0.0001"));
-    
-    [Test]
-    public void SignedZero() => Assert.That(Signed(0), Is.EqualTo("0"));
 
     [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)

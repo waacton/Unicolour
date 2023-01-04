@@ -5,7 +5,7 @@ public record WhitePoint(double X, double Y, double Z)
     public double X { get; } = X;
     public double Y { get; } = Y;
     public double Z { get; } = Z;
-
+    
     public override string ToString() => $"({X}, {Y}, {Z})";
     
     public static WhitePoint From(Illuminant illuminant, Observer observer = Observer.Standard2)

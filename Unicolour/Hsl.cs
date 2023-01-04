@@ -18,8 +18,8 @@ public record Hsl : ColourRepresentation
     public Hsl(double h, double s, double l) : this(h, s, l, ColourMode.Unset) {}
     internal Hsl(double h, double s, double l, ColourMode colourMode) : base(h, s, l, colourMode) {}
 
-    protected override string FirstString => $"{(IsEffectivelyHued ? Math.Round(H, 1) : "—")}°";
-    protected override string SecondString => $"{Math.Round(S * 100, 1)}%";
-    protected override string ThirdString => $"{Math.Round(L * 100, 1)}%";
+    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string SecondString => $"{S * 100:F1}%";
+    protected override string ThirdString => $"{L * 100:F1}%";
     public override string ToString() => base.ToString();
 }

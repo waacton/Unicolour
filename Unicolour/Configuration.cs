@@ -7,6 +7,7 @@ public class Configuration
     public Chromaticity ChromaticityB { get; }
     public WhitePoint RgbWhitePoint { get; }
     public WhitePoint XyzWhitePoint { get; }
+    public Chromaticity ChromaticityWhite { get; }
     public Func<double, double> Compand { get; }
     public Func<double, double> InverseCompand { get; }
     
@@ -32,18 +33,13 @@ public class Configuration
         InverseCompand = inverseCompand;
         RgbWhitePoint = rgbWhitePoint;
         XyzWhitePoint = xyzWhitePoint;
+        
+        var x = XyzWhitePoint.X / 100.0;
+        var y = XyzWhitePoint.Y / 100.0;
+        var z = XyzWhitePoint.Z / 100.0;
+        var normalisation = x + y + z;
+        ChromaticityWhite = new(x / normalisation, y / normalisation);
     }
 
-    public override string ToString() => $"RGB {RgbWhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB} -> XYZ {XyzWhitePoint} ";
-}
-
-public record Chromaticity(double X, double Y)
-{
-    public static readonly Chromaticity StandardRgbR = new(0.6400, 0.3300);
-    public static readonly Chromaticity StandardRgbG = new(0.3000, 0.6000);
-    public static readonly Chromaticity StandardRgbB = new(0.1500, 0.0600);
-    
-    public double X { get; } = X;
-    public double Y { get; } = Y;
-    public override string ToString() => $"({X}, {Y})";
+    public override string ToString() => $"RGB {RgbWhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB} <-> XYZ {XyzWhitePoint} ";
 }

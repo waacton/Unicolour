@@ -336,6 +336,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Rgb.Linear, unicolour2.Rgb.Linear);
         AssertEqual(unicolour1.Hsb, unicolour2.Hsb);
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
+        AssertEqual(unicolour1.Hwb, unicolour2.Hwb);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Xyy, unicolour2.Xyy);
         AssertEqual(unicolour1.Lab, unicolour2.Lab);

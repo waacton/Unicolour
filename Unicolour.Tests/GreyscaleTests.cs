@@ -51,6 +51,20 @@ public static class GreyscaleTests
     [TestCase(180.0, 0.5, 1.00000000001, true)]
     [TestCase(180.0, 0.5, 0.99999999999, false)]
     public static void GreyscaleHsl(double h, double s, double l, bool expected) => AssertUnicolour(Unicolour.FromHsl(h, s, l), expected);
+    
+    [TestCase(180.0, 1.0, 0.0, true)]
+    [TestCase(180.0, 1.00000000001, 0.0, true)]
+    [TestCase(180.0, 0.99999999999, 0.0, false)]
+    [TestCase(180.0, 0.0, 1.0, true)]
+    [TestCase(180.0, 0.0, 1.00000000001, true)]
+    [TestCase(180.0, 0.0, 0.99999999999, false)]
+    [TestCase(180.0, 0.5, 0.5, true)]
+    [TestCase(180.0, 0.50000000001, 0.5, true)]
+    [TestCase(180.0, 0.49999999999, 0.5, false)]
+    [TestCase(180.0, 0.5, 0.5, true)]
+    [TestCase(180.0, 0.5, 0.50000000001, true)]
+    [TestCase(180.0, 0.5, 0.49999999999, false)]
+    public static void GreyscaleHwb(double h, double w, double b, bool expected) => AssertUnicolour(Unicolour.FromHwb(h, w, b), expected);
 
     // XYZ does not currently attempt to determine greyscale status from XYZ triplet, too much room for error
     // subsequent colour spaces may later report to be greyscale based on their own triplet values

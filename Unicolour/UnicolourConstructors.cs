@@ -31,7 +31,13 @@ public partial class Unicolour
     public static Unicolour FromHsl(double h, double s, double l, double alpha = 1.0) => FromHsl(Configuration.Default, h, s, l, alpha);
     public static Unicolour FromHsl(Configuration config, double h, double s, double l, double alpha = 1.0) => new(config, new Hsl(h, s, l), new Alpha(alpha));
     internal static Unicolour FromHsl(Configuration config, ColourMode colourMode, double h, double s, double l, double alpha = 1.0) => new(config, new Hsl(h, s, l, colourMode), new Alpha(alpha));
-
+    
+    public static Unicolour FromHwb((double h, double w, double b) tuple, double alpha = 1.0) => FromHwb(Configuration.Default, tuple.h, tuple.w, tuple.b, alpha);
+    public static Unicolour FromHwb(Configuration config, (double h, double w, double b) tuple, double alpha = 1.0) => FromHwb(config, tuple.h, tuple.w, tuple.b, alpha);
+    public static Unicolour FromHwb(double h, double w, double b, double alpha = 1.0) => FromHwb(Configuration.Default, h, w, b, alpha);
+    public static Unicolour FromHwb(Configuration config, double h, double w, double b, double alpha = 1.0) => new(config, new Hwb(h, w, b), new Alpha(alpha));
+    internal static Unicolour FromHwb(Configuration config, ColourMode colourMode, double h, double w, double b, double alpha = 1.0) => new(config, new Hwb(h, w, b, colourMode), new Alpha(alpha));
+    
     public static Unicolour FromXyz((double x, double y, double z) tuple, double alpha = 1.0) => FromXyz(Configuration.Default, tuple.x, tuple.y, tuple.z, alpha);
     public static Unicolour FromXyz(Configuration config, (double x, double y, double z) tuple, double alpha = 1.0) => FromXyz(config, tuple.x, tuple.y, tuple.z, alpha);
     public static Unicolour FromXyz(double x, double y, double z, double alpha = 1.0) => FromXyz(Configuration.Default, x, y, z, alpha);

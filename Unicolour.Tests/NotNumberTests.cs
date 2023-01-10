@@ -26,6 +26,9 @@ public static class NotNumberTests
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberHsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
+    
+    [TestCaseSource(nameof(notNumberTestCases))]
+    public static void NotNumberHwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberXyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));

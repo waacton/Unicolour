@@ -33,6 +33,15 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public static void Hwb(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromHwb(first, second, third));
+    }
+    
+    [Test, Combinatorial]
     public static void Xyz(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 

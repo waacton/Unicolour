@@ -54,7 +54,6 @@ internal static class AssertUtils
         void AccessProperties()
         {
             AccessProperty(() => unicolour.Alpha);
-            AccessProperty(() => unicolour.IsDisplayable);
             AccessProperty(() => unicolour.Config);
             AccessProperty(() => unicolour.Description);
             AccessProperty(() => unicolour.Hex);
@@ -62,6 +61,8 @@ internal static class AssertUtils
             AccessProperty(() => unicolour.Hsb);
             AccessProperty(() => unicolour.Hsl);
             AccessProperty(() => unicolour.Hsluv);
+            AccessProperty(() => unicolour.Hwb);
+            AccessProperty(() => unicolour.IsDisplayable);
             AccessProperty(() => unicolour.Jzazbz);
             AccessProperty(() => unicolour.Jzczhz);
             AccessProperty(() => unicolour.Lab);
@@ -70,8 +71,8 @@ internal static class AssertUtils
             AccessProperty(() => unicolour.Luv);
             AccessProperty(() => unicolour.Oklab);
             AccessProperty(() => unicolour.Oklch);
-            AccessProperty(() => unicolour.Rgb);
             AccessProperty(() => unicolour.RelativeLuminance);
+            AccessProperty(() => unicolour.Rgb);
             AccessProperty(() => unicolour.Xyy);
             AccessProperty(() => unicolour.Xyz);
         }

@@ -12,6 +12,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> RgbTriplets = new();
     public static readonly List<ColourTriplet> HsbTriplets = new();
     public static readonly List<ColourTriplet> HslTriplets = new();
+    public static readonly List<ColourTriplet> HwbTriplets = new();
     public static readonly List<ColourTriplet> XyzTriplets = new();
     public static readonly List<ColourTriplet> XyyTriplets = new();
     public static readonly List<ColourTriplet> LabTriplets = new();
@@ -34,6 +35,7 @@ internal static class RandomColours
             RgbTriplets.Add(Rgb());
             HsbTriplets.Add(Hsb());
             HslTriplets.Add(Hsl());
+            HwbTriplets.Add(Hwb());
             XyzTriplets.Add(Xyz());
             XyyTriplets.Add(Xyy());
             LabTriplets.Add(Lab());
@@ -54,6 +56,7 @@ internal static class RandomColours
     internal static ColourTriplet Rgb() => new(Rng(), Rng(), Rng());
     internal static ColourTriplet Hsb() => new(Rng(0, 360), Rng(), Rng());
     internal static ColourTriplet Hsl() => new(Rng(0, 360), Rng(), Rng());
+    internal static ColourTriplet Hwb() => new(Rng(0, 360), Rng(), Rng());
     internal static ColourTriplet Xyz() => new(Rng(), Rng(), Rng());
     internal static ColourTriplet Xyy() => new(Rng(), Rng(), Rng());
     internal static ColourTriplet Lab() => new(Rng(0, 100), Rng(-128, 128), Rng(-128, 128));

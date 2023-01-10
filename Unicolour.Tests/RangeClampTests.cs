@@ -92,6 +92,23 @@ public static class RangeClampTests
     }
     
     [Test]
+    public static void HwbRange()
+    {
+        Range hRange = new(0.0, 360.0);
+        Range wRange = new(0.0, 1.0);
+        Range bRange = new(0.0, 1.0);
+        var beyondMax = new Hwb(hRange.BeyondMax, wRange.BeyondMax, bRange.BeyondMax);
+        var beyondMin = new Hwb(hRange.BeyondMin, wRange.BeyondMin, bRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+        
+        var representations = new[] {beyondMax, beyondMin};
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedW, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
     public static void LchabRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);

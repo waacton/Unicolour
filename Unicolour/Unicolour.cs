@@ -6,6 +6,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Rgb? rgb;
     private Hsb? hsb;
     private Hsl? hsl;
+    private Hwb? hwb;
     private Xyz? xyz;
     private Xyy? xyy;
     private Lab? lab;
@@ -22,6 +23,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Rgb Rgb => Get<Rgb>(ColourSpace.Rgb);
     public Hsb Hsb => Get<Hsb>(ColourSpace.Hsb);
     public Hsl Hsl => Get<Hsl>(ColourSpace.Hsl);
+    public Hwb Hwb => Get<Hwb>(ColourSpace.Hwb);
     public Xyz Xyz => Get<Xyz>(ColourSpace.Xyz);
     public Xyy Xyy => Get<Xyy>(ColourSpace.Xyy);
     public Lab Lab => Get<Lab>(ColourSpace.Lab);

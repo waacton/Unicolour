@@ -29,6 +29,11 @@ public static class SmokeTests
     [TestCase(360, 1, 1)]
     [TestCase(180, 0.4, 0.6)]
     public static void UnicolourHsl(double h, double s, double l) => AssertInit(h, s, l, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl, Unicolour.FromHsl);
+    
+    [TestCase(0, 0, 0)]
+    [TestCase(360, 1, 1)]
+    [TestCase(180, 0.4, 0.6)]
+    public static void UnicolourHwb(double h, double w, double b) => AssertInit(h, w, b, Unicolour.FromHwb, Unicolour.FromHwb, Unicolour.FromHwb, Unicolour.FromHwb);
 
     [TestCase(0, 0, 0)]
     [TestCase(1, 1, 1)]

@@ -41,6 +41,9 @@ public class ConversionTests
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HslTriplets))]
     public void HslSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHslRoundTrip(triplet);
     
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HwbTriplets))]
+    public void HwbSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHwbRoundTrip(triplet);
+    
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
     public void XyzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertXyzRoundTrip(triplet);
     
@@ -128,6 +131,9 @@ public class ConversionTests
         
         var viaHsl = Conversion.HslToHsb(Conversion.HsbToHsl(original));
         AssertUtils.AssertColourTriplet(viaHsl.Triplet, original.Triplet, HsbTolerance);
+        
+        var viaHwb = Conversion.HwbToHsb(Conversion.HsbToHwb(original));
+        AssertUtils.AssertColourTriplet(viaHwb.Triplet, original.Triplet, DefaultTolerance);
     }
     
     private static void AssertHslRoundTrip(TestColour namedColour) => AssertHslRoundTrip(namedColour.Hsl!);
@@ -136,6 +142,29 @@ public class ConversionTests
     {
         var viaHsb = Conversion.HsbToHsl(Conversion.HslToHsb(original));
         AssertUtils.AssertColourTriplet(viaHsb.Triplet, original.Triplet, HslTolerance);
+    }
+    
+    private static void AssertHwbRoundTrip(ColourTriplet triplet) => AssertHwbRoundTrip(new Hwb(triplet.First, triplet.Second, triplet.Third));
+    private static void AssertHwbRoundTrip(Hwb original)
+    {
+        // note: cannot test round trip of all HWB values as HWB <-> HSB is not 1:1
+        // since when HWB W + B > 100%, it is the same as another HWB where W + B = 100%
+        // (e.g. W 100 B 50 == W 66.666 B 33.333)
+        // and HSB -> HWB will always produce HWB that results in W + B <= 100%
+        var scale = original.ConstrainedW + original.ConstrainedB;
+        var scaledHwb = new Hwb(original.H, original.ConstrainedW / scale, original.ConstrainedB / scale);
+
+        var needsScaling = scale > 1.0;
+        if (needsScaling)
+        {
+            var hsbFromOriginal = Conversion.HwbToHsb(original);
+            var hsbFromScaled = Conversion.HwbToHsb(scaledHwb);
+            AssertUtils.AssertColourTriplet(hsbFromOriginal.Triplet, hsbFromScaled.Triplet, DefaultTolerance);
+        }
+
+        var viaHsb = Conversion.HsbToHwb(Conversion.HwbToHsb(original));
+        var expectedHwb = needsScaling ? scaledHwb.Triplet : original.Triplet;
+        AssertUtils.AssertColourTriplet(viaHsb.Triplet, expectedHwb, DefaultTolerance);
     }
     
     private static void AssertXyzRoundTrip(ColourTriplet triplet) => AssertXyzRoundTrip(new Xyz(triplet.First, triplet.Second, triplet.Third));

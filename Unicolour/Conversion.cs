@@ -71,6 +71,37 @@ internal static class Conversion
 
         return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hsl));
     }
+    
+    // https://en.wikipedia.org/wiki/HWB_color_model#Conversion
+    public static Hwb HsbToHwb(Hsb hsb)
+    {
+        var (hue, s, b) = hsb.ConstrainedTriplet;
+        var whiteness = (1 - s) * b;
+        var blackness = 1 - b;
+        
+        return new Hwb(hue, whiteness, blackness, ColourMode.FromRepresentation(hsb));
+    }
+    
+    // https://en.wikipedia.org/wiki/HWB_color_model#Conversion
+    public static Hsb HwbToHsb(Hwb hwb)
+    {
+        var (hue, w, b) = hwb.ConstrainedTriplet;
+
+        double brightness;
+        double saturation;
+        if (hwb.IsGreyscale)
+        {
+            brightness = w / (w + b);
+            saturation = 0;
+        }
+        else
+        {
+            brightness = 1 - b;
+            saturation = brightness == 0.0 ? 0 : 1 - w / brightness;
+        }
+        
+        return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hwb));
+    }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
     public static Xyz RgbToXyz(Rgb rgb, Configuration config)

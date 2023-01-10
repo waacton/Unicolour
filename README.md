@@ -31,8 +31,10 @@ Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° ob
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
 
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
-The goal of this library is to be accurate, intuitive, and easy to use; performance is not a priority.
-It is also [extensively tested](Unicolour.Tests) against known colour values and other .NET libraries.
+The goal of this library is to be accurate, intuitive, and easy to use.
+Although performance is not a priority, conversions are only calculated only once;
+when first required — either on access or as part of an intermediate calculation — the result is evaluated and stored.
+It is also [extensively tested](Unicolour.Tests), including comparisons against known colour values and other .NET libraries.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 

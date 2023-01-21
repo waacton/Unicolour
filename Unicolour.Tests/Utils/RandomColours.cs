@@ -21,6 +21,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> LchuvTriplets = new();
     public static readonly List<ColourTriplet> HsluvTriplets = new();
     public static readonly List<ColourTriplet> HpluvTriplets = new();
+    public static readonly List<ColourTriplet> IctcpTriplets = new();
     public static readonly List<ColourTriplet> JzazbzTriplets = new();
     public static readonly List<ColourTriplet> JzczhzTriplets = new();
     public static readonly List<ColourTriplet> OklabTriplets = new();
@@ -44,6 +45,7 @@ internal static class RandomColours
             LchuvTriplets.Add(Lchuv());
             HsluvTriplets.Add(Hsluv());
             HpluvTriplets.Add(Hpluv());
+            IctcpTriplets.Add(Ictcp());
             JzazbzTriplets.Add(Jzazbz());
             JzczhzTriplets.Add(Jzczhz());
             OklabTriplets.Add(Oklab());
@@ -65,10 +67,11 @@ internal static class RandomColours
     internal static ColourTriplet Lchuv() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
     internal static ColourTriplet Hsluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
     internal static ColourTriplet Hpluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
+    internal static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
+    internal static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0>1, -0.5>0.5, -0.5>0.5) easily produce XYZ with NaNs [https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272]
+    internal static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values
     internal static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
     internal static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
-    internal static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0>1, -0.5>0.5, -0.5>0.5) easily produce XYZ with NaNs [https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272]
-    internal static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values since
     internal static double Alpha() => Random.NextDouble();
 
     private static double Rng() => Random.NextDouble();

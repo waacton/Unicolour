@@ -18,10 +18,9 @@ public static class Comparison
     // https://en.wikipedia.org/wiki/Color_difference#CIE76
     public static double DeltaE76(this Unicolour reference, Unicolour sample)
     {
-        var squaredDiffL = Math.Pow(reference.Lab.L - sample.Lab.L, 2);
-        var squaredDiffA = Math.Pow(reference.Lab.A - sample.Lab.A, 2);
-        var squaredDiffB = Math.Pow(reference.Lab.B - sample.Lab.B, 2);
-        return Math.Sqrt(squaredDiffL + squaredDiffA + squaredDiffB);
+        var (l1, a1, b1) = reference.Lab.Triplet;
+        var (l2, a2, b2) = sample.Lab.Triplet;
+        return Math.Sqrt(SquaredDiff(l1, l2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
     }
     
     // https://en.wikipedia.org/wiki/Color_difference#CIE94
@@ -127,14 +126,34 @@ public static class Comparison
             rt * ratioC * ratioH);
     }
     
+    // https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2124-0-201901-I!!PDF-E.pdf
+    public static double DeltaEItp(this Unicolour reference, Unicolour sample)
+    {
+        ColourTriplet ToItp(Ictcp ictcp) => new(ictcp.I, 0.5 * ictcp.Ct, ictcp.Cp);
+        var (i1, t1, c1) = ToItp(reference.Ictcp);
+        var (i2, t2, c2) = ToItp(sample.Ictcp);
+        return 720 * Math.Sqrt(SquaredDiff(i1, i2) + SquaredDiff(t1, t2) + SquaredDiff(c1, c2));
+    }
+    
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
     public static double DeltaEz(this Unicolour reference, Unicolour sample)
     {
-        var deltaHz = reference.Jzczhz.H - sample.Jzczhz.H;
+        var (jz1, cz1, hz1) = reference.Jzczhz.Triplet;
+        var (jz2, cz2, hz2) = sample.Jzczhz.Triplet;
+        
+        var deltaHz = hz1 - hz2;
         deltaHz = 2 * Math.Sqrt(reference.Jzczhz.C * sample.Jzczhz.C) * Math.Sin(ToRadians(deltaHz / 2.0));
-        var squaredDiffJz = Math.Pow(reference.Jzczhz.J - sample.Jzczhz.J, 2);
-        var squaredDiffCz = Math.Pow(reference.Jzczhz.C - sample.Jzczhz.C, 2);
-        var squaredDiffHz = Math.Pow(deltaHz, 2);
-        return Math.Sqrt(squaredDiffJz + squaredDiffCz + squaredDiffHz);
+        deltaHz = Math.Pow(deltaHz, 2);
+        return Math.Sqrt(SquaredDiff(jz1, jz2) + SquaredDiff(cz1, cz2) + deltaHz);
     }
+    
+    // https://en.wikipedia.org/wiki/Color_difference#Other_geometric_constructions
+    public static double DeltaEHyab(this Unicolour reference, Unicolour sample)
+    {
+        var (l1, a1, b1) = reference.Lab.Triplet;
+        var (l2, a2, b2) = sample.Lab.Triplet;
+        return Math.Sqrt(SquaredDiff(a1, a2) + SquaredDiff(b1, b2)) + Math.Abs(l2 - l1);
+    }
+
+    private static double SquaredDiff(double first, double second) => Math.Pow(second - first, 2);
 }

@@ -75,6 +75,11 @@ public static class SmokeTests
     [TestCase(180, 50, 50)]
     public static void UnicolourHpluv(double h, double s, double l) => AssertInit(h, s, l, Unicolour.FromHpluv, Unicolour.FromHpluv, Unicolour.FromHpluv, Unicolour.FromHpluv);
     
+    [TestCase(0, -0.5, -0.5)]
+    [TestCase(1, 0.5, 0.5)]
+    [TestCase(0.5, -0.01, 0.01)]
+    public static void UnicolourIctcp(double i, double ct, double cp) => AssertInit(i, ct, cp, Unicolour.FromIctcp, Unicolour.FromIctcp, Unicolour.FromIctcp, Unicolour.FromIctcp);
+    
     [TestCase(0, -0.10, -0.16)]
     [TestCase(0.17, 0.11, 0.12)]
     [TestCase(0.085, -0.0001, 0.0001)]

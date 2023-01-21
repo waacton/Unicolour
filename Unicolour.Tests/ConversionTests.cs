@@ -68,6 +68,9 @@ public class ConversionTests
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HpluvTriplets))]
     public void HpluvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHpluvRoundTrip(triplet);
     
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.IctcpTriplets))]
+    public void IctcpSameAfterRoundTripConversion(ColourTriplet triplet) => AssertIctcpRoundTrip(triplet);
+    
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.JzazbzTriplets))]
     public void JzazbzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertJzazbzRoundTrip(triplet);
     
@@ -182,6 +185,9 @@ public class ConversionTests
         var viaLuv = Conversion.LuvToXyz(Conversion.XyzToLuv(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaLuv.Triplet, original.Triplet, XyzTolerance);
         
+        var viaIctcp = Conversion.IctcpToXyz(Conversion.XyzToIctcp(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(viaIctcp.Triplet, viaIctcp.Triplet, XyzTolerance);
+        
         var viaJzazbz = Conversion.JzazbzToXyz(Conversion.XyzToJzazbz(original, Configuration.Default), Configuration.Default);
         AssertUtils.AssertColourTriplet(viaJzazbz.Triplet, viaJzazbz.Triplet, XyzTolerance);
         
@@ -250,14 +256,23 @@ public class ConversionTests
         AssertUtils.AssertColourTriplet(viaLch.Triplet, original.Triplet, DefaultTolerance);
     }
     
+    private static void AssertIctcpRoundTrip(ColourTriplet triplet) => AssertIctcpRoundTrip(new Ictcp(triplet.First, triplet.Second, triplet.Third));
+    private static void AssertIctcpRoundTrip(Ictcp original)
+    {
+        // Ictcp -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaXyz = Conversion.XyzToIctcp(Conversion.IctcpToXyz(original, Configuration.Default), Configuration.Default);
+        AssertUtils.AssertColourTriplet(viaXyz.Triplet, viaXyz.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, DefaultTolerance);
+    }
+    
     private static void AssertJzazbzRoundTrip(ColourTriplet triplet) => AssertJzazbzRoundTrip(new Jzazbz(triplet.First, triplet.Second, triplet.Third));
     private static void AssertJzazbzRoundTrip(Jzazbz original)
     {
-        // note: cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1, e.g.
+        // cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1, e.g.
         // - when Jzazbz inputs produces negative XYZ values, which are clamped during XYZ -> Jzazbz
-        // - when Jzazbz negative inputs trigger a negative number to a fractional power, resulting in XYZ containing NaNs
+        // - when Jzazbz negative inputs trigger a negative number to a fractional power, producing NaNs
         // var viaXyz = Conversion.XyzToJzazbz(Conversion.JzazbzToXyz(original, Configuration.Default), Configuration.Default);
-        
+        // AssertUtils.AssertColourTriplet(viaXyz.Triplet, viaXyz.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, JzazbzTolerance);
+
         var viaJzczhz = Conversion.JzczhzToJzazbz(Conversion.JzazbzToJzczhz(original));
         AssertUtils.AssertColourTriplet(viaJzczhz.Triplet, original.Triplet, JzazbzTolerance);
     }

@@ -86,6 +86,12 @@ public partial class Unicolour
     public static Unicolour FromHpluv(Configuration config, double h, double s, double l, double alpha = 1.0) => new(config, new Hpluv(h, s, l), new Alpha(alpha));
     internal static Unicolour FromHpluv(Configuration config, ColourMode colourMode, double h, double s, double l, double alpha = 1.0) => new(config, new Hpluv(h, s, l, colourMode), new Alpha(alpha));
 
+    public static Unicolour FromIctcp((double i, double ct, double cp) tuple, double alpha = 1.0) => FromIctcp(Configuration.Default, tuple.i, tuple.ct, tuple.cp, alpha);
+    public static Unicolour FromIctcp(Configuration config, (double i, double ct, double cp) tuple, double alpha = 1.0) => FromIctcp(config, tuple.i, tuple.ct, tuple.cp, alpha);
+    public static Unicolour FromIctcp(double i, double ct, double cp, double alpha = 1.0) => FromIctcp(Configuration.Default, i, ct, cp, alpha);
+    public static Unicolour FromIctcp(Configuration config, double i, double ct, double cp, double alpha = 1.0) => new(config, new Ictcp(i, ct, cp), new Alpha(alpha));
+    internal static Unicolour FromIctcp(Configuration config, ColourMode colourMode, double i, double ct, double cp, double alpha = 1.0) => new(config, new Ictcp(i, ct, cp, colourMode), new Alpha(alpha));
+    
     public static Unicolour FromJzazbz((double jz, double az, double bz) tuple, double alpha = 1.0) => FromJzazbz(Configuration.Default, tuple.jz, tuple.az, tuple.bz, alpha);
     public static Unicolour FromJzazbz(Configuration config, (double jz, double az, double bz) tuple, double alpha = 1.0) => FromJzazbz(config, tuple.jz, tuple.az, tuple.bz, alpha);
     public static Unicolour FromJzazbz(double jz, double az, double bz, double alpha = 1.0) => FromJzazbz(Configuration.Default, jz, az, bz, alpha);

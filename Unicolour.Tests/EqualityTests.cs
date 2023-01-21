@@ -33,6 +33,14 @@ public class EqualityTests
     }
     
     [Test]
+    public void EqualHwbGivesEqualObjects()
+    {
+        var unicolour1 = UnicolourFromHwb();
+        var unicolour2 = Unicolour.FromHwb(unicolour1.Hwb.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
     public void EqualXyzGivesEqualObjects()
     {
         var unicolour1 = UnicolourFromXyz();
@@ -97,6 +105,14 @@ public class EqualityTests
     }
     
     [Test]
+    public void EqualIctcpGivesEqualObjects()
+    {
+        var unicolour1 = UnicolourFromIctcp();
+        var unicolour2 = Unicolour.FromIctcp(unicolour1.Ictcp.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
     public void EqualJzazbzGivesEqualObjects()
     {
         var unicolour1 = UnicolourFromJzazbz();
@@ -155,6 +171,15 @@ public class EqualityTests
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsl.Triplet);
     }
     
+    [Test]
+    public void NotEqualHwbGivesNotEqualObjects()
+    {
+        var unicolour1 = UnicolourFromHwb();
+        var differentTuple = GetDifferent(unicolour1.Hwb.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromHwb(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hwb.Triplet);
+    }
+
     [Test]
     public void NotEqualXyzGivesNotEqualObjects()
     {
@@ -225,6 +250,15 @@ public class EqualityTests
         var differentTuple = GetDifferent(unicolour1.Hsluv.Triplet).Tuple;
         var unicolour2 = Unicolour.FromHpluv(differentTuple, unicolour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hpluv.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualIctcpGivesNotEqualObjects()
+    {
+        var unicolour1 = UnicolourFromIctcp();
+        var differentTuple = GetDifferent(unicolour1.Ictcp.Triplet, 0.001).Tuple;
+        var unicolour2 = Unicolour.FromIctcp(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Ictcp.Triplet);
     }
     
     [Test]
@@ -315,6 +349,7 @@ public class EqualityTests
     private static Unicolour UnicolourFromRgb() => Unicolour.FromRgb(RandomColours.Rgb().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromHsb() => Unicolour.FromHsb(RandomColours.Hsb().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromHsl() => Unicolour.FromHsl(RandomColours.Hsl().Tuple, RandomColours.Alpha());
+    private static Unicolour UnicolourFromHwb() => Unicolour.FromHwb(RandomColours.Hwb().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromXyz() => Unicolour.FromXyz(RandomColours.Xyz().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromXyy() => Unicolour.FromXyy(RandomColours.Xyy().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromLab() => Unicolour.FromLab(RandomColours.Lab().Tuple, RandomColours.Alpha());
@@ -323,6 +358,7 @@ public class EqualityTests
     private static Unicolour UnicolourFromLchuv() => Unicolour.FromLchuv(RandomColours.Lchuv().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromHsluv() => Unicolour.FromHsluv(RandomColours.Hsluv().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromHpluv() => Unicolour.FromHpluv(RandomColours.Hpluv().Tuple, RandomColours.Alpha());
+    private static Unicolour UnicolourFromIctcp() => Unicolour.FromIctcp(RandomColours.Ictcp().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromJzazbz() => Unicolour.FromJzazbz(RandomColours.Jzazbz().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromJzczhz() => Unicolour.FromJzczhz(RandomColours.Jzczhz().Tuple, RandomColours.Alpha());
     private static Unicolour UnicolourFromOklab() => Unicolour.FromOklab(RandomColours.Oklab().Tuple, RandomColours.Alpha());
@@ -345,6 +381,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Lchuv, unicolour2.Lchuv);
         AssertEqual(unicolour1.Hsluv, unicolour2.Hsluv);
         AssertEqual(unicolour1.Hpluv, unicolour2.Hpluv);
+        AssertEqual(unicolour1.Ictcp, unicolour2.Ictcp);
         AssertEqual(unicolour1.Jzazbz, unicolour2.Jzazbz);
         AssertEqual(unicolour1.Jzczhz, unicolour2.Jzczhz);
         AssertEqual(unicolour1.Oklab, unicolour2.Oklab);

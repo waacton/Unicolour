@@ -22,10 +22,19 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIELCh<sub>uv</sub>
 - HSLuv
 - HPLuv
+- IC<sub>T</sub>C<sub>P</sub>
 - J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
 - J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
 - Oklab
 - Oklch
+
+Unicolour can be used to calculate colour difference via:
+- ΔE<sub>76</sub> (CIE76)
+- ΔE<sub>94</sub> (CIE94)
+- ΔE<sub>00</sub> (CIEDE2000)
+- ΔE<sub>ITP</sub>
+- ΔE<sub>z</sub>
+- ΔE<sub>HyAB</sub>
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
@@ -39,26 +48,27 @@ It is also [extensively tested](Unicolour.Tests), including comparisons against 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 ## Quickstart ⚡
-| Colour space                            | Construction             | Access         | Interpolation          |
-|-----------------------------------------|--------------------------|----------------|------------------------|
-| RGB (Hex)                               | `Unicolour.FromHex()`    | `.Hex`         | `.InterpolateRgb()`    |
-| RGB (0-255)                             | `Unicolour.FromRgb255()` | `.Rgb.Byte255` | `.InterpolateRgb()`    |
-| RGB                                     | `Unicolour.FromRgb()`    | `.Rgb`         | `.InterpolateRgb()`    |
-| HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.InterpolateHsb()`    |
-| HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.InterpolateHsl()`    |
-| HWB                                     | `Unicolour.FromHwb()`    | `.Hwb`         | `.InterpolateHwb()`    |
-| CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.InterpolateXyz()`    |
-| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.InterpolateXyy()`    |
-| CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.InterpolateLab()`    |
-| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.InterpolateLchab()`  |
-| CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.InterpolateLuv()`    |
-| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.InterpolateLchuv()`  |
-| HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.InterpolateHsluv()`  |
-| HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.InterpolateHpluv()`  |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.InterpolateJzazbz()` |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.InterpolateJzczhz()` |
-| Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`  |
-| Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`  |
+| Colour space                            | Construction             | Access         | Interpolation           |
+|-----------------------------------------|--------------------------|----------------|-------------------------|
+| RGB (Hex)                               | `Unicolour.FromHex()`    | `.Hex`         | `.InterpolateRgb()`     |
+| RGB (0-255)                             | `Unicolour.FromRgb255()` | `.Rgb.Byte255` | `.InterpolateRgb()`     |
+| RGB                                     | `Unicolour.FromRgb()`    | `.Rgb`         | `.InterpolateRgb()`     |
+| HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.InterpolateHsb()`     |
+| HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.InterpolateHsl()`     |
+| HWB                                     | `Unicolour.FromHwb()`    | `.Hwb`         | `.InterpolateHwb()`     |
+| CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.InterpolateXyz()`     |
+| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.InterpolateXyy()`     |
+| CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.InterpolateLab()`     |
+| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.InterpolateLchab()`   |
+| CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.InterpolateLuv()`     |
+| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.InterpolateLchuv()`   |
+| HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.InterpolateHsluv()`   |
+| HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.InterpolateHpluv()`   |
+| IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`  | `.Ictcp`       | `.InterpolateIctcp()`   |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.InterpolateJzazbz()`  |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.InterpolateJzczhz()`  |
+| Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`   |
+| Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`   |
 
 ## How to use 🎨
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -72,7 +82,7 @@ using Wacton.Unicolour;
 ...
 var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
-var unicolour = Unicolour.FromRgb(1.0, 0.078, 0.576);
+var unicolour = Unicolour.FromRgb(1.0, 0.08, 0.58);
 var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
 var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
 var unicolour = Unicolour.FromHwb(327.6, 0.078, 0.0);
@@ -84,6 +94,7 @@ var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
 var unicolour = Unicolour.FromHsluv(349.5, 100, 56);
 var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56);
+var unicolour = Unicolour.FromIctcp(0.38, +0.12, +0.19);
 var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
 var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
@@ -104,6 +115,7 @@ var luv = unicolour.Luv;
 var lchuv = unicolour.Lchuv;
 var hsluv = unicolour.Hsluv;
 var hpluv = unicolour.Hpluv;
+var ictcp = unicolour.Ictcp;
 var jzazbz = unicolour.Jzazbz;
 var jzczhz = unicolour.Jzczhz;
 var oklab = unicolour.Oklab;
@@ -124,6 +136,7 @@ var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsluv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHpluv(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateIctcp(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzazbz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzczhz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
@@ -136,7 +149,9 @@ var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
 var difference = unicolour1.DeltaE94(unicolour2);
 var difference = unicolour1.DeltaE00(unicolour2);
+var difference = unicolour1.DeltaEItp(unicolour2);
 var difference = unicolour1.DeltaEz(unicolour2);
+var difference = unicolour1.DeltaEHyab(unicolour2);
 ```
 
 See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:

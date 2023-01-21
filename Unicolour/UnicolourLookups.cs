@@ -1,11 +1,11 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Jzazbz, Jzczhz, Oklab, Oklch }
+internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch }
 
 public partial class Unicolour
 {
     internal IEnumerable<ColourRepresentation> AllRepresentations => new List<ColourRepresentation>
-        {Rgb, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Jzazbz, Jzczhz, Oklab, Oklch};
+        {Rgb, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch};
 
     internal ColourRepresentation Representation(ColourSpace colourSpace) => AllRepresentations.Single(x => x.ColourSpace == colourSpace);
     internal ColourRepresentation InitialRepresentation() => Representation(initialColourSpace);
@@ -26,6 +26,7 @@ public partial class Unicolour
             case Lchuv lchuvColour: lchuv = lchuvColour; break;
             case Hsluv hsluvColour: hsluv = hsluvColour; break;
             case Hpluv hpluvColour: hpluv = hpluvColour; break;
+            case Ictcp ictcpColour: ictcp = ictcpColour; break;
             case Jzazbz jzazbzColour: jzazbz = jzazbzColour; break;
             case Jzczhz jzczhzColour: jzczhz = jzczhzColour; break;
             case Oklab oklabColour: oklab = oklabColour; break;
@@ -71,6 +72,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => lchuv,
             ColourSpace.Hsluv => hsluv,
             ColourSpace.Hpluv => hpluv,
+            ColourSpace.Ictcp => ictcp,
             ColourSpace.Jzazbz => jzazbz,
             ColourSpace.Jzczhz => jzczhz,
             ColourSpace.Oklab => oklab,
@@ -95,6 +97,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => SetFromLchuv(targetSpace),
             ColourSpace.Hsluv => SetFromHsluv(targetSpace),
             ColourSpace.Hpluv => SetFromHpluv(targetSpace),
+            ColourSpace.Ictcp => SetFromIctcp(targetSpace),
             ColourSpace.Jzazbz => SetFromJzazbz(targetSpace),
             ColourSpace.Jzczhz => SetFromJzczhz(targetSpace),
             ColourSpace.Oklab => SetFromOklab(targetSpace),
@@ -121,6 +124,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -145,6 +149,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -169,6 +174,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -193,6 +199,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -217,6 +224,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -241,6 +249,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -265,6 +274,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -289,6 +299,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -313,6 +324,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -337,6 +349,7 @@ public partial class Unicolour
             // ColourSpace.Lchuv => () => { },
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -361,6 +374,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.HsluvToLchuv(Hsluv),
             // ColourSpace.Hsluv => () => { },
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -385,6 +399,32 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.HpluvToLchuv(Hpluv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             // ColourSpace.Hpluv => () => { },
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
+            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
+            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
+            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
+            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+    
+    private Action SetFromIctcp(ColourSpace targetSpace)
+    {
+        return targetSpace switch
+        {
+            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config),
+            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
+            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
+            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
+            ColourSpace.Xyz => () => xyz = Conversion.IctcpToXyz(Ictcp, Config),
+            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config),
+            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config),
+            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
+            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config),
+            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
+            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
+            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            // ColourSpace.Ictcp => () => { },
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -409,6 +449,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             // ColourSpace.Jzazbz => () => { },
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -433,6 +474,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.JzczhzToJzazbz(Jzczhz),
             // ColourSpace.Jzczhz => () => { },
             ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config),
@@ -457,6 +499,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             // ColourSpace.Oklab => () => { },
@@ -481,6 +524,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
             ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
             ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
+            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config),
             ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config),
             ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
             ColourSpace.Oklab => () => oklab = Conversion.OklchToOklab(Oklch),

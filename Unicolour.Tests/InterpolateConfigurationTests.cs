@@ -3,7 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using System;
 using NUnit.Framework;
 
-public class InterpolateConfigTests
+public class InterpolateConfigurationTests
 {
     [Test]
     public void UndefinedConfig()

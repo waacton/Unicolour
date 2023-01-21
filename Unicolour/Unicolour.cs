@@ -15,6 +15,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Lchuv? lchuv;
     private Hsluv? hsluv;
     private Hpluv? hpluv;
+    private Ictcp? ictcp;
     private Jzazbz? jzazbz;
     private Jzczhz? jzczhz;
     private Oklab? oklab;
@@ -32,6 +33,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Lchuv Lchuv => Get<Lchuv>(ColourSpace.Lchuv);
     public Hsluv Hsluv => Get<Hsluv>(ColourSpace.Hsluv);
     public Hpluv Hpluv => Get<Hpluv>(ColourSpace.Hpluv);
+    public Ictcp Ictcp => Get<Ictcp>(ColourSpace.Ictcp);
     public Jzazbz Jzazbz => Get<Jzazbz>(ColourSpace.Jzazbz);
     public Jzczhz Jzczhz => Get<Jzczhz>(ColourSpace.Jzczhz);
     public Oklab Oklab => Get<Oklab>(ColourSpace.Oklab);

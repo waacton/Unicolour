@@ -103,7 +103,32 @@ public static class DifferenceTests
         }
     }
     
-    [Test]
+    [Test] // assumes Ictcp scalar of 100
+    public static void KnownDeltaEItp()
+    {
+        var black = ColourLimits.Rgb["black"];
+        var white = ColourLimits.Rgb["white"];
+        var red = ColourLimits.Rgb["red"];
+        var green = ColourLimits.Rgb["green"];
+        var blue = ColourLimits.Rgb["blue"];
+        var random = GetRandomColour();
+        
+        // delta-EItp colour differences are symmetric, i.e. green from red == red from green
+        AssertKnownDeltaEItp(black, white, 365.816926);
+        AssertKnownDeltaEItp(red, green, 239.982435);
+        AssertKnownDeltaEItp(green, blue, 234.838743);
+        AssertKnownDeltaEItp(blue, red, 322.659678);
+        AssertKnownDeltaEItp(random, random, 0.000000);
+
+        for (var i = 0; i < 1000; i++)
+        {
+            var reference = GetRandomColour();
+            var sample = GetRandomColour();
+            Assert.That(reference.DeltaEItp(sample), Is.EqualTo(sample.DeltaEItp(reference)));
+        }
+    }
+    
+    [Test] // assumes Jzczhz scalar of 100
     public static void KnownDeltaEz()
     {
         var black = ColourLimits.Rgb["black"];
@@ -127,6 +152,30 @@ public static class DifferenceTests
             Assert.That(reference.DeltaEz(sample), Is.EqualTo(sample.DeltaEz(reference)));
         }
     }
+    
+    [Test]
+    public static void KnownDeltaEHyab()
+    {
+        var black = ColourLimits.Rgb["black"];
+        var white = ColourLimits.Rgb["white"];
+        var red = ColourLimits.Rgb["red"];
+        var green = ColourLimits.Rgb["green"];
+        var blue = ColourLimits.Rgb["blue"];
+        var random = GetRandomColour();
+        
+        AssertKnownDeltaEHyab(black, white, 100.000000);
+        AssertKnownDeltaEHyab(red, green, 201.534889);
+        AssertKnownDeltaEHyab(green, blue, 308.110214);
+        AssertKnownDeltaEHyab(blue, red, 196.009473);
+        AssertKnownDeltaEHyab(random, random, 0.000000);
+        
+        for (var i = 0; i < 1000; i++)
+        {
+            var reference = GetRandomColour();
+            var sample = GetRandomColour();
+            Assert.That(reference.DeltaEHyab(sample), Is.EqualTo(sample.DeltaEHyab(reference)));
+        }
+    }
 
     [Test]
     public static void RelativeDeltaE76() => AssertRelativeLabBasedDeltas(Comparison.DeltaE76);
@@ -139,24 +188,36 @@ public static class DifferenceTests
     
     [Test]
     public static void RelativeDeltaE00() => AssertRelativeLabBasedDeltas(Comparison.DeltaE00);
-
-    [Test]
-    public static void RelativeDeltaEz() => AssertRelativeJchBasedDeltas();
-
-    [Test]
-    public static void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76);
     
     [Test]
-    public static void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample));
-    
-    [Test]
-    public static void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true));
-    
-    [Test]
-    public static void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00);
+    public static void RelativeDeltaEItp() => AssertRelativeIctcpBasedDeltas();
 
     [Test]
-    public static void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz);
+    public static void RelativeDeltaEz() => AssertRelativeJzczhzBasedDeltas();
+    
+    [Test]
+    public static void RelativeDeltaEHyab() => AssertRelativeLabBasedDeltas(Comparison.DeltaEHyab);
+
+    [Test]
+    public static void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76, ColourSpace.Lab);
+    
+    [Test]
+    public static void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample), ColourSpace.Lab);
+    
+    [Test]
+    public static void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true), ColourSpace.Lab);
+    
+    [Test]
+    public static void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00, ColourSpace.Lab);
+    
+    [Test]
+    public static void NotNumberDeltaEItp() => AssertNotNumberDeltas(Comparison.DeltaEItp, ColourSpace.Ictcp);
+
+    [Test]
+    public static void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz, ColourSpace.Jzczhz);
+    
+    [Test]
+    public static void NotNumberDeltaEHyab() => AssertNotNumberDeltas(Comparison.DeltaEHyab, ColourSpace.Lab);
     
     private static void AssertKnownDeltaE76(Unicolour reference, Unicolour sample, double expectedDelta)
     {
@@ -180,11 +241,27 @@ public static class DifferenceTests
         Assert.That(symmetricDelta, Is.EqualTo(delta));
     }
     
+    private static void AssertKnownDeltaEItp(Unicolour reference, Unicolour sample, double expectedDelta)
+    {
+        var delta = reference.DeltaEItp(sample);
+        var symmetricDelta = sample.DeltaEItp(reference);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.00005));
+        Assert.That(symmetricDelta, Is.EqualTo(delta));
+    }
+    
     private static void AssertKnownDeltaEz(Unicolour reference, Unicolour sample, double expectedDelta)
     {
         var delta = reference.DeltaEz(sample);
         var symmetricDelta = sample.DeltaEz(reference);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.00005));
+        Assert.That(symmetricDelta, Is.EqualTo(delta));
+    }
+    
+    private static void AssertKnownDeltaEHyab(Unicolour reference, Unicolour sample, double expectedDelta)
+    {
+        var delta = reference.DeltaEHyab(sample);
+        var symmetricDelta = sample.DeltaEHyab(reference);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.0005));
         Assert.That(symmetricDelta, Is.EqualTo(delta));
     }
 
@@ -250,74 +327,119 @@ public static class DifferenceTests
         Assert.That(yellowBlueDelta, Is.GreaterThan(greenYellowDelta));
     }
     
-    private static void AssertRelativeJchBasedDeltas()
+    private static void AssertRelativeIctcpBasedDeltas()
     {
         for (var i = 0; i < 100; i++)
         {
-            AssertRelativeJchBasedDeltas(RandomColours.Jzczhz(), RandomColours.Jzczhz(), RandomColours.Jzczhz());
+            AssertRelativeIctcpBasedDeltas(RandomColours.Ictcp(), RandomColours.Ictcp(), RandomColours.Ictcp());
         }
-    }
-
-    private static void AssertRelativeJchBasedDeltas(ColourTriplet triplet1, ColourTriplet triplet2, ColourTriplet triplet3)
-    {
-        var jzczhzTriplets = new List<ColourTriplet> {triplet1, triplet2, triplet3};
-        var js = jzczhzTriplets.Select(x => x.First).OrderBy(x => x).ToList();
-        var cs = jzczhzTriplets.Select(x => x.Second).OrderBy(x => x).ToList();
-        var hs = jzczhzTriplets.Select(x => x.Third).OrderBy(x => x).ToList();
-
-        void AssertChangesInJ()
-        {
-            var uni1 = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
-            var uni2 = Unicolour.FromJzczhz(js[1], cs[0], hs[0]);
-            var uni3 = Unicolour.FromJzczhz(js[2], cs[0], hs[0]);
-
-            var minMidDelta = uni1.DeltaEz(uni2);
-            var midMaxDelta = uni2.DeltaEz(uni3);
-            var minMaxDelta = uni1.DeltaEz(uni3);
-
-            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
-            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
-        }
-
-        void AssertChangesInC()
-        {
-            var uni1 = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
-            var uni2 = Unicolour.FromJzczhz(js[0], cs[1], hs[0]);
-            var uni3 = Unicolour.FromJzczhz(js[0], cs[2], hs[0]);
-
-            var minMidDelta = uni1.DeltaEz(uni2);
-            var midMaxDelta = uni2.DeltaEz(uni3);
-            var minMaxDelta = uni1.DeltaEz(uni3);
-
-            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
-            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
-        }
-
-        void AssertChangesInH()
-        {
-            double Distance(double lowHue, double highHue) => Math.Min(highHue - lowHue, lowHue + 360 - highHue);
-            var isInHueOrder = Distance(hs[0], hs[1]) < Distance(hs[0], hs[2]);
-            var nearHue = isInHueOrder ? hs[1] : hs[2];
-            var farHue = isInHueOrder ? hs[2] : hs[1];
-
-            var startColour = Unicolour.FromJzczhz(js[0], cs[0], hs[0]);
-            var nearColour = Unicolour.FromJzczhz(js[0], cs[0], nearHue);
-            var farColour = Unicolour.FromJzczhz(js[0], cs[0], farHue);
-
-            var smallerDelta = startColour.DeltaEz(nearColour);
-            var largerDelta = startColour.DeltaEz(farColour);
-
-            Assert.That(smallerDelta, Is.LessThan(largerDelta));
-        }
-
-        AssertChangesInJ();
-        AssertChangesInC();
-        AssertChangesInH();
     }
     
-    private static void AssertNotNumberDeltas(Func<Unicolour, Unicolour, double> getDelta)
+    private static void AssertRelativeIctcpBasedDeltas(ColourTriplet triplet1, ColourTriplet triplet2, ColourTriplet triplet3)
     {
-        var unicolour = Unicolour.FromLab(double.NaN, double.NaN, double.NaN);
+        var ictcpTriplets = new List<ColourTriplet> {triplet1, triplet2, triplet3};
+        var firsts = ictcpTriplets.Select(x => x.First).OrderBy(x => x).ToList();
+        var seconds = ictcpTriplets.Select(x => x.Second).OrderBy(x => x).ToList();
+        var thirds = ictcpTriplets.Select(x => x.Third).OrderBy(x => x).ToList();
+
+        AssertDeltas(
+            min: Unicolour.FromIctcp(firsts[0], seconds[0], thirds[0]),
+            mid: Unicolour.FromIctcp(firsts[1], seconds[0], thirds[0]),
+            max: Unicolour.FromIctcp(firsts[2], seconds[0], thirds[0])
+        );
+        
+        AssertDeltas(
+            min: Unicolour.FromIctcp(firsts[0], seconds[0], thirds[0]),
+            mid: Unicolour.FromIctcp(firsts[0], seconds[1], thirds[0]),
+            max: Unicolour.FromIctcp(firsts[0], seconds[2], thirds[0])
+        );
+        
+        AssertDeltas(
+            min: Unicolour.FromIctcp(firsts[0], seconds[0], thirds[0]),
+            mid: Unicolour.FromIctcp(firsts[0], seconds[0], thirds[1]),
+            max: Unicolour.FromIctcp(firsts[0], seconds[0], thirds[2])
+        );
+        
+        void AssertDeltas(Unicolour min, Unicolour mid, Unicolour max)
+        {
+            var minMidDelta = min.DeltaEItp(mid);
+            var midMaxDelta = mid.DeltaEItp(max);
+            var minMaxDelta = min.DeltaEItp(max);
+            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
+            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
+        }
+    }
+    
+    private static void AssertRelativeJzczhzBasedDeltas()
+    {
+        for (var i = 0; i < 100; i++)
+        {
+            AssertRelativeJzczhzBasedDeltas(RandomColours.Jzczhz(), RandomColours.Jzczhz(), RandomColours.Jzczhz());
+        }
+    }
+
+    private static void AssertRelativeJzczhzBasedDeltas(ColourTriplet triplet1, ColourTriplet triplet2, ColourTriplet triplet3)
+    {
+        var jzczhzTriplets = new List<ColourTriplet> {triplet1, triplet2, triplet3};
+        var firsts = jzczhzTriplets.Select(x => x.First).OrderBy(x => x).ToList();
+        var seconds = jzczhzTriplets.Select(x => x.Second).OrderBy(x => x).ToList();
+        var thirds = jzczhzTriplets.Select(x => x.Third).OrderBy(x => x).ToList();
+        
+        AssertDeltas(
+            min: Unicolour.FromJzczhz(firsts[0], seconds[0], thirds[0]),
+            mid: Unicolour.FromJzczhz(firsts[1], seconds[0], thirds[0]),
+            max: Unicolour.FromJzczhz(firsts[2], seconds[0], thirds[0])
+        );
+        
+        AssertDeltas(
+            min: Unicolour.FromJzczhz(firsts[0], seconds[0], thirds[0]),
+            mid: Unicolour.FromJzczhz(firsts[0], seconds[1], thirds[0]),
+            max: Unicolour.FromJzczhz(firsts[0], seconds[2], thirds[0])
+        );
+        
+        double Distance(double lowHue, double highHue) => Math.Min(highHue - lowHue, lowHue + 360 - highHue);
+        var isInHueOrder = Distance(thirds[0], thirds[1]) < Distance(thirds[0], thirds[2]);
+        var startHue = thirds[0];
+        var nearHue = isInHueOrder ? thirds[1] : thirds[2];
+        var farHue = isInHueOrder ? thirds[2] : thirds[1];
+        
+        AssertHueDeltas(
+            start: Unicolour.FromJzczhz(firsts[0], seconds[0], startHue),
+            near: Unicolour.FromJzczhz(firsts[0], seconds[0], nearHue),
+            far: Unicolour.FromJzczhz(firsts[0], seconds[0], farHue)
+        );
+        
+        void AssertDeltas(Unicolour min, Unicolour mid, Unicolour max)
+        {
+            var minMidDelta = min.DeltaEz(mid);
+            var midMaxDelta = mid.DeltaEz(max);
+            var minMaxDelta = min.DeltaEz(max);
+            Assert.That(minMidDelta, Is.LessThan(minMaxDelta));
+            Assert.That(midMaxDelta, Is.LessThan(minMaxDelta));
+        }
+
+        void AssertHueDeltas(Unicolour start, Unicolour near, Unicolour far)
+        {
+            var smallerDelta = start.DeltaEz(near);
+            var largerDelta = start.DeltaEz(far);
+            Assert.That(smallerDelta, Is.LessThan(largerDelta));
+        }
+    }
+    
+    private delegate Unicolour UnicolourCreator(double first, double second, double third, double alpha = 1.0);
+    private static void AssertNotNumberDeltas(Func<Unicolour, Unicolour, double> getDelta, ColourSpace fromSpace)
+    {
+        UnicolourCreator CreateUnicolour()
+        {
+            return fromSpace switch
+            {
+                ColourSpace.Lab => Unicolour.FromLab,
+                ColourSpace.Ictcp => Unicolour.FromIctcp,
+                ColourSpace.Jzczhz => Unicolour.FromJzczhz
+            };
+        }
+        
+        var unicolour = CreateUnicolour().Invoke(double.NaN, double.NaN, double.NaN);
         var delta = getDelta(unicolour, unicolour);
         Assert.That(delta, Is.NaN);
     }

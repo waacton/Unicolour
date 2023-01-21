@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
+// TODO: rework this for Unicolour v2
 public class Configuration
 {
     public Chromaticity ChromaticityR { get; }
@@ -10,6 +11,8 @@ public class Configuration
     public Chromaticity ChromaticityWhite { get; }
     public Func<double, double> Compand { get; }
     public Func<double, double> InverseCompand { get; }
+    public double IctcpScalar { get; }
+    public double JzazbzScalar { get; }
     
     // default is sRGB model (defined by these chromaticities, illuminant/observer, and sRGB linear correction)
     // and will transform into D65-based XYZ colour space
@@ -24,7 +27,8 @@ public class Configuration
 
     public Configuration(Chromaticity chromaticityR, Chromaticity chromaticityG, Chromaticity chromaticityB,
         Func<double, double> compand, Func<double, double> inverseCompand, 
-        WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint)
+        WhitePoint rgbWhitePoint, WhitePoint xyzWhitePoint,
+        double ictcpScalar = 100, double jzazbzScalar = 100)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
@@ -33,6 +37,8 @@ public class Configuration
         InverseCompand = inverseCompand;
         RgbWhitePoint = rgbWhitePoint;
         XyzWhitePoint = xyzWhitePoint;
+        IctcpScalar = ictcpScalar;
+        JzazbzScalar = jzazbzScalar;
         
         var x = XyzWhitePoint.X / 100.0;
         var y = XyzWhitePoint.Y / 100.0;

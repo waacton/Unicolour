@@ -1,7 +1,5 @@
 ﻿namespace Wacton.Unicolour;
 
-using static Utils;
-
 public record Luv : ColourRepresentation
 {
     internal override ColourSpace ColourSpace => ColourSpace.Luv;

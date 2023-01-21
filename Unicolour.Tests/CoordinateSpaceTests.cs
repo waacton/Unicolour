@@ -53,6 +53,20 @@ public class CoordinateSpaceTests
         AssertHslToHsb(hsxUpperInRange, hsxUpperOutRange);
         AssertHslToHsb(hsxLowerInRange, hsxLowerOutRange);
     }
+    
+    [Test]
+    public void CylindricalHsbToCylindricalHwb()
+    {
+        AssertHsbToHwb(hsxUpperInRange, hsxUpperOutRange);
+        AssertHsbToHwb(hsxLowerInRange, hsxLowerOutRange);
+    }
+    
+    [Test]
+    public void CylindricalHwbToCylindricalHsb()
+    {
+        AssertHwbToHsb(hsxUpperInRange, hsxUpperOutRange);
+        AssertHwbToHsb(hsxLowerInRange, hsxLowerOutRange);
+    }
 
     [Test]
     public void CylindricalLchabCartesianLab()
@@ -122,6 +136,26 @@ public class CoordinateSpaceTests
         AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
     }
     
+    private static void AssertHsbToHwb(ColourTriplet inRange, ColourTriplet outRange)
+    {
+        var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);
+        var hsbOutRange = new Hsb(outRange.First, outRange.Second, outRange.Third);
+        var hwbFromInRange = Conversion.HsbToHwb(hsbInRange);
+        var hwbFromOutRange = Conversion.HsbToHwb(hsbOutRange);
+        AssertSourceTriplets(AsTriplets(hsbInRange), AsTriplets(hsbOutRange));
+        AssertDestinationTriplets(AsTriplets(hwbFromInRange), AsTriplets(hwbFromOutRange));
+    }
+
+    private static void AssertHwbToHsb(ColourTriplet inRange, ColourTriplet outRange)
+    {
+        var hwbInRange = new Hwb(inRange.First, inRange.Second, inRange.Third);
+        var hwbOutRange = new Hwb(outRange.First, outRange.Second, outRange.Third);
+        var hsbFromInRange = Conversion.HwbToHsb(hwbInRange);
+        var hsbFromOutRange = Conversion.HwbToHsb(hwbOutRange);
+        AssertSourceTriplets(AsTriplets(hwbInRange), AsTriplets(hwbOutRange));
+        AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
+    }
+    
     private static void AssertLchabToLab(double hueInRange, double hueOutRange)
     {
         var lchabInRange = new Lchab(50, 100, hueInRange);
@@ -181,6 +215,7 @@ public class CoordinateSpaceTests
     private static Triplets AsTriplets(Rgb rgb) => new(rgb.Triplet, rgb.ConstrainedTriplet);
     private static Triplets AsTriplets(Hsb hsb) => new(hsb.Triplet, hsb.ConstrainedTriplet);
     private static Triplets AsTriplets(Hsl hsl) => new(hsl.Triplet, hsl.ConstrainedTriplet);
+    private static Triplets AsTriplets(Hwb hwb) => new(hwb.Triplet, hwb.ConstrainedTriplet);
     private static Triplets AsTriplets(Lchab lchab) => new(lchab.Triplet, lchab.ConstrainedTriplet);
     private static Triplets AsTriplets(Lchuv lchuv) => new(lchuv.Triplet, lchuv.ConstrainedTriplet);
     private static Triplets AsTriplets(Jzczhz jzczhz) => new(jzczhz.Triplet, jzczhz.ConstrainedTriplet);

@@ -10,6 +10,7 @@ public record Oklab : ColourRepresentation
     internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
 
     public Oklab(double l, double a, double b) : this(l, a, b, ColourMode.Unset) {}
+    internal Oklab(ColourTriplet triplet, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, colourMode) {}
     internal Oklab(double l, double a, double b, ColourMode colourMode) : base(l, a, b, colourMode) {}
 
     protected override string FirstString => $"{L:F2}";

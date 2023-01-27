@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-// Oklab is the only colour space so far that provides test values (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
+// Oklab actually provides test values 🙌 (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
 // so it has its own dedicated set of tests based on those
 public static class OklabTests
 {

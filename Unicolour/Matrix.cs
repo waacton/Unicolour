@@ -77,6 +77,30 @@ internal class Matrix
 
         return new Matrix(inverse);
     }
+    
+    public Matrix Select(Func<double, double> operation)
+    {
+        var result = new double[Rows, Cols];
+        for (var row = 0; row < Rows; row++)
+        {
+            for (var col = 0; col < Cols; col++)
+            {
+                result[row, col] = operation(this[row, col]);
+            }
+        }
+
+        return new Matrix(result);
+    }
+    
+    public ColourTriplet ToTriplet()
+    {
+        if (Rows != 3 || Cols != 1)
+        {
+            throw new InvalidOperationException("Can only create triplet from 3x1 matrix");
+        }
+        
+        return new ColourTriplet(Data[0, 0], Data[1, 0], Data[2, 0]);
+    }
 
     public static Matrix FromTriplet(ColourTriplet triplet)
     {

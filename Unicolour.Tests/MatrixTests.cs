@@ -81,29 +81,107 @@ public static class MatrixTests
         Assert.Throws<InvalidOperationException>(() => oneByThree.Inverse());
     }
 
-    private static void AssertMatrixMultiply(double[,] dataA, double[,] dataB, double[,] expectedResult)
+    [Test]
+    public static void Select()
+    {
+        var identity = new[,]
+        {
+            { 0.0, 1.0, 10.0 },
+            { -10.0, -1.0, 0.0 },
+            { -0.25, 0.0, 0.25 }
+        };
+        
+        var specified = new[,]
+        {
+            { 9.9, 9.9, 9.9 },
+            { 9.9, 9.9, 9.9 },
+            { 9.9, 9.9, 9.9 }
+        };
+        
+        var doubled = new[,]
+        {
+            { 0.0, 2.0, 20.0 },
+            { -20.0, -2.0, 0.0 },
+            { -0.50, 0.0, 0.50 }
+        };
+        
+        var incremented = new[,]
+        {
+            { 1.0, 2.0, 11.0 },
+            { -9.0, 0.0, 1.0 },
+            { 0.75, 1.0, 1.25 }
+        };
+        
+        var squared = new[,]
+        {
+            { 0.0, 1.0, 100.0 },
+            { 100.0, 1.0, 0.0 },
+            { 0.0625, 0.0, 0.0625 }
+        };
+        
+        AssertMatrixSelect(DataA, x => x, identity);
+        AssertMatrixSelect(DataA, x => 9.9, specified);
+        AssertMatrixSelect(DataA, x => x * 2, doubled);
+        AssertMatrixSelect(DataA, x => x + 1, incremented);
+        AssertMatrixSelect(DataA, x => Math.Pow(x, 2), squared);
+    }
+
+    [Test]
+    public static void ToTripletCompatibleDimensions()
+    {
+        var triplet = new ColourTriplet(1.1, 2.2, 3.3);
+        var matrixFromData = new Matrix(new[,]
+        {
+            { triplet.First },
+            { triplet.Second },
+            { triplet.Third }
+        });
+        var matrixFromTriplet = Matrix.FromTriplet(triplet);
+        Assert.That(matrixFromData.ToTriplet(), Is.EqualTo(triplet));
+        Assert.That(matrixFromTriplet.ToTriplet(), Is.EqualTo(triplet));
+    }
+    
+    [Test]
+    public static void ToTripletIncompatibleDimensions()
+    {
+        var matrix = new Matrix(DataA);
+        Assert.Throws<InvalidOperationException>(() => matrix.ToTriplet());
+    }
+
+    private static void AssertMatrixMultiply(double[,] dataA, double[,] dataB, double[,] expected)
     {
         var matrixA = new Matrix(dataA);
         var matrixB = new Matrix(dataB);
-        var matrixC = matrixA.Multiply(matrixB);
+        var multipliedMatrix = matrixA.Multiply(matrixB);
         
         var mathNetMatrixA = Matrix<double>.Build.DenseOfArray(dataA);
         var mathNetMatrixB = Matrix<double>.Build.DenseOfArray(dataB);
-        var mathNetMatrixC = mathNetMatrixA.Multiply(mathNetMatrixB);
-
-        Assert.That(matrixC.Data, Is.EqualTo(expectedResult));
-        Assert.That(mathNetMatrixC.ToArray(), Is.EqualTo(expectedResult).Within(0.0000000000000001));
+        var mathNetMultipliedMatrix = mathNetMatrixA.Multiply(mathNetMatrixB);
+        
+        AssertMatrixEquals(multipliedMatrix, mathNetMultipliedMatrix, expected);
     }
     
-    private static void AssertMatrixInverse(double[,] data, double[,] expectedResult)
+    private static void AssertMatrixInverse(double[,] data, double[,] expected)
     {
         var matrixA = new Matrix(data);
-        var inverseA = matrixA.Inverse();
+        var inverseMatrix = matrixA.Inverse();
         
         var mathNetMatrixA = Matrix<double>.Build.DenseOfArray(data);
-        var mathNetInverseA = mathNetMatrixA.Inverse();
+        var mathNetInverseMatrix = mathNetMatrixA.Inverse();
+        
+        AssertMatrixEquals(inverseMatrix, mathNetInverseMatrix, expected);
+    }
+    
+    private static void AssertMatrixSelect(double[,] data, Func<double, double> operation, double[,] expected)
+    {
+        var matrix = new Matrix(data).Select(operation);
+        var mathNetMatrix = Matrix<double>.Build.DenseOfArray(data).Map(operation);
+        AssertMatrixEquals(matrix, mathNetMatrix, expected);
+    }
 
-        Assert.That(inverseA.Data, Is.EqualTo(expectedResult));
-        Assert.That(mathNetInverseA.ToArray(), Is.EqualTo(expectedResult).Within(0.0000000000000001));
+    private static void AssertMatrixEquals(Matrix actual, Matrix<double> actualMathNet, double[,] expected)
+    {
+        Assert.That(actual.Data, Is.EqualTo(expected));
+        Assert.That(actualMathNet.ToArray(), Is.EqualTo(expected).Within(0.0000000000000001));
     }
 }

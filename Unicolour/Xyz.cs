@@ -13,6 +13,7 @@ public record Xyz : ColourRepresentation
     internal override bool IsGreyscale => false;
 
     public Xyz(double x, double y, double z) : this(x, y, z, ColourMode.Unset) {}
+    internal Xyz(ColourTriplet triplet, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, colourMode) {}
     internal Xyz(double x, double y, double z, ColourMode colourMode) : base(x, y, z, colourMode) {}
 
     protected override string FirstString => $"{X:F4}";

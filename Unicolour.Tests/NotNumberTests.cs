@@ -53,6 +53,9 @@ public static class NotNumberTests
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberHpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
+    
+    [TestCaseSource(nameof(notNumberTestCases))]
+    public static void NotNumberIctcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
 
     [TestCaseSource(nameof(notNumberTestCases))]
     public static void NotNumberJzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));

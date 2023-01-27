@@ -19,6 +19,7 @@ public record Rgb : ColourRepresentation
     public Rgb255 Byte255 { get; }
 
     public Rgb(double r, double g, double b, Configuration config) : this(r, g, b, config, ColourMode.Unset) {}
+    internal Rgb(ColourTriplet triplet, Configuration config, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, config, colourMode) {}
     internal Rgb(double r, double g, double b, Configuration config, ColourMode colourMode) : base(r, g, b, colourMode)
     {
         double ToLinear(double value) => config.InverseCompand(value);

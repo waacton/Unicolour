@@ -178,7 +178,7 @@ var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),
     chromaticityG: new(0.1152, 0.8264),
     chromaticityB: new(0.1566, 0.0177),
-    whitePoint: WhitePoint.From(Illuminant.D50)
+    whitePoint: WhitePoint.From(Illuminant.D50),
     fromLinear: value => Companding.Gamma(value, 2.2),
     toLinear: value => Companding.InverseGamma(value, 2.2),
 );

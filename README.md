@@ -180,7 +180,7 @@ var rgbConfig = new RgbConfiguration(
     chromaticityB: new(0.1566, 0.0177),
     whitePoint: WhitePoint.From(Illuminant.D50),
     fromLinear: value => Companding.Gamma(value, 2.2),
-    toLinear: value => Companding.InverseGamma(value, 2.2),
+    toLinear: value => Companding.InverseGamma(value, 2.2)
 );
 
 // manual configuration for equal-energy (10° observer) XYZ

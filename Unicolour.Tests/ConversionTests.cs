@@ -7,6 +7,11 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class ConversionTests
 {
+    private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
+    private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
+    private const double IctcpScalar = 100;
+    private const double JzazbzScalar = 100;
+
     private const double DefaultTolerance = 0.00000000001;
     private const double RbgTolerance = 0.00000005;
     private const double HsbTolerance = 0.000000001;
@@ -86,7 +91,7 @@ public class ConversionTests
     private static void AssertRgbConversion(TestColour namedColour)
     {
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
-        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, Configuration.Default);
+        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, RgbConfig);
         var hsb = Conversion.RgbToHsb(rgb);
         var hsl = Conversion.HsbToHsl(hsb);
         
@@ -105,10 +110,10 @@ public class ConversionTests
 
     private static void AssertRgbRoundTrip(TestColour namedColour) => AssertRgbRoundTrip(GetRgbTripletFromHex(namedColour.Hex!));
     private static void AssertRgb255RoundTrip(ColourTriplet triplet) => AssertRgbRoundTrip(GetNormalisedRgb255Triplet(triplet));
-    private static void AssertRgbRoundTrip(ColourTriplet triplet) => AssertRgbRoundTrip(new Rgb(triplet.First, triplet.Second, triplet.Third, Configuration.Default));
+    private static void AssertRgbRoundTrip(ColourTriplet triplet) => AssertRgbRoundTrip(new Rgb(triplet.First, triplet.Second, triplet.Third, RgbConfig));
     private static void AssertRgbRoundTrip(Rgb original)
     {
-        var viaHsb = Conversion.HsbToRgb(Conversion.RgbToHsb(original), Configuration.Default);
+        var viaHsb = Conversion.HsbToRgb(Conversion.RgbToHsb(original), RgbConfig);
         AssertUtils.AssertColourTriplet(viaHsb.Triplet, original.Triplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(viaHsb.ConstrainedTriplet, original.ConstrainedTriplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(viaHsb.Linear.Triplet, original.Linear.Triplet, RbgTolerance);
@@ -116,7 +121,7 @@ public class ConversionTests
         AssertUtils.AssertColourTriplet(viaHsb.Byte255.Triplet, original.Byte255.Triplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(viaHsb.Byte255.ConstrainedTriplet, original.Byte255.ConstrainedTriplet, RbgTolerance);
         
-        var viaXyz = Conversion.XyzToRgb(Conversion.RgbToXyz(original, Configuration.Default), Configuration.Default);
+        var viaXyz = Conversion.XyzToRgb(Conversion.RgbToXyz(original, RgbConfig, XyzConfig), RgbConfig, XyzConfig);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(viaXyz.ConstrainedTriplet, original.ConstrainedTriplet, RbgTolerance);
         AssertUtils.AssertColourTriplet(viaXyz.Linear.Triplet, original.Linear.Triplet, RbgTolerance);
@@ -129,7 +134,7 @@ public class ConversionTests
     private static void AssertHsbRoundTrip(ColourTriplet triplet) => AssertHsbRoundTrip(new Hsb(triplet.First, triplet.Second, triplet.Third));
     private static void AssertHsbRoundTrip(Hsb original)
     {
-        var viaRgb = Conversion.RgbToHsb(Conversion.HsbToRgb(original, Configuration.Default));
+        var viaRgb = Conversion.RgbToHsb(Conversion.HsbToRgb(original, RgbConfig));
         AssertUtils.AssertColourTriplet(viaRgb.Triplet, original.Triplet, HsbTolerance);
         
         var viaHsl = Conversion.HslToHsb(Conversion.HsbToHsl(original));
@@ -173,39 +178,39 @@ public class ConversionTests
     private static void AssertXyzRoundTrip(ColourTriplet triplet) => AssertXyzRoundTrip(new Xyz(triplet.First, triplet.Second, triplet.Third));
     private static void AssertXyzRoundTrip(Xyz original)
     {
-        var viaRgb = Conversion.RgbToXyz(Conversion.XyzToRgb(original, Configuration.Default), Configuration.Default);
+        var viaRgb = Conversion.RgbToXyz(Conversion.XyzToRgb(original, RgbConfig,  XyzConfig), RgbConfig, XyzConfig);
         AssertUtils.AssertColourTriplet(viaRgb.Triplet, original.Triplet, XyzTolerance);
         
-        var viaXyy = Conversion.XyyToXyz(Conversion.XyzToXyy(original, Configuration.Default));
+        var viaXyy = Conversion.XyyToXyz(Conversion.XyzToXyy(original, XyzConfig));
         AssertUtils.AssertColourTriplet(viaXyy.Triplet, original.Triplet, XyzTolerance);
 
-        var viaLab = Conversion.LabToXyz(Conversion.XyzToLab(original, Configuration.Default), Configuration.Default);
+        var viaLab = Conversion.LabToXyz(Conversion.XyzToLab(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaLab.Triplet, original.Triplet, XyzTolerance);
         
-        var viaLuv = Conversion.LuvToXyz(Conversion.XyzToLuv(original, Configuration.Default), Configuration.Default);
+        var viaLuv = Conversion.LuvToXyz(Conversion.XyzToLuv(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaLuv.Triplet, original.Triplet, XyzTolerance);
         
-        var viaIctcp = Conversion.IctcpToXyz(Conversion.XyzToIctcp(original, Configuration.Default), Configuration.Default);
+        var viaIctcp = Conversion.IctcpToXyz(Conversion.XyzToIctcp(original, XyzConfig, IctcpScalar), XyzConfig, IctcpScalar);
         AssertUtils.AssertColourTriplet(viaIctcp.Triplet, viaIctcp.Triplet, XyzTolerance);
         
-        var viaJzazbz = Conversion.JzazbzToXyz(Conversion.XyzToJzazbz(original, Configuration.Default), Configuration.Default);
+        var viaJzazbz = Conversion.JzazbzToXyz(Conversion.XyzToJzazbz(original, XyzConfig, JzazbzScalar), XyzConfig, JzazbzScalar);
         AssertUtils.AssertColourTriplet(viaJzazbz.Triplet, viaJzazbz.Triplet, XyzTolerance);
         
-        var viaOklab = Conversion.OklabToXyz(Conversion.XyzToOklab(original, Configuration.Default), Configuration.Default);
+        var viaOklab = Conversion.OklabToXyz(Conversion.XyzToOklab(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaOklab.Triplet, original.Triplet, XyzTolerance);
     }
     
     private static void AssertXyyRoundTrip(ColourTriplet triplet) => AssertXyyRoundTrip(new Xyy(triplet.First, triplet.Second, triplet.Third));
     private static void AssertXyyRoundTrip(Xyy original)
     {
-        var viaXyz = Conversion.XyzToXyy(Conversion.XyyToXyz(original), Configuration.Default);
+        var viaXyz = Conversion.XyzToXyy(Conversion.XyyToXyz(original), XyzConfig);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, XyzTolerance);
     }
     
     private static void AssertLabRoundTrip(ColourTriplet triplet) => AssertLabRoundTrip(new Lab(triplet.First, triplet.Second, triplet.Third));
     private static void AssertLabRoundTrip(Lab original)
     {
-        var viaXyz = Conversion.XyzToLab(Conversion.LabToXyz(original, Configuration.Default), Configuration.Default);
+        var viaXyz = Conversion.XyzToLab(Conversion.LabToXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, DefaultTolerance);
         
         var viaLchab = Conversion.LchabToLab(Conversion.LabToLchab(original));
@@ -222,7 +227,7 @@ public class ConversionTests
     private static void AssertLuvRoundTrip(ColourTriplet triplet) => AssertLuvRoundTrip(new Luv(triplet.First, triplet.Second, triplet.Third));
     private static void AssertLuvRoundTrip(Luv original)
     {
-        var viaXyz = Conversion.XyzToLuv(Conversion.LuvToXyz(original, Configuration.Default), Configuration.Default);
+        var viaXyz = Conversion.XyzToLuv(Conversion.LuvToXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, LuvTolerance);
         
         var viaLchuv = Conversion.LchuvToLuv(Conversion.LuvToLchuv(original));
@@ -260,7 +265,7 @@ public class ConversionTests
     private static void AssertIctcpRoundTrip(Ictcp original)
     {
         // Ictcp -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
-        var viaXyz = Conversion.XyzToIctcp(Conversion.IctcpToXyz(original, Configuration.Default), Configuration.Default);
+        var viaXyz = Conversion.XyzToIctcp(Conversion.IctcpToXyz(original, XyzConfig, IctcpScalar), XyzConfig, IctcpScalar);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, viaXyz.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, DefaultTolerance);
     }
     
@@ -270,7 +275,7 @@ public class ConversionTests
         // cannot test round trip of XYZ space as Jzazbz <-> XYZ is not 1:1, e.g.
         // - when Jzazbz inputs produces negative XYZ values, which are clamped during XYZ -> Jzazbz
         // - when Jzazbz negative inputs trigger a negative number to a fractional power, producing NaNs
-        // var viaXyz = Conversion.XyzToJzazbz(Conversion.JzazbzToXyz(original, Configuration.Default), Configuration.Default);
+        // var viaXyz = Conversion.XyzToJzazbz(Conversion.JzazbzToXyz(original, xyzConfig), xyzConfig);
         // AssertUtils.AssertColourTriplet(viaXyz.Triplet, viaXyz.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, JzazbzTolerance);
 
         var viaJzczhz = Conversion.JzczhzToJzazbz(Conversion.JzazbzToJzczhz(original));
@@ -287,7 +292,7 @@ public class ConversionTests
     private static void AssertOklabRoundTrip(ColourTriplet triplet) => AssertOklabRoundTrip(new Oklab(triplet.First, triplet.Second, triplet.Third));
     private static void AssertOklabRoundTrip(Oklab original)
     {
-        var viaXyz = Conversion.XyzToOklab(Conversion.OklabToXyz(original, Configuration.Default), Configuration.Default);
+        var viaXyz = Conversion.XyzToOklab(Conversion.OklabToXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertColourTriplet(viaXyz.Triplet, original.Triplet, OklabTolerance);
         
         var viaOklch = Conversion.OklchToOklab(Conversion.OklabToOklch(original));

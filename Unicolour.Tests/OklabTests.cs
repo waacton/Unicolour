@@ -37,7 +37,7 @@ public static class OklabTests
     private static void AssertFromXyzD65(ColourTriplet xyz, ColourTriplet expectedOklab)
     {
         var (x, y, z) = xyz;
-        var oklab = Conversion.XyzToOklab(new Xyz(x, y, z), Configuration.Default);
+        var oklab = Conversion.XyzToOklab(new Xyz(x, y, z), XyzConfiguration.D65);
         AssertOklab(oklab, expectedOklab);
     }
 
@@ -48,14 +48,7 @@ public static class OklabTests
         var rgb = fromXyzD65.Rgb;
         
         // using the D65 RGB, create a unicolour based in D50 XYZ
-        var configXyzD50 = new Configuration(
-            Chromaticity.StandardRgbR,
-            Chromaticity.StandardRgbG,
-            Chromaticity.StandardRgbB,
-            Companding.StandardRgb, 
-            Companding.InverseStandardRgb, 
-            WhitePoint.From(Illuminant.D65), 
-            WhitePoint.From(Illuminant.D50));
+        var configXyzD50 = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         
         var toXyzD50 = Unicolour.FromRgb(configXyzD50, rgb.Triplet.Tuple);
         var oklabFromXyzD50 = toXyzD50.Oklab;

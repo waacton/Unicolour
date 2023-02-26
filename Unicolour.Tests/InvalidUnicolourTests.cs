@@ -12,7 +12,7 @@ public class InvalidUnicolourTests
     private const ColourSpace BadColourSpace = (ColourSpace)int.MaxValue;
     
     private readonly Unicolour unicolour = Unicolour.FromXyz(0.1, 0.2, 0.3);
-    private readonly ColourRepresentation goodColourRepresentation = new Rgb(0.4, 0.5, 0.6, Configuration.Default);
+    private readonly ColourRepresentation goodColourRepresentation = new Rgb(0.4, 0.5, 0.6, RgbConfiguration.StandardRgb);
     private ColourRepresentation badColourRepresentation = null!;
 
     [SetUp]

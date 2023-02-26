@@ -12,8 +12,8 @@ public static class RangeClampTests
         Range rRange = new(0.0, 1.0);
         Range gRange = new(0.0, 1.0);
         Range bRange = new(0.0, 1.0);
-        var beyondMax = new Rgb(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax, Configuration.Default);
-        var beyondMin = new Rgb(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin, Configuration.Default);
+        var beyondMax = new Rgb(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax, RgbConfiguration.StandardRgb);
+        var beyondMin = new Rgb(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin, RgbConfiguration.StandardRgb);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
 

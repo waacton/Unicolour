@@ -1,47 +1,23 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
 
 public static class IctcpConfigurationTests
 {
-    // TODO: extract this after v2 changes
-    private static readonly Chromaticity Rec2020R = new(0.708, 0.292);
-    private static readonly Chromaticity Rec2020G = new(0.170, 0.797);
-    private static readonly Chromaticity Rec2020B = new(0.131, 0.046);
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
 
-    private const double Alpha = 1.09929682680944;
-    private const double Beta = 0.018053968510807;
-
-    private static double Gamma(double e)
-    {
-        if (e < Beta) return 4.5 * e;
-        return Alpha * Math.Pow(e, 0.45) - (Alpha - 1);
-    }
-
-    public static double InverseGamma(double ePrime)
-    {
-        if (ePrime < Beta * 4.5) return ePrime / 4.5;
-        return Math.Pow((ePrime + (Alpha - 1)) / Alpha, 1 / 0.45);
-    }
-
     // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31223ictcp-colour-encoding
+    private static double Gamma(double e) => Companding.Rec2020.FromLinear(e);
     private static readonly ColourTriplet TestLinearRgb = new(0.45620519, 0.03081071, 0.04091952);
     private static readonly ColourTriplet TestRgb = new(Gamma(TestLinearRgb.First), Gamma(TestLinearRgb.Second), Gamma(TestLinearRgb.Third));
 
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://professional.dolby.com/siteassets/pdfs/ictcp_dolbywhitepaper_v071.pdf, figure 6)
     public static void Rec2020RgbToIctcp100()
     {
-        var config = new Configuration(
-            Chromaticity.StandardRgbR, Chromaticity.StandardRgbG, Chromaticity.StandardRgbB, 
-            Companding.StandardRgb, Companding.InverseStandardRgb,
-            D65WhitePoint, 
-            D65WhitePoint,
-            100);
+        var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 100, jzazbzScalar: 100);
 
         var red = Unicolour.FromXyz(config, HungBerns.RedRef.Xyz.Triplet.Tuple);
         var blue = Unicolour.FromXyz(config, HungBerns.BlueRef.Xyz.Triplet.Tuple);
@@ -65,12 +41,8 @@ public static class IctcpConfigurationTests
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31223ictcp-colour-encoding)  
     public static void Rec2020RgbToIctcp1()
     {
-        var config = new Configuration(
-            Rec2020R, Rec2020G, Rec2020B, Gamma, InverseGamma,
-            D65WhitePoint, 
-            D65WhitePoint,
-            1);
-        
+        var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 1, jzazbzScalar: 100);
+
         var unicolour = Unicolour.FromRgb(config, TestRgb.Tuple);
         AssertUtils.AssertColourTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
         AssertUtils.AssertColourTriplet(unicolour.Ictcp.Triplet, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
@@ -84,12 +56,8 @@ public static class IctcpConfigurationTests
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
     public static void Rec2020RgbToIctcp203()
     {
-        var config = new Configuration(
-            Rec2020R, Rec2020G, Rec2020B, Gamma, InverseGamma,
-            D65WhitePoint, 
-            D65WhitePoint,
-            203);
-        
+        var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 203, jzazbzScalar: 100);
+
         var unicolour = Unicolour.FromRgb(config, TestRgb.Tuple);
         AssertUtils.AssertColourTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
         AssertUtils.AssertColourTriplet(unicolour.Ictcp.Triplet, new(0.39224991, -0.0001166, 0.28389029), 0.0001);

@@ -17,8 +17,8 @@ public partial class Unicolour
     public static Unicolour FromRgb((double r, double g, double b) tuple, double alpha = 1.0) => FromRgb(Configuration.Default, tuple.r, tuple.g, tuple.b, alpha);
     public static Unicolour FromRgb(Configuration config, (double r, double g, double b) tuple, double alpha = 1.0) => FromRgb(config, tuple.r, tuple.g, tuple.b, alpha);
     public static Unicolour FromRgb(double r, double g, double b, double alpha = 1.0) => FromRgb(Configuration.Default, r, g, b, alpha);
-    public static Unicolour FromRgb(Configuration config, double r, double g, double b, double alpha = 1.0) => new(config, new Rgb(r, g, b, config), new Alpha(alpha));
-    internal static Unicolour FromRgb(Configuration config, ColourMode colourMode, double r, double g, double b, double alpha = 1.0) => new(config, new Rgb(r, g, b, config, colourMode), new Alpha(alpha));
+    public static Unicolour FromRgb(Configuration config, double r, double g, double b, double alpha = 1.0) => new(config, new Rgb(r, g, b, config.Rgb), new Alpha(alpha));
+    internal static Unicolour FromRgb(Configuration config, ColourMode colourMode, double r, double g, double b, double alpha = 1.0) => new(config, new Rgb(r, g, b, config.Rgb, colourMode), new Alpha(alpha));
     
     public static Unicolour FromHsb((double h, double s, double b) tuple, double alpha = 1.0) => FromHsb(Configuration.Default, tuple.h, tuple.s, tuple.b, alpha);
     public static Unicolour FromHsb(Configuration config, (double h, double s, double b) tuple, double alpha = 1.0) => FromHsb(config, tuple.h, tuple.s, tuple.b, alpha);

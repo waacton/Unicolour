@@ -157,23 +157,38 @@ See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour
 ![Gradients generate from Unicolour](Unicolour.Example/gradients.png)
 
 ## Advanced configuration 💡
-A `Configuration` parameter can be used to change the RGB model (e.g. Adobe RGB, wide-gamut RGB)
+A `Configuration` parameter can be used to change the RGB model (e.g. Display P3, Rec. 2020)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
-RGB configuration requires red, green, and blue chromaticity coordinates, the companding functions, and the reference white point.
-XYZ configuration only requires the reference white point.
+RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
+Default configuration for sRGB, Display P3, and Rec. 2020 is provided.
 
+XYZ configuration only requires the reference white point.
+Default configuration for D65 and D50 (2° observer) is provided.
 
 ```c#
-var config = new Configuration(
-    new(0.7347, 0.2653), // RGB red chromaticity coordinates
-    new(0.1152, 0.8264), // RGB green chromaticity coordinates
-    new(0.1566, 0.0177), // RGB blue chromaticity coordinates
-    value => Companding.Gamma(value, 2.2),        // RGB companding function
-    value => Companding.InverseGamma(value, 2.2), // RGB inverse companding function
-    WhitePoint.From(Illuminant.D50),  // RGB white point
-    WhitePoint.From(Illuminant.D50)); // XYZ white point
-    
+// built-in configuration for Rec. 2020 RGB + D65 XYZ
+var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
+var unicolour = Unicolour.FromRgb(config, 255, 20, 147);
+```
+
+```c#
+// manual configuration for wide-gamut RGB
+var rgbConfig = new RgbConfiguration(
+    chromaticityR: new(0.7347, 0.2653),
+    chromaticityG: new(0.1152, 0.8264),
+    chromaticityB: new(0.1566, 0.0177),
+    whitePoint: WhitePoint.From(Illuminant.D50)
+    fromLinear: value => Companding.Gamma(value, 2.2),
+    toLinear: value => Companding.InverseGamma(value, 2.2),
+);
+
+// manual configuration for equal-energy (10° observer) XYZ
+var xyzConfig = new XyzConfiguration(
+    whitePoint: WhitePoint.From(Illuminant.E, Observer.Supplementary10)
+);
+
+var config = new Configuration(rgbConfig, xyzConfig);
 var unicolour = Unicolour.FromRgb(config, 255, 20, 147);
 ```
 

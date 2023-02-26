@@ -62,13 +62,7 @@ public static class XyyTests
 
     private static Configuration GetConfig(Illuminant illuminant)
     {
-        return new Configuration(
-            Chromaticity.StandardRgbR,
-            Chromaticity.StandardRgbG,
-            Chromaticity.StandardRgbB,
-            Companding.StandardRgb, 
-            Companding.InverseStandardRgb, 
-            WhitePoint.From(Illuminant.D65), 
-            WhitePoint.From(illuminant));
+        var xyzConfig = new XyzConfiguration(WhitePoint.From(illuminant));
+        return new Configuration(RgbConfiguration.StandardRgb, xyzConfig);
     }
 }

@@ -300,31 +300,33 @@ public class EqualityTests
     [Test]
     public void DifferentConfigurationObjects()
     {
-        var config1 = new Configuration(
-            Chromaticity.StandardRgbR,
+        var rgbConfig1 = new RgbConfiguration(
+            Chromaticity.StandardRgb.R,
             new Chromaticity(0.25, 0.75),
             new Chromaticity(0.5, 0.5),
-            Companding.StandardRgb,
-            Companding.InverseStandardRgb, 
-            new WhitePoint(0.9, 1.0, 1.1), 
-            new WhitePoint(0.95, 1.0, 1.05));
-
-        var config2 = new Configuration(
-            Chromaticity.StandardRgbR,
-            new Chromaticity(0.75, 0.25),
-            new Chromaticity(0.5, 0.5),
-            Companding.StandardRgb,
-            Companding.InverseStandardRgb, 
-            new WhitePoint(0.9, 1.0, 1.1), 
-            new WhitePoint(0.95001, 1.0001, 1.05001));
+            new WhitePoint(0.9, 1.0, 1.1),
+            Companding.StandardRgb.FromLinear,
+            Companding.StandardRgb.ToLinear);
+        var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05));
+        var config1 = new Configuration(rgbConfig1, xyzConfig1);
         
-        AssertEqual(config1.ChromaticityR, config2.ChromaticityR);
-        AssertNotEqual(config1.ChromaticityG, config2.ChromaticityG);
-        AssertEqual(config1.ChromaticityB, config2.ChromaticityB);
-        AssertEqual(config1.RgbWhitePoint, config2.RgbWhitePoint);
-        AssertNotEqual(config1.XyzWhitePoint, config2.XyzWhitePoint);
-        AssertEqual(config1.Compand, config2.Compand);
-        AssertEqual(config1.InverseCompand, config2.InverseCompand);
+        var rgbConfig2 = new RgbConfiguration(
+            Chromaticity.StandardRgb.R,
+            new Chromaticity(0.75, 0.25),
+            new Chromaticity(0.5, 0.5), 
+            new WhitePoint(0.9, 1.0, 1.1),
+            Companding.StandardRgb.FromLinear,
+            Companding.StandardRgb.ToLinear);
+        var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001));
+        var config2 = new Configuration(rgbConfig2, xyzConfig2);
+
+        AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
+        AssertNotEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
+        AssertEqual(config1.Rgb.ChromaticityB, config2.Rgb.ChromaticityB);
+        AssertEqual(config1.Rgb.WhitePoint, config2.Rgb.WhitePoint);
+        AssertEqual(config1.Rgb.CompandFromLinear, config2.Rgb.CompandFromLinear);
+        AssertEqual(config1.Rgb.InverseCompandToLinear, config2.Rgb.InverseCompandToLinear);
+        AssertNotEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
         AssertNotEqual(config1, config2);
     }
     

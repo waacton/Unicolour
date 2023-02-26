@@ -52,14 +52,12 @@ internal static class Matrices
     });
 
     // based on http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    public static Matrix RgbToXyzMatrix(Configuration config)
+    public static Matrix RgbToXyzMatrix(RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
-        var cr = config.ChromaticityR;
-        var cg = config.ChromaticityG;
-        var cb = config.ChromaticityB;
-        var rgbWhitePoint = config.RgbWhitePoint;
-        var xyzWhitePoint = config.XyzWhitePoint;
-        
+        var cr = rgbConfig.ChromaticityR;
+        var cg = rgbConfig.ChromaticityG;
+        var cb = rgbConfig.ChromaticityB;
+
         double X(Chromaticity c) => c.X / c.Y;
         double Y(Chromaticity c) => 1;
         double Z(Chromaticity c) => (1 - c.X - c.Y) / c.Y;
@@ -75,7 +73,7 @@ internal static class Matrices
             {zr, zg, zb}
         });
         
-        var sourceWhite = ReferenceWhiteMatrix(rgbWhitePoint);
+        var sourceWhite = ReferenceWhiteMatrix(rgbConfig.WhitePoint);
         
         var s = fromPrimaries.Inverse().Multiply(sourceWhite);
         var sr = s[0, 0];
@@ -89,7 +87,7 @@ internal static class Matrices
             {sr * zr, sg * zg, sb * zb}
         });
 
-        var adaptedMatrix = AdaptForWhitePoint(matrix, rgbWhitePoint, xyzWhitePoint);
+        var adaptedMatrix = AdaptForWhitePoint(matrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
         return adaptedMatrix;
     }
 

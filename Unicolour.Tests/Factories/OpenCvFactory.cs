@@ -149,7 +149,7 @@ internal class OpenCvFactory : ITestColourFactory
     }
     
     private static Vec3f AsVec(double first, double second, double third) => new((float)first, (float)second, (float)third);
-    private static Vec3f ToLinear(Vec3f input) => DoOperation(input, value => (float) Companding.InverseStandardRgb(value));
+    private static Vec3f ToLinear(Vec3f input) => DoOperation(input, value => (float) Companding.StandardRgb.ToLinear(value));
     private static Vec3f DoOperation(Vec3f input, Func<float, float> function) => new(function(input.Item0), function(input.Item1), function(input.Item2));
     
     private static bool HasLowChroma(Vec3f rgb)

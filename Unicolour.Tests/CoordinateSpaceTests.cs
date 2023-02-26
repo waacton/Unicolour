@@ -98,8 +98,8 @@ public class CoordinateSpaceTests
     
     private static void AssertRgbToHsb(ColourTriplet inRange, ColourTriplet outRange)
     {
-        var rgbInRange = new Rgb(inRange.First, inRange.Second, inRange.Third, Configuration.Default);
-        var rgbOutRange = new Rgb(outRange.First, outRange.Second, outRange.Third, Configuration.Default);
+        var rgbInRange = new Rgb(inRange.First, inRange.Second, inRange.Third, RgbConfiguration.StandardRgb);
+        var rgbOutRange = new Rgb(outRange.First, outRange.Second, outRange.Third, RgbConfiguration.StandardRgb);
         var hsbFromInRange = Conversion.RgbToHsb(rgbInRange);
         var hsbFromOutRange = Conversion.RgbToHsb(rgbOutRange);
         AssertSourceTriplets(AsTriplets(rgbInRange), AsTriplets(rgbOutRange));
@@ -110,8 +110,8 @@ public class CoordinateSpaceTests
     {
         var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);
         var hsbOutRange = new Hsb(outRange.First, outRange.Second, outRange.Third);
-        var rgbFromInRange = Conversion.HsbToRgb(hsbInRange, Configuration.Default);
-        var rgbFromOutRange = Conversion.HsbToRgb(hsbOutRange, Configuration.Default);
+        var rgbFromInRange = Conversion.HsbToRgb(hsbInRange, RgbConfiguration.StandardRgb);
+        var rgbFromOutRange = Conversion.HsbToRgb(hsbOutRange, RgbConfiguration.StandardRgb);
         AssertSourceTriplets(AsTriplets(hsbInRange), AsTriplets(hsbOutRange));
         AssertDestinationTriplets(AsTriplets(rgbFromInRange), AsTriplets(rgbFromOutRange));
     }

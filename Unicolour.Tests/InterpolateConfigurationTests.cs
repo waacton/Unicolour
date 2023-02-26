@@ -42,14 +42,7 @@ public class InterpolateConfigurationTests
 
     private static Configuration GetConfig()
     {
-        return new Configuration(
-            Chromaticity.StandardRgbR,
-            Chromaticity.StandardRgbG,
-            Chromaticity.StandardRgbB,
-            Companding.StandardRgb,
-            Companding.InverseStandardRgb, 
-            WhitePoint.From(Illuminant.D65), 
-            WhitePoint.From(Illuminant.D65));
+        return new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
     }
 
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)

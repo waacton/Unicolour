@@ -6,7 +6,6 @@ using Wacton.Unicolour.Tests.Utils;
 
 public static class JzazbzConfigurationTests
 {
-    // TODO: extract this after v2 changes
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
 
@@ -16,13 +15,8 @@ public static class JzazbzConfigurationTests
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://www.researchgate.net/figure/The-Hung-Berns-data-plotted-in-six-different-color-spaces-a-CIELAB-b-CIELUV-c_fig2_317811721)
     public static void XyzD65ToJzazbz100()
     {
-        var config = new Configuration(
-            Chromaticity.StandardRgbR, Chromaticity.StandardRgbG, Chromaticity.StandardRgbB, 
-            Companding.StandardRgb, Companding.InverseStandardRgb,
-            D65WhitePoint, 
-            D65WhitePoint,
-            100, 100);
-
+        var config = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, ictcpScalar: 100, jzazbzScalar: 100);
+        
         var red = Unicolour.FromXyz(config, HungBerns.RedRef.Xyz.Triplet.Tuple);
         var blue = Unicolour.FromXyz(config, HungBerns.BlueRef.Xyz.Triplet.Tuple);
         var white = Unicolour.FromXyz(config, XyzWhite.Tuple);
@@ -45,12 +39,7 @@ public static class JzazbzConfigurationTests
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31220jzazbz-colourspace)  
     public static void XyzD65ToJzazbz1()
     {
-        var config = new Configuration(
-            Chromaticity.StandardRgbR, Chromaticity.StandardRgbG, Chromaticity.StandardRgbB, 
-            Companding.StandardRgb, Companding.InverseStandardRgb,
-            D65WhitePoint, 
-            D65WhitePoint,
-            100, 1);
+        var config = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, ictcpScalar: 100,  jzazbzScalar: 1);
         
         var unicolour = Unicolour.FromXyz(config, TestXyz.Tuple);
         AssertUtils.AssertColourTriplet(unicolour.Jzazbz.Triplet, new(0.00535048, 0.00924302, 0.00526007), 0.00001);
@@ -64,12 +53,7 @@ public static class JzazbzConfigurationTests
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
     public static void XyzD65ToJzazbz203()
     {
-        var config = new Configuration(
-            Chromaticity.StandardRgbR, Chromaticity.StandardRgbG, Chromaticity.StandardRgbB, 
-            Companding.StandardRgb, Companding.InverseStandardRgb,
-            D65WhitePoint, 
-            D65WhitePoint,
-            100, 203);
+        var config = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, ictcpScalar: 100,  jzazbzScalar: 203);
         
         var unicolour = Unicolour.FromXyz(config, TestXyz.Tuple);
         AssertUtils.AssertColourTriplet(unicolour.Jzazbz.Triplet, new(0.10287841, 0.08613415, 0.05873694), 0.0001);

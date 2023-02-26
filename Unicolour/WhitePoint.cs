@@ -5,8 +5,11 @@ public record WhitePoint(double X, double Y, double Z)
     public double X { get; } = X;
     public double Y { get; } = Y;
     public double Z { get; } = Z;
-    
     public override string ToString() => $"({X}, {Y}, {Z})";
+
+    public static WhitePoint StandardRgb => From(Illuminant.D65);
+    public static WhitePoint DisplayP3 => From(Illuminant.D65);
+    public static WhitePoint Rec2020 => From(Illuminant.D65);
     
     public static WhitePoint From(Illuminant illuminant, Observer observer = Observer.Standard2)
     {

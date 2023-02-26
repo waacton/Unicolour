@@ -18,11 +18,11 @@ public record Rgb : ColourRepresentation
     public RgbLinear Linear { get; }
     public Rgb255 Byte255 { get; }
 
-    public Rgb(double r, double g, double b, Configuration config) : this(r, g, b, config, ColourMode.Unset) {}
-    internal Rgb(ColourTriplet triplet, Configuration config, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, config, colourMode) {}
-    internal Rgb(double r, double g, double b, Configuration config, ColourMode colourMode) : base(r, g, b, colourMode)
+    public Rgb(double r, double g, double b, RgbConfiguration rgbConfig) : this(r, g, b, rgbConfig, ColourMode.Unset) {}
+    internal Rgb(ColourTriplet triplet, RgbConfiguration rgbConfig, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, rgbConfig, colourMode) {}
+    internal Rgb(double r, double g, double b, RgbConfiguration rgbConfig, ColourMode colourMode) : base(r, g, b, colourMode)
     {
-        double ToLinear(double value) => config.InverseCompand(value);
+        double ToLinear(double value) => rgbConfig.InverseCompandToLinear(value);
         Linear = new RgbLinear(ToLinear(r), ToLinear(g), ToLinear(b), ColourMode.FromRepresentation(this));
         
         double To255(double value) => Math.Round(value * 255);

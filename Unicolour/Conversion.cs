@@ -25,12 +25,12 @@ internal static class Conversion
     }
 
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
-    public static Rgb HsbToRgb(Hsb hsb, Configuration config)
+    public static Rgb HsbToRgb(Hsb hsb, RgbConfiguration rgbConfig)
     {
         var (hue, saturation, brightness) = hsb.ConstrainedTriplet;
         var chroma = brightness * saturation;
         var h = hue / 60;
-        var x = chroma * (1 - Math.Abs(((h % 2) - 1)));
+        var x = chroma * (1 - Math.Abs(h % 2 - 1));
 
         var (r, g, b) = h switch
         {
@@ -45,7 +45,7 @@ internal static class Conversion
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, config, ColourMode.FromRepresentation(hsb));
+        return new Rgb(red, green, blue, rgbConfig, ColourMode.FromRepresentation(hsb));
     }
     
     // https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
@@ -103,33 +103,33 @@ internal static class Conversion
     }
 
     // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
-    public static Xyz RgbToXyz(Rgb rgb, Configuration config)
+    public static Xyz RgbToXyz(Rgb rgb, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
-        var transformationMatrix = Matrices.RgbToXyzMatrix(config);
+        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig);
         var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(rgb));
     }
     
     // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
-    public static Rgb XyzToRgb(Xyz xyz, Configuration config)
+    public static Rgb XyzToRgb(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var transformationMatrix = Matrices.RgbToXyzMatrix(config).Inverse();
+        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
         var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
-        var rgbMatrix = rgbLinearMatrix.Select(config.Compand);
-        return new Rgb(rgbMatrix.ToTriplet(), config, ColourMode.FromRepresentation(xyz));
+        var rgbMatrix = rgbLinearMatrix.Select(rgbConfig.CompandFromLinear);
+        return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourMode.FromRepresentation(xyz));
     }
     
     // https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
-    public static Xyy XyzToXyy(Xyz xyz, Configuration config)
+    public static Xyy XyzToXyy(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var (x, y, z) = xyz.Triplet;
         var normalisation = x + y + z;
         var isBlack = normalisation == 0.0;
         
-        var chromaticityX = isBlack ? config.ChromaticityWhite.X : x / normalisation;
-        var chromaticityY = isBlack ? config.ChromaticityWhite.Y : y / normalisation;
+        var chromaticityX = isBlack ? xyzConfig.ChromaticityWhite.X : x / normalisation;
+        var chromaticityY = isBlack ? xyzConfig.ChromaticityWhite.Y : y / normalisation;
         var luminance = isBlack ? 0 : y;
         return new Xyy(chromaticityX, chromaticityY, luminance, ColourMode.FromRepresentation(xyz));
     }
@@ -149,10 +149,10 @@ internal static class Conversion
     }
     
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
-    public static Lab XyzToLab(Xyz xyz, Configuration config)
+    public static Lab XyzToLab(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var (x, y, z) = xyz.Triplet;
-        var referenceWhite = config.XyzWhitePoint;
+        var referenceWhite = xyzConfig.WhitePoint;
         var xRatio = x * 100 / referenceWhite.X;
         var yRatio = y * 100 / referenceWhite.Y;
         var zRatio = z * 100 / referenceWhite.Z;
@@ -166,10 +166,10 @@ internal static class Conversion
     }
 
     // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIELAB_to_CIEXYZ
-    public static Xyz LabToXyz(Lab lab, Configuration config)
+    public static Xyz LabToXyz(Lab lab, XyzConfiguration xyzConfig)
     {
         var (l, a, b) = lab.Triplet;
-        var referenceWhite = config.XyzWhitePoint;
+        var referenceWhite = xyzConfig.WhitePoint;
         var delta = 6.0 / 29.0;
         double F(double t) => t > delta ? Math.Pow(t, 3.0) : 3 * Math.Pow(delta, 2) * (t - 4.0 / 29.0);
         var x = referenceWhite.X / 100.0 * F((l + 16) / 116.0 + a / 500.0);
@@ -191,10 +191,10 @@ internal static class Conversion
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_forward_transformation
-    public static Luv XyzToLuv(Xyz xyz, Configuration config)
+    public static Luv XyzToLuv(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var (x, y, z) = xyz.Triplet;
-        var (xRef, yRef, zRef) = config.XyzWhitePoint;
+        var (xRef, yRef, zRef) = xyzConfig.WhitePoint;
 
         double U(double xu, double yu, double zu) => 4 * xu / (xu + 15 * yu + 3 * zu);
         double V(double xv, double yv, double zv) => 9 * yv / (xv + 15 * yv + 3 * zv);
@@ -213,13 +213,13 @@ internal static class Conversion
     }
     
     // https://en.wikipedia.org/wiki/CIELUV#The_reverse_transformation
-    public static Xyz LuvToXyz(Luv luv, Configuration config)
+    public static Xyz LuvToXyz(Luv luv, XyzConfiguration xyzConfig)
     {
         var (l, u, v) = luv.Triplet;
         double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
         double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
 
-        var (xRef, yRef, zRef) = config.XyzWhitePoint;
+        var (xRef, yRef, zRef) = xyzConfig.WhitePoint;
         var uPrimeRef = U(xRef, yRef, zRef);
         var uPrime = u / (13 * l) + uPrimeRef;
         var vPrimeRef = V(xRef, yRef, zRef);
@@ -367,11 +367,11 @@ internal static class Conversion
 
     // https://professional.dolby.com/siteassets/pdfs/dolby-vision-measuring-perceptual-color-volume-v7.1.pdf
     // currently only PQ, not HLG (https://en.wikipedia.org/wiki/Hybrid_log%E2%80%93gamma)
-    public static Ictcp XyzToIctcp(Xyz xyz, Configuration config)
+    public static Ictcp XyzToIctcp(Xyz xyz, XyzConfiguration xyzConfig, double ictcpScalar)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
-        var d65ScaledMatrix = d65Matrix.Select(x => x * config.IctcpScalar);
+        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65ScaledMatrix = d65Matrix.Select(x => x * ictcpScalar);
         var lmsMatrix = Matrices.IctcpM1.Multiply(d65ScaledMatrix);
         var lmsPrimeMatrix = lmsMatrix.Select(Pq.Smpte.InverseEotf);
         var ictcpMatrix = Matrices.IctcpM2.Multiply(lmsPrimeMatrix);
@@ -379,20 +379,20 @@ internal static class Conversion
     }
 
     // this is not specified in the Dolby white paper, but unit tests confirm roundtrip conversion
-    public static Xyz IctcpToXyz(Ictcp ictcp, Configuration config)
+    public static Xyz IctcpToXyz(Ictcp ictcp, XyzConfiguration xyzConfig, double ictcpScalar)
     {
         var ictcpMatrix = Matrix.FromTriplet(ictcp.Triplet);
         var lmsPrimeMatrix = Matrices.IctcpM2.Inverse().Multiply(ictcpMatrix);
         var lmsMatrix = lmsPrimeMatrix.Select(Pq.Smpte.Eotf);
-        var d65ScaledMatrix = lmsMatrix.Select(x => x / config.IctcpScalar);
+        var d65ScaledMatrix = lmsMatrix.Select(x => x / ictcpScalar);
         var d65Matrix = Matrices.IctcpM1.Inverse().Multiply(d65ScaledMatrix);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
+        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(ictcp));
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
     // https://opticapublishing.figshare.com/articles/software/JzAzBz_m/5016299
-    public static Jzazbz XyzToJzazbz(Xyz xyz, Configuration config)
+    public static Jzazbz XyzToJzazbz(Xyz xyz, XyzConfiguration xyzConfig, double jzazbzScalar)
     {
         var b = 1.15;
         var g = 0.66;
@@ -400,8 +400,8 @@ internal static class Conversion
         var d0 = 1.6295499532821566e-11;
 
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
-        var d65ScaledMatrix = d65Matrix.Select(x => Math.Max(x * config.JzazbzScalar, 0));
+        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65ScaledMatrix = d65Matrix.Select(x => Math.Max(x * jzazbzScalar, 0));
         var x65 = d65ScaledMatrix[0, 0];
         var y65 = d65ScaledMatrix[1, 0];
         var z65 = d65ScaledMatrix[2, 0];
@@ -421,7 +421,7 @@ internal static class Conversion
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
-    public static Xyz JzazbzToXyz(Jzazbz jzazbz, Configuration config)
+    public static Xyz JzazbzToXyz(Jzazbz jzazbz, XyzConfiguration xyzConfig, double jzazbzScalar)
     {
         var b = 1.15;
         var g = 0.66;
@@ -442,8 +442,8 @@ internal static class Conversion
         var y65 = (y65Prime + (g - 1) * x65) / g;
         var z65 = z65Prime;
         var d65ScaledMatrix = Matrix.FromTriplet(new(x65, y65, z65));
-        var d65Matrix = d65ScaledMatrix.Select(x => x / config.JzazbzScalar);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
+        var d65Matrix = d65ScaledMatrix.Select(x => x / jzazbzScalar);
+        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(jzazbz));
     }
     
@@ -460,10 +460,10 @@ internal static class Conversion
     }
 
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
-    public static Oklab XyzToOklab(Xyz xyz, Configuration config)
+    public static Oklab XyzToOklab(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, config.XyzWhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
         var lmsMatrix = Matrices.OklabM1.Multiply(d65Matrix);
         var lmsNonLinearMatrix = lmsMatrix.Select(CubeRoot);
         var labMatrix = Matrices.OklabM2.Multiply(lmsNonLinearMatrix);
@@ -471,13 +471,13 @@ internal static class Conversion
     }
     
     // https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
-    public static Xyz OklabToXyz(Oklab oklab, Configuration config)
+    public static Xyz OklabToXyz(Oklab oklab, XyzConfiguration xyzConfig)
     {
         var labMatrix = Matrix.FromTriplet(oklab.Triplet);
         var lmsNonLinearMatrix = Matrices.OklabM2.Inverse().Multiply(labMatrix);
         var lmsMatrix = lmsNonLinearMatrix.Select(x => Math.Pow(x, 3));
         var d65Matrix = Matrices.OklabM1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), config.XyzWhitePoint);
+        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(oklab));
     }
     

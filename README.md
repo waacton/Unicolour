@@ -169,7 +169,7 @@ Default configuration for D65 and D50 (2° observer) is provided.
 ```c#
 // built-in configuration for Rec. 2020 RGB + D65 XYZ
 var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
-var unicolour = Unicolour.FromRgb(config, 255, 20, 147);
+var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
 ```
 
 ```c#
@@ -189,7 +189,7 @@ var xyzConfig = new XyzConfiguration(
 );
 
 var config = new Configuration(rgbConfig, xyzConfig);
-var unicolour = Unicolour.FromRgb(config, 255, 20, 147);
+var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
 ```
 
 ---

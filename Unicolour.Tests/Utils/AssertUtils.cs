@@ -1,19 +1,26 @@
 ﻿namespace Wacton.Unicolour.Tests.Utils;
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 internal static class AssertUtils
 {
     public const double InterpolationTolerance = 0.00000000005;
 
-    public static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
+    public static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
     {
         var details = $"Expected --- {expected}\nActual ----- {actual}";
         string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
         AssertTripletValue(actual.First, expected.First, tolerance, FailMessage("Channel 1"), actual.HueIndex == 0);
         AssertTripletValue(actual.Second, expected.Second, tolerance, FailMessage("Channel 2"));
         AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
+    }
+
+    public static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
+    {
+        var colourRepresentation = unicolour.AllRepresentations.Single(x => x is T);
+        AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
     }
 
     private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)

@@ -198,11 +198,11 @@ public class OtherLibraryTests
 
         var unicolourRgb = testColour.IsRgbConstrained ? unicolour.Rgb.ConstrainedTriplet : unicolour.Rgb.Triplet;
         var unicolourRgbLinear = testColour.IsRgbLinearConstrained ? unicolour.Rgb.Linear.ConstrainedTriplet : unicolour.Rgb.Linear.Triplet;
-        AssertColourTriplet(unicolourRgb, testColour.Rgb, tolerances.Rgb, $"{colourName} -> RGB");
-        AssertColourTriplet(unicolourRgbLinear, testColour.RgbLinear, tolerances.RgbLinear, $"{colourName} -> RGB Linear");
-        AssertColourTriplet(unicolour.Xyz.Triplet, testColour.Xyz, tolerances.Xyz, $"{colourName} -> XYZ");
-        AssertColourTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{colourName} -> LAB");
-        AssertColourTriplet(unicolour.Luv.Triplet, testColour.Luv, tolerances.Luv, $"{colourName} -> LUV");
+        AssertTriplet(unicolourRgb, testColour.Rgb, tolerances.Rgb, $"{colourName} -> RGB");
+        AssertTriplet(unicolourRgbLinear, testColour.RgbLinear, tolerances.RgbLinear, $"{colourName} -> RGB Linear");
+        AssertTriplet(unicolour.Xyz.Triplet, testColour.Xyz, tolerances.Xyz, $"{colourName} -> XYZ");
+        AssertTriplet(unicolour.Lab.Triplet, testColour.Lab, tolerances.Lab, $"{colourName} -> LAB");
+        AssertTriplet(unicolour.Luv.Triplet, testColour.Luv, tolerances.Luv, $"{colourName} -> LUV");
         
         if (testColour.ExcludeFromXyyTests)
         {
@@ -211,7 +211,7 @@ public class OtherLibraryTests
         }
         else
         {
-            AssertColourTriplet(unicolour.Xyy.Triplet, testColour.Xyy, tolerances.Xyy, $"{colourName} -> xyY");
+            AssertTriplet(unicolour.Xyy.Triplet, testColour.Xyy, tolerances.Xyy, $"{colourName} -> xyY");
         }
 
         if (testColour.ExcludeFromHsxTests)
@@ -221,8 +221,8 @@ public class OtherLibraryTests
         }
         else
         {
-            AssertColourTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB");
-            AssertColourTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL");
+            AssertTriplet(unicolour.Hsb.ConstrainedTriplet, testColour.Hsb, tolerances.Hsb, $"{colourName} -> HSB");
+            AssertTriplet(unicolour.Hsl.ConstrainedTriplet, testColour.Hsl, tolerances.Hsl, $"{colourName} -> HSL");
         }
         
         if (testColour.ExcludeFromLchTests)
@@ -232,14 +232,14 @@ public class OtherLibraryTests
         }
         else
         {
-            AssertColourTriplet(unicolour.Lchab.ConstrainedTriplet, testColour.Lchab, tolerances.Lchab, $"{colourName} -> LCHab");
-            AssertColourTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv");
+            AssertTriplet(unicolour.Lchab.ConstrainedTriplet, testColour.Lchab, tolerances.Lchab, $"{colourName} -> LCHab");
+            AssertTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv");
         }
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info)
+    private static void AssertTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info)
     {
         if (expected == null) return;
-        AssertUtils.AssertColourTriplet(actual, expected, tolerance, info);
+        AssertUtils.AssertTriplet(actual, expected, tolerance, info);
     }
 }

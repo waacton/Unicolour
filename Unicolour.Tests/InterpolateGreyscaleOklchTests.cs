@@ -23,10 +23,10 @@ public class InterpolateGreyscaleOklchTests
 
         // greyscale interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
-        AssertColourTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
-        AssertColourTriplet(fromOklabWhite.Oklch.Triplet, new(0.75, 0.25, 120));
-        AssertColourTriplet(fromOklchBlack.Oklch.Triplet, new(0.25, 0.5, 150));
-        AssertColourTriplet(fromOklchWhite.Oklch.Triplet, new(0.75, 0.5, 150));
+        AssertTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
+        AssertTriplet(fromOklabWhite.Oklch.Triplet, new(0.75, 0.25, 120));
+        AssertTriplet(fromOklchBlack.Oklch.Triplet, new(0.25, 0.5, 150));
+        AssertTriplet(fromOklchWhite.Oklch.Triplet, new(0.75, 0.5, 150));
     }
     
     [Test]
@@ -45,10 +45,10 @@ public class InterpolateGreyscaleOklchTests
 
         // greyscale interpolates differently depending on the initial colour space
         // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
-        AssertColourTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
-        AssertColourTriplet(toOklabWhite.Oklch.Triplet, new(0.75, 0.25, 240));
-        AssertColourTriplet(toOklchBlack.Oklch.Triplet, new(0.25, 0.5, 210));
-        AssertColourTriplet(toOklchWhite.Oklch.Triplet, new(0.75, 0.5, 210));
+        AssertTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
+        AssertTriplet(toOklabWhite.Oklch.Triplet, new(0.75, 0.25, 240));
+        AssertTriplet(toOklchBlack.Oklch.Triplet, new(0.25, 0.5, 210));
+        AssertTriplet(toOklchWhite.Oklch.Triplet, new(0.75, 0.5, 210));
     }
     
     [Test]
@@ -62,14 +62,14 @@ public class InterpolateGreyscaleOklchTests
         var blackToGrey = black.InterpolateOklch(grey, 0.5);
         var whiteToGrey = white.InterpolateOklch(grey, 0.5);
         
-        AssertColourTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
-        AssertColourTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
         
         // colours created from Oklab therefore hue does not change
-        AssertColourTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 0));
-        AssertColourTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 0));
     }
     
     [Test]
@@ -83,18 +83,18 @@ public class InterpolateGreyscaleOklchTests
         var blackToGrey = black.InterpolateOklch(grey, 0.5);
         var whiteToGrey = white.InterpolateOklch(grey, 0.5);
         
-        AssertColourTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
-        AssertColourTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
         
         // colours created from Oklch therefore hue changes
-        AssertColourTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 330));
-        AssertColourTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 50));
-        AssertColourTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 20));
+        AssertTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 330));
+        AssertTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 50));
+        AssertTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 20));
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected)
+    private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        AssertUtils.AssertColourTriplet(actual, expected, AssertUtils.InterpolationTolerance);
+        AssertUtils.AssertTriplet(actual, expected, AssertUtils.InterpolationTolerance);
     }
 }

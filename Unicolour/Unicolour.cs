@@ -41,7 +41,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public string Hex => IsDisplayable ? this.Hex() : "-";
+    public string Hex => this.Hex();
     public bool IsDisplayable => this.IsDisplayable();
     public double RelativeLuminance => this.RelativeLuminance();
     public string Description => string.Join(" ", this.Description());
@@ -54,6 +54,13 @@ public partial class Unicolour : IEquatable<Unicolour>
         initialColourSpace = initialColourRepresentation.ColourSpace;
     }
 
+    public Unicolour ConvertToConfiguration(Configuration newConfig)
+    {
+        var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
+        var adaptedMatrix = Matrices.AdaptForWhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
+        return FromXyz(newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
+    }
+    
     public override string ToString()
     {
         var parts = new List<string> { $"from {initialColourSpace} {InitialRepresentation()}, alpha {Alpha.A}" };

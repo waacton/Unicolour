@@ -16,7 +16,7 @@ public static class XyyTests
     public static void White(Illuminant illuminant, double expectedX, double expectedY, double expectedLuminance)
     {
         var unicolour = Unicolour.FromRgb(GetConfig(illuminant), 1, 1, 1);
-        AssertUtils.AssertColourTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
+        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.214041)]
@@ -25,7 +25,7 @@ public static class XyyTests
     public static void Grey(Illuminant illuminant, double expectedX, double expectedY, double expectedLuminance)
     {
         var unicolour = Unicolour.FromRgb(GetConfig(illuminant), 0.5, 0.5, 0.5);
-        AssertUtils.AssertColourTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
+        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.000001)]
@@ -34,7 +34,7 @@ public static class XyyTests
     public static void NearBlack(Illuminant illuminant, double expectedX, double expectedY, double expectedLuminance)
     {
         var unicolour = Unicolour.FromRgb(GetConfig(illuminant), 0.00001, 0.00001, 0.00001);
-        AssertUtils.AssertColourTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
+        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.000000)]
@@ -43,7 +43,7 @@ public static class XyyTests
     public static void Black(Illuminant illuminant, double expectedX, double expectedY, double expectedLuminance)
     {
         var unicolour = Unicolour.FromRgb(GetConfig(illuminant), 0, 0, 0);
-        AssertUtils.AssertColourTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
+        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(expectedX, expectedY, expectedLuminance), Tolerance);
     }
 
     [TestCase(-0.00000000001)]

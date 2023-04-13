@@ -4,6 +4,7 @@ internal static class Measurement
 {
     internal static string Hex(this Unicolour colour)
     {
+        if (!colour.IsDisplayable) return "-";
         var byte255 = colour.Rgb.Byte255;
         if (byte255.IsEffectivelyNaN) return "-";
         var (r255, g255, b255) = byte255.ConstrainedTriplet;

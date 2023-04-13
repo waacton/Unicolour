@@ -34,6 +34,6 @@ public static class HsluvTests
 
     private static void Assert(ColourTriplet actual, ColourTriplet expected, double tolerance, string info)
     {
-        AssertUtils.AssertColourTriplet(actual, expected, tolerance, info);
+        AssertUtils.AssertTriplet(actual, expected, tolerance, info);
     }
 }

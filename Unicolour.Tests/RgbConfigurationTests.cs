@@ -24,6 +24,26 @@ public static class RgbConfigurationTests
 
     private const double Gamma = 2.19921875;
     
+    private static readonly Dictionary<ColourTriplet, ColourTriplet> StandardRgbToDisplayP3Lookup = new()
+    {
+        { new(1.0, 0.0, 0.0), new(0.9175, 0.2003, 0.1386) },
+        { new(0.0, 1.0, 0.0), new(0.4587, 0.9853, 0.2983) },
+        { new(0.0, 0.0, 1.0), new(0.0000, 0.0000, 0.9596) },
+        { new(1.0930, -0.5435, -0.2538), new(1.0, 0.0, 0.0) },
+        { new(-2.9057, 1.0183, -1.0162), new(0.0, 1.0, 0.0) },
+        { new(0.00, 0.00, 1.04), new(0.0, 0.0, 1.0) }
+    };
+    
+    private static readonly Dictionary<ColourTriplet, ColourTriplet> StandardRgbToRec2020Lookup = new()
+    {
+        { new(1.0, 0.0, 0.0), new(0.7920, 0.2310, 0.0738) },
+        { new(0.0, 1.0, 0.0), new(0.5675, 0.9593, 0.2690) },
+        { new(0.0, 0.0, 1.0), new(0.1683, 0.0511, 0.9468) },
+        { new(1.2482, -1.6094, -0.2346), new(1.0, 0.0, 0.0) },
+        { new(-7.5910, 1.0563, -1.2998), new(0.0, 1.0, 0.0) },
+        { new(-0.9409, -0.1079, 1.0505), new(0.0, 0.0, 1.0) }
+    };
+    
     [Test]
     public static void XyzD65ToStandardRgbD65()
     {
@@ -53,10 +73,10 @@ public static class RgbConfigurationTests
         var unicolourLab = Unicolour.FromLab(Configuration.Default, 41.1553, 51.4108, -56.4485);
         var unicolourLabNoConfig = Unicolour.FromLab(41.1553, 51.4108, -56.4485);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourXyzNoConfig.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLabNoConfig.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyzNoConfig, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLabNoConfig, expectedRgb, Tolerance);
     }
 
     [Test]
@@ -86,8 +106,8 @@ public static class RgbConfigurationTests
         var unicolourXyz = Unicolour.FromXyz(config, 0.187691, 0.115771, 0.381093);
         var unicolourLab = Unicolour.FromLab(config, 40.5359, 46.0847, -57.1158);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
 
     [Test]
@@ -106,8 +126,8 @@ public static class RgbConfigurationTests
         var unicolourXyz = Unicolour.FromXyz(config, 0.234243, 0.134410, 0.535559);
         var unicolourLab = Unicolour.FromLab(config, 43.4203, 57.3600, -55.4259);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
     
     [Test]
@@ -126,8 +146,8 @@ public static class RgbConfigurationTests
         var unicolourXyz = Unicolour.FromXyz(config, 0.221673, 0.130920, 0.402670);
         var unicolourLab = Unicolour.FromLab(config, 42.9015, 52.4152, -55.9013);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
 
     [Test]
@@ -146,8 +166,8 @@ public static class RgbConfigurationTests
         var unicolourXyz = Unicolour.FromXyz(config, 0.251993, 0.102404, 0.550393);
         var unicolourLab = Unicolour.FromLab(config, 38.2704, 87.2838, -65.7493);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
 
     [Test]
@@ -166,35 +186,12 @@ public static class RgbConfigurationTests
         var unicolourXyz = Unicolour.FromXyz(config, 0.238795, 0.099490, 0.413181);
         var unicolourLab = Unicolour.FromLab(config, 37.7508, 82.3084, -66.1402);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        AssertUtils.AssertColourTriplet(unicolourXyz.Rgb.Triplet, expectedRgb, Tolerance);
-        AssertUtils.AssertColourTriplet(unicolourLab.Rgb.Triplet, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
+        AssertUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
 
-    // TODO: update following tests when Unicolour configuration conversion is implemented
-    // these tests currently convert manually via XYZ space
-
-    private static readonly Dictionary<ColourTriplet, ColourTriplet> StandardRgbToDisplayP3Lookup = new()
-    {
-        { new(1.0, 0.0, 0.0), new(0.9175, 0.2003, 0.1386) },
-        { new(0.0, 1.0, 0.0), new(0.4587, 0.9853, 0.2983) },
-        { new(0.0, 0.0, 1.0), new(0.0000, 0.0000, 0.9596) },
-        { new(1.0930, -0.5435, -0.2538), new(1.0, 0.0, 0.0) },
-        { new(-2.9057, 1.0183, -1.0162), new(0.0, 1.0, 0.0) },
-        { new(0.00, 0.00, 1.04), new(0.0, 0.0, 1.0) }
-    };
-    
-    private static readonly Dictionary<ColourTriplet, ColourTriplet> StandardRgbToRec2020Lookup = new()
-    {
-        { new(1.0, 0.0, 0.0), new(0.7920, 0.2310, 0.0738) },
-        { new(0.0, 1.0, 0.0), new(0.5675, 0.9593, 0.2690) },
-        { new(0.0, 0.0, 1.0), new(0.1683, 0.0511, 0.9468) },
-        { new(1.2482, -1.6094, -0.2346), new(1.0, 0.0, 0.0) },
-        { new(-7.5910, 1.0563, -1.2998), new(0.0, 1.0, 0.0) },
-        { new(-0.9409, -0.1079, 1.0505), new(0.0, 0.0, 1.0) }
-    };
-
     [Test]
-    public static void StandardRgbToDisplayP3()
+    public static void ConvertStandardRgbToDisplayP3()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
@@ -202,14 +199,13 @@ public static class RgbConfigurationTests
         foreach (var (standardRgbTriplet, displayP3Triplet) in StandardRgbToDisplayP3Lookup)
         {
             var standardRgb = Unicolour.FromRgb(standardRgbConfig, standardRgbTriplet.Tuple);
-            var xyz = standardRgb.Xyz;
-            var displayP3 = Unicolour.FromXyz(displayP3Config, xyz.Triplet.Tuple);
-            AssertUtils.AssertColourTriplet(displayP3.Rgb.Triplet, displayP3Triplet, Tolerance);
+            var displayP3 = standardRgb.ConvertToConfiguration(displayP3Config);
+            AssertUtils.AssertTriplet<Rgb>(displayP3, displayP3Triplet, Tolerance);
         }
     }
     
     [Test]
-    public static void DisplayP3ToStandardRgb()
+    public static void ConvertDisplayP3ToStandardRgb()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
@@ -217,14 +213,13 @@ public static class RgbConfigurationTests
         foreach (var (standardRgbTriplet, displayP3Triplet) in StandardRgbToDisplayP3Lookup)
         {
             var displayP3 = Unicolour.FromRgb(displayP3Config, displayP3Triplet.Tuple);
-            var xyz = displayP3.Xyz;
-            var standardRgb = Unicolour.FromXyz(standardRgbConfig, xyz.Triplet.Tuple);
-            AssertUtils.AssertColourTriplet(standardRgb.Rgb.Triplet, standardRgbTriplet, Tolerance);
+            var standardRgb = displayP3.ConvertToConfiguration(standardRgbConfig);
+            AssertUtils.AssertTriplet<Rgb>(standardRgb, standardRgbTriplet, Tolerance);
         }
     }
 
     [Test]
-    public static void StandardRgbToRec2020()
+    public static void ConvertStandardRgbToRec2020()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var rec2020Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
@@ -232,14 +227,13 @@ public static class RgbConfigurationTests
         foreach (var (standardRgbTriplet, rec2020Triplet) in StandardRgbToRec2020Lookup)
         {
             var standardRgb = Unicolour.FromRgb(standardRgbConfig, standardRgbTriplet.Tuple);
-            var xyz = standardRgb.Xyz;
-            var rec2020 = Unicolour.FromXyz(rec2020Config, xyz.Triplet.Tuple);
-            AssertUtils.AssertColourTriplet(rec2020.Rgb.Triplet, rec2020Triplet, Tolerance);
+            var rec2020 = standardRgb.ConvertToConfiguration(rec2020Config);
+            AssertUtils.AssertTriplet<Rgb>(rec2020, rec2020Triplet, Tolerance);
         }
     }
     
     [Test]
-    public static void Rec2020ToStandardRgb()
+    public static void ConvertRec2020ToStandardRgb()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var rec2020Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
@@ -247,9 +241,8 @@ public static class RgbConfigurationTests
         foreach (var (standardRgbTriplet, rec2020Triplet) in StandardRgbToRec2020Lookup)
         {
             var rec2020 = Unicolour.FromRgb(rec2020Config, rec2020Triplet.Tuple);
-            var xyz = rec2020.Xyz;
-            var standardRgb = Unicolour.FromXyz(standardRgbConfig, xyz.Triplet.Tuple);
-            AssertUtils.AssertColourTriplet(standardRgb.Rgb.Triplet, standardRgbTriplet, Tolerance);
+            var standardRgb = rec2020.ConvertToConfiguration(standardRgbConfig);
+            AssertUtils.AssertTriplet<Rgb>(standardRgb, standardRgbTriplet, Tolerance);
         }
     }
 }

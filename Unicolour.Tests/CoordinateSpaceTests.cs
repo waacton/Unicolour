@@ -209,7 +209,7 @@ public class CoordinateSpaceTests
 
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        AssertUtils.AssertColourTriplet(actual, expected, 0.00001);
+        AssertUtils.AssertTriplet(actual, expected, 0.00001);
     }
 
     private static Triplets AsTriplets(Rgb rgb) => new(rgb.Triplet, rgb.ConstrainedTriplet);

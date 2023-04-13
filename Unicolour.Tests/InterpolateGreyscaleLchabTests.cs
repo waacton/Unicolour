@@ -23,10 +23,10 @@ public class InterpolateGreyscaleLchabTests
 
         // greyscale interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
-        AssertColourTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
-        AssertColourTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
-        AssertColourTriplet(fromLchabBlack.Lchab.Triplet, new(25, 100, 150));
-        AssertColourTriplet(fromLchabWhite.Lchab.Triplet, new(75, 100, 150));
+        AssertTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
+        AssertTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
+        AssertTriplet(fromLchabBlack.Lchab.Triplet, new(25, 100, 150));
+        AssertTriplet(fromLchabWhite.Lchab.Triplet, new(75, 100, 150));
     }
     
     [Test]
@@ -45,10 +45,10 @@ public class InterpolateGreyscaleLchabTests
 
         // greyscale interpolates differently depending on the initial colour space
         // since LAB black/white assumes chroma of 0 (but chroma can be any value)
-        AssertColourTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
-        AssertColourTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
-        AssertColourTriplet(toLchabBlack.Lchab.Triplet, new(25, 100, 210));
-        AssertColourTriplet(toLchabWhite.Lchab.Triplet, new(75, 100, 210));
+        AssertTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
+        AssertTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
+        AssertTriplet(toLchabBlack.Lchab.Triplet, new(25, 100, 210));
+        AssertTriplet(toLchabWhite.Lchab.Triplet, new(75, 100, 210));
     }
     
     [Test]
@@ -62,14 +62,14 @@ public class InterpolateGreyscaleLchabTests
         var blackToGrey = black.InterpolateLchab(grey, 0.5);
         var whiteToGrey = white.InterpolateLchab(grey, 0.5);
         
-        AssertColourTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
-        AssertColourTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
         
         // colours created from LAB therefore hue does not change
-        AssertColourTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 0));
-        AssertColourTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 0));
     }
     
     [Test]
@@ -83,18 +83,18 @@ public class InterpolateGreyscaleLchabTests
         var blackToGrey = black.InterpolateLchab(grey, 0.5);
         var whiteToGrey = white.InterpolateLchab(grey, 0.5);
         
-        AssertColourTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
-        AssertColourTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
-        AssertColourTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
         
         // colours created from LCHab therefore hue changes
-        AssertColourTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 330));
-        AssertColourTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 50));
-        AssertColourTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 20));
+        AssertTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 330));
+        AssertTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 50));
+        AssertTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 20));
     }
     
-    private static void AssertColourTriplet(ColourTriplet actual, ColourTriplet expected)
+    private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        AssertUtils.AssertColourTriplet(actual, expected, AssertUtils.InterpolationTolerance);
+        AssertUtils.AssertTriplet(actual, expected, AssertUtils.InterpolationTolerance);
     }
 }

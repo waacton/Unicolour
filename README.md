@@ -160,10 +160,10 @@ See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour
 A `Configuration` parameter can be used to change the RGB model (e.g. Display P3, Rec. 2020)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
-RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
+- RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
 Default configuration for sRGB, Display P3, and Rec. 2020 is provided.
 
-XYZ configuration only requires the reference white point.
+- XYZ configuration only requires the reference white point.
 Default configuration for D65 and D50 (2° observer) is provided.
 
 ```c#
@@ -190,6 +190,20 @@ var xyzConfig = new XyzConfiguration(
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
+```
+
+A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
+
+```c#
+var srgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
+var rec202Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
+
+// pure green in standard RGB
+var unicolourSrgb = Unicolour.FromRgb(config, 0, 1, 0);                         // RGB = (0.00, 1.00, 0.00)
+var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); // RGB = (0.46, 0.99, 0.30)
+var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config); // RGB = (0.57, 0.96, 0.27)
+
 ```
 
 ---

@@ -21,7 +21,7 @@ internal static class Matrices
         { 2048, 2048, 0 },
         { 6610, -13613, 7003 },
         { 17933, -17390, -543 }
-    }).Select(x => x / 4096.0);
+    }).Scalar(x => x / 4096.0);
     
     public static readonly Matrix JzazbzM1 = new(new[,]
     {
@@ -51,7 +51,7 @@ internal static class Matrices
         {+0.0259040371, +0.7827717662, -0.8086757660}
     });
 
-    // based on http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    // see http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
     public static Matrix RgbToXyzMatrix(RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var cr = rgbConfig.ChromaticityR;
@@ -101,14 +101,14 @@ internal static class Matrices
         var adaptedBradford = AdaptedBradfordMatrix(sourceWhitePoint, destinationWhitePoint);
         return adaptedBradford.Multiply(matrix);
     }
-    
+
     private static Matrix ReferenceWhiteMatrix(WhitePoint whitePoint)
     {
         var (x, y, z) = whitePoint;
-        return Matrix.FromTriplet(new(x, y, z)).Select(value => value / 100.0);
+        return Matrix.FromTriplet(new(x, y, z)).Scalar(value => value / 100.0);
     }
 
-    // based on http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
+    // see http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
     private static Matrix AdaptedBradfordMatrix(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
         var sourceWhite = ReferenceWhiteMatrix(sourceWhitePoint);

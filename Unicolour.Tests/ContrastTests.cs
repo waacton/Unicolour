@@ -7,7 +7,7 @@ using Wacton.Unicolour.Tests.Utils;
 public static class ContrastTests
 {
     private static readonly Random Random = new();
-
+    
     [Test]
     public static void KnownContrasts()
     {

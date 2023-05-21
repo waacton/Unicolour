@@ -1,8 +1,8 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 
 public static class DescriptionTests
 {

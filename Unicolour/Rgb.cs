@@ -2,7 +2,6 @@
 
 public record Rgb : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Rgb;
     protected override int? HueIndex => null;
     public double R => First;
     public double G => Second;
@@ -33,4 +32,27 @@ public record Rgb : ColourRepresentation
     protected override string SecondString => $"{G:F2}";
     protected override string ThirdString => $"{B:F2}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * RGB is a transform of XYZ 
+     * Forward: https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
+     * Reverse: https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
+     */
+
+    internal static Rgb FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
+    {
+        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
+        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
+        var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
+        var rgbMatrix = rgbLinearMatrix.Scalar(rgbConfig.CompandFromLinear);
+        return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourMode.FromRepresentation(xyz));
+    }
+    
+    internal static Xyz ToXyz(Rgb rgb, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
+    {
+        var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
+        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig);
+        var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
+        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(rgb));
+    }
 }

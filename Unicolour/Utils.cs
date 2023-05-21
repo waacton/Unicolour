@@ -54,4 +54,19 @@ internal static class Utils
 
         return int.Parse(chars, NumberStyles.HexNumber);
     }
+    
+    public static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
+    {
+        var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
+        var hue = ToDegrees(Math.Atan2(axis2, axis1));
+        return new ColourTriplet(lightness, chroma, hue.Modulo(360.0));
+    }
+    
+    public static ColourTriplet FromLchTriplet(ColourTriplet lchTriplet)
+    {
+        var (l, c, h) = lchTriplet;
+        var axis1 = c * Math.Cos(ToRadians(h));
+        var axis2 = c * Math.Sin(ToRadians(h));
+        return new ColourTriplet(l, axis1, axis2);
+    }
 }

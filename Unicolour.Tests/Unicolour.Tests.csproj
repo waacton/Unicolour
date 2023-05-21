@@ -3,11 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
-
         <AssemblyName>Wacton.Unicolour.Tests</AssemblyName>
-
         <RootNamespace>Wacton.Unicolour.Tests</RootNamespace>
     </PropertyGroup>
 

@@ -2,7 +2,6 @@
 
 public record Xyy : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Xyy;
     protected override int? HueIndex => null;
     public Chromaticity Chromaticity => new(First, Second);
     public double Luminance => Third;
@@ -23,4 +22,35 @@ public record Xyy : ColourRepresentation
     protected override string SecondString => $"{Chromaticity.Y:F4}";
     protected override string ThirdString => $"{Luminance:F4}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * XYY is a transform of XYZ (in terms of Unicolour implementation)
+     * Forward: https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
+     * Reverse: https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
+     */
+    
+    internal static Xyy FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
+    {
+        var (x, y, z) = xyz.Triplet;
+        var normalisation = x + y + z;
+        var isBlack = normalisation == 0.0;
+        
+        var chromaticityX = isBlack ? xyzConfig.ChromaticityWhite.X : x / normalisation;
+        var chromaticityY = isBlack ? xyzConfig.ChromaticityWhite.Y : y / normalisation;
+        var luminance = isBlack ? 0 : y;
+        return new Xyy(chromaticityX, chromaticityY, luminance, ColourMode.FromRepresentation(xyz));
+    }
+    
+    internal static Xyz ToXyz(Xyy xyy)
+    {
+        var chromaticity = xyy.ConstrainedChromaticity;
+        var luminance = xyy.ConstrainedLuminance;
+
+        var useZero = chromaticity.Y <= 0;
+        var factor = luminance / chromaticity.Y;
+        var x = useZero ? 0 : factor * chromaticity.X;
+        var y = useZero ? 0 : luminance;
+        var z = useZero ? 0 : factor * (1 - chromaticity.X - chromaticity.Y);
+        return new Xyz(x, y, z, ColourMode.FromRepresentation(xyy));
+    }
 }

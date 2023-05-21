@@ -1,7 +1,5 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
-using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -91,7 +89,7 @@ public static class NotNumberTests
     private static void AssertUnicolour(Unicolour unicolour)
     {
         var data = new ColourModeData(unicolour);
-        var initial = unicolour.InitialRepresentation();
+        var initial = unicolour.InitialRepresentation;
         
         Assert.That(initial.ColourMode, Is.EqualTo(ColourMode.ExplicitNaN));
         Assert.That(initial.IsNaN, Is.True);
@@ -104,7 +102,7 @@ public static class NotNumberTests
         Assert.That(unicolour.RelativeLuminance, Is.NaN);
         Assert.That(unicolour.Description, Is.EqualTo("-"));
 
-        var spaces = Enum.GetValues<ColourSpace>().ToList();
+        var spaces = AssertUtils.AllColourSpaces;
         Assert.That(data.Modes(spaces), Has.All.EqualTo(ColourMode.ExplicitNaN));
         Assert.That(data.NaN(spaces), Has.All.True);
         Assert.That(data.Greyscale(spaces), Has.All.False);

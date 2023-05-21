@@ -100,8 +100,8 @@ public class CoordinateSpaceTests
     {
         var rgbInRange = new Rgb(inRange.First, inRange.Second, inRange.Third, RgbConfiguration.StandardRgb);
         var rgbOutRange = new Rgb(outRange.First, outRange.Second, outRange.Third, RgbConfiguration.StandardRgb);
-        var hsbFromInRange = Conversion.RgbToHsb(rgbInRange);
-        var hsbFromOutRange = Conversion.RgbToHsb(rgbOutRange);
+        var hsbFromInRange = Hsb.FromRgb(rgbInRange);
+        var hsbFromOutRange = Hsb.FromRgb(rgbOutRange);
         AssertSourceTriplets(AsTriplets(rgbInRange), AsTriplets(rgbOutRange));
         AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
     }
@@ -110,8 +110,8 @@ public class CoordinateSpaceTests
     {
         var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);
         var hsbOutRange = new Hsb(outRange.First, outRange.Second, outRange.Third);
-        var rgbFromInRange = Conversion.HsbToRgb(hsbInRange, RgbConfiguration.StandardRgb);
-        var rgbFromOutRange = Conversion.HsbToRgb(hsbOutRange, RgbConfiguration.StandardRgb);
+        var rgbFromInRange = Hsb.ToRgb(hsbInRange, RgbConfiguration.StandardRgb);
+        var rgbFromOutRange = Hsb.ToRgb(hsbOutRange, RgbConfiguration.StandardRgb);
         AssertSourceTriplets(AsTriplets(hsbInRange), AsTriplets(hsbOutRange));
         AssertDestinationTriplets(AsTriplets(rgbFromInRange), AsTriplets(rgbFromOutRange));
     }
@@ -120,8 +120,8 @@ public class CoordinateSpaceTests
     {
         var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);
         var hsbOutRange = new Hsb(outRange.First, outRange.Second, outRange.Third);
-        var hslFromInRange = Conversion.HsbToHsl(hsbInRange);
-        var hslFromOutRange = Conversion.HsbToHsl(hsbOutRange);
+        var hslFromInRange = Hsl.FromHsb(hsbInRange);
+        var hslFromOutRange = Hsl.FromHsb(hsbOutRange);
         AssertSourceTriplets(AsTriplets(hsbInRange), AsTriplets(hsbOutRange));
         AssertDestinationTriplets(AsTriplets(hslFromInRange), AsTriplets(hslFromOutRange));
     }
@@ -130,8 +130,8 @@ public class CoordinateSpaceTests
     {
         var hslInRange = new Hsl(inRange.First, inRange.Second, inRange.Third);
         var hslOutRange = new Hsl(outRange.First, outRange.Second, outRange.Third);
-        var hsbFromInRange = Conversion.HslToHsb(hslInRange);
-        var hsbFromOutRange = Conversion.HslToHsb(hslOutRange);
+        var hsbFromInRange = Hsl.ToHsb(hslInRange);
+        var hsbFromOutRange = Hsl.ToHsb(hslOutRange);
         AssertSourceTriplets(AsTriplets(hslInRange), AsTriplets(hslOutRange));
         AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
     }
@@ -140,8 +140,8 @@ public class CoordinateSpaceTests
     {
         var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);
         var hsbOutRange = new Hsb(outRange.First, outRange.Second, outRange.Third);
-        var hwbFromInRange = Conversion.HsbToHwb(hsbInRange);
-        var hwbFromOutRange = Conversion.HsbToHwb(hsbOutRange);
+        var hwbFromInRange = Hwb.FromHsb(hsbInRange);
+        var hwbFromOutRange = Hwb.FromHsb(hsbOutRange);
         AssertSourceTriplets(AsTriplets(hsbInRange), AsTriplets(hsbOutRange));
         AssertDestinationTriplets(AsTriplets(hwbFromInRange), AsTriplets(hwbFromOutRange));
     }
@@ -150,8 +150,8 @@ public class CoordinateSpaceTests
     {
         var hwbInRange = new Hwb(inRange.First, inRange.Second, inRange.Third);
         var hwbOutRange = new Hwb(outRange.First, outRange.Second, outRange.Third);
-        var hsbFromInRange = Conversion.HwbToHsb(hwbInRange);
-        var hsbFromOutRange = Conversion.HwbToHsb(hwbOutRange);
+        var hsbFromInRange = Hwb.ToHsb(hwbInRange);
+        var hsbFromOutRange = Hwb.ToHsb(hwbOutRange);
         AssertSourceTriplets(AsTriplets(hwbInRange), AsTriplets(hwbOutRange));
         AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
     }
@@ -160,8 +160,8 @@ public class CoordinateSpaceTests
     {
         var lchabInRange = new Lchab(50, 100, hueInRange);
         var lchabOutRange = new Lchab(50, 100, hueOutRange);
-        var labFromInRange = Conversion.LchabToLab(lchabInRange);
-        var labFromOutRange = Conversion.LchabToLab(lchabOutRange);
+        var labFromInRange = Lchab.ToLab(lchabInRange);
+        var labFromOutRange = Lchab.ToLab(lchabOutRange);
         AssertSourceTriplets(AsTriplets(lchabInRange), AsTriplets(lchabOutRange));
         AssertTriplet(labFromOutRange.Triplet, labFromInRange.Triplet);
     }
@@ -170,8 +170,8 @@ public class CoordinateSpaceTests
     {
         var lchuvInRange = new Lchuv(50, 100, hueInRange);
         var lchuvOutRange = new Lchuv(50, 100, hueOutRange);
-        var luvFromInRange = Conversion.LchuvToLuv(lchuvInRange);
-        var luvFromOutRange = Conversion.LchuvToLuv(lchuvOutRange);
+        var luvFromInRange = Lchuv.ToLuv(lchuvInRange);
+        var luvFromOutRange = Lchuv.ToLuv(lchuvOutRange);
         AssertSourceTriplets(AsTriplets(lchuvInRange), AsTriplets(lchuvOutRange));
         AssertTriplet(luvFromOutRange.Triplet, luvFromInRange.Triplet);
     }
@@ -180,8 +180,8 @@ public class CoordinateSpaceTests
     {
         var jzczhzInRange = new Jzczhz(0.5, 0.25, hueInRange);
         var jzczhzOutRange = new Jzczhz(0.5, 0.25, hueOutRange);
-        var jzazbzFromInRange = Conversion.JzczhzToJzazbz(jzczhzInRange);
-        var jzazbzFromOutRange = Conversion.JzczhzToJzazbz(jzczhzOutRange);
+        var jzazbzFromInRange = Jzczhz.ToJzazbz(jzczhzInRange);
+        var jzazbzFromOutRange = Jzczhz.ToJzazbz(jzczhzOutRange);
         AssertSourceTriplets(AsTriplets(jzczhzInRange), AsTriplets(jzczhzOutRange));
         AssertTriplet(jzazbzFromOutRange.Triplet, jzazbzFromInRange.Triplet);
     }
@@ -190,8 +190,8 @@ public class CoordinateSpaceTests
     {
         var oklchInRange = new Oklch(0.5, 1, hueInRange);
         var oklchOutRange = new Oklch(0.5, 1, hueOutRange);
-        var oklabFromInRange = Conversion.OklchToOklab(oklchInRange);
-        var oklabFromOutRange = Conversion.OklchToOklab(oklchOutRange);
+        var oklabFromInRange = Oklch.ToOklab(oklchInRange);
+        var oklabFromOutRange = Oklch.ToOklab(oklchOutRange);
         AssertSourceTriplets(AsTriplets(oklchInRange), AsTriplets(oklchOutRange));
         AssertTriplet(oklabFromOutRange.Triplet, oklabFromInRange.Triplet);
     }

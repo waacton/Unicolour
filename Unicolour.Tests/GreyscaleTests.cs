@@ -1,6 +1,5 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -186,29 +185,30 @@ public static class GreyscaleTests
     private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
     {
         var data = new ColourModeData(unicolour);
-        var initial = unicolour.InitialRepresentation();
-        AssertInitialRepresentation(initial, shouldBeGreyscale);
+        var initialRepresentation = unicolour.InitialRepresentation;
+        var initialColourSpace = unicolour.InitialColourSpace;
+        AssertInitialRepresentation(initialRepresentation, shouldBeGreyscale);
 
-        if (!initial.IsGreyscale)
+        if (!initialRepresentation.IsGreyscale)
         {
             // if initial representation is non-greyscale
             // downstream representations should not have explicit hue (only the initial can have explicit hue)
             // and the first downstream representation should have no explicit behaviour
             // note: it's possible for downstream conversions to result in greyscale or NaN, especially with outlier values e.g. negatives
-            var spaces = Enum.GetValues<ColourSpace>().Except(new[] {initial.ColourSpace}).ToList();
+            var spaces = AssertUtils.AllColourSpaces.Except(new[] { initialColourSpace }).ToList();
             Assert.That(data.Modes(spaces), Has.None.EqualTo(ColourMode.ExplicitHue));
             Assert.That(data.Modes(spaces), Has.Some.EqualTo(ColourMode.NoExplicitBehaviour));
         }
         else
         {
-            var initialSpaceCanProduceNaN = NaNProducingSpaces.Contains(initial.ColourSpace);
+            var initialSpaceCanProduceNaN = NaNProducingSpaces.Contains(initialColourSpace);
             if (initialSpaceCanProduceNaN)
             {
-                AssertDownstreamFromInitialMaybeNaN(initial.ColourSpace, data);
+                AssertDownstreamFromInitialMaybeNaN(initialColourSpace, data);
             }
             else
             {
-                AssertDownstreamNotNaN(initial.ColourSpace, data);
+                AssertDownstreamNotNaN(initialColourSpace, data);
                 AssertDownstreamMaybeNaN(data);
             }
         }
@@ -225,8 +225,8 @@ public static class GreyscaleTests
 
     private static void AssertDownstreamNotNaN(ColourSpace initialColourSpace, ColourModeData data)
     {
-        var excludedSpaces = NaNProducingSpaces.Concat(new[] {initialColourSpace});
-        var spaces = Enum.GetValues<ColourSpace>().Except(excludedSpaces).ToList();
+        var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
+        var spaces = AssertUtils.AllColourSpaces.Except(excludedSpaces).ToList();
         
         // if initial representation is greyscale, downstream non-NaN-producing representations should all be greyscale too
         Assert.That(data.Modes(spaces), Has.All.EqualTo(ColourMode.ExplicitGreyscale));
@@ -248,8 +248,8 @@ public static class GreyscaleTests
 
     private static void AssertDownstreamFromInitialMaybeNaN(ColourSpace initialColourSpace, ColourModeData data)
     {
-        var excludedSpaces = NaNProducingSpaces.Concat(new[] {initialColourSpace});
-        var spaces = Enum.GetValues<ColourSpace>().Except(excludedSpaces).ToList();
+        var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
+        var spaces = AssertUtils.AllColourSpaces.Except(excludedSpaces).ToList();
 
         // if initial representation is greyscale and NaN-producing, downstream representations should all be either greyscale or NaN
         var greyscaleOrNan = data.Greyscale(spaces).Zip(data.NaN(spaces), (a, b) => a || b).ToList();

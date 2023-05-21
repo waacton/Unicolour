@@ -82,7 +82,7 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void Select()
+    public static void Scalar()
     {
         var identity = new[,]
         {
@@ -119,11 +119,11 @@ public static class MatrixTests
             { 0.0625, 0.0, 0.0625 }
         };
         
-        AssertMatrixSelect(DataA, x => x, identity);
-        AssertMatrixSelect(DataA, x => 9.9, specified);
-        AssertMatrixSelect(DataA, x => x * 2, doubled);
-        AssertMatrixSelect(DataA, x => x + 1, incremented);
-        AssertMatrixSelect(DataA, x => Math.Pow(x, 2), squared);
+        AssertMatrixScalar(DataA, x => x, identity);
+        AssertMatrixScalar(DataA, x => 9.9, specified);
+        AssertMatrixScalar(DataA, x => x * 2, doubled);
+        AssertMatrixScalar(DataA, x => x + 1, incremented);
+        AssertMatrixScalar(DataA, x => Math.Pow(x, 2), squared);
     }
 
     [Test]
@@ -172,9 +172,9 @@ public static class MatrixTests
         AssertMatrixEquals(inverseMatrix, mathNetInverseMatrix, expected);
     }
     
-    private static void AssertMatrixSelect(double[,] data, Func<double, double> operation, double[,] expected)
+    private static void AssertMatrixScalar(double[,] data, Func<double, double> operation, double[,] expected)
     {
-        var matrix = new Matrix(data).Select(operation);
+        var matrix = new Matrix(data).Scalar(operation);
         var mathNetMatrix = Matrix<double>.Build.DenseOfArray(data).Map(operation);
         AssertMatrixEquals(matrix, mathNetMatrix, expected);
     }

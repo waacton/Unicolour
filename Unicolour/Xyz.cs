@@ -2,7 +2,6 @@
 
 public record Xyz : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Xyz;
     protected override int? HueIndex => null;
     public double X => First;
     public double Y => Second;
@@ -20,4 +19,9 @@ public record Xyz : ColourRepresentation
     protected override string SecondString => $"{Y:F4}";
     protected override string ThirdString => $"{Z:F4}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * XYZ is considered the root colour representation (in terms of Unicolour implementation)
+     * so does not contain any forward (from another space) or reverse (back to original space) functions
+     */
 }

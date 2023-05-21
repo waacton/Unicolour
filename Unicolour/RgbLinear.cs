@@ -2,7 +2,6 @@
 
 public record RgbLinear : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.RgbLinear;
     protected override int? HueIndex => null;
     public double R => First;
     public double G => Second;
@@ -22,4 +21,11 @@ public record RgbLinear : ColourRepresentation
     protected override string SecondString => $"{G:F2}";
     protected override string ThirdString => $"{B:F2}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * if I implement Unicolour.FromRgbLinear(), will need to rethink the workflow a bit, where:
+     * RGB-LINEAR is a transform of XYZ
+     * RGB is a transform of RGB-LINEAR
+     * (though with the aim of keeping RgbLinear a 'subspace' under Rgb)
+     */
 }

@@ -1,7 +1,7 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using NUnit.Framework;
 using System;
+using NUnit.Framework;
 
 public static class HueOverrideTests
 {

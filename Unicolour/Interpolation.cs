@@ -20,12 +20,12 @@ public static class Interpolation
     public static Unicolour InterpolateOklab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklab, start, end, distance);
     public static Unicolour InterpolateOklch(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklch, start, end, distance);
 
-    private static Unicolour Interpolate(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
+    internal static Unicolour Interpolate(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);
         
-        var startRepresentation = startColour.Representation(colourSpace);
-        var endRepresentation = endColour.Representation(colourSpace);
+        var startRepresentation = startColour.GetRepresentation(colourSpace);
+        var endRepresentation = endColour.GetRepresentation(colourSpace);
         
         var (start, end) = GetTriplets(startRepresentation, endRepresentation);
         var triplet = InterpolateTriplet(start, end, distance).WithHueModulo();

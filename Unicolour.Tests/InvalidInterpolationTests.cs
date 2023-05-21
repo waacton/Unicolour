@@ -2,8 +2,8 @@ namespace Wacton.Unicolour.Tests;
 
 using System;
 using System.Reflection;
-using NUnit.Framework.Constraints;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 public class InvalidInterpolationTests
 {
@@ -16,10 +16,7 @@ public class InvalidInterpolationTests
     [Test]
     public void InvalidInterpolationInput()
     {
-        const string methodName = "Interpolate";
-        var types = new[] { typeof(ColourSpace), typeof(Unicolour), typeof(Unicolour), typeof(double) };
-        AssertDoesNotThrow(() => InvokeMethod(methodName, types, GoodColourSpace, unicolour1, unicolour2, 0.5));
-        AssertThrows<InvalidOperationException>(() => InvokeMethod(methodName, types, BadColourSpace, unicolour1, unicolour2, 0.5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Interpolate(BadColourSpace, unicolour1, unicolour2, 0.5));
     }
 
     [Test] 

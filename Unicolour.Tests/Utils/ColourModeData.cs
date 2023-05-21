@@ -12,13 +12,11 @@ internal class ColourModeData
     
     internal ColourModeData(Unicolour unicolour)
     {
-        var rgbSubRepresentations = new ColourRepresentation[] {unicolour.Rgb.Linear, unicolour.Rgb.Byte255};
-        var all = unicolour.AllRepresentations.Concat(rgbSubRepresentations).ToList();
-        
-        modes = all.ToDictionary(x => x.ColourSpace, x => x.ColourMode);
-        greyscale = all.ToDictionary(x => x.ColourSpace, x => x.IsEffectivelyGreyscale);
-        hued = all.ToDictionary(x => x.ColourSpace, x => x.IsEffectivelyHued);
-        nan = all.ToDictionary(x => x.ColourSpace, x => x.IsEffectivelyNaN);
+        var all = AssertUtils.AllColourSpaces.ToDictionary(x => x, unicolour.GetRepresentation);
+        modes = all.ToDictionary(x => x.Key, x => x.Value.ColourMode);
+        greyscale = all.ToDictionary(x => x.Key, x => x.Value.IsEffectivelyGreyscale);
+        hued = all.ToDictionary(x => x.Key, x => x.Value.IsEffectivelyHued);
+        nan = all.ToDictionary(x => x.Key, x => x.Value.IsEffectivelyNaN);
     }
 
     public List<ColourMode> Modes(List<ColourSpace> spaces) => Filter(modes, spaces);

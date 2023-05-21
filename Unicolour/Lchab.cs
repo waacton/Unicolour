@@ -1,8 +1,9 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Utils;
+
 public record Lchab : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Lchab;
     protected override int? HueIndex => 2;
     public double L => First;
     public double C => Second;
@@ -18,4 +19,22 @@ public record Lchab : ColourRepresentation
     protected override string SecondString => $"{C:F2}";
     protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
+    
+    /*
+     * LCHAB is a transform of LAB 
+     * Forward: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     * Reverse: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     */
+    
+    internal static Lchab FromLab(Lab lab)
+    {
+        var (l, c, h) = ToLchTriplet(lab.L, lab.A, lab.B);
+        return new Lchab(l, c, h, ColourMode.FromRepresentation(lab));
+    }
+    
+    internal static Lab ToLab(Lchab lchab)
+    {
+        var (l, a, b) = FromLchTriplet(lchab.ConstrainedTriplet);
+        return new Lab(l, a, b, ColourMode.FromRepresentation(lchab));
+    }
 }

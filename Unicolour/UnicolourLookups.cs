@@ -4,59 +4,84 @@ internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab
 
 public partial class Unicolour
 {
-    internal IEnumerable<ColourRepresentation> AllRepresentations => new List<ColourRepresentation>
-        {Rgb, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch};
-
-    internal ColourRepresentation Representation(ColourSpace colourSpace) => AllRepresentations.Single(x => x.ColourSpace == colourSpace);
-    internal ColourRepresentation InitialRepresentation() => Representation(initialColourSpace);
-    
-    private void SetInitialRepresentation(ColourRepresentation colourRepresentation)
+    /*
+     * ColourSpace information needs to be held outwith ColourRepresentation object
+     * otherwise the ColourRepresentation needs to be evaluated just to obtain the ColourSpace it represents
+     */
+    private static ColourSpace GetSpace<T>(T representation) where T : ColourRepresentation => TypeToSpace[representation.GetType()];
+    private static readonly Dictionary<Type, ColourSpace> TypeToSpace = new()
     {
-        switch (colourRepresentation)
+        { typeof(Rgb), ColourSpace.Rgb },
+        { typeof(RgbLinear), ColourSpace.RgbLinear },
+        { typeof(Rgb255), ColourSpace.Rgb255 },
+        { typeof(Hsb), ColourSpace.Hsb },
+        { typeof(Hsl), ColourSpace.Hsl },
+        { typeof(Hwb), ColourSpace.Hwb },
+        { typeof(Xyz), ColourSpace.Xyz },
+        { typeof(Xyy), ColourSpace.Xyy },
+        { typeof(Lab), ColourSpace.Lab },
+        { typeof(Lchab), ColourSpace.Lchab },
+        { typeof(Luv), ColourSpace.Luv },
+        { typeof(Lchuv), ColourSpace.Lchuv },
+        { typeof(Hsluv), ColourSpace.Hsluv },
+        { typeof(Hpluv), ColourSpace.Hpluv },
+        { typeof(Ictcp), ColourSpace.Ictcp },
+        { typeof(Jzazbz), ColourSpace.Jzazbz },
+        { typeof(Jzczhz), ColourSpace.Jzczhz },
+        { typeof(Oklab), ColourSpace.Oklab },
+        { typeof(Oklch), ColourSpace.Oklch }
+    };
+
+    internal List<ColourRepresentation> GetRepresentations(List<ColourSpace> colourSpaces) => colourSpaces.Select(GetRepresentation).ToList();
+    internal ColourRepresentation GetRepresentation(ColourSpace colourSpace)
+    {
+        return colourSpace switch
         {
-            case Rgb rgbColour: rgb = rgbColour; break;
-            case Hsb hsbColour: hsb = hsbColour; break;
-            case Hsl hslColour: hsl = hslColour; break;
-            case Hwb hwbColour: hwb = hwbColour; break;
-            case Xyz xyzColour: xyz = xyzColour; break;
-            case Xyy xyyColour: xyy = xyyColour; break;
-            case Lab labColour: lab = labColour; break;
-            case Lchab lchabColour: lchab = lchabColour; break;
-            case Luv luvColour: luv = luvColour; break;
-            case Lchuv lchuvColour: lchuv = lchuvColour; break;
-            case Hsluv hsluvColour: hsluv = hsluvColour; break;
-            case Hpluv hpluvColour: hpluv = hpluvColour; break;
-            case Ictcp ictcpColour: ictcp = ictcpColour; break;
-            case Jzazbz jzazbzColour: jzazbz = jzazbzColour; break;
-            case Jzczhz jzczhzColour: jzczhz = jzczhzColour; break;
-            case Oklab oklabColour: oklab = oklabColour; break;
-            case Oklch oklchColour: oklch = oklchColour; break;
-            default: throw new ArgumentOutOfRangeException(nameof(colourRepresentation));
-        }
+            ColourSpace.Rgb => Rgb,
+            ColourSpace.RgbLinear => Rgb.Linear,
+            ColourSpace.Rgb255 => Rgb.Byte255,
+            ColourSpace.Hsb => Hsb,
+            ColourSpace.Hsl => Hsl,
+            ColourSpace.Hwb => Hwb,
+            ColourSpace.Xyz => Xyz,
+            ColourSpace.Xyy => Xyy,
+            ColourSpace.Lab => Lab,
+            ColourSpace.Lchab => Lchab,
+            ColourSpace.Luv => Luv,
+            ColourSpace.Lchuv => Lchuv,
+            ColourSpace.Hsluv => Hsluv,
+            ColourSpace.Hpluv => Hpluv,
+            ColourSpace.Ictcp => Ictcp,
+            ColourSpace.Jzazbz => Jzazbz,
+            ColourSpace.Jzczhz => Jzczhz,
+            ColourSpace.Oklab => Oklab,
+            ColourSpace.Oklch => Oklch,
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
+        };
     }
-    
+
     /*
      * getting a value will trigger a chain of gets and conversions if the intermediary values have not been calculated yet
      * e.g. if Unicolour is created from RGB, and the first request is for LAB:
-     * - Get(ColourSpace.Lab); lab is null, execute: lab = Conversion.XyzToLab(Xyz, Config)
-     * - Get(ColourSpace.Xyz); xyz is null, execute: xyz = Conversion.RgbToXyz(Rgb, Config)
+     * - Get(ColourSpace.Lab); lab is null, execute: lab = Lab.FromXyz(Xyz, Config)
+     * - Get(ColourSpace.Xyz); xyz is null, execute: xyz = Rgb.ToXyz(Rgb, Config)
      * - Get(ColourSpace.Rgb); rgb is not null, return value
      * - xyz is evaluated from rgb and stored
      * - lab is evaluated from xyz and stored
      */
     private T Get<T>(ColourSpace targetSpace) where T : ColourRepresentation
     {
-        var colourRepresentation = GetBackingRepresentation(targetSpace);
-        if (colourRepresentation == null)
+        var backingRepresentation = GetBackingField(targetSpace);
+        if (backingRepresentation == null)
         {
-            SetBackingRepresentation(targetSpace);
-            colourRepresentation = GetBackingRepresentation(targetSpace);
+            SetBackingField(targetSpace);
+            backingRepresentation = GetBackingField(targetSpace);
         }
 
-        return (colourRepresentation as T)!;
+        return (backingRepresentation as T)!;
     }
-    
-    private ColourRepresentation? GetBackingRepresentation(ColourSpace colourSpace)
+
+    private ColourRepresentation? GetBackingField(ColourSpace colourSpace)
     {
         return colourSpace switch
         {
@@ -81,455 +106,223 @@ public partial class Unicolour
         };
     }
 
-    private void SetBackingRepresentation(ColourSpace targetSpace)
+    private void SetBackingField(ColourSpace targetSpace)
     {
-        var setValueAction = initialColourSpace switch
+        Action setField = targetSpace switch
         {
-            ColourSpace.Rgb => SetFromRgb(targetSpace),
-            ColourSpace.Hsb => SetFromHsb(targetSpace),
-            ColourSpace.Hsl => SetFromHsl(targetSpace),
-            ColourSpace.Hwb => SetFromHwb(targetSpace),
-            ColourSpace.Xyz => SetFromXyz(targetSpace),
-            ColourSpace.Xyy => SetFromXyy(targetSpace),
-            ColourSpace.Lab => SetFromLab(targetSpace),
-            ColourSpace.Lchab => SetFromLchab(targetSpace),
-            ColourSpace.Luv => SetFromLuv(targetSpace),
-            ColourSpace.Lchuv => SetFromLchuv(targetSpace),
-            ColourSpace.Hsluv => SetFromHsluv(targetSpace),
-            ColourSpace.Hpluv => SetFromHpluv(targetSpace),
-            ColourSpace.Ictcp => SetFromIctcp(targetSpace),
-            ColourSpace.Jzazbz => SetFromJzazbz(targetSpace),
-            ColourSpace.Jzczhz => SetFromJzczhz(targetSpace),
-            ColourSpace.Oklab => SetFromOklab(targetSpace),
-            ColourSpace.Oklch => SetFromOklch(targetSpace),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Rgb => () => rgb = EvaluateRgb(),
+            ColourSpace.Hsb => () => hsb = EvaluateHsb(),
+            ColourSpace.Hsl => () => hsl = EvaluateHsl(),
+            ColourSpace.Hwb => () => hwb = EvaluateHwb(),
+            ColourSpace.Xyz => () => xyz = EvaluateXyz(),
+            ColourSpace.Xyy => () => xyy = EvaluateXyy(),
+            ColourSpace.Lab => () => lab = EvaluateLab(),
+            ColourSpace.Lchab => () => lchab = EvaluateLchab(),
+            ColourSpace.Luv => () => luv = EvaluateLuv(),
+            ColourSpace.Lchuv => () => lchuv = EvaluateLchuv(),
+            ColourSpace.Hsluv => () => hsluv = EvaluateHsluv(),
+            ColourSpace.Hpluv => () => hpluv = EvaluateHpluv(),
+            ColourSpace.Ictcp => () => ictcp = EvaluateIctcp(),
+            ColourSpace.Jzazbz => () => jzazbz = EvaluateJzazbz(),
+            ColourSpace.Jzczhz => () => jzczhz = EvaluateJzczhz(),
+            ColourSpace.Oklab => () => oklab = EvaluateOklab(),
+            ColourSpace.Oklch => () => oklch = EvaluateOklch(),
+            _ => throw new ArgumentOutOfRangeException(nameof(targetSpace), targetSpace, null)
         };
-        
-        setValueAction();
+
+        setField();
     }
     
-    private Action SetFromRgb(ColourSpace targetSpace)
+    /*
+     * evaluation method switch expressions are arranged as follows:
+     * - first item     = target space is the initial space, simply return initial representation
+     * - middle items   = reverse transforms to the target space; only the immediate transforms (e.g. RGB <- HSB <- HSL)
+     * - default item   = forward transform from a base space
+     * -----------------
+     * for reverse transforms, only consider the immediate transforms
+     * e.g. target RGB + initial HSL has transforms RGB <- HSB <- HSL
+     * but only need RGB <- HSB as HSB <- HSL is handled separately (target HSB + initial HSL)
+     */
+
+    private Rgb EvaluateRgb()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            // ColourSpace.Rgb => () => { },
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.RgbToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
+            ColourSpace.Rgb => (InitialRepresentation as Rgb)!,
+            ColourSpace.Hsb => Hsb.ToRgb(Hsb, Config.Rgb),
+            ColourSpace.Hsl => Hsb.ToRgb(Hsb, Config.Rgb),
+            ColourSpace.Hwb => Hsb.ToRgb(Hsb, Config.Rgb),
+            _ => Rgb.FromXyz(Xyz, Config.Rgb, Config.Xyz)
+        };
+    }
+
+    private Hsb EvaluateHsb()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Hsb => (InitialRepresentation as Hsb)!,
+            ColourSpace.Hsl => Hsl.ToHsb(Hsl),
+            ColourSpace.Hwb => Hwb.ToHsb(Hwb),
+            _ => Hsb.FromRgb(Rgb)
+        };
+    }
+
+    private Hsl EvaluateHsl()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Hsl => (InitialRepresentation as Hsl)!,
+            _ => Hsl.FromHsb(Hsb)
+        };
+    }
+
+    private Hwb EvaluateHwb()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Hwb => (InitialRepresentation as Hwb)!,
+            _ => Hwb.FromHsb(Hsb)
+        };
+    }
+
+    private Xyz EvaluateXyz()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Xyz => (InitialRepresentation as Xyz)!,
+            ColourSpace.Rgb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
+            ColourSpace.Hsb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
+            ColourSpace.Hsl => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
+            ColourSpace.Hwb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
+            ColourSpace.Xyy => Xyy.ToXyz(Xyy),
+            ColourSpace.Lab => Lab.ToXyz(Lab, Config.Xyz),
+            ColourSpace.Lchab => Lab.ToXyz(Lab, Config.Xyz),
+            ColourSpace.Luv => Luv.ToXyz(Luv, Config.Xyz),
+            ColourSpace.Lchuv => Luv.ToXyz(Luv, Config.Xyz),
+            ColourSpace.Hsluv => Luv.ToXyz(Luv, Config.Xyz),
+            ColourSpace.Hpluv => Luv.ToXyz(Luv, Config.Xyz),
+            ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.Xyz, Config.IctcpScalar),
+            ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
+            ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
+            ColourSpace.Oklab => Oklab.ToXyz(Oklab, Config.Xyz),
+            ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    private Action SetFromHsb(ColourSpace targetSpace)
+    private Xyy EvaluateXyy()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.HsbToRgb(Hsb, Config.Rgb),
-            // ColourSpace.Hsb => () => { },
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.RgbToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Xyy => (InitialRepresentation as Xyy)!,
+            _ => Xyy.FromXyz(Xyz, Config.Xyz)
         };
     }
-    
-    private Action SetFromHsl(ColourSpace targetSpace)
+
+    private Lab EvaluateLab()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.HsbToRgb(Hsb, Config.Rgb),
-            ColourSpace.Hsb => () => hsb = Conversion.HslToHsb(Hsl),
-            // ColourSpace.Hsl => () => { },
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.RgbToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Lab => (InitialRepresentation as Lab)!,
+            ColourSpace.Lchab => Lchab.ToLab(Lchab),
+            _ => Lab.FromXyz(Xyz, Config.Xyz)
         };
     }
-    
-    private Action SetFromHwb(ColourSpace targetSpace)
+
+    private Lchab EvaluateLchab()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.HsbToRgb(Hsb, Config.Rgb),
-            ColourSpace.Hsb => () => hsb = Conversion.HwbToHsb(Hwb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            // ColourSpace.Hwb => () => { },
-            ColourSpace.Xyz => () => xyz = Conversion.RgbToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Lchab => (InitialRepresentation as Lchab)!,
+            _ => Lchab.FromLab(Lab)
         };
     }
-    
-    private Action SetFromXyz(ColourSpace targetSpace)
+
+    private Luv EvaluateLuv()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            // ColourSpace.Xyz => () => { },
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Luv => (InitialRepresentation as Luv)!,
+            ColourSpace.Lchuv => Lchuv.ToLuv(Lchuv),
+            ColourSpace.Hsluv => Lchuv.ToLuv(Lchuv),
+            ColourSpace.Hpluv => Lchuv.ToLuv(Lchuv),
+            _ => Luv.FromXyz(Xyz, Config.Xyz)
         };
     }
-    
-    private Action SetFromXyy(ColourSpace targetSpace)
+
+    private Lchuv EvaluateLchuv()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.XyyToXyz(Xyy),
-            // ColourSpace.Xyy => () => { },
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Lchuv => (InitialRepresentation as Lchuv)!,
+            ColourSpace.Hsluv => Hsluv.ToLchuv(Hsluv),
+            ColourSpace.Hpluv => Hpluv.ToLchuv(Hpluv),
+            _ => Lchuv.FromLuv(Luv)
         };
     }
-    
-    private Action SetFromLab(ColourSpace targetSpace)
+
+    private Hsluv EvaluateHsluv()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LabToXyz(Lab, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            // ColourSpace.Lab => () => { },
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Hsluv => (InitialRepresentation as Hsluv)!,
+            _ => Hsluv.FromLchuv(Lchuv)
         };
     }
-    
-    private Action SetFromLchab(ColourSpace targetSpace)
+
+    private Hpluv EvaluateHpluv()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LabToXyz(Lab, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.LchabToLab(Lchab),
-            // ColourSpace.Lchab => () => { },
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Hpluv => (InitialRepresentation as Hpluv)!,
+            _ => Hpluv.FromLchuv(Lchuv)
         };
     }
-    
-    private Action SetFromLuv(ColourSpace targetSpace)
+
+    private Ictcp EvaluateIctcp()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LuvToXyz(Luv, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            // ColourSpace.Luv => () => { },
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Ictcp => (InitialRepresentation as Ictcp)!,
+            _ => Ictcp.FromXyz(Xyz, Config.Xyz, Config.IctcpScalar)
         };
     }
-    
-    private Action SetFromLchuv(ColourSpace targetSpace)
+
+    private Jzazbz EvaluateJzazbz()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LuvToXyz(Luv, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.LchuvToLuv(Lchuv),
-            // ColourSpace.Lchuv => () => { },
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Jzazbz => (InitialRepresentation as Jzazbz)!,
+            ColourSpace.Jzczhz => Jzczhz.ToJzazbz(Jzczhz),
+            _ => Jzazbz.FromXyz(Xyz, Config.Xyz, Config.JzazbzScalar)
         };
     }
-    
-    private Action SetFromHsluv(ColourSpace targetSpace)
+
+    private Jzczhz EvaluateJzczhz()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LuvToXyz(Luv, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.LchuvToLuv(Lchuv),
-            ColourSpace.Lchuv => () => lchuv = Conversion.HsluvToLchuv(Hsluv),
-            // ColourSpace.Hsluv => () => { },
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Jzczhz => (InitialRepresentation as Jzczhz)!,
+            _ => Jzczhz.FromJzazbz(Jzazbz)
         };
     }
-    
-    private Action SetFromHpluv(ColourSpace targetSpace)
+
+    private Oklab EvaluateOklab()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.LuvToXyz(Luv, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.LchuvToLuv(Lchuv),
-            ColourSpace.Lchuv => () => lchuv = Conversion.HpluvToLchuv(Hpluv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            // ColourSpace.Hpluv => () => { },
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Oklab => (InitialRepresentation as Oklab)!,
+            ColourSpace.Oklch => Oklch.ToOklab(Oklch),
+            _ => Oklab.FromXyz(Xyz, Config.Xyz)
         };
     }
-    
-    private Action SetFromIctcp(ColourSpace targetSpace)
+
+    private Oklch EvaluateOklch()
     {
-        return targetSpace switch
+        return InitialColourSpace switch
         {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.IctcpToXyz(Ictcp, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            // ColourSpace.Ictcp => () => { },
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-    
-    private Action SetFromJzazbz(ColourSpace targetSpace)
-    {
-        return targetSpace switch
-        {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.JzazbzToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            // ColourSpace.Jzazbz => () => { },
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-    
-    private Action SetFromJzczhz(ColourSpace targetSpace)
-    {
-        return targetSpace switch
-        {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.JzazbzToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.JzczhzToJzazbz(Jzczhz),
-            // ColourSpace.Jzczhz => () => { },
-            ColourSpace.Oklab => () => oklab = Conversion.XyzToOklab(Xyz, Config.Xyz),
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-    
-    private Action SetFromOklab(ColourSpace targetSpace)
-    {
-        return targetSpace switch
-        {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.OklabToXyz(Oklab, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            // ColourSpace.Oklab => () => { },
-            ColourSpace.Oklch => () => oklch = Conversion.OklabToOklch(Oklab),
-            _ => throw new ArgumentOutOfRangeException()
-        };
-    }
-    
-    private Action SetFromOklch(ColourSpace targetSpace)
-    {
-        return targetSpace switch
-        {
-            ColourSpace.Rgb => () => rgb = Conversion.XyzToRgb(Xyz, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => () => hsb = Conversion.RgbToHsb(Rgb),
-            ColourSpace.Hsl => () => hsl = Conversion.HsbToHsl(Hsb),
-            ColourSpace.Hwb => () => hwb = Conversion.HsbToHwb(Hsb),
-            ColourSpace.Xyz => () => xyz = Conversion.OklabToXyz(Oklab, Config.Xyz),
-            ColourSpace.Xyy => () => xyy = Conversion.XyzToXyy(Xyz, Config.Xyz),
-            ColourSpace.Lab => () => lab = Conversion.XyzToLab(Xyz, Config.Xyz),
-            ColourSpace.Lchab => () => lchab = Conversion.LabToLchab(Lab),
-            ColourSpace.Luv => () => luv = Conversion.XyzToLuv(Xyz, Config.Xyz),
-            ColourSpace.Lchuv => () => lchuv = Conversion.LuvToLchuv(Luv),
-            ColourSpace.Hsluv => () => hsluv = Conversion.LchuvToHsluv(Lchuv),
-            ColourSpace.Hpluv => () => hpluv = Conversion.LchuvToHpluv(Lchuv),
-            ColourSpace.Ictcp => () => ictcp = Conversion.XyzToIctcp(Xyz, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => () => jzazbz = Conversion.XyzToJzazbz(Xyz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => () => jzczhz = Conversion.JzazbzToJzczhz(Jzazbz),
-            ColourSpace.Oklab => () => oklab = Conversion.OklchToOklab(Oklch),
-            // ColourSpace.Oklch => () => { },
-            _ => throw new ArgumentOutOfRangeException()
+            ColourSpace.Oklch => (InitialRepresentation as Oklch)!,
+            _ => Oklch.FromOklab(Oklab)
         };
     }
 }

@@ -2,7 +2,6 @@
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
-    private readonly ColourSpace initialColourSpace;
     private Rgb? rgb;
     private Hsb? hsb;
     private Hsl? hsl;
@@ -21,6 +20,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Oklab? oklab;
     private Oklch? oklch;
     
+    internal readonly ColourRepresentation InitialRepresentation;
+    internal readonly ColourSpace InitialColourSpace;
     public Rgb Rgb => Get<Rgb>(ColourSpace.Rgb);
     public Hsb Hsb => Get<Hsb>(ColourSpace.Hsb);
     public Hsl Hsl => Get<Hsl>(ColourSpace.Hsl);
@@ -46,12 +47,13 @@ public partial class Unicolour : IEquatable<Unicolour>
     public double RelativeLuminance => this.RelativeLuminance();
     public string Description => string.Join(" ", this.Description());
     
-    private Unicolour(Configuration config, ColourRepresentation initialColourRepresentation, Alpha alpha)
+    private Unicolour(Configuration config, ColourRepresentation initialRepresentation, Alpha alpha)
     {
         Config = config;
         Alpha = alpha;
-        SetInitialRepresentation(initialColourRepresentation);
-        initialColourSpace = initialColourRepresentation.ColourSpace;
+        InitialRepresentation = initialRepresentation;
+        InitialColourSpace = GetSpace(InitialRepresentation);
+        SetBackingField(InitialColourSpace);
     }
 
     public Unicolour ConvertToConfiguration(Configuration newConfig)
@@ -63,7 +65,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {initialColourSpace} {InitialRepresentation()}, alpha {Alpha.A}" };
+        var parts = new List<string> { $"from {InitialColourSpace} {InitialRepresentation}, alpha {Alpha.A}" };
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);
@@ -91,14 +93,14 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     private bool ColourSpaceEquals(Unicolour other)
     {
-        return InitialRepresentation().Equals(other.InitialRepresentation());
+        return InitialRepresentation.Equals(other.InitialRepresentation);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            return (InitialRepresentation().GetHashCode() * 397) ^ Alpha.GetHashCode();
+            return (InitialRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
         }
     }
 }

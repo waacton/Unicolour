@@ -1,11 +1,14 @@
 ﻿namespace Wacton.Unicolour.Tests.Utils;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
 internal static class AssertUtils
 {
+    public static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
+        
     public const double InterpolationTolerance = 0.00000000005;
 
     public static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
@@ -19,7 +22,7 @@ internal static class AssertUtils
 
     public static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
-        var colourRepresentation = unicolour.AllRepresentations.Single(x => x is T);
+        var colourRepresentation = unicolour.GetRepresentations(AllColourSpaces).Single(x => x is T);
         AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
     }
 

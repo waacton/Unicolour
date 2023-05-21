@@ -7,6 +7,8 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class OtherLibraryTests
 {
+    private const bool PrintExclusions = true;
+
     private static readonly ITestColourFactory OpenCvFactory = new OpenCvFactory();
     private static readonly ITestColourFactory ColourfulFactory = new ColourfulFactory();
     private static readonly ITestColourFactory ColorMineFactory = new ColorMineFactory();
@@ -191,8 +193,7 @@ public class OtherLibraryTests
         
         if (testColour.ExcludeFromAllTests)
         {
-            var reasons = string.Join(", ", testColour.ExcludeFromAllTestReasons);
-            Console.WriteLine($"Excluded test colour {colourName} -> all colour spaces because: {reasons}");
+            PrintExclusion(colourName, "all colour spaces", string.Join(", ", testColour.ExcludeFromAllTestReasons));
             return;
         }
 
@@ -206,8 +207,7 @@ public class OtherLibraryTests
         
         if (testColour.ExcludeFromXyyTests)
         {
-            var reasons = string.Join(", ", testColour.ExcludeFromXyyTestReasons);
-            Console.WriteLine($"Excluded test colour {colourName} -> xyY because: {reasons}");
+            PrintExclusion(colourName, "xyY", string.Join(", ", testColour.ExcludeFromXyyTestReasons));
         }
         else
         {
@@ -216,8 +216,7 @@ public class OtherLibraryTests
 
         if (testColour.ExcludeFromHsxTests)
         {
-            var reasons = string.Join(", ", testColour.ExcludeFromHsxTestReasons);
-            Console.WriteLine($"Excluded test colour {colourName} -> HSB/HSL because: {reasons}");
+            PrintExclusion(colourName, "HSB/HSL", string.Join(", ", testColour.ExcludeFromHsxTestReasons));
         }
         else
         {
@@ -227,8 +226,7 @@ public class OtherLibraryTests
         
         if (testColour.ExcludeFromLchTests)
         {
-            var reasons = string.Join(", ", testColour.ExcludeFromLchTestReasons);
-            Console.WriteLine($"Excluded test colour {colourName} -> LCH because: {reasons}");
+            PrintExclusion(colourName, "LCH", string.Join(", ", testColour.ExcludeFromLchTestReasons));
         }
         else
         {
@@ -236,10 +234,16 @@ public class OtherLibraryTests
             AssertTriplet(unicolour.Lchuv.ConstrainedTriplet, testColour.Lchuv, tolerances.Lchuv, $"{colourName} -> LCHuv");
         }
     }
-    
+
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet? expected, double tolerance, string info)
     {
         if (expected == null) return;
         AssertUtils.AssertTriplet(actual, expected, tolerance, info);
+    }
+
+    private static void PrintExclusion(string colourName, string excludedTestName, string reasons)
+    {
+        if (!PrintExclusions) return;
+        Console.WriteLine($"Excluded test colour {colourName} -> {excludedTestName}, because: {reasons}");
     }
 }

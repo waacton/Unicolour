@@ -37,7 +37,7 @@ public static class OklabTests
     private static void AssertFromXyzD65(ColourTriplet xyz, ColourTriplet expectedOklab)
     {
         var (x, y, z) = xyz;
-        var oklab = Conversion.XyzToOklab(new Xyz(x, y, z), XyzConfiguration.D65);
+        var oklab = Oklab.FromXyz(new Xyz(x, y, z), XyzConfiguration.D65);
         AssertOklab(oklab, expectedOklab);
     }
 

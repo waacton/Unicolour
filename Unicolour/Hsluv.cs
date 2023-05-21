@@ -2,7 +2,6 @@
 
 public record Hsluv : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Hsluv;
     protected override int? HueIndex => 0;
     public double H => First;
     public double S => Second;
@@ -22,4 +21,68 @@ public record Hsluv : ColourRepresentation
     protected override string SecondString => $"{S:F1}%";
     protected override string ThirdString => $"{L:F1}%";
     public override string ToString() => base.ToString();
+    
+    /*
+     * HSLUV is a transform of LCHUV 
+     * Forward: https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L363
+     * Reverse: https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L346
+     */
+    
+    internal static Hsluv FromLchuv(Lchuv lchuv)
+    {
+        var (lchLightness, chroma, hue) = lchuv.ConstrainedTriplet;
+        double saturation;
+        double lightness;
+
+        switch (lchLightness)
+        {
+            case > 99.9999999:
+                saturation = 0.0;
+                lightness = 100.0;
+                break;
+            case < 0.00000001:
+                saturation = 0.0;
+                lightness = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(lchLightness, hue);
+                saturation = chroma / maxChroma * 100;
+                lightness = lchLightness;
+                break;
+            }
+        }
+        
+        return new Hsluv(hue, saturation, lightness, ColourMode.FromRepresentation(lchuv));
+    }
+    
+    internal static Lchuv ToLchuv(Hsluv hsluv)
+    {
+        var hue = hsluv.ConstrainedH;
+        var saturation = hsluv.S;
+        var hslLightness = hsluv.L;
+        double lightness;
+        double chroma;
+
+        switch (hslLightness)
+        {
+            case > 99.9999999:
+                lightness = 100.0;
+                chroma = 0.0;
+                break;
+            case < 0.00000001:
+                lightness = 0.0;
+                chroma = 0.0;
+                break;
+            default:
+            {
+                var maxChroma = Lines.CalculateMaxChroma(hslLightness, hue);
+                chroma = maxChroma / 100 * saturation;
+                lightness = hslLightness;
+                break;
+            }
+        }
+        
+        return new Lchuv(lightness, chroma, hue, ColourMode.FromRepresentation(hsluv));
+    }
 }

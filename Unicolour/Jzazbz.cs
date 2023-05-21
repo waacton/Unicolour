@@ -2,7 +2,6 @@
 
 public record Jzazbz : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Jzazbz;
     protected override int? HueIndex => null;
     public double J => First;
     public double A => Second;
@@ -19,4 +18,64 @@ public record Jzazbz : ColourRepresentation
     protected override string SecondString => $"{A:+0.000;-0.000;0.000}";
     protected override string ThirdString => $"{B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * JZAZBZ is a transform of XYZ 
+     * Forward: https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+     * Reverse: https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+     * -------
+     * also useful: https://opticapublishing.figshare.com/articles/software/JzAzBz_m/5016299
+     */
+    
+    // ReSharper disable InconsistentNaming
+    private const double b = 1.15;
+    private const double g = 0.66;
+    private const double d = -0.56;
+    private const double d0 = 1.6295499532821566e-11;
+    // ReSharper restore InconsistentNaming
+    
+    internal static Jzazbz FromXyz(Xyz xyz, XyzConfiguration xyzConfig, double jzazbzScalar)
+    {
+        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
+        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65ScaledMatrix = d65Matrix.Scalar(x => Math.Max(x * jzazbzScalar, 0));
+        var x65 = d65ScaledMatrix[0, 0];
+        var y65 = d65ScaledMatrix[1, 0];
+        var z65 = d65ScaledMatrix[2, 0];
+        
+        var x65Prime = b * x65 - (b - 1) * z65;
+        var y65Prime = g * y65 - (g - 1) * x65;
+        var xyz65PrimeMatrix = Matrix.FromTriplet(new(x65Prime, y65Prime, z65));
+        var lmsMatrix = Matrices.JzazbzM1.Multiply(xyz65PrimeMatrix);
+        var lmsPrimeMatrix = lmsMatrix.Scalar(Pq.Jzazbz.InverseEotf);
+        var izazbzMatrix = Matrices.JzazbzM2.Multiply(lmsPrimeMatrix);
+        
+        var iz = izazbzMatrix[0, 0];
+        var az = izazbzMatrix[1, 0];
+        var bz = izazbzMatrix[2, 0];
+        var jz = (1 + d) * iz / (1 + d * iz) - d0;
+        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(xyz));
+    }
+    
+    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    internal static Xyz ToXyz(Jzazbz jzazbz, XyzConfiguration xyzConfig, double jzazbzScalar)
+    {
+        var (jz, az, bz) = jzazbz.Triplet;
+        var iz = (jz + d0) / (1 + d - d * (jz + d0));
+        var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
+        var lmsPrimeMatrix = Matrices.JzazbzM2.Inverse().Multiply(izazbzMatrix);
+        var lmsMatrix = lmsPrimeMatrix.Scalar(Pq.Jzazbz.Eotf);
+        var xyz65PrimeMatrix = Matrices.JzazbzM1.Inverse().Multiply(lmsMatrix);
+        var x65Prime = xyz65PrimeMatrix[0, 0];
+        var y65Prime = xyz65PrimeMatrix[1, 0];
+        var z65Prime = xyz65PrimeMatrix[2, 0];
+        
+        var x65 = (x65Prime + (b - 1) * z65Prime) / b;
+        var y65 = (y65Prime + (g - 1) * x65) / g;
+        var z65 = z65Prime;
+        var d65ScaledMatrix = Matrix.FromTriplet(new(x65, y65, z65));
+        var d65Matrix = d65ScaledMatrix.Scalar(x => x / jzazbzScalar);
+        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(jzazbz));
+    }
 }

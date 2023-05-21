@@ -5,7 +5,6 @@ public abstract record ColourRepresentation
     protected readonly double First;
     protected readonly double Second;
     protected readonly double Third;
-    internal abstract ColourSpace ColourSpace { get; }
     protected abstract int? HueIndex { get; }
     internal bool HasHueAxis => HueIndex != null;
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);

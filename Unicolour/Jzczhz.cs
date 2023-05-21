@@ -1,8 +1,9 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Utils;
+
 public record Jzczhz : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Jzczhz;
     protected override int? HueIndex => 2;
     public double J => First;
     public double C => Second;
@@ -21,4 +22,22 @@ public record Jzczhz : ColourRepresentation
     protected override string SecondString => $"{C:F3}";
     protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
+    
+    /*
+     * JZCZHZ is a transform of JZAZBZ 
+     * Forward: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     * Reverse: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     */
+    
+    internal static Jzczhz FromJzazbz(Jzazbz jzazbz)
+    {
+        var (jz, cz, hz) = ToLchTriplet(jzazbz.J, jzazbz.A, jzazbz.B);
+        return new Jzczhz(jz, cz, hz, ColourMode.FromRepresentation(jzazbz));
+    }
+    
+    internal static Jzazbz ToJzazbz(Jzczhz jzczhz)
+    {
+        var (jz, az, bz) = FromLchTriplet(jzczhz.ConstrainedTriplet);
+        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(jzczhz));
+    }
 }

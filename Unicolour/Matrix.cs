@@ -78,7 +78,7 @@ internal class Matrix
         return new Matrix(inverse);
     }
     
-    public Matrix Select(Func<double, double> operation)
+    public Matrix Scalar(Func<double, double> operation)
     {
         var result = new double[Rows, Cols];
         for (var row = 0; row < Rows; row++)

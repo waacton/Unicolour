@@ -1,8 +1,9 @@
 ﻿namespace Wacton.Unicolour;
 
+using static Utils;
+
 public record Lchuv : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Lchuv;
     protected override int? HueIndex => 2;
     public double L => First;
     public double C => Second;
@@ -18,4 +19,22 @@ public record Lchuv : ColourRepresentation
     protected override string SecondString => $"{C:F2}";
     protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
+    
+    /*
+     * LCHUV is a transform of LUV 
+     * Forward: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     * Reverse: https://en.wikipedia.org/wiki/CIELAB_color_space#CIEHLC_cylindrical_model
+     */
+    
+    internal static Lchuv FromLuv(Luv luv)
+    {
+        var (l, c, h) = ToLchTriplet(luv.L, luv.U, luv.V);
+        return new Lchuv(l, c, h, ColourMode.FromRepresentation(luv));
+    }
+    
+    internal static Luv ToLuv(Lchuv lchuv)
+    {
+        var (l, u, v) = FromLchTriplet(lchuv.ConstrainedTriplet);
+        return new Luv(l, u, v, ColourMode.FromRepresentation(lchuv));
+    }
 }

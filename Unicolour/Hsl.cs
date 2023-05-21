@@ -2,7 +2,6 @@
 
 public record Hsl : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Hsl;
     protected override int? HueIndex => 0;
     public double H => First;
     public double S => Second;
@@ -22,4 +21,32 @@ public record Hsl : ColourRepresentation
     protected override string SecondString => $"{S * 100:F1}%";
     protected override string ThirdString => $"{L * 100:F1}%";
     public override string ToString() => base.ToString();
+    
+    /*
+     * HSL is a transform of HSB (in terms of Unicolour implementation)
+     * Forward: https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_HSL
+     * Reverse: https://en.wikipedia.org/wiki/HSL_and_HSV#HSL_to_HSV
+     */
+    
+    internal static Hsl FromHsb(Hsb hsb)
+    {
+        var (hue, hsbSaturation, brightness) = hsb.ConstrainedTriplet;
+        var lightness = brightness * (1 - hsbSaturation / 2);
+        var saturation = lightness is > 0.0 and < 1.0
+            ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
+            : 0;
+
+        return new Hsl(hue, saturation, lightness, ColourMode.FromRepresentation(hsb));
+    }
+    
+    internal static Hsb ToHsb(Hsl hsl)
+    {
+        var (hue, hslSaturation, lightness) = hsl.ConstrainedTriplet;
+        var brightness = lightness + hslSaturation * Math.Min(lightness, 1 - lightness);
+        var saturation = brightness > 0.0
+            ? 2 * (1 - lightness / brightness)
+            : 0;
+
+        return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hsl));
+    }
 }

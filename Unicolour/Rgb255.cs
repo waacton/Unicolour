@@ -2,7 +2,6 @@
 
 public record Rgb255 : ColourRepresentation
 {
-    internal override ColourSpace ColourSpace => ColourSpace.Rgb255;
     protected override int? HueIndex => null;
     public int R => (int) First;
     public int G => (int) Second;
@@ -22,4 +21,12 @@ public record Rgb255 : ColourRepresentation
     protected override string SecondString => $"{G}";
     protected override string ThirdString => $"{B}";
     public override string ToString() => base.ToString();
+    
+    /*
+     * will look into moving RGB <-> RGB-255 transform here
+     * if I ever need to refactor RGB-LINEAR (see the comment there for details)
+     * would result in something like:
+     * RGB is a transform of RGB-LINEAR
+     * RGB-255 is a transform of RGB
+     */
 }

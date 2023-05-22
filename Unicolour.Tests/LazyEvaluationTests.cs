@@ -18,7 +18,7 @@ public static class LazyEvaluationTests
             .Select(x => x.ToString().ToLower())
             .ToList();
 
-    private static readonly List<TestCaseData> UnicolourTestCases = new()
+    private static readonly List<TestCaseData> TestCases = new()
     {
         new TestCaseData(RandomColours.UnicolourFromRgb).SetName("Rgb"),
         new TestCaseData(RandomColours.UnicolourFromHsb).SetName("Hsb"),
@@ -39,14 +39,14 @@ public static class LazyEvaluationTests
         new TestCaseData(RandomColours.UnicolourFromOklch).SetName("Oklch")
     };
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void InitialUnicolour(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterEquality(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -55,7 +55,7 @@ public static class LazyEvaluationTests
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterInterpolation(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -65,7 +65,7 @@ public static class LazyEvaluationTests
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterHex(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -73,7 +73,7 @@ public static class LazyEvaluationTests
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterIsDisplayable(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -81,7 +81,7 @@ public static class LazyEvaluationTests
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterRelativeLuminance(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -89,7 +89,7 @@ public static class LazyEvaluationTests
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterDescription(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
@@ -97,7 +97,7 @@ public static class LazyEvaluationTests
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Hsl);
     }
     
-    [TestCaseSource(nameof(UnicolourTestCases))]
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterConfigurationConversion(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();

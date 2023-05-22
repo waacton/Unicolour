@@ -6,6 +6,7 @@ public static class HungBerns
     private static readonly Xyz WhiteXyz = Xyy.ToXyz(WhiteXyy);
     private static readonly XyzConfiguration XyzConfig = new(new WhitePoint(WhiteXyz.X * 100, WhiteXyz.Y * 100, WhiteXyz.Z * 100));
     private static readonly Configuration Config = new(RgbConfiguration.StandardRgb, XyzConfig);
+    public static readonly Unicolour White = Unicolour.FromXyy(Config, WhiteXyy.Triplet.Tuple);
     
     public static readonly Unicolour Red25 = Unicolour.FromXyz(Config, 0.3603, 0.309, 0.2448);
     public static readonly Unicolour Red50 = Unicolour.FromXyz(Config, 0.4195, 0.309, 0.1528);
@@ -55,7 +56,6 @@ public static class HungBerns
     public static readonly Unicolour MagentaRed50 = Unicolour.FromXyz(Config, 0.4923, 0.3553, 0.5121);
     public static readonly Unicolour MagentaRed75 = Unicolour.FromXyz(Config, 0.5677, 0.3553, 0.5313);
     public static readonly Unicolour MagentaRedRef = Unicolour.FromXyz(Config, 0.6436, 0.3553, 0.5366);
-    public static readonly Unicolour White = Unicolour.FromXyy(Config, WhiteXyy.Triplet.Tuple);
 
     public static readonly List<Unicolour> AllRed = new() { Red25, Red50, Red75, RedRef };
     public static readonly List<Unicolour> AllRedYellow = new() { RedYellow25, RedYellow50, RedYellow75, RedYellowRef };
@@ -69,8 +69,23 @@ public static class HungBerns
     public static readonly List<Unicolour> AllBlueMagenta = new() { BlueMagenta25, BlueMagenta50, BlueMagenta75, BlueMagentaRef };
     public static readonly List<Unicolour> AllMagenta = new() { Magenta25, Magenta50, Magenta75, MagentaRef };
     public static readonly List<Unicolour> AllMagentaRed = new() { MagentaRed25, MagentaRed50, MagentaRed75, MagentaRedRef };
+   
     public static readonly List<Unicolour> All25 = new() { Red25, RedYellow25, Yellow25, YellowGreen25, Green25, GreenCyan25, Cyan25, CyanBlue25, Blue25, BlueMagenta25, Magenta25, MagentaRed25 };
     public static readonly List<Unicolour> All50 = new() { Red50, RedYellow50, Yellow50, YellowGreen50, Green50, GreenCyan50, Cyan50, CyanBlue50, Blue50, BlueMagenta50, Magenta50, MagentaRed50 };
     public static readonly List<Unicolour> All75 = new() { Red75, RedYellow75, Yellow75, YellowGreen75, Green75, GreenCyan75, Cyan75, CyanBlue75, Blue75, BlueMagenta75, Magenta75, MagentaRed75 };
     public static readonly List<Unicolour> AllRef = new() { RedRef, RedYellowRef, YellowRef, YellowGreenRef, GreenRef, GreenCyanRef, CyanRef, CyanBlueRef, BlueRef, BlueMagentaRef, MagentaRef, MagentaRedRef };
+
+    public static IEnumerable<Unicolour> All => new List<Unicolour>()
+        .Concat(AllRed)
+        .Concat(AllRedYellow)
+        .Concat(AllYellow)
+        .Concat(AllYellowGreen)
+        .Concat(AllGreen)
+        .Concat(AllGreenCyan)
+        .Concat(AllCyan)
+        .Concat(AllCyanBlue)
+        .Concat(AllBlue)
+        .Concat(AllBlueMagenta)
+        .Concat(AllMagenta)
+        .Concat(AllMagentaRed);
 }

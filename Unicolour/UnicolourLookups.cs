@@ -139,9 +139,10 @@ public partial class Unicolour
      * - middle items   = reverse transforms to the target space; only the immediate transforms (e.g. RGB <- HSB <- HSL)
      * - default item   = forward transform from a base space
      * -----------------
-     * for reverse transforms, only consider the immediate transforms
-     * e.g. target RGB + initial HSL has transforms RGB <- HSB <- HSL
-     * but only need RGB <- HSB as HSB <- HSL is handled separately (target HSB + initial HSL)
+     * only need to consider the immediate transforms, as subsequent transforms are handled recursively
+     * e.g. if target is RGB:
+     * reverse starting at HSL = RGB <- HSB <- HSL; use RGB <- HSB [Hsb.ToRgb]
+     * forward starting at LAB = LAB -> XYZ -> RGB; use XYZ -> RGB [Rgb.FromXyz]
      */
 
     private Rgb EvaluateRgb()

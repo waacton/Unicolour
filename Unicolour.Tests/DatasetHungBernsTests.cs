@@ -3,6 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
 using static Datasets.HungBerns;
 
@@ -76,5 +77,5 @@ public class DatasetHungBernsTests
     }
     
     [Test]
-    public void All() => Assert.That(Datasets.HungBerns.All.Distinct().Count(), Is.EqualTo(48));
+    public void All() => Assert.That(HungBerns.All.Distinct().Count(), Is.EqualTo(48));
 }

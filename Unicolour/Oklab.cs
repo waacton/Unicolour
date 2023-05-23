@@ -24,24 +24,38 @@ public record Oklab : ColourRepresentation
      * Forward: https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
      * Reverse: https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
      */
-    
+
+    private static readonly Matrix M1 = new(new[,]
+    {
+        { +0.8189330101, +0.3618667424, -0.1288597137 },
+        { +0.0329845436, +0.9293118715, +0.0361456387 },
+        { +0.0482003018, +0.2643662691, +0.6338517070 }
+    });
+
+    private static readonly Matrix M2 = new(new[,]
+    {
+        { +0.2104542553, +0.7936177850, -0.0040720468 },
+        { +1.9779984951, -2.4285922050, +0.4505937099 },
+        { +0.0259040371, +0.7827717662, -0.8086757660 }
+    });
+
     internal static Oklab FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
-        var lmsMatrix = Matrices.OklabM1.Multiply(d65Matrix);
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var lmsMatrix = M1.Multiply(d65Matrix);
         var lmsNonLinearMatrix = lmsMatrix.Scalar(CubeRoot);
-        var labMatrix = Matrices.OklabM2.Multiply(lmsNonLinearMatrix);
+        var labMatrix = M2.Multiply(lmsNonLinearMatrix);
         return new Oklab(labMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
     }
     
     internal static Xyz ToXyz(Oklab oklab, XyzConfiguration xyzConfig)
     {
         var labMatrix = Matrix.FromTriplet(oklab.Triplet);
-        var lmsNonLinearMatrix = Matrices.OklabM2.Inverse().Multiply(labMatrix);
+        var lmsNonLinearMatrix = M2.Inverse().Multiply(labMatrix);
         var lmsMatrix = lmsNonLinearMatrix.Scalar(x => Math.Pow(x, 3));
-        var d65Matrix = Matrices.OklabM1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(oklab));
     }
 }

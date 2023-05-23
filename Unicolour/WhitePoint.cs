@@ -5,6 +5,7 @@ public record WhitePoint(double X, double Y, double Z)
     public double X { get; } = X;
     public double Y { get; } = Y;
     public double Z { get; } = Z;
+    internal Matrix AsXyzMatrix() => Matrix.FromTriplet(new(X, Y, Z)).Scalar(value => value / 100.0);
     public override string ToString() => $"({X}, {Y}, {Z})";
 
     public static WhitePoint StandardRgb => From(Illuminant.D65);
@@ -15,7 +16,7 @@ public record WhitePoint(double X, double Y, double Z)
     {
         return ByIlluminant[observer][illuminant];
     }
-    
+
     // as far as I'm aware, these are the latest ASTM standards
     private static readonly Dictionary<Observer, Dictionary<Illuminant, WhitePoint>> ByIlluminant = new()
     {

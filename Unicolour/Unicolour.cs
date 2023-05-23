@@ -59,7 +59,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Unicolour ConvertToConfiguration(Configuration newConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
-        var adaptedMatrix = Matrices.AdaptForWhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
+        var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
         return FromXyz(newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
     }
     

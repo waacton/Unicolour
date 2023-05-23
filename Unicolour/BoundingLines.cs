@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-public static class Lines
+public static class BoundingLines
 {
     internal static double CalculateMaxChroma(double lightness, double hue)
     {

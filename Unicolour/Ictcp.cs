@@ -24,26 +24,40 @@ public record Ictcp : ColourRepresentation
      * -------
      * currently only support PQ transfer function, not HLG (https://en.wikipedia.org/wiki/Hybrid_log%E2%80%93gamma)
      */
-    
+
+    private static readonly Matrix M1 = new(new[,]
+    {
+        { 0.3593, 0.6976, -0.0359 },
+        { -0.1921, 1.1005, 0.0754 },
+        { 0.0071, 0.0748, 0.8433 }
+    });
+
+    private static readonly Matrix M2 = new Matrix(new double[,]
+    {
+        { 2048, 2048, 0 },
+        { 6610, -13613, 7003 },
+        { 17933, -17390, -543 }
+    }).Scalar(x => x / 4096.0);
+
     internal static Ictcp FromXyz(Xyz xyz, XyzConfiguration xyzConfig, double ictcpScalar)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
         var d65ScaledMatrix = d65Matrix.Scalar(x => x * ictcpScalar);
-        var lmsMatrix = Matrices.IctcpM1.Multiply(d65ScaledMatrix);
+        var lmsMatrix = M1.Multiply(d65ScaledMatrix);
         var lmsPrimeMatrix = lmsMatrix.Scalar(Pq.Smpte.InverseEotf);
-        var ictcpMatrix = Matrices.IctcpM2.Multiply(lmsPrimeMatrix);
+        var ictcpMatrix = M2.Multiply(lmsPrimeMatrix);
         return new Ictcp(ictcpMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
     }
 
     internal static Xyz ToXyz(Ictcp ictcp, XyzConfiguration xyzConfig, double ictcpScalar)
     {
         var ictcpMatrix = Matrix.FromTriplet(ictcp.Triplet);
-        var lmsPrimeMatrix = Matrices.IctcpM2.Inverse().Multiply(ictcpMatrix);
+        var lmsPrimeMatrix = M2.Inverse().Multiply(ictcpMatrix);
         var lmsMatrix = lmsPrimeMatrix.Scalar(Pq.Smpte.Eotf);
         var d65ScaledMatrix = lmsMatrix.Scalar(x => x / ictcpScalar);
-        var d65Matrix = Matrices.IctcpM1.Inverse().Multiply(d65ScaledMatrix);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var d65Matrix = M1.Inverse().Multiply(d65ScaledMatrix);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(ictcp));
     }
 }

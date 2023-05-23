@@ -33,11 +33,25 @@ public record Jzazbz : ColourRepresentation
     private const double d = -0.56;
     private const double d0 = 1.6295499532821566e-11;
     // ReSharper restore InconsistentNaming
+
+    private static readonly Matrix M1 = new(new[,]
+    {
+        { +0.41478972, +0.579999, +0.0146480 },
+        { -0.2015100, +1.120649, +0.0531008 },
+        { -0.0166008, +0.264800, +0.6684799 }
+    });
+
+    private static readonly Matrix M2 = new(new[,]
+    {
+        { +0.5, +0.5, 0 },
+        { +3.524000, -4.066708, +0.542708 },
+        { +0.199076, +1.096799, -1.295875 }
+    });
     
     internal static Jzazbz FromXyz(Xyz xyz, XyzConfiguration xyzConfig, double jzazbzScalar)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Matrices.AdaptForWhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
         var d65ScaledMatrix = d65Matrix.Scalar(x => Math.Max(x * jzazbzScalar, 0));
         var x65 = d65ScaledMatrix[0, 0];
         var y65 = d65ScaledMatrix[1, 0];
@@ -46,9 +60,9 @@ public record Jzazbz : ColourRepresentation
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
         var xyz65PrimeMatrix = Matrix.FromTriplet(new(x65Prime, y65Prime, z65));
-        var lmsMatrix = Matrices.JzazbzM1.Multiply(xyz65PrimeMatrix);
+        var lmsMatrix = M1.Multiply(xyz65PrimeMatrix);
         var lmsPrimeMatrix = lmsMatrix.Scalar(Pq.Jzazbz.InverseEotf);
-        var izazbzMatrix = Matrices.JzazbzM2.Multiply(lmsPrimeMatrix);
+        var izazbzMatrix = M2.Multiply(lmsPrimeMatrix);
         
         var iz = izazbzMatrix[0, 0];
         var az = izazbzMatrix[1, 0];
@@ -63,9 +77,9 @@ public record Jzazbz : ColourRepresentation
         var (jz, az, bz) = jzazbz.Triplet;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
         var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
-        var lmsPrimeMatrix = Matrices.JzazbzM2.Inverse().Multiply(izazbzMatrix);
+        var lmsPrimeMatrix = M2.Inverse().Multiply(izazbzMatrix);
         var lmsMatrix = lmsPrimeMatrix.Scalar(Pq.Jzazbz.Eotf);
-        var xyz65PrimeMatrix = Matrices.JzazbzM1.Inverse().Multiply(lmsMatrix);
+        var xyz65PrimeMatrix = M1.Inverse().Multiply(lmsMatrix);
         var x65Prime = xyz65PrimeMatrix[0, 0];
         var y65Prime = xyz65PrimeMatrix[1, 0];
         var z65Prime = xyz65PrimeMatrix[2, 0];
@@ -75,7 +89,7 @@ public record Jzazbz : ColourRepresentation
         var z65 = z65Prime;
         var d65ScaledMatrix = Matrix.FromTriplet(new(x65, y65, z65));
         var d65Matrix = d65ScaledMatrix.Scalar(x => x / jzazbzScalar);
-        var xyzMatrix = Matrices.AdaptForWhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(jzazbz));
     }
 }

@@ -42,7 +42,7 @@ public record Rgb : ColourRepresentation
     internal static Rgb FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
+        var transformationMatrix = RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
         var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
         var rgbMatrix = rgbLinearMatrix.Scalar(rgbConfig.CompandFromLinear);
         return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourMode.FromRepresentation(xyz));
@@ -51,8 +51,47 @@ public record Rgb : ColourRepresentation
     internal static Xyz ToXyz(Rgb rgb, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
-        var transformationMatrix = Matrices.RgbToXyzMatrix(rgbConfig, xyzConfig);
+        var transformationMatrix = RgbToXyzMatrix(rgbConfig, xyzConfig);
         var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(rgb));
+    }
+    
+    // see http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    internal static Matrix RgbToXyzMatrix(RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
+    {
+        var cr = rgbConfig.ChromaticityR;
+        var cg = rgbConfig.ChromaticityG;
+        var cb = rgbConfig.ChromaticityB;
+
+        double X(Chromaticity c) => c.X / c.Y;
+        double Y(Chromaticity c) => 1;
+        double Z(Chromaticity c) => (1 - c.X - c.Y) / c.Y;
+
+        var (xr, yr, zr) = (X(cr), Y(cr), Z(cr));
+        var (xg, yg, zg) = (X(cg), Y(cg), Z(cg));
+        var (xb, yb, zb) = (X(cb), Y(cb), Z(cb));
+
+        var fromPrimaries = new Matrix(new[,]
+        {
+            { xr, xg, xb },
+            { yr, yg, yb },
+            { zr, zg, zb }
+        });
+        
+        var sourceWhite = rgbConfig.WhitePoint.AsXyzMatrix();
+        var s = fromPrimaries.Inverse().Multiply(sourceWhite);
+        var sr = s[0, 0];
+        var sg = s[1, 0];
+        var sb = s[2, 0];
+
+        var matrix = new Matrix(new[,]
+        {
+            { sr * xr, sg * xg, sb * xb },
+            { sr * yr, sg * yg, sb * yb },
+            { sr * zr, sg * zg, sb * zb }
+        });
+
+        var adaptedMatrix = Adaptation.WhitePoint(matrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
+        return adaptedMatrix;
     }
 }

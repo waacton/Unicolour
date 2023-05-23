@@ -64,7 +64,7 @@ public static class RgbConfigurationTests
         };
         
         // testing default config values; other tests explicitly construct configs
-        var xyzToRgbMatrix = Matrices.RgbToXyzMatrix(RgbConfiguration.StandardRgb, XyzConfiguration.D65).Inverse();
+        var xyzToRgbMatrix = Rgb.RgbToXyzMatrix(RgbConfiguration.StandardRgb, XyzConfiguration.D65).Inverse();
         Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
         Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
         
@@ -100,7 +100,7 @@ public static class RgbConfigurationTests
             { 0.0719453, -0.2289914, 1.4052427}
         };
         
-        var xyzToRgbMatrix = Matrices.RgbToXyzMatrix(config.Rgb, config.Xyz).Inverse();
+        var xyzToRgbMatrix = Rgb.RgbToXyzMatrix(config.Rgb, config.Xyz).Inverse();
         Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
         var unicolourXyz = Unicolour.FromXyz(config, 0.187691, 0.115771, 0.381093);

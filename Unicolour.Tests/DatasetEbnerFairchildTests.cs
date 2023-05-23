@@ -3,6 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Wacton.Unicolour.Datasets;
 using static Datasets.EbnerFairchild;
 
 public class DatasetEbnerFairchildTests
@@ -64,5 +65,5 @@ public class DatasetEbnerFairchildTests
     }
     
     [Test]
-    public void All() => Assert.That(Datasets.EbnerFairchild.All.Distinct().Count(), Is.EqualTo(321));
+    public void All() => Assert.That(EbnerFairchild.All.Distinct().Count(), Is.EqualTo(321));
 }

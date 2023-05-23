@@ -46,7 +46,7 @@ public record Hpluv : ColourRepresentation
                 break;
             default:
             {
-                var maxChroma = Lines.CalculateMaxChroma(lchLightness);
+                var maxChroma = BoundingLines.CalculateMaxChroma(lchLightness);
                 saturation = chroma / maxChroma * 100;
                 lightness = lchLightness;
                 break;
@@ -76,7 +76,7 @@ public record Hpluv : ColourRepresentation
                 break;
             default:
             {
-                var maxChroma = Lines.CalculateMaxChroma(hslLightness);
+                var maxChroma = BoundingLines.CalculateMaxChroma(hslLightness);
                 chroma = maxChroma / 100 * saturation;
                 lightness = hslLightness;
                 break;

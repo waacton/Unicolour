@@ -157,10 +157,13 @@ var difference = unicolour1.DeltaEHyab(unicolour2);
 ```
 
 See also:
-- [Example code](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
+
+[Example code](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
+
 ![Gradients generate from Unicolour](Unicolour.Example/gradients.png)
-<br/><br/>
-- [Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
+
+[Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
+
 ![Colour information from hex value](Unicolour.Console/colour-info.png)
 
 ## Advanced configuration 💡

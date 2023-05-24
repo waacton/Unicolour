@@ -69,16 +69,19 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`   |
 | Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`   |
 
-## How to use 🎨
+## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
 ```
 dotnet add package Wacton.Unicolour
 ```
 
-2. Create a `Unicolour` from values:
+2. Import the package:
 ```c#
 using Wacton.Unicolour;
-...
+```
+
+3. Create a `Unicolour` from values:
+```c#
 var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
 var unicolour = Unicolour.FromRgb(1.0, 0.08, 0.58);
@@ -100,7 +103,7 @@ var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
 ```
 
-3. Get representation of colour in different colour spaces:
+4. Get representation of colour in different colour spaces:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
@@ -121,7 +124,7 @@ var oklab = unicolour.Oklab;
 var oklch = unicolour.Oklch;
 ```
 
-4. Interpolate between colours:
+5. Interpolate between colours:
 ```c#
 var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
@@ -142,7 +145,7 @@ var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 ```
 
-5. Compare colours:
+6. Compare colours:
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
@@ -153,18 +156,22 @@ var difference = unicolour1.DeltaEz(unicolour2);
 var difference = unicolour1.DeltaEHyab(unicolour2);
 ```
 
-See also the [example code](Unicolour.Example/Program.cs), which uses `Unicolour` to generate gradients through different colour spaces:
+See also:
+- [Example code](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
 ![Gradients generate from Unicolour](Unicolour.Example/gradients.png)
+<br/><br/>
+- [Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
+![Gradients generate from Unicolour](Unicolour.Console/colour-info.png)
 
 ## Advanced configuration 💡
 A `Configuration` parameter can be used to change the RGB model (e.g. Display P3, Rec. 2020)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
 - RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
-Default configuration for sRGB, Display P3, and Rec. 2020 is provided.
+  Default configuration for sRGB, Display P3, and Rec. 2020 is provided.
 
 - XYZ configuration only requires the reference white point.
-Default configuration for D65 and D50 (2° observer) is provided.
+  Default configuration for D65 and D50 (2° observer) is provided.
 
 ```c#
 // built-in configuration for Rec. 2020 RGB + D65 XYZ
@@ -195,15 +202,20 @@ var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
 A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
 
 ```c#
+// pure sRGB green
 var srgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+var unicolourSrgb = Unicolour.FromRgb(srgbConfig, 0, 1, 0);                         
+Console.WriteLine(unicolourSrgb.Rgb); // 0.00 1.00 0.00
+
+// pure sRGB green -> Display P3
 var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
+var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); 
+Console.WriteLine(unicolourDisplayP3.Rgb); // 0.46 0.99 0.30
+
+// pure sRGB green -> Rec. 2020
 var rec202Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
-
-// pure green in standard RGB
-var unicolourSrgb = Unicolour.FromRgb(config, 0, 1, 0);                         // RGB = (0.00, 1.00, 0.00)
-var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); // RGB = (0.46, 0.99, 0.30)
-var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config); // RGB = (0.57, 0.96, 0.27)
-
+var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config);
+Console.WriteLine(unicolourRec2020.Rgb); // 0.57 0.96 0.27
 ```
 
 ---

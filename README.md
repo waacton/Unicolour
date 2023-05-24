@@ -161,7 +161,7 @@ See also:
 ![Gradients generate from Unicolour](Unicolour.Example/gradients.png)
 <br/><br/>
 - [Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
-![Gradients generate from Unicolour](Unicolour.Console/colour-info.png)
+![Colour information from hex value](Unicolour.Console/colour-info.png)
 
 ## Advanced configuration 💡
 A `Configuration` parameter can be used to change the RGB model (e.g. Display P3, Rec. 2020)

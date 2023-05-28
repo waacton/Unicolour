@@ -15,9 +15,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageVersion>2.1.0</PackageVersion>
-        <PackageTags>colour color RGB HSB HSV HSL HWB XYZ xyY LAB LUV LCH LCHab LCHuv HSLuv HPLuv ICtCp JzAzBz JzCzHz Oklab Oklch converter colour-converter colour-conversion color-converter color-conversion colour-spaces color-spaces interpolation colour-interpolation color-interpolation comparison colour-comparison color-comparison contrast luminance deltaE chromaticity display-p3 rec-2020</PackageTags>
-        <PackageReleaseNotes>Enable conversion between configurations</PackageReleaseNotes>
+        <PackageVersion>2.2.0</PackageVersion>
+        <PackageTags>colour color RGB HSB HSV HSL HWB XYZ xyY LAB LUV LCH LCHab LCHuv CAM16 HSLuv HPLuv ICtCp JzAzBz JzCzHz Oklab Oklch converter colour-converter colour-conversion color-converter color-conversion colour-spaces color-spaces interpolation colour-interpolation color-interpolation comparison colour-comparison color-comparison contrast luminance deltaE chromaticity display-p3 rec-2020</PackageTags>
+        <PackageReleaseNotes>Add CAM16 support</PackageReleaseNotes>
         <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>

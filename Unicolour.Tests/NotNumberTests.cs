@@ -5,7 +5,7 @@ using Wacton.Unicolour.Tests.Utils;
 
 public static class NotNumberTests
 {
-    private static double[][] notNumberTestCases =
+    private static double[][] testCases =
     {
         new[] {double.NaN, 0, 0},
         new[] {0, double.NaN, 0},
@@ -16,60 +16,63 @@ public static class NotNumberTests
         new[] {double.NaN, double.NaN, double.NaN}
     };
     
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberRgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
+    [TestCaseSource(nameof(testCases))]
+    public static void Rgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberHsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
+    [TestCaseSource(nameof(testCases))]
+    public static void Hsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberHsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
+    [TestCaseSource(nameof(testCases))]
+    public static void Hsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
     
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberHwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
+    [TestCaseSource(nameof(testCases))]
+    public static void Hwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberXyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
+    [TestCaseSource(nameof(testCases))]
+    public static void Xyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
     
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberXyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
+    [TestCaseSource(nameof(testCases))]
+    public static void Xyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberLab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
+    [TestCaseSource(nameof(testCases))]
+    public static void Lab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberLchab(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchab(l, c, h));
+    [TestCaseSource(nameof(testCases))]
+    public static void Lchab(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchab(l, c, h));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberLuv(double l, double u, double v) => AssertUnicolour(Unicolour.FromLuv(l, u, v));
+    [TestCaseSource(nameof(testCases))]
+    public static void Luv(double l, double u, double v) => AssertUnicolour(Unicolour.FromLuv(l, u, v));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberLchuv(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchuv(l, c, h));
+    [TestCaseSource(nameof(testCases))]
+    public static void Lchuv(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchuv(l, c, h));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberHsluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsluv(h, s, l));
+    [TestCaseSource(nameof(testCases))]
+    public static void Hsluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsluv(h, s, l));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberHpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
+    [TestCaseSource(nameof(testCases))]
+    public static void Hpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
     
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberIctcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
+    [TestCaseSource(nameof(testCases))]
+    public static void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
+    
+    [TestCaseSource(nameof(testCases))]
+    public static void Ictcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberJzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));
+    [TestCaseSource(nameof(testCases))]
+    public static void Jzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberJzczhz(double jz, double cz, double hz) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz));
+    [TestCaseSource(nameof(testCases))]
+    public static void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberOklab(double l, double a, double b) => AssertUnicolour(Unicolour.FromOklab(l, a, b));
+    [TestCaseSource(nameof(testCases))]
+    public static void Oklab(double l, double a, double b) => AssertUnicolour(Unicolour.FromOklab(l, a, b));
 
-    [TestCaseSource(nameof(notNumberTestCases))]
-    public static void NotNumberOklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
+    [TestCaseSource(nameof(testCases))]
+    public static void Oklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
     
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but treated effectively as NaN
-    [TestCaseSource(nameof(notNumberTestCases))]
+    [TestCaseSource(nameof(testCases))]
     public static void OnlyEffectivelyNotNumber(double l, double u, double v)
     {
         var unicolour = Unicolour.FromLuv(l, u, v);

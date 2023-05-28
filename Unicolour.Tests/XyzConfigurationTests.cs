@@ -32,17 +32,17 @@ public static class XyzConfigurationTests
         // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
         var expectedMatrixA = new[,]
         {
-            {0.4124, 0.3576, 0.1805},
-            {0.2126, 0.7152, 0.0722},
-            {0.0193, 0.1192, 0.9505}
+            { 0.4124, 0.3576, 0.1805 },
+            { 0.2126, 0.7152, 0.0722 },
+            { 0.0193, 0.1192, 0.9505 }
         };
 
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         var expectedMatrixB = new[,]
         {
-            {0.4124564, 0.3575761, 0.1804375},
-            {0.2126729, 0.7151522, 0.0721750},
-            {0.0193339, 0.1191920, 0.9503041}
+            { 0.4124564, 0.3575761, 0.1804375 },
+            { 0.2126729, 0.7151522, 0.0721750 },
+            { 0.0193339, 0.1191920, 0.9503041 }
         };
         
         // testing default config values; other tests explicitly construct configs
@@ -79,9 +79,9 @@ public static class XyzConfigurationTests
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         var expectedMatrix = new[,]
         {
-            {0.4360747, 0.3850649, 0.1430804},
-            {0.2225045, 0.7168786, 0.0606169},
-            {0.0139322, 0.0971045, 0.7141733}
+            { 0.4360747, 0.3850649, 0.1430804 },
+            { 0.2225045, 0.7168786, 0.0606169 },
+            { 0.0139322, 0.0971045, 0.7141733 }
         };
         
         var rgbToXyzMatrix = Rgb.RgbToXyzMatrix(config.Rgb, config.Xyz);
@@ -212,19 +212,20 @@ public static class XyzConfigurationTests
         var convertedToF11 = convertedToF7.ConvertToConfiguration(Config(Illuminant.F11));
         var convertedToA = convertedToF11.ConvertToConfiguration(Config(Illuminant.A));
         
-        AssertUtils.AssertTriplet<Xyz>(initialA, new(1.098500, 1.000000, 0.355850), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToC, new(0.980740, 1.000000, 1.182320), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD50, new(0.964220, 1.000000, 0.825210), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD55, new(0.956820, 1.000000, 0.921490), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD65, new(0.950470, 1.000000, 1.088830), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD75, new(0.949720, 1.000000, 1.226380), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToE, new(1.000000, 1.000000, 1.000000), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF2, new(0.991860, 1.000000, 0.673930), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF7, new(0.950410, 1.000000, 1.087470), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF11, new(1.009620, 1.000000, 0.643500), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToA, new(1.098500, 1.000000, 0.355850), XyzTolerance);
+        ColourTriplet WhitePointTriplet(Illuminant illuminant) => WhitePoint.From(illuminant).AsXyzMatrix().ToTriplet();
+        AssertUtils.AssertTriplet<Xyz>(initialA, WhitePointTriplet(Illuminant.A), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToC, WhitePointTriplet(Illuminant.C), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD50, WhitePointTriplet(Illuminant.D50), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD55, WhitePointTriplet(Illuminant.D55), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD65, WhitePointTriplet(Illuminant.D65), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD75, WhitePointTriplet(Illuminant.D75), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToE, WhitePointTriplet(Illuminant.E), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF2, WhitePointTriplet(Illuminant.F2), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF7, WhitePointTriplet(Illuminant.F7), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF11, WhitePointTriplet(Illuminant.F11), XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToA, WhitePointTriplet(Illuminant.A), XyzTolerance);
     }
-    
+
     [Test]
     public static void ConvertBlack()
     {
@@ -241,17 +242,73 @@ public static class XyzConfigurationTests
         var convertedToF7 = convertedToF2.ConvertToConfiguration(Config(Illuminant.F7));
         var convertedToF11 = convertedToF7.ConvertToConfiguration(Config(Illuminant.F11));
         var convertedToA = convertedToF11.ConvertToConfiguration(Config(Illuminant.A));
+
+        ColourTriplet zeroes = new(0, 0, 0);
+        AssertUtils.AssertTriplet<Xyz>(initialA, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToC, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD50, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD55, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD65, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToD75, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToE, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF2, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF7, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToF11, zeroes, XyzTolerance);
+        AssertUtils.AssertTriplet<Xyz>(convertedToA, zeroes, XyzTolerance);
+    }
+    
+    [TestCase(Illuminant.A)]
+    [TestCase(Illuminant.C)]
+    [TestCase(Illuminant.D50)]
+    [TestCase(Illuminant.D55)]
+    [TestCase(Illuminant.D65)]
+    [TestCase(Illuminant.D75)]
+    [TestCase(Illuminant.E)]
+    [TestCase(Illuminant.F2)]
+    [TestCase(Illuminant.F7)]
+    [TestCase(Illuminant.F11)]
+    public static void RgbWhitePointRoundTrip(Illuminant rgbIlluminant)
+    {
+        RgbConfiguration RgbConfig(WhitePoint whitePoint, RgbConfiguration baseConfig)
+        {
+            return new(baseConfig.ChromaticityR, baseConfig.ChromaticityG, baseConfig.ChromaticityB,
+                whitePoint, baseConfig.CompandFromLinear, baseConfig.InverseCompandToLinear);
+        }
         
-        AssertUtils.AssertTriplet<Xyz>(initialA, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToC, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD50, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD55, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD65, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD75, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToE, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF2, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF7, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF11, new(0, 0, 0), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToA, new(0, 0, 0), XyzTolerance);
+        var initialRgbConfig = RgbConfig(XyzConfiguration.D65.WhitePoint, RgbConfiguration.StandardRgb);
+        var initialRgb = new Rgb(1.0, 0.08, 0.58, initialRgbConfig);
+        var expectedXyz = Rgb.ToXyz(initialRgb, initialRgbConfig, XyzConfiguration.D65);
+        
+        var rgbConfig = RgbConfig(WhitePoint.From(rgbIlluminant), RgbConfiguration.StandardRgb);
+        var rgb = Rgb.FromXyz(expectedXyz, rgbConfig, XyzConfiguration.D65);
+        var xyz = Rgb.ToXyz(rgb, rgbConfig, XyzConfiguration.D65);
+        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
+    }
+    
+    [TestCase(Illuminant.A)]
+    [TestCase(Illuminant.C)]
+    [TestCase(Illuminant.D50)]
+    [TestCase(Illuminant.D55)]
+    [TestCase(Illuminant.D65)]
+    [TestCase(Illuminant.D75)]
+    [TestCase(Illuminant.E)]
+    [TestCase(Illuminant.F2)]
+    [TestCase(Illuminant.F7)]
+    [TestCase(Illuminant.F11)]
+    public static void Cam16WhitePointRoundTrip(Illuminant cam16Illuminant)
+    {
+        Cam16Configuration Cam16Config(WhitePoint whitePoint, Cam16Configuration baseConfig)
+        {
+            return new(whitePoint, baseConfig.AdaptingLuminance, baseConfig.BackgroundLuminance, baseConfig.Surround);
+        }
+        
+        var initialCam16Config = Cam16Config(XyzConfiguration.D65.WhitePoint, Cam16Configuration.StandardRgb);
+        var initialCam16 = new Cam16(62.47, 42.60, -1.36, initialCam16Config);
+        var expectedXyz = Cam16.ToXyz(initialCam16, initialCam16Config, XyzConfiguration.D65);
+        
+        var cam16Config = Cam16Config(WhitePoint.From(cam16Illuminant), Cam16Configuration.StandardRgb);
+        var cam16 = Cam16.FromXyz(expectedXyz, cam16Config, XyzConfiguration.D65);
+        var xyz = Cam16.ToXyz(cam16, cam16Config, XyzConfiguration.D65);
+        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
 }

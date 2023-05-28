@@ -14,6 +14,7 @@ public static class Interpolation
     public static Unicolour InterpolateLchuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchuv, start, end, distance);
     public static Unicolour InterpolateHsluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsluv, start, end, distance);
     public static Unicolour InterpolateHpluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hpluv, start, end, distance);
+    public static Unicolour InterpolateCam16(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Cam16, start, end, distance);
     public static Unicolour InterpolateIctcp(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Ictcp, start, end, distance);
     public static Unicolour InterpolateJzazbz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzazbz, start, end, distance);
     public static Unicolour InterpolateJzczhz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzczhz, start, end, distance);
@@ -117,6 +118,7 @@ public static class Interpolation
             ColourSpace.Lchuv => Unicolour.FromLchuv,
             ColourSpace.Hsluv => Unicolour.FromHsluv,
             ColourSpace.Hpluv => Unicolour.FromHpluv,
+            ColourSpace.Cam16 => Unicolour.FromCam16,
             ColourSpace.Ictcp => Unicolour.FromIctcp,
             ColourSpace.Jzazbz => Unicolour.FromJzazbz,
             ColourSpace.Jzczhz => Unicolour.FromJzczhz,

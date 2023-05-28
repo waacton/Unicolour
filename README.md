@@ -22,6 +22,7 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIELCh<sub>uv</sub>
 - HSLuv
 - HPLuv
+- CAM16
 - IC<sub>T</sub>C<sub>P</sub>
 - J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
 - J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
@@ -47,27 +48,39 @@ It is also [extensively tested](Unicolour.Tests), including comparisons against 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 ## Quickstart ⚡
-| Colour space                            | Construction             | Access         | Interpolation           |
-|-----------------------------------------|--------------------------|----------------|-------------------------|
-| RGB (Hex)                               | `Unicolour.FromHex()`    | `.Hex`         | `.InterpolateRgb()`     |
-| RGB (0-255)                             | `Unicolour.FromRgb255()` | `.Rgb.Byte255` | `.InterpolateRgb()`     |
-| RGB                                     | `Unicolour.FromRgb()`    | `.Rgb`         | `.InterpolateRgb()`     |
-| HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.InterpolateHsb()`     |
-| HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.InterpolateHsl()`     |
-| HWB                                     | `Unicolour.FromHwb()`    | `.Hwb`         | `.InterpolateHwb()`     |
-| CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.InterpolateXyz()`     |
-| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.InterpolateXyy()`     |
-| CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.InterpolateLab()`     |
-| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.InterpolateLchab()`   |
-| CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.InterpolateLuv()`     |
-| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.InterpolateLchuv()`   |
-| HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.InterpolateHsluv()`   |
-| HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.InterpolateHpluv()`   |
-| IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`  | `.Ictcp`       | `.InterpolateIctcp()`   |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.InterpolateJzazbz()`  |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.InterpolateJzczhz()`  |
-| Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`   |
-| Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`   |
+| Colour space                            | Construction             | Access         | Interpolation          |
+|-----------------------------------------|--------------------------|----------------|------------------------|
+| RGB (Hex)                               | `Unicolour.FromHex()`    | `.Hex`         | `.InterpolateRgb()`    |
+| RGB (0-255)                             | `Unicolour.FromRgb255()` | `.Rgb.Byte255` | `.InterpolateRgb()`    |
+| RGB                                     | `Unicolour.FromRgb()`    | `.Rgb`         | `.InterpolateRgb()`    |
+| HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.InterpolateHsb()`    |
+| HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.InterpolateHsl()`    |
+| HWB                                     | `Unicolour.FromHwb()`    | `.Hwb`         | `.InterpolateHwb()`    |
+| CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.InterpolateXyz()`    |
+| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.InterpolateXyy()`    |
+| CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.InterpolateLab()`    |
+| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.InterpolateLchab()`  |
+| CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.InterpolateLuv()`    |
+| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.InterpolateLchuv()`  |
+| HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.InterpolateHsluv()`  |
+| HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.InterpolateHpluv()`  |
+| CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.InterpolateCam16()`  |
+| IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`  | `.Ictcp`       | `.InterpolateIctcp()`  |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.InterpolateJzazbz()` |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.InterpolateJzczhz()` |
+| Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`  |
+| Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`  |
+
+<details>
+<summary>Diagram of colour space relationships</summary>
+
+![Diagram of colour space relationships](Unicolour/Resources/diagram.png)
+
+This diagram summarises how colour space conversions are implemented in Unicolour.
+Arrows indicate forward transformations from one space to another.
+For each forward transformation there is a corresponding reverse transformation.
+XYZ is considered the root colour space.
+</details>
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -96,6 +109,7 @@ var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
 var unicolour = Unicolour.FromHsluv(349.5, 100, 56);
 var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56);
+var unicolour = Unicolour.FromCam16(62.47, +42.60, -1.36);
 var unicolour = Unicolour.FromIctcp(0.38, +0.12, +0.19);
 var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
 var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
@@ -117,6 +131,7 @@ var luv = unicolour.Luv;
 var lchuv = unicolour.Lchuv;
 var hsluv = unicolour.Hsluv;
 var hpluv = unicolour.Hpluv;
+var cam16 = unicolour.Cam16;
 var ictcp = unicolour.Ictcp;
 var jzazbz = unicolour.Jzazbz;
 var jzczhz = unicolour.Jzczhz;
@@ -138,6 +153,7 @@ var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsluv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHpluv(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateCam16(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateIctcp(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzazbz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzczhz(unicolour2, 0.5);
@@ -167,7 +183,7 @@ See also:
 ![Colour information from hex value](Unicolour.Console/colour-info.png)
 
 ## Advanced configuration 💡
-A `Configuration` parameter can be used to change the RGB model (e.g. Display P3, Rec. 2020)
+A `Configuration` parameter can be used to customise the RGB model (e.g. Display P3, Rec. 2020)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
 - RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
@@ -201,6 +217,10 @@ var xyzConfig = new XyzConfiguration(
 var config = new Configuration(rgbConfig, xyzConfig);
 var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
 ```
+
+Configuration is also available for CAM16 viewing conditions,
+IC<sub>T</sub>C<sub>P</sub> scalar,
+and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> scalar.
 
 A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
 

@@ -79,10 +79,7 @@ public record Rgb : ColourRepresentation
         });
         
         var sourceWhite = rgbConfig.WhitePoint.AsXyzMatrix();
-        var s = fromPrimaries.Inverse().Multiply(sourceWhite);
-        var sr = s[0, 0];
-        var sg = s[1, 0];
-        var sb = s[2, 0];
+        var (sr, sg, sb) = fromPrimaries.Inverse().Multiply(sourceWhite).ToTriplet();
 
         var matrix = new Matrix(new[,]
         {

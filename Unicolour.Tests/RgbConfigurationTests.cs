@@ -50,17 +50,17 @@ public static class RgbConfigurationTests
         // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
         var expectedMatrixA = new[,]
         {
-            {3.2406, -1.5372, -0.4986},
-            {-0.9689, 1.8758, 0.0415},
-            {0.0557, -0.2040, 1.0570}
+            { 3.2406, -1.5372, -0.4986 },
+            { -0.9689, 1.8758, 0.0415 },
+            { 0.0557, -0.2040, 1.0570 }
         };
 
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         var expectedMatrixB = new[,]
         {
-            {3.2404542, -1.5371385, -0.4985314},
-            {-0.9692660, 1.8760108, 0.0415560},
-            {0.0556434, -0.2040259,  1.0572252}
+            { 3.2404542, -1.5371385, -0.4985314 },
+            { -0.9692660, 1.8760108, 0.0415560 },
+            { 0.0556434, -0.2040259, 1.0572252 }
         };
         
         // testing default config values; other tests explicitly construct configs
@@ -92,12 +92,12 @@ public static class RgbConfigurationTests
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
         var config = new Configuration(standardRgbConfig, d50XyzConfig);
 
-            // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+        // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
         var expectedMatrix = new[,]
         {
-            {3.1338561, -1.6168667, -0.4906146},
-            {-0.9787684, 1.9161415, 0.0334540},
-            { 0.0719453, -0.2289914, 1.4052427}
+            { 3.1338561, -1.6168667, -0.4906146 },
+            { -0.9787684, 1.9161415, 0.0334540 },
+            { 0.0719453, -0.2289914, 1.4052427 }
         };
         
         var xyzToRgbMatrix = Rgb.RgbToXyzMatrix(config.Rgb, config.Xyz).Inverse();
@@ -244,5 +244,27 @@ public static class RgbConfigurationTests
             var standardRgb = rec2020.ConvertToConfiguration(standardRgbConfig);
             AssertUtils.AssertTriplet<Rgb>(standardRgb, standardRgbTriplet, Tolerance);
         }
+    }
+    
+    [TestCase(Illuminant.A)]
+    [TestCase(Illuminant.C)]
+    [TestCase(Illuminant.D50)]
+    [TestCase(Illuminant.D55)]
+    [TestCase(Illuminant.D65)]
+    [TestCase(Illuminant.D75)]
+    [TestCase(Illuminant.E)]
+    [TestCase(Illuminant.F2)]
+    [TestCase(Illuminant.F7)]
+    [TestCase(Illuminant.F11)]
+    public static void XyzWhitePointRoundTrip(Illuminant xyzIlluminant)
+    {
+        var initialXyzConfig = new XyzConfiguration(RgbConfiguration.StandardRgb.WhitePoint);
+        var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);
+        var expectedRgb = Rgb.FromXyz(initialXyz, RgbConfiguration.StandardRgb, initialXyzConfig);
+
+        var xyzConfig = new XyzConfiguration(WhitePoint.From(xyzIlluminant));
+        var xyz = Rgb.ToXyz(expectedRgb, RgbConfiguration.StandardRgb, xyzConfig);
+        var rgb = Rgb.FromXyz(xyz, RgbConfiguration.StandardRgb, xyzConfig);
+        AssertUtils.AssertTriplet(rgb.Triplet, expectedRgb.Triplet, 0.00000000001);
     }
 }

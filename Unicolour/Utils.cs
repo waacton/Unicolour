@@ -62,11 +62,11 @@ internal static class Utils
         return new ColourTriplet(lightness, chroma, hue.Modulo(360.0));
     }
     
-    public static ColourTriplet FromLchTriplet(ColourTriplet lchTriplet)
+    public static (double lightness, double axis1, double axis2) FromLchTriplet(ColourTriplet lchTriplet)
     {
         var (l, c, h) = lchTriplet;
         var axis1 = c * Math.Cos(ToRadians(h));
         var axis2 = c * Math.Sin(ToRadians(h));
-        return new ColourTriplet(l, axis1, axis2);
+        return (l, axis1, axis2);
     }
 }

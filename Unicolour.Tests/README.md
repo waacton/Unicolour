@@ -1,6 +1,22 @@
-To generate test reports:
+Tests to add / update for new colour spaces:
+- Smoke tests
+- Known value conversion tests (e.g. Oklab, Hsluv)
+- Roundtrip conversion tests
+- Interpolation tests
+- Greyscale interpolation tests (if colour space has hue component)
+- Equality tests
+- Extreme values tests
+- Greyscale tests
+- NaN tests
+- Difference tests (if colour space has corresponding ΔE)
+- Configuration tests (if colour space requires configuration)
+- Lazy evaluation tests
 
-0. If `reportgenerator` is not installed, first run `'dotnet tool install -g dotnet-reportgenerator-globaltool'`
-1. `dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose" --collect:"XPlat Code Coverage" --results-directory:".\artifacts"`
-2. `reportgenerator "-reports:.\**\coverage.cobertura.xml" "-targetdir:.\artifacts\report" "-reporttypes:Html;TextSummary"`
+To obtain code coverage metrics (as GitLab CI is setup to do):
 
+0. Install `reportgenerator` if not already installed <br/>`
+dotnet tool install -g dotnet-reportgenerator-globaltool'`
+1. Run tests and output artifacts <br/>
+`dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose" --collect:"XPlat Code Coverage" --results-directory:".\artifacts"`
+2. Generate report from artifacts <br/>
+`reportgenerator "-reports:.\**\coverage.cobertura.xml" "-targetdir:.\artifacts\report" "-reporttypes:Html;TextSummary"`

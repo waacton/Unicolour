@@ -64,6 +64,7 @@ internal static class AssertUtils
         void AccessProperties()
         {
             AccessProperty(() => unicolour.Alpha);
+            AccessProperty(() => unicolour.Cam16);
             AccessProperty(() => unicolour.Config);
             AccessProperty(() => unicolour.Description);
             AccessProperty(() => unicolour.Hex);

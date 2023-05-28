@@ -13,7 +13,7 @@ using ColorMineLchab = ColorMine.ColorSpaces.Lch;
 using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 
 /*
- * ColorMine does not support HWB / LCHuv / HSLuv / HPLuv / Jzazbz / Jzczhz / Oklab / Oklch
+ * ColorMine does not support HWB / LCHuv / HSLuv / HPLuv / CAM16 / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch
  * ColorMine does not expose linear RGB
  * ColorMine does a bad job of converting to HSL
  * ColorMine does a terrible job of converting from XYZ / LAB / LCHab / LUV

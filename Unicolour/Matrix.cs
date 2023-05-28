@@ -18,7 +18,8 @@ internal class Matrix
         {
             throw new ArgumentException($"Cannot multiply {this} matrix by {other} matrix, incompatible dimensions");
         }
-        
+
+        var dimension = Cols;
         var rows = Rows;
         var cols = other.Cols;
         
@@ -27,9 +28,11 @@ internal class Matrix
         {
             for (var col = 0; col < cols; col++)
             {
-                result[row, col] = this[row, 0] * other[0, col] + 
-                                   this[row, 1] * other[1, col] +
-                                   this[row, 2] * other[2, col];
+                result[row, col] = 0;
+                for (var i = 0; i < dimension; i++)
+                {
+                    result[row, col] += this[row, i] * other[i, col];
+                }
             }
         }
         
@@ -54,11 +57,6 @@ internal class Matrix
         var i = this[2, 2];
 
         var determinant = a*e*i + b*f*g + c*d*h - c*e*g - a*f*h - b*d*i;
-        if (determinant == 0)
-        {
-            throw new InvalidOperationException("Matrix has determinant of 0, is not invertible");
-        }
-
         var adjugate = new[,]
         {
             {e*i - f*h, h*c - i*b, b*f - c*e},
@@ -71,7 +69,9 @@ internal class Matrix
         {
             for (var col = 0; col < 3; col++)
             {
-                inverse[row, col] = adjugate[row, col] / determinant;
+                inverse[row, col] = determinant == 0
+                    ? double.NaN
+                    : adjugate[row, col] / determinant;
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch }
+internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Cam16, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch }
 
 public partial class Unicolour
 {
@@ -25,6 +25,7 @@ public partial class Unicolour
         { typeof(Lchuv), ColourSpace.Lchuv },
         { typeof(Hsluv), ColourSpace.Hsluv },
         { typeof(Hpluv), ColourSpace.Hpluv },
+        { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Ictcp), ColourSpace.Ictcp },
         { typeof(Jzazbz), ColourSpace.Jzazbz },
         { typeof(Jzczhz), ColourSpace.Jzczhz },
@@ -51,6 +52,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => Lchuv,
             ColourSpace.Hsluv => Hsluv,
             ColourSpace.Hpluv => Hpluv,
+            ColourSpace.Cam16 => Cam16,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
             ColourSpace.Jzczhz => Jzczhz,
@@ -97,6 +99,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => lchuv,
             ColourSpace.Hsluv => hsluv,
             ColourSpace.Hpluv => hpluv,
+            ColourSpace.Cam16 => cam16,
             ColourSpace.Ictcp => ictcp,
             ColourSpace.Jzazbz => jzazbz,
             ColourSpace.Jzczhz => jzczhz,
@@ -122,6 +125,7 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = EvaluateLchuv(),
             ColourSpace.Hsluv => () => hsluv = EvaluateHsluv(),
             ColourSpace.Hpluv => () => hpluv = EvaluateHpluv(),
+            ColourSpace.Cam16 => () => cam16 = EvaluateCam16(),
             ColourSpace.Ictcp => () => ictcp = EvaluateIctcp(),
             ColourSpace.Jzazbz => () => jzazbz = EvaluateJzazbz(),
             ColourSpace.Jzczhz => () => jzczhz = EvaluateJzczhz(),
@@ -149,7 +153,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Rgb => (InitialRepresentation as Rgb)!,
+            ColourSpace.Rgb => (Rgb)InitialRepresentation,
             ColourSpace.Hsb => Hsb.ToRgb(Hsb, Config.Rgb),
             ColourSpace.Hsl => Hsb.ToRgb(Hsb, Config.Rgb),
             ColourSpace.Hwb => Hsb.ToRgb(Hsb, Config.Rgb),
@@ -161,7 +165,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Hsb => (InitialRepresentation as Hsb)!,
+            ColourSpace.Hsb => (Hsb)InitialRepresentation,
             ColourSpace.Hsl => Hsl.ToHsb(Hsl),
             ColourSpace.Hwb => Hwb.ToHsb(Hwb),
             _ => Hsb.FromRgb(Rgb)
@@ -172,7 +176,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Hsl => (InitialRepresentation as Hsl)!,
+            ColourSpace.Hsl => (Hsl)InitialRepresentation,
             _ => Hsl.FromHsb(Hsb)
         };
     }
@@ -181,7 +185,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Hwb => (InitialRepresentation as Hwb)!,
+            ColourSpace.Hwb => (Hwb)InitialRepresentation,
             _ => Hwb.FromHsb(Hsb)
         };
     }
@@ -190,7 +194,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Xyz => (InitialRepresentation as Xyz)!,
+            ColourSpace.Xyz => (Xyz)InitialRepresentation,
             ColourSpace.Rgb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
             ColourSpace.Hsb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
             ColourSpace.Hsl => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
@@ -202,9 +206,10 @@ public partial class Unicolour
             ColourSpace.Lchuv => Luv.ToXyz(Luv, Config.Xyz),
             ColourSpace.Hsluv => Luv.ToXyz(Luv, Config.Xyz),
             ColourSpace.Hpluv => Luv.ToXyz(Luv, Config.Xyz),
-            ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.Xyz, Config.IctcpScalar),
-            ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
-            ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Config.Xyz, Config.JzazbzScalar),
+            ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Config.Cam16, Config.Xyz),
+            ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.IctcpScalar, Config.Xyz),
+            ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
+            ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
             ColourSpace.Oklab => Oklab.ToXyz(Oklab, Config.Xyz),
             ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz),
             _ => throw new ArgumentOutOfRangeException()
@@ -215,7 +220,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Xyy => (InitialRepresentation as Xyy)!,
+            ColourSpace.Xyy => (Xyy)InitialRepresentation,
             _ => Xyy.FromXyz(Xyz, Config.Xyz)
         };
     }
@@ -224,7 +229,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Lab => (InitialRepresentation as Lab)!,
+            ColourSpace.Lab => (Lab)InitialRepresentation,
             ColourSpace.Lchab => Lchab.ToLab(Lchab),
             _ => Lab.FromXyz(Xyz, Config.Xyz)
         };
@@ -234,7 +239,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Lchab => (InitialRepresentation as Lchab)!,
+            ColourSpace.Lchab => (Lchab)InitialRepresentation,
             _ => Lchab.FromLab(Lab)
         };
     }
@@ -243,7 +248,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Luv => (InitialRepresentation as Luv)!,
+            ColourSpace.Luv => (Luv)InitialRepresentation,
             ColourSpace.Lchuv => Lchuv.ToLuv(Lchuv),
             ColourSpace.Hsluv => Lchuv.ToLuv(Lchuv),
             ColourSpace.Hpluv => Lchuv.ToLuv(Lchuv),
@@ -255,7 +260,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Lchuv => (InitialRepresentation as Lchuv)!,
+            ColourSpace.Lchuv => (Lchuv)InitialRepresentation,
             ColourSpace.Hsluv => Hsluv.ToLchuv(Hsluv),
             ColourSpace.Hpluv => Hpluv.ToLchuv(Hpluv),
             _ => Lchuv.FromLuv(Luv)
@@ -266,7 +271,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Hsluv => (InitialRepresentation as Hsluv)!,
+            ColourSpace.Hsluv => (Hsluv)InitialRepresentation,
             _ => Hsluv.FromLchuv(Lchuv)
         };
     }
@@ -275,8 +280,17 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Hpluv => (InitialRepresentation as Hpluv)!,
+            ColourSpace.Hpluv => (Hpluv)InitialRepresentation,
             _ => Hpluv.FromLchuv(Lchuv)
+        };
+    }
+    
+    private Cam16 EvaluateCam16()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Cam16 => (Cam16)InitialRepresentation,
+            _ => Cam16.FromXyz(Xyz, Config.Cam16, Config.Xyz)
         };
     }
 
@@ -284,8 +298,8 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Ictcp => (InitialRepresentation as Ictcp)!,
-            _ => Ictcp.FromXyz(Xyz, Config.Xyz, Config.IctcpScalar)
+            ColourSpace.Ictcp => (Ictcp)InitialRepresentation,
+            _ => Ictcp.FromXyz(Xyz, Config.IctcpScalar, Config.Xyz)
         };
     }
 
@@ -293,9 +307,9 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Jzazbz => (InitialRepresentation as Jzazbz)!,
+            ColourSpace.Jzazbz => (Jzazbz)InitialRepresentation,
             ColourSpace.Jzczhz => Jzczhz.ToJzazbz(Jzczhz),
-            _ => Jzazbz.FromXyz(Xyz, Config.Xyz, Config.JzazbzScalar)
+            _ => Jzazbz.FromXyz(Xyz, Config.JzazbzScalar, Config.Xyz)
         };
     }
 
@@ -303,7 +317,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Jzczhz => (InitialRepresentation as Jzczhz)!,
+            ColourSpace.Jzczhz => (Jzczhz)InitialRepresentation,
             _ => Jzczhz.FromJzazbz(Jzazbz)
         };
     }
@@ -312,7 +326,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Oklab => (InitialRepresentation as Oklab)!,
+            ColourSpace.Oklab => (Oklab)InitialRepresentation,
             ColourSpace.Oklch => Oklch.ToOklab(Oklch),
             _ => Oklab.FromXyz(Xyz, Config.Xyz)
         };
@@ -322,7 +336,7 @@ public partial class Unicolour
     {
         return InitialColourSpace switch
         {
-            ColourSpace.Oklch => (InitialRepresentation as Oklch)!,
+            ColourSpace.Oklch => (Oklch)InitialRepresentation,
             _ => Oklch.FromOklab(Oklab)
         };
     }

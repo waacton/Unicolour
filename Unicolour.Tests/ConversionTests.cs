@@ -9,6 +9,7 @@ public class ConversionTests
 {
     private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
+    private static readonly Cam16Configuration Cam16Config = Cam16Configuration.StandardRgb;
     private const double IctcpScalar = 100;
     private const double JzazbzScalar = 100;
 
@@ -18,6 +19,7 @@ public class ConversionTests
     private const double HslTolerance = 0.0000000001;
     private const double XyzTolerance = 0.0000000005;
     private const double LuvTolerance = 0.00000001;
+    private const double Cam16Tolerance = 0.00000001;
     private const double JzazbzTolerance = 0.00000005;
     private const double OklabTolerance = 0.000005;
 
@@ -72,6 +74,9 @@ public class ConversionTests
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HpluvTriplets))]
     public void HpluvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHpluvRoundTrip(triplet);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Cam16Triplets))]
+    public void Cam16SameAfterRoundTripConversion(ColourTriplet triplet) => AssertCam16RoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.IctcpTriplets))]
     public void IctcpSameAfterRoundTripConversion(ColourTriplet triplet) => AssertIctcpRoundTrip(triplet);
@@ -183,17 +188,21 @@ public class ConversionTests
         
         var viaXyy = Xyy.ToXyz(Xyy.FromXyz(original, XyzConfig));
         AssertUtils.AssertTriplet(viaXyy.Triplet, original.Triplet, XyzTolerance);
-
+        
         var viaLab = Lab.ToXyz(Lab.FromXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertTriplet(viaLab.Triplet, original.Triplet, XyzTolerance);
         
         var viaLuv = Luv.ToXyz(Luv.FromXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertTriplet(viaLuv.Triplet, original.Triplet, XyzTolerance);
         
-        var viaIctcp = Ictcp.ToXyz(Ictcp.FromXyz(original, XyzConfig, IctcpScalar), XyzConfig, IctcpScalar);
+        // CAM16 -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaCam16 = Cam16.ToXyz(Cam16.FromXyz(original, Cam16Config,  XyzConfig), Cam16Config, XyzConfig);
+        AssertUtils.AssertTriplet(viaCam16.Triplet, viaCam16.IsNaN ? ViaCam16WithNaN(viaCam16.Triplet) : original.Triplet, XyzTolerance);
+        
+        var viaIctcp = Ictcp.ToXyz(Ictcp.FromXyz(original, IctcpScalar, XyzConfig), IctcpScalar, XyzConfig);
         AssertUtils.AssertTriplet(viaIctcp.Triplet, viaIctcp.Triplet, XyzTolerance);
         
-        var viaJzazbz = Jzazbz.ToXyz(Jzazbz.FromXyz(original, XyzConfig, JzazbzScalar), XyzConfig, JzazbzScalar);
+        var viaJzazbz = Jzazbz.ToXyz(Jzazbz.FromXyz(original, JzazbzScalar, XyzConfig), JzazbzScalar, XyzConfig);
         AssertUtils.AssertTriplet(viaJzazbz.Triplet, viaJzazbz.Triplet, XyzTolerance);
         
         var viaOklab = Oklab.ToXyz(Oklab.FromXyz(original, XyzConfig), XyzConfig);
@@ -261,11 +270,19 @@ public class ConversionTests
         AssertUtils.AssertTriplet(viaLch.Triplet, original.Triplet, DefaultTolerance);
     }
     
+    private static void AssertCam16RoundTrip(ColourTriplet triplet) => AssertCam16RoundTrip(new Cam16(triplet.First, triplet.Second, triplet.Third, Cam16Config));
+    private static void AssertCam16RoundTrip(Cam16 original)
+    {
+        // CAM16 <-> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaXyz = Cam16.FromXyz(Cam16.ToXyz(original, Cam16Config, XyzConfig), Cam16Config, XyzConfig);
+        AssertUtils.AssertTriplet(viaXyz.Triplet, viaXyz.IsNaN ? ViaCam16WithNaN(viaXyz.Triplet) : original.Triplet, Cam16Tolerance);
+    }
+    
     private static void AssertIctcpRoundTrip(ColourTriplet triplet) => AssertIctcpRoundTrip(new Ictcp(triplet.First, triplet.Second, triplet.Third));
     private static void AssertIctcpRoundTrip(Ictcp original)
     {
         // Ictcp -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
-        var viaXyz = Ictcp.FromXyz(Ictcp.ToXyz(original, XyzConfig, IctcpScalar), XyzConfig, IctcpScalar);
+        var viaXyz = Ictcp.FromXyz(Ictcp.ToXyz(original, IctcpScalar, XyzConfig), IctcpScalar, XyzConfig);
         AssertUtils.AssertTriplet(viaXyz.Triplet, viaXyz.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, DefaultTolerance);
     }
     
@@ -316,5 +333,14 @@ public class ConversionTests
     {
         var (r255, g255, b255) = triplet;
         return new(r255 / 255.0, g255 / 255.0, b255 / 255.0);
+    }
+
+    // when NaNs occur during CAM16 <-> XYZ conversion
+    // if the NaN occurs during CAM -> XYZ: all value are NaN
+    // if the NaN occurs during XYZ -> CAM: J, H, Q have values and C, M, S are NaN - J is the first item of the triplet
+    private static ColourTriplet ViaCam16WithNaN(ColourTriplet triplet)
+    {
+        var first = double.IsNaN(triplet.First) ? double.NaN : triplet.First;
+        return new(first, double.NaN, double.NaN);
     }
 }

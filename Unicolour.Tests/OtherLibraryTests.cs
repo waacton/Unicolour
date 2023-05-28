@@ -19,7 +19,7 @@ public class OtherLibraryTests
     
     /*
      * OPENCV:
-     * not testing from HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / CAM16 / ICtCp / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
      * (also I've given up trying to make OpenCvSharp work in a dockerised unix environment...)
      */
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
@@ -55,7 +55,7 @@ public class OtherLibraryTests
     
     /*
      * COLOURFUL:
-     * not testing from HSB / HSL / HWB / HSLuv / HPLuv / Oklab / Oklch --- does not support them
+     * not testing from HSB / HSL / HWB / HSLuv / HPLuv / CAM16 / ICtCp / Oklab / Oklch --- does not support them
      * not testing from LUV / LCHuv --- appears to give wrong values (XYZ clamping?)
      * not testing JzAzBz / JzCzHz --- generates different values, due to multiplying XYZ by different values
      * (Jzazbz paper is ambiguous about XYZ input, more details here https://github.com/nschloe/colorio/issues/41 - Unicolour aims to match plots of colour datasets like Colorio)
@@ -85,7 +85,7 @@ public class OtherLibraryTests
     public void ColourfulLchab(ColourTriplet triplet) => AssertTriplet(triplet, Unicolour.FromLchab, ColourfulFactory.FromLchab);
     
     /* COLORMINE:
-     * not testing from HWB / LCHuv / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from HWB / LCHuv / HSLuv / HPLuv / CAM16 / ICtCp / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
      * not testing from RGB [0-1] --- RGB only accepts 0-255
      * not testing from XYZ / xyY / LAB / LCHab / LUV --- does a terrible job
      */
@@ -106,7 +106,7 @@ public class OtherLibraryTests
     
     /*
      * SIXLABORS:
-     * not testing from HWB / LCHab / HSLuv / HPLuv / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
+     * not testing from HWB / LCHab / HSLuv / HPLuv / CAM16 / ICtCp / JzAzBz / JzCzHz / Oklab / Oklch --- does not support them
      * not testing from LAB / LUV / LCHuv --- appears to give wrong values (XYZ clamping?)
      */
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]

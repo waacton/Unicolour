@@ -42,11 +42,12 @@ public class InterpolateConfigurationTests
 
     private static Configuration GetConfig()
     {
-        return new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+        return new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, Cam16Configuration.StandardRgb);
     }
 
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)
     {
+        Assert.That(unicolour1.Config.Id, Is.EqualTo(unicolour2.Config.Id));
         Assert.DoesNotThrow(() => unicolour1.InterpolateRgb(unicolour2, 0.5));
         Assert.DoesNotThrow(() => unicolour2.InterpolateRgb(unicolour1, 0.5));
         Assert.DoesNotThrow(() => unicolour1.InterpolateHsb(unicolour2, 0.5));
@@ -55,6 +56,7 @@ public class InterpolateConfigurationTests
     
     private static void AssertError(Unicolour unicolour1, Unicolour unicolour2)
     {
+        Assert.That(unicolour1.Config.Id, Is.Not.EqualTo(unicolour2.Config.Id));
         Assert.Throws<InvalidOperationException>(() => unicolour1.InterpolateRgb(unicolour2, 0.5));
         Assert.Throws<InvalidOperationException>(() => unicolour2.InterpolateRgb(unicolour1, 0.5));
         Assert.Throws<InvalidOperationException>(() => unicolour1.InterpolateHsb(unicolour2, 0.5));

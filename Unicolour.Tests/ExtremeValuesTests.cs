@@ -15,6 +15,20 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public static void RgbConfiguration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double chromaticity, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint,
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double linear)
+    {
+        var rgbConfig = new RgbConfiguration(
+            new Chromaticity(chromaticity, chromaticity), new Chromaticity(chromaticity, chromaticity), new Chromaticity(chromaticity, chromaticity),
+            new WhitePoint(whitePoint, whitePoint, whitePoint), 
+            _ => linear, _ => linear);
+        var config = new Configuration(rgbConfiguration: rgbConfig);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromRgb(config, 1.00, 0.08, 0.58));
+    }
+    
+    [Test, Combinatorial]
     public static void Hsb(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
@@ -48,6 +62,15 @@ public static class ExtremeValuesTests
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
     {
         AssertUtils.AssertNoPropertyError(Unicolour.FromXyz(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void XyzConfiguration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint)
+    {
+        var xyzConfig = new XyzConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint));
+        var config = new Configuration(xyzConfiguration: xyzConfig);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromXyz(config, 0.4676, 0.2387, 0.2974));
     }
     
     [Test, Combinatorial]
@@ -114,6 +137,26 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public static void Cam16(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void Cam16Configuration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
+    {
+        var cam16Config = new Cam16Configuration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
+        var config = new Configuration(cam16Configuration: cam16Config);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(config, 62.47, 42.60, -1.36));
+    }
+    
+    [Test, Combinatorial]
     public static void Ictcp(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
@@ -123,12 +166,28 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public static void IctcpConfiguration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double scalar)
+    {
+        var config = new Configuration(ictcpScalar: scalar);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromIctcp(config, 0.38, 0.12, 0.19));
+    }
+    
+    [Test, Combinatorial]
     public static void Jzazbz(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
     {
         AssertUtils.AssertNoPropertyError(Unicolour.FromJzazbz(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void JzazbzConfiguration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double scalar)
+    {
+        var config = new Configuration(jzazbzScalar: scalar);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromJzazbz(config, 0.106, 0.107, 0.005));
     }
     
     [Test, Combinatorial]

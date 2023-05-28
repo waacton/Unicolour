@@ -1,38 +1,51 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
 using System;
+using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 
 public static class MatrixTests
 {
-    private static readonly double[,] DataA = {
-        {0.0, 1.0, 10.0},
-        {-10.0, -1.0, 0.0},
-        {-0.25, 0.0, 0.25}
+    private static readonly double[,] DataA =
+    {
+        { 0.0, 1.0, 10.0 },
+        { -10.0, -1.0, 0.0 },
+        { -0.25, 0.0, 0.25 }
     };
     
-    private static readonly double[,] DataB = {
-        {1.0, 2.0, 3.0},
-        {8.0, 9.0, 4.0},
-        {7.0, 6.0, 5.0}
-    };
-    
-    private static readonly double[,] ExpectedMultiplied = {
-        {78.0, 69.0, 54.0},
-        {-18.0, -29.0, -34.0},
-        {1.5, 1.0, 0.5}
-    };
-    
-    private static readonly double[,] ExpectedInverseB = {
-        {-21/48.0, -8/48.0, 19/48.0},
-        {12/48.0, 16/48.0, -20/48.0},
-        {15/48.0, -8/48.0, 7/48.0}
+    private static readonly double[,] DataB =
+    {
+        { 1.0, 2.0, 3.0 },
+        { 8.0, 9.0, 4.0 },
+        { 7.0, 6.0, 5.0 }
     };
 
+    private static readonly double[,] ExpectedMultiplied =
+    {
+        { 78.0, 69.0, 54.0 },
+        { -18.0, -29.0, -34.0 },
+        { 1.5, 1.0, 0.5 }
+    };
+    
+    // DataA has determinant of 0, no inverse
+    private static readonly double[,] ExpectedInverseA =
+    {
+        { double.NaN, double.NaN, double.NaN },
+        { double.NaN, double.NaN, double.NaN },
+        { double.NaN, double.NaN, double.NaN }
+    };
+    
+    private static readonly double[,] ExpectedInverseB =
+    {
+        { -21 / 48.0, -8 / 48.0, 19 / 48.0 },
+        { 12 / 48.0, 16 / 48.0, -20 / 48.0 },
+        { 15 / 48.0, -8 / 48.0, 7 / 48.0 }
+    };
+    
     private static double[,] GetColumn(double[,] data, int index)
     {
-        return new[,] {{data[0, index]}, {data[1, index]}, {data[2, index]}};
+        return new[,] { { data[0, index] }, { data[1, index] }, { data[2, index] } };
     }
 
     [Test]
@@ -52,15 +65,14 @@ public static class MatrixTests
     {
         // 3x3 * 1x3
         var matrixA = new Matrix(DataA);
-        var matrixB = new Matrix(new[,] {{1.0, 2.0, 3.0} });
+        var matrixB = new Matrix(new[,] { { 1.0, 2.0, 3.0 } });
         Assert.Throws<ArgumentException>(() => matrixA.Multiply(matrixB));
     }
 
     [Test]
     public static void InverseThreeByThree()
     {
-        // DataA has determinant of 0, no inverse
-        Assert.Throws<InvalidOperationException>(() => new Matrix(DataA).Inverse());
+        AssertMatrixInverse(DataA, ExpectedInverseA);
         AssertMatrixInverse(DataB, ExpectedInverseB);
     }
     
@@ -73,8 +85,8 @@ public static class MatrixTests
             {1.0, 2.0},
             {3.0, 4.0}
         });
-        var threeByOne = new Matrix(new[,] {{1.0}, {2.0}, {3.0}});
-        var oneByThree = new Matrix(new[,] {{1.0, 2.0, 3.0}});
+        var threeByOne = new Matrix(new[,] { { 1.0 }, { 2.0 }, { 3.0 } });
+        var oneByThree = new Matrix(new[,] { { 1.0, 2.0, 3.0 } });
         
         Assert.Throws<InvalidOperationException>(() => twoByTwo.Inverse());
         Assert.Throws<InvalidOperationException>(() => threeByOne.Inverse());
@@ -182,6 +194,11 @@ public static class MatrixTests
     private static void AssertMatrixEquals(Matrix actual, Matrix<double> actualMathNet, double[,] expected)
     {
         Assert.That(actual.Data, Is.EqualTo(expected));
+        
+        // MathNet handles inverse matrix where determinant is 0 differently, with a combination of NaNs and Infinities
+        // so only compare with MathNet if at least one item is real
+        var containsNumber = expected.Cast<double>().Any(x => !double.IsNaN(x));
+        if (!containsNumber) return;
         Assert.That(actualMathNet.ToArray(), Is.EqualTo(expected).Within(0.0000000000000001));
     }
 }

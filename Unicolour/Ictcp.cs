@@ -39,7 +39,7 @@ public record Ictcp : ColourRepresentation
         { 17933, -17390, -543 }
     }).Scalar(x => x / 4096.0);
 
-    internal static Ictcp FromXyz(Xyz xyz, XyzConfiguration xyzConfig, double ictcpScalar)
+    internal static Ictcp FromXyz(Xyz xyz, double ictcpScalar, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
@@ -50,7 +50,7 @@ public record Ictcp : ColourRepresentation
         return new Ictcp(ictcpMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
     }
 
-    internal static Xyz ToXyz(Ictcp ictcp, XyzConfiguration xyzConfig, double ictcpScalar)
+    internal static Xyz ToXyz(Ictcp ictcp, double ictcpScalar, XyzConfiguration xyzConfig)
     {
         var ictcpMatrix = Matrix.FromTriplet(ictcp.Triplet);
         var lmsPrimeMatrix = M2.Inverse().Multiply(ictcpMatrix);

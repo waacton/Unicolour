@@ -48,14 +48,12 @@ public record Jzazbz : ColourRepresentation
         { +0.199076, +1.096799, -1.295875 }
     });
     
-    internal static Jzazbz FromXyz(Xyz xyz, XyzConfiguration xyzConfig, double jzazbzScalar)
+    internal static Jzazbz FromXyz(Xyz xyz, double jzazbzScalar, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
         var d65ScaledMatrix = d65Matrix.Scalar(x => Math.Max(x * jzazbzScalar, 0));
-        var x65 = d65ScaledMatrix[0, 0];
-        var y65 = d65ScaledMatrix[1, 0];
-        var z65 = d65ScaledMatrix[2, 0];
+        var (x65, y65, z65) = d65ScaledMatrix.ToTriplet();
         
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
@@ -63,16 +61,14 @@ public record Jzazbz : ColourRepresentation
         var lmsMatrix = M1.Multiply(xyz65PrimeMatrix);
         var lmsPrimeMatrix = lmsMatrix.Scalar(Pq.Jzazbz.InverseEotf);
         var izazbzMatrix = M2.Multiply(lmsPrimeMatrix);
-        
-        var iz = izazbzMatrix[0, 0];
-        var az = izazbzMatrix[1, 0];
-        var bz = izazbzMatrix[2, 0];
+
+        var (iz, az, bz) = izazbzMatrix.ToTriplet();
         var jz = (1 + d) * iz / (1 + d * iz) - d0;
         return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(xyz));
     }
     
     // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
-    internal static Xyz ToXyz(Jzazbz jzazbz, XyzConfiguration xyzConfig, double jzazbzScalar)
+    internal static Xyz ToXyz(Jzazbz jzazbz, double jzazbzScalar, XyzConfiguration xyzConfig)
     {
         var (jz, az, bz) = jzazbz.Triplet;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
@@ -80,10 +76,8 @@ public record Jzazbz : ColourRepresentation
         var lmsPrimeMatrix = M2.Inverse().Multiply(izazbzMatrix);
         var lmsMatrix = lmsPrimeMatrix.Scalar(Pq.Jzazbz.Eotf);
         var xyz65PrimeMatrix = M1.Inverse().Multiply(lmsMatrix);
-        var x65Prime = xyz65PrimeMatrix[0, 0];
-        var y65Prime = xyz65PrimeMatrix[1, 0];
-        var z65Prime = xyz65PrimeMatrix[2, 0];
-        
+        var (x65Prime, y65Prime, z65Prime) = xyz65PrimeMatrix.ToTriplet();
+
         var x65 = (x65Prime + (b - 1) * z65Prime) / b;
         var y65 = (y65Prime + (g - 1) * x65) / g;
         var z65 = z65Prime;

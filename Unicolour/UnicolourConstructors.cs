@@ -86,12 +86,6 @@ public partial class Unicolour
     public static Unicolour FromHpluv(Configuration config, double h, double s, double l, double alpha = 1.0) => new(config, new Hpluv(h, s, l), new Alpha(alpha));
     internal static Unicolour FromHpluv(Configuration config, ColourMode colourMode, double h, double s, double l, double alpha = 1.0) => new(config, new Hpluv(h, s, l, colourMode), new Alpha(alpha));
 
-    public static Unicolour FromCam16(double j, double a, double b, double alpha = 1.0) => FromCam16(Configuration.Default, j, a, b, alpha);
-    public static Unicolour FromCam16((double j, double a, double b) tuple, double alpha = 1.0) => FromCam16(Configuration.Default, tuple.j, tuple.a, tuple.b, alpha);
-    public static Unicolour FromCam16(Configuration config, (double j, double a, double b) tuple, double alpha = 1.0) => FromCam16(config, tuple.j, tuple.a, tuple.b, alpha);
-    public static Unicolour FromCam16(Configuration config, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(j, a, b, config.Cam16), new Alpha(alpha));
-    internal static Unicolour FromCam16(Configuration config, ColourMode colourMode, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(new Cam16Ucs(j, a, b), config.Cam16, colourMode), new Alpha(alpha));
-    
     public static Unicolour FromIctcp(double i, double ct, double cp, double alpha = 1.0) => FromIctcp(Configuration.Default, i, ct, cp, alpha);
     public static Unicolour FromIctcp((double i, double ct, double cp) tuple, double alpha = 1.0) => FromIctcp(Configuration.Default, tuple.i, tuple.ct, tuple.cp, alpha);
     public static Unicolour FromIctcp(Configuration config, (double i, double ct, double cp) tuple, double alpha = 1.0) => FromIctcp(config, tuple.i, tuple.ct, tuple.cp, alpha);
@@ -121,4 +115,16 @@ public partial class Unicolour
     public static Unicolour FromOklch(Configuration config, (double l, double c, double h) tuple, double alpha = 1.0) => FromOklch(config, tuple.l, tuple.c, tuple.h, alpha);
     public static Unicolour FromOklch(Configuration config, double l, double c, double h, double alpha = 1.0) => new(config, new Oklch(l, c, h), new Alpha(alpha));
     internal static Unicolour FromOklch(Configuration config, ColourMode colourMode, double l, double c, double h, double alpha = 1.0) => new(config, new Oklch(l, c, h, colourMode), new Alpha(alpha));
+    
+    public static Unicolour FromCam02(double j, double a, double b, double alpha = 1.0) => FromCam02(Configuration.Default, j, a, b, alpha);
+    public static Unicolour FromCam02((double j, double a, double b) tuple, double alpha = 1.0) => FromCam02(Configuration.Default, tuple.j, tuple.a, tuple.b, alpha);
+    public static Unicolour FromCam02(Configuration config, (double j, double a, double b) tuple, double alpha = 1.0) => FromCam02(config, tuple.j, tuple.a, tuple.b, alpha);
+    public static Unicolour FromCam02(Configuration config, double j, double a, double b, double alpha = 1.0) => new(config, new Cam02(j, a, b, config.Cam), new Alpha(alpha));
+    internal static Unicolour FromCam02(Configuration config, ColourMode colourMode, double j, double a, double b, double alpha = 1.0) => new(config, new Cam02(new Cam.Ucs(j, a, b), config.Cam, colourMode), new Alpha(alpha));
+    
+    public static Unicolour FromCam16(double j, double a, double b, double alpha = 1.0) => FromCam16(Configuration.Default, j, a, b, alpha);
+    public static Unicolour FromCam16((double j, double a, double b) tuple, double alpha = 1.0) => FromCam16(Configuration.Default, tuple.j, tuple.a, tuple.b, alpha);
+    public static Unicolour FromCam16(Configuration config, (double j, double a, double b) tuple, double alpha = 1.0) => FromCam16(config, tuple.j, tuple.a, tuple.b, alpha);
+    public static Unicolour FromCam16(Configuration config, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(j, a, b, config.Cam), new Alpha(alpha));
+    internal static Unicolour FromCam16(Configuration config, ColourMode colourMode, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(new Cam.Ucs(j, a, b), config.Cam, colourMode), new Alpha(alpha));
 }

@@ -9,7 +9,7 @@ public class ConversionTests
 {
     private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
-    private static readonly Cam16Configuration Cam16Config = Cam16Configuration.StandardRgb;
+    private static readonly CamConfiguration CamConfig = CamConfiguration.StandardRgb;
     private const double IctcpScalar = 100;
     private const double JzazbzScalar = 100;
 
@@ -19,79 +19,83 @@ public class ConversionTests
     private const double HslTolerance = 0.0000000001;
     private const double XyzTolerance = 0.0000000005;
     private const double LuvTolerance = 0.00000001;
-    private const double Cam16Tolerance = 0.00000001;
     private const double JzazbzTolerance = 0.00000005;
     private const double OklabTolerance = 0.000005;
+    private const double Cam02Tolerance = 0.0000001;
+    private const double Cam16Tolerance = 0.00000001;
 
-    
-    [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))] // no point doing this test starting with Wikipedia's HSB / HSL values since they're rounded
-    public void NamedColoursMatchRgbConversion(TestColour namedColour) => AssertRgbConversion(namedColour);
+    // no point doing this test starting with Wikipedia's HSB / HSL values since they're rounded
+    [TestCaseSource(typeof(NamedColours), nameof(Utils.NamedColours.All))]
+    public void NamedColours(TestColour namedColour) => AssertRgbConversion(namedColour);
 
-    [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
-    public void RgbNamedSameAfterRoundTripConversion(TestColour namedColour) => AssertRgbRoundTrip(namedColour);
+    [TestCaseSource(typeof(NamedColours), nameof(Utils.NamedColours.All))]
+    public void RgbNamedRoundTrip(TestColour namedColour) => AssertRgbRoundTrip(namedColour);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
-    public void Rgb255SameAfterRoundTripConversion(ColourTriplet triplet) => AssertRgb255RoundTrip(triplet);
+    public void Rgb255RoundTrip(ColourTriplet triplet) => AssertRgb255RoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
-    public void RgbSameAfterRoundTripConversion(ColourTriplet triplet) => AssertRgbRoundTrip(triplet);
+    public void RgbRoundTrip(ColourTriplet triplet) => AssertRgbRoundTrip(triplet);
 
-    [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
-    public void HsbNamedSameAfterRoundTripConversion(TestColour namedColour) => AssertHsbRoundTrip(namedColour);
+    [TestCaseSource(typeof(NamedColours), nameof(Utils.NamedColours.All))]
+    public void HsbNamedRoundTrip(TestColour namedColour) => AssertHsbRoundTrip(namedColour);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HsbTriplets))]
-    public void HsbSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHsbRoundTrip(triplet);
+    public void HsbRoundTrip(ColourTriplet triplet) => AssertHsbRoundTrip(triplet);
     
-    [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
-    public void HslNamedSameAfterRoundTripConversion(TestColour namedColour) => AssertHslRoundTrip(namedColour);
+    [TestCaseSource(typeof(NamedColours), nameof(Utils.NamedColours.All))]
+    public void HslNamedRoundTrip(TestColour namedColour) => AssertHslRoundTrip(namedColour);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HslTriplets))]
-    public void HslSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHslRoundTrip(triplet);
+    public void HslRoundTrip(ColourTriplet triplet) => AssertHslRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HwbTriplets))]
-    public void HwbSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHwbRoundTrip(triplet);
+    public void HwbRoundTrip(ColourTriplet triplet) => AssertHwbRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
-    public void XyzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertXyzRoundTrip(triplet);
+    public void XyzRoundTrip(ColourTriplet triplet) => AssertXyzRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
-    public void XyySameAfterRoundTripConversion(ColourTriplet triplet) => AssertXyyRoundTrip(triplet);
+    public void XyyRoundTrip(ColourTriplet triplet) => AssertXyyRoundTrip(triplet);
 
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LabTriplets))]
-    public void LabSameAfterRoundTripConversion(ColourTriplet triplet) => AssertLabRoundTrip(triplet);
+    public void LabRoundTrip(ColourTriplet triplet) => AssertLabRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LchabTriplets))]
-    public void LchabSameAfterRoundTripConversion(ColourTriplet triplet) => AssertLchabRoundTrip(triplet);
+    public void LchabRoundTrip(ColourTriplet triplet) => AssertLchabRoundTrip(triplet);
 
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LuvTriplets))]
-    public void LuvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertLuvRoundTrip(triplet);
+    public void LuvRoundTrip(ColourTriplet triplet) => AssertLuvRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LchuvTriplets))]
-    public void LchuvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertLchuvRoundTrip(triplet);
+    public void LchuvRoundTrip(ColourTriplet triplet) => AssertLchuvRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HsluvTriplets))]
-    public void HsluvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHsluvRoundTrip(triplet);
+    public void HsluvRoundTrip(ColourTriplet triplet) => AssertHsluvRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HpluvTriplets))]
-    public void HpluvSameAfterRoundTripConversion(ColourTriplet triplet) => AssertHpluvRoundTrip(triplet);
-    
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Cam16Triplets))]
-    public void Cam16SameAfterRoundTripConversion(ColourTriplet triplet) => AssertCam16RoundTrip(triplet);
-    
+    public void HpluvRoundTrip(ColourTriplet triplet) => AssertHpluvRoundTrip(triplet);
+
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.IctcpTriplets))]
-    public void IctcpSameAfterRoundTripConversion(ColourTriplet triplet) => AssertIctcpRoundTrip(triplet);
+    public void IctcpRoundTrip(ColourTriplet triplet) => AssertIctcpRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.JzazbzTriplets))]
-    public void JzazbzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertJzazbzRoundTrip(triplet);
+    public void JzazbzRoundTrip(ColourTriplet triplet) => AssertJzazbzRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.JzczhzTriplets))]
-    public void JzczhzSameAfterRoundTripConversion(ColourTriplet triplet) => AssertJzczhzRoundTrip(triplet);
+    public void JzczhzRoundTrip(ColourTriplet triplet) => AssertJzczhzRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklabTriplets))]
-    public void OklabSameAfterRoundTripConversion(ColourTriplet triplet) => AssertOklabRoundTrip(triplet);
+    public void OklabRoundTrip(ColourTriplet triplet) => AssertOklabRoundTrip(triplet);
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklchTriplets))]
-    public void OklchSameAfterRoundTripConversion(ColourTriplet triplet) => AssertOklchRoundTrip(triplet);
+    public void OklchRoundTrip(ColourTriplet triplet) => AssertOklchRoundTrip(triplet);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Cam02Triplets))]
+    public void Cam02RoundTrip(ColourTriplet triplet) => AssertCam02RoundTrip(triplet);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Cam16Triplets))]
+    public void Cam16RoundTrip(ColourTriplet triplet) => AssertCam16RoundTrip(triplet);
     
     private static void AssertRgbConversion(TestColour namedColour)
     {
@@ -194,11 +198,7 @@ public class ConversionTests
         
         var viaLuv = Luv.ToXyz(Luv.FromXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertTriplet(viaLuv.Triplet, original.Triplet, XyzTolerance);
-        
-        // CAM16 -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
-        var viaCam16 = Cam16.ToXyz(Cam16.FromXyz(original, Cam16Config,  XyzConfig), Cam16Config, XyzConfig);
-        AssertUtils.AssertTriplet(viaCam16.Triplet, viaCam16.IsNaN ? ViaCam16WithNaN(viaCam16.Triplet) : original.Triplet, XyzTolerance);
-        
+
         var viaIctcp = Ictcp.ToXyz(Ictcp.FromXyz(original, IctcpScalar, XyzConfig), IctcpScalar, XyzConfig);
         AssertUtils.AssertTriplet(viaIctcp.Triplet, viaIctcp.Triplet, XyzTolerance);
         
@@ -207,6 +207,14 @@ public class ConversionTests
         
         var viaOklab = Oklab.ToXyz(Oklab.FromXyz(original, XyzConfig), XyzConfig);
         AssertUtils.AssertTriplet(viaOklab.Triplet, original.Triplet, XyzTolerance);
+        
+        // CAM02 -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaCam02 = Cam02.ToXyz(Cam02.FromXyz(original, CamConfig,  XyzConfig), CamConfig, XyzConfig);
+        AssertUtils.AssertTriplet(viaCam02.Triplet, viaCam02.IsNaN ? ViaCamWithNaN(viaCam02.Triplet) : original.Triplet, XyzTolerance);
+        
+        // CAM16 -> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaCam16 = Cam16.ToXyz(Cam16.FromXyz(original, CamConfig,  XyzConfig), CamConfig, XyzConfig);
+        AssertUtils.AssertTriplet(viaCam16.Triplet, viaCam16.IsNaN ? ViaCamWithNaN(viaCam16.Triplet) : original.Triplet, XyzTolerance);
     }
     
     private static void AssertXyyRoundTrip(ColourTriplet triplet) => AssertXyyRoundTrip(new Xyy(triplet.First, triplet.Second, triplet.Third));
@@ -269,15 +277,7 @@ public class ConversionTests
         var viaLch = Hpluv.FromLchuv(Hpluv.ToLchuv(original));
         AssertUtils.AssertTriplet(viaLch.Triplet, original.Triplet, DefaultTolerance);
     }
-    
-    private static void AssertCam16RoundTrip(ColourTriplet triplet) => AssertCam16RoundTrip(new Cam16(triplet.First, triplet.Second, triplet.Third, Cam16Config));
-    private static void AssertCam16RoundTrip(Cam16 original)
-    {
-        // CAM16 <-> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
-        var viaXyz = Cam16.FromXyz(Cam16.ToXyz(original, Cam16Config, XyzConfig), Cam16Config, XyzConfig);
-        AssertUtils.AssertTriplet(viaXyz.Triplet, viaXyz.IsNaN ? ViaCam16WithNaN(viaXyz.Triplet) : original.Triplet, Cam16Tolerance);
-    }
-    
+
     private static void AssertIctcpRoundTrip(ColourTriplet triplet) => AssertIctcpRoundTrip(new Ictcp(triplet.First, triplet.Second, triplet.Third));
     private static void AssertIctcpRoundTrip(Ictcp original)
     {
@@ -322,6 +322,22 @@ public class ConversionTests
         var viaOklab = Oklch.FromOklab(Oklch.ToOklab(original));
         AssertUtils.AssertTriplet(viaOklab.Triplet, original.Triplet, DefaultTolerance);
     }
+    
+    private static void AssertCam02RoundTrip(ColourTriplet triplet) => AssertCam02RoundTrip(new Cam02(triplet.First, triplet.Second, triplet.Third, CamConfig));
+    private static void AssertCam02RoundTrip(Cam02 original)
+    {
+        // CAM <-> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaXyz = Cam02.FromXyz(Cam02.ToXyz(original, CamConfig, XyzConfig), CamConfig, XyzConfig);
+        AssertUtils.AssertTriplet(viaXyz.Triplet, viaXyz.IsNaN ? ViaCamWithNaN(viaXyz.Triplet) : original.Triplet, Cam02Tolerance);
+    }
+    
+    private static void AssertCam16RoundTrip(ColourTriplet triplet) => AssertCam16RoundTrip(new Cam16(triplet.First, triplet.Second, triplet.Third, CamConfig));
+    private static void AssertCam16RoundTrip(Cam16 original)
+    {
+        // CAM <-> XYZ often produces NaNs due to a negative number to a fractional power in the conversion process
+        var viaXyz = Cam16.FromXyz(Cam16.ToXyz(original, CamConfig, XyzConfig), CamConfig, XyzConfig);
+        AssertUtils.AssertTriplet(viaXyz.Triplet, viaXyz.IsNaN ? ViaCamWithNaN(viaXyz.Triplet) : original.Triplet, Cam16Tolerance);
+    }
 
     private static ColourTriplet GetRgbTripletFromHex(string hex)
     {
@@ -334,11 +350,11 @@ public class ConversionTests
         var (r255, g255, b255) = triplet;
         return new(r255 / 255.0, g255 / 255.0, b255 / 255.0);
     }
-
-    // when NaNs occur during CAM16 <-> XYZ conversion
+    
+    // when NaNs occur during CAM <-> XYZ conversion
     // if the NaN occurs during CAM -> XYZ: all value are NaN
     // if the NaN occurs during XYZ -> CAM: J, H, Q have values and C, M, S are NaN - J is the first item of the triplet
-    private static ColourTriplet ViaCam16WithNaN(ColourTriplet triplet)
+    private static ColourTriplet ViaCamWithNaN(ColourTriplet triplet)
     {
         var first = double.IsNaN(triplet.First) ? double.NaN : triplet.First;
         return new(first, double.NaN, double.NaN);

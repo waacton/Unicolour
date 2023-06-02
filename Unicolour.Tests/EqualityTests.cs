@@ -103,15 +103,7 @@ public class EqualityTests
         var unicolour2 = Unicolour.FromHpluv(unicolour1.Hpluv.Triplet.Tuple, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
-    
-    [Test]
-    public void EqualCam16GivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam16();
-        var unicolour2 = Unicolour.FromCam16(unicolour1.Cam16.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
+
     [Test]
     public void EqualIctcpGivesEqualObjects()
     {
@@ -149,6 +141,22 @@ public class EqualityTests
     {
         var unicolour1 = RandomColours.UnicolourFromOklch();
         var unicolour2 = Unicolour.FromOklch(unicolour1.Oklch.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualCam02GivesEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromCam02();
+        var unicolour2 = Unicolour.FromCam02(unicolour1.Cam02.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
+    public void EqualCam16GivesEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromCam16();
+        var unicolour2 = Unicolour.FromCam16(unicolour1.Cam16.Triplet.Tuple, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
 
@@ -259,16 +267,7 @@ public class EqualityTests
         var unicolour2 = Unicolour.FromHpluv(differentTuple, unicolour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hpluv.Triplet);
     }
-    
-    [Test]
-    public void NotEqualCam16GivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam16();
-        var differentTuple = GetDifferent(unicolour1.Cam16.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromCam16(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Cam16.Triplet);
-    }
-    
+
     [Test]
     public void NotEqualIctcpGivesNotEqualObjects()
     {
@@ -313,6 +312,24 @@ public class EqualityTests
         var unicolour2 = Unicolour.FromOklch(differentTuple, unicolour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Oklch.Triplet);
     }
+        
+    [Test]
+    public void NotEqualCam02GivesNotEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromCam02();
+        var differentTuple = GetDifferent(unicolour1.Cam02.Triplet, 1.0).Tuple;
+        var unicolour2 = Unicolour.FromCam02(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Cam02.Triplet);
+    }
+        
+    [Test]
+    public void NotEqualCam16GivesNotEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromCam16();
+        var differentTuple = GetDifferent(unicolour1.Cam16.Triplet, 1.0).Tuple;
+        var unicolour2 = Unicolour.FromCam16(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Cam16.Triplet);
+    }
     
     [Test]
     public void DifferentConfigurationObjects()
@@ -325,8 +342,8 @@ public class EqualityTests
             Companding.StandardRgb.FromLinear,
             Companding.StandardRgb.ToLinear);
         var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05));
-        var cam16Config1 = new Cam16Configuration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark);
-        var config1 = new Configuration(rgbConfig1, xyzConfig1, cam16Config1);
+        var camConfig1 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark);
+        var config1 = new Configuration(rgbConfig1, xyzConfig1, camConfig1);
         
         var rgbConfig2 = new RgbConfiguration(
             Chromaticity.StandardRgb.R,
@@ -336,8 +353,8 @@ public class EqualityTests
             Companding.StandardRgb.FromLinear,
             Companding.StandardRgb.ToLinear);
         var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001));
-        var cam16Config2 = new Cam16Configuration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim);
-        var config2 = new Configuration(rgbConfig2, xyzConfig2, cam16Config2);
+        var camConfig2 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim);
+        var config2 = new Configuration(rgbConfig2, xyzConfig2, camConfig2);
 
         AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
         AssertNotEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
@@ -349,7 +366,7 @@ public class EqualityTests
         AssertNotEqual(config1, config2);
         AssertNotEqual(config1.Rgb, config2.Rgb);
         AssertNotEqual(config1.Xyz, config2.Xyz);
-        AssertNotEqual(config1.Cam16, config2.Cam16);
+        AssertNotEqual(config1.Cam, config2.Cam);
     }
     
     [Test]
@@ -388,12 +405,13 @@ public class EqualityTests
         AssertEqual(unicolour1.Lchuv, unicolour2.Lchuv);
         AssertEqual(unicolour1.Hsluv, unicolour2.Hsluv);
         AssertEqual(unicolour1.Hpluv, unicolour2.Hpluv);
-        AssertEqual(unicolour1.Cam16, unicolour2.Cam16);
         AssertEqual(unicolour1.Ictcp, unicolour2.Ictcp);
         AssertEqual(unicolour1.Jzazbz, unicolour2.Jzazbz);
         AssertEqual(unicolour1.Jzczhz, unicolour2.Jzczhz);
         AssertEqual(unicolour1.Oklab, unicolour2.Oklab);
         AssertEqual(unicolour1.Oklch, unicolour2.Oklch);
+        AssertEqual(unicolour1.Cam02, unicolour2.Cam02);
+        AssertEqual(unicolour1.Cam16, unicolour2.Cam16);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Hex, unicolour2.Hex);
         AssertEqual(unicolour1.IsDisplayable, unicolour2.IsDisplayable);

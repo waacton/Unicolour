@@ -7,7 +7,8 @@ using Wacton.Unicolour.Tests.Utils;
 
 public static class GreyscaleTests
 {
-    private static readonly List<ColourSpace> NaNProducingSpaces = new() { ColourSpace.Cam16, ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz };
+    private static readonly List<ColourSpace> NaNProducingSpaces = new()
+        { ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16 };
 
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(-0.00000000001, 0.0, -0.0, true)]
@@ -138,13 +139,6 @@ public static class GreyscaleTests
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 0.99999999999, false)]
     public static void Hpluv(double h, double s, double l, bool expected) => AssertUnicolour(Unicolour.FromHpluv(h, s, l), expected);
-    
-    [TestCase(50.0, 0.0, 0.0, true)]
-    [TestCase(50.0, 0.00000000001, 0.0, false)]
-    [TestCase(50.0, -0.00000000001, 0.0, false)]
-    [TestCase(50.0, 0.0, 0.00000000001, false)]
-    [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public static void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam16(j, a, b), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
@@ -188,6 +182,20 @@ public static class GreyscaleTests
     [TestCase(1.00000000001, 0.25, 180.0, true)]
     [TestCase(0.99999999999, 0.25, 180.0, false)]
     public static void Oklch(double l, double c, double h, bool expected) => AssertUnicolour(Unicolour.FromOklch(l, c, h), expected);
+    
+    [TestCase(50.0, 0.0, 0.0, true)]
+    [TestCase(50.0, 0.00000000001, 0.0, false)]
+    [TestCase(50.0, -0.00000000001, 0.0, false)]
+    [TestCase(50.0, 0.0, 0.00000000001, false)]
+    [TestCase(50.0, 0.0, -0.00000000001, false)]
+    public static void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam02(j, a, b), expected);
+    
+    [TestCase(50.0, 0.0, 0.0, true)]
+    [TestCase(50.0, 0.00000000001, 0.0, false)]
+    [TestCase(50.0, -0.00000000001, 0.0, false)]
+    [TestCase(50.0, 0.0, 0.00000000001, false)]
+    [TestCase(50.0, 0.0, -0.00000000001, false)]
+    public static void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam16(j, a, b), expected);
 
     private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
     {

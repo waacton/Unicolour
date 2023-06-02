@@ -14,12 +14,13 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Lchuv? lchuv;
     private Hsluv? hsluv;
     private Hpluv? hpluv;
-    private Cam16? cam16;
     private Ictcp? ictcp;
     private Jzazbz? jzazbz;
     private Jzczhz? jzczhz;
     private Oklab? oklab;
     private Oklch? oklch;
+    private Cam02? cam02;
+    private Cam16? cam16;
     
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
@@ -35,12 +36,13 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Lchuv Lchuv => Get<Lchuv>(ColourSpace.Lchuv);
     public Hsluv Hsluv => Get<Hsluv>(ColourSpace.Hsluv);
     public Hpluv Hpluv => Get<Hpluv>(ColourSpace.Hpluv);
-    public Cam16 Cam16 => Get<Cam16>(ColourSpace.Cam16);
     public Ictcp Ictcp => Get<Ictcp>(ColourSpace.Ictcp);
     public Jzazbz Jzazbz => Get<Jzazbz>(ColourSpace.Jzazbz);
     public Jzczhz Jzczhz => Get<Jzczhz>(ColourSpace.Jzczhz);
     public Oklab Oklab => Get<Oklab>(ColourSpace.Oklab);
     public Oklch Oklch => Get<Oklch>(ColourSpace.Oklch);
+    public Cam02 Cam02 => Get<Cam02>(ColourSpace.Cam02);
+    public Cam16 Cam16 => Get<Cam16>(ColourSpace.Cam16);
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 

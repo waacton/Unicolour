@@ -7,7 +7,7 @@ using OpenCvSharp;
 using Wacton.Unicolour.Tests.Utils;
 
 /*
- * OpenCV does not support HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / CAM16 / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch
+ * OpenCV does not support HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16
  * OpenCV does not expose linear RGB
  * OpenCV RGB -> XYZ expects to linear RGB values (that have not been companded)
  * OpenCV XYZ -> RGB actually converts to linear RGB (not companded)

@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Cam16, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch }
+internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16 }
 
 public partial class Unicolour
 {
@@ -25,12 +25,13 @@ public partial class Unicolour
         { typeof(Lchuv), ColourSpace.Lchuv },
         { typeof(Hsluv), ColourSpace.Hsluv },
         { typeof(Hpluv), ColourSpace.Hpluv },
-        { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Ictcp), ColourSpace.Ictcp },
         { typeof(Jzazbz), ColourSpace.Jzazbz },
         { typeof(Jzczhz), ColourSpace.Jzczhz },
         { typeof(Oklab), ColourSpace.Oklab },
-        { typeof(Oklch), ColourSpace.Oklch }
+        { typeof(Oklch), ColourSpace.Oklch },
+        { typeof(Cam02), ColourSpace.Cam02 },
+        { typeof(Cam16), ColourSpace.Cam16 }
     };
 
     internal List<ColourRepresentation> GetRepresentations(List<ColourSpace> colourSpaces) => colourSpaces.Select(GetRepresentation).ToList();
@@ -52,12 +53,13 @@ public partial class Unicolour
             ColourSpace.Lchuv => Lchuv,
             ColourSpace.Hsluv => Hsluv,
             ColourSpace.Hpluv => Hpluv,
-            ColourSpace.Cam16 => Cam16,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
             ColourSpace.Jzczhz => Jzczhz,
             ColourSpace.Oklab => Oklab,
             ColourSpace.Oklch => Oklch,
+            ColourSpace.Cam02 => Cam02,
+            ColourSpace.Cam16 => Cam16,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -99,12 +101,13 @@ public partial class Unicolour
             ColourSpace.Lchuv => lchuv,
             ColourSpace.Hsluv => hsluv,
             ColourSpace.Hpluv => hpluv,
-            ColourSpace.Cam16 => cam16,
             ColourSpace.Ictcp => ictcp,
             ColourSpace.Jzazbz => jzazbz,
             ColourSpace.Jzczhz => jzczhz,
             ColourSpace.Oklab => oklab,
             ColourSpace.Oklch => oklch,
+            ColourSpace.Cam02 => cam02,
+            ColourSpace.Cam16 => cam16,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -125,12 +128,13 @@ public partial class Unicolour
             ColourSpace.Lchuv => () => lchuv = EvaluateLchuv(),
             ColourSpace.Hsluv => () => hsluv = EvaluateHsluv(),
             ColourSpace.Hpluv => () => hpluv = EvaluateHpluv(),
-            ColourSpace.Cam16 => () => cam16 = EvaluateCam16(),
             ColourSpace.Ictcp => () => ictcp = EvaluateIctcp(),
             ColourSpace.Jzazbz => () => jzazbz = EvaluateJzazbz(),
             ColourSpace.Jzczhz => () => jzczhz = EvaluateJzczhz(),
             ColourSpace.Oklab => () => oklab = EvaluateOklab(),
             ColourSpace.Oklch => () => oklch = EvaluateOklch(),
+            ColourSpace.Cam02 => () => cam02 = EvaluateCam02(),
+            ColourSpace.Cam16 => () => cam16 = EvaluateCam16(),
             _ => throw new ArgumentOutOfRangeException(nameof(targetSpace), targetSpace, null)
         };
 
@@ -206,12 +210,13 @@ public partial class Unicolour
             ColourSpace.Lchuv => Luv.ToXyz(Luv, Config.Xyz),
             ColourSpace.Hsluv => Luv.ToXyz(Luv, Config.Xyz),
             ColourSpace.Hpluv => Luv.ToXyz(Luv, Config.Xyz),
-            ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Config.Cam16, Config.Xyz),
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.IctcpScalar, Config.Xyz),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
             ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
             ColourSpace.Oklab => Oklab.ToXyz(Oklab, Config.Xyz),
             ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz),
+            ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Config.Cam, Config.Xyz),
+            ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Config.Cam, Config.Xyz),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -284,15 +289,6 @@ public partial class Unicolour
             _ => Hpluv.FromLchuv(Lchuv)
         };
     }
-    
-    private Cam16 EvaluateCam16()
-    {
-        return InitialColourSpace switch
-        {
-            ColourSpace.Cam16 => (Cam16)InitialRepresentation,
-            _ => Cam16.FromXyz(Xyz, Config.Cam16, Config.Xyz)
-        };
-    }
 
     private Ictcp EvaluateIctcp()
     {
@@ -338,6 +334,24 @@ public partial class Unicolour
         {
             ColourSpace.Oklch => (Oklch)InitialRepresentation,
             _ => Oklch.FromOklab(Oklab)
+        };
+    }
+    
+    private Cam02 EvaluateCam02()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Cam02 => (Cam02)InitialRepresentation,
+            _ => Cam02.FromXyz(Xyz, Config.Cam, Config.Xyz)
+        };
+    }
+    
+    private Cam16 EvaluateCam16()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Cam16 => (Cam16)InitialRepresentation,
+            _ => Cam16.FromXyz(Xyz, Config.Cam, Config.Xyz)
         };
     }
 }

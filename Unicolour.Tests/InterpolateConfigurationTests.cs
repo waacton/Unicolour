@@ -42,7 +42,7 @@ public class InterpolateConfigurationTests
 
     private static Configuration GetConfig()
     {
-        return new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, Cam16Configuration.StandardRgb);
+        return new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, CamConfiguration.StandardRgb);
     }
 
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)

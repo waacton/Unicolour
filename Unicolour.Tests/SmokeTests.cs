@@ -75,11 +75,6 @@ public static class SmokeTests
     [TestCase(180, 50, 50)]
     public static void UnicolourHpluv(double h, double s, double l) => AssertInit(h, s, l, Unicolour.FromHpluv, Unicolour.FromHpluv, Unicolour.FromHpluv, Unicolour.FromHpluv);
 
-    [TestCase(0, -50, -50)]
-    [TestCase(100, 50, 50)]
-    [TestCase(50, -1, 1)]
-    public static void UnicolourCam16(double j, double a, double b) => AssertInit(j, a, b, Unicolour.FromCam16, Unicolour.FromCam16, Unicolour.FromCam16, Unicolour.FromCam16);
-
     [TestCase(0, -0.5, -0.5)]
     [TestCase(1, 0.5, 0.5)]
     [TestCase(0.5, -0.01, 0.01)]
@@ -105,6 +100,16 @@ public static class SmokeTests
     [TestCase(0.5, 0.25, 180)]
     public static void UnicolourOklch(double l, double c, double h) => AssertInit(l, c, h, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch, Unicolour.FromOklch);
 
+    [TestCase(0, -50, -50)]
+    [TestCase(100, 50, 50)]
+    [TestCase(50, -1, 1)]
+    public static void UnicolourCam02(double j, double a, double b) => AssertInit(j, a, b, Unicolour.FromCam02, Unicolour.FromCam02, Unicolour.FromCam02, Unicolour.FromCam02);
+    
+    [TestCase(0, -50, -50)]
+    [TestCase(100, 50, 50)]
+    [TestCase(50, -1, 1)]
+    public static void UnicolourCam16(double j, double a, double b) => AssertInit(j, a, b, Unicolour.FromCam16, Unicolour.FromCam16, Unicolour.FromCam16, Unicolour.FromCam16);
+    
     private delegate Unicolour FromValues(double first, double second, double third, double alpha = 1.0);
     private delegate Unicolour FromValuesWithConfig(Configuration config, double first, double second, double third, double alpha = 1.0);
     private delegate Unicolour FromTuple((double first, double second, double third) tuple, double alpha = 1.0);

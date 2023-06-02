@@ -1,8 +1,8 @@
 ﻿namespace Wacton.Unicolour;
 
 // NOTE: "discounting" parameter which I've noticed in other implementations
-// is not a parameter in the CAM16 paper (therefore D is always calculated)
-public class Cam16Configuration
+// is not a parameter in the CAM papers (therefore D is always calculated)
+public class CamConfiguration
 {
     public WhitePoint WhitePoint { get; }
     public double AdaptingLuminance { get; } // [L_A] Luminance of adapting field (brightness of the room where the colour is being viewed)
@@ -35,10 +35,10 @@ public class Cam16Configuration
      * - sRGB standard ambient illumination level of 64 lux ~= 4
      * - La = E * R / PI / 5 where E = lux & R = 1 --> 64 / PI / 5
      */
-    public static readonly Cam16Configuration StandardRgb = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(64), 20, Surround.Average);
+    public static readonly CamConfiguration StandardRgb = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(64), 20, Surround.Average);
     internal static double LuxToLuminance(double lux) => lux / Math.PI / 5.0;
     
-    public Cam16Configuration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround)
+    public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround)
     {
         WhitePoint = whitePoint;
         AdaptingLuminance = adaptingLuminance;
@@ -46,7 +46,7 @@ public class Cam16Configuration
         Surround = surround;
     }
     
-    public override string ToString() => $"CAM16 {AdaptingLuminance:f0} {BackgroundLuminance:f0} {Surround}";
+    public override string ToString() => $"CAM {AdaptingLuminance:f0} {BackgroundLuminance:f0} {Surround}";
 }
 
 public enum Surround

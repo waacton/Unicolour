@@ -22,12 +22,13 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIELCh<sub>uv</sub>
 - HSLuv
 - HPLuv
-- CAM16
 - IC<sub>T</sub>C<sub>P</sub>
 - J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
 - J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
 - Oklab
 - Oklch
+- CIECAM02
+- CAM16
 
 Unicolour can be used to calculate colour difference via:
 - ΔE<sub>76</sub> (CIE76)
@@ -64,12 +65,13 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.InterpolateLchuv()`  |
 | HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.InterpolateHsluv()`  |
 | HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.InterpolateHpluv()`  |
-| CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.InterpolateCam16()`  |
 | IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`  | `.Ictcp`       | `.InterpolateIctcp()`  |
 | J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.InterpolateJzazbz()` |
 | J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.InterpolateJzczhz()` |
 | Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.InterpolateOklab()`  |
 | Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`  |
+| CIECAM02                                | `Unicolour.FromCam02()`  | `.Cam02`       | `.InterpolateCam02()`  |
+| CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.InterpolateCam16()`  |
 
 <details>
 <summary>Diagram of colour space relationships</summary>
@@ -109,12 +111,13 @@ var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
 var unicolour = Unicolour.FromHsluv(349.5, 100, 56);
 var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56);
-var unicolour = Unicolour.FromCam16(62.47, +42.60, -1.36);
 var unicolour = Unicolour.FromIctcp(0.38, +0.12, +0.19);
 var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
 var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
+var unicolour = Unicolour.FromCam02(62.86, +40.81, -1.18);
+var unicolour = Unicolour.FromCam16(62.47, +42.60, -1.36);
 ```
 
 4. Get representation of colour in different colour spaces:
@@ -131,12 +134,13 @@ var luv = unicolour.Luv;
 var lchuv = unicolour.Lchuv;
 var hsluv = unicolour.Hsluv;
 var hpluv = unicolour.Hpluv;
-var cam16 = unicolour.Cam16;
 var ictcp = unicolour.Ictcp;
 var jzazbz = unicolour.Jzazbz;
 var jzczhz = unicolour.Jzczhz;
 var oklab = unicolour.Oklab;
 var oklch = unicolour.Oklch;
+var cam02 = unicolour.Cam02;
+var cam16 = unicolour.Cam16;
 ```
 
 5. Interpolate between colours:
@@ -153,12 +157,13 @@ var interpolated = unicolour1.InterpolateLuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateLchuv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsluv(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHpluv(unicolour2, 0.5);
-var interpolated = unicolour1.InterpolateCam16(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateIctcp(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzazbz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateJzczhz(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateCam02(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateCam16(unicolour2, 0.5);
 ```
 
 6. Compare colours:
@@ -218,7 +223,7 @@ var config = new Configuration(rgbConfig, xyzConfig);
 var unicolour = Unicolour.FromRgb255(config, 255, 20, 147);
 ```
 
-Configuration is also available for CAM16 viewing conditions,
+Configuration is also available for CAM02 & CAM16 viewing conditions,
 IC<sub>T</sub>C<sub>P</sub> scalar,
 and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> scalar.
 

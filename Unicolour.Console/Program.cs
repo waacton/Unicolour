@@ -65,12 +65,13 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Lchuv", $"{unicolour.Lchuv}");
     table.AddRow("Hsluv", $"{unicolour.Hsluv}");
     table.AddRow("Hpluv", $"{unicolour.Hpluv}");
-    table.AddRow("Cam16", $"{unicolour.Cam16}");
     table.AddRow("Ictcp", $"{unicolour.Ictcp}");
     table.AddRow("Jzazbz", $"{unicolour.Jzazbz}");
     table.AddRow("Jzczhz", $"{unicolour.Jzczhz}");
     table.AddRow("Oklab", $"{unicolour.Oklab}");
     table.AddRow("Oklch", $"{unicolour.Oklch}");
+    table.AddRow("Cam02", $"{unicolour.Cam02}");
+    table.AddRow("Cam16", $"{unicolour.Cam16}");
     return table;
 }
 

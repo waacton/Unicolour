@@ -32,12 +32,13 @@ public static class LazyEvaluationTests
         new TestCaseData(RandomColours.UnicolourFromLchuv).SetName("Lchuv"),
         new TestCaseData(RandomColours.UnicolourFromHsluv).SetName("Hsluv"),
         new TestCaseData(RandomColours.UnicolourFromHpluv).SetName("Hpluv"),
-        new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16"),
         new TestCaseData(RandomColours.UnicolourFromIctcp).SetName("Ictcp"),
         new TestCaseData(RandomColours.UnicolourFromJzazbz).SetName("Jzazbz"),
         new TestCaseData(RandomColours.UnicolourFromJzczhz).SetName("Jzczhz"),
         new TestCaseData(RandomColours.UnicolourFromOklab).SetName("Oklab"),
-        new TestCaseData(RandomColours.UnicolourFromOklch).SetName("Oklch")
+        new TestCaseData(RandomColours.UnicolourFromOklch).SetName("Oklch"),
+        new TestCaseData(RandomColours.UnicolourFromCam02).SetName("Cam02"),
+        new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16")
     };
     
     [TestCaseSource(nameof(TestCases))]

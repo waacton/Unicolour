@@ -51,10 +51,7 @@ public static class NotNumberTests
 
     [TestCaseSource(nameof(testCases))]
     public static void Hpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
-    
-    [TestCaseSource(nameof(testCases))]
-    public static void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
-    
+
     [TestCaseSource(nameof(testCases))]
     public static void Ictcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
 
@@ -69,6 +66,12 @@ public static class NotNumberTests
 
     [TestCaseSource(nameof(testCases))]
     public static void Oklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
+    
+    [TestCaseSource(nameof(testCases))]
+    public static void Cam02(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam02(j, a, b));
+    
+    [TestCaseSource(nameof(testCases))]
+    public static void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
     
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but treated effectively as NaN

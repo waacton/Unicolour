@@ -57,7 +57,7 @@ public record Jzazbz : ColourRepresentation
         
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
-        var xyz65PrimeMatrix = Matrix.FromTriplet(new(x65Prime, y65Prime, z65));
+        var xyz65PrimeMatrix = Matrix.FromTriplet(x65Prime, y65Prime, z65);
         var lmsMatrix = M1.Multiply(xyz65PrimeMatrix);
         var lmsPrimeMatrix = lmsMatrix.Scalar(Pq.Jzazbz.InverseEotf);
         var izazbzMatrix = M2.Multiply(lmsPrimeMatrix);
@@ -72,7 +72,7 @@ public record Jzazbz : ColourRepresentation
     {
         var (jz, az, bz) = jzazbz.Triplet;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
-        var izazbzMatrix = Matrix.FromTriplet(new(iz, az, bz));
+        var izazbzMatrix = Matrix.FromTriplet(iz, az, bz);
         var lmsPrimeMatrix = M2.Inverse().Multiply(izazbzMatrix);
         var lmsMatrix = lmsPrimeMatrix.Scalar(Pq.Jzazbz.Eotf);
         var xyz65PrimeMatrix = M1.Inverse().Multiply(lmsMatrix);
@@ -81,7 +81,7 @@ public record Jzazbz : ColourRepresentation
         var x65 = (x65Prime + (b - 1) * z65Prime) / b;
         var y65 = (y65Prime + (g - 1) * x65) / g;
         var z65 = z65Prime;
-        var d65ScaledMatrix = Matrix.FromTriplet(new(x65, y65, z65));
+        var d65ScaledMatrix = Matrix.FromTriplet(x65, y65, z65);
         var d65Matrix = d65ScaledMatrix.Scalar(x => x / jzazbzScalar);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(jzazbz));

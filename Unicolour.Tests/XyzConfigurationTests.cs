@@ -295,20 +295,47 @@ public static class XyzConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void Cam16WhitePointRoundTrip(Illuminant cam16Illuminant)
+    public static void Cam02WhitePointRoundTrip(Illuminant camIlluminant)
     {
-        Cam16Configuration Cam16Config(WhitePoint whitePoint, Cam16Configuration baseConfig)
+        CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
         {
             return new(whitePoint, baseConfig.AdaptingLuminance, baseConfig.BackgroundLuminance, baseConfig.Surround);
         }
         
-        var initialCam16Config = Cam16Config(XyzConfiguration.D65.WhitePoint, Cam16Configuration.StandardRgb);
-        var initialCam16 = new Cam16(62.47, 42.60, -1.36, initialCam16Config);
-        var expectedXyz = Cam16.ToXyz(initialCam16, initialCam16Config, XyzConfiguration.D65);
+        var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
+        var initialCam = new Cam02(62.86, 40.81, -1.18, initialCamConfig);
+        var expectedXyz = Cam02.ToXyz(initialCam, initialCamConfig, XyzConfiguration.D65);
         
-        var cam16Config = Cam16Config(WhitePoint.From(cam16Illuminant), Cam16Configuration.StandardRgb);
-        var cam16 = Cam16.FromXyz(expectedXyz, cam16Config, XyzConfiguration.D65);
-        var xyz = Cam16.ToXyz(cam16, cam16Config, XyzConfiguration.D65);
+        var camConfig = CamConfig(WhitePoint.From(camIlluminant), CamConfiguration.StandardRgb);
+        var cam = Cam02.FromXyz(expectedXyz, camConfig, XyzConfiguration.D65);
+        var xyz = Cam02.ToXyz(cam, camConfig, XyzConfiguration.D65);
+        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
+    }
+    
+    [TestCase(Illuminant.A)]
+    [TestCase(Illuminant.C)]
+    [TestCase(Illuminant.D50)]
+    [TestCase(Illuminant.D55)]
+    [TestCase(Illuminant.D65)]
+    [TestCase(Illuminant.D75)]
+    [TestCase(Illuminant.E)]
+    [TestCase(Illuminant.F2)]
+    [TestCase(Illuminant.F7)]
+    [TestCase(Illuminant.F11)]
+    public static void Cam16WhitePointRoundTrip(Illuminant camIlluminant)
+    {
+        CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
+        {
+            return new(whitePoint, baseConfig.AdaptingLuminance, baseConfig.BackgroundLuminance, baseConfig.Surround);
+        }
+        
+        var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
+        var initialCam = new Cam16(62.47, 42.60, -1.36, initialCamConfig);
+        var expectedXyz = Cam16.ToXyz(initialCam, initialCamConfig, XyzConfiguration.D65);
+        
+        var camConfig = CamConfig(WhitePoint.From(camIlluminant), CamConfiguration.StandardRgb);
+        var cam = Cam16.FromXyz(expectedXyz, camConfig, XyzConfiguration.D65);
+        var xyz = Cam16.ToXyz(cam, camConfig, XyzConfiguration.D65);
         AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
 }

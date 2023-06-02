@@ -135,27 +135,7 @@ public static class ExtremeValuesTests
     {
         AssertUtils.AssertNoPropertyError(Unicolour.FromHpluv(first, second, third));
     }
-    
-    [Test, Combinatorial]
-    public static void Cam16(
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
-    {
-        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(first, second, third));
-    }
-    
-    [Test, Combinatorial]
-    public static void Cam16Configuration(
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
-        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
-    {
-        var cam16Config = new Cam16Configuration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
-        var config = new Configuration(cam16Configuration: cam16Config);
-        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(config, 62.47, 42.60, -1.36));
-    }
-    
+
     [Test, Combinatorial]
     public static void Ictcp(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
@@ -215,5 +195,45 @@ public static class ExtremeValuesTests
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
     {
         AssertUtils.AssertNoPropertyError(Unicolour.FromOklch(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void Cam02(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam02(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void Cam16(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(first, second, third));
+    }
+    
+    [Test, Combinatorial]
+    public static void Cam02Configuration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
+    {
+        var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
+        var config = new Configuration(camConfiguration: camConfig);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam02(config, 62.86, 40.81, -1.18));
+    }
+    
+    [Test, Combinatorial]
+    public static void Cam16Configuration(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
+    {
+        var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
+        var config = new Configuration(camConfiguration: camConfig);
+        AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(config, 62.47, 42.60, -1.36));
     }
 }

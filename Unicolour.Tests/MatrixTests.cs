@@ -149,8 +149,11 @@ public static class MatrixTests
             { triplet.Third }
         });
         var matrixFromTriplet = Matrix.FromTriplet(triplet);
+        var matrixFromValues = Matrix.FromTriplet(triplet.First, triplet.Second, triplet.Third);
+
         Assert.That(matrixFromData.ToTriplet(), Is.EqualTo(triplet));
         Assert.That(matrixFromTriplet.ToTriplet(), Is.EqualTo(triplet));
+        Assert.That(matrixFromValues.ToTriplet(), Is.EqualTo(triplet));
     }
     
     [Test]

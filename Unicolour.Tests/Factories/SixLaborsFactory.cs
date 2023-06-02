@@ -18,7 +18,7 @@ using SixLaborsLchuv = SixLabors.ImageSharp.ColorSpaces.CieLchuv;
 using SixLaborsIlluminants = SixLabors.ImageSharp.ColorSpaces.Illuminants;
 
 /*
- * SixLabors does not support HWB / HSLuv / HPLuv / CAM16 / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch
+ * SixLabors does not support HWB / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16
  * SixLabors does not do a great job of converting to or from LAB / LUV
  * SixLabors does not handle very small RGB -> HSB / HSL
  * SixLabors produces unexpected results for XYZ -> HSB / HSL due to clamping RGB during conversion

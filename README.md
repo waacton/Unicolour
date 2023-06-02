@@ -231,17 +231,17 @@ A `Unicolour` can be converted to a different configuration, which enables conve
 
 ```c#
 // pure sRGB green
-var srgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+var srgbConfig = new Configuration(RgbConfiguration.StandardRgb);
 var unicolourSrgb = Unicolour.FromRgb(srgbConfig, 0, 1, 0);                         
 Console.WriteLine(unicolourSrgb.Rgb); // 0.00 1.00 0.00
 
 // pure sRGB green -> Display P3
-var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
+var displayP3Config = new Configuration(RgbConfiguration.DisplayP3);
 var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); 
 Console.WriteLine(unicolourDisplayP3.Rgb); // 0.46 0.99 0.30
 
 // pure sRGB green -> Rec. 2020
-var rec202Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
+var rec202Config = new Configuration(RgbConfiguration.Rec2020);
 var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config);
 Console.WriteLine(unicolourRec2020.Rgb); // 0.57 0.96 0.27
 ```

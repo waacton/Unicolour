@@ -30,6 +30,17 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - CIECAM02
 - CAM16
 
+<details>
+<summary>Diagram of colour space relationships</summary>
+
+![Diagram of colour space relationships](Unicolour/Resources/diagram.png)
+
+This diagram summarises how colour space conversions are implemented in Unicolour.
+Arrows indicate forward transformations from one space to another.
+For each forward transformation there is a corresponding reverse transformation.
+XYZ is considered the root colour space.
+</details>
+
 Unicolour can be used to calculate colour difference via:
 - ΔE<sub>76</sub> (CIE76)
 - ΔE<sub>94</sub> (CIE94)
@@ -72,17 +83,6 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`  |
 | CIECAM02                                | `Unicolour.FromCam02()`  | `.Cam02`       | `.InterpolateCam02()`  |
 | CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.InterpolateCam16()`  |
-
-<details>
-<summary>Diagram of colour space relationships</summary>
-
-![Diagram of colour space relationships](Unicolour/Resources/diagram.png)
-
-This diagram summarises how colour space conversions are implemented in Unicolour.
-Arrows indicate forward transformations from one space to another.
-For each forward transformation there is a corresponding reverse transformation.
-XYZ is considered the root colour space.
-</details>
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)

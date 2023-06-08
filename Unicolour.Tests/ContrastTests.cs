@@ -1,22 +1,19 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 public static class ContrastTests
 {
-    private static readonly Random Random = new();
-    
     [Test]
     public static void KnownContrasts()
     {
-        var black = ColourLimits.Rgb["black"];
-        var white = ColourLimits.Rgb["white"];
-        var red = ColourLimits.Rgb["red"];
-        var green = ColourLimits.Rgb["green"];
-        var blue = ColourLimits.Rgb["blue"];
-        var random = Unicolour.FromRgb(Random.NextDouble(), Random.NextDouble(), Random.NextDouble());
+        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var white = ColourLimits.Rgb[ColourLimit.White];
+        var red = ColourLimits.Rgb[ColourLimit.Red];
+        var green = ColourLimits.Rgb[ColourLimit.Green];
+        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var random = RandomColours.UnicolourFromRgb();
         
         AssertKnownContrast(black, white, 21);
         AssertKnownContrast(red, green, 2.91);
@@ -28,8 +25,8 @@ public static class ContrastTests
     [Test]
     public static void UnconstrainedRgbLuminance()
     {
-        var black = ColourLimits.Rgb["black"];
-        var white = ColourLimits.Rgb["white"];
+        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var white = ColourLimits.Rgb[ColourLimit.White];
         var beyondMinRgb = Unicolour.FromRgb(-0.25, -0.5, -0.75);
         var beyondMaxRgb = Unicolour.FromRgb(1.25, 1.5, 1.75);
         

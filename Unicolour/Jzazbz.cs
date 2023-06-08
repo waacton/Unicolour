@@ -21,8 +21,8 @@ public record Jzazbz : ColourRepresentation
     
     /*
      * JZAZBZ is a transform of XYZ 
-     * Forward: https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
-     * Reverse: https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+     * Forward: https://doi.org/10.1364/OE.25.015131
+     * Reverse: https://doi.org/10.1364/OE.25.015131
      * -------
      * also useful: https://opticapublishing.figshare.com/articles/software/JzAzBz_m/5016299
      */
@@ -67,7 +67,6 @@ public record Jzazbz : ColourRepresentation
         return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(xyz));
     }
     
-    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
     internal static Xyz ToXyz(Jzazbz jzazbz, double jzazbzScalar, XyzConfiguration xyzConfig)
     {
         var (jz, az, bz) = jzazbz.Triplet;

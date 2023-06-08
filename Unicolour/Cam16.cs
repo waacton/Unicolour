@@ -3,9 +3,6 @@
 using static Cam;
 using static Utils;
 
-// TODO: CAM16 colour difference
-// - Euclidean distance between JAB --> ΔE'
-// - ΔE = 1.41 * Math.Pow(ΔE', 0.63)
 public record Cam16 : ColourRepresentation
 {
     protected override int? HueIndex => null;

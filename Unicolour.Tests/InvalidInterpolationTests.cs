@@ -22,7 +22,7 @@ public class InvalidInterpolationTests
     [Test] 
     public void InvalidInterpolationOutput()
     {
-        const string methodName = "UnicolourCreator";
+        const string methodName = "GetConstructor";
         var types = new[] { typeof(ColourSpace) };
         AssertDoesNotThrow(() => InvokeMethod(methodName, types, GoodColourSpace));
         AssertThrows<ArgumentOutOfRangeException>(() => InvokeMethod(methodName, types, BadColourSpace));

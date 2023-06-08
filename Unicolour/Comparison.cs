@@ -135,7 +135,7 @@ public static class Comparison
         return 720 * Math.Sqrt(SquaredDiff(i1, i2) + SquaredDiff(t1, t2) + SquaredDiff(c1, c2));
     }
     
-    // https://opg.optica.org/oe/fulltext.cfm?uri=oe-25-13-15131&id=368272
+    // https://doi.org/10.1364/OE.25.015131
     public static double DeltaEz(this Unicolour reference, Unicolour sample)
     {
         var (jz1, cz1, hz1) = reference.Jzczhz.Triplet;
@@ -155,5 +155,23 @@ public static class Comparison
         return Math.Sqrt(SquaredDiff(a1, a2) + SquaredDiff(b1, b2)) + Math.Abs(l2 - l1);
     }
 
+    // https://doi.org/10.1007/978-1-4419-6190-7_2
+    // currently only support UCS, not LCD or SCD - no need to handle ΔJ / kl since kl = 1
+    public static double DeltaECam02(this Unicolour reference, Unicolour sample)
+    {
+        var (j1, a1, b1) = reference.Cam02.Triplet;
+        var (j2, a2, b2) = sample.Cam02.Triplet;
+        return Math.Sqrt(SquaredDiff(j1, j2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
+    }
+    
+    // https://doi.org/10.1002/col.22131
+    public static double DeltaECam16(this Unicolour reference, Unicolour sample)
+    {
+        var (j1, a1, b1) = reference.Cam16.Triplet;
+        var (j2, a2, b2) = sample.Cam16.Triplet;
+        var deltaE = Math.Sqrt(SquaredDiff(j1, j2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
+        return 1.41 * Math.Pow(deltaE, 0.63);
+    }
+    
     private static double SquaredDiff(double first, double second) => Math.Pow(second - first, 2);
 }

@@ -48,11 +48,12 @@ internal class SixLaborsFactory : ITestColourFactory
         return FromRgb(rgb, name, Tolerances with {Hsb = 0.05, Hsl = 0.05});
     }
 
+    // strange mix of static and non-static converters
     private static TestColour FromRgb(SixLaborsRgb rgb, string name, Tolerances tolerances)
     {
-        var rgbLinear = Converter.ToLinearRgb(rgb);
-        var hsb = Converter.ToHsv(rgb);
-        var hsl = Converter.ToHsl(rgb);
+        var rgbLinear = ColorSpaceConverter.ToLinearRgb(rgb);
+        var hsb = ColorSpaceConverter.ToHsv(rgb);
+        var hsl = ColorSpaceConverter.ToHsl(rgb);
         var xyz = Converter.ToCieXyz(rgb);
         var xyy = Converter.ToCieXyy(rgb);
         var lab = Converter.ToCieLab(rgb);
@@ -64,9 +65,9 @@ internal class SixLaborsFactory : ITestColourFactory
     public TestColour FromHsb(double h, double s, double b, string name)
     {
         var hsb = new SixLaborsHsb((float) h, (float) s, (float) b);
-        var rgb = Converter.ToRgb(hsb);
-        var rgbLinear = Converter.ToLinearRgb(hsb);
-        var hsl = Converter.ToHsl(hsb);
+        var rgb = ColorSpaceConverter.ToRgb(hsb);
+        var rgbLinear = ColorSpaceConverter.ToLinearRgb(hsb);
+        var hsl = ColorSpaceConverter.ToHsl(hsb);
         var xyz = Converter.ToCieXyz(hsb);
         var xyy = Converter.ToCieXyy(hsb);
         var lab = Converter.ToCieLab(hsb);
@@ -78,9 +79,9 @@ internal class SixLaborsFactory : ITestColourFactory
     public TestColour FromHsl(double h, double s, double l, string name)
     {
         var hsl = new SixLaborsHsl((float) h, (float) s, (float) l);
-        var rgb = Converter.ToRgb(hsl);
-        var rgbLinear = Converter.ToLinearRgb(hsl);
-        var hsb = Converter.ToHsv(hsl);
+        var rgb = ColorSpaceConverter.ToRgb(hsl);
+        var rgbLinear = ColorSpaceConverter.ToLinearRgb(hsl);
+        var hsb = ColorSpaceConverter.ToHsv(hsl);
         var xyz = Converter.ToCieXyz(hsl);
         var xyy = Converter.ToCieXyy(hsl);
         var lab = Converter.ToCieLab(hsl);
@@ -97,7 +98,7 @@ internal class SixLaborsFactory : ITestColourFactory
         var xyz = new SixLaborsXyz((float) x, (float) y, (float) z);
         var rgb = Converter.ToRgb(xyz);
         var rgbLinear = Converter.ToLinearRgb(xyz);
-        var xyy = Converter.ToCieXyy(xyz);
+        var xyy = ColorSpaceConverter.ToCieXyy(xyz);
         var lab = Converter.ToCieLab(xyz);
         var luv = Converter.ToCieLuv(xyz);
         var lchuv = Converter.ToCieLchuv(xyz);
@@ -112,7 +113,7 @@ internal class SixLaborsFactory : ITestColourFactory
         var xyy = new SixLaborsXyy((float) x, (float) y, (float) upperY);
         var rgb = Converter.ToRgb(xyy);
         var rgbLinear = Converter.ToLinearRgb(xyy);
-        var xyz = Converter.ToCieXyz(xyy);
+        var xyz = ColorSpaceConverter.ToCieXyz(xyy);
         var lab = Converter.ToCieLab(xyy);
         var luv = Converter.ToCieLuv(xyy);
         var lchuv = Converter.ToCieLchuv(xyy);

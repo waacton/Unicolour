@@ -3,8 +3,6 @@
 using static Cam;
 using static Utils;
 
-// TODO: CAM02 colour difference
-// - Euclidean distance between JAB --> ΔE'
 public record Cam02 : ColourRepresentation
 {
     protected override int? HueIndex => null;

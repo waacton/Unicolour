@@ -36,7 +36,7 @@ public static class Interpolation
         
         var explicitlyGreyscale = !startRepresentation.IsEffectivelyHued && !endRepresentation.IsEffectivelyHued;
         var colourMode = explicitlyGreyscale ? ColourMode.ExplicitGreyscale : ColourMode.Default(triplet.HueIndex);
-        return UnicolourCreator(colourSpace).Invoke(startColour.Config, colourMode, first, second, third, alpha);
+        return GetConstructor(colourSpace).Invoke(startColour.Config, colourMode, first, second, third, alpha);
     }
 
     private static (ColourTriplet start, ColourTriplet end) GetTriplets(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
@@ -102,8 +102,8 @@ public static class Interpolation
         }
     }
 
-    private delegate Unicolour CreateUnicolour(Configuration config, ColourMode colourMode, double first, double second, double third, double alpha = 1.0);
-    private static CreateUnicolour UnicolourCreator(ColourSpace colourSpace)
+    private delegate Unicolour UnicolourConstructor(Configuration config, ColourMode colourMode, double first, double second, double third, double alpha = 1.0);
+    private static UnicolourConstructor GetConstructor(ColourSpace colourSpace)
     {
         return colourSpace switch
         {

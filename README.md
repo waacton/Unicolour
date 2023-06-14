@@ -48,6 +48,8 @@ Unicolour can be used to calculate colour difference via:
 - ΔE<sub>ITP</sub>
 - ΔE<sub>z</sub>
 - ΔE<sub>HyAB</sub>
+- ΔE<sub>CAM02</sub>
+- ΔE<sub>CAM16</sub>
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
@@ -175,6 +177,8 @@ var difference = unicolour1.DeltaE00(unicolour2);
 var difference = unicolour1.DeltaEItp(unicolour2);
 var difference = unicolour1.DeltaEz(unicolour2);
 var difference = unicolour1.DeltaEHyab(unicolour2);
+var difference = unicolour1.DeltaECam02(unicolour2);
+var difference = unicolour1.DeltaECam16(unicolour2);
 ```
 
 See also:

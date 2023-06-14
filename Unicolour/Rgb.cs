@@ -44,7 +44,7 @@ public record Rgb : ColourRepresentation
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var transformationMatrix = RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
         var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
-        var rgbMatrix = rgbLinearMatrix.Scalar(rgbConfig.CompandFromLinear);
+        var rgbMatrix = rgbLinearMatrix.Select(rgbConfig.CompandFromLinear);
         return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourMode.FromRepresentation(xyz));
     }
     

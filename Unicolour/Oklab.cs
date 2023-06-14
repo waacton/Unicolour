@@ -44,7 +44,7 @@ public record Oklab : ColourRepresentation
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
         var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
         var lmsMatrix = M1.Multiply(d65Matrix);
-        var lmsNonLinearMatrix = lmsMatrix.Scalar(CubeRoot);
+        var lmsNonLinearMatrix = lmsMatrix.Select(CubeRoot);
         var labMatrix = M2.Multiply(lmsNonLinearMatrix);
         return new Oklab(labMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
     }
@@ -53,7 +53,7 @@ public record Oklab : ColourRepresentation
     {
         var labMatrix = Matrix.FromTriplet(oklab.Triplet);
         var lmsNonLinearMatrix = M2.Inverse().Multiply(labMatrix);
-        var lmsMatrix = lmsNonLinearMatrix.Scalar(x => Math.Pow(x, 3));
+        var lmsMatrix = lmsNonLinearMatrix.Select(x => Math.Pow(x, 3));
         var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(oklab));

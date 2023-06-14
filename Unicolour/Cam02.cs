@@ -68,7 +68,7 @@ public record Cam02 : ColourRepresentation
         { 460, 451, 288 },
         { 460, -891, -261 },
         { 460, -220, -6300 }
-    }).Scalar(x => x / 1403.0);
+    }).Scale(1 / 1403.0);
     
     private static ViewingConditions ViewingConditions(CamConfiguration camConfig)
     {
@@ -115,7 +115,7 @@ public record Cam02 : ColourRepresentation
 
         // step 1
         var xyzMatrix = Matrix.FromTriplet(xyz.X, xyz.Y, xyz.Z);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, camConfig.WhitePoint).Scalar(x => x * 100);
+        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, camConfig.WhitePoint).Select(x => x * 100);
         var rgb = MCAT02.Multiply(xyzMatrix).ToTriplet();
 
         // step 2
@@ -203,7 +203,7 @@ public record Cam02 : ColourRepresentation
         
         // step 7
         var xyzMatrix = MCAT02.Inverse().Multiply(rgbMatrix);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint).Scalar(x => x / 100.0);
+        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint).Select(x => x / 100.0);
         return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(cam));
     }
 }

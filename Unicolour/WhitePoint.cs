@@ -5,7 +5,7 @@ public record WhitePoint(double X, double Y, double Z)
     public double X { get; } = X;
     public double Y { get; } = Y;
     public double Z { get; } = Z;
-    internal Matrix AsXyzMatrix() => Matrix.FromTriplet(X, Y, Z).Scalar(value => value / 100.0);
+    internal Matrix AsXyzMatrix() => Matrix.FromTriplet(X, Y, Z).Select(x => x / 100.0);
     public override string ToString() => $"({X}, {Y}, {Z})";
 
     public static WhitePoint StandardRgb => From(Illuminant.D65);

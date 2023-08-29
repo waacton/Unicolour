@@ -2,7 +2,7 @@
 
 internal record TestRepresentation : ColourRepresentation
 {
-    internal TestRepresentation(double first, double second, double third, ColourMode colourMode) : base(first, second, third, colourMode) { }
+    internal TestRepresentation(double first, double second, double third, ColourHeritage heritage) : base(first, second, third, heritage) { }
     
     protected override int? HueIndex => null;
     internal override bool IsGreyscale => false;

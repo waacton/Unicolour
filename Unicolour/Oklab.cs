@@ -10,9 +10,9 @@ public record Oklab : ColourRepresentation
     public double B => Third;
     internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
 
-    public Oklab(double l, double a, double b) : this(l, a, b, ColourMode.Unset) {}
-    internal Oklab(ColourTriplet triplet, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, colourMode) {}
-    internal Oklab(double l, double a, double b, ColourMode colourMode) : base(l, a, b, colourMode) {}
+    public Oklab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
+    internal Oklab(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
+    internal Oklab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
 
     protected override string FirstString => $"{L:F2}";
     protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
@@ -46,7 +46,7 @@ public record Oklab : ColourRepresentation
         var lmsMatrix = M1.Multiply(d65Matrix);
         var lmsNonLinearMatrix = lmsMatrix.Select(CubeRoot);
         var labMatrix = M2.Multiply(lmsNonLinearMatrix);
-        return new Oklab(labMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
+        return new Oklab(labMatrix.ToTriplet(), ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(Oklab oklab, XyzConfiguration xyzConfig)
@@ -56,6 +56,6 @@ public record Oklab : ColourRepresentation
         var lmsMatrix = lmsNonLinearMatrix.Select(x => Math.Pow(x, 3));
         var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(oklab));
+        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(oklab));
     }
 }

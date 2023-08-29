@@ -11,9 +11,9 @@ public record Xyz : ColourRepresentation
     // but requires making assumptions about floating-point comparison, which I don't want to do
     internal override bool IsGreyscale => false;
 
-    public Xyz(double x, double y, double z) : this(x, y, z, ColourMode.Unset) {}
-    internal Xyz(ColourTriplet triplet, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, colourMode) {}
-    internal Xyz(double x, double y, double z, ColourMode colourMode) : base(x, y, z, colourMode) {}
+    public Xyz(double x, double y, double z) : this(x, y, z, ColourHeritage.None) {}
+    internal Xyz(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
+    internal Xyz(double x, double y, double z, ColourHeritage heritage) : base(x, y, z, heritage) {}
 
     protected override string FirstString => $"{X:F4}";
     protected override string SecondString => $"{Y:F4}";

@@ -11,8 +11,8 @@ public record Jzazbz : ColourRepresentation
     // i.e. non-lightness axes are zero
     internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
     
-    public Jzazbz(double j, double a, double b) : this(j, a, b, ColourMode.Unset) {}
-    internal Jzazbz(double j, double a, double b, ColourMode colourMode) : base(j, a, b, colourMode) {}
+    public Jzazbz(double j, double a, double b) : this(j, a, b, ColourHeritage.None) {}
+    internal Jzazbz(double j, double a, double b, ColourHeritage heritage) : base(j, a, b, heritage) {}
 
     protected override string FirstString => $"{J:F3}";
     protected override string SecondString => $"{A:+0.000;-0.000;0.000}";
@@ -64,7 +64,7 @@ public record Jzazbz : ColourRepresentation
 
         var (iz, az, bz) = izazbzMatrix.ToTriplet();
         var jz = (1 + d) * iz / (1 + d * iz) - d0;
-        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(xyz));
+        return new Jzazbz(jz, az, bz, ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(Jzazbz jzazbz, double jzazbzScalar, XyzConfiguration xyzConfig)
@@ -83,6 +83,6 @@ public record Jzazbz : ColourRepresentation
         var d65ScaledMatrix = Matrix.FromTriplet(x65, y65, z65);
         var d65Matrix = d65ScaledMatrix.Scale(1 / jzazbzScalar);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(jzazbz));
+        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(jzazbz));
     }
 }

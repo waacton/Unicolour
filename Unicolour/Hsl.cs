@@ -14,10 +14,10 @@ public record Hsl : ColourRepresentation
     protected override double ConstrainedThird => L.Clamp(0.0, 1.0);
     internal override bool IsGreyscale => S <= 0.0 || L is <= 0.0 or >= 1.0;
 
-    public Hsl(double h, double s, double l) : this(h, s, l, ColourMode.Unset) {}
-    internal Hsl(double h, double s, double l, ColourMode colourMode) : base(h, s, l, colourMode) {}
+    public Hsl(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
+    internal Hsl(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
 
-    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
     protected override string SecondString => $"{S * 100:F1}%";
     protected override string ThirdString => $"{L * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -36,7 +36,7 @@ public record Hsl : ColourRepresentation
             ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
             : 0;
 
-        return new Hsl(hue, saturation, lightness, ColourMode.FromRepresentation(hsb));
+        return new Hsl(hue, saturation, lightness, ColourHeritage.From(hsb));
     }
     
     internal static Hsb ToHsb(Hsl hsl)
@@ -47,6 +47,6 @@ public record Hsl : ColourRepresentation
             ? 2 * (1 - lightness / brightness)
             : 0;
 
-        return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hsl));
+        return new Hsb(hue, saturation, brightness, ColourHeritage.From(hsl));
     }
 }

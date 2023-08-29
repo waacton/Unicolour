@@ -14,10 +14,10 @@ public record Hwb : ColourRepresentation
     protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
     internal override bool IsGreyscale => ConstrainedW + ConstrainedB >= 1.0;
 
-    public Hwb(double h, double w, double b) : this(h, w, b, ColourMode.Unset) {}
-    internal Hwb(double h, double w, double b, ColourMode colourMode) : base(h, w, b, colourMode) {}
+    public Hwb(double h, double w, double b) : this(h, w, b, ColourHeritage.None) {}
+    internal Hwb(double h, double w, double b, ColourHeritage heritage) : base(h, w, b, heritage) {}
 
-    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
     protected override string SecondString => $"{W * 100:F1}%";
     protected override string ThirdString => $"{B * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -33,7 +33,7 @@ public record Hwb : ColourRepresentation
         var (hue, s, b) = hsb.ConstrainedTriplet;
         var whiteness = (1 - s) * b;
         var blackness = 1 - b;
-        return new Hwb(hue, whiteness, blackness, ColourMode.FromRepresentation(hsb));
+        return new Hwb(hue, whiteness, blackness, ColourHeritage.From(hsb));
     }
     
     internal static Hsb ToHsb(Hwb hwb)
@@ -53,6 +53,6 @@ public record Hwb : ColourRepresentation
             saturation = brightness == 0.0 ? 0 : 1 - w / brightness;
         }
         
-        return new Hsb(hue, saturation, brightness, ColourMode.FromRepresentation(hwb));
+        return new Hsb(hue, saturation, brightness, ColourHeritage.From(hwb));
     }
 }

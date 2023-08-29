@@ -14,8 +14,8 @@ public record Rgb255 : ColourRepresentation
     protected override double ConstrainedThird => B.Clamp(0, 255);
     internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
 
-    public Rgb255(double r, double g, double b) : this(r, g, b, ColourMode.Unset) {}
-    internal Rgb255(double r, double g, double b, ColourMode colourMode) : base(r, g, b, colourMode) {}
+    public Rgb255(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
+    internal Rgb255(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
 
     protected override string FirstString => $"{R}";
     protected override string SecondString => $"{G}";

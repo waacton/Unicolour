@@ -15,12 +15,12 @@ public record Jzczhz : ColourRepresentation
     // (paper says lightness J is 0 - 1 but seems like it's a scaling of their plot of Rec.2020 gamut - in my tests maxes out after ~0.17)
     internal override bool IsGreyscale => C <= 0.0 || J is <= 0.0 or >= 1.0;
 
-    public Jzczhz(double j, double c, double h) : this(j, c, h, ColourMode.Unset) {}
-    internal Jzczhz(double j, double c, double h, ColourMode colourMode) : base(j, c, h, colourMode) {}
+    public Jzczhz(double j, double c, double h) : this(j, c, h, ColourHeritage.None) {}
+    internal Jzczhz(double j, double c, double h, ColourHeritage heritage) : base(j, c, h, heritage) {}
 
     protected override string FirstString => $"{J:F3}";
     protected override string SecondString => $"{C:F3}";
-    protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string ThirdString => UseAsHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,12 +32,12 @@ public record Jzczhz : ColourRepresentation
     internal static Jzczhz FromJzazbz(Jzazbz jzazbz)
     {
         var (jz, cz, hz) = ToLchTriplet(jzazbz.J, jzazbz.A, jzazbz.B);
-        return new Jzczhz(jz, cz, hz, ColourMode.FromRepresentation(jzazbz));
+        return new Jzczhz(jz, cz, hz, ColourHeritage.From(jzazbz));
     }
     
     internal static Jzazbz ToJzazbz(Jzczhz jzczhz)
     {
         var (jz, az, bz) = FromLchTriplet(jzczhz.ConstrainedTriplet);
-        return new Jzazbz(jz, az, bz, ColourMode.FromRepresentation(jzczhz));
+        return new Jzazbz(jz, az, bz, ColourHeritage.From(jzczhz));
     }
 }

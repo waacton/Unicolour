@@ -12,12 +12,12 @@ public record Oklch : ColourRepresentation
     protected override double ConstrainedThird => H.Modulo(360.0);
     internal override bool IsGreyscale => C <= 0.0 || L is <= 0.0 or >= 1.0;
 
-    public Oklch(double l, double c, double h) : this(l, c, h, ColourMode.Unset) {}
-    internal Oklch(double l, double c, double h, ColourMode colourMode) : base(l, c, h, colourMode) {}
+    public Oklch(double l, double c, double h) : this(l, c, h, ColourHeritage.None) {}
+    internal Oklch(double l, double c, double h, ColourHeritage heritage) : base(l, c, h, heritage) {}
 
     protected override string FirstString => $"{L:F2}";
     protected override string SecondString => $"{C:F2}";
-    protected override string ThirdString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string ThirdString => UseAsHued ? $"{H:F1}°" : "—°";
     public override string ToString() => base.ToString();
     
     /*
@@ -29,12 +29,12 @@ public record Oklch : ColourRepresentation
     internal static Oklch FromOklab(Oklab oklab)
     {
         var (l, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
-        return new Oklch(l, c, h, ColourMode.FromRepresentation(oklab));
+        return new Oklch(l, c, h, ColourHeritage.From(oklab));
     }
     
     internal static Oklab ToOklab(Oklch oklch)
     {
         var (l, a, b) = FromLchTriplet(oklch.ConstrainedTriplet);
-        return new Oklab(l, a, b, ColourMode.FromRepresentation(oklch));
+        return new Oklab(l, a, b, ColourHeritage.From(oklch));
     }
 }

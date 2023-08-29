@@ -33,10 +33,9 @@ public static class Interpolation
         var triplet = InterpolateTriplet(start, end, distance).WithHueModulo();
         var (first, second, third) = triplet;
         var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
+        var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
         
-        var explicitlyGreyscale = !startRepresentation.IsEffectivelyHued && !endRepresentation.IsEffectivelyHued;
-        var colourMode = explicitlyGreyscale ? ColourMode.ExplicitGreyscale : ColourMode.Default(triplet.HueIndex);
-        return GetConstructor(colourSpace).Invoke(startColour.Config, colourMode, first, second, third, alpha);
+        return GetConstructor(colourSpace).Invoke(startColour.Config, heritage, first, second, third, alpha);
     }
 
     private static (ColourTriplet start, ColourTriplet end) GetTriplets(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
@@ -46,17 +45,17 @@ public static class Interpolation
         return startRepresentation.HasHueAxis ? GetTripletsWithHue(startRepresentation, endRepresentation) : (startTriplet, endTriplet);
     }
 
-    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startColourRepresentation, ColourRepresentation endColourRepresentation)
+    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
     {
-        var startTriplet = startColourRepresentation.Triplet;
-        var endTriplet = endColourRepresentation.Triplet;
+        var startTriplet = startRepresentation.Triplet;
+        var endTriplet = endRepresentation.Triplet;
         
         (ColourTriplet, ColourTriplet) HueResult(double startHue, double endHue) => (
             startTriplet.WithHueOverride(startHue), 
             endTriplet.WithHueOverride(endHue));
 
-        var startHasHue = startColourRepresentation.IsEffectivelyHued;
-        var endHasHue = endColourRepresentation.IsEffectivelyHued;
+        var startHasHue = startRepresentation.UseAsHued;
+        var endHasHue = endRepresentation.UseAsHued;
         var ignoreHue = !startHasHue && !endHasHue;
         
         // don't change hue if one colour is greyscale (e.g. black n/a° to green 120° should always stay at hue 120°)
@@ -102,7 +101,7 @@ public static class Interpolation
         }
     }
 
-    private delegate Unicolour UnicolourConstructor(Configuration config, ColourMode colourMode, double first, double second, double third, double alpha = 1.0);
+    private delegate Unicolour UnicolourConstructor(Configuration config, ColourHeritage heritage, double first, double second, double third, double alpha = 1.0);
     private static UnicolourConstructor GetConstructor(ColourSpace colourSpace)
     {
         return colourSpace switch

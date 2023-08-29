@@ -10,8 +10,8 @@ public record Lab : ColourRepresentation
     public double B => Third;
     internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
     
-    public Lab(double l, double a, double b) : this(l, a, b, ColourMode.Unset) {}
-    internal Lab(double l, double a, double b, ColourMode colourMode) : base(l, a, b, colourMode) {}
+    public Lab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
+    internal Lab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
 
     protected override string FirstString => $"{L:F2}";
     protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
@@ -40,7 +40,7 @@ public record Lab : ColourRepresentation
         var l = 116 * F(yRatio) - 16;
         var a = 500 * (F(xRatio) - F(yRatio));
         var b = 200 * (F(yRatio) - F(zRatio));
-        return new Lab(l, a, b, ColourMode.FromRepresentation(xyz));
+        return new Lab(l, a, b, ColourHeritage.From(xyz));
     }
 
     internal static Xyz ToXyz(Lab lab, XyzConfiguration xyzConfig)
@@ -51,6 +51,6 @@ public record Lab : ColourRepresentation
         var x = referenceWhite.X / 100.0 * F((l + 16) / 116.0 + a / 500.0);
         var y = referenceWhite.Y / 100.0 * F((l + 16) / 116.0);
         var z = referenceWhite.Z / 100.0 * F((l + 16) / 116.0 - b / 200.0);
-        return new Xyz(x, y, z, ColourMode.FromRepresentation(lab));
+        return new Xyz(x, y, z, ColourHeritage.From(lab));
     }
 }

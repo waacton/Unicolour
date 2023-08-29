@@ -14,10 +14,10 @@ public record Hpluv : ColourRepresentation
     protected override double ConstrainedThird => L.Clamp(0.0, 100.0);
     internal override bool IsGreyscale => S <= 0.0 || L is <= 0.0 or >= 100.0;
 
-    public Hpluv(double h, double s, double l) : this(h, s, l, ColourMode.Unset) {}
-    internal Hpluv(double h, double s, double l, ColourMode colourMode) : base(h, s, l, colourMode) {}
+    public Hpluv(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
+    internal Hpluv(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
 
-    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
     protected override string SecondString => $"{S:F1}%";
     protected override string ThirdString => $"{L:F1}%";
     public override string ToString() => base.ToString();
@@ -53,7 +53,7 @@ public record Hpluv : ColourRepresentation
             }
         }
         
-        return new Hpluv(hue, saturation, lightness, ColourMode.FromRepresentation(lchuv));
+        return new Hpluv(hue, saturation, lightness, ColourHeritage.From(lchuv));
     }
     
     internal static Lchuv ToLchuv(Hpluv hpluv)
@@ -83,6 +83,6 @@ public record Hpluv : ColourRepresentation
             }
         }
         
-        return new Lchuv(lightness, chroma, hue, ColourMode.FromRepresentation(hpluv));
+        return new Lchuv(lightness, chroma, hue, ColourHeritage.From(hpluv));
     }
 }

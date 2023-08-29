@@ -370,19 +370,14 @@ public class EqualityTests
     }
     
     [Test]
-    public void DifferentColourModeObjects()
+    public void DifferentColourHeritageObjects()
     {
-        var colourModes = new List<ColourMode>
+        var heritages = new List<ColourHeritage> { ColourHeritage.None, ColourHeritage.NaN, ColourHeritage.Greyscale };
+        foreach (var heritage in heritages)
         {
-            ColourMode.Unset, ColourMode.NoExplicitBehaviour, 
-            ColourMode.ExplicitNaN, ColourMode.ExplicitHue, ColourMode.ExplicitGreyscale
-        };
-        
-        foreach (var mode in colourModes)
-        {
-            foreach (var otherMode in colourModes.Except(new[] {mode}))
+            foreach (var otherHeritage in heritages.Except(new[] { heritage }))
             {
-                AssertNotEqual(mode, otherMode);
+                AssertNotEqual(heritage, otherHeritage);
             }
         }
     }

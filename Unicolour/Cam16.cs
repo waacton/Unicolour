@@ -14,14 +14,14 @@ public record Cam16 : ColourRepresentation
 
     internal override bool IsGreyscale => Model.Chroma <= 0; // presumably also A.Equals(0.0) && B.Equals(0.0)
 
-    public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, ColourMode.Unset) {}
+    public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, ColourHeritage.None) {}
 
-    internal Cam16(Model model, CamConfiguration camConfig, ColourMode colourMode) : this(model.ToUcs(), camConfig, colourMode)
+    internal Cam16(Model model, CamConfiguration camConfig, ColourHeritage heritage) : this(model.ToUcs(), camConfig, heritage)
     {
         Model = model;
     }
 
-    internal Cam16(Ucs ucs, CamConfiguration camConfig, ColourMode colourMode) : base(ucs.J, ucs.A, ucs.B, colourMode)
+    internal Cam16(Ucs ucs, CamConfiguration camConfig, ColourHeritage heritage) : base(ucs.J, ucs.A, ucs.B, heritage)
     {
         // Model will only be non-null if the constructor that takes Cam16Model is called (currently not possible from external code)
         Ucs = ucs;
@@ -142,7 +142,7 @@ public record Cam16 : ColourRepresentation
         var c = alpha * Math.Sqrt(j / 100.0);
         var m = c * Math.Pow(view.Fl, 0.25);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
-        return new Cam16(new Model(j, c, h, m, s, q), camConfig, ColourMode.FromRepresentation(xyz));
+        return new Cam16(new Model(j, c, h, m, s, q), camConfig, ColourHeritage.From(xyz));
     }
     
     public static Xyz ToXyz(Cam16 cam, CamConfiguration camConfig, XyzConfiguration xyzConfig)
@@ -187,6 +187,6 @@ public record Cam16 : ColourRepresentation
         // step 7
         var xyzMatrix = M16.Inverse().Multiply(rgbMatrix);
         xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint).Select(x => x / 100.0);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(cam));
+        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(cam));
     }
 }

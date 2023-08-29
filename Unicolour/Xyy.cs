@@ -15,8 +15,8 @@ public record Xyy : ColourRepresentation
     // but requires making assumptions about floating-point comparison, which I don't want to do
     internal override bool IsGreyscale => Luminance <= 0.0;
 
-    public Xyy(double x, double y, double upperY) : this(x, y, upperY, ColourMode.Unset) {}
-    internal Xyy(double x, double y, double upperY, ColourMode colourMode) : base(x, y, upperY, colourMode) { }
+    public Xyy(double x, double y, double upperY) : this(x, y, upperY, ColourHeritage.None) {}
+    internal Xyy(double x, double y, double upperY, ColourHeritage heritage) : base(x, y, upperY, heritage) { }
 
     protected override string FirstString => $"{Chromaticity.X:F4}";
     protected override string SecondString => $"{Chromaticity.Y:F4}";
@@ -38,7 +38,7 @@ public record Xyy : ColourRepresentation
         var chromaticityX = isBlack ? xyzConfig.ChromaticityWhite.X : x / normalisation;
         var chromaticityY = isBlack ? xyzConfig.ChromaticityWhite.Y : y / normalisation;
         var luminance = isBlack ? 0 : y;
-        return new Xyy(chromaticityX, chromaticityY, luminance, ColourMode.FromRepresentation(xyz));
+        return new Xyy(chromaticityX, chromaticityY, luminance, ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(Xyy xyy)
@@ -51,6 +51,6 @@ public record Xyy : ColourRepresentation
         var x = useZero ? 0 : factor * chromaticity.X;
         var y = useZero ? 0 : luminance;
         var z = useZero ? 0 : factor * (1 - chromaticity.X - chromaticity.Y);
-        return new Xyz(x, y, z, ColourMode.FromRepresentation(xyy));
+        return new Xyz(x, y, z, ColourHeritage.From(xyy));
     }
 }

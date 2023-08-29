@@ -3,7 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-internal record RepresentationTests() : TestRepresentation(0.1, 0.2, 0.3, ColourMode.Unset)
+internal record RepresentationTests() : TestRepresentation(0.1, 0.2, 0.3, ColourHeritage.None)
 {
     [Test]
     public void UnconstrainedValues()

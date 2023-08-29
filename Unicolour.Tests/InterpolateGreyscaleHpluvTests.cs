@@ -71,11 +71,11 @@ public class InterpolateGreyscaleHpluvTests
         
         // colours created from LUV therefore hue does not change
         AssertTriplet(blackToWhite.Hpluv.Triplet, new(0, 0, 50));
-        Assert.That(blackToWhite.Hpluv.IsEffectivelyHued, Is.False);
+        Assert.That(blackToWhite.Hpluv.UseAsHued, Is.False);
         AssertTriplet(blackToGrey.Hpluv.Triplet, new(0, 0, 25));
-        Assert.That(blackToGrey.Hpluv.IsEffectivelyHued, Is.False);
+        Assert.That(blackToGrey.Hpluv.UseAsHued, Is.False);
         AssertTriplet(whiteToGrey.Hpluv.Triplet, new(0, 0, 75));
-        Assert.That(whiteToGrey.Hpluv.IsEffectivelyHued, Is.False);
+        Assert.That(whiteToGrey.Hpluv.UseAsHued, Is.False);
     }
     
     [Test]

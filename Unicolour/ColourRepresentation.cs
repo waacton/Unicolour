@@ -6,24 +6,26 @@ public abstract record ColourRepresentation
     protected readonly double Second;
     protected readonly double Third;
     protected abstract int? HueIndex { get; }
-    internal bool HasHueAxis => HueIndex != null;
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
-    internal ColourMode ColourMode { get; }
+    internal ColourHeritage Heritage { get; }
 
     protected virtual double ConstrainedFirst => First;
     protected virtual double ConstrainedSecond => Second;
     protected virtual double ConstrainedThird => Third;
     public ColourTriplet ConstrainedTriplet => new(ConstrainedFirst, ConstrainedSecond, ConstrainedThird, HueIndex);
+    
+    internal bool IsNaN => double.IsNaN(First) || double.IsNaN(Second) || double.IsNaN(Third);
+    internal bool UseAsNaN => Heritage == ColourHeritage.NaN || IsNaN;
 
     /*
      * a representation may be non-greyscale according to its values
-     * but is effectively greyscale if it was generated from a representation that was greyscale
+     * but should be used as greyscale if it was generated from a representation that was greyscale
      * e.g. RGB(1,1,1) is greyscale and converts to LAB(99.99999999999999, 0, -2.220446049250313E-14)
      * LAB doesn't report as greyscale since B != 0 (and I don't want to make assumptions via precision-based tolerance comparison)
      * but it should be considered greyscale since the source RGB representation definitely is
      */
     internal abstract bool IsGreyscale { get; }
-    internal bool IsEffectivelyGreyscale => ColourMode == ColourMode.ExplicitGreyscale || (!IsEffectivelyNaN && IsGreyscale);
+    internal bool UseAsGreyscale => Heritage == ColourHeritage.Greyscale || Heritage == ColourHeritage.GreyscaleAndHued || (!UseAsNaN && IsGreyscale);
     
     /*
      * a representation is considered "hued" when it has a hue axis (e.g. HSL / LCH) and is not greyscale
@@ -34,26 +36,15 @@ public abstract record ColourRepresentation
      * [RGB(0,0,0) black -> RGB(0,0,255) blue] via HSB is [HSB(0,0,0) red with no colour -> HSB(240,1,1) blue with full colour]
      * but the interpolation should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
      */
-    internal bool IsHued => HasHueAxis && !IsEffectivelyGreyscale;
-    internal bool IsEffectivelyHued => ColourMode == ColourMode.ExplicitHue || (!IsEffectivelyNaN && IsHued);
+    internal bool HasHueAxis => HueIndex != null;
+    internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueAxis;
     
-    internal bool IsNaN => double.IsNaN(First) || double.IsNaN(Second) || double.IsNaN(Third);
-    internal bool IsEffectivelyNaN => ColourMode == ColourMode.ExplicitNaN || IsNaN;
-
-    internal ColourRepresentation(double first, double second, double third, ColourMode colourMode)
+    internal ColourRepresentation(double first, double second, double third, ColourHeritage heritage)
     {
         First = first;
         Second = second;
         Third = third;
-
-        if (colourMode == ColourMode.Unset)
-        {
-            ColourMode = IsNaN ? ColourMode.ExplicitNaN : ColourMode.Default(HueIndex);
-        }
-        else
-        {
-            ColourMode = colourMode;
-        }
+        Heritage = heritage;
     }
 
     protected abstract string FirstString { get; }
@@ -63,7 +54,7 @@ public abstract record ColourRepresentation
     public override string ToString()
     {
         var values = $"{FirstString} {SecondString} {ThirdString}";
-        return IsEffectivelyNaN ? $"NaN [{values}]" : values;
+        return UseAsNaN ? $"NaN [{values}]" : values;
     }
 }
 

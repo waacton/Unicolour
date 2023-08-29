@@ -12,7 +12,6 @@ public static class HueOverrideTests
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, null);
         Assert.Throws<ArgumentException>(() => triplet.HueValue());
         Assert.Throws<ArgumentException>(() => triplet.WithHueOverride(6.6));
-        Assert.That(ColourMode.Default(null), Is.EqualTo(ColourMode.NoExplicitBehaviour));
     }
     
     [Test]
@@ -23,7 +22,6 @@ public static class HueOverrideTests
         var hueOverrideTriplet = triplet.WithHueOverride(6.6);
         Assert.That(hueOverrideTriplet.HueValue(), Is.EqualTo(6.6));
         Assert.That(hueOverrideTriplet.Tuple, Is.EqualTo((6.6, 8.8, 9.9)));
-        Assert.That(ColourMode.Default(0), Is.EqualTo(ColourMode.ExplicitHue));
     }
     
     [Test]
@@ -32,7 +30,6 @@ public static class HueOverrideTests
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, 1);
         Assert.Throws<ArgumentException>(() => triplet.HueValue());
         Assert.Throws<ArgumentException>(() => triplet.WithHueOverride(6.6));
-        Assert.That(ColourMode.Default(1), Is.EqualTo(ColourMode.ExplicitHue));
     }
     
     [Test]
@@ -43,6 +40,5 @@ public static class HueOverrideTests
         var hueOverrideTriplet = triplet.WithHueOverride(6.6);
         Assert.That(hueOverrideTriplet.HueValue(), Is.EqualTo(6.6));
         Assert.That(hueOverrideTriplet.Tuple, Is.EqualTo((7.7, 8.8, 6.6)));
-        Assert.That(ColourMode.Default(2), Is.EqualTo(ColourMode.ExplicitHue));
     }
 }

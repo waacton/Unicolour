@@ -8,9 +8,9 @@ public record Ictcp : ColourRepresentation
     public double Cp => Third;
     internal override bool IsGreyscale => Ct.Equals(0.0) && Cp.Equals(0.0);
     
-    public Ictcp(double i, double ct, double cp) : this(i, ct, cp, ColourMode.Unset) {}
-    internal Ictcp(ColourTriplet triplet, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, colourMode) {}
-    internal Ictcp(double i, double ct, double cp, ColourMode colourMode) : base(i, ct, cp, colourMode) {}
+    public Ictcp(double i, double ct, double cp) : this(i, ct, cp, ColourHeritage.None) {}
+    internal Ictcp(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
+    internal Ictcp(double i, double ct, double cp, ColourHeritage heritage) : base(i, ct, cp, heritage) {}
 
     protected override string FirstString => $"{I:F2}";
     protected override string SecondString => $"{Ct:+0.00;-0.00;0.00}";
@@ -47,7 +47,7 @@ public record Ictcp : ColourRepresentation
         var lmsMatrix = M1.Multiply(d65ScaledMatrix);
         var lmsPrimeMatrix = lmsMatrix.Select(Pq.Smpte.InverseEotf);
         var ictcpMatrix = M2.Multiply(lmsPrimeMatrix);
-        return new Ictcp(ictcpMatrix.ToTriplet(), ColourMode.FromRepresentation(xyz));
+        return new Ictcp(ictcpMatrix.ToTriplet(), ColourHeritage.From(xyz));
     }
 
     internal static Xyz ToXyz(Ictcp ictcp, double ictcpScalar, XyzConfiguration xyzConfig)
@@ -58,6 +58,6 @@ public record Ictcp : ColourRepresentation
         var d65ScaledMatrix = lmsMatrix.Scale(1 / ictcpScalar);
         var d65Matrix = M1.Inverse().Multiply(d65ScaledMatrix);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(ictcp));
+        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(ictcp));
     }
 }

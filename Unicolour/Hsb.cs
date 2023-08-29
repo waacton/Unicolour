@@ -14,10 +14,10 @@ public record Hsb : ColourRepresentation
     protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
     internal override bool IsGreyscale => S <= 0.0 || B <= 0.0;
 
-    public Hsb(double h, double s, double b) : this(h, s, b, ColourMode.Unset) {}
-    internal Hsb(double h, double s, double b, ColourMode colourMode) : base(h, s, b, colourMode) {}
+    public Hsb(double h, double s, double b) : this(h, s, b, ColourHeritage.None) {}
+    internal Hsb(double h, double s, double b, ColourHeritage heritage) : base(h, s, b, heritage) {}
 
-    protected override string FirstString => IsEffectivelyHued ? $"{H:F1}°" : "—°";
+    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
     protected override string SecondString => $"{S * 100:F1}%";
     protected override string ThirdString => $"{B * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -44,7 +44,7 @@ public record Hsb : ColourRepresentation
         else hue = double.NaN;
         var brightness = xMax;
         var saturation = brightness == 0 ? 0 : chroma / brightness;
-        return new Hsb(hue.Modulo(360.0), saturation, brightness, ColourMode.FromRepresentation(rgb));
+        return new Hsb(hue.Modulo(360.0), saturation, brightness, ColourHeritage.From(rgb));
     }
     
     internal static Rgb ToRgb(Hsb hsb, RgbConfiguration rgbConfig)
@@ -67,6 +67,6 @@ public record Hsb : ColourRepresentation
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, rgbConfig, ColourMode.FromRepresentation(hsb));
+        return new Rgb(red, green, blue, rgbConfig, ColourHeritage.From(hsb));
     }
 }

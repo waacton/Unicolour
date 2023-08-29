@@ -19,9 +19,9 @@ public static class HsluvTests
         var info = $"{hex} \n-> RGB: {unicolour.Rgb} \n-> XYZ: {unicolour.Xyz} \n-> LUV: {unicolour.Luv} \n-> LCH: {unicolour.Lchuv}";
         
         ColourTriplet HandleNoHue(ColourTriplet triplet, bool hasHue) => hasHue ? triplet : triplet.WithHueOverride(0);
-        var lchuv = HandleNoHue(unicolour.Lchuv.Triplet, unicolour.Lchuv.IsEffectivelyHued);
-        var hsluv = HandleNoHue(unicolour.Hsluv.Triplet, unicolour.Hsluv.IsEffectivelyHued);
-        var hpluv = HandleNoHue(unicolour.Hpluv.Triplet, unicolour.Hpluv.IsEffectivelyHued);
+        var lchuv = HandleNoHue(unicolour.Lchuv.Triplet, unicolour.Lchuv.UseAsHued);
+        var hsluv = HandleNoHue(unicolour.Hsluv.Triplet, unicolour.Hsluv.UseAsHued);
+        var hpluv = HandleNoHue(unicolour.Hpluv.Triplet, unicolour.Hpluv.UseAsHued);
         
         // accuracy drops off when saturation goes beyond 100% (mostly at 1,500%+), so be slightly more tolerant for larger values
         Assert(unicolour.Rgb.Triplet, testColour.Rgb!, 0.00000000001, info);

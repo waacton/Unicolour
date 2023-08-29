@@ -10,8 +10,8 @@ public record Luv : ColourRepresentation
     public double V => Third;
     internal override bool IsGreyscale => U.Equals(0.0) && V.Equals(0.0);
     
-    public Luv(double l, double u, double v) : this(l, u, v, ColourMode.Unset) {}
-    internal Luv(double l, double u, double v, ColourMode colourMode) : base(l, u, v, colourMode) {}
+    public Luv(double l, double u, double v) : this(l, u, v, ColourHeritage.None) {}
+    internal Luv(double l, double u, double v, ColourHeritage heritage) : base(l, u, v, heritage) {}
 
     protected override string FirstString => $"{L:F2}";
     protected override string SecondString => $"{U:+0.00;-0.00;0.00}";
@@ -42,7 +42,7 @@ public record Luv : ColourRepresentation
         var v = 13 * l * (vPrime - vPrimeRef);
         
         double ZeroNaN(double value) => double.IsNaN(value) ? 0.0 : value;
-        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v), ColourMode.FromRepresentation(xyz));
+        return new Luv(ZeroNaN(l), ZeroNaN(u), ZeroNaN(v), ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(Luv luv, XyzConfiguration xyzConfig)
@@ -62,6 +62,6 @@ public record Luv : ColourRepresentation
         var z = y * ((12 - 3 * uPrime - 20 * vPrime) / (4 * vPrime));
         
         double ZeroNaN(double value) => double.IsNaN(value) || double.IsInfinity(value) ? 0.0 : value;
-        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z), ColourMode.FromRepresentation(luv));
+        return new Xyz(ZeroNaN(x), ZeroNaN(y), ZeroNaN(z), ColourHeritage.From(luv));
     }
 }

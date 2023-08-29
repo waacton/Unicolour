@@ -6,7 +6,7 @@ internal static class Measurement
     {
         if (!colour.IsDisplayable) return "-";
         var byte255 = colour.Rgb.Byte255;
-        if (byte255.IsEffectivelyNaN) return "-";
+        if (byte255.UseAsNaN) return "-";
         var (r255, g255, b255) = byte255.ConstrainedTriplet;
         return $"#{(int)r255:X2}{(int)g255:X2}{(int)b255:X2}";
     }
@@ -14,7 +14,7 @@ internal static class Measurement
     internal static bool IsDisplayable(this Unicolour colour)
     {
         var rgbLinear = colour.Rgb.Linear;
-        if (rgbLinear.IsEffectivelyNaN) return false;
+        if (rgbLinear.UseAsNaN) return false;
         var (r, g, b) = colour.Rgb.Linear.Triplet;
         return r is >= 0 and <= 1.0 && g is >= 0 and <= 1.0 && b is >= 0 and <= 1.0;
     }
@@ -23,7 +23,7 @@ internal static class Measurement
     internal static double RelativeLuminance(this Unicolour colour)
     {
         var rgbLinear = colour.Rgb.Linear;
-        if (rgbLinear.IsEffectivelyNaN) return double.NaN;
+        if (rgbLinear.UseAsNaN) return double.NaN;
         var (r, g, b) = rgbLinear.ConstrainedTriplet;
         return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
@@ -31,7 +31,7 @@ internal static class Measurement
     internal static IEnumerable<ColourDescription> Description(this Unicolour colour)
     {
         var hsl = colour.Hsl;
-        if (hsl.IsEffectivelyNaN) return new List<ColourDescription> { ColourDescription.NotApplicable };
+        if (hsl.UseAsNaN) return new List<ColourDescription> { ColourDescription.NotApplicable };
 
         var (h, s, l) = hsl.ConstrainedTriplet;
         switch (l)
@@ -49,7 +49,7 @@ internal static class Measurement
             _ => ColourDescription.Pale
         };
 
-        if (hsl.IsEffectivelyGreyscale) return new List<ColourDescription> { lightness, ColourDescription.Grey };
+        if (hsl.UseAsGreyscale) return new List<ColourDescription> { lightness, ColourDescription.Grey };
 
         var strength = s switch
         {

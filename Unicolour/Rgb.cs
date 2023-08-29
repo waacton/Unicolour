@@ -17,15 +17,15 @@ public record Rgb : ColourRepresentation
     public RgbLinear Linear { get; }
     public Rgb255 Byte255 { get; }
 
-    public Rgb(double r, double g, double b, RgbConfiguration rgbConfig) : this(r, g, b, rgbConfig, ColourMode.Unset) {}
-    internal Rgb(ColourTriplet triplet, RgbConfiguration rgbConfig, ColourMode colourMode) : this(triplet.First, triplet.Second, triplet.Third, rgbConfig, colourMode) {}
-    internal Rgb(double r, double g, double b, RgbConfiguration rgbConfig, ColourMode colourMode) : base(r, g, b, colourMode)
+    public Rgb(double r, double g, double b, RgbConfiguration rgbConfig) : this(r, g, b, rgbConfig, ColourHeritage.None) {}
+    internal Rgb(ColourTriplet triplet, RgbConfiguration rgbConfig, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, rgbConfig, heritage) {}
+    internal Rgb(double r, double g, double b, RgbConfiguration rgbConfig, ColourHeritage heritage) : base(r, g, b, heritage)
     {
         double ToLinear(double value) => rgbConfig.InverseCompandToLinear(value);
-        Linear = new RgbLinear(ToLinear(r), ToLinear(g), ToLinear(b), ColourMode.FromRepresentation(this));
+        Linear = new RgbLinear(ToLinear(r), ToLinear(g), ToLinear(b), ColourHeritage.From(this));
         
         double To255(double value) => Math.Round(value * 255);
-        Byte255 = new Rgb255(To255(r), To255(g), To255(b), ColourMode.FromRepresentation(this));
+        Byte255 = new Rgb255(To255(r), To255(g), To255(b), ColourHeritage.From(this));
     }
 
     protected override string FirstString => $"{R:F2}";
@@ -45,7 +45,7 @@ public record Rgb : ColourRepresentation
         var transformationMatrix = RgbToXyzMatrix(rgbConfig, xyzConfig).Inverse();
         var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
         var rgbMatrix = rgbLinearMatrix.Select(rgbConfig.CompandFromLinear);
-        return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourMode.FromRepresentation(xyz));
+        return new Rgb(rgbMatrix.ToTriplet(), rgbConfig, ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(Rgb rgb, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
@@ -53,7 +53,7 @@ public record Rgb : ColourRepresentation
         var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
         var transformationMatrix = RgbToXyzMatrix(rgbConfig, xyzConfig);
         var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourMode.FromRepresentation(rgb));
+        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(rgb));
     }
     
     // see http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html

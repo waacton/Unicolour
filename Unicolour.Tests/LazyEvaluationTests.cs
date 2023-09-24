@@ -100,6 +100,14 @@ public static class LazyEvaluationTests
     }
     
     [TestCaseSource(nameof(TestCases))]
+    public static void AfterTemperature(Func<Unicolour> unicolourFunction)
+    {
+        var unicolour = unicolourFunction();
+        var _ = unicolour.Temperature;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
+    }
+    
+    [TestCaseSource(nameof(TestCases))]
     public static void AfterConfigurationConversion(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();

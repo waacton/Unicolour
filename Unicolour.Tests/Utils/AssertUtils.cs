@@ -86,6 +86,7 @@ internal static class AssertUtils
             AccessProperty(() => unicolour.Oklch);
             AccessProperty(() => unicolour.RelativeLuminance);
             AccessProperty(() => unicolour.Rgb);
+            AccessProperty(() => unicolour.Temperature);
             AccessProperty(() => unicolour.Xyy);
             AccessProperty(() => unicolour.Xyz);
         }

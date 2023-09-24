@@ -10,7 +10,7 @@ public static class IctcpConfigurationTests
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
 
     // TODO: simplify tests if ever support Unicolour.FromLinearRgb()
-    // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31223ictcp-colour-encoding
+    // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31224ictcp-colour-encoding
     private static double Gamma(double e) => Companding.Rec2020.FromLinear(e);
     private static readonly ColourTriplet TestLinearRgb = new(0.45620519, 0.03081071, 0.04091952);
     private static readonly ColourTriplet TestRgb = new(Gamma(TestLinearRgb.First), Gamma(TestLinearRgb.Second), Gamma(TestLinearRgb.Third));
@@ -41,7 +41,7 @@ public static class IctcpConfigurationTests
         AssertUtils.AssertTriplet<Ictcp>(blackNoConfig, new(0, 0, 0), 0.0005);
     }
     
-    [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31223ictcp-colour-encoding)  
+    [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
     public static void Rec2020RgbToIctcp1()
     {
         var unicolour = Unicolour.FromRgb(Config1, TestRgb.Tuple);

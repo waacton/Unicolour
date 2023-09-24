@@ -9,7 +9,7 @@ public static class JzazbzConfigurationTests
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
 
-    // XYZ as used in https://github.com/colour-science/colour#31220jzazbz-colourspace
+    // XYZ as used in https://github.com/colour-science/colour#31212jzazbz-colourspace
     private static readonly ColourTriplet TestXyz = new(0.20654008, 0.12197225, 0.05136952);
     
     private static readonly Configuration Config100 = new(RgbConfiguration.StandardRgb, XyzConfiguration.D65, jzazbzScalar: 100);
@@ -38,7 +38,7 @@ public static class JzazbzConfigurationTests
         AssertUtils.AssertTriplet<Jzazbz>(blackNoConfig, new(0, 0, 0), 0.0005);
     }
     
-    [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31220jzazbz-colourspace)  
+    [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31212jzazbz-colourspace)  
     public static void XyzD65ToJzazbz1()
     {
         var unicolour = Unicolour.FromXyz(Config1, TestXyz.Tuple);

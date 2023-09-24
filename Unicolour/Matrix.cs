@@ -2,17 +2,17 @@
 
 internal class Matrix
 {
-    public double[,] Data { get; }
-    public double this[int row, int col] => Data[row, col];
-    public int Rows => Data.GetLength(0);
-    public int Cols => Data.GetLength(1);
+    internal double[,] Data { get; }
+    internal double this[int row, int col] => Data[row, col];
+    private int Rows => Data.GetLength(0);
+    private int Cols => Data.GetLength(1);
     
-    public Matrix(double[,] data)
+    internal Matrix(double[,] data)
     {
         Data = data;
     }
 
-    public Matrix Multiply(Matrix other)
+    internal Matrix Multiply(Matrix other)
     {
         if (other.Rows != Cols)
         {
@@ -39,7 +39,7 @@ internal class Matrix
         return new Matrix(result);
     }
 
-    public Matrix Inverse()
+    internal Matrix Inverse()
     {
         if (Rows != 3 || Cols != 3)
         {
@@ -78,8 +78,8 @@ internal class Matrix
         return new Matrix(inverse);
     }
     
-    public Matrix Scale(double scalar) => Select(x => x * scalar);
-    public Matrix Select(Func<double, double> operation)
+    internal Matrix Scale(double scalar) => Select(x => x * scalar);
+    internal Matrix Select(Func<double, double> operation)
     {
         var result = new double[Rows, Cols];
         for (var row = 0; row < Rows; row++)
@@ -93,7 +93,7 @@ internal class Matrix
         return new Matrix(result);
     }
     
-    public ColourTriplet ToTriplet()
+    internal ColourTriplet ToTriplet()
     {
         if (Rows != 3 || Cols != 1)
         {
@@ -103,8 +103,8 @@ internal class Matrix
         return new ColourTriplet(Data[0, 0], Data[1, 0], Data[2, 0]);
     }
 
-    public static Matrix FromTriplet(ColourTriplet triplet) => FromTriplet(triplet.First, triplet.Second, triplet.Third);
-    public static Matrix FromTriplet(double first, double second, double third)
+    internal static Matrix FromTriplet(ColourTriplet triplet) => FromTriplet(triplet.First, triplet.Second, triplet.Third);
+    internal static Matrix FromTriplet(double first, double second, double third)
     {
         return new Matrix(new[,]
         {

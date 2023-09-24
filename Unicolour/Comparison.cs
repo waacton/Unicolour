@@ -8,8 +8,8 @@ public static class Comparison
     // minimal recommended contrast ratio is 4.5, or 3 for larger font-sizes
     public static double Contrast(this Unicolour colour1, Unicolour colour2)
     {
-        var luminance1 = colour1.RelativeLuminance();
-        var luminance2 = colour2.RelativeLuminance();
+        var luminance1 = colour1.RelativeLuminance;
+        var luminance2 = colour2.RelativeLuminance;
         var l1 = Math.Max(luminance1, luminance2); // lighter of the colours
         var l2 = Math.Min(luminance1, luminance2); // darker of the colours
         return (l1 + 0.05) / (l2 + 0.05);
@@ -154,7 +154,15 @@ public static class Comparison
         var (l2, a2, b2) = sample.Lab.Triplet;
         return Math.Sqrt(SquaredDiff(a1, a2) + SquaredDiff(b1, b2)) + Math.Abs(l2 - l1);
     }
-
+    
+    // https://www.w3.org/TR/css-color-4/#color-difference-OK
+    public static double DeltaEOk(this Unicolour reference, Unicolour sample)
+    {
+        var (l1, a1, b1) = reference.Oklab.Triplet;
+        var (l2, a2, b2) = sample.Oklab.Triplet;
+        return Math.Sqrt(SquaredDiff(l1, l2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
+    }
+    
     // https://doi.org/10.1007/978-1-4419-6190-7_2
     // currently only support UCS, not LCD or SCD - no need to handle ΔJ / kl since kl = 1
     public static double DeltaECam02(this Unicolour reference, Unicolour sample)

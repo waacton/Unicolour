@@ -4,13 +4,13 @@ using System.Globalization;
 
 internal static class Utils
 {
-    public static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
-    public static double Clamp(this int x, int min, int max) => x < min ? min : x > max ? max : x;
-    public static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
-    public static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
-    public static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
+    internal static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
+    internal static double Clamp(this int x, int min, int max) => x < min ? min : x > max ? max : x;
+    internal static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
+    internal static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
+    internal static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
     
-    public static double Modulo(this double value, double modulus)
+    internal static double Modulo(this double value, double modulus)
     {
         if (double.IsNaN(value))
         {
@@ -29,7 +29,7 @@ internal static class Utils
         return useSubtraction ? modulus + remainder : remainder; 
     }
     
-    public static (int r255, int g255, int b255, int a255) ParseColourHex(string colourHex)
+    internal static (int r255, int g255, int b255, int a255) ParseColourHex(string colourHex)
     {
         var hex = colourHex.TrimStart('#');
         if (hex.Length is not (6 or 8))
@@ -55,14 +55,14 @@ internal static class Utils
         return int.Parse(chars, NumberStyles.HexNumber);
     }
     
-    public static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
+    internal static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
     {
         var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
         var hue = ToDegrees(Math.Atan2(axis2, axis1));
         return new ColourTriplet(lightness, chroma, hue.Modulo(360.0));
     }
     
-    public static (double lightness, double axis1, double axis2) FromLchTriplet(ColourTriplet lchTriplet)
+    internal static (double lightness, double axis1, double axis2) FromLchTriplet(ColourTriplet lchTriplet)
     {
         var (l, c, h) = lchTriplet;
         var axis1 = c * Math.Cos(ToRadians(h));

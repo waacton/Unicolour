@@ -35,6 +35,57 @@ internal record ColourDescription(string description)
     internal static readonly List<ColourDescription> Saturations = new() { Faint, Weak, Mild, Strong, Vibrant };
     internal static readonly List<ColourDescription> Hues = new() { Red, Orange, Yellow, Chartreuse, Green, Mint, Cyan, Azure, Blue, Violet, Magenta, Rose };
     internal static readonly List<ColourDescription> Greyscales = new() { Black, Grey, White };
+    
+    internal static IEnumerable<ColourDescription> Get(Hsl hsl)
+    {
+        if (hsl.UseAsNaN) return new List<ColourDescription> { NotApplicable };
 
+        var (h, s, l) = hsl.ConstrainedTriplet;
+        switch (l)
+        {
+            case <= 0: return new List<ColourDescription> { Black };
+            case >= 1: return new List<ColourDescription> { White };
+        }
+
+        var lightness = l switch
+        {
+            < 0.20 => Shadow,
+            < 0.40 => Dark,
+            < 0.60 => Pure,
+            < 0.80 => Light,
+            _ => Pale
+        };
+
+        if (hsl.UseAsGreyscale) return new List<ColourDescription> { lightness, Grey };
+
+        var strength = s switch
+        {
+            < 0.20 => Faint,
+            < 0.40 => Weak,
+            < 0.60 => Mild,
+            < 0.80 => Strong,
+            _ => Vibrant
+        };
+        
+        var hue = h switch
+        {
+            < 15 => Red,
+            < 45 => Orange,
+            < 75 => Yellow,
+            < 105 => Chartreuse,
+            < 135 => Green,
+            < 165 => Mint,
+            < 195 => Cyan,
+            < 225 => Azure,
+            < 255 => Blue,
+            < 285 => Violet,
+            < 315 => Magenta,
+            < 345 => Rose,
+            _ => Red
+        };
+
+        return new List<ColourDescription> { lightness, strength, hue };
+    }
+    
     public override string ToString() => description.ToLower();
 }

@@ -56,7 +56,7 @@ public record Rgb : ColourRepresentation
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(rgb));
     }
     
-    // see http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+    // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
     internal static Matrix RgbToXyzMatrix(RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var cr = rgbConfig.ChromaticityR;

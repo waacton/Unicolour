@@ -93,8 +93,8 @@ public static class Cam
         private static T Get<T>(IReadOnlyList<T> array, int i) => array[i - 1];
 
         private static double GetHPrime(double h) => h < Angle1 ? h + 360 : h;
-        public static double GetEccentricity(double h) => 0.25 * (Math.Cos(ToRadians(GetHPrime(h)) + 2) + 3.8);
-        public static string GetHueComposition(double h)
+        internal static double GetEccentricity(double h) => 0.25 * (Math.Cos(ToRadians(GetHPrime(h)) + 2) + 3.8);
+        internal static string GetHueComposition(double h)
         {
             if (double.IsNaN(h)) return "-";
             var hPrime = GetHPrime(h);

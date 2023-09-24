@@ -9,7 +9,7 @@ internal static class Adaptation
         { +0.0389, -0.0685, +1.0296 }
     });
 
-    public static Matrix WhitePoint(Matrix matrix, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
+    internal static Matrix WhitePoint(Matrix matrix, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
         if (sourceWhitePoint == destinationWhitePoint)
         {
@@ -20,7 +20,7 @@ internal static class Adaptation
         return adaptedBradford.Multiply(matrix);
     }
     
-    // see http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
+    // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
     private static Matrix AdaptedBradfordMatrix(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
         var sourceWhite = sourceWhitePoint.AsXyzMatrix();

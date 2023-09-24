@@ -8,6 +8,7 @@ Unicolour is a set of utilities for working with colour:
 - Colour space conversion
 - Colour interpolation
 - Colour comparison
+- Colour properties
 
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
 - RGB
@@ -41,6 +42,11 @@ For each forward transformation there is a corresponding reverse transformation.
 XYZ is considered the root colour space.
 </details>
 
+The following colour properties are available on each `Unicolour`:
+- Hex representation
+- Relative luminance
+- Temperature (CCT and Duv)
+
 Unicolour can be used to calculate colour difference via:
 - ΔE<sub>76</sub> (CIE76)
 - ΔE<sub>94</sub> (CIE94)
@@ -48,6 +54,7 @@ Unicolour can be used to calculate colour difference via:
 - ΔE<sub>ITP</sub>
 - ΔE<sub>z</sub>
 - ΔE<sub>HyAB</sub>
+- ΔE<sub>OK</sub>
 - ΔE<sub>CAM02</sub>
 - ΔE<sub>CAM16</sub>
 
@@ -107,22 +114,22 @@ var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
 var unicolour = Unicolour.FromHwb(327.6, 0.078, 0.0);
 var unicolour = Unicolour.FromXyz(0.4676, 0.2387, 0.2974);
 var unicolour = Unicolour.FromXyy(0.4658, 0.2378, 0.2387);
-var unicolour = Unicolour.FromLab(55.96, +84.54, -5.7);
+var unicolour = Unicolour.FromLab(55.96, 84.54, -5.7);
 var unicolour = Unicolour.FromLchab(55.96, 84.73, 356.1);
-var unicolour = Unicolour.FromLuv(55.96, +131.47, -24.35);
+var unicolour = Unicolour.FromLuv(55.96, 131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
 var unicolour = Unicolour.FromHsluv(349.5, 100, 56);
 var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56);
-var unicolour = Unicolour.FromIctcp(0.38, +0.12, +0.19);
-var unicolour = Unicolour.FromJzazbz(0.106, +0.107, +0.005);
+var unicolour = Unicolour.FromIctcp(0.38, 0.12, 0.19);
+var unicolour = Unicolour.FromJzazbz(0.106, 0.107, 0.005);
 var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
 var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
-var unicolour = Unicolour.FromCam02(62.86, +40.81, -1.18);
-var unicolour = Unicolour.FromCam16(62.47, +42.60, -1.36);
+var unicolour = Unicolour.FromCam02(62.86, 40.81, -1.18);
+var unicolour = Unicolour.FromCam16(62.47, 42.60, -1.36);
 ```
 
-4. Get representation of colour in different colour spaces:
+4. Get representations of a colour in different colour spaces:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
@@ -145,7 +152,14 @@ var cam02 = unicolour.Cam02;
 var cam16 = unicolour.Cam16;
 ```
 
-5. Interpolate between colours:
+5. Get properties of a colour
+```c#
+var hex = unicolour.Hex;
+var relativeLuminance = unicolour.RelativeLuminance;
+var temperature = unicolour.Temperature;
+```
+
+6. Interpolate between colours:
 ```c#
 var interpolated = unicolour1.InterpolateRgb(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateHsb(unicolour2, 0.5);
@@ -168,7 +182,7 @@ var interpolated = unicolour1.InterpolateCam02(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateCam16(unicolour2, 0.5);
 ```
 
-6. Compare colours:
+7. Compare colours:
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
@@ -177,6 +191,7 @@ var difference = unicolour1.DeltaE00(unicolour2);
 var difference = unicolour1.DeltaEItp(unicolour2);
 var difference = unicolour1.DeltaEz(unicolour2);
 var difference = unicolour1.DeltaEHyab(unicolour2);
+var difference = unicolour1.DeltaEOk(unicolour2);
 var difference = unicolour1.DeltaECam02(unicolour2);
 var difference = unicolour1.DeltaECam16(unicolour2);
 ```

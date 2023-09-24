@@ -127,6 +127,22 @@ public static class DifferenceTests
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
+    [TestCase(ColourLimit.Black, ColourLimit.White, 1.000000)]
+    [TestCase(ColourLimit.Red, ColourLimit.Green, 0.519797)]
+    [TestCase(ColourLimit.Green, ColourLimit.Blue, 0.673409)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Red, 0.537117)]
+    [TestCase(ColourLimit.White, ColourLimit.Black, 1.000000)]
+    [TestCase(ColourLimit.Green, ColourLimit.Red, 0.519797)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Green, 0.673409)]
+    [TestCase(ColourLimit.Red, ColourLimit.Blue, 0.537117)]
+    public static void DeltaEOk(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    {
+        var reference = ColourLimits.Rgb[referenceColour];
+        var sample = ColourLimits.Rgb[sampleColour];
+        var delta = reference.DeltaEOk(sample);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
+    }
+    
     [TestCase(ColourLimit.Black, ColourLimit.White, 100.024844)]
     [TestCase(ColourLimit.Red, ColourLimit.Green, 76.105436)]
     [TestCase(ColourLimit.Green, ColourLimit.Blue, 92.321874)]
@@ -175,6 +191,9 @@ public static class DifferenceTests
     public static void RandomSymmetricDeltaEHyab() => AssertRandomSymmetricDeltas(Comparison.DeltaEHyab);
     
     [Test]
+    public static void RandomSymmetricDeltaEOk() => AssertRandomSymmetricDeltas(Comparison.DeltaEOk);
+    
+    [Test]
     public static void RandomSymmetricDeltaECam02() => AssertRandomSymmetricDeltas(Comparison.DeltaECam02);
 
     [Test]
@@ -200,6 +219,9 @@ public static class DifferenceTests
     
     [Test]
     public static void NotNumberDeltaEHyab() => AssertNotNumberDeltas(Comparison.DeltaEHyab, ColourSpace.Lab);
+    
+    [Test]
+    public static void NotNumberDeltaEOk() => AssertNotNumberDeltas(Comparison.DeltaEOk, ColourSpace.Oklab);
     
     [Test]
     public static void NotNumberDeltaECam02() => AssertNotNumberDeltas(Comparison.DeltaECam02, ColourSpace.Cam02);
@@ -232,6 +254,7 @@ public static class DifferenceTests
             ColourSpace.Lab => Unicolour.FromLab,
             ColourSpace.Ictcp => Unicolour.FromIctcp,
             ColourSpace.Jzczhz => Unicolour.FromJzczhz,
+            ColourSpace.Oklab => Unicolour.FromOklab,
             ColourSpace.Cam02 => Unicolour.FromCam02,
             ColourSpace.Cam16 => Unicolour.FromCam16
         };

@@ -1,7 +1,8 @@
 ﻿namespace Wacton.Unicolour;
 
 // NOTE: "discounting" parameter which I've noticed in other implementations
-// is not a parameter in the CAM papers (therefore D is always calculated)
+// is not a parameter in the CAM papers (there's probably some other paper I've missed 🤷)
+// therefore D is always calculated
 public class CamConfiguration
 {
     public WhitePoint WhitePoint { get; }

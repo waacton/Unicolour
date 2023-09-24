@@ -46,10 +46,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public string Hex => this.Hex();
-    public bool IsDisplayable => this.IsDisplayable();
-    public double RelativeLuminance => this.RelativeLuminance();
-    public string Description => string.Join(" ", this.Description());
+    public string Hex => this.GetHex();
+    public bool IsDisplayable => this.GetIsDisplayable();
+    public double RelativeLuminance => this.GetRelativeLuminance();
+    public string Description => string.Join(" ", this.GetDescriptions());
+    public Temperature Temperature => this.GetTemperature();
     
     private Unicolour(Configuration config, ColourRepresentation initialRepresentation, Alpha alpha)
     {

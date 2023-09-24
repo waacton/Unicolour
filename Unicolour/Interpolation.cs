@@ -87,7 +87,7 @@ public static class Interpolation
         return new(first, second, third, start.HueIndex);
     }
 
-    private static double Interpolate(double startValue, double endValue, double distance)
+    internal static double Interpolate(double startValue, double endValue, double distance)
     {
         var difference = endValue - startValue;
         return startValue + (difference * distance);

@@ -9,6 +9,7 @@ public abstract record ColourRepresentation
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     internal ColourHeritage Heritage { get; }
 
+    // TODO: consider gamut mapping (https://www.w3.org/TR/css-color-4/#binsearch ?)
     protected virtual double ConstrainedFirst => First;
     protected virtual double ConstrainedSecond => Second;
     protected virtual double ConstrainedThird => Third;

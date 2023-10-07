@@ -210,16 +210,16 @@ var tritanopia = unicolour.SimulateTritanopia();
 var achromatopsia = unicolour.SimulateAchromatopsia();
 ```
 
-See also:
+## Examples ✨
 
-[Example code](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
-and for different colour vision deficiencies
+This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
+and for different colour vision deficiencies...
 
 ![Gradients through different colour spaces generated from Unicolour](Unicolour.Example/gradients.png)
 
 ![Gradients for different colour vision deficiencies generated from Unicolour](Unicolour.Example/vision-deficiency.png)
 
-[Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
+... and a [console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value.
 
 ![Colour information from hex value](Unicolour.Console/colour-info.png)
 

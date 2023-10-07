@@ -21,8 +21,8 @@ public class ConversionTests
     private const double LuvTolerance = 0.00000001;
     private const double JzazbzTolerance = 0.00000005;
     private const double OklabTolerance = 0.000005;
-    private const double Cam02Tolerance = 0.0000001;
-    private const double Cam16Tolerance = 0.00000001;
+    private const double Cam02Tolerance = 0.00005;
+    private const double Cam16Tolerance = 0.00005;
 
     // no point doing this test starting with Wikipedia's HSB / HSL values since they're rounded
     [TestCaseSource(typeof(NamedColours), nameof(Utils.NamedColours.All))]

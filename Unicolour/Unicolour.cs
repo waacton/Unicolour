@@ -46,11 +46,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public string Hex => this.GetHex();
-    public bool IsDisplayable => this.GetIsDisplayable();
-    public double RelativeLuminance => this.GetRelativeLuminance();
-    public string Description => string.Join(" ", this.GetDescriptions());
-    public Temperature Temperature => this.GetTemperature();
+    public string Hex => !IsDisplayable ? "-" : Rgb.Byte255.ConstrainedHex;
+    public bool IsDisplayable => Rgb.IsDisplayable;
+    public double RelativeLuminance => Rgb.Linear.RelativeLuminance;
+    public string Description => string.Join(" ", ColourDescription.Get(Hsl));
+    public Temperature Temperature => Temperature.Get(Xyz);
     
     private Unicolour(Configuration config, ColourRepresentation initialRepresentation, Alpha alpha)
     {
@@ -67,6 +67,11 @@ public partial class Unicolour : IEquatable<Unicolour>
         var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
         return FromXyz(newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
     }
+
+    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(Rgb, Config);
+    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(Rgb, Config);
+    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(Rgb, Config);
+    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(RelativeLuminance, Config);
     
     public override string ToString()
     {

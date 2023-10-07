@@ -20,7 +20,7 @@ public class TemperatureTests
     {
         var whitePoint = WhitePoint.From(illuminant);
         var unicolour = Unicolour.FromXyz(whitePoint.AsXyzMatrix().ToTriplet().Tuple);
-        var temperature = unicolour.GetTemperature();
+        var temperature = unicolour.Temperature;
         Assert.That(temperature.Cct, Is.EqualTo(kelvins).Within(0.05));
         Assert.That(temperature.ToString().Contains(kelvins.ToString(CultureInfo.InvariantCulture)));
     }
@@ -69,7 +69,7 @@ public class TemperatureTests
         Assert.That(temperature.Cct, Is.EqualTo(expected).Within(0.05));
     }
     
-    // higher temperatures (~blue) correlate with lower (u, v) - (0.18006, 0.26352) is the uppermost defined (u, v) by Robertson
+    // higher temperatures (~blue) correlate with lower (u, v) - (0.18006, 0.26352) is the lowermost defined (u, v) by Robertson
     [TestCase(0.18006, 0.26352, double.PositiveInfinity)] 
     [TestCase(0.18006 - 0.000000000000001, 0.26352, double.NaN)] 
     [TestCase(0.18006, 0.26352 - 0.000000000000001, double.NaN)]

@@ -8,9 +8,9 @@ public record Temperature(double Cct, double Duv)
     private static Temperature NaN() => new(double.NaN, double.NaN);
     
     // https://en.wikipedia.org/wiki/CIE_1960_color_space
-    internal static Temperature Get(Unicolour unicolour)
+    internal static Temperature Get(Xyz xyz)
     {
-        var (x, y, z) = unicolour.Xyz.Triplet;
+        var (x, y, z) = xyz.Triplet;
         var u = 4.0 * x / (x + 15.0 * y + 3.0 * z);
         var v = 6.0 * y / (x + 15.0 * y + 3.0 * z);
 

@@ -23,15 +23,21 @@ public static class ContrastTests
     }
 
     [Test]
-    public static void UnconstrainedRgbLuminance()
+    public static void BeyondMinRgbLuminance()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        var white = ColourLimits.Rgb[ColourLimit.White];
         var beyondMinRgb = Unicolour.FromRgb(-0.25, -0.5, -0.75);
+        Assert.That(beyondMinRgb.RelativeLuminance, Is.LessThan(black.RelativeLuminance));
+        AssertRelativeLuminance(beyondMinRgb);
+    }
+    
+    [Test]
+    public static void BeyondMaxRgbLuminance()
+    {
+        var white = ColourLimits.Rgb[ColourLimit.White];
         var beyondMaxRgb = Unicolour.FromRgb(1.25, 1.5, 1.75);
-        
-        Assert.That(beyondMinRgb.RelativeLuminance, Is.EqualTo(black.RelativeLuminance));
-        Assert.That(beyondMaxRgb.RelativeLuminance, Is.EqualTo(white.RelativeLuminance));
+        Assert.That(beyondMaxRgb.RelativeLuminance, Is.GreaterThan(white.RelativeLuminance));
+        AssertRelativeLuminance(beyondMaxRgb);
     }
     
     [Test]
@@ -47,9 +53,17 @@ public static class ContrastTests
     
     private static void AssertKnownContrast(Unicolour colour1, Unicolour colour2, double expectedContrast)
     {
+        AssertRelativeLuminance(colour1);
+        AssertRelativeLuminance(colour2);
+        
         var delta1 = colour1.Contrast(colour2);
         var delta2 = colour2.Contrast(colour1);
         Assert.That(delta1, Is.EqualTo(expectedContrast).Within(0.005));
         Assert.That(delta1, Is.EqualTo(delta2));
+    }
+
+    private static void AssertRelativeLuminance(Unicolour unicolour)
+    {
+        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(unicolour.Xyz.Y).Within(0.0005));
     }
 }

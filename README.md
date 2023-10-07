@@ -58,6 +58,12 @@ Unicolour can be used to calculate colour difference via:
 - ΔE<sub>CAM02</sub>
 - ΔE<sub>CAM16</sub>
 
+Simulations of colour vision deficiency (CVD) / colour blindness is supported for:
+- Protanopia (no red perception)
+- Deuteranopia (no green perception)
+- Tritanopia (no blue perception)
+- Achromatopsia (no colour perception)
+
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
 
@@ -196,11 +202,22 @@ var difference = unicolour1.DeltaECam02(unicolour2);
 var difference = unicolour1.DeltaECam16(unicolour2);
 ```
 
+8. Simulate colour vision deficiency:
+```c#
+var protanopia = unicolour.SimulateProtanopia();
+var deuteranopia = unicolour.SimulateDeuteranopia();
+var tritanopia = unicolour.SimulateTritanopia();
+var achromatopsia = unicolour.SimulateAchromatopsia();
+```
+
 See also:
 
 [Example code](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
+and for different colour vision deficiencies
 
-![Gradients generate from Unicolour](Unicolour.Example/gradients.png)
+![Gradients through different colour spaces generated from Unicolour](Unicolour.Example/gradients.png)
+
+![Gradients for different colour vision deficiencies generated from Unicolour](Unicolour.Example/vision-deficiency.png)
 
 [Console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value
 

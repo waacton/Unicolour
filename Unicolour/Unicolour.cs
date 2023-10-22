@@ -21,6 +21,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Oklch? oklch;
     private Cam02? cam02;
     private Cam16? cam16;
+    private Hct? hct;
     
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
@@ -43,6 +44,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Oklch Oklch => Get<Oklch>(ColourSpace.Oklch);
     public Cam02 Cam02 => Get<Cam02>(ColourSpace.Cam02);
     public Cam16 Cam16 => Get<Cam16>(ColourSpace.Cam16);
+    public Hct Hct => Get<Hct>(ColourSpace.Hct);
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 

@@ -21,6 +21,7 @@ public static class Interpolation
     public static Unicolour InterpolateOklch(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklch, start, end, distance);
     public static Unicolour InterpolateCam02(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Cam02, start, end, distance);
     public static Unicolour InterpolateCam16(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Cam16, start, end, distance);
+    public static Unicolour InterpolateHct(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hct, start, end, distance);
 
     internal static Unicolour Interpolate(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
     {
@@ -125,6 +126,7 @@ public static class Interpolation
             ColourSpace.Oklch => Unicolour.FromOklch,
             ColourSpace.Cam02 => Unicolour.FromCam02,
             ColourSpace.Cam16 => Unicolour.FromCam16,
+            ColourSpace.Hct => Unicolour.FromHct,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }

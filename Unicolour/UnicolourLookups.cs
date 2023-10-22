@@ -1,6 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16 }
+internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16, Hct }
 
 public partial class Unicolour
 {
@@ -31,7 +31,8 @@ public partial class Unicolour
         { typeof(Oklab), ColourSpace.Oklab },
         { typeof(Oklch), ColourSpace.Oklch },
         { typeof(Cam02), ColourSpace.Cam02 },
-        { typeof(Cam16), ColourSpace.Cam16 }
+        { typeof(Cam16), ColourSpace.Cam16 },
+        { typeof(Hct), ColourSpace.Hct }
     };
 
     internal List<ColourRepresentation> GetRepresentations(List<ColourSpace> colourSpaces) => colourSpaces.Select(GetRepresentation).ToList();
@@ -60,6 +61,7 @@ public partial class Unicolour
             ColourSpace.Oklch => Oklch,
             ColourSpace.Cam02 => Cam02,
             ColourSpace.Cam16 => Cam16,
+            ColourSpace.Hct => Hct,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -108,6 +110,7 @@ public partial class Unicolour
             ColourSpace.Oklch => oklch,
             ColourSpace.Cam02 => cam02,
             ColourSpace.Cam16 => cam16,
+            ColourSpace.Hct => hct,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -135,6 +138,7 @@ public partial class Unicolour
             ColourSpace.Oklch => () => oklch = EvaluateOklch(),
             ColourSpace.Cam02 => () => cam02 = EvaluateCam02(),
             ColourSpace.Cam16 => () => cam16 = EvaluateCam16(),
+            ColourSpace.Hct => () => hct = EvaluateHct(),
             _ => throw new ArgumentOutOfRangeException(nameof(targetSpace), targetSpace, null)
         };
 
@@ -217,6 +221,7 @@ public partial class Unicolour
             ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz),
             ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Config.Cam, Config.Xyz),
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Config.Cam, Config.Xyz),
+            ColourSpace.Hct => Hct.ToXyz(Hct, Config.Xyz),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -352,6 +357,15 @@ public partial class Unicolour
         {
             ColourSpace.Cam16 => (Cam16)InitialRepresentation,
             _ => Cam16.FromXyz(Xyz, Config.Cam, Config.Xyz)
+        };
+    }
+    
+    private Hct EvaluateHct()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Hct => (Hct)InitialRepresentation,
+            _ => Hct.FromXyz(Xyz, Config.Xyz)
         };
     }
 }

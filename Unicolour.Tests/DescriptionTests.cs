@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-public static class DescriptionTests
+public class DescriptionTests
 {
     [Test, Combinatorial]
-    public static void LightnessNotApplicable(
+    public void LightnessNotApplicable(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(double.NaN)] double l)
@@ -22,7 +22,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessBlack(
+    public void LightnessBlack(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(-0.000000000000001, 0)] double l)
@@ -37,7 +37,7 @@ public static class DescriptionTests
     }
 
     [Test, Combinatorial]
-    public static void LightnessShadow(
+    public void LightnessShadow(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.000000000000001, 0.199999999999999)] double l)
@@ -50,7 +50,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessDark(
+    public void LightnessDark(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.2, 0.399999999999999)] double l) 
@@ -63,7 +63,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessPure(
+    public void LightnessPure(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.4, 0.599999999999999)] double l) 
@@ -76,7 +76,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessLight(
+    public void LightnessLight(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.6, 0.799999999999999)] double l) 
@@ -89,7 +89,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessPale(
+    public void LightnessPale(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.8, 0.999999999999999)] double l) 
@@ -102,7 +102,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void LightnessWhite(
+    public void LightnessWhite(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(1, 1.000000000000001)] double l) 
@@ -117,7 +117,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationNotApplicable(
+    public void SaturationNotApplicable(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(double.NaN)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l)
@@ -132,7 +132,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationGrey(
+    public void SaturationGrey(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(-0.000000000000001, 0)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -145,7 +145,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationFaint(
+    public void SaturationFaint(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(0.000000000000001, 0.199999999999999)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -158,7 +158,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationWeak(
+    public void SaturationWeak(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(0.2, 0.399999999999999)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -171,7 +171,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationMild(
+    public void SaturationMild(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(0.4, 0.599999999999999)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -184,7 +184,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationStrong(
+    public void SaturationStrong(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(0.6, 0.799999999999999)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -197,7 +197,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void SaturationVibrant(
+    public void SaturationVibrant(
         [Values(-1, 0, 180, 360, 361)] double h,
         [Values(0.8, 1, 1.000000000000001)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -210,7 +210,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueNotApplicable(
+    public void HueNotApplicable(
         [Values(double.NaN)] double h,
         [Values(-0.000000000000001, 0, 0.5, 1, 1.000000000000001)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l)
@@ -225,7 +225,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueRed(
+    public void HueRed(
         [Values(345, 0, 14.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -238,7 +238,7 @@ public static class DescriptionTests
     }
 
     [Test, Combinatorial]
-    public static void HueOrange(
+    public void HueOrange(
         [Values(15, 44.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -251,7 +251,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueYellow(
+    public void HueYellow(
         [Values(45, 74.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -264,7 +264,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueChartreuse(
+    public void HueChartreuse(
         [Values(75, 104.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -277,7 +277,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueGreen(
+    public void HueGreen(
         [Values(105, 134.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -290,7 +290,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueMint(
+    public void HueMint(
         [Values(135, 164.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -303,7 +303,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueCyan(
+    public void HueCyan(
         [Values(165, 194.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -316,7 +316,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueAzure(
+    public void HueAzure(
         [Values(195, 224.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -329,7 +329,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueBlue(
+    public void HueBlue(
         [Values(225, 254.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -342,7 +342,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueViolet(
+    public void HueViolet(
         [Values(255, 284.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -355,7 +355,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueMagenta(
+    public void HueMagenta(
         [Values(285, 314.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 
@@ -368,7 +368,7 @@ public static class DescriptionTests
     }
     
     [Test, Combinatorial]
-    public static void HueRose(
+    public void HueRose(
         [Values(315, 344.9999999999999)] double h,
         [Values(0.000000000000001, 0.5, 1)] double s,
         [Values(0.000000000000001, 0.5, 0.999999999999999)] double l) 

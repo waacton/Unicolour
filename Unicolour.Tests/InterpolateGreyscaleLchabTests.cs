@@ -22,7 +22,6 @@ public class InterpolateGreyscaleLchabTests
         var fromLchabWhite = lchabWhite.InterpolateLchab(green, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since LAB black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
         AssertTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
         AssertTriplet(fromLchabBlack.Lchab.Triplet, new(25, 100, 150));
@@ -44,7 +43,6 @@ public class InterpolateGreyscaleLchabTests
         var toLchabWhite = blue.InterpolateLchab(lchabWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since LAB black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
         AssertTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
         AssertTriplet(toLchabBlack.Lchab.Triplet, new(25, 100, 210));

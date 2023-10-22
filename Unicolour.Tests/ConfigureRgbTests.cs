@@ -8,7 +8,7 @@ using Wacton.Unicolour.Tests.Utils;
  * expected colour values for these tests based on calculations from
  * http://www.brucelindbloom.com/index.html?ColorCalculator.html
  */
-public static class RgbConfigurationTests
+public class ConfigureRgbTests
 {
     private const double Tolerance = 0.01;
     
@@ -45,7 +45,7 @@ public static class RgbConfigurationTests
     };
     
     [Test]
-    public static void XyzD65ToStandardRgbD65()
+    public void XyzD65ToStandardRgbD65()
     {
         // https://en.wikipedia.org/wiki/SRGB#From_CIE_XYZ_to_sRGB
         var expectedMatrixA = new[,]
@@ -80,7 +80,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void XyzD50ToStandardRgbD65()
+    public void XyzD50ToStandardRgbD65()
     {
         var standardRgbConfig = new RgbConfiguration(
             Chromaticity.StandardRgb.R,
@@ -111,7 +111,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void XyzD65ToAdobeRgbD65()
+    public void XyzD65ToAdobeRgbD65()
     {
         var adobeRgbConfig = new RgbConfiguration(
             AdobeChromaticityR,
@@ -131,7 +131,7 @@ public static class RgbConfigurationTests
     }
     
     [Test]
-    public static void XyzD50ToAdobeRgbD65()
+    public void XyzD50ToAdobeRgbD65()
     {
         var adobeRgbConfig = new RgbConfiguration(
             AdobeChromaticityR,
@@ -151,7 +151,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void XyzD65ToWideGamutRgbD50()
+    public void XyzD65ToWideGamutRgbD50()
     {
         var wideGamutRgbConfig = new RgbConfiguration(
             WideGamutChromaticityR,
@@ -171,7 +171,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void XyzD50ToWideGamutRgbD50()
+    public void XyzD50ToWideGamutRgbD50()
     {
         var wideGamutRgbConfig = new RgbConfiguration(
             WideGamutChromaticityR,
@@ -191,7 +191,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void ConvertStandardRgbToDisplayP3()
+    public void ConvertStandardRgbToDisplayP3()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
@@ -205,7 +205,7 @@ public static class RgbConfigurationTests
     }
     
     [Test]
-    public static void ConvertDisplayP3ToStandardRgb()
+    public void ConvertDisplayP3ToStandardRgb()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var displayP3Config = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
@@ -219,7 +219,7 @@ public static class RgbConfigurationTests
     }
 
     [Test]
-    public static void ConvertStandardRgbToRec2020()
+    public void ConvertStandardRgbToRec2020()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var rec2020Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
@@ -233,7 +233,7 @@ public static class RgbConfigurationTests
     }
     
     [Test]
-    public static void ConvertRec2020ToStandardRgb()
+    public void ConvertRec2020ToStandardRgb()
     {
         var standardRgbConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
         var rec2020Config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
@@ -256,7 +256,7 @@ public static class RgbConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void XyzWhitePointRoundTrip(Illuminant xyzIlluminant)
+    public void XyzWhitePointRoundTrip(Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(RgbConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);

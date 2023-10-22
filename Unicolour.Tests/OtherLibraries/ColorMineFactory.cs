@@ -1,4 +1,4 @@
-namespace Wacton.Unicolour.Tests.Factories;
+namespace Wacton.Unicolour.Tests.OtherLibraries;
 
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using ColorMineLchab = ColorMine.ColorSpaces.Lch;
 using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 
 /*
- * ColorMine does not support HWB / LCHuv / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16
+ * ColorMine does not support HWB / LCHuv / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16 / HCT
  * ColorMine does not expose linear RGB
  * ColorMine does a bad job of converting to HSL
  * ColorMine does a terrible job of converting from XYZ / LAB / LCHab / LUV

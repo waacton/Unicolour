@@ -33,6 +33,9 @@ public class HuedTests
     
     [Test]
     public void Oklch() => AssertUnicolour(Unicolour.FromOklch(0, 0, 180), new List<ColourSpace>());
+    
+    [Test]
+    public void Hct() => AssertUnicolour(Unicolour.FromHct(180, 0, 0), new List<ColourSpace>());
 
     private static void AssertUnicolour(Unicolour unicolour, List<ColourSpace> adjacentHuedSpaces)
     {

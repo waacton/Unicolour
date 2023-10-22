@@ -6,7 +6,9 @@ public record Ictcp : ColourRepresentation
     public double I => First;
     public double Ct => Second;
     public double Cp => Third;
-    internal override bool IsGreyscale => Ct.Equals(0.0) && Cp.Equals(0.0);
+    
+    // no clear lightness upper-bound
+    internal override bool IsGreyscale => I <= 0.0 || (Ct.Equals(0.0) && Cp.Equals(0.0));
     
     public Ictcp(double i, double ct, double cp) : this(i, ct, cp, ColourHeritage.None) {}
     internal Ictcp(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}

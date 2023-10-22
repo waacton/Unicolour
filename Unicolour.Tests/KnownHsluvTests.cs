@@ -3,7 +3,7 @@
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class HsluvTests
+public class KnownHsluvTests
 {
     /*
      * note that at each step of the conversion process, more tolerance is required to match the HSLuv test data set
@@ -12,7 +12,7 @@ public static class HsluvTests
      * Unicolour calculates matrix from chromaticities and matches Bruce Lindbloom's sRGB D65 matrix (first matrix value: 0.41245643908969187)
      */
     [TestCaseSource(typeof(HsluvTestColour), nameof(HsluvTestColour.All))]
-    public static void SnapshotTestColour(TestColour testColour)
+    public void SnapshotTestColour(TestColour testColour)
     {
         var hex = testColour.Hex!;
         var unicolour = Unicolour.FromHex(hex);

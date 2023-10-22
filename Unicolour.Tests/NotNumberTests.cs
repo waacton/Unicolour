@@ -4,7 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class NotNumberTests
+public class NotNumberTests
 {
     private static double[][] testCases =
     {
@@ -18,61 +18,64 @@ public static class NotNumberTests
     };
     
     [TestCaseSource(nameof(testCases))]
-    public static void Rgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
+    public void Rgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Hsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
+    public void Hsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Hsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
+    public void Hsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
     
     [TestCaseSource(nameof(testCases))]
-    public static void Hwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
+    public void Hwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Xyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
+    public void Xyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
     
     [TestCaseSource(nameof(testCases))]
-    public static void Xyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
+    public void Xyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Lab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
+    public void Lab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Lchab(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchab(l, c, h));
+    public void Lchab(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchab(l, c, h));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Luv(double l, double u, double v) => AssertUnicolour(Unicolour.FromLuv(l, u, v));
+    public void Luv(double l, double u, double v) => AssertUnicolour(Unicolour.FromLuv(l, u, v));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Lchuv(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchuv(l, c, h));
+    public void Lchuv(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchuv(l, c, h));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Hsluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsluv(h, s, l));
+    public void Hsluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsluv(h, s, l));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Hpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
+    public void Hpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Ictcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
+    public void Ictcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Jzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));
+    public void Jzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz));
+    public void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Oklab(double l, double a, double b) => AssertUnicolour(Unicolour.FromOklab(l, a, b));
+    public void Oklab(double l, double a, double b) => AssertUnicolour(Unicolour.FromOklab(l, a, b));
 
     [TestCaseSource(nameof(testCases))]
-    public static void Oklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
+    public void Oklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
     
     [TestCaseSource(nameof(testCases))]
-    public static void Cam02(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam02(j, a, b));
+    public void Cam02(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam02(j, a, b));
     
     [TestCaseSource(nameof(testCases))]
-    public static void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
+    public void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Hct(double h, double c, double t) => AssertUnicolour(Unicolour.FromHct(h, c, t));
     
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but are used as NaN

@@ -35,9 +35,18 @@ public class CamConfiguration
      * hard to find guidance for default CAM settings; this is based on data in "Usage guidelines for CIECAM97s" (Moroney, 2000)
      * - sRGB standard ambient illumination level of 64 lux ~= 4
      * - La = E * R / PI / 5 where E = lux & R = 1 --> 64 / PI / 5
+     * ----------
+     * I don't know why Google's HCT luminance calculations don't match the above
+     * they suggest 200 lux -> ~11.72 luminance, but the formula above gives ~12.73 luminance
+     * and they appear to ignore the division by 5 and incorporate XYZ luminance (Y)
      */
     public static readonly CamConfiguration StandardRgb = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(64), 20, Surround.Average);
+    public static readonly CamConfiguration Hct = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(200) * 5 * DefaultHctY(), DefaultHctY() * 100, Surround.Average);
     internal static double LuxToLuminance(double lux) => lux / Math.PI / 5.0;
+
+    // just for HCT, use specific XYZ configuration
+    private const double DefaultHctLightness = 50;
+    private static double DefaultHctY() => Lab.ToXyz(new Lab(DefaultHctLightness, 0, 0), XyzConfiguration.D65).Y;
     
     public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround)
     {

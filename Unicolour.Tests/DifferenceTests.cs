@@ -4,7 +4,7 @@ using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class DifferenceTests
+public class DifferenceTests
 {
     private const double Tolerance = 0.00005;
     private static Unicolour RandomColour() => RandomColours.UnicolourFromRgb();
@@ -17,7 +17,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 170.565257)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 258.682686)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 176.314083)]
-    public static void DeltaE76(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaE76(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -34,7 +34,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 68.800069)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 100.577051)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 70.580743)]
-    public static void DeltaE94Graphics(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaE94Graphics(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -51,7 +51,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 64.530477)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 92.093048)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 71.003011)]
-    public static void DeltaE94Textiles(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaE94Textiles(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -69,7 +69,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 86.608245)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 83.185881)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 52.881375)]
-    public static void DeltaE00(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaE00(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -86,7 +86,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 239.982435)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 234.838743)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 322.659678)]
-    public static void DeltaEItp(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaEItp(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -103,7 +103,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 0.195524)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 0.271571)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 0.281457)]
-    public static void DeltaEz(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaEz(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -119,7 +119,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 201.534889)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 308.110214)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 196.009473)]
-    public static void DeltaEHyab(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaEHyab(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -135,7 +135,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 0.519797)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 0.673409)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 0.537117)]
-    public static void DeltaEOk(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaEOk(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -151,7 +151,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 76.105436)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 92.321874)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 84.119853)]
-    public static void DeltaCam02(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaCam02(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -167,7 +167,7 @@ public static class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 22.523082)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 24.596320)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 20.689226)]
-    public static void DeltaCam16(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void DeltaCam16(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
@@ -176,58 +176,58 @@ public static class DifferenceTests
     }
     
     [Test]
-    public static void RandomSymmetricDeltaE76() => AssertRandomSymmetricDeltas(Comparison.DeltaE76);
+    public void RandomSymmetricDeltaE76() => AssertRandomSymmetricDeltas(Comparison.DeltaE76);
     
     [Test]
-    public static void RandomSymmetricDeltaE00() => AssertRandomSymmetricDeltas(Comparison.DeltaE00);
+    public void RandomSymmetricDeltaE00() => AssertRandomSymmetricDeltas(Comparison.DeltaE00);
     
     [Test]
-    public static void RandomSymmetricDeltaEItp() => AssertRandomSymmetricDeltas(Comparison.DeltaEItp);
+    public void RandomSymmetricDeltaEItp() => AssertRandomSymmetricDeltas(Comparison.DeltaEItp);
     
     [Test]
-    public static void RandomSymmetricDeltaEz() => AssertRandomSymmetricDeltas(Comparison.DeltaEz);
+    public void RandomSymmetricDeltaEz() => AssertRandomSymmetricDeltas(Comparison.DeltaEz);
     
     [Test]
-    public static void RandomSymmetricDeltaEHyab() => AssertRandomSymmetricDeltas(Comparison.DeltaEHyab);
+    public void RandomSymmetricDeltaEHyab() => AssertRandomSymmetricDeltas(Comparison.DeltaEHyab);
     
     [Test]
-    public static void RandomSymmetricDeltaEOk() => AssertRandomSymmetricDeltas(Comparison.DeltaEOk);
+    public void RandomSymmetricDeltaEOk() => AssertRandomSymmetricDeltas(Comparison.DeltaEOk);
     
     [Test]
-    public static void RandomSymmetricDeltaECam02() => AssertRandomSymmetricDeltas(Comparison.DeltaECam02);
+    public void RandomSymmetricDeltaECam02() => AssertRandomSymmetricDeltas(Comparison.DeltaECam02);
 
     [Test]
-    public static void RandomSymmetricDeltaECam16() => AssertRandomSymmetricDeltas(Comparison.DeltaECam16);
+    public void RandomSymmetricDeltaECam16() => AssertRandomSymmetricDeltas(Comparison.DeltaECam16);
 
     [Test]
-    public static void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76, ColourSpace.Lab);
+    public void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76, ColourSpace.Lab);
     
     [Test]
-    public static void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample), ColourSpace.Lab);
+    public void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample), ColourSpace.Lab);
     
     [Test]
-    public static void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true), ColourSpace.Lab);
+    public void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true), ColourSpace.Lab);
     
     [Test]
-    public static void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00, ColourSpace.Lab);
+    public void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00, ColourSpace.Lab);
     
     [Test]
-    public static void NotNumberDeltaEItp() => AssertNotNumberDeltas(Comparison.DeltaEItp, ColourSpace.Ictcp);
+    public void NotNumberDeltaEItp() => AssertNotNumberDeltas(Comparison.DeltaEItp, ColourSpace.Ictcp);
 
     [Test]
-    public static void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz, ColourSpace.Jzczhz);
+    public void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz, ColourSpace.Jzczhz);
     
     [Test]
-    public static void NotNumberDeltaEHyab() => AssertNotNumberDeltas(Comparison.DeltaEHyab, ColourSpace.Lab);
+    public void NotNumberDeltaEHyab() => AssertNotNumberDeltas(Comparison.DeltaEHyab, ColourSpace.Lab);
     
     [Test]
-    public static void NotNumberDeltaEOk() => AssertNotNumberDeltas(Comparison.DeltaEOk, ColourSpace.Oklab);
+    public void NotNumberDeltaEOk() => AssertNotNumberDeltas(Comparison.DeltaEOk, ColourSpace.Oklab);
     
     [Test]
-    public static void NotNumberDeltaECam02() => AssertNotNumberDeltas(Comparison.DeltaECam02, ColourSpace.Cam02);
+    public void NotNumberDeltaECam02() => AssertNotNumberDeltas(Comparison.DeltaECam02, ColourSpace.Cam02);
     
     [Test]
-    public static void NotNumberDeltaECam16() => AssertNotNumberDeltas(Comparison.DeltaECam16, ColourSpace.Cam16);
+    public void NotNumberDeltaECam16() => AssertNotNumberDeltas(Comparison.DeltaECam16, ColourSpace.Cam16);
 
     private static void AssertRandomSymmetricDeltas(Func<Unicolour, Unicolour, double> getDelta)
     {

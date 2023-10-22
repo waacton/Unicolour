@@ -22,7 +22,6 @@ public class InterpolateGreyscaleLchuvTests
         var fromLchuvWhite = lchuvWhite.InterpolateLchuv(green, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since LUV black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(fromLuvBlack.Lchuv.Triplet, new(25, 50, 120));
         AssertTriplet(fromLuvWhite.Lchuv.Triplet, new(75, 50, 120));
         AssertTriplet(fromLchuvBlack.Lchuv.Triplet, new(25, 100, 150));
@@ -44,7 +43,6 @@ public class InterpolateGreyscaleLchuvTests
         var toLchuvWhite = blue.InterpolateLchuv(lchuvWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since LUV black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(toLuvBlack.Lchuv.Triplet, new(25, 50, 240));
         AssertTriplet(toLuvWhite.Lchuv.Triplet, new(75, 50, 240));
         AssertTriplet(toLchuvBlack.Lchuv.Triplet, new(25, 100, 210));

@@ -72,6 +72,7 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Oklch", $"{unicolour.Oklch}");
     table.AddRow("Cam02", $"{unicolour.Cam02}");
     table.AddRow("Cam16", $"{unicolour.Cam16}");
+    table.AddRow("Hct", $"{unicolour.Hct}");
     return table;
 }
 

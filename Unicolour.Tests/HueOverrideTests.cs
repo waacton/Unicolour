@@ -3,11 +3,10 @@
 using System;
 using NUnit.Framework;
 
-public static class HueOverrideTests
+public class HueOverrideTests
 {
-    
     [Test]
-    public static void NoHue()
+    public void NoHue()
     {
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, null);
         Assert.Throws<ArgumentException>(() => triplet.HueValue());
@@ -15,7 +14,7 @@ public static class HueOverrideTests
     }
     
     [Test]
-    public static void FirstHue()
+    public void FirstHue()
     {
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, 0);
         Assert.That(triplet.HueValue(), Is.EqualTo(7.7));
@@ -25,7 +24,7 @@ public static class HueOverrideTests
     }
     
     [Test]
-    public static void SecondHue()
+    public void SecondHue()
     {
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, 1);
         Assert.Throws<ArgumentException>(() => triplet.HueValue());
@@ -33,7 +32,7 @@ public static class HueOverrideTests
     }
     
     [Test]
-    public static void ThirdHue()
+    public void ThirdHue()
     {
         var triplet = new ColourTriplet(7.7, 8.8, 9.9, 2);
         Assert.That(triplet.HueValue(), Is.EqualTo(9.9));

@@ -9,7 +9,8 @@ public record Jzazbz : ColourRepresentation
     
     // based on the figures from the paper, greyscale behaviour is the same as LAB
     // i.e. non-lightness axes are zero
-    internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
+    // but no clear lightness upper-bound
+    internal override bool IsGreyscale => J <= 0.0 || (A.Equals(0.0) && B.Equals(0.0));
     
     public Jzazbz(double j, double a, double b) : this(j, a, b, ColourHeritage.None) {}
     internal Jzazbz(double j, double a, double b, ColourHeritage heritage) : base(j, a, b, heritage) {}

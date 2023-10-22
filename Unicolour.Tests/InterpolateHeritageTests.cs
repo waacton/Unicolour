@@ -10,7 +10,7 @@ public class InterpolateHeritageTests
     private static readonly List<ColourSpace> HuedSpaces = new()
     {
         ColourSpace.Hsb, ColourSpace.Hsl, ColourSpace.Hwb, ColourSpace.Lchab, ColourSpace.Lchuv, 
-        ColourSpace.Hsluv, ColourSpace.Hpluv, ColourSpace.Jzczhz, ColourSpace.Oklch
+        ColourSpace.Hsluv, ColourSpace.Hpluv, ColourSpace.Jzczhz, ColourSpace.Oklch, ColourSpace.Hct
     };
 
     private static readonly List<ColourSpace> NonHuedSpaces = AssertUtils.AllColourSpaces.Except(HuedSpaces).ToList();

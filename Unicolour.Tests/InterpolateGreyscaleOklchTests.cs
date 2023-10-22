@@ -22,7 +22,6 @@ public class InterpolateGreyscaleOklchTests
         var fromOklchWhite = oklchWhite.InterpolateOklch(green, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
         AssertTriplet(fromOklabWhite.Oklch.Triplet, new(0.75, 0.25, 120));
         AssertTriplet(fromOklchBlack.Oklch.Triplet, new(0.25, 0.5, 150));
@@ -44,7 +43,6 @@ public class InterpolateGreyscaleOklchTests
         var toOklchWhite = blue.InterpolateOklch(oklchWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since Oklab black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
         AssertTriplet(toOklabWhite.Oklch.Triplet, new(0.75, 0.25, 240));
         AssertTriplet(toOklchBlack.Oklch.Triplet, new(0.25, 0.5, 210));

@@ -25,7 +25,6 @@ public class InterpolateGreyscaleHpluvTests
         var fromHpluvWhite = hpluvWhite.InterpolateHpluv(green, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertTriplet(fromRgbBlack.Hpluv.Triplet, new(120, 50, 25));
         AssertTriplet(fromRgbWhite.Hpluv.Triplet, new(120, 50, 75));
         AssertTriplet(fromHpluvBlack.Hpluv.Triplet, new(150, 100, 25));
@@ -47,7 +46,6 @@ public class InterpolateGreyscaleHpluvTests
         var toHpluvWhite = blue.InterpolateHpluv(hpluvWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertTriplet(toRgbBlack.Hpluv.Triplet, new(240, 50, 25));
         AssertTriplet(toRgbWhite.Hpluv.Triplet, new(240, 50, 75));
         AssertTriplet(toHpluvBlack.Hpluv.Triplet, new(210, 100, 25));
@@ -71,11 +69,8 @@ public class InterpolateGreyscaleHpluvTests
         
         // colours created from LUV therefore hue does not change
         AssertTriplet(blackToWhite.Hpluv.Triplet, new(0, 0, 50));
-        Assert.That(blackToWhite.Hpluv.UseAsHued, Is.False);
         AssertTriplet(blackToGrey.Hpluv.Triplet, new(0, 0, 25));
-        Assert.That(blackToGrey.Hpluv.UseAsHued, Is.False);
         AssertTriplet(whiteToGrey.Hpluv.Triplet, new(0, 0, 75));
-        Assert.That(whiteToGrey.Hpluv.UseAsHued, Is.False);
     }
     
     [Test]

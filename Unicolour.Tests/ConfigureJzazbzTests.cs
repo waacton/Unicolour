@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class JzazbzConfigurationTests
+public class ConfigureJzazbzTests
 {
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
@@ -17,7 +17,7 @@ public static class JzazbzConfigurationTests
     private static readonly Configuration Config203 = new(RgbConfiguration.StandardRgb, XyzConfiguration.D65, jzazbzScalar: 203);
 
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://www.researchgate.net/figure/The-Hung-Berns-data-plotted-in-six-different-color-spaces-a-CIELAB-b-CIELUV-c_fig2_317811721)
-    public static void XyzD65ToJzazbz100()
+    public void XyzD65ToJzazbz100()
     {
         var red = Unicolour.FromXyz(Config100, HungBerns.RedRef.Xyz.Triplet.Tuple);
         var blue = Unicolour.FromXyz(Config100, HungBerns.BlueRef.Xyz.Triplet.Tuple);
@@ -39,7 +39,7 @@ public static class JzazbzConfigurationTests
     }
     
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31212jzazbz-colourspace)  
-    public static void XyzD65ToJzazbz1()
+    public void XyzD65ToJzazbz1()
     {
         var unicolour = Unicolour.FromXyz(Config1, TestXyz.Tuple);
         AssertUtils.AssertTriplet<Jzazbz>(unicolour, new(0.00535048, 0.00924302, 0.00526007), 0.00001);
@@ -51,7 +51,7 @@ public static class JzazbzConfigurationTests
     }
 
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
-    public static void XyzD65ToJzazbz203()
+    public void XyzD65ToJzazbz203()
     {
         var unicolour = Unicolour.FromXyz(Config203, TestXyz.Tuple);
         AssertUtils.AssertTriplet<Jzazbz>(unicolour, new(0.10287841, 0.08613415, 0.05873694), 0.0001);
@@ -63,7 +63,7 @@ public static class JzazbzConfigurationTests
     }
     
     [Test]
-    public static void ConvertTestColour()
+    public void ConvertTestColour()
     {
         var initial100 = Unicolour.FromXyz(Config100, TestXyz.Tuple);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);
@@ -76,7 +76,7 @@ public static class JzazbzConfigurationTests
     }
     
     [Test]
-    public static void ConvertWhite()
+    public void ConvertWhite()
     {
         var initial100 = Unicolour.FromXyz(Config100, XyzWhite.Tuple);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);
@@ -90,7 +90,7 @@ public static class JzazbzConfigurationTests
     }
 
     [Test]
-    public static void ConvertBlack()
+    public void ConvertBlack()
     {
         var initial100 = Unicolour.FromXyz(Config100, 0, 0, 0);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);

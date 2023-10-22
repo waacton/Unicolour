@@ -30,6 +30,7 @@ A `Unicolour` encapsulates a single colour and its representation across differe
 - Oklch
 - CIECAM02
 - CAM16
+- HCT
 
 <details>
 <summary>Diagram of colour space relationships</summary>
@@ -58,7 +59,7 @@ Unicolour can be used to calculate colour difference via:
 - ΔE<sub>CAM02</sub>
 - ΔE<sub>CAM16</sub>
 
-Simulations of colour vision deficiency (CVD) / colour blindness is supported for:
+Simulation of colour vision deficiency (CVD) / colour blindness is supported for:
 - Protanopia (no red perception)
 - Deuteranopia (no green perception)
 - Tritanopia (no blue perception)
@@ -70,7 +71,7 @@ These [can be overridden](#advanced-configuration-) using the `Configuration` pa
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be accurate, intuitive, and easy to use.
 Although performance is not a priority, conversions are only calculated once — when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
-It is also [extensively tested](Unicolour.Tests), including comparisons against known colour values and other .NET libraries.
+It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and comparisons against other .NET libraries.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
@@ -98,6 +99,7 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.InterpolateOklch()`  |
 | CIECAM02                                | `Unicolour.FromCam02()`  | `.Cam02`       | `.InterpolateCam02()`  |
 | CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.InterpolateCam16()`  |
+| HCT                                     | `Unicolour.FromHct()`    | `.Hct`         | `.InterpolateHct()`    |
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -133,6 +135,7 @@ var unicolour = Unicolour.FromOklab(0.65, 0.26, -0.01);
 var unicolour = Unicolour.FromOklch(0.65, 0.26, 356.9);
 var unicolour = Unicolour.FromCam02(62.86, 40.81, -1.18);
 var unicolour = Unicolour.FromCam16(62.47, 42.60, -1.36);
+var unicolour = Unicolour.FromHct(358.2, 100.38, 55.96);
 ```
 
 4. Get representations of a colour in different colour spaces:
@@ -156,6 +159,7 @@ var oklab = unicolour.Oklab;
 var oklch = unicolour.Oklch;
 var cam02 = unicolour.Cam02;
 var cam16 = unicolour.Cam16;
+var hct = unicolour.Hct;
 ```
 
 5. Get properties of a colour
@@ -186,6 +190,7 @@ var interpolated = unicolour1.InterpolateOklab(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateOklch(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateCam02(unicolour2, 0.5);
 var interpolated = unicolour1.InterpolateCam16(unicolour2, 0.5);
+var interpolated = unicolour1.InterpolateHct(unicolour2, 0.5);
 ```
 
 7. Compare colours:

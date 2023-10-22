@@ -1,4 +1,4 @@
-namespace Wacton.Unicolour.Tests.Factories;
+namespace Wacton.Unicolour.Tests.OtherLibraries;
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using OpenCvSharp;
 using Wacton.Unicolour.Tests.Utils;
 
 /*
- * OpenCV does not support HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16
+ * OpenCV does not support HWB / xyY / LCHab / LCHuv / HSLuv / HPLuv / ICtCp / Jzazbz / Jzczhz / Oklab / Oklch / CAM02 / CAM16 / HCT
  * OpenCV does not expose linear RGB
  * OpenCV RGB -> XYZ expects to linear RGB values (that have not been companded)
  * OpenCV XYZ -> RGB actually converts to linear RGB (not companded)

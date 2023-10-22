@@ -8,7 +8,7 @@ using Wacton.Unicolour.Tests.Utils;
 public class GreyscaleTests
 {
     private static readonly List<ColourSpace> NaNProducingSpaces = new()
-        { ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16 };
+        { ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16, ColourSpace.Hct };
 
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(-0.00000000001, 0.0, -0.0, true)]
@@ -66,13 +66,14 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.49999999999, false)]
     public void Hwb(double h, double w, double b, bool expected) => AssertUnicolour(Unicolour.FromHwb(h, w, b), expected);
 
-    // XYZ does not currently attempt to determine greyscale status from XYZ triplet, too much room for error
-    // subsequent colour spaces may later report to be greyscale based on their own triplet values
-    [TestCase(0.0, 0.0, 0.0)]
-    [TestCase(0.5, 0.5, 0.5)]
-    [TestCase(0.25, 0.5, 0.75)]
-    [TestCase(0.95047, 1.0, 1.08883)]
-    public void Xyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z), false);
+    [TestCase(0.0, 0.0, 0.0, true)]
+    [TestCase(0.0, -0.00000000001, 0.0, true)]
+    [TestCase(0.00000000001, 0.0, 0.00000000001, true)]
+    [TestCase(0.0, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.5, 0.5, false)]
+    [TestCase(0.25, 0.5, 0.75, false)]
+    [TestCase(0.95047, 1.0, 1.08883, false)]
+    public void Xyz(double x, double y, double z, bool expected) => AssertUnicolour(Unicolour.FromXyz(x, y, z), expected);
     
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(0.0, 0.0, -0.00000000001, true)]
@@ -87,6 +88,12 @@ public class GreyscaleTests
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.00000000001, -0.00000000001, true)]
+    [TestCase(-0.00000000001, 50, -50, true)]
+    [TestCase(0.00000000001, 50, -50, false)]
+    [TestCase(100.0, 50, -50, true)]
+    [TestCase(100.00000000001, 50, -50, true)]
+    [TestCase(99.99999999999, 50, -50, false)]
     public void Lab(double l, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromLab(l, a, b), expected);
 
     [TestCase(50.0, 0.0, 180.0, true)]
@@ -105,6 +112,12 @@ public class GreyscaleTests
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.00000000001, -0.00000000001, true)]
+    [TestCase(-0.00000000001, 50, -50, true)]
+    [TestCase(0.00000000001, 50, -50, false)]
+    [TestCase(100.0, 50, -50, true)]
+    [TestCase(100.00000000001, 50, -50, true)]
+    [TestCase(99.99999999999, 50, -50, false)]
     public void Luv(double l, double u, double v, bool expected) => AssertUnicolour(Unicolour.FromLuv(l, u, v), expected);
 
     [TestCase(50.0, 0.0, 180.0, true)]
@@ -145,6 +158,10 @@ public class GreyscaleTests
     [TestCase(0.5, -0.00000000001, 0.0, false)]
     [TestCase(0.5, 0.0, 0.00000000001, false)]
     [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
     public void Ictcp(double i, double ct, double cp, bool expected) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
@@ -152,6 +169,10 @@ public class GreyscaleTests
     [TestCase(0.5, -0.00000000001, 0.0, false)]
     [TestCase(0.5, 0.0, 0.00000000001, false)]
     [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
     public void Jzazbz(double jz, double az, double bz, bool expected) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz), expected);
 
     [TestCase(0.5, 0.0, 180.0, true)]
@@ -159,10 +180,8 @@ public class GreyscaleTests
     [TestCase(0.5, 0.00000000001, 180.0, false)]
     [TestCase(0.0, 0.1, 180.0, true)]
     [TestCase(-0.00000000001, 0.1, 180.0, true)]
-    [TestCase(0.00000000001, 0.05, 180.0, false)]
-    [TestCase(1.0, 0.1, 180.0, true)]
-    [TestCase(1.00000000001, 0.1, 180.0, true)]
-    [TestCase(0.99999999999, 0.1, 180.0, false)]
+    [TestCase(0.00000000001, 0.1, 180.0, false)]
+    [TestCase(1.0, 0.1, 180.0, false)]
     public void Jzczhz(double jz, double cz, double hz, bool expected) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
@@ -170,6 +189,12 @@ public class GreyscaleTests
     [TestCase(0.5, -0.00000000001, 0.0, false)]
     [TestCase(0.5, 0.0, 0.00000000001, false)]
     [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.00000000001, -0.00000000001, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, true)]
+    [TestCase(1.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.99999999999, 0.1, -0.1, false)]
     public void Oklab(double l, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromOklab(l, a, b), expected);
 
     [TestCase(0.5, 0.0, 180.0, true)]
@@ -196,6 +221,17 @@ public class GreyscaleTests
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
     public void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam16(j, a, b), expected);
+    
+    [TestCase(180.0, 0.0, 50, true)]
+    [TestCase(180.0, -0.00000000001, 50, true)]
+    [TestCase(180.0, 0.00000000001, 50, false)]
+    [TestCase(180.0, 50, 0.0, true)]
+    [TestCase(180.0, 50, -0.00000000001, true)]
+    [TestCase(180.0, 50, 0.00000000001, false)]
+    [TestCase(180.0, 50, 100.0, true)]
+    [TestCase(180.0, 50, 100.00000000001, true)]
+    [TestCase(180.0, 50, 99.99999999999, false)]
+    public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(Unicolour.FromHct(h, c, t), expected);
 
     private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
     {

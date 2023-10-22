@@ -212,14 +212,7 @@ public class CoordinateSpaceTests
         AssertUtils.AssertTriplet(actual, expected, 0.00001);
     }
 
-    private static Triplets AsTriplets(Rgb rgb) => new(rgb.Triplet, rgb.ConstrainedTriplet);
-    private static Triplets AsTriplets(Hsb hsb) => new(hsb.Triplet, hsb.ConstrainedTriplet);
-    private static Triplets AsTriplets(Hsl hsl) => new(hsl.Triplet, hsl.ConstrainedTriplet);
-    private static Triplets AsTriplets(Hwb hwb) => new(hwb.Triplet, hwb.ConstrainedTriplet);
-    private static Triplets AsTriplets(Lchab lchab) => new(lchab.Triplet, lchab.ConstrainedTriplet);
-    private static Triplets AsTriplets(Lchuv lchuv) => new(lchuv.Triplet, lchuv.ConstrainedTriplet);
-    private static Triplets AsTriplets(Jzczhz jzczhz) => new(jzczhz.Triplet, jzczhz.ConstrainedTriplet);
-    private static Triplets AsTriplets(Oklch oklch) => new(oklch.Triplet, oklch.ConstrainedTriplet);
+    private static Triplets AsTriplets(ColourRepresentation representation) => new(representation.Triplet, representation.ConstrainedTriplet);
 
     private record Triplets(ColourTriplet Unconstrained, ColourTriplet Constrained);
 }

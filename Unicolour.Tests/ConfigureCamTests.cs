@@ -3,7 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class CamConfigurationTests
+public class ConfigureCamTests
 {
     [TestCase(Illuminant.A)]
     [TestCase(Illuminant.C)]
@@ -15,7 +15,7 @@ public static class CamConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void XyzWhitePointRoundTripViaCam02(Illuminant xyzIlluminant)
+    public void XyzWhitePointRoundTripViaCam02(Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);
@@ -37,7 +37,7 @@ public static class CamConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void XyzWhitePointRoundTripViaCam16(Illuminant xyzIlluminant)
+    public void XyzWhitePointRoundTripViaCam16(Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);

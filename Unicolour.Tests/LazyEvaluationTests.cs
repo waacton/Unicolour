@@ -7,7 +7,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class LazyEvaluationTests
+public class LazyEvaluationTests
 {
     // RgbLinear & Rgb255 are currently calculated during Rgb construction
     // instead of separately like the other colour spaces
@@ -38,80 +38,81 @@ public static class LazyEvaluationTests
         new TestCaseData(RandomColours.UnicolourFromOklab).SetName("Oklab"),
         new TestCaseData(RandomColours.UnicolourFromOklch).SetName("Oklch"),
         new TestCaseData(RandomColours.UnicolourFromCam02).SetName("Cam02"),
-        new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16")
+        new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16"),
+        new TestCaseData(RandomColours.UnicolourFromHct).SetName("Hct")
     };
     
     [TestCaseSource(nameof(TestCases))]
-    public static void InitialUnicolour(Func<Unicolour> unicolourFunction)
+    public void InitialUnicolour(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
         AssertBackingFields(unicolour);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterEquality(Func<Unicolour> unicolourFunction)
+    public void AfterEquality(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
         var other = unicolourFunction();
-        var _ = unicolour.Equals(other);
+        _ = unicolour.Equals(other);
         AssertBackingFields(unicolour);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterInterpolation(Func<Unicolour> unicolourFunction)
+    public void AfterInterpolation(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
         var other = unicolourFunction();
         var initialColourSpace = unicolour.InitialColourSpace;
-        var _ = Interpolation.Interpolate(initialColourSpace, unicolour, other, 0.5);
+        _ = Interpolation.Interpolate(initialColourSpace, unicolour, other, 0.5);
         AssertBackingFields(unicolour);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterHex(Func<Unicolour> unicolourFunction)
+    public void AfterHex(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.Hex;
+        _ = unicolour.Hex;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterIsDisplayable(Func<Unicolour> unicolourFunction)
+    public void AfterIsDisplayable(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.IsDisplayable;
+        _ = unicolour.IsDisplayable;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterRelativeLuminance(Func<Unicolour> unicolourFunction)
+    public void AfterRelativeLuminance(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.RelativeLuminance;
+        _ = unicolour.RelativeLuminance;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterDescription(Func<Unicolour> unicolourFunction)
+    public void AfterDescription(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.Description;
+        _ = unicolour.Description;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Hsl);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterTemperature(Func<Unicolour> unicolourFunction)
+    public void AfterTemperature(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.Temperature;
+        _ = unicolour.Temperature;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public static void AfterConfigurationConversion(Func<Unicolour> unicolourFunction)
+    public void AfterConfigurationConversion(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        var _ = unicolour.ConvertToConfiguration(Configuration.Default);
+        _ = unicolour.ConvertToConfiguration(Configuration.Default);
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
     }
     

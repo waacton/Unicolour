@@ -22,7 +22,6 @@ public class InterpolateGreyscaleHsbTests
         var fromHsbWhite = hsbWhite.InterpolateHsb(green, 0.5);
         
         // greyscale interpolates differently depending on the initial colour space
-        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertTriplet(fromRgbBlack.Hsb.Triplet, new(120, 0.5, 0.5));
         AssertTriplet(fromRgbWhite.Hsb.Triplet, new(120, 0.5, 1));
         AssertTriplet(fromHsbBlack.Hsb.Triplet, new(150, 1, 0.5));
@@ -44,7 +43,6 @@ public class InterpolateGreyscaleHsbTests
         var toHsbWhite = blue.InterpolateHsb(hsbWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since greyscale RGB assumes saturation of 0 (but saturation can be any value)
         AssertTriplet(toRgbBlack.Hsb.Triplet, new(240, 0.5, 0.5));
         AssertTriplet(toRgbWhite.Hsb.Triplet, new(240, 0.5, 1));
         AssertTriplet(toHsbBlack.Hsb.Triplet, new(210, 1, 0.5));

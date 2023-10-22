@@ -7,9 +7,9 @@ public record Xyz : ColourRepresentation
     public double Y => Second;
     public double Z => Third;
     
-    // could compare whitepoint against config.XyzWhitePoint
-    // but requires making assumptions about floating-point comparison, which I don't want to do
-    internal override bool IsGreyscale => false;
+    // no clear luminance upper-bound; usually Y >= 1 is max luminance
+    // but since custom white points can be provided, don't want to make the assumption
+    internal override bool IsGreyscale => Y <= 0;
 
     public Xyz(double x, double y, double z) : this(x, y, z, ColourHeritage.None) {}
     internal Xyz(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
@@ -24,4 +24,8 @@ public record Xyz : ColourRepresentation
      * XYZ is considered the root colour representation (in terms of Unicolour implementation)
      * so does not contain any forward (from another space) or reverse (back to original space) functions
      */
+
+    // only for potential debugging or diagnostics
+    // until there is an "official" HCT -> XYZ reverse transform
+    internal HctToXyzSearchResult? HctToXyzSearchResult;
 }

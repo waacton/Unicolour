@@ -2,13 +2,13 @@
 
 using NUnit.Framework;
 
-public static class DisplayableColourTests
+public class DisplayableColourTests
 {
     [TestCase(0.0, 0.0, 0.0)]
     [TestCase(0.5, 0.5, 0.5)]
     [TestCase(1.0, 1.0, 1.0)]
     [TestCase(double.Epsilon, double.Epsilon, double.Epsilon)]
-    public static void DisplayableRgb(double r, double g, double b)
+    public void DisplayableRgb(double r, double g, double b)
     {
         var unicolour = Unicolour.FromRgb(r, g, b);
         Assert.That(unicolour.IsDisplayable, Is.True);
@@ -35,7 +35,7 @@ public static class DisplayableColourTests
     [TestCase(double.NaN, 0.5, 0.5)]
     [TestCase(0.5, double.NaN, 0.5)]
     [TestCase(0.5, 0.5, double.NaN)]
-    public static void UndisplayableRgb(double r, double g, double b)
+    public void UndisplayableRgb(double r, double g, double b)
     {
         var unicolour = Unicolour.FromRgb(r, g, b);
         Assert.That(unicolour.IsDisplayable, Is.False);

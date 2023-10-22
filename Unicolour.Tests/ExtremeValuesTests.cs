@@ -3,10 +3,10 @@
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class ExtremeValuesTests
+public class ExtremeValuesTests
 {
     [Test, Combinatorial]
-    public static void Rgb(
+    public void Rgb(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -15,7 +15,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void RgbConfiguration(
+    public void RgbConfiguration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double chromaticity, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint,
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double linear)
@@ -29,7 +29,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Hsb(
+    public void Hsb(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -38,7 +38,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Hsl(
+    public void Hsl(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -47,7 +47,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Hwb(
+    public void Hwb(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -56,7 +56,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Xyz(
+    public void Xyz(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -65,7 +65,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void XyzConfiguration(
+    public void XyzConfiguration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint)
     {
         var xyzConfig = new XyzConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint));
@@ -74,7 +74,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Xyy(
+    public void Xyy(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -83,7 +83,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Lab(
+    public void Lab(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -92,7 +92,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Lchab(
+    public void Lchab(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -101,7 +101,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Luv(
+    public void Luv(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -110,7 +110,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Lchuv(
+    public void Lchuv(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -119,7 +119,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Hsluv(
+    public void Hsluv(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -128,7 +128,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Hpluv(
+    public void Hpluv(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -137,7 +137,7 @@ public static class ExtremeValuesTests
     }
 
     [Test, Combinatorial]
-    public static void Ictcp(
+    public void Ictcp(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -146,7 +146,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void IctcpConfiguration(
+    public void IctcpConfiguration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double scalar)
     {
         var config = new Configuration(ictcpScalar: scalar);
@@ -154,7 +154,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Jzazbz(
+    public void Jzazbz(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -163,7 +163,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void JzazbzConfiguration(
+    public void JzazbzConfiguration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double scalar)
     {
         var config = new Configuration(jzazbzScalar: scalar);
@@ -171,7 +171,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Jzczhz(
+    public void Jzczhz(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -180,7 +180,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Oklab(
+    public void Oklab(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -189,7 +189,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Oklch(
+    public void Oklch(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -198,7 +198,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Cam02(
+    public void Cam02(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -207,7 +207,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Cam16(
+    public void Cam16(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
@@ -216,7 +216,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Cam02Configuration(
+    public void Cam02Configuration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
@@ -227,7 +227,7 @@ public static class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
-    public static void Cam16Configuration(
+    public void Cam16Configuration(
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double whitePoint, 
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double adaptingLuminance,
         [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double backgroundLuminance)
@@ -235,5 +235,14 @@ public static class ExtremeValuesTests
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfiguration: camConfig);
         AssertUtils.AssertNoPropertyError(Unicolour.FromCam16(config, 62.47, 42.60, -1.36));
+    }
+    
+    [Test, Combinatorial]
+    public void Hct(
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double first, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double second, 
+        [Values(double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN)] double third)
+    {
+        AssertUtils.AssertNoPropertyError(Unicolour.FromHct(first, second, third));
     }
 }

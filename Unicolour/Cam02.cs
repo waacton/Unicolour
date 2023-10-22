@@ -12,7 +12,9 @@ public record Cam02 : ColourRepresentation
     public Ucs Ucs { get; }
     public Model Model { get; }
 
-    internal override bool IsGreyscale => Model.Chroma <= 0; // presumably also A.Equals(0.0) && B.Equals(0.0)
+    // J lightness bounds not clear (and is different between Model and UCS)
+    // presumably also greyscale when A.Equals(0.0) && B.Equals(0.0)
+    internal override bool IsGreyscale => Model.Chroma <= 0;
 
     public Cam02(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, ColourHeritage.None) {}
 

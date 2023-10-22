@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 // Oklab actually provides test values 🙌 (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
 // so it has its own dedicated set of tests based on those
-public static class OklabTests
+public class KnownOklabTests
 {
     private static readonly List<(ColourTriplet xyz, ColourTriplet expectedOklab)> TestData = new()
     {
@@ -17,7 +17,7 @@ public static class OklabTests
     };
     
     [Test]
-    public static void FromXyzD65()
+    public void FromXyzD65()
     {
         foreach (var (xyz, expectedOklab) in TestData)
         {
@@ -26,7 +26,7 @@ public static class OklabTests
     }
     
     [Test]
-    public static void FromXyzD50()
+    public void FromXyzD50()
     {
         foreach (var (xyz, expectedOklab) in TestData)
         {

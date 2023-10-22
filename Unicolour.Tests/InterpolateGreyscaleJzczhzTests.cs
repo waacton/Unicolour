@@ -22,7 +22,6 @@ public class InterpolateGreyscaleJzczhzTests
         var fromJchWhite = jchWhite.InterpolateJzczhz(green, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since Jzazbz black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(fromJabBlack.Jzczhz.Triplet, new(0.25, 0.25, 120));
         AssertTriplet(fromJabWhite.Jzczhz.Triplet, new(0.75, 0.25, 120));
         AssertTriplet(fromJchBlack.Jzczhz.Triplet, new(0.25, 0.5, 150));
@@ -44,7 +43,6 @@ public class InterpolateGreyscaleJzczhzTests
         var toJzczhzWhite = blue.InterpolateJzczhz(jcWhite, 0.5);
 
         // greyscale interpolates differently depending on the initial colour space
-        // since Jzazbz black/white assumes chroma of 0 (but chroma can be any value)
         AssertTriplet(toJzazbzBlack.Jzczhz.Triplet, new(0.25, 0.25, 240));
         AssertTriplet(toJzazbzWhite.Jzczhz.Triplet, new(0.75, 0.25, 240));
         AssertTriplet(toJzczhzBlack.Jzczhz.Triplet, new(0.25, 0.5, 210));

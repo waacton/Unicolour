@@ -9,7 +9,7 @@ void GenerateColourSpaceGradients()
 {
     const int columns = 3;
     const int columnWidth = 800;
-    const int rows = 19; 
+    const int rows = 20; 
     const int rowHeight = 100;
     
     var purple = Unicolour.FromHsb(260, 1.0, 0.33);
@@ -55,6 +55,7 @@ void GenerateColourSpaceGradients()
         var oklch = Gradient.Draw(("OKLCH", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.InterpolateOklch(end, distance));
         var cam02 = Gradient.Draw(("CAM02", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.InterpolateCam02(end, distance));
         var cam16 = Gradient.Draw(("CAM16", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.InterpolateCam16(end, distance));
+        var hct = Gradient.Draw(("HCT", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.InterpolateHct(end, distance));
 
         var columnImage = new Image<Rgba32>(columnWidth, rowHeight * rows);
         columnImage.Mutate(context => context
@@ -77,6 +78,7 @@ void GenerateColourSpaceGradients()
             .DrawImage(oklch, new Point(0, rowHeight * 16), 1f)
             .DrawImage(cam02, new Point(0, rowHeight * 17), 1f)
             .DrawImage(cam16, new Point(0, rowHeight * 18), 1f)
+            .DrawImage(hct, new Point(0, rowHeight * 19), 1f)
         );
 
         return columnImage;

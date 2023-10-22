@@ -8,7 +8,7 @@ public record Luv : ColourRepresentation
     public double L => First;
     public double U => Second;
     public double V => Third;
-    internal override bool IsGreyscale => U.Equals(0.0) && V.Equals(0.0);
+    internal override bool IsGreyscale => L is <= 0.0 or >= 100.0 || (U.Equals(0.0) && V.Equals(0.0));
     
     public Luv(double l, double u, double v) : this(l, u, v, ColourHeritage.None) {}
     internal Luv(double l, double u, double v, ColourHeritage heritage) : base(l, u, v, heritage) {}

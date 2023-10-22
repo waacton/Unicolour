@@ -29,6 +29,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> OklchTriplets = new();
     public static readonly List<ColourTriplet> Cam02Triplets = new();
     public static readonly List<ColourTriplet> Cam16Triplets = new();
+    public static readonly List<ColourTriplet> HctTriplets = new();
     // ReSharper restore CollectionNeverQueried.Global
     
     static RandomColours()
@@ -56,6 +57,7 @@ internal static class RandomColours
             OklchTriplets.Add(Oklch());
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
+            HctTriplets.Add(Hct());
         }
     }
 
@@ -79,7 +81,8 @@ internal static class RandomColours
     public static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
     public static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
     public static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
-    public static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
+    public static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
+    public static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
     public static double Alpha() => Random.NextDouble();
     
     private static double Rng() => Random.NextDouble();
@@ -104,6 +107,7 @@ internal static class RandomColours
     public static Unicolour UnicolourFromOklch() => Unicolour.FromOklch(Oklch().Tuple, Alpha());
     public static Unicolour UnicolourFromCam02() => Unicolour.FromCam02(Cam02().Tuple, Alpha());
     public static Unicolour UnicolourFromCam16() => Unicolour.FromCam16(Cam16().Tuple, Alpha());
+    public static Unicolour UnicolourFromHct() => Unicolour.FromHct(Hct().Tuple, Alpha());
 
     private static string Hex()
     {

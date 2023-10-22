@@ -11,9 +11,9 @@ public record Jzczhz : ColourRepresentation
     public double ConstrainedH => ConstrainedThird;
     protected override double ConstrainedThird => H.Modulo(360.0);
     
-    // I'm assuming JCH has the same greyscale behaviour as LCH, i.e. greyscale = no chroma, no lightness, or full lightness
+    // no clear lightness upper-bound
     // (paper says lightness J is 0 - 1 but seems like it's a scaling of their plot of Rec.2020 gamut - in my tests maxes out after ~0.17)
-    internal override bool IsGreyscale => C <= 0.0 || J is <= 0.0 or >= 1.0;
+    internal override bool IsGreyscale => J <= 0.0 || C <= 0.0;
 
     public Jzczhz(double j, double c, double h) : this(j, c, h, ColourHeritage.None) {}
     internal Jzczhz(double j, double c, double h, ColourHeritage heritage) : base(j, c, h, heritage) {}

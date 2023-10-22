@@ -3,10 +3,10 @@
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class ContrastTests
+public class ContrastTests
 {
     [Test]
-    public static void KnownContrasts()
+    public void KnownContrasts()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
         var white = ColourLimits.Rgb[ColourLimit.White];
@@ -23,7 +23,7 @@ public static class ContrastTests
     }
 
     [Test]
-    public static void BeyondMinRgbLuminance()
+    public void BeyondMinRgbLuminance()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
         var beyondMinRgb = Unicolour.FromRgb(-0.25, -0.5, -0.75);
@@ -32,7 +32,7 @@ public static class ContrastTests
     }
     
     [Test]
-    public static void BeyondMaxRgbLuminance()
+    public void BeyondMaxRgbLuminance()
     {
         var white = ColourLimits.Rgb[ColourLimit.White];
         var beyondMaxRgb = Unicolour.FromRgb(1.25, 1.5, 1.75);
@@ -41,7 +41,7 @@ public static class ContrastTests
     }
     
     [Test]
-    public static void NaNContrast()
+    public void NaNContrast()
     {
         var notNumber = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
         var grey = Unicolour.FromRgb(0.5, 0.5, 0.5);

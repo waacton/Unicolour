@@ -98,15 +98,17 @@ public static class Cam
         {
             if (double.IsNaN(h)) return "-";
             var hPrime = GetHPrime(h);
-            var i = hPrime switch
+            int? index = hPrime switch
             {
                 >= Angle1 and < Angle2 => 1,
                 >= Angle2 and < Angle3 => 2,
                 >= Angle3 and < Angle4 => 3,
                 >= Angle4 and < Angle5 => 4,
-                _ => throw new Exception("hPrime out of range")
+                _ => null
             };
 
+            if (index == null) return "-";
+            var i = index.Value;
             var hQuad = Quad(i) +
                         100 * E(i + 1) * (hPrime - Angle(i)) /
                         (E(i + 1) * (hPrime - Angle(i)) + E(i) * (Angle(i + 1) - hPrime));

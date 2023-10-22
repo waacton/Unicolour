@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
 
-public static class IctcpConfigurationTests
+public class ConfigureIctcpTests
 {
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
@@ -20,7 +20,7 @@ public static class IctcpConfigurationTests
     private static readonly Configuration Config203 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 203);
 
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://professional.dolby.com/siteassets/pdfs/ictcp_dolbywhitepaper_v071.pdf, figure 6)
-    public static void Rec2020RgbToIctcp100()
+    public void Rec2020RgbToIctcp100()
     {
         var red = Unicolour.FromXyz(Config100, HungBerns.RedRef.Xyz.Triplet.Tuple);
         var blue = Unicolour.FromXyz(Config100, HungBerns.BlueRef.Xyz.Triplet.Tuple);
@@ -42,7 +42,7 @@ public static class IctcpConfigurationTests
     }
     
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
-    public static void Rec2020RgbToIctcp1()
+    public void Rec2020RgbToIctcp1()
     {
         var unicolour = Unicolour.FromRgb(Config1, TestRgb.Tuple);
         AssertUtils.AssertTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
@@ -55,7 +55,7 @@ public static class IctcpConfigurationTests
     }
 
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
-    public static void Rec2020RgbToIctcp203()
+    public void Rec2020RgbToIctcp203()
     {
         var unicolour = Unicolour.FromRgb(Config203, TestRgb.Tuple);
         AssertUtils.AssertTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
@@ -68,7 +68,7 @@ public static class IctcpConfigurationTests
     }
 
     [Test]
-    public static void ConvertTestColour()
+    public void ConvertTestColour()
     {
         var initial100 = Unicolour.FromRgb(Config100, TestRgb.Tuple);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);
@@ -81,7 +81,7 @@ public static class IctcpConfigurationTests
     }
     
     [Test]
-    public static void ConvertWhite()
+    public void ConvertWhite()
     {
         var initial100 = Unicolour.FromXyz(Config100, XyzWhite.Tuple);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);
@@ -95,7 +95,7 @@ public static class IctcpConfigurationTests
     }
 
     [Test]
-    public static void ConvertBlack()
+    public void ConvertBlack()
     {
         var initial100 = Unicolour.FromXyz(Config100, 0, 0, 0);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);

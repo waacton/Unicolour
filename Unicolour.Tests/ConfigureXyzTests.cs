@@ -8,7 +8,7 @@ using Wacton.Unicolour.Tests.Utils;
  * expected colour values for these tests based on calculations from
  * http://www.brucelindbloom.com/index.html?ColorCalculator.html
  */
-public static class XyzConfigurationTests
+public class ConfigureXyzTests
 {
     private const double XyzTolerance = 0.001;
     private const double LabTolerance = 0.05;
@@ -27,7 +27,7 @@ public static class XyzConfigurationTests
     private const double Gamma = 2.19921875;
 
     [Test]
-    public static void StandardRgbD65ToXyzD65()
+    public void StandardRgbD65ToXyzD65()
     {
         // https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
         var expectedMatrixA = new[,]
@@ -64,7 +64,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void StandardRgbD65ToXyzD50()
+    public void StandardRgbD65ToXyzD50()
     {
         var standardRgbConfig = new RgbConfiguration(
             Chromaticity.StandardRgb.R,
@@ -97,7 +97,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void AdobeRgbD65ToXyzD65()
+    public void AdobeRgbD65ToXyzD65()
     {
         var adobeRgbConfig = new RgbConfiguration(
             AdobeChromaticityR,
@@ -119,7 +119,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void AdobeRgbD65ToXyzD50()
+    public void AdobeRgbD65ToXyzD50()
     {
         var adobeRgbConfig = new RgbConfiguration(
             AdobeChromaticityR,
@@ -141,7 +141,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void WideGamutRgbD50ToXyzD65()
+    public void WideGamutRgbD50ToXyzD65()
     {
         var wideGamutRgbConfig = new RgbConfiguration(
             WideGamutChromaticityR,
@@ -163,7 +163,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void WideGamutRgbD50ToXyzD50()
+    public void WideGamutRgbD50ToXyzD50()
     {
         var wideGamutRgbConfig = new RgbConfiguration(
             WideGamutChromaticityR,
@@ -187,7 +187,7 @@ public static class XyzConfigurationTests
     [TestCase(Illuminant.D65, 0.312727, 0.329023)]
     [TestCase(Illuminant.D50, 0.345669, 0.358496)]
     [TestCase(Illuminant.E, 0.333333, 0.333333)]
-    public static void WhiteChromaticity(Illuminant illuminant, double expectedX, double expectedY)
+    public void WhiteChromaticity(Illuminant illuminant, double expectedX, double expectedY)
     {
         var xyzConfig = new XyzConfiguration(WhitePoint.From(illuminant, Observer.Standard2));
         var chromaticity = xyzConfig.ChromaticityWhite;
@@ -196,7 +196,7 @@ public static class XyzConfigurationTests
     }
     
     [Test]
-    public static void ConvertWhite()
+    public void ConvertWhite()
     {
         Configuration Config(Illuminant illuminant) => new(RgbConfiguration.StandardRgb, new XyzConfiguration(WhitePoint.From(illuminant)));
 
@@ -227,7 +227,7 @@ public static class XyzConfigurationTests
     }
 
     [Test]
-    public static void ConvertBlack()
+    public void ConvertBlack()
     {
         Configuration Config(Illuminant illuminant) => new(RgbConfiguration.StandardRgb, new XyzConfiguration(WhitePoint.From(illuminant)));
 
@@ -267,7 +267,7 @@ public static class XyzConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void RgbWhitePointRoundTrip(Illuminant rgbIlluminant)
+    public void RgbWhitePointRoundTrip(Illuminant rgbIlluminant)
     {
         RgbConfiguration RgbConfig(WhitePoint whitePoint, RgbConfiguration baseConfig)
         {
@@ -295,7 +295,7 @@ public static class XyzConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void Cam02WhitePointRoundTrip(Illuminant camIlluminant)
+    public void Cam02WhitePointRoundTrip(Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
         {
@@ -322,7 +322,7 @@ public static class XyzConfigurationTests
     [TestCase(Illuminant.F2)]
     [TestCase(Illuminant.F7)]
     [TestCase(Illuminant.F11)]
-    public static void Cam16WhitePointRoundTrip(Illuminant camIlluminant)
+    public void Cam16WhitePointRoundTrip(Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
         {

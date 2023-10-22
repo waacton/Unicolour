@@ -159,6 +159,14 @@ public class EqualityTests
         var unicolour2 = Unicolour.FromCam16(unicolour1.Cam16.Triplet.Tuple, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
+    
+    [Test]
+    public void EqualHctGivesEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromHct();
+        var unicolour2 = Unicolour.FromHct(unicolour1.Hct.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
 
     [Test]
     public void NotEqualRgbGivesNotEqualObjects()
@@ -332,6 +340,15 @@ public class EqualityTests
     }
     
     [Test]
+    public void NotEqualHctGivesNotEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromHct();
+        var differentTuple = GetDifferent(unicolour1.Hct.Triplet, 1.0).Tuple;
+        var unicolour2 = Unicolour.FromHct(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hct.Triplet);
+    }
+    
+    [Test]
     public void DifferentConfigurationObjects()
     {
         var rgbConfig1 = new RgbConfiguration(
@@ -407,12 +424,19 @@ public class EqualityTests
         AssertEqual(unicolour1.Oklch, unicolour2.Oklch);
         AssertEqual(unicolour1.Cam02, unicolour2.Cam02);
         AssertEqual(unicolour1.Cam16, unicolour2.Cam16);
+        AssertEqual(unicolour1.Hct, unicolour2.Hct);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Hex, unicolour2.Hex);
         AssertEqual(unicolour1.IsDisplayable, unicolour2.IsDisplayable);
         AssertEqual(unicolour1.RelativeLuminance, unicolour2.RelativeLuminance);
         AssertEqual(unicolour1.Description, unicolour2.Description);
+        AssertEqual(unicolour1.Temperature, unicolour2.Temperature);
         AssertEqual(unicolour1, unicolour2);
+
+        if (unicolour1.Xyz.HctToXyzSearchResult != null)
+        {
+            AssertEqual(unicolour1.Xyz.HctToXyzSearchResult, unicolour2.Xyz.HctToXyzSearchResult);
+        }
     }
 
     private static void AssertUnicoloursNotEqual(Unicolour unicolour1, Unicolour unicolour2, Func<Unicolour, ColourTriplet> getTriplet)

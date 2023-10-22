@@ -127,4 +127,10 @@ public partial class Unicolour
     public static Unicolour FromCam16(Configuration config, (double j, double a, double b) tuple, double alpha = 1.0) => FromCam16(config, tuple.j, tuple.a, tuple.b, alpha);
     public static Unicolour FromCam16(Configuration config, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(j, a, b, config.Cam), new Alpha(alpha));
     internal static Unicolour FromCam16(Configuration config, ColourHeritage heritage, double j, double a, double b, double alpha = 1.0) => new(config, new Cam16(new Cam.Ucs(j, a, b), config.Cam, heritage), new Alpha(alpha));
+    
+    public static Unicolour FromHct(double h, double c, double t, double alpha = 1.0) => FromHct(Configuration.Default, h, c, t, alpha);
+    public static Unicolour FromHct((double h, double c, double t) tuple, double alpha = 1.0) => FromHct(Configuration.Default, tuple.h, tuple.c, tuple.t, alpha);
+    public static Unicolour FromHct(Configuration config, (double h, double c, double t) tuple, double alpha = 1.0) => FromHct(config, tuple.h, tuple.c, tuple.t, alpha);
+    public static Unicolour FromHct(Configuration config, double h, double c, double t, double alpha = 1.0) => new(config, new Hct(h, c, t), new Alpha(alpha));
+    internal static Unicolour FromHct(Configuration config, ColourHeritage heritage, double h, double c, double t, double alpha = 1.0) => new(config, new Hct(h, c, t, heritage), new Alpha(alpha));
 }

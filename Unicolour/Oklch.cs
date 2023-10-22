@@ -10,7 +10,7 @@ public record Oklch : ColourRepresentation
     public double H => Third;
     public double ConstrainedH => ConstrainedThird;
     protected override double ConstrainedThird => H.Modulo(360.0);
-    internal override bool IsGreyscale => C <= 0.0 || L is <= 0.0 or >= 1.0;
+    internal override bool IsGreyscale => L is <= 0.0 or >= 1.0 || C <= 0.0;
 
     public Oklch(double l, double c, double h) : this(l, c, h, ColourHeritage.None) {}
     internal Oklch(double l, double c, double h, ColourHeritage heritage) : base(l, c, h, heritage) {}

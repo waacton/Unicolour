@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-public static class RangeClampTests
+public class RangeClampTests
 {
     [Test]
-    public static void RgbRange()
+    public void RgbRange()
     {
         Range rRange = new(0.0, 1.0);
         Range gRange = new(0.0, 1.0);
@@ -17,14 +17,14 @@ public static class RangeClampTests
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
 
-        var representations = new[] {beyondMax, beyondMin};
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedR, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedG, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
     }
 
     [Test]
-    public static void RgbLinearRange()
+    public void RgbLinearRange()
     {
         Range rRange = new(0.0, 1.0);
         Range gRange = new(0.0, 1.0);
@@ -33,15 +33,15 @@ public static class RangeClampTests
         var beyondMin = new RgbLinear(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedR, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedG, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void Rgb255Range()
+    public void Rgb255Range()
     {
         Range rRange = new(0, 255);
         Range gRange = new(0, 255);
@@ -50,15 +50,15 @@ public static class RangeClampTests
         var beyondMin = new Rgb255(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedR, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedG, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
     }
 
     [Test]
-    public static void HsbRange()
+    public void HsbRange()
     {
         Range hRange = new(0.0, 360.0);
         Range sRange = new(0.0, 1.0);
@@ -67,15 +67,15 @@ public static class RangeClampTests
         var beyondMin = new Hsb(hRange.BeyondMin, sRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void HslRange()
+    public void HslRange()
     {
         Range hRange = new(0.0, 360.0);
         Range sRange = new(0.0, 1.0);
@@ -84,15 +84,15 @@ public static class RangeClampTests
         var beyondMin = new Hsl(hRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedL, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void HwbRange()
+    public void HwbRange()
     {
         Range hRange = new(0.0, 360.0);
         Range wRange = new(0.0, 1.0);
@@ -101,41 +101,41 @@ public static class RangeClampTests
         var beyondMin = new Hwb(hRange.BeyondMin, wRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedW, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void LchabRange() // only the hue is constrained
+    public void LchabRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);
         var beyondMax = new Lchab(100, 230, hRange.BeyondMax);
         var beyondMin = new Lchab(0, 0, hRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
         AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void LchuvRange() // only the hue is constrained
+    public void LchuvRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);
         var beyondMax = new Lchuv(100, 230, hRange.BeyondMax);
         var beyondMin = new Lchuv(0, 0, hRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
         AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void HsluvRange()
+    public void HsluvRange()
     {
         Range hRange = new(0.0, 360.0);
         Range sRange = new(0.0, 100.0);
@@ -144,15 +144,15 @@ public static class RangeClampTests
         var beyondMin = new Hsluv(hRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedL, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void HpluvRange()
+    public void HpluvRange()
     {
         Range hRange = new(0.0, 360.0);
         Range sRange = new(0.0, 100.0);
@@ -161,37 +161,50 @@ public static class RangeClampTests
         var beyondMin = new Hpluv(hRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
         AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
         AssertConstrainedValue(representations, x => x.ConstrainedL, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void JzczhzRange() // only the hue is constrained
+    public void JzczhzRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);
         var beyondMax = new Jzczhz(1, 0.1, hRange.BeyondMax);
         var beyondMin = new Jzczhz(0, 0, hRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
         AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.Third);
     }
     
     [Test]
-    public static void OklchRange() // only the hue is constrained
+    public void OklchRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);
         var beyondMax = new Oklch(100, 230, hRange.BeyondMax);
         var beyondMin = new Oklch(0, 0, hRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
         AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
-        
-        var representations = new[] {beyondMax, beyondMin};
+
+        var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
+    public void HctRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Hct(hRange.BeyondMax, 100, 100);
+        var beyondMin = new Hct(hRange.BeyondMin, 0, 0);
+        AssertConstrained(beyondMax.ConstrainedTriplet.First, beyondMax.Triplet.First);
+        AssertConstrained(beyondMin.Triplet.First, beyondMin.ConstrainedTriplet.First);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
     }
 
     private static void AssertConstrained(ColourTriplet lesser, ColourTriplet greater)

@@ -1,4 +1,4 @@
-﻿namespace Wacton.Unicolour.Tests.Factories;
+﻿namespace Wacton.Unicolour.Tests.OtherLibraries;
 
 using Wacton.Unicolour.Tests.Utils;
 

@@ -5,7 +5,7 @@ using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 
-public static class MatrixTests
+public class MatrixTests
 {
     private static readonly double[,] DataA =
     {
@@ -49,7 +49,7 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void MultiplyCompatibleDimensions()
+    public void MultiplyCompatibleDimensions()
     {
         // 3x3 * 3x3
         AssertMatrixMultiply(DataA, DataB, ExpectedMultiplied);
@@ -61,7 +61,7 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void MultiplyIncompatibleDimensions()
+    public void MultiplyIncompatibleDimensions()
     {
         // 3x3 * 1x3
         var matrixA = new Matrix(DataA);
@@ -70,14 +70,14 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void InverseThreeByThree()
+    public void InverseThreeByThree()
     {
         AssertMatrixInverse(DataA, ExpectedInverseA);
         AssertMatrixInverse(DataB, ExpectedInverseB);
     }
     
     [Test]
-    public static void InverseUnsupported()
+    public void InverseUnsupported()
     {
         // invert only supports 3x3 invert, as that is all that is required for colours
         var twoByTwo = new Matrix(new[,]
@@ -94,7 +94,7 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void Scale()
+    public void Scale()
     {
         var identity = new[,]
         {
@@ -123,7 +123,7 @@ public static class MatrixTests
     }
     
     [Test]
-    public static void Select()
+    public void Select()
     {
         var identity = new[,]
         {
@@ -176,7 +176,7 @@ public static class MatrixTests
     }
 
     [Test]
-    public static void ToTripletCompatibleDimensions()
+    public void ToTripletCompatibleDimensions()
     {
         var triplet = new ColourTriplet(1.1, 2.2, 3.3);
         var matrixFromData = new Matrix(new[,]
@@ -194,7 +194,7 @@ public static class MatrixTests
     }
     
     [Test]
-    public static void ToTripletIncompatibleDimensions()
+    public void ToTripletIncompatibleDimensions()
     {
         var matrix = new Matrix(DataA);
         Assert.Throws<InvalidOperationException>(() => matrix.ToTriplet());

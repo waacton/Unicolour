@@ -8,7 +8,7 @@ public record Lab : ColourRepresentation
     public double L => First;
     public double A => Second;
     public double B => Third;
-    internal override bool IsGreyscale => A.Equals(0.0) && B.Equals(0.0);
+    internal override bool IsGreyscale => L is <= 0.0 or >= 100.0 || (A.Equals(0.0) && B.Equals(0.0));
     
     public Lab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
     internal Lab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}

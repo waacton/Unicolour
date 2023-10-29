@@ -4,7 +4,7 @@
 [![tests passed](https://badgen.net/https/waacton.npkn.net/gitlab-test-badge/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 
-Unicolour is a set of utilities for working with colour:
+Unicolour is a .NET library written in C# for working with colour:
 - Colour space conversion
 - Colour interpolation
 - Colour comparison

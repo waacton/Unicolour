@@ -33,9 +33,9 @@ public abstract record ColourRepresentation
      * enabling differentiation between representations where:
      * a) a hue value is meaningful ------------------------------ e.g. HSB(0,0,0) = red with no saturation or brightness
      * b) a hue value is used as a fallback when there is no hue - e.g. RGB(0,0,0) -> HSB(0,0,0) = black with no red
-     * which is essential for proper interpolation;
+     * which is essential for proper mixing;
      * [RGB(0,0,0) black -> RGB(0,0,255) blue] via HSB is [HSB(0,0,0) red with no colour -> HSB(240,1,1) blue with full colour]
-     * but the interpolation should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
+     * but the mixing should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
      */
     internal bool HasHueAxis => HueIndex != null;
     internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueAxis;

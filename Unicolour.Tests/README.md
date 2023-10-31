@@ -2,8 +2,8 @@ Tests to add / update for new colour spaces:
 - Smoke tests
 - Known value conversion tests (if data available, e.g. Oklab, Hsluv)
 - Roundtrip conversion tests
-- Interpolation tests
-- Greyscale interpolation tests (if colour space has hue component)
+- Mixing tests
+- Greyscale mixing tests (if colour space has hue component)
 - Hued tests (if colour space has hue component)
 - Equality tests
 - Extreme values tests

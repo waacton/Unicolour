@@ -9,7 +9,7 @@ internal static class AssertUtils
 {
     public static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
         
-    public const double InterpolationTolerance = 0.00000000005;
+    public const double MixTolerance = 0.00000000005;
 
     public static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
     {
@@ -45,21 +45,19 @@ internal static class AssertUtils
             .Or.EqualTo(expectedMinus360).Within(tolerance), 
             failMessage);
     }
-
-    public static void AssertInterpolated(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
+    
+    public static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
     {
-        Assert.That(triplet.First, Is.EqualTo(expected.first).Within(InterpolationTolerance));
-        Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(InterpolationTolerance));
-        Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(InterpolationTolerance));
-        Assert.That(alpha, Is.EqualTo(expected.alpha).Within(InterpolationTolerance));
+        Assert.That(triplet.First, Is.EqualTo(expected.first).Within(MixTolerance));
+        Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(MixTolerance));
+        Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(MixTolerance));
+        Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance));
     }
 
     public static void AssertNoPropertyError(Unicolour unicolour)
     {
-        void AccessProperty(Func<object> getProperty)
-        {
-            var _ = getProperty();
-        }
+        Assert.DoesNotThrow(AccessProperties);
+        return;
 
         void AccessProperties()
         {
@@ -92,6 +90,9 @@ internal static class AssertUtils
             AccessProperty(() => unicolour.Xyz);
         }
         
-        Assert.DoesNotThrow(AccessProperties);
+        void AccessProperty(Func<object> getProperty)
+        {
+            _ = getProperty();
+        }
     }
 }

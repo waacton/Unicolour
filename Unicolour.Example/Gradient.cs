@@ -7,10 +7,10 @@ internal static class Gradient
 {
     const bool ConstrainUndisplayableColours = true; // if false, undisplayable colours will render as transparent
 
-    internal delegate Unicolour Interpolate(Unicolour start, Unicolour end, double distance);
+    internal delegate Unicolour Mix(Unicolour start, Unicolour end, double distance);
 
     internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, 
-        Unicolour[] colourPoints, Interpolate interpolate)
+        Unicolour[] colourPoints, Mix mix)
     {
         var image = new Image<Rgba32>(width, height);
 
@@ -21,7 +21,7 @@ internal static class Gradient
         {
             var startColour = colourPoints[sectionIndex];
             var endColour = colourPoints[sectionIndex + 1];
-            SetSectionPixels(image, sectionWidth, sectionIndex, height, startColour, endColour, interpolate);
+            SetSectionPixels(image, sectionWidth, sectionIndex, height, startColour, endColour, mix);
         }
         
         SetLabel(image, label.text, label.colour);
@@ -29,12 +29,12 @@ internal static class Gradient
     }
 
     private static void SetSectionPixels(Image<Rgba32> image, int sectionWidth, int sectionIndex, int height,
-        Unicolour startColour, Unicolour endColour, Interpolate interpolate)
+        Unicolour startColour, Unicolour endColour, Mix mix)
     {
         for (var pixelIndex = 0; pixelIndex < sectionWidth; pixelIndex++)
         {
             var distance = pixelIndex / (double)(sectionWidth - 1);
-            var colour = interpolate(startColour, endColour, distance);
+            var colour = mix(startColour, endColour, distance);
             var column = sectionWidth * sectionIndex + pixelIndex;
             SetImageColumnPixels(image, column, height, colour);
         }

@@ -1,29 +1,8 @@
 ﻿namespace Wacton.Unicolour;
 
-public static class Interpolation
+internal static class Interpolation
 {
-    public static Unicolour InterpolateRgb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Rgb, start, end, distance);
-    public static Unicolour InterpolateHsb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsb, start, end, distance);
-    public static Unicolour InterpolateHsl(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsl, start, end, distance);
-    public static Unicolour InterpolateHwb(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hwb, start, end, distance);
-    public static Unicolour InterpolateXyz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Xyz, start, end, distance);
-    public static Unicolour InterpolateXyy(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Xyy, start, end, distance);
-    public static Unicolour InterpolateLab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lab, start, end, distance);
-    public static Unicolour InterpolateLchab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchab, start, end, distance);
-    public static Unicolour InterpolateLuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Luv, start, end, distance);
-    public static Unicolour InterpolateLchuv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Lchuv, start, end, distance);
-    public static Unicolour InterpolateHsluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hsluv, start, end, distance);
-    public static Unicolour InterpolateHpluv(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hpluv, start, end, distance);
-    public static Unicolour InterpolateIctcp(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Ictcp, start, end, distance);
-    public static Unicolour InterpolateJzazbz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzazbz, start, end, distance);
-    public static Unicolour InterpolateJzczhz(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Jzczhz, start, end, distance);
-    public static Unicolour InterpolateOklab(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklab, start, end, distance);
-    public static Unicolour InterpolateOklch(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Oklch, start, end, distance);
-    public static Unicolour InterpolateCam02(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Cam02, start, end, distance);
-    public static Unicolour InterpolateCam16(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Cam16, start, end, distance);
-    public static Unicolour InterpolateHct(this Unicolour start, Unicolour end, double distance) => Interpolate(ColourSpace.Hct, start, end, distance);
-
-    internal static Unicolour Interpolate(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
+    internal static Unicolour Mix(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
     {
         GuardConfiguration(startColour, endColour);
         
@@ -98,7 +77,7 @@ public static class Interpolation
     {
         if (unicolour1.Config != unicolour2.Config)
         {
-            throw new InvalidOperationException("Can only interpolate unicolours with the same configuration reference");
+            throw new InvalidOperationException("Can only mix unicolours with the same configuration reference");
         }
     }
 

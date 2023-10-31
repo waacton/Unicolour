@@ -40,7 +40,7 @@ public class TestColour
     
     /*
      * ColorMine and Colourful treats xyY black as (0,0,0)
-     * whereas Unicolour uses white chromaticity with 0 lumninance for accurate interpolation
+     * whereas Unicolour uses white chromaticity with 0 luminance for accurate mixing
      */
     public bool ExcludeFromXyyTests => ExcludeFromXyyTestReasons.Any();
     public List<string> ExcludeFromXyyTestReasons { get; init; } = new();

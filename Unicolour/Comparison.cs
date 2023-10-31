@@ -2,11 +2,11 @@
 
 using static Utils;
 
-public static class Comparison
+internal static class Comparison
 {
     // https://www.w3.org/WAI/WCAG21/Techniques/general/G18.html#tests
     // minimal recommended contrast ratio is 4.5, or 3 for larger font-sizes
-    public static double Contrast(this Unicolour colour1, Unicolour colour2)
+    internal static double Contrast(Unicolour colour1, Unicolour colour2)
     {
         var luminance1 = colour1.RelativeLuminance;
         var luminance2 = colour2.RelativeLuminance;
@@ -16,7 +16,7 @@ public static class Comparison
     }
 
     // https://en.wikipedia.org/wiki/Color_difference#CIE76
-    public static double DeltaE76(this Unicolour reference, Unicolour sample)
+    internal static double DeltaE76(Unicolour reference, Unicolour sample)
     {
         var (l1, a1, b1) = reference.Lab.Triplet;
         var (l2, a2, b2) = sample.Lab.Triplet;
@@ -24,7 +24,7 @@ public static class Comparison
     }
     
     // https://en.wikipedia.org/wiki/Color_difference#CIE94
-    public static double DeltaE94(this Unicolour reference, Unicolour sample, bool isForTextiles = false)
+    internal static double DeltaE94(Unicolour reference, Unicolour sample, bool isForTextiles = false)
     {
         var (l1, a1, b1) = reference.Lab.Triplet;
         var (l2, a2, b2) = sample.Lab.Triplet;
@@ -55,7 +55,7 @@ public static class Comparison
     }
         
     // https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-    public static double DeltaE00(this Unicolour reference, Unicolour sample)
+    internal static double DeltaE00(Unicolour reference, Unicolour sample)
     {
         var (l1, a1, b1) = reference.Lab.Triplet;
         var (l2, a2, b2) = sample.Lab.Triplet;
@@ -127,7 +127,7 @@ public static class Comparison
     }
     
     // https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.2124-0-201901-I!!PDF-E.pdf
-    public static double DeltaEItp(this Unicolour reference, Unicolour sample)
+    internal static double DeltaEItp(Unicolour reference, Unicolour sample)
     {
         ColourTriplet ToItp(Ictcp ictcp) => new(ictcp.I, 0.5 * ictcp.Ct, ictcp.Cp);
         var (i1, t1, c1) = ToItp(reference.Ictcp);
@@ -136,7 +136,7 @@ public static class Comparison
     }
     
     // https://doi.org/10.1364/OE.25.015131
-    public static double DeltaEz(this Unicolour reference, Unicolour sample)
+    internal static double DeltaEz(Unicolour reference, Unicolour sample)
     {
         var (jz1, cz1, hz1) = reference.Jzczhz.Triplet;
         var (jz2, cz2, hz2) = sample.Jzczhz.Triplet;
@@ -148,7 +148,7 @@ public static class Comparison
     }
     
     // https://en.wikipedia.org/wiki/Color_difference#Other_geometric_constructions
-    public static double DeltaEHyab(this Unicolour reference, Unicolour sample)
+    internal static double DeltaEHyab(Unicolour reference, Unicolour sample)
     {
         var (l1, a1, b1) = reference.Lab.Triplet;
         var (l2, a2, b2) = sample.Lab.Triplet;
@@ -156,7 +156,7 @@ public static class Comparison
     }
     
     // https://www.w3.org/TR/css-color-4/#color-difference-OK
-    public static double DeltaEOk(this Unicolour reference, Unicolour sample)
+    internal static double DeltaEOk(Unicolour reference, Unicolour sample)
     {
         var (l1, a1, b1) = reference.Oklab.Triplet;
         var (l2, a2, b2) = sample.Oklab.Triplet;
@@ -165,7 +165,7 @@ public static class Comparison
     
     // https://doi.org/10.1007/978-1-4419-6190-7_2
     // currently only support UCS, not LCD or SCD - no need to handle ΔJ / kl since kl = 1
-    public static double DeltaECam02(this Unicolour reference, Unicolour sample)
+    internal static double DeltaECam02(Unicolour reference, Unicolour sample)
     {
         var (j1, a1, b1) = reference.Cam02.Triplet;
         var (j2, a2, b2) = sample.Cam02.Triplet;
@@ -173,7 +173,7 @@ public static class Comparison
     }
     
     // https://doi.org/10.1002/col.22131
-    public static double DeltaECam16(this Unicolour reference, Unicolour sample)
+    internal static double DeltaECam16(Unicolour reference, Unicolour sample)
     {
         var (j1, a1, b1) = reference.Cam16.Triplet;
         var (j2, a2, b2) = sample.Cam16.Triplet;

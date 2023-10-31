@@ -59,12 +59,12 @@ public class LazyEvaluationTests
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public void AfterInterpolation(Func<Unicolour> unicolourFunction)
+    public void AfterMix(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
         var other = unicolourFunction();
         var initialColourSpace = unicolour.InitialColourSpace;
-        _ = Interpolation.Interpolate(initialColourSpace, unicolour, other, 0.5);
+        _ = Interpolation.Mix(initialColourSpace, unicolour, other, 0.5);
         AssertBackingFields(unicolour);
     }
     

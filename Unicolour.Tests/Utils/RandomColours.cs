@@ -34,7 +34,7 @@ internal static class RandomColours
     
     static RandomColours()
     {
-        for (var i = 0; i < 1000; i++)
+        for (var i = 0; i < 1024; i++)
         {
             HexStrings.Add(Hex());
             Rgb255Triplets.Add(Rgb255());

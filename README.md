@@ -76,7 +76,7 @@ These [can be overridden](#advanced-configuration-) using the `Configuration` pa
 This library was initially written for personal projects since existing libraries had complex APIs or missing features.
 The goal of this library is to be accurate, intuitive, and easy to use.
 Although performance is not a priority, conversions are only calculated once — when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
-It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and comparisons against other .NET libraries.
+It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions and validation using known colour values.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 

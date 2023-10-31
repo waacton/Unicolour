@@ -256,7 +256,8 @@ public class DifferenceTests
             ColourSpace.Jzczhz => Unicolour.FromJzczhz,
             ColourSpace.Oklab => Unicolour.FromOklab,
             ColourSpace.Cam02 => Unicolour.FromCam02,
-            ColourSpace.Cam16 => Unicolour.FromCam16
+            ColourSpace.Cam16 => Unicolour.FromCam16,
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
 
         return constructor.Invoke(first, second, third);

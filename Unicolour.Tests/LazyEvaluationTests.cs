@@ -20,6 +20,7 @@ public class LazyEvaluationTests
 
     private static readonly List<TestCaseData> TestCases = new()
     {
+        #pragma warning disable CS8974 // Converting method group to non-delegate type
         new TestCaseData(RandomColours.UnicolourFromRgb).SetName("Rgb"),
         new TestCaseData(RandomColours.UnicolourFromHsb).SetName("Hsb"),
         new TestCaseData(RandomColours.UnicolourFromHsl).SetName("Hsl"),
@@ -40,6 +41,7 @@ public class LazyEvaluationTests
         new TestCaseData(RandomColours.UnicolourFromCam02).SetName("Cam02"),
         new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16"),
         new TestCaseData(RandomColours.UnicolourFromHct).SetName("Hct")
+        #pragma warning restore CS8974 // Converting method group to non-delegate type
     };
     
     [TestCaseSource(nameof(TestCases))]

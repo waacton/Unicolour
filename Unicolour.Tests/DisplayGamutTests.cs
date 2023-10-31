@@ -2,16 +2,16 @@
 
 using NUnit.Framework;
 
-public class DisplayableColourTests
+public class DisplayGamutTests
 {
     [TestCase(0.0, 0.0, 0.0)]
     [TestCase(0.5, 0.5, 0.5)]
     [TestCase(1.0, 1.0, 1.0)]
     [TestCase(double.Epsilon, double.Epsilon, double.Epsilon)]
-    public void DisplayableRgb(double r, double g, double b)
+    public void InRgbGamut(double r, double g, double b)
     {
         var unicolour = Unicolour.FromRgb(r, g, b);
-        Assert.That(unicolour.IsDisplayable, Is.True);
+        Assert.That(unicolour.IsInDisplayGamut, Is.True);
     }
     
     [TestCase(-0.00001, 0.0, 0.0)]
@@ -35,9 +35,9 @@ public class DisplayableColourTests
     [TestCase(double.NaN, 0.5, 0.5)]
     [TestCase(0.5, double.NaN, 0.5)]
     [TestCase(0.5, 0.5, double.NaN)]
-    public void UndisplayableRgb(double r, double g, double b)
+    public void OutRgbGamut(double r, double g, double b)
     {
         var unicolour = Unicolour.FromRgb(r, g, b);
-        Assert.That(unicolour.IsDisplayable, Is.False);
+        Assert.That(unicolour.IsInDisplayGamut, Is.False);
     }
 }

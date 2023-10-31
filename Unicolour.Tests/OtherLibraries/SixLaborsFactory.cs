@@ -26,7 +26,10 @@ using SixLaborsIlluminants = SixLabors.ImageSharp.ColorSpaces.Illuminants;
 internal class SixLaborsFactory : ITestColourFactory
 {
     private static readonly Tolerances Tolerances = new()
-        {Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Xyy = 0.005, Lab = 0.1, Luv = 0.2, Lchuv = 0.1};
+    {
+        Rgb = 0.001, RgbLinear = 0.005, Hsb = 0.000005, Hsl = 0.000005, Xyz = 0.005, Xyy = 0.005, 
+        Lab = 0.001, Luv = 0.2, Lchuv = 0.1
+    };
 
     private static readonly ColorSpaceConverter Converter = new(new ColorSpaceConverterOptions
     {

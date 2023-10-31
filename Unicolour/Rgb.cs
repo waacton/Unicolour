@@ -17,7 +17,7 @@ public record Rgb : ColourRepresentation
     // for almost all cases, doing this check in linear RGB will return the same result
     // but handling it here feels most natural as it is the intended "display" space
     // and isn't concerned about questionable custom inverse-companding-to-linear functions (e.g. where where RGB <= 1.0 but RGB-Linear > 1.0)
-    internal bool IsDisplayable => !UseAsNaN && R is >= 0 and <= 1.0 && G is >= 0 and <= 1.0 && B is >= 0 and <= 1.0;
+    internal bool IsInGamut => !UseAsNaN && R is >= 0 and <= 1.0 && G is >= 0 and <= 1.0 && B is >= 0 and <= 1.0;
     public RgbLinear Linear { get; }
     public Rgb255 Byte255 { get; }
 

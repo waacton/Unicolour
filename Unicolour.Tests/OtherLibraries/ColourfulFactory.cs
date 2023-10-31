@@ -23,7 +23,10 @@ using ColourfulIlluminants = Colourful.Illuminants;
 internal class ColourfulFactory : ITestColourFactory
 {
     private static readonly Tolerances Tolerances = new()
-        {Rgb = 0.0000000001, RgbLinear = 0.0000000001, Xyz = 0.0000000001, Xyy = 0.000000005, Lab = 0.0000005, Lchab = 0.0000005, Luv = 0.000005, Lchuv = 0.000005};
+    {
+        Rgb = 0.0000000001, RgbLinear = 0.0000000001, Xyz = 0.0000000001, Xyy = 0.000000005, 
+        Lab = 0.0000005, Lchab = 0.0000005, Luv = 0.000005, Lchuv = 0.000005
+    };
     
     public TestColour FromRgb(double r, double g, double b, string name)
     {
@@ -159,7 +162,8 @@ internal class ColourfulFactory : ITestColourFactory
             IsRgbConstrained = false,
             IsRgbLinearConstrained = false,
             ExcludeFromLchTestReasons = LchExclusions(rgb),
-            ExcludeFromXyyTestReasons = XyyExclusions(xyy)
+            ExcludeFromXyyTestReasons = XyyExclusions(xyy),
+            ExcludeFromAllTestReasons = AllExclusions(rgbLinear)
         };
     }
 
@@ -176,7 +180,15 @@ internal class ColourfulFactory : ITestColourFactory
         if (HasNoChromaticityY(xyy)) exclusions.Add("Colourful sets all values to 0 when xyY has no y-chromaticity");
         return exclusions;
     }
+    
+    private static List<string> AllExclusions(ColourfulRgbLinear rgbLinear)
+    {
+        var exclusions = new List<string>();
+        if (HasNegativeLinear(rgbLinear)) exclusions.Add("Colourful does not handle linear companding when negative");
+        return exclusions;
+    }
 
     private static bool IsGreyscale(ColourfulRgb rgb) => rgb.R == rgb.G && rgb.G == rgb.B;
     private static bool HasNoChromaticityY(ColourfulXyy xyy) => xyy.y <= 0.0;
+    private static bool HasNegativeLinear(ColourfulRgbLinear rgbLinear) => rgbLinear.R < 0 || rgbLinear.G < 0 || rgbLinear.B < 0;
 }

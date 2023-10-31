@@ -35,13 +35,13 @@ internal static class VisionDeficiency
         return Unicolour.FromRgb(config, simulatedRgbMatrix.ToTriplet().Tuple);
     }
     
-    internal static Unicolour SimulateProtanopia(Rgb rgb, Configuration config) => SimulateCvd(rgb, config, Protanomaly);
-    internal static Unicolour SimulateDeuteranopia(Rgb rgb, Configuration config) => SimulateCvd(rgb, config, Deuteranomaly);
-    internal static Unicolour SimulateTritanopia(Rgb rgb, Configuration config) => SimulateCvd(rgb, config, Tritanomaly);
-    internal static Unicolour SimulateAchromatopsia(double luminance, Configuration config)
+    internal static Unicolour SimulateProtanopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Protanomaly);
+    internal static Unicolour SimulateDeuteranopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Deuteranomaly);
+    internal static Unicolour SimulateTritanopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Tritanomaly);
+    internal static Unicolour SimulateAchromatopsia(Unicolour unicolour, Configuration config)
     {
         // luminance is based on Linear RGB, so needs to be companded back into chosen RGB space
-        var rgbLuminance = config.Rgb.CompandFromLinear(luminance);
+        var rgbLuminance = config.Rgb.CompandFromLinear(unicolour.RelativeLuminance);
         return Unicolour.FromRgb(config, rgbLuminance, rgbLuminance, rgbLuminance);
     }
 }

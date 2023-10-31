@@ -108,7 +108,7 @@ public class NotNumberTests
         Assert.That(initial.UseAsHued, Is.False);
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(unicolour.Hex, Is.EqualTo("-"));
-        Assert.That(unicolour.IsDisplayable, Is.False);
+        Assert.That(unicolour.IsInDisplayGamut, Is.False);
         Assert.That(unicolour.RelativeLuminance, Is.NaN);
         Assert.That(unicolour.Description, Is.EqualTo("-"));
 

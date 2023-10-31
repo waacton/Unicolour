@@ -77,10 +77,10 @@ public class LazyEvaluationTests
     }
     
     [TestCaseSource(nameof(TestCases))]
-    public void AfterIsDisplayable(Func<Unicolour> unicolourFunction)
+    public void AfterIsInDisplayGamut(Func<Unicolour> unicolourFunction)
     {
         var unicolour = unicolourFunction();
-        _ = unicolour.IsDisplayable;
+        _ = unicolour.IsInDisplayGamut;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     

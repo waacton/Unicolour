@@ -16,7 +16,11 @@ using Wacton.Unicolour.Tests.Utils;
  */
 internal class OpenCvFactory : ITestColourFactory
 {
-    public static readonly Tolerances Tolerances = new() {Rgb = 0.05, Hsb = 0.05, Hsl = 0.01, Xyz = 0.0005, Lab = 1.0, Luv = 1.0};
+    public static readonly Tolerances Tolerances = new()
+    {
+        Rgb = 0.05, Hsb = 0.05, Hsl = 0.01, Xyz = 0.0005, 
+        Lab = 1.0, Luv = 1.0
+    };
     
     public TestColour FromRgb(double r, double g, double b, string name)
     {

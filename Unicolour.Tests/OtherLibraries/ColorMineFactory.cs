@@ -21,7 +21,10 @@ using ColorMineLuv = ColorMine.ColorSpaces.Luv;
 internal class ColorMineFactory : ITestColourFactory
 {
     private static readonly Tolerances Tolerances = new()
-        {Rgb = 0.0005, Hsb = 0.00005, Hsl = 0.0125, Xyz = 0.0005, Xyy = 0.0005, Lab = 0.05, Lchab = 0.05, Luv = 0.05};
+    {
+        Rgb = 0.0005, Hsb = 0.00005, Hsl = 0.0125, Xyz = 0.0005, Xyy = 0.0005, 
+        Lab = 0.05, Lchab = 0.05, Luv = 0.05
+    };
 
     public TestColour FromRgb(double r, double g, double b, string name)
     {

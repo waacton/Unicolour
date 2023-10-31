@@ -73,8 +73,8 @@ internal static class AssertUtils
             AccessProperty(() => unicolour.Hsl);
             AccessProperty(() => unicolour.Hsluv);
             AccessProperty(() => unicolour.Hwb);
-            AccessProperty(() => unicolour.IsDisplayable);
             AccessProperty(() => unicolour.Ictcp);
+            AccessProperty(() => unicolour.IsInDisplayGamut);
             AccessProperty(() => unicolour.Jzazbz);
             AccessProperty(() => unicolour.Jzczhz);
             AccessProperty(() => unicolour.Lab);

@@ -9,7 +9,9 @@ Unicolour is a .NET library written in C# for working with colour:
 - Colour mixing / colour interpolation
 - Colour comparison
 - Colour properties
+- Colour gamut mapping
 
+## Overview 🧭
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
 - RGB
 - HSB/HSV
@@ -65,6 +67,9 @@ Simulation of colour vision deficiency (CVD) / colour blindness is supported for
 - Tritanopia (no blue perception)
 - Achromatopsia (no colour perception)
 
+If a colour is outwith the display gamut, the closest in-gamut colour can be obtained through
+gamut mapping according to CSS specifications.
+
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
 
@@ -102,17 +107,17 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | HCT                                     | `Unicolour.FromHct()`    | `.Hct`         | `.MixHct()`    |
 
 ## How to use 🌈
-1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
+##### 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
 ```
 dotnet add package Wacton.Unicolour
 ```
 
-2. Import the package:
+##### 2. Import the package:
 ```c#
 using Wacton.Unicolour;
 ```
 
-3. Create a `Unicolour` from values:
+##### 3. Create a `Unicolour` from values:
 ```c#
 var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
@@ -138,7 +143,7 @@ var unicolour = Unicolour.FromCam16(62.47, 42.60, -1.36);
 var unicolour = Unicolour.FromHct(358.2, 100.38, 55.96);
 ```
 
-4. Get representations of a colour in different colour spaces:
+##### 4. Get representations of a colour in different colour spaces:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
@@ -162,14 +167,14 @@ var cam16 = unicolour.Cam16;
 var hct = unicolour.Hct;
 ```
 
-5. Get properties of a colour
+##### 5. Get properties of a colour
 ```c#
 var hex = unicolour.Hex;
 var relativeLuminance = unicolour.RelativeLuminance;
 var temperature = unicolour.Temperature;
 ```
 
-6. Mix colours (interpolate between them):
+##### 6. Mix colours (interpolate between them):
 ```c#
 var mixed = unicolour1.MixRgb(unicolour2, 0.5);
 var mixed = unicolour1.MixHsb(unicolour2, 0.5);
@@ -193,7 +198,7 @@ var mixed = unicolour1.MixCam16(unicolour2, 0.5);
 var mixed = unicolour1.MixHct(unicolour2, 0.5);
 ```
 
-7. Compare colours:
+##### 7. Compare colours:
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
@@ -207,7 +212,12 @@ var difference = unicolour1.DeltaECam02(unicolour2);
 var difference = unicolour1.DeltaECam16(unicolour2);
 ```
 
-8. Simulate colour vision deficiency:
+##### 8. Map to display gamut:
+```c#
+var mapped = unicolour.MapToGamut();
+```
+
+##### 9. Simulate colour vision deficiency:
 ```c#
 var protanopia = unicolour.SimulateProtanopia();
 var deuteranopia = unicolour.SimulateDeuteranopia();

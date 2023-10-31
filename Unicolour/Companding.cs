@@ -7,18 +7,28 @@ public static class Companding
     
     public static class StandardRgb
     {
-        public static double FromLinear(double value)
+        public static double FromLinear(double linear)
         {
-            return value <= 0.0031308
-                ? 12.92 * value
-                : 1.055 * Gamma(value, 2.4) - 0.055;
+            if (double.IsNaN(linear)) return double.NaN;
+            return Math.Sign(linear) * Nonlinear(Math.Abs(linear));
+            double Nonlinear(double value)
+            {
+                return value <= 0.0031308
+                    ? 12.92 * value
+                    : 1.055 * Gamma(value, 2.4) - 0.055;
+            }
         }
-    
-        public static double ToLinear(double value)
+        
+        public static double ToLinear(double nonlinear)
         {
-            return value <= 0.04045 
-                ? value / 12.92 
-                : InverseGamma((value + 0.055) / 1.055, 2.4);
+            if (double.IsNaN(nonlinear)) return double.NaN;
+            return Math.Sign(nonlinear) * Linear(Math.Abs(nonlinear));
+            double Linear(double value)
+            {
+                return value <= 0.04045 
+                    ? value / 12.92 
+                    : InverseGamma((value + 0.055) / 1.055, 2.4);
+            }
         }
     }
 
@@ -33,16 +43,27 @@ public static class Companding
         private const double Alpha = 1.09929682680944;
         private const double Beta = 0.018053968510807;
         
-        public static double FromLinear(double e)
+        public static double FromLinear(double linear)
         {
-            if (e < Beta) return 4.5 * e;
-            return Alpha * Math.Pow(e, 0.45) - (Alpha - 1);
+            if (double.IsNaN(linear)) return double.NaN;
+            return Math.Sign(linear) * Nonlinear(Math.Abs(linear));
+            double Nonlinear(double e)
+            {
+                if (e < Beta) return 4.5 * e;
+                return Alpha * Math.Pow(e, 0.45) - (Alpha - 1);
+            }
+
         }
 
-        public static double ToLinear(double ePrime)
+        public static double ToLinear(double nonlinear)
         {
-            if (ePrime < Beta * 4.5) return ePrime / 4.5;
-            return Math.Pow((ePrime + (Alpha - 1)) / Alpha, 1 / 0.45);
+            if (double.IsNaN(nonlinear)) return double.NaN;
+            return Math.Sign(nonlinear) * Linear(Math.Abs(nonlinear));
+            double Linear(double ePrime)
+            {
+                if (ePrime < Beta * 4.5) return ePrime / 4.5;
+                return Math.Pow((ePrime + (Alpha - 1)) / Alpha, 1 / 0.45);
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 
 internal static class Gradient
 {
-    const bool ConstrainUndisplayableColours = true; // if false, undisplayable colours will render as transparent
+    private const bool RenderOutOfGamutAsTransparent = false;
 
     internal delegate Unicolour Mix(Unicolour start, Unicolour end, double distance);
 
@@ -61,7 +61,7 @@ internal static class Gradient
     private static Rgba32 AsRgba32(Unicolour unicolour)
     {
         var (r, g, b) = unicolour.Rgb.Byte255.ConstrainedTriplet;
-        var a = ConstrainUndisplayableColours || unicolour.IsDisplayable ? 255 : 0;
+        var a = unicolour.IsInDisplayGamut || !RenderOutOfGamutAsTransparent ? 255 : 0;
         return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
     }
 }

@@ -48,8 +48,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public string Hex => !IsDisplayable ? "-" : Rgb.Byte255.ConstrainedHex;
-    public bool IsDisplayable => Rgb.IsDisplayable;
+    public string Hex => !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
+    public bool IsInDisplayGamut => Rgb.IsInGamut;
     public double RelativeLuminance => Rgb.Linear.RelativeLuminance;
     public string Description => string.Join(" ", ColourDescription.Get(Hsl));
     public Temperature Temperature => Temperature.Get(Xyz);
@@ -95,10 +95,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Unicolour MixCam16(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Cam16, this, other, amount);
     public Unicolour MixHct(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Hct, this, other, amount);
     
-    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(Rgb, Config);
-    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(Rgb, Config);
-    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(Rgb, Config);
-    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(RelativeLuminance, Config);
+    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this, Config);
+    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this, Config);
+    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(this, Config);
+    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(this, Config);
+
+    public Unicolour MapToGamut() => GamutMapping.ToRgbGamut(this);
     
     public Unicolour ConvertToConfiguration(Configuration newConfig)
     {

@@ -427,7 +427,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Hct, unicolour2.Hct);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Hex, unicolour2.Hex);
-        AssertEqual(unicolour1.IsDisplayable, unicolour2.IsDisplayable);
+        AssertEqual(unicolour1.IsInDisplayGamut, unicolour2.IsInDisplayGamut);
         AssertEqual(unicolour1.RelativeLuminance, unicolour2.RelativeLuminance);
         AssertEqual(unicolour1.Description, unicolour2.Description);
         AssertEqual(unicolour1.Temperature, unicolour2.Temperature);

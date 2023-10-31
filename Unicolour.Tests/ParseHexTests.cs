@@ -85,5 +85,4 @@ public class ParseHexTests
 
         return chars;
     }
-    
 }

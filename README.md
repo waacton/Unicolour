@@ -14,6 +14,7 @@ Unicolour is a .NET library written in C# for working with colour:
 ## Overview 🧭
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
 - RGB
+- Linear RGB
 - HSB/HSV
 - HSL
 - HWB
@@ -81,30 +82,31 @@ It is also [extensively tested](Unicolour.Tests), including verification of roun
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 ## Quickstart ⚡
-| Colour space                            | Construction             | Access         | Interpolation  |
-|-----------------------------------------|--------------------------|----------------|----------------|
-| RGB (Hex)                               | `Unicolour.FromHex()`    | `.Hex`         | `.MixRgb()`    |
-| RGB (0-255)                             | `Unicolour.FromRgb255()` | `.Rgb.Byte255` | `.MixRgb()`    |
-| RGB                                     | `Unicolour.FromRgb()`    | `.Rgb`         | `.MixRgb()`    |
-| HSB/HSV                                 | `Unicolour.FromHsb()`    | `.Hsb`         | `.MixHsb()`    |
-| HSL                                     | `Unicolour.FromHsl()`    | `.Hsl`         | `.MixHsl()`    |
-| HWB                                     | `Unicolour.FromHwb()`    | `.Hwb`         | `.MixHwb()`    |
-| CIEXYZ                                  | `Unicolour.FromXyz()`    | `.Xyz`         | `.MixXyz()`    |
-| CIExyY                                  | `Unicolour.FromXyy()`    | `.Xyy`         | `.MixXyy()`    |
-| CIELAB                                  | `Unicolour.FromLab()`    | `.Lab`         | `.MixLab()`    |
-| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`  | `.Lchab`       | `.MixLchab()`  |
-| CIELUV                                  | `Unicolour.FromLuv()`    | `.Luv`         | `.MixLuv()`    |
-| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`  | `.Lchuv`       | `.MixLchuv()`  |
-| HSLuv                                   | `Unicolour.FromHsluv()`  | `.Hsluv`       | `.MixHsluv()`  |
-| HPLuv                                   | `Unicolour.FromHpluv()`  | `.Hpluv`       | `.MixHpluv()`  |
-| IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`  | `.Ictcp`       | `.MixIctcp()`  |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()` | `.Jzazbz`      | `.MixJzazbz()` |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()` | `.Jzczhz`      | `.MixJzczhz()` |
-| Oklab                                   | `Unicolour.FromOklab()`  | `.Oklab`       | `.MixOklab()`  |
-| Oklch                                   | `Unicolour.FromOklch()`  | `.Oklch`       | `.MixOklch()`  |
-| CIECAM02                                | `Unicolour.FromCam02()`  | `.Cam02`       | `.MixCam02()`  |
-| CAM16                                   | `Unicolour.FromCam16()`  | `.Cam16`       | `.MixCam16()`  |
-| HCT                                     | `Unicolour.FromHct()`    | `.Hct`         | `.MixHct()`    |
+| Colour space                            | Construction                | Access         | Interpolation     |
+|-----------------------------------------|-----------------------------|----------------|-------------------|
+| RGB (Hex)                               | `Unicolour.FromHex()`       | `.Hex`         | `.MixRgb()`       |
+| RGB (0-255)                             | `Unicolour.FromRgb255()`    | `.Rgb.Byte255` | `.MixRgb()`       |
+| RGB                                     | `Unicolour.FromRgb()`       | `.Rgb`         | `.MixRgb()`       |
+| Linear RGB                              | `Unicolour.FromRgbLinear()` | `.RgbLinear`   | `.MixRgbLinear()` |
+| HSB/HSV                                 | `Unicolour.FromHsb()`       | `.Hsb`         | `.MixHsb()`       |
+| HSL                                     | `Unicolour.FromHsl()`       | `.Hsl`         | `.MixHsl()`       |
+| HWB                                     | `Unicolour.FromHwb()`       | `.Hwb`         | `.MixHwb()`       |
+| CIEXYZ                                  | `Unicolour.FromXyz()`       | `.Xyz`         | `.MixXyz()`       |
+| CIExyY                                  | `Unicolour.FromXyy()`       | `.Xyy`         | `.MixXyy()`       |
+| CIELAB                                  | `Unicolour.FromLab()`       | `.Lab`         | `.MixLab()`       |
+| CIELCh<sub>ab</sub>                     | `Unicolour.FromLchab()`     | `.Lchab`       | `.MixLchab()`     |
+| CIELUV                                  | `Unicolour.FromLuv()`       | `.Luv`         | `.MixLuv()`       |
+| CIELCh<sub>uv</sub>                     | `Unicolour.FromLchuv()`     | `.Lchuv`       | `.MixLchuv()`     |
+| HSLuv                                   | `Unicolour.FromHsluv()`     | `.Hsluv`       | `.MixHsluv()`     |
+| HPLuv                                   | `Unicolour.FromHpluv()`     | `.Hpluv`       | `.MixHpluv()`     |
+| IC<sub>T</sub>C<sub>P</sub>             | `Unicolour.FromIctcp()`     | `.Ictcp`       | `.MixIctcp()`     |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `Unicolour.FromJzazbz()`    | `.Jzazbz`      | `.MixJzazbz()`    |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `Unicolour.FromJzczhz()`    | `.Jzczhz`      | `.MixJzczhz()`    |
+| Oklab                                   | `Unicolour.FromOklab()`     | `.Oklab`       | `.MixOklab()`     |
+| Oklch                                   | `Unicolour.FromOklch()`     | `.Oklch`       | `.MixOklch()`     |
+| CIECAM02                                | `Unicolour.FromCam02()`     | `.Cam02`       | `.MixCam02()`     |
+| CAM16                                   | `Unicolour.FromCam16()`     | `.Cam16`       | `.MixCam16()`     |
+| HCT                                     | `Unicolour.FromHct()`       | `.Hct`         | `.MixHct()`       |
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -121,18 +123,19 @@ using Wacton.Unicolour;
 ```c#
 var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
-var unicolour = Unicolour.FromRgb(1.0, 0.08, 0.58);
-var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.0);
-var unicolour = Unicolour.FromHsl(327.6, 1.0, 0.539);
-var unicolour = Unicolour.FromHwb(327.6, 0.078, 0.0);
+var unicolour = Unicolour.FromRgb(1.00, 0.08, 0.58);
+var unicolour = Unicolour.FromRgbLinear(1.00, 0.01, 0.29);
+var unicolour = Unicolour.FromHsb(327.6, 0.922, 1.000);
+var unicolour = Unicolour.FromHsl(327.6, 1.000, 0.539);
+var unicolour = Unicolour.FromHwb(327.6, 0.078, 0.000);
 var unicolour = Unicolour.FromXyz(0.4676, 0.2387, 0.2974);
 var unicolour = Unicolour.FromXyy(0.4658, 0.2378, 0.2387);
 var unicolour = Unicolour.FromLab(55.96, 84.54, -5.7);
 var unicolour = Unicolour.FromLchab(55.96, 84.73, 356.1);
 var unicolour = Unicolour.FromLuv(55.96, 131.47, -24.35);
 var unicolour = Unicolour.FromLchuv(55.96, 133.71, 349.5);
-var unicolour = Unicolour.FromHsluv(349.5, 100, 56);
-var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56);
+var unicolour = Unicolour.FromHsluv(349.5, 100.0, 56.0);
+var unicolour = Unicolour.FromHpluv(349.5, 303.2, 56.0);
 var unicolour = Unicolour.FromIctcp(0.38, 0.12, 0.19);
 var unicolour = Unicolour.FromJzazbz(0.106, 0.107, 0.005);
 var unicolour = Unicolour.FromJzczhz(0.106, 0.107, 2.6);
@@ -146,6 +149,7 @@ var unicolour = Unicolour.FromHct(358.2, 100.38, 55.96);
 4. Get colour space representations
 ```c#
 var rgb = unicolour.Rgb;
+var rgbLinear = unicolour.RgbLinear;
 var hsb = unicolour.Hsb;
 var hsl = unicolour.Hsl;
 var hwb = unicolour.Hwb;
@@ -178,6 +182,7 @@ var inGamut = unicolour.IsInDisplayGamut;
 6. Mix colours (interpolate between them)
 ```c#
 var mixed = unicolour1.MixRgb(unicolour2, 0.5);
+var mixed = unicolour1.MixRgbLinear(unicolour2, 0.5);
 var mixed = unicolour1.MixHsb(unicolour2, 0.5);
 var mixed = unicolour1.MixHsl(unicolour2, 0.5);
 var mixed = unicolour1.MixHwb(unicolour2, 0.5);
@@ -213,7 +218,7 @@ var difference = unicolour1.DeltaECam02(unicolour2);
 var difference = unicolour1.DeltaECam16(unicolour2);
 ```
 
-8. Map to display gamut
+8. Map colour to display gamut
 ```c#
 var mapped = unicolour.MapToGamut();
 ```

@@ -17,6 +17,14 @@ public class EqualityTests
     }
     
     [Test]
+    public void EqualRgbLinearGivesEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromRgbLinear();
+        var unicolour2 = Unicolour.FromRgbLinear(unicolour1.RgbLinear.Triplet.Tuple, unicolour1.Alpha.A);
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [Test]
     public void EqualHsbGivesEqualObjects()
     {
         var unicolour1 = RandomColours.UnicolourFromHsb();
@@ -175,6 +183,15 @@ public class EqualityTests
         var differentTuple = GetDifferent(unicolour1.Rgb.Triplet).Tuple;
         var unicolour2 = Unicolour.FromRgb(differentTuple, unicolour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Rgb.Triplet);
+    }
+    
+    [Test]
+    public void NotEqualRgbLinearGivesNotEqualObjects()
+    {
+        var unicolour1 = RandomColours.UnicolourFromRgbLinear();
+        var differentTuple = GetDifferent(unicolour1.RgbLinear.Triplet).Tuple;
+        var unicolour2 = Unicolour.FromRgbLinear(differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.RgbLinear.Triplet);
     }
     
     [Test]
@@ -405,7 +422,7 @@ public class EqualityTests
     {
         AssertEqual(unicolour1.Rgb, unicolour2.Rgb);
         AssertEqual(unicolour1.Rgb.Byte255, unicolour2.Rgb.Byte255);
-        AssertEqual(unicolour1.Rgb.Linear, unicolour2.Rgb.Linear);
+        AssertEqual(unicolour1.RgbLinear, unicolour2.RgbLinear);
         AssertEqual(unicolour1.Hsb, unicolour2.Hsb);
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Hwb, unicolour2.Hwb);

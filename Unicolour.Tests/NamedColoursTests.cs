@@ -7,14 +7,12 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class NamedColoursTests
 {
-    private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
-
     // no point doing this test starting with Wikipedia's HSB / HSL values since they're rounded
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
     public void RgbToHsb(TestColour namedColour)
     {
         var systemColour = ColorTranslator.FromHtml(namedColour.Hex!);
-        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0, RgbConfig);
+        var rgb = new Rgb(systemColour.R / 255.0, systemColour.G / 255.0, systemColour.B / 255.0);
         var hsb = Hsb.FromRgb(rgb);
         var hsl = Hsl.FromHsb(hsb);
         

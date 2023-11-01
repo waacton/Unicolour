@@ -23,7 +23,7 @@ public class AlphaTests
     [TestCase(double.NaN, 0, "00")]
     public void OutRange(double value, int value255, string hex) => AssertAlpha(value, value255, hex);
 
-    private void AssertAlpha(double value, int value255, string hex)
+    private static void AssertAlpha(double value, int value255, string hex)
     {
         var alpha = new Alpha(value);
         Assert.That(alpha.A, Is.EqualTo(value));

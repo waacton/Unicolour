@@ -59,7 +59,7 @@ public class DatasetEbnerFairchildTests
         Assert.That(unicolours.Count, Is.EqualTo(expectedCount));
         
         // questionable, but would be surprised if a Lab's hue for a group was beyond a neighbouring group's hue
-        var tolerance = 24;
+        const int tolerance = 24;
         var hues = unicolours.Select(x => x.Lchab.H);
         Assert.That(hues, Has.All.EqualTo(expectedHue).Within(tolerance).Or.EqualTo(expectedHue + 360).Within(tolerance));
     }

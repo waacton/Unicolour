@@ -9,11 +9,8 @@ public class ConfigureIctcpTests
     private static readonly WhitePoint D65WhitePoint = WhitePoint.From(Illuminant.D65);
     private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
 
-    // TODO: simplify tests if ever support Unicolour.FromLinearRgb()
     // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31224ictcp-colour-encoding
-    private static double Gamma(double e) => Companding.Rec2020.FromLinear(e);
     private static readonly ColourTriplet TestLinearRgb = new(0.45620519, 0.03081071, 0.04091952);
-    private static readonly ColourTriplet TestRgb = new(Gamma(TestLinearRgb.First), Gamma(TestLinearRgb.Second), Gamma(TestLinearRgb.Third));
     
     private static readonly Configuration Config100 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 100);
     private static readonly Configuration Config1 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 1);
@@ -44,8 +41,7 @@ public class ConfigureIctcpTests
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
     public void Rec2020RgbToIctcp1()
     {
-        var unicolour = Unicolour.FromRgb(Config1, TestRgb.Tuple);
-        AssertUtils.AssertTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
+        var unicolour = Unicolour.FromRgbLinear(Config1, TestLinearRgb.Tuple);
         AssertUtils.AssertTriplet(unicolour.Ictcp.Triplet, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
         
         var white = Unicolour.FromXyz(Config1, XyzWhite.Tuple);
@@ -57,8 +53,7 @@ public class ConfigureIctcpTests
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
     public void Rec2020RgbToIctcp203()
     {
-        var unicolour = Unicolour.FromRgb(Config203, TestRgb.Tuple);
-        AssertUtils.AssertTriplet(unicolour.Rgb.Linear.Triplet, TestLinearRgb, 0.00000000001);
+        var unicolour = Unicolour.FromRgbLinear(Config203, TestLinearRgb.Tuple);
         AssertUtils.AssertTriplet(unicolour.Ictcp.Triplet, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
         
         var white = Unicolour.FromXyz(Config203, XyzWhite.Tuple);
@@ -70,7 +65,7 @@ public class ConfigureIctcpTests
     [Test]
     public void ConvertTestColour()
     {
-        var initial100 = Unicolour.FromRgb(Config100, TestRgb.Tuple);
+        var initial100 = Unicolour.FromRgbLinear(Config100, TestLinearRgb.Tuple);
         var convertedTo1 = initial100.ConvertToConfiguration(Config1);
         var convertedTo203 = convertedTo1.ConvertToConfiguration(Config203);
         var convertedTo100 = convertedTo203.ConvertToConfiguration(Config100);

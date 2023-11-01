@@ -1,6 +1,10 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace { Rgb, RgbLinear, Rgb255, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16, Hct }
+internal enum ColourSpace 
+{ 
+    Rgb, Rgb255, RgbLinear, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, 
+    Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16, Hct 
+}
 
 public partial class Unicolour
 {
@@ -12,8 +16,8 @@ public partial class Unicolour
     private static readonly Dictionary<Type, ColourSpace> TypeToSpace = new()
     {
         { typeof(Rgb), ColourSpace.Rgb },
-        { typeof(RgbLinear), ColourSpace.RgbLinear },
         { typeof(Rgb255), ColourSpace.Rgb255 },
+        { typeof(RgbLinear), ColourSpace.RgbLinear },
         { typeof(Hsb), ColourSpace.Hsb },
         { typeof(Hsl), ColourSpace.Hsl },
         { typeof(Hwb), ColourSpace.Hwb },
@@ -41,8 +45,8 @@ public partial class Unicolour
         return colourSpace switch
         {
             ColourSpace.Rgb => Rgb,
-            ColourSpace.RgbLinear => Rgb.Linear,
             ColourSpace.Rgb255 => Rgb.Byte255,
+            ColourSpace.RgbLinear => RgbLinear,
             ColourSpace.Hsb => Hsb,
             ColourSpace.Hsl => Hsl,
             ColourSpace.Hwb => Hwb,
@@ -92,6 +96,7 @@ public partial class Unicolour
         return colourSpace switch
         {
             ColourSpace.Rgb => rgb,
+            ColourSpace.RgbLinear => rgbLinear,
             ColourSpace.Hsb => hsb,
             ColourSpace.Hsl => hsl,
             ColourSpace.Hwb => hwb,
@@ -120,6 +125,7 @@ public partial class Unicolour
         Action setField = targetSpace switch
         {
             ColourSpace.Rgb => () => rgb = EvaluateRgb(),
+            ColourSpace.RgbLinear => () => rgbLinear = EvaluateRgbLinear(),
             ColourSpace.Hsb => () => hsb = EvaluateHsb(),
             ColourSpace.Hsl => () => hsl = EvaluateHsl(),
             ColourSpace.Hwb => () => hwb = EvaluateHwb(),
@@ -148,13 +154,19 @@ public partial class Unicolour
     /*
      * evaluation method switch expressions are arranged as follows:
      * - first item     = target space is the initial space, simply return initial representation
-     * - middle items   = reverse transforms to the target space; only the immediate transforms (e.g. RGB <- HSB <- HSL)
+     * - middle items   = reverse transforms to the target space; only the immediate transforms
      * - default item   = forward transform from a base space
      * -----------------
-     * only need to consider the immediate transforms, as subsequent transforms are handled recursively
-     * e.g. if target is RGB:
-     * reverse starting at HSL = RGB <- HSB <- HSL; use RGB <- HSB [Hsb.ToRgb]
-     * forward starting at LAB = LAB -> XYZ -> RGB; use XYZ -> RGB [Rgb.FromXyz]
+     * only need to consider the transforms relative to the target-space, as subsequent transforms are handled recursively
+     * e.g. for target-space RGB...
+     * - starting at HSL:
+     *   - transforms: HSL ==reverse==> HSB ==reverse==> RGB
+     *   - only need to specify: HSB ==reverse==> RGB
+     *   - function: Hsb.ToRgb()
+     * - starting at LAB:
+     *   - LAB ==reverse==> XYZ ==forward==> RGB Linear ==forward==> RGB
+     *   - only need to specify: RGB Linear ==forward==> RGB
+     *   - function: Rgb.FromRgbLinear()
      */
 
     private Rgb EvaluateRgb()
@@ -162,10 +174,23 @@ public partial class Unicolour
         return InitialColourSpace switch
         {
             ColourSpace.Rgb => (Rgb)InitialRepresentation,
-            ColourSpace.Hsb => Hsb.ToRgb(Hsb, Config.Rgb),
-            ColourSpace.Hsl => Hsb.ToRgb(Hsb, Config.Rgb),
-            ColourSpace.Hwb => Hsb.ToRgb(Hsb, Config.Rgb),
-            _ => Rgb.FromXyz(Xyz, Config.Rgb, Config.Xyz)
+            ColourSpace.Hsb => Hsb.ToRgb(Hsb),
+            ColourSpace.Hsl => Hsb.ToRgb(Hsb),
+            ColourSpace.Hwb => Hsb.ToRgb(Hsb),
+            _ => Rgb.FromRgbLinear(RgbLinear, Config.Rgb)
+        };
+    }
+    
+    private RgbLinear EvaluateRgbLinear()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.RgbLinear => (RgbLinear)InitialRepresentation,
+            ColourSpace.Rgb => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Hsb => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Hsl => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Hwb => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            _ => RgbLinear.FromXyz(Xyz, Config.Rgb, Config.Xyz)
         };
     }
 
@@ -203,10 +228,11 @@ public partial class Unicolour
         return InitialColourSpace switch
         {
             ColourSpace.Xyz => (Xyz)InitialRepresentation,
-            ColourSpace.Rgb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Hsl => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
-            ColourSpace.Hwb => Rgb.ToXyz(Rgb, Config.Rgb, Config.Xyz),
+            ColourSpace.Rgb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.RgbLinear => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Hsb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Hsl => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Hwb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Xyy => Xyy.ToXyz(Xyy),
             ColourSpace.Lab => Lab.ToXyz(Lab, Config.Xyz),
             ColourSpace.Lchab => Lab.ToXyz(Lab, Config.Xyz),

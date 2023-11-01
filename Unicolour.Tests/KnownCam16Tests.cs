@@ -27,8 +27,7 @@ public class KnownCam16Tests
             A: 40.22460974,
             B: 14.25288392);
 
-        var expectedHueComposition = "1B99R";
-
+        const string expectedHueComposition = "1B99R";
         AssertCam16(xyz, camConfig, expectedModel, expectedUcs, expectedHueComposition);
     }
     
@@ -51,8 +50,7 @@ public class KnownCam16Tests
             A: -5.256862406480357,
             B: -27.623820831847528);
 
-        var expectedHueComposition = "89B11R";
-
+        const string expectedHueComposition = "89B11R";
         AssertCam16(xyz, camConfig, expectedModel, expectedUcs, expectedHueComposition);
     }
     
@@ -91,7 +89,7 @@ public class KnownCam16Tests
         var xyz = new Xyz(0, 0, 0);
         var expectedModel = new Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Ucs(0, 0, 0);
-        var expectedHueComposition = "20B80R";
+        const string expectedHueComposition = "20B80R";
         AssertCam16(xyz, camConfig, expectedModel, expectedUcs, expectedHueComposition);
     }
     

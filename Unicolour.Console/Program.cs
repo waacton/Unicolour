@@ -44,7 +44,7 @@ static Table GetTable(Unicolour unicolour)
     var table = new Table
     {
         Border = TableBorder.Rounded,
-        BorderStyle = new Style(new Color((byte)rgb255.R, (byte)rgb255.G, (byte)rgb255.B)),
+        BorderStyle = new Style(new Color((byte)rgb255.R, (byte)rgb255.G, (byte)rgb255.B))
     };
     
     table.AddColumn(new TableColumn("Space").Width(col1Width));
@@ -53,7 +53,7 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Hex", $"{unicolour.Hex}");
     table.AddRow("Rgb 255", $"{unicolour.Rgb.Byte255}");
     table.AddRow("Rgb", $"{unicolour.Rgb}");
-    table.AddRow("Rgb Lin.", $"{unicolour.Rgb.Linear}");
+    table.AddRow("Rgb Lin.", $"{unicolour.RgbLinear}");
     table.AddRow("Hsl", $"{unicolour.Hsl}");
     table.AddRow("Hsb", $"{unicolour.Hsb}");
     table.AddRow("Hwb", $"{unicolour.Hwb}");

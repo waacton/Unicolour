@@ -46,9 +46,9 @@ public class ConfigureXyzTests
         };
         
         // testing default config values; other tests explicitly construct configs
-        var rgbToXyzMatrix = Rgb.RgbToXyzMatrix(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
-        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
-        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
+        var rgbLinearToXyzMatrix = RgbLinear.RgbLinearToXyzMatrix(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
+        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
         
         var unicolour = Unicolour.FromRgb(Configuration.Default, 0.5, 0.25, 0.75);
         var unicolourNoConfig = Unicolour.FromRgb(0.5, 0.25, 0.75);
@@ -84,8 +84,8 @@ public class ConfigureXyzTests
             { 0.0139322, 0.0971045, 0.7141733 }
         };
         
-        var rgbToXyzMatrix = Rgb.RgbToXyzMatrix(config.Rgb, config.Xyz);
-        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
+        var rgbLinearToXyzMatrix = RgbLinear.RgbLinearToXyzMatrix(config.Rgb, config.Xyz);
+        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
         var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.187691, 0.115771, 0.381093);
@@ -276,12 +276,12 @@ public class ConfigureXyzTests
         }
         
         var initialRgbConfig = RgbConfig(XyzConfiguration.D65.WhitePoint, RgbConfiguration.StandardRgb);
-        var initialRgb = new Rgb(1.0, 0.08, 0.58, initialRgbConfig);
-        var expectedXyz = Rgb.ToXyz(initialRgb, initialRgbConfig, XyzConfiguration.D65);
+        var initialRgb = new RgbLinear(1.0, 0.08, 0.58);
+        var expectedXyz = RgbLinear.ToXyz(initialRgb, initialRgbConfig, XyzConfiguration.D65);
         
         var rgbConfig = RgbConfig(WhitePoint.From(rgbIlluminant), RgbConfiguration.StandardRgb);
-        var rgb = Rgb.FromXyz(expectedXyz, rgbConfig, XyzConfiguration.D65);
-        var xyz = Rgb.ToXyz(rgb, rgbConfig, XyzConfiguration.D65);
+        var rgb = RgbLinear.FromXyz(expectedXyz, rgbConfig, XyzConfiguration.D65);
+        var xyz = RgbLinear.ToXyz(rgb, rgbConfig, XyzConfiguration.D65);
         AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     

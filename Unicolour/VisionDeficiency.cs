@@ -25,21 +25,23 @@ internal static class VisionDeficiency
         { +0.004733, +0.691367, +0.303900 }
     });
 
-    // TODO: support standalone Linear RGB? would simplify this a little
-    private static Unicolour SimulateCvd(Rgb rgb, Configuration config, Matrix cvdMatrix)
+    private static Unicolour SimulateCvd(Unicolour unicolour, Matrix cvdMatrix)
     {
+        var config = unicolour.Config;
+        
         // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
-        var rgbLinearMatrix = Matrix.FromTriplet(rgb.Linear.Triplet);
+        var rgbLinearMatrix = Matrix.FromTriplet(unicolour.RgbLinear.Triplet);
         var simulatedRgbLinearMatrix = cvdMatrix.Multiply(rgbLinearMatrix);
-        var simulatedRgbMatrix = simulatedRgbLinearMatrix.Select(config.Rgb.CompandFromLinear);
-        return Unicolour.FromRgb(config, simulatedRgbMatrix.ToTriplet().Tuple);
+        return Unicolour.FromRgbLinear(config, simulatedRgbLinearMatrix.ToTriplet().Tuple);
     }
     
-    internal static Unicolour SimulateProtanopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Protanomaly);
-    internal static Unicolour SimulateDeuteranopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Deuteranomaly);
-    internal static Unicolour SimulateTritanopia(Unicolour unicolour, Configuration config) => SimulateCvd(unicolour.Rgb, config, Tritanomaly);
-    internal static Unicolour SimulateAchromatopsia(Unicolour unicolour, Configuration config)
+    internal static Unicolour SimulateProtanopia(Unicolour unicolour) => SimulateCvd(unicolour, Protanomaly);
+    internal static Unicolour SimulateDeuteranopia(Unicolour unicolour) => SimulateCvd(unicolour, Deuteranomaly);
+    internal static Unicolour SimulateTritanopia(Unicolour unicolour) => SimulateCvd(unicolour, Tritanomaly);
+    internal static Unicolour SimulateAchromatopsia(Unicolour unicolour)
     {
+        var config = unicolour.Config;
+
         // luminance is based on Linear RGB, so needs to be companded back into chosen RGB space
         var rgbLuminance = config.Rgb.CompandFromLinear(unicolour.RelativeLuminance);
         return Unicolour.FromRgb(config, rgbLuminance, rgbLuminance, rgbLuminance);

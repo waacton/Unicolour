@@ -3,6 +3,7 @@
 public partial class Unicolour : IEquatable<Unicolour>
 {
     private Rgb? rgb;
+    private RgbLinear? rgbLinear;
     private Hsb? hsb;
     private Hsl? hsl;
     private Hwb? hwb;
@@ -26,6 +27,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
     public Rgb Rgb => Get<Rgb>(ColourSpace.Rgb);
+    public RgbLinear RgbLinear => Get<RgbLinear>(ColourSpace.RgbLinear);
     public Hsb Hsb => Get<Hsb>(ColourSpace.Hsb);
     public Hsl Hsl => Get<Hsl>(ColourSpace.Hsl);
     public Hwb Hwb => Get<Hwb>(ColourSpace.Hwb);
@@ -50,7 +52,7 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     public string Hex => !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
-    public double RelativeLuminance => Rgb.Linear.RelativeLuminance;
+    public double RelativeLuminance => RgbLinear.RelativeLuminance;
     public string Description => string.Join(" ", ColourDescription.Get(Hsl));
     public Temperature Temperature => Temperature.Get(Xyz);
     
@@ -75,6 +77,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public double DeltaECam16(Unicolour sample) => Comparison.DeltaECam16(this, sample);
     
     public Unicolour MixRgb(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Rgb, this, other, amount);
+    public Unicolour MixRgbLinear(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.RgbLinear, this, other, amount);
     public Unicolour MixHsb(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Hsb, this, other, amount);
     public Unicolour MixHsl(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Hsl, this, other, amount);
     public Unicolour MixHwb(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Hwb, this, other, amount);
@@ -95,10 +98,10 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Unicolour MixCam16(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Cam16, this, other, amount);
     public Unicolour MixHct(Unicolour other, double amount = 0.5) => Interpolation.Mix(ColourSpace.Hct, this, other, amount);
     
-    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this, Config);
-    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this, Config);
-    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(this, Config);
-    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(this, Config);
+    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);
+    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this);
+    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(this);
+    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(this);
 
     public Unicolour MapToGamut() => GamutMapping.ToRgbGamut(this);
     

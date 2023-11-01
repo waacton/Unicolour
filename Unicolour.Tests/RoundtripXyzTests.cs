@@ -14,10 +14,10 @@ public class RoundtripXyzTests
     private const double JzazbzScalar = 100;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
-    public void ViaRgb(ColourTriplet triplet)
+    public void ViaRgbLinear(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Rgb.ToXyz(Rgb.FromXyz(original, RgbConfig,  XyzConfig), RgbConfig, XyzConfig);
+        var roundtrip = RgbLinear.ToXyz(RgbLinear.FromXyz(original, RgbConfig,  XyzConfig), RgbConfig, XyzConfig);
         AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     

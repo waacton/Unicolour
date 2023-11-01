@@ -11,6 +11,7 @@ internal static class RandomColours
     public static readonly List<string> HexStrings = new();
     public static readonly List<ColourTriplet> Rgb255Triplets = new();
     public static readonly List<ColourTriplet> RgbTriplets = new();
+    public static readonly List<ColourTriplet> RgbLinearTriplets = new();
     public static readonly List<ColourTriplet> HsbTriplets = new();
     public static readonly List<ColourTriplet> HslTriplets = new();
     public static readonly List<ColourTriplet> HwbTriplets = new();
@@ -39,6 +40,7 @@ internal static class RandomColours
             HexStrings.Add(Hex());
             Rgb255Triplets.Add(Rgb255());
             RgbTriplets.Add(Rgb());
+            RgbLinearTriplets.Add(RgbLinear());
             HsbTriplets.Add(Hsb());
             HslTriplets.Add(Hsl());
             HwbTriplets.Add(Hwb());
@@ -63,32 +65,34 @@ internal static class RandomColours
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     private static ColourTriplet Rgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
-    public static ColourTriplet Rgb() => new(Rng(), Rng(), Rng());
-    public static ColourTriplet Hsb() => new(Rng(0, 360), Rng(), Rng());
-    public static ColourTriplet Hsl() => new(Rng(0, 360), Rng(), Rng());
-    public static ColourTriplet Hwb() => new(Rng(0, 360), Rng(), Rng());
-    public static ColourTriplet Xyz() => new(Rng(), Rng(), Rng());
-    public static ColourTriplet Xyy() => new(Rng(), Rng(), Rng());
-    public static ColourTriplet Lab() => new(Rng(0, 100), Rng(-128, 128), Rng(-128, 128));
-    public static ColourTriplet Lchab() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
-    public static ColourTriplet Luv() => new(Rng(0, 100), Rng(-100, 100), Rng(-100, 100));
-    public static ColourTriplet Lchuv() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
-    public static ColourTriplet Hsluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
-    public static ColourTriplet Hpluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
-    public static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
-    public static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
-    public static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values
-    public static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
-    public static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
-    public static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
-    public static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
-    public static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
-    public static double Alpha() => Random.NextDouble();
+    private static ColourTriplet Rgb() => new(Rng(), Rng(), Rng());
+    private static ColourTriplet RgbLinear() => new(Rng(), Rng(), Rng());
+    private static ColourTriplet Hsb() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Hsl() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Hwb() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Xyz() => new(Rng(), Rng(), Rng());
+    private static ColourTriplet Xyy() => new(Rng(), Rng(), Rng());
+    private static ColourTriplet Lab() => new(Rng(0, 100), Rng(-128, 128), Rng(-128, 128));
+    private static ColourTriplet Lchab() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
+    private static ColourTriplet Luv() => new(Rng(0, 100), Rng(-100, 100), Rng(-100, 100));
+    private static ColourTriplet Lchuv() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
+    private static ColourTriplet Hsluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
+    private static ColourTriplet Hpluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
+    private static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
+    private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
+    private static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values
+    private static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
+    private static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
+    private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
+    private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
+    private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
+    private static double Alpha() => Random.NextDouble();
     
     private static double Rng() => Random.NextDouble();
     private static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
     
     public static Unicolour UnicolourFromRgb() => Unicolour.FromRgb(Rgb().Tuple, Alpha());
+    public static Unicolour UnicolourFromRgbLinear() => Unicolour.FromRgbLinear(RgbLinear().Tuple, Alpha());
     public static Unicolour UnicolourFromHsb() => Unicolour.FromHsb(Hsb().Tuple, Alpha());
     public static Unicolour UnicolourFromHsl() => Unicolour.FromHsl(Hsl().Tuple, Alpha());
     public static Unicolour UnicolourFromHwb() => Unicolour.FromHwb(Hwb().Tuple, Alpha());

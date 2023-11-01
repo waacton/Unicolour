@@ -14,21 +14,24 @@ public class CamConfiguration
     {
         Surround.Dark => 0.8,
         Surround.Dim => 0.9,
-        Surround.Average => 1.0
+        Surround.Average => 1.0,
+        _ => throw new ArgumentOutOfRangeException()
     };
     
     internal double C => Surround switch
     {
         Surround.Dark => 0.525,
         Surround.Dim => 0.59,
-        Surround.Average => 0.69
+        Surround.Average => 0.69,
+        _ => throw new ArgumentOutOfRangeException()
     };
 
     internal double Nc => Surround switch
     {
         Surround.Dark => 0.8,
         Surround.Dim => 0.9,
-        Surround.Average => 1.0
+        Surround.Average => 1.0,
+        _ => throw new ArgumentOutOfRangeException()
     };
 
     /*

@@ -47,7 +47,7 @@ public record Hsb : ColourRepresentation
         return new Hsb(hue.Modulo(360.0), saturation, brightness, ColourHeritage.From(rgb));
     }
     
-    internal static Rgb ToRgb(Hsb hsb, RgbConfiguration rgbConfig)
+    internal static Rgb ToRgb(Hsb hsb)
     {
         var (hue, saturation, brightness) = hsb.ConstrainedTriplet;
         var chroma = brightness * saturation;
@@ -67,6 +67,6 @@ public record Hsb : ColourRepresentation
 
         var m = brightness - chroma;
         var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, rgbConfig, ColourHeritage.From(hsb));
+        return new Rgb(red, green, blue, ColourHeritage.From(hsb));
     }
 }

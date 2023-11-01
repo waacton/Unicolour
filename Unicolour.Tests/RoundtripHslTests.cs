@@ -11,7 +11,7 @@ public class RoundtripHslTests
     public void ViaHsb(ColourTriplet triplet) => AssertViaHsb(triplet);
     
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
-    public void ViaHsbNamed(TestColour namedColour) => AssertViaHsb(namedColour.Hsl!);
+    public void ViaHsbFromNamed(TestColour namedColour) => AssertViaHsb(namedColour.Hsl!);
     
     private static void AssertViaHsb(ColourTriplet triplet)
     {

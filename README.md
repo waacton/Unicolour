@@ -67,8 +67,8 @@ Simulation of colour vision deficiency (CVD) / colour blindness is supported for
 - Tritanopia (no blue perception)
 - Achromatopsia (no colour perception)
 
-If a colour is outwith the display gamut, the closest in-gamut colour can be obtained through
-gamut mapping according to CSS specifications.
+If a colour is outwith the display gamut, the closest in-gamut colour can be obtained using the provided
+gamut mapping algorithm, which meets CSS specifications.
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.

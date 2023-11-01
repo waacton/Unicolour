@@ -87,6 +87,7 @@ internal static class Interpolation
         return colourSpace switch
         {
             ColourSpace.Rgb => Unicolour.FromRgb,
+            ColourSpace.RgbLinear => Unicolour.FromRgbLinear,
             ColourSpace.Hsb => Unicolour.FromHsb,
             ColourSpace.Hsl => Unicolour.FromHsl,
             ColourSpace.Hwb => Unicolour.FromHwb,

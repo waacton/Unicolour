@@ -19,6 +19,9 @@ public class NotNumberTests
     
     [TestCaseSource(nameof(testCases))]
     public void Rgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void RgbLinear(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgbLinear(r, g, b));
 
     [TestCaseSource(nameof(testCases))]
     public void Hsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
@@ -80,7 +83,7 @@ public class NotNumberTests
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but are used as NaN
     [TestCaseSource(nameof(testCases))]
-    public static void IsNumberButUseAsNotNumber(double l, double u, double v)
+    public void IsNumberButUseAsNotNumber(double l, double u, double v)
     {
         var unicolour = Unicolour.FromLuv(l, u, v);
         Assert.That(unicolour.Luv.IsNaN, Is.True);

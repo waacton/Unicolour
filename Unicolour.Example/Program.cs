@@ -9,7 +9,7 @@ void GenerateColourSpaceGradients()
 {
     const int columns = 3;
     const int columnWidth = 800;
-    const int rows = 20; 
+    const int rows = 21; 
     const int rowHeight = 100;
     
     var purple = Unicolour.FromHsb(260, 1.0, 0.33);
@@ -37,6 +37,7 @@ void GenerateColourSpaceGradients()
     Image<Rgba32> DrawColumn(Unicolour[] colourPoints)
     {
         var rgb = Gradient.Draw(("RGB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixRgb(end, distance));
+        var rgbLinear = Gradient.Draw(("RGB Linear", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixRgbLinear(end, distance));
         var hsb = Gradient.Draw(("HSB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHsb(end, distance));
         var hsl = Gradient.Draw(("HSL", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHsl(end, distance));
         var hwb = Gradient.Draw(("HWB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHwb(end, distance));
@@ -60,25 +61,26 @@ void GenerateColourSpaceGradients()
         var columnImage = new Image<Rgba32>(columnWidth, rowHeight * rows);
         columnImage.Mutate(context => context
             .DrawImage(rgb, new Point(0, rowHeight * 0), 1f)
-            .DrawImage(hsb, new Point(0, rowHeight * 1), 1f)
-            .DrawImage(hsl, new Point(0, rowHeight * 2), 1f)
-            .DrawImage(hwb, new Point(0, rowHeight * 3), 1f)
-            .DrawImage(xyz, new Point(0, rowHeight * 4), 1f)
-            .DrawImage(xyy, new Point(0, rowHeight * 5), 1f)
-            .DrawImage(lab, new Point(0, rowHeight * 6), 1f)
-            .DrawImage(lchab, new Point(0, rowHeight * 7), 1f)
-            .DrawImage(luv, new Point(0, rowHeight * 8), 1f)
-            .DrawImage(lchuv, new Point(0, rowHeight * 9), 1f)
-            .DrawImage(hsluv, new Point(0, rowHeight * 10), 1f)
-            .DrawImage(hpluv, new Point(0, rowHeight * 11), 1f)
-            .DrawImage(ictcp, new Point(0, rowHeight * 12), 1f)
-            .DrawImage(jzazbz, new Point(0, rowHeight * 13), 1f)
-            .DrawImage(jzczhz, new Point(0, rowHeight * 14), 1f)
-            .DrawImage(oklab, new Point(0, rowHeight * 15), 1f)
-            .DrawImage(oklch, new Point(0, rowHeight * 16), 1f)
-            .DrawImage(cam02, new Point(0, rowHeight * 17), 1f)
-            .DrawImage(cam16, new Point(0, rowHeight * 18), 1f)
-            .DrawImage(hct, new Point(0, rowHeight * 19), 1f)
+            .DrawImage(rgbLinear, new Point(0, rowHeight * 1), 1f)
+            .DrawImage(hsb, new Point(0, rowHeight * 2), 1f)
+            .DrawImage(hsl, new Point(0, rowHeight * 3), 1f)
+            .DrawImage(hwb, new Point(0, rowHeight * 4), 1f)
+            .DrawImage(xyz, new Point(0, rowHeight * 5), 1f)
+            .DrawImage(xyy, new Point(0, rowHeight * 6), 1f)
+            .DrawImage(lab, new Point(0, rowHeight * 7), 1f)
+            .DrawImage(lchab, new Point(0, rowHeight * 8), 1f)
+            .DrawImage(luv, new Point(0, rowHeight * 9), 1f)
+            .DrawImage(lchuv, new Point(0, rowHeight * 10), 1f)
+            .DrawImage(hsluv, new Point(0, rowHeight * 11), 1f)
+            .DrawImage(hpluv, new Point(0, rowHeight * 12), 1f)
+            .DrawImage(ictcp, new Point(0, rowHeight * 13), 1f)
+            .DrawImage(jzazbz, new Point(0, rowHeight * 14), 1f)
+            .DrawImage(jzczhz, new Point(0, rowHeight * 15), 1f)
+            .DrawImage(oklab, new Point(0, rowHeight * 16), 1f)
+            .DrawImage(oklch, new Point(0, rowHeight * 17), 1f)
+            .DrawImage(cam02, new Point(0, rowHeight * 18), 1f)
+            .DrawImage(cam16, new Point(0, rowHeight * 19), 1f)
+            .DrawImage(hct, new Point(0, rowHeight * 20), 1f)
         );
 
         return columnImage;

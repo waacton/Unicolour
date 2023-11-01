@@ -12,25 +12,8 @@ public class RangeClampTests
         Range rRange = new(0.0, 1.0);
         Range gRange = new(0.0, 1.0);
         Range bRange = new(0.0, 1.0);
-        var beyondMax = new Rgb(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax, RgbConfiguration.StandardRgb);
-        var beyondMin = new Rgb(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin, RgbConfiguration.StandardRgb);
-        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
-        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
-
-        var representations = new[] { beyondMax, beyondMin };
-        AssertConstrainedValue(representations, x => x.ConstrainedR, x => x.ConstrainedTriplet.First);
-        AssertConstrainedValue(representations, x => x.ConstrainedG, x => x.ConstrainedTriplet.Second);
-        AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
-    }
-
-    [Test]
-    public void RgbLinearRange()
-    {
-        Range rRange = new(0.0, 1.0);
-        Range gRange = new(0.0, 1.0);
-        Range bRange = new(0.0, 1.0);
-        var beyondMax = new RgbLinear(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax);
-        var beyondMin = new RgbLinear(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
+        var beyondMax = new Rgb(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax);
+        var beyondMin = new Rgb(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
 
@@ -48,6 +31,23 @@ public class RangeClampTests
         Range bRange = new(0, 255);
         var beyondMax = new Rgb255(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax);
         var beyondMin = new Rgb255(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedR, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedG, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
+    }
+
+    [Test]
+    public void RgbLinearRange()
+    {
+        Range rRange = new(0.0, 1.0);
+        Range gRange = new(0.0, 1.0);
+        Range bRange = new(0.0, 1.0);
+        var beyondMax = new RgbLinear(rRange.BeyondMax, gRange.BeyondMax, bRange.BeyondMax);
+        var beyondMin = new RgbLinear(rRange.BeyondMin, gRange.BeyondMin, bRange.BeyondMin);
         AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
         AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
 

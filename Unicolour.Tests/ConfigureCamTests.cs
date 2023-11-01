@@ -1,5 +1,6 @@
 namespace Wacton.Unicolour.Tests;
 
+using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -47,5 +48,15 @@ public class ConfigureCamTests
         var xyz = Cam16.ToXyz(expectedCam, CamConfiguration.StandardRgb, xyzConfig);
         var cam = Cam16.FromXyz(xyz, CamConfiguration.StandardRgb, xyzConfig);
         AssertUtils.AssertTriplet(cam.Triplet, expectedCam.Triplet, 0.00000000001);
+    }
+
+    [Test]
+    public void InvalidSurround()
+    {
+        const Surround badSurround = (Surround)int.MaxValue;
+        var camConfig = new CamConfiguration(WhitePoint.StandardRgb, 0, 0, badSurround);
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.F; });
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.C; });
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.Nc; });
     }
 }

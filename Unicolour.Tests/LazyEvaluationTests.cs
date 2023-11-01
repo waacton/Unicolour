@@ -9,19 +9,16 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class LazyEvaluationTests
 {
-    // RgbLinear & Rgb255 are currently calculated during Rgb construction
-    // instead of separately like the other colour spaces
-    // but this might change in future if Unicolour.FromRgbLinear() becomes supported
-    private static readonly List<string> BackingFields = 
-        AssertUtils.AllColourSpaces
-            .Except(new [] { ColourSpace.RgbLinear, ColourSpace.Rgb255 })
-            .Select(x => x.ToString().ToLower())
-            .ToList();
+    // RGB255 is the only colour space that's not handled with its own backing field
+    // (is a kind of sub-space behind RGB)
+    private static readonly List<ColourSpace> ColourSpacesWithBackingFields =
+        AssertUtils.AllColourSpaces.Except(new [] { ColourSpace.Rgb255 }).ToList();
 
     private static readonly List<TestCaseData> TestCases = new()
     {
         #pragma warning disable CS8974 // Converting method group to non-delegate type
         new TestCaseData(RandomColours.UnicolourFromRgb).SetName("Rgb"),
+        new TestCaseData(RandomColours.UnicolourFromRgbLinear).SetName("RgbLinear"),
         new TestCaseData(RandomColours.UnicolourFromHsb).SetName("Hsb"),
         new TestCaseData(RandomColours.UnicolourFromHsl).SetName("Hsl"),
         new TestCaseData(RandomColours.UnicolourFromHwb).SetName("Hwb"),
@@ -91,7 +88,7 @@ public class LazyEvaluationTests
     {
         var unicolour = unicolourFunction();
         _ = unicolour.RelativeLuminance;
-        AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.RgbLinear);
     }
     
     [TestCaseSource(nameof(TestCases))]
@@ -120,9 +117,10 @@ public class LazyEvaluationTests
     
     private static void AssertBackingFields(Unicolour unicolour)
     {
-        var initialField = unicolour.InitialColourSpace.ToString().ToLower();
-        foreach (var backingField in BackingFields)
+        var initialField = GetBackingFieldName(unicolour.InitialColourSpace);
+        foreach (var colourSpace in ColourSpacesWithBackingFields)
         {
+            var backingField = GetBackingFieldName(colourSpace);
             var value = GetPrivateField(backingField).GetValue(unicolour);
             if (backingField == initialField)
             {
@@ -137,9 +135,15 @@ public class LazyEvaluationTests
 
     private static void AssertBackingFieldEvaluated(Unicolour unicolour, ColourSpace colourSpace)
     {
-        var field = colourSpace.ToString().ToLower();
+        var field = GetBackingFieldName(colourSpace);
         var value = GetPrivateField(field).GetValue(unicolour);
         Assert.NotNull(value);
+    }
+
+    private static string GetBackingFieldName(ColourSpace colourSpace)
+    {
+        var colourSpaceName = colourSpace.ToString();
+        return char.ToLower(colourSpaceName[0]) + colourSpaceName[1..];
     }
     
     private static FieldInfo GetPrivateField(string name) => typeof(Unicolour).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!;

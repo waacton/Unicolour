@@ -19,28 +19,40 @@ public class InvalidUnicolourTests
     }
 
     [Test]
-    public void InvalidRequestedRepresentation()
+    public void InvalidColourSpaceGet()
     {
         const string genericMethodName = "Get";
-        AssertDoesNotThrow(() => InvokeGenericMethod(genericMethodName, typeof(ColourRepresentation), GoodColourSpace));
-        AssertThrows<ArgumentOutOfRangeException>(() => InvokeGenericMethod(genericMethodName, typeof(ColourRepresentation), BadColourSpace));
+        AssertDoesNotThrow(() => InvokePrivateGenericMethod(genericMethodName, typeof(ColourRepresentation), GoodColourSpace));
+        AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateGenericMethod(genericMethodName, typeof(ColourRepresentation), BadColourSpace));
     }
     
     [Test]
-    public void InvalidInitialRepresentation()
+    public void InvalidColourSpaceSet()
     {
         const string methodName = "SetBackingField";
-        AssertDoesNotThrow(() => InvokeMethod(methodName, GoodColourSpace));
-        AssertThrows<ArgumentOutOfRangeException>(() => InvokeMethod(methodName, BadColourSpace));
+        AssertDoesNotThrow(() => InvokePrivateMethod(methodName, GoodColourSpace));
+        AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateMethod(methodName, BadColourSpace));
+    }
+    
+    [Test]
+    public void InvalidXyzEvaluation()
+    {
+        const string fieldName = "InitialColourSpace";
+        SetPrivateField(fieldName, BadColourSpace);
+        
+        const string methodName = "EvaluateXyz";
+        AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateMethod(methodName));
     }
 
     private static void AssertDoesNotThrow(Action action) => Assert.DoesNotThrow(action.Invoke);
     private static void AssertThrows<T>(Action action) => Assert.Throws(ExceptionConstraint<T>(), action.Invoke);
     private static ExactTypeConstraint ExceptionConstraint<T>() => Is.TypeOf<TargetInvocationException>().And.InnerException.TypeOf<T>();
 
-    private void InvokeMethod(string name, params object[] args) => GetPrivateMethod(name).Invoke(unicolour, args);
-    private void InvokeGenericMethod(string name, Type genericType, params object[] args) => GetPrivateMethod(name, genericType).Invoke(unicolour, args);
+    private void InvokePrivateMethod(string name, params object[] args) => GetPrivateMethod(name).Invoke(unicolour, args);
+    private void InvokePrivateGenericMethod(string name, Type genericType, params object[] args) => GetPrivateMethod(name, genericType).Invoke(unicolour, args);
+    private void SetPrivateField(string name, object value) => GetPrivateField(name).SetValue(unicolour, value);
 
     private static MethodInfo GetPrivateMethod(string name) => typeof(Unicolour).GetMethod(name, BindingFlags.NonPublic | BindingFlags.Instance)!;
     private static MethodInfo GetPrivateMethod(string name, Type genericType) => GetPrivateMethod(name).MakeGenericMethod(genericType);
+    private static FieldInfo GetPrivateField(string name) => typeof(Unicolour).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!;
 }

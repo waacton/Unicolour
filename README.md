@@ -107,17 +107,17 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 | HCT                                     | `Unicolour.FromHct()`    | `.Hct`         | `.MixHct()`    |
 
 ## How to use 🌈
-##### 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
 ```
 dotnet add package Wacton.Unicolour
 ```
 
-##### 2. Import the package:
+2. Import the package:
 ```c#
 using Wacton.Unicolour;
 ```
 
-##### 3. Create a `Unicolour` from values:
+3. Create a `Unicolour`:
 ```c#
 var unicolour = Unicolour.FromHex("#FF1493");
 var unicolour = Unicolour.FromRgb255(255, 20, 147);
@@ -143,7 +143,7 @@ var unicolour = Unicolour.FromCam16(62.47, 42.60, -1.36);
 var unicolour = Unicolour.FromHct(358.2, 100.38, 55.96);
 ```
 
-##### 4. Get representations of a colour in different colour spaces:
+4. Get colour space representations:
 ```c#
 var rgb = unicolour.Rgb;
 var hsb = unicolour.Hsb;
@@ -167,14 +167,15 @@ var cam16 = unicolour.Cam16;
 var hct = unicolour.Hct;
 ```
 
-##### 5. Get properties of a colour
+5. Get colour properties:
 ```c#
 var hex = unicolour.Hex;
 var relativeLuminance = unicolour.RelativeLuminance;
 var temperature = unicolour.Temperature;
+var inGamut = unicolour.IsInDisplayGamut;
 ```
 
-##### 6. Mix colours (interpolate between them):
+6. Mix colours (interpolate between them):
 ```c#
 var mixed = unicolour1.MixRgb(unicolour2, 0.5);
 var mixed = unicolour1.MixHsb(unicolour2, 0.5);
@@ -198,7 +199,7 @@ var mixed = unicolour1.MixCam16(unicolour2, 0.5);
 var mixed = unicolour1.MixHct(unicolour2, 0.5);
 ```
 
-##### 7. Compare colours:
+7. Compare colours:
 ```c#
 var contrast = unicolour1.Contrast(unicolour2);
 var difference = unicolour1.DeltaE76(unicolour2);
@@ -212,12 +213,12 @@ var difference = unicolour1.DeltaECam02(unicolour2);
 var difference = unicolour1.DeltaECam16(unicolour2);
 ```
 
-##### 8. Map to display gamut:
+8. Map to display gamut:
 ```c#
 var mapped = unicolour.MapToGamut();
 ```
 
-##### 9. Simulate colour vision deficiency:
+9. Simulate colour vision deficiency:
 ```c#
 var protanopia = unicolour.SimulateProtanopia();
 var deuteranopia = unicolour.SimulateDeuteranopia();

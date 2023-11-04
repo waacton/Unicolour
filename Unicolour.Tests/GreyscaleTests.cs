@@ -291,7 +291,7 @@ public class GreyscaleTests
         Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
         Assert.That(initial.IsGreyscale, Is.EqualTo(shouldBeGreyscale));
         Assert.That(initial.UseAsGreyscale, Is.EqualTo(shouldBeGreyscale));
-        Assert.That(initial.UseAsHued, Is.EqualTo(initial.HasHueAxis));
+        Assert.That(initial.UseAsHued, Is.EqualTo(initial.HasHueComponent));
         Assert.That(initial.UseAsNaN, Is.False);
     }
 

@@ -3,7 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// note: HCT is a composite of LAB & CAM16, therefore there is no obvious cartesian/hueless space to compare against
+// note: HCT is a composite of LAB & CAM16, therefore there is no obvious rectangular/hueless space to compare against
 // so using RGB to generate non-HCT greyscales
 // ----------
 // greyscale RGB has no hue - shouldn't assume to start at red (0 degrees) when mixing
@@ -21,10 +21,10 @@ public class MixGreyscaleHctTests
         var hctWhite = Unicolour.FromHct(180, 100, 100); // full tone = white
         
         var green = Unicolour.FromHct(120, 100, 50);
-        var fromRgbBlack = rgbBlack.MixHct(green, 0.5);
-        var fromRgbWhite = rgbWhite.MixHct(green, 0.5);
-        var fromHctBlack = hctBlack.MixHct(green, 0.5);
-        var fromHctWhite = hctWhite.MixHct(green, 0.5);
+        var fromRgbBlack = rgbBlack.MixHct(green, 0.5, false);
+        var fromRgbWhite = rgbWhite.MixHct(green, 0.5, false);
+        var fromHctBlack = hctBlack.MixHct(green, 0.5, false);
+        var fromHctWhite = hctWhite.MixHct(green, 0.5, false);
         
         // no obvious way to create known HCT value when starting from non-HCT space
         // so need to calculate what the expected Chroma will be for RGB-white
@@ -47,10 +47,10 @@ public class MixGreyscaleHctTests
         var hctWhite = Unicolour.FromHct(180, 100, 100); // full tone = white
         
         var blue = Unicolour.FromHct(240, 100, 50);
-        var toRgbBlack = blue.MixHct(rgbBlack, 0.5);
-        var toRgbWhite = blue.MixHct(rgbWhite, 0.5);
-        var toHctBlack = blue.MixHct(hctBlack, 0.5);
-        var toHctWhite = blue.MixHct(hctWhite, 0.5);
+        var toRgbBlack = blue.MixHct(rgbBlack, 0.5, false);
+        var toRgbWhite = blue.MixHct(rgbWhite, 0.5, false);
+        var toHctBlack = blue.MixHct(hctBlack, 0.5, false);
+        var toHctWhite = blue.MixHct(hctWhite, 0.5, false);
         
         // no obvious way to create known HCT value when starting from non-HCT space
         // so need to calculate what the expected Chroma will be for RGB-white
@@ -74,9 +74,9 @@ public class MixGreyscaleHctTests
         var white = Unicolour.FromRgb(1, 1, 1);
         var grey = Unicolour.FromRgb(0.5, 0.5, 0.5);
 
-        var blackToWhite = black.MixHct(white, 0.5);
-        var blackToGrey = black.MixHct(grey, 0.5);
-        var whiteToGrey = white.MixHct(grey, 0.5);
+        var blackToWhite = black.MixHct(white, 0.5, false);
+        var blackToGrey = black.MixHct(grey, 0.5, false);
+        var whiteToGrey = white.MixHct(grey, 0.5, false);
         
         // colours created from RGB therefore hue does not change
         // (except for HCT for RGB-black, which converts to a different hue than other greyscales)
@@ -96,9 +96,9 @@ public class MixGreyscaleHctTests
         var white = Unicolour.FromHct(300, 0, 100);
         var grey = Unicolour.FromHct(100, 0, 50);
 
-        var blackToWhite = black.MixHct(white, 0.5);
-        var blackToGrey = black.MixHct(grey, 0.5);
-        var whiteToGrey = white.MixHct(grey, 0.5);
+        var blackToWhite = black.MixHct(white, 0.5, false);
+        var blackToGrey = black.MixHct(grey, 0.5, false);
+        var whiteToGrey = white.MixHct(grey, 0.5, false);
         
         AssertGrey(blackToWhite.Rgb);
         AssertGrey(blackToGrey.Rgb);

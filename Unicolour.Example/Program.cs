@@ -3,6 +3,7 @@ using Wacton.Unicolour.Example;
 
 GenerateColourSpaceGradients();
 GenerateVisionDeficiencyGradients();
+GenerateAlphaInterpolation();
 return;
 
 void GenerateColourSpaceGradients()
@@ -36,27 +37,27 @@ void GenerateColourSpaceGradients()
 
     Image<Rgba32> DrawColumn(Unicolour[] colourPoints)
     {
-        var rgb = Gradient.Draw(("RGB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixRgb(end, distance));
-        var rgbLinear = Gradient.Draw(("RGB Linear", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixRgbLinear(end, distance));
-        var hsb = Gradient.Draw(("HSB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHsb(end, distance));
-        var hsl = Gradient.Draw(("HSL", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHsl(end, distance));
-        var hwb = Gradient.Draw(("HWB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHwb(end, distance));
-        var xyz = Gradient.Draw(("XYZ", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixXyz(end, distance));
-        var xyy = Gradient.Draw(("xyY", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixXyy(end, distance));
-        var lab = Gradient.Draw(("LAB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixLab(end, distance));
-        var lchab = Gradient.Draw(("LCHab", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixLchab(end, distance));
-        var luv = Gradient.Draw(("LUV", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixLuv(end, distance));
-        var lchuv = Gradient.Draw(("LCHuv", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixLchuv(end, distance));
-        var hsluv = Gradient.Draw(("HSLuv", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHsluv(end, distance));
-        var hpluv = Gradient.Draw(("HPLuv", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHpluv(end, distance));
-        var ictcp = Gradient.Draw(("ICtCp", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixIctcp(end, distance));
-        var jzazbz = Gradient.Draw(("JzAzBz", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixJzazbz(end, distance));
-        var jzczhz = Gradient.Draw(("JzCzHz", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixJzczhz(end, distance));
-        var oklab = Gradient.Draw(("OKLAB", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixOklab(end, distance));
-        var oklch = Gradient.Draw(("OKLCH", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixOklch(end, distance));
-        var cam02 = Gradient.Draw(("CAM02", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixCam02(end, distance));
-        var cam16 = Gradient.Draw(("CAM16", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixCam16(end, distance));
-        var hct = Gradient.Draw(("HCT", light), columnWidth, rowHeight, colourPoints, (start, end, distance) => start.MixHct(end, distance));
+        var rgb = Gradient.Draw(("RGB", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixRgb(end, amount));
+        var rgbLinear = Gradient.Draw(("RGB Linear", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixRgbLinear(end, amount));
+        var hsb = Gradient.Draw(("HSB", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHsb(end, amount));
+        var hsl = Gradient.Draw(("HSL", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHsl(end, amount));
+        var hwb = Gradient.Draw(("HWB", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHwb(end, amount));
+        var xyz = Gradient.Draw(("XYZ", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixXyz(end, amount));
+        var xyy = Gradient.Draw(("xyY", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixXyy(end, amount));
+        var lab = Gradient.Draw(("LAB", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixLab(end, amount));
+        var lchab = Gradient.Draw(("LCHab", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixLchab(end, amount));
+        var luv = Gradient.Draw(("LUV", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixLuv(end, amount));
+        var lchuv = Gradient.Draw(("LCHuv", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixLchuv(end, amount));
+        var hsluv = Gradient.Draw(("HSLuv", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHsluv(end, amount));
+        var hpluv = Gradient.Draw(("HPLuv", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHpluv(end, amount));
+        var ictcp = Gradient.Draw(("ICtCp", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixIctcp(end, amount));
+        var jzazbz = Gradient.Draw(("JzAzBz", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixJzazbz(end, amount));
+        var jzczhz = Gradient.Draw(("JzCzHz", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixJzczhz(end, amount));
+        var oklab = Gradient.Draw(("OKLAB", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixOklab(end, amount));
+        var oklch = Gradient.Draw(("OKLCH", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixOklch(end, amount));
+        var cam02 = Gradient.Draw(("CAM02", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixCam02(end, amount));
+        var cam16 = Gradient.Draw(("CAM16", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixCam16(end, amount));
+        var hct = Gradient.Draw(("HCT", light), columnWidth, rowHeight, colourPoints, (start, end, amount) => start.MixHct(end, amount));
 
         var columnImage = new Image<Rgba32>(columnWidth, rowHeight * rows);
         columnImage.Mutate(context => context
@@ -105,15 +106,15 @@ void GenerateVisionDeficiencyGradients()
 
     var dark = Unicolour.FromHex("#404046");
     var none = Gradient.Draw(("No deficiency", dark), width, rowHeight, colourPoints, 
-        (start, end, distance) => start.MixHsb(end, distance));
+        (start, end, amount) => start.MixHsb(end, amount));
     var protanopia = Gradient.Draw(("Protanopia", dark), width, rowHeight, colourPoints, 
-        (start, end, distance) => start.MixHsb(end, distance).SimulateProtanopia());
+        (start, end, amount) => start.MixHsb(end, amount).SimulateProtanopia());
     var deuteranopia = Gradient.Draw(("Deuteranopia", dark), width, rowHeight, colourPoints, 
-        (start, end, distance) => start.MixHsb(end, distance).SimulateDeuteranopia());
+        (start, end, amount) => start.MixHsb(end, amount).SimulateDeuteranopia());
     var tritanopia = Gradient.Draw(("Tritanopia", dark), width, rowHeight, colourPoints, 
-        (start, end, distance) => start.MixHsb(end, distance).SimulateTritanopia());
+        (start, end, amount) => start.MixHsb(end, amount).SimulateTritanopia());
     var achromatopsia = Gradient.Draw(("Achromatopsia", dark), width, rowHeight, colourPoints, 
-        (start, end, distance) => start.MixHsb(end, distance).SimulateAchromatopsia());
+        (start, end, amount) => start.MixHsb(end, amount).SimulateAchromatopsia());
 
     var image = new Image<Rgba32>(width, rowHeight * rows);
     image.Mutate(context => context
@@ -125,4 +126,32 @@ void GenerateVisionDeficiencyGradients()
     );
 
     image.Save("vision-deficiency.png");
+}
+
+void GenerateAlphaInterpolation()
+{
+    const int width = 1000;
+    const int rows = 2; 
+    const int rowHeight = 120;
+    
+    var colourPoints = new[]
+    {
+        Unicolour.FromRgb(1, 0, 0, 1), 
+        Unicolour.FromRgb(0, 0, 0, 0), 
+        Unicolour.FromRgb(0, 0, 1, 1)
+    };
+    
+    var black = Unicolour.FromHex("#000000");
+    var premultiplied = Gradient.Draw(("With premultiplied alpha", black), width, rowHeight, colourPoints, 
+        (start, end, amount) => start.MixRgb(end, amount, true));
+    var notPremultiplied = Gradient.Draw(("Without premultiplied alpha", black), width, rowHeight, colourPoints, 
+        (start, end, amount) => start.MixRgb(end, amount, false));
+    
+    var image = new Image<Rgba32>(width, rowHeight * rows);
+    image.Mutate(context => context
+        .DrawImage(premultiplied, new Point(0, rowHeight * 0), 1f)
+        .DrawImage(notPremultiplied, new Point(0, rowHeight * 1), 1f)
+    );
+
+    image.Save("alpha-interpolation.png");
 }

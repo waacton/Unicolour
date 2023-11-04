@@ -3,7 +3,7 @@ namespace Wacton.Unicolour.Tests;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-// note: HPLuv is a transformation from LCHuv, therefore there is no obvious cartesian/hueless space to compare against
+// note: HPLuv is a transformation from LCHuv, therefore there is no obvious rectangular/hueless space to compare against
 // so using RGB for greyscale -> colour behaviour, and LUV for greyscale -> greyscale behaviour
 // ----------
 // greyscale RGB & LUV have no hue - shouldn't assume to start at red (0 degrees) when mixing
@@ -19,10 +19,10 @@ public class MixGreyscaleHpluvTests
         var hpluvWhite = Unicolour.FromHpluv(180, 0, 100); // no saturation = greyscale
         
         var green = Unicolour.FromHpluv(120, 100, 50);
-        var fromRgbBlack = rgbBlack.MixHpluv(green, 0.5);
-        var fromRgbWhite = rgbWhite.MixHpluv(green, 0.5);
-        var fromHpluvBlack = hpluvBlack.MixHpluv(green, 0.5);
-        var fromHpluvWhite = hpluvWhite.MixHpluv(green, 0.5);
+        var fromRgbBlack = rgbBlack.MixHpluv(green, 0.5, false);
+        var fromRgbWhite = rgbWhite.MixHpluv(green, 0.5, false);
+        var fromHpluvBlack = hpluvBlack.MixHpluv(green, 0.5, false);
+        var fromHpluvWhite = hpluvWhite.MixHpluv(green, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromRgbBlack.Hpluv.Triplet, new(120, 50, 25));
@@ -40,10 +40,10 @@ public class MixGreyscaleHpluvTests
         var hpluvWhite = Unicolour.FromHpluv(180, 0, 100); // no saturation = greyscale
         
         var blue = Unicolour.FromHpluv(240, 100, 50);
-        var toRgbBlack = blue.MixHpluv(rgbBlack, 0.5);
-        var toRgbWhite = blue.MixHpluv(rgbWhite, 0.5);
-        var toHpluvBlack = blue.MixHpluv(hpluvBlack, 0.5);
-        var toHpluvWhite = blue.MixHpluv(hpluvWhite, 0.5);
+        var toRgbBlack = blue.MixHpluv(rgbBlack, 0.5, false);
+        var toRgbWhite = blue.MixHpluv(rgbWhite, 0.5, false);
+        var toHpluvBlack = blue.MixHpluv(hpluvBlack, 0.5, false);
+        var toHpluvWhite = blue.MixHpluv(hpluvWhite, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toRgbBlack.Hpluv.Triplet, new(240, 50, 25));
@@ -59,9 +59,9 @@ public class MixGreyscaleHpluvTests
         var white = Unicolour.FromLuv(100, 0, 0);
         var grey = Unicolour.FromLuv(50, 0, 0);
 
-        var blackToWhite = black.MixHpluv(white, 0.5);
-        var blackToGrey = black.MixHpluv(grey, 0.5);
-        var whiteToGrey = white.MixHpluv(grey, 0.5);
+        var blackToWhite = black.MixHpluv(white, 0.5, false);
+        var blackToGrey = black.MixHpluv(grey, 0.5, false);
+        var whiteToGrey = white.MixHpluv(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));
@@ -80,9 +80,9 @@ public class MixGreyscaleHpluvTests
         var white = Unicolour.FromHpluv(300, 0, 100);
         var grey = Unicolour.FromHpluv(100, 0, 50);
 
-        var blackToWhite = black.MixHpluv(white, 0.5);
-        var blackToGrey = black.MixHpluv(grey, 0.5);
-        var whiteToGrey = white.MixHpluv(grey, 0.5);
+        var blackToWhite = black.MixHpluv(white, 0.5, false);
+        var blackToGrey = black.MixHpluv(grey, 0.5, false);
+        var whiteToGrey = white.MixHpluv(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));

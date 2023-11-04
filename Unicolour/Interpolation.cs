@@ -2,29 +2,63 @@
 
 internal static class Interpolation
 {
-    internal static Unicolour Mix(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance)
+    internal static Unicolour Mix(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance, bool premultiplyAlpha)
     {
         GuardConfiguration(startColour, endColour);
         
         var startRepresentation = startColour.GetRepresentation(colourSpace);
+        var startAlpha = startColour.Alpha;
         var endRepresentation = endColour.GetRepresentation(colourSpace);
+        var endAlpha = endColour.Alpha;
+
+        (ColourTriplet start, ColourTriplet end) = GetTripletsToInterpolate(
+            (startRepresentation, startAlpha), 
+            (endRepresentation, endAlpha),
+            premultiplyAlpha);
         
-        var (start, end) = GetTriplets(startRepresentation, endRepresentation);
         var triplet = InterpolateTriplet(start, end, distance).WithHueModulo();
-        var (first, second, third) = triplet;
-        var alpha = Interpolate(startColour.Alpha.A, endColour.Alpha.A, distance);
-        var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
+        var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
         
+        if (premultiplyAlpha)
+        {
+            triplet = triplet.WithUnpremultipliedAlpha(alpha);
+        }
+        
+        var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
+        var (first, second, third) = triplet;
         return GetConstructor(colourSpace).Invoke(startColour.Config, heritage, first, second, third, alpha);
     }
-
-    private static (ColourTriplet start, ColourTriplet end) GetTriplets(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
+    
+    private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
+        (ColourRepresentation representation, Alpha alpha) start, 
+        (ColourRepresentation representation, Alpha alpha) end, 
+        bool premultiplyAlpha)
     {
-        var startTriplet = startRepresentation.Triplet;
-        var endTriplet = endRepresentation.Triplet;
-        return startRepresentation.HasHueAxis ? GetTripletsWithHue(startRepresentation, endRepresentation) : (startTriplet, endTriplet);
-    }
+        ColourTriplet startTriplet;
+        ColourTriplet endTriplet;
+        
+        // these can't give different answers since they use the same colour space
+        // (except by reflection, in which case an error would be thrown when later trying to read the hue component)
+        var hasHueComponent = start.representation.HasHueComponent || end.representation.HasHueComponent;
+        if (hasHueComponent)
+        {
+            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation);
+        }
+        else
+        {
+            startTriplet = start.representation.Triplet;
+            endTriplet = end.representation.Triplet;
+        }
+        
+        if (premultiplyAlpha)
+        {
+            startTriplet = startTriplet.WithPremultipliedAlpha(start.alpha.ConstrainedA);
+            endTriplet = endTriplet.WithPremultipliedAlpha(end.alpha.ConstrainedA);
+        }
 
+        return (startTriplet, endTriplet);
+    }
+    
     private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
     {
         var startTriplet = startRepresentation.Triplet;

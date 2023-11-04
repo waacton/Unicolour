@@ -7,7 +7,7 @@ internal static class Gradient
 {
     private const bool RenderOutOfGamutAsTransparent = false;
 
-    internal delegate Unicolour Mix(Unicolour start, Unicolour end, double distance);
+    internal delegate Unicolour Mix(Unicolour start, Unicolour end, double amount);
 
     internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, 
         Unicolour[] colourPoints, Mix mix)
@@ -61,7 +61,8 @@ internal static class Gradient
     private static Rgba32 AsRgba32(Unicolour unicolour)
     {
         var (r, g, b) = unicolour.Rgb.Byte255.ConstrainedTriplet;
-        var a = unicolour.IsInDisplayGamut || !RenderOutOfGamutAsTransparent ? 255 : 0;
+        var alpha = unicolour.Alpha.A255;
+        var a = unicolour.IsInDisplayGamut || !RenderOutOfGamutAsTransparent ? alpha : 0;
         return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
     }
 }

@@ -48,18 +48,18 @@ public class MixConfigurationTests
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)
     {
         Assert.That(unicolour1.Config.Id, Is.EqualTo(unicolour2.Config.Id));
-        Assert.DoesNotThrow(() => unicolour1.MixRgb(unicolour2, 0.5));
-        Assert.DoesNotThrow(() => unicolour2.MixRgb(unicolour1, 0.5));
-        Assert.DoesNotThrow(() => unicolour1.MixHsb(unicolour2, 0.5));
-        Assert.DoesNotThrow(() => unicolour2.MixHsb(unicolour1, 0.5));
+        Assert.DoesNotThrow(() => unicolour1.MixRgb(unicolour2, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour2.MixRgb(unicolour1, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour1.MixHsb(unicolour2, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour2.MixHsb(unicolour1, 0.5, false));
     }
     
     private static void AssertError(Unicolour unicolour1, Unicolour unicolour2)
     {
         Assert.That(unicolour1.Config.Id, Is.Not.EqualTo(unicolour2.Config.Id));
-        Assert.Throws<InvalidOperationException>(() => unicolour1.MixRgb(unicolour2, 0.5));
-        Assert.Throws<InvalidOperationException>(() => unicolour2.MixRgb(unicolour1, 0.5));
-        Assert.Throws<InvalidOperationException>(() => unicolour1.MixHsb(unicolour2, 0.5));
-        Assert.Throws<InvalidOperationException>(() => unicolour2.MixHsb(unicolour1, 0.5));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.MixRgb(unicolour2, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.MixRgb(unicolour1, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.MixHsb(unicolour2, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.MixHsb(unicolour1, 0.5, false));
     }
 }

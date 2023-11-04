@@ -16,10 +16,10 @@ public class MixGreyscaleLchuvTests
         var lchuvWhite = Unicolour.FromLchuv(100, 100, 180); // full lightness = white
         
         var green = Unicolour.FromLchuv(50, 100, 120);
-        var fromLuvBlack = luvBlack.MixLchuv(green, 0.5);
-        var fromLuvWhite = luvWhite.MixLchuv(green, 0.5);
-        var fromLchuvBlack = lchuvBlack.MixLchuv(green, 0.5);
-        var fromLchuvWhite = lchuvWhite.MixLchuv(green, 0.5);
+        var fromLuvBlack = luvBlack.MixLchuv(green, 0.5, false);
+        var fromLuvWhite = luvWhite.MixLchuv(green, 0.5, false);
+        var fromLchuvBlack = lchuvBlack.MixLchuv(green, 0.5, false);
+        var fromLchuvWhite = lchuvWhite.MixLchuv(green, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromLuvBlack.Lchuv.Triplet, new(25, 50, 120));
@@ -37,10 +37,10 @@ public class MixGreyscaleLchuvTests
         var lchuvWhite = Unicolour.FromLchuv(100, 100, 180); // full lightness = white
         
         var blue = Unicolour.FromLchuv(50, 100, 240);
-        var toLuvBlack = blue.MixLchuv(luvBlack, 0.5);
-        var toLuvWhite = blue.MixLchuv(luvWhite, 0.5);
-        var toLchuvBlack = blue.MixLchuv(lchuvBlack, 0.5);
-        var toLchuvWhite = blue.MixLchuv(lchuvWhite, 0.5);
+        var toLuvBlack = blue.MixLchuv(luvBlack, 0.5, false);
+        var toLuvWhite = blue.MixLchuv(luvWhite, 0.5, false);
+        var toLchuvBlack = blue.MixLchuv(lchuvBlack, 0.5, false);
+        var toLchuvWhite = blue.MixLchuv(lchuvWhite, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toLuvBlack.Lchuv.Triplet, new(25, 50, 240));
@@ -56,9 +56,9 @@ public class MixGreyscaleLchuvTests
         var white = Unicolour.FromLuv(100, 0, 0);
         var grey = Unicolour.FromLuv(50, 0, 0);
 
-        var blackToWhite = black.MixLchuv(white, 0.5);
-        var blackToGrey = black.MixLchuv(grey, 0.5);
-        var whiteToGrey = white.MixLchuv(grey, 0.5);
+        var blackToWhite = black.MixLchuv(white, 0.5, false);
+        var blackToGrey = black.MixLchuv(grey, 0.5, false);
+        var whiteToGrey = white.MixLchuv(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));
@@ -77,9 +77,9 @@ public class MixGreyscaleLchuvTests
         var white = Unicolour.FromLchuv(100, 0, 300);
         var grey = Unicolour.FromLchuv(50, 0, 100);
 
-        var blackToWhite = black.MixLchuv(white, 0.5);
-        var blackToGrey = black.MixLchuv(grey, 0.5);
-        var whiteToGrey = white.MixLchuv(grey, 0.5);
+        var blackToWhite = black.MixLchuv(white, 0.5, false);
+        var blackToGrey = black.MixLchuv(grey, 0.5, false);
+        var whiteToGrey = white.MixLchuv(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));

@@ -7,6 +7,8 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
     public double Third { get; } = Third;
     public (double, double, double) Tuple => (First, Second, Third);
     public int? HueIndex { get; } = HueIndex;
+
+    public double[] AsArray() => new[] { First, Second, Third };
     
     internal double HueValue()
     {
@@ -14,7 +16,7 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
         {
             0 => First,
             2 => Third,
-            _ => throw new ArgumentException()
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
     
@@ -24,7 +26,7 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
         {
             0 => new(hue, Second, Third, HueIndex),
             2 => new(First, Second, hue, HueIndex),
-            _ => throw new ArgumentException()
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
 
@@ -34,17 +36,41 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
         {
             0 => new(First.Modulo(360), Second, Third, HueIndex),
             2 => new(First, Second, Third.Modulo(360), HueIndex),
-            _ => new(First, Second, Third, HueIndex)
+            null => new(First, Second, Third, HueIndex),
+            _ => throw new ArgumentOutOfRangeException()
         };
     }
     
-    public override string ToString() => Tuple.ToString();
-
-    // need a custom deconstruct to ignore the nullable hue
+    internal ColourTriplet WithPremultipliedAlpha(double alpha)
+    {
+        return HueIndex switch
+        {
+            0 => new(First, Second * alpha, Third * alpha, HueIndex),
+            2 => new(First * alpha, Second * alpha, Third, HueIndex),
+            null => new(First * alpha, Second * alpha, Third * alpha, HueIndex),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+    
+    internal ColourTriplet WithUnpremultipliedAlpha(double alpha)
+    {
+        if (alpha == 0) return new(First, Second, Third, HueIndex);
+        return HueIndex switch
+        {
+            0 => new(First, Second / alpha, Third / alpha, HueIndex),
+            2 => new(First / alpha, Second / alpha, Third, HueIndex),
+            null => new(First / alpha, Second / alpha, Third / alpha, HueIndex),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+    
+    // need a custom deconstruct to ignore the nullable hue index
     public void Deconstruct(out double first, out double second, out double third)
     {
         first = First;
         second = Second;
         third = Third;
     }
+    
+    public override string ToString() => Tuple.ToString();
 }

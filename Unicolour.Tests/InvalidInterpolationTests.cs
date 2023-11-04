@@ -16,7 +16,7 @@ public class InvalidInterpolationTests
     [Test]
     public void InvalidInterpolationInput()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(BadColourSpace, unicolour1, unicolour2, 0.5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(BadColourSpace, unicolour1, unicolour2, 0.5, true));
     }
 
     [Test] 

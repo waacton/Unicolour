@@ -16,10 +16,10 @@ public class MixGreyscaleHslTests
         var hslWhite = Unicolour.FromHsl(180, 0, 1); // no saturation = greyscale
         
         var green = Unicolour.FromHsl(120, 1, 0.5);
-        var fromRgbBlack = rgbBlack.MixHsl(green, 0.5);
-        var fromRgbWhite = rgbWhite.MixHsl(green, 0.5);
-        var fromHslBlack = hslBlack.MixHsl(green, 0.5);
-        var fromHslWhite = hslWhite.MixHsl(green, 0.5);
+        var fromRgbBlack = rgbBlack.MixHsl(green, 0.5, false);
+        var fromRgbWhite = rgbWhite.MixHsl(green, 0.5, false);
+        var fromHslBlack = hslBlack.MixHsl(green, 0.5, false);
+        var fromHslWhite = hslWhite.MixHsl(green, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromRgbBlack.Hsl.Triplet, new(120, 0.5, 0.25));
@@ -37,10 +37,10 @@ public class MixGreyscaleHslTests
         var hslWhite = Unicolour.FromHsl(180, 0, 1); // no saturation = greyscale
         
         var blue = Unicolour.FromHsl(240, 1, 0.5);
-        var toRgbBlack = blue.MixHsl(rgbBlack, 0.5);
-        var toRgbWhite = blue.MixHsl(rgbWhite, 0.5);
-        var toHslBlack = blue.MixHsl(hslBlack, 0.5);
-        var toHslWhite = blue.MixHsl(hslWhite, 0.5);
+        var toRgbBlack = blue.MixHsl(rgbBlack, 0.5, false);
+        var toRgbWhite = blue.MixHsl(rgbWhite, 0.5, false);
+        var toHslBlack = blue.MixHsl(hslBlack, 0.5, false);
+        var toHslWhite = blue.MixHsl(hslWhite, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toRgbBlack.Hsl.Triplet, new(240, 0.5, 0.25));
@@ -56,9 +56,9 @@ public class MixGreyscaleHslTests
         var white = Unicolour.FromRgb(1.0, 1.0, 1.0);
         var grey = Unicolour.FromRgb(0.5, 0.5, 0.5);
 
-        var blackToWhite = black.MixHsl(white, 0.5);
-        var blackToGrey = black.MixHsl(grey, 0.5);
-        var whiteToGrey = white.MixHsl(grey, 0.5);
+        var blackToWhite = black.MixHsl(white, 0.5, false);
+        var blackToGrey = black.MixHsl(grey, 0.5, false);
+        var whiteToGrey = white.MixHsl(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
         AssertTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));
@@ -77,9 +77,9 @@ public class MixGreyscaleHslTests
         var white = Unicolour.FromHsl(300, 0, 1.0);
         var grey = Unicolour.FromHsl(100, 0, 0.5);
 
-        var blackToWhite = black.MixHsl(white, 0.5);
-        var blackToGrey = black.MixHsl(grey, 0.5);
-        var whiteToGrey = white.MixHsl(grey, 0.5);
+        var blackToWhite = black.MixHsl(white, 0.5, false);
+        var blackToGrey = black.MixHsl(grey, 0.5, false);
+        var whiteToGrey = white.MixHsl(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
         AssertTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));

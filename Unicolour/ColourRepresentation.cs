@@ -28,7 +28,7 @@ public abstract record ColourRepresentation
     internal bool UseAsGreyscale => Heritage == ColourHeritage.Greyscale || Heritage == ColourHeritage.GreyscaleAndHued || (!UseAsNaN && IsGreyscale);
     
     /*
-     * a representation is considered "hued" when it has a hue axis (e.g. HSL / LCH) and is not greyscale
+     * a representation is considered "hued" when it has a hue component (e.g. HSL / LCH) and is not greyscale
      * enabling differentiation between representations where:
      * a) a hue value is meaningful ------------------------------ e.g. HSB(0,0,0) = red with no saturation or brightness
      * b) a hue value is used as a fallback when there is no hue - e.g. RGB(0,0,0) -> HSB(0,0,0) = black with no red
@@ -36,8 +36,8 @@ public abstract record ColourRepresentation
      * [RGB(0,0,0) black -> RGB(0,0,255) blue] via HSB is [HSB(0,0,0) red with no colour -> HSB(240,1,1) blue with full colour]
      * but the mixing should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
      */
-    internal bool HasHueAxis => HueIndex != null;
-    internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueAxis;
+    internal bool HasHueComponent => HueIndex != null;
+    internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueComponent;
     
     internal ColourRepresentation(double first, double second, double third, ColourHeritage heritage)
     {

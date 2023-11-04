@@ -16,10 +16,10 @@ public class MixGreyscaleOklchTests
         var oklchWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
         
         var green = Unicolour.FromOklch(0.5, 0.5, 120);
-        var fromOklabBlack = oklabBlack.MixOklch(green, 0.5);
-        var fromOklabWhite = oklabWhite.MixOklch(green, 0.5);
-        var fromOklchBlack = oklchBlack.MixOklch(green, 0.5);
-        var fromOklchWhite = oklchWhite.MixOklch(green, 0.5);
+        var fromOklabBlack = oklabBlack.MixOklch(green, 0.5, false);
+        var fromOklabWhite = oklabWhite.MixOklch(green, 0.5, false);
+        var fromOklchBlack = oklchBlack.MixOklch(green, 0.5, false);
+        var fromOklchWhite = oklchWhite.MixOklch(green, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
@@ -37,10 +37,10 @@ public class MixGreyscaleOklchTests
         var oklchWhite = Unicolour.FromOklch(1, 0.5, 180); // full lightness = white
         
         var blue = Unicolour.FromOklch(0.5, 0.5, 240);
-        var toOklabBlack = blue.MixOklch(oklabBlack, 0.5);
-        var toOklabWhite = blue.MixOklch(oklabWhite, 0.5);
-        var toOklchBlack = blue.MixOklch(oklchBlack, 0.5);
-        var toOklchWhite = blue.MixOklch(oklchWhite, 0.5);
+        var toOklabBlack = blue.MixOklch(oklabBlack, 0.5, false);
+        var toOklabWhite = blue.MixOklch(oklabWhite, 0.5, false);
+        var toOklchBlack = blue.MixOklch(oklchBlack, 0.5, false);
+        var toOklchWhite = blue.MixOklch(oklchWhite, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
@@ -56,9 +56,9 @@ public class MixGreyscaleOklchTests
         var white = Unicolour.FromOklab(1, 0, 0);
         var grey = Unicolour.FromOklab(0.5, 0, 0);
 
-        var blackToWhite = black.MixOklch(white, 0.5);
-        var blackToGrey = black.MixOklch(grey, 0.5);
-        var whiteToGrey = white.MixOklch(grey, 0.5);
+        var blackToWhite = black.MixOklch(white, 0.5, false);
+        var blackToGrey = black.MixOklch(grey, 0.5, false);
+        var whiteToGrey = white.MixOklch(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
@@ -77,9 +77,9 @@ public class MixGreyscaleOklchTests
         var white = Unicolour.FromOklch(1, 0, 300);
         var grey = Unicolour.FromOklch(0.5, 0, 100);
 
-        var blackToWhite = black.MixOklch(white, 0.5);
-        var blackToGrey = black.MixOklch(grey, 0.5);
-        var whiteToGrey = white.MixOklch(grey, 0.5);
+        var blackToWhite = black.MixOklch(white, 0.5, false);
+        var blackToGrey = black.MixOklch(grey, 0.5, false);
+        var whiteToGrey = white.MixOklch(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));

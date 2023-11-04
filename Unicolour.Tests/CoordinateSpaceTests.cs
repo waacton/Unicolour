@@ -27,14 +27,14 @@ public class CoordinateSpaceTests
     private readonly ColourTriplet rgbLowerInRange = new(0, 0, 0);
     
     [Test]
-    public void CartesianRgbToCylindricalHsb()
+    public void RectangularRgbToCylindricalHsb()
     {
         AssertRgbToHsb(rgbUpperInRange, rgbUpperOutRange);
         AssertRgbToHsb(rgbLowerInRange, rgbLowerOutRange);
     }
 
     [Test]
-    public void CylindricalHsbToCartesianRgb()
+    public void CylindricalHsbToRectangularRgb()
     {
         AssertHsbToRgb(hsxUpperInRange, hsxUpperOutRange);
         AssertHsbToRgb(hsxLowerInRange, hsxLowerOutRange);
@@ -69,28 +69,28 @@ public class CoordinateSpaceTests
     }
 
     [Test]
-    public void CylindricalLchabCartesianLab()
+    public void CylindricalLchabRectangularLab()
     {
         AssertLchabToLab(HueUpperInRange, HueUpperOutRange);
         AssertLchabToLab(HueLowerInRange, HueLowerOutRange);
     }
     
     [Test]
-    public void CylindricalLchuvCartesianLuv()
+    public void CylindricalLchuvRectangularLuv()
     {
         AssertLchuvToLuv(HueUpperInRange, HueUpperOutRange);
         AssertLchuvToLuv(HueLowerInRange, HueLowerOutRange);
     }
     
     [Test]
-    public void CylindricalJzczhzCartesianJzazbz()
+    public void CylindricalJzczhzRectangularJzazbz()
     {
         AssertJzczhzToJzazbz(HueUpperInRange, HueUpperOutRange);
         AssertJzczhzToJzazbz(HueLowerInRange, HueLowerOutRange);
     }
     
     [Test]
-    public void CylindricalOklchCartesianOklab()
+    public void CylindricalOklchRectangularOklab()
     {
         AssertOklchToOklab(HueUpperInRange, HueUpperOutRange);
         AssertOklchToOklab(HueLowerInRange, HueLowerOutRange);

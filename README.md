@@ -233,14 +233,18 @@ var achromatopsia = unicolour.SimulateAchromatopsia();
 
 ## Examples ✨
 
-This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to generate gradients through different colour spaces
-and for different colour vision deficiencies...
+This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to:
+1. Generate gradients through different colour spaces
+2. Render the colour spectrum with different colour vision deficiencies
+3. Demonstrate interpolation with and without premultiplied alpha
 
 ![Gradients through different colour spaces generated from Unicolour](Unicolour.Example/gradients.png)
 
 ![Gradients for different colour vision deficiencies generated from Unicolour](Unicolour.Example/vision-deficiency.png)
 
-... and a [console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value.
+![Interpolation from red to transparent to blue, with and without premultiplied alpha](Unicolour.Example/alpha-interpolation.png)
+
+There is also a [console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value:
 
 ![Colour information from hex value](Unicolour.Console/colour-info.png)
 

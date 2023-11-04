@@ -3,11 +3,49 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Wacton.Unicolour.Tests.Utils;
 
-// Oklab actually provides test values 🙌 (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
-// so it has its own dedicated set of tests based on those
 public class KnownOklabTests
 {
+    private const double Tolerance = 0.0005;
+    
+    [Test]
+    public void Red()
+    {
+        var red = ColourLimits.Rgb[ColourLimit.Red];
+        AssertUtils.AssertTriplet<Oklab>(red, new(0.62796, 0.22486, 0.12585), Tolerance);
+    }
+    
+    [Test]
+    public void Green()
+    {
+        var green = ColourLimits.Rgb[ColourLimit.Green];
+        AssertUtils.AssertTriplet<Oklab>(green, new(0.86644, -0.23389, 0.1795), Tolerance);
+    }
+    
+    [Test]
+    public void Blue()
+    {
+        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        AssertUtils.AssertTriplet<Oklab>(blue, new(0.45201, -0.03246, -0.31153), Tolerance);
+    }
+    
+    [Test]
+    public void Black()
+    {
+        var black = ColourLimits.Rgb[ColourLimit.Black];
+        AssertUtils.AssertTriplet<Oklab>(black, new(0.0, 0.0, 0.0), Tolerance);
+    }
+    
+    [Test]
+    public void White()
+    {
+        var white = ColourLimits.Rgb[ColourLimit.White];
+        AssertUtils.AssertTriplet<Oklab>(white, new(1.0, 0.0, 0.0), Tolerance);
+    }
+    
+    // Oklab actually provides test values 🙌 (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
+    // so it has its own dedicated set of tests based on those
     private static readonly List<(ColourTriplet xyz, ColourTriplet expectedOklab)> TestData = new()
     {
         (new(0.950, 1.000, 1.089), new(1.000, 0.000, 0.000)),

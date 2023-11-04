@@ -25,8 +25,8 @@ public class MixHeritageTests
         AssertInitialHeritage(unicolour2, ColourHeritage.None, isHued: false, isGreyscale: false, isNotNumber: false);
         
         // initial mixed representation: no heritage, non-NaN, non-greyscale;
-        // all representations are used as hued where hue axis is present
-        var mixed = unicolour1.MixRgb(unicolour2, 0.5);
+        // all representations are used as hued where hue component is present
+        var mixed = unicolour1.MixRgb(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.None, isHued: false, isGreyscale: false, isNotNumber: false);
         
         var data = new ColourHeritageData(mixed);
@@ -34,7 +34,7 @@ public class MixHeritageTests
         Assert.That(data.UseAsHued(NonHuedSpaces), Has.All.False);
         
         // representations of mixed colour has same behaviour when mixed via hued space
-        mixed = unicolour1.MixHsb(unicolour2, 0.5);
+        mixed = unicolour1.MixHsb(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.Hued, isHued: true, isGreyscale: false, isNotNumber: false);
 
         data = new ColourHeritageData(mixed);
@@ -53,7 +53,7 @@ public class MixHeritageTests
         
         // initial mixed representation: no heritage, greyscale values;
         // all representations are used as greyscale, none are used as hued
-        var mixed = unicolour1.MixRgb(unicolour2, 0.5);
+        var mixed = unicolour1.MixRgb(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.None, isHued: false, isGreyscale: true, isNotNumber: false);
 
         var data = new ColourHeritageData(mixed);
@@ -71,8 +71,8 @@ public class MixHeritageTests
         AssertInitialHeritage(unicolour2, ColourHeritage.None, isHued: false, isGreyscale: false, isNotNumber: false);
         
         // initial mixed representation: no heritage, non-greyscale values;
-        // all representations are used as hued where hue axis is present
-        var mixed = unicolour1.MixRgb(unicolour2, 0.5);
+        // all representations are used as hued where hue component is present
+        var mixed = unicolour1.MixRgb(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.None, isHued: false, isGreyscale: false, isNotNumber: false);
 
         var data = new ColourHeritageData(mixed);
@@ -91,7 +91,7 @@ public class MixHeritageTests
         
         // initial mixed representation: greyscale heritage, greyscale values;
         // all representations are used as greyscale, none are used as hued
-        var mixed = unicolour1.MixLab(unicolour2, 0.5);
+        var mixed = unicolour1.MixLab(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.Greyscale, isHued: false, isGreyscale: true, isNotNumber: false);
 
         var data = new ColourHeritageData(mixed);
@@ -110,7 +110,7 @@ public class MixHeritageTests
         
         // initial mixed representation: NaN heritage, NaN values;
         // all representations are used as NaN, none are used as hued or greyscale
-        var mixed = unicolour1.MixRgb(unicolour2, 0.5);
+        var mixed = unicolour1.MixRgb(unicolour2, 0.5, false);
         AssertInitialHeritage(mixed, ColourHeritage.NaN, isHued: false, isGreyscale: false, isNotNumber: true);
         
         var data = new ColourHeritageData(mixed);
@@ -132,22 +132,22 @@ public class MixHeritageTests
         AssertInitialHeritage(unicolour1, ColourHeritage.None, isHued: true, isGreyscale: true, isNotNumber: false);
         AssertInitialHeritage(unicolour2, ColourHeritage.None, isHued: true, isGreyscale: true, isNotNumber: false);
         
-        var mixed1 = unicolour1.MixHsb(unicolour2, 0.75); // 90, 0, 0
-        var mixed2 = unicolour1.MixHsb(unicolour2, 0.25); // 30, 0, 0
+        var mixed1 = unicolour1.MixHsb(unicolour2, 0.75, false); // 90, 0, 0
+        var mixed2 = unicolour1.MixHsb(unicolour2, 0.25, false); // 30, 0, 0
         AssertInitialHeritage(mixed1, ColourHeritage.GreyscaleAndHued, isHued: true, isGreyscale: true, isNotNumber: false);
         AssertInitialHeritage(mixed2, ColourHeritage.GreyscaleAndHued, isHued: true, isGreyscale: true, isNotNumber: false);
         
-        var mixed3 = mixed1.MixHsb(mixed2, 0.5); // 60, 0, 0
+        var mixed3 = mixed1.MixHsb(mixed2, 0.5, false); // 60, 0, 0
         var unicolour3 = Unicolour.FromHsb(240, 1, 1);
         AssertInitialHeritage(mixed3, ColourHeritage.GreyscaleAndHued, isHued: true, isGreyscale: true, isNotNumber: false);
         AssertInitialHeritage(unicolour3, ColourHeritage.None, isHued: true, isGreyscale: false, isNotNumber: false);
         
-        var mixed4 = mixed3.MixHsb(unicolour3, 0.5); // 180, 0.5, 0.5
+        var mixed4 = mixed3.MixHsb(unicolour3, 0.5, false); // 180, 0.5, 0.5
         AssertInitialHeritage(mixed4, ColourHeritage.Hued, isHued: true, isGreyscale: false, isNotNumber: false);
         Assert.That(mixed4.Hsb.H, Is.EqualTo(150));
         
         // HSL is a transform of HSB, hue information should also still be intact
-        var mixedHsl = mixed3.MixHsl(unicolour3, 0.5);
+        var mixedHsl = mixed3.MixHsl(unicolour3, 0.5, false);
         AssertInitialHeritage(mixed4, ColourHeritage.Hued, isHued: true, isGreyscale: false, isNotNumber: false);
         Assert.That(mixedHsl.Hsb.H, Is.EqualTo(150));
     }

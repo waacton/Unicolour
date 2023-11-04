@@ -16,10 +16,10 @@ public class MixGreyscaleLchabTests
         var lchabWhite = Unicolour.FromLchab(100, 100, 180); // full lightness = white
         
         var green = Unicolour.FromLchab(50, 100, 120);
-        var fromLabBlack = labBlack.MixLchab(green, 0.5);
-        var fromLabWhite = labWhite.MixLchab(green, 0.5);
-        var fromLchabBlack = lchabBlack.MixLchab(green, 0.5);
-        var fromLchabWhite = lchabWhite.MixLchab(green, 0.5);
+        var fromLabBlack = labBlack.MixLchab(green, 0.5, false);
+        var fromLabWhite = labWhite.MixLchab(green, 0.5, false);
+        var fromLchabBlack = lchabBlack.MixLchab(green, 0.5, false);
+        var fromLchabWhite = lchabWhite.MixLchab(green, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
@@ -37,10 +37,10 @@ public class MixGreyscaleLchabTests
         var lchabWhite = Unicolour.FromLchab(100, 100, 180); // full lightness = white
         
         var blue = Unicolour.FromLchab(50, 100, 240);
-        var toLabBlack = blue.MixLchab(labBlack, 0.5);
-        var toLabWhite = blue.MixLchab(labWhite, 0.5);
-        var toLchabBlack = blue.MixLchab(lchabBlack, 0.5);
-        var toLchabWhite = blue.MixLchab(lchabWhite, 0.5);
+        var toLabBlack = blue.MixLchab(labBlack, 0.5, false);
+        var toLabWhite = blue.MixLchab(labWhite, 0.5, false);
+        var toLchabBlack = blue.MixLchab(lchabBlack, 0.5, false);
+        var toLchabWhite = blue.MixLchab(lchabWhite, 0.5, false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
@@ -56,9 +56,9 @@ public class MixGreyscaleLchabTests
         var white = Unicolour.FromLab(100, 0, 0);
         var grey = Unicolour.FromLab(50, 0, 0);
 
-        var blackToWhite = black.MixLchab(white, 0.5);
-        var blackToGrey = black.MixLchab(grey, 0.5);
-        var whiteToGrey = white.MixLchab(grey, 0.5);
+        var blackToWhite = black.MixLchab(white, 0.5, false);
+        var blackToGrey = black.MixLchab(grey, 0.5, false);
+        var whiteToGrey = white.MixLchab(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
@@ -77,9 +77,9 @@ public class MixGreyscaleLchabTests
         var white = Unicolour.FromLchab(100, 0, 300);
         var grey = Unicolour.FromLchab(50, 0, 100);
 
-        var blackToWhite = black.MixLchab(white, 0.5);
-        var blackToGrey = black.MixLchab(grey, 0.5);
-        var whiteToGrey = white.MixLchab(grey, 0.5);
+        var blackToWhite = black.MixLchab(white, 0.5, false);
+        var blackToGrey = black.MixLchab(grey, 0.5, false);
+        var whiteToGrey = white.MixLchab(grey, 0.5, false);
         
         AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));

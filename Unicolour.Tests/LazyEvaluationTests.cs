@@ -63,7 +63,7 @@ public class LazyEvaluationTests
         var unicolour = unicolourFunction();
         var other = unicolourFunction();
         var initialColourSpace = unicolour.InitialColourSpace;
-        _ = Interpolation.Mix(initialColourSpace, unicolour, other, 0.5);
+        _ = Interpolation.Mix(initialColourSpace, unicolour, other, 0.5, true);
         AssertBackingFields(unicolour);
     }
     

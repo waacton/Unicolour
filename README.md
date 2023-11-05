@@ -83,31 +83,31 @@ It is also [extensively tested](Unicolour.Tests), including verification of roun
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 ## Quickstart ⚡
-| Colour space                            | Enum                    | Create                                      | Get            |
-|-----------------------------------------|-------------------------|---------------------------------------------|----------------|
-| RGB (Hex)                               | -                       | `new Unicolour(hex)`                        | `.Hex`         |
-| RGB (0-255)                             | `ColourSpace.Rgb255`    | `new Unicolour(ColourSpace.Rgb255, ...)`    | `.Rgb.Byte255` |
-| RGB                                     | `ColourSpace.Rgb`       | `new Unicolour(ColourSpace.Rgb, ...)`       | `.Rgb`         |
-| Linear RGB                              | `ColourSpace.RgbLinear` | `new Unicolour(ColourSpace.RgbLinear, ...)` | `.RgbLinear`   |
-| HSB/HSV                                 | `ColourSpace.Hsb`       | `new Unicolour(ColourSpace.Hsb, ...)`       | `.Hsb`         |
-| HSL                                     | `ColourSpace.Hsl`       | `new Unicolour(ColourSpace.Hsl, ...)`       | `.Hsl`         |
-| HWB                                     | `ColourSpace.Hwb`       | `new Unicolour(ColourSpace.Hwb, ...)`       | `.Hwb`         |
-| CIEXYZ                                  | `ColourSpace.Xyz`       | `new Unicolour(ColourSpace.Xyz, ...)`       | `.Xyz`         |
-| CIExyY                                  | `ColourSpace.Xyy`       | `new Unicolour(ColourSpace.Xyy, ...)`       | `.Xyy`         |
-| CIELAB                                  | `ColourSpace.Lab`       | `new Unicolour(ColourSpace.Lab, ...)`       | `.Lab`         |
-| CIELCh<sub>ab</sub>                     | `ColourSpace.Lchab`     | `new Unicolour(ColourSpace.Lchab, ...)`     | `.Lchab`       |
-| CIELUV                                  | `ColourSpace.Luv`       | `new Unicolour(ColourSpace.Luv, ...)`       | `.Luv`         |
-| CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `new Unicolour(ColourSpace.Lchuv, ...)`     | `.Lchuv`       |
-| HSLuv                                   | `ColourSpace.Hsluv`     | `new Unicolour(ColourSpace.Hsluv, ...)`     | `.Hsluv`       |
-| HPLuv                                   | `ColourSpace.Hpluv`     | `new Unicolour(ColourSpace.Hpluv, ...)`     | `.Hpluv`       |
-| IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `new Unicolour(ColourSpace.Ictcp, ...)`     | `.Ictcp`       |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `new Unicolour(ColourSpace.Jzazbz, ...)`    | `.Jzazbz`      |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `new Unicolour(ColourSpace.Jzczhz, ...)`    | `.Jzczhz`      |
-| Oklab                                   | `ColourSpace.Oklab`     | `new Unicolour(ColourSpace.Oklab, ...)`     | `.Oklab`       |
-| Oklch                                   | `ColourSpace.Oklch`     | `new Unicolour(ColourSpace.Oklch, ...)`     | `.Oklch`       |
-| CIECAM02                                | `ColourSpace.Cam02`     | `new Unicolour(ColourSpace.Cam02, ...)`     | `.Cam02`       |
-| CAM16                                   | `ColourSpace.Cam16`     | `new Unicolour(ColourSpace.Cam16, ...)`     | `.Cam16`       |
-| HCT                                     | `ColourSpace.Hct`       | `new Unicolour(ColourSpace.Hct, ...)`       | `.Hct`         |
+| Colour space                            | Enum                    | Create                            | Get            |
+|-----------------------------------------|-------------------------|-----------------------------------|----------------|
+| RGB (Hex)                               | -                       | `new(hex)`                        | `.Hex`         |
+| RGB (0-255)                             | `ColourSpace.Rgb255`    | `new(ColourSpace.Rgb255, ...)`    | `.Rgb.Byte255` |
+| RGB                                     | `ColourSpace.Rgb`       | `new(ColourSpace.Rgb, ...)`       | `.Rgb`         |
+| Linear RGB                              | `ColourSpace.RgbLinear` | `new(ColourSpace.RgbLinear, ...)` | `.RgbLinear`   |
+| HSB/HSV                                 | `ColourSpace.Hsb`       | `new(ColourSpace.Hsb, ...)`       | `.Hsb`         |
+| HSL                                     | `ColourSpace.Hsl`       | `new(ColourSpace.Hsl, ...)`       | `.Hsl`         |
+| HWB                                     | `ColourSpace.Hwb`       | `new(ColourSpace.Hwb, ...)`       | `.Hwb`         |
+| CIEXYZ                                  | `ColourSpace.Xyz`       | `new(ColourSpace.Xyz, ...)`       | `.Xyz`         |
+| CIExyY                                  | `ColourSpace.Xyy`       | `new(ColourSpace.Xyy, ...)`       | `.Xyy`         |
+| CIELAB                                  | `ColourSpace.Lab`       | `new(ColourSpace.Lab, ...)`       | `.Lab`         |
+| CIELCh<sub>ab</sub>                     | `ColourSpace.Lchab`     | `new(ColourSpace.Lchab, ...)`     | `.Lchab`       |
+| CIELUV                                  | `ColourSpace.Luv`       | `new(ColourSpace.Luv, ...)`       | `.Luv`         |
+| CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `new(ColourSpace.Lchuv, ...)`     | `.Lchuv`       |
+| HSLuv                                   | `ColourSpace.Hsluv`     | `new(ColourSpace.Hsluv, ...)`     | `.Hsluv`       |
+| HPLuv                                   | `ColourSpace.Hpluv`     | `new(ColourSpace.Hpluv, ...)`     | `.Hpluv`       |
+| IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `new(ColourSpace.Ictcp, ...)`     | `.Ictcp`       |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `new(ColourSpace.Jzazbz, ...)`    | `.Jzazbz`      |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `new(ColourSpace.Jzczhz, ...)`    | `.Jzczhz`      |
+| Oklab                                   | `ColourSpace.Oklab`     | `new(ColourSpace.Oklab, ...)`     | `.Oklab`       |
+| Oklch                                   | `ColourSpace.Oklch`     | `new(ColourSpace.Oklch, ...)`     | `.Oklch`       |
+| CIECAM02                                | `ColourSpace.Cam02`     | `new(ColourSpace.Cam02, ...)`     | `.Cam02`       |
+| CAM16                                   | `ColourSpace.Cam16`     | `new(ColourSpace.Cam16, ...)`     | `.Cam16`       |
+| HCT                                     | `ColourSpace.Hct`       | `new(ColourSpace.Hct, ...)`       | `.Hct`         |
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)

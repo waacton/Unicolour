@@ -18,7 +18,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = RgbLinear.ToXyz(RgbLinear.FromXyz(original, RgbConfig,  XyzConfig), RgbConfig, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -26,7 +26,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Xyy.ToXyz(Xyy.FromXyz(original, XyzConfig));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -34,7 +34,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Lab.ToXyz(Lab.FromXyz(original, XyzConfig), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -42,7 +42,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Luv.ToXyz(Luv.FromXyz(original, XyzConfig), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -50,7 +50,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Ictcp.ToXyz(Ictcp.FromXyz(original, IctcpScalar, XyzConfig), IctcpScalar, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -58,7 +58,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Jzazbz.ToXyz(Jzazbz.FromXyz(original, JzazbzScalar, XyzConfig), JzazbzScalar, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -66,7 +66,7 @@ public class RoundtripXyzTests
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Oklab.ToXyz(Oklab.FromXyz(original, XyzConfig), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -75,7 +75,7 @@ public class RoundtripXyzTests
         // CAM02 -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Cam02.ToXyz(Cam02.FromXyz(original, CamConfig,  XyzConfig), CamConfig, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -84,7 +84,7 @@ public class RoundtripXyzTests
         // CAM16 -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Cam16.ToXyz(Cam16.FromXyz(original, CamConfig,  XyzConfig), CamConfig, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
@@ -106,7 +106,7 @@ public class RoundtripXyzTests
         }
         else
         {
-            AssertUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, viaHctTolerance);
+            TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, viaHctTolerance);
         }
     }
     

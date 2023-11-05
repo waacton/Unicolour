@@ -5,9 +5,35 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-internal static class AssertUtils
+internal static class TestUtils
 {
     public static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
+    public static readonly List<TestCaseData> AllColourSpacesTestCases = new()
+    {
+        new TestCaseData(ColourSpace.Rgb),
+        new TestCaseData(ColourSpace.RgbLinear),
+        new TestCaseData(ColourSpace.Hsb),
+        new TestCaseData(ColourSpace.Hsl),
+        new TestCaseData(ColourSpace.Hwb),
+        new TestCaseData(ColourSpace.Xyz),
+        new TestCaseData(ColourSpace.Xyy),
+        new TestCaseData(ColourSpace.Lab),
+        new TestCaseData(ColourSpace.Lchab),
+        new TestCaseData(ColourSpace.Luv),
+        new TestCaseData(ColourSpace.Lchuv),
+        new TestCaseData(ColourSpace.Hsluv),
+        new TestCaseData(ColourSpace.Hpluv),
+        new TestCaseData(ColourSpace.Ictcp),
+        new TestCaseData(ColourSpace.Jzazbz),
+        new TestCaseData(ColourSpace.Jzczhz),
+        new TestCaseData(ColourSpace.Oklab),
+        new TestCaseData(ColourSpace.Oklch),
+        new TestCaseData(ColourSpace.Cam02),
+        new TestCaseData(ColourSpace.Cam16),
+        new TestCaseData(ColourSpace.Hct)
+    };
+    
+    public static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
         
     public const double MixTolerance = 0.00000000005;
 
@@ -22,7 +48,8 @@ internal static class AssertUtils
 
     public static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
-        var colourRepresentation = unicolour.GetRepresentations(AllColourSpaces).Single(x => x is T);
+        var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
+        var colourRepresentation = unicolour.GetRepresentation(colourSpace);
         AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
     }
 
@@ -97,4 +124,30 @@ internal static class AssertUtils
             _ = getProperty();
         }
     }
+    
+    private static readonly Dictionary<Type, ColourSpace> RepresentationTypeToColourSpace = new()
+    {
+        { typeof(Rgb), ColourSpace.Rgb },
+        { typeof(Rgb255), ColourSpace.Rgb255 },
+        { typeof(RgbLinear), ColourSpace.RgbLinear },
+        { typeof(Hsb), ColourSpace.Hsb },
+        { typeof(Hsl), ColourSpace.Hsl },
+        { typeof(Hwb), ColourSpace.Hwb },
+        { typeof(Xyz), ColourSpace.Xyz },
+        { typeof(Xyy), ColourSpace.Xyy },
+        { typeof(Lab), ColourSpace.Lab },
+        { typeof(Lchab), ColourSpace.Lchab },
+        { typeof(Luv), ColourSpace.Luv },
+        { typeof(Lchuv), ColourSpace.Lchuv },
+        { typeof(Hsluv), ColourSpace.Hsluv },
+        { typeof(Hpluv), ColourSpace.Hpluv },
+        { typeof(Ictcp), ColourSpace.Ictcp },
+        { typeof(Jzazbz), ColourSpace.Jzazbz },
+        { typeof(Jzczhz), ColourSpace.Jzczhz },
+        { typeof(Oklab), ColourSpace.Oklab },
+        { typeof(Oklch), ColourSpace.Oklch },
+        { typeof(Cam02), ColourSpace.Cam02 },
+        { typeof(Cam16), ColourSpace.Cam16 },
+        { typeof(Hct), ColourSpace.Hct }
+    };
 }

@@ -8,361 +8,51 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class EqualityTests
 {
-    [Test]
-    public void EqualRgbGivesEqualObjects()
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void SameReference(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFromRgb();
-        var unicolour2 = Unicolour.FromRgb(unicolour1.Rgb.Triplet.Tuple, unicolour1.Alpha.A);
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
+        var unicolour2 = unicolour1;
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
-    [Test]
-    public void EqualRgbLinearGivesEqualObjects()
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void DifferentType(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFromRgbLinear();
-        var unicolour2 = Unicolour.FromRgbLinear(unicolour1.RgbLinear.Triplet.Tuple, unicolour1.Alpha.A);
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        var notUnicolour = new object();
+        AssertNotEqual(unicolour, notUnicolour);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void NullUnicolour(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        Assert.That(unicolour.Equals(null), Is.False);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void NullObject(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        Assert.That(unicolour.Equals(null as object), Is.False);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void EqualObjects(ColourSpace colourSpace)
+    {
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
+        var unicolour2 = new Unicolour(colourSpace, unicolour1.GetRepresentation(colourSpace).Triplet.Tuple, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
-    [Test]
-    public void EqualHsbGivesEqualObjects()
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void NotEqualObjects(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFromHsb();
-        var unicolour2 = Unicolour.FromHsb(unicolour1.Hsb.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualHslGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHsl();
-        var unicolour2 = Unicolour.FromHsl(unicolour1.Hsl.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualHwbGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHwb();
-        var unicolour2 = Unicolour.FromHwb(unicolour1.Hwb.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualXyzGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromXyz();
-        var unicolour2 = Unicolour.FromXyz(unicolour1.Xyz.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualXyyGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromXyy();
-        var unicolour2 = Unicolour.FromXyy(unicolour1.Xyy.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualLabGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLab();
-        var unicolour2 = Unicolour.FromLab(unicolour1.Lab.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualLchabGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLchab();
-        var unicolour2 = Unicolour.FromLchab(unicolour1.Lchab.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualLuvGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLuv();
-        var unicolour2 = Unicolour.FromLuv(unicolour1.Luv.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualLchuvGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLchuv();
-        var unicolour2 = Unicolour.FromLchuv(unicolour1.Lchuv.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualHsluvGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHsluv();
-        var unicolour2 = Unicolour.FromHsluv(unicolour1.Hsluv.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-        
-    [Test]
-    public void EqualHpluvGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHpluv();
-        var unicolour2 = Unicolour.FromHpluv(unicolour1.Hpluv.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-
-    [Test]
-    public void EqualIctcpGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromIctcp();
-        var unicolour2 = Unicolour.FromIctcp(unicolour1.Ictcp.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualJzazbzGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromJzazbz();
-        var unicolour2 = Unicolour.FromJzazbz(unicolour1.Jzazbz.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualJzczhzGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromJzczhz();
-        var unicolour2 = Unicolour.FromJzczhz(unicolour1.Jzczhz.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualOklabGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromOklab();
-        var unicolour2 = Unicolour.FromOklab(unicolour1.Oklab.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualOklchGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromOklch();
-        var unicolour2 = Unicolour.FromOklch(unicolour1.Oklch.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualCam02GivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam02();
-        var unicolour2 = Unicolour.FromCam02(unicolour1.Cam02.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualCam16GivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam16();
-        var unicolour2 = Unicolour.FromCam16(unicolour1.Cam16.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-    
-    [Test]
-    public void EqualHctGivesEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHct();
-        var unicolour2 = Unicolour.FromHct(unicolour1.Hct.Triplet.Tuple, unicolour1.Alpha.A);
-        AssertUnicoloursEqual(unicolour1, unicolour2);
-    }
-
-    [Test]
-    public void NotEqualRgbGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromRgb();
-        var differentTuple = GetDifferent(unicolour1.Rgb.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromRgb(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Rgb.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualRgbLinearGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromRgbLinear();
-        var differentTuple = GetDifferent(unicolour1.RgbLinear.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromRgbLinear(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.RgbLinear.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHsbGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHsb();
-        var differentTuple = GetDifferent(unicolour1.Hsb.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromHsb(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsb.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHslGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHsl();
-        var differentTuple = GetDifferent(unicolour1.Hsl.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromHsl(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsl.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHwbGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHwb();
-        var differentTuple = GetDifferent(unicolour1.Hwb.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromHwb(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hwb.Triplet);
-    }
-
-    [Test]
-    public void NotEqualXyzGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromXyz();
-        var differentTuple = GetDifferent(unicolour1.Xyz.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromXyz(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Xyz.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualXyyGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromXyy();
-        var differentTuple = GetDifferent(unicolour1.Xyy.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromXyy(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Xyy.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualLabGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLab();
-        var differentTuple = GetDifferent(unicolour1.Lab.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromLab(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Lab.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualLchabGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLchab();
-        var differentTuple = GetDifferent(unicolour1.Lchab.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromLchab(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Lchab.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualLuvGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLuv();
-        var differentTuple = GetDifferent(unicolour1.Luv.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromLuv(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Luv.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualLchuvGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromLchuv();
-        var differentTuple = GetDifferent(unicolour1.Lchuv.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromLchuv(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Lchuv.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHsluvGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHsluv();
-        var differentTuple = GetDifferent(unicolour1.Hsluv.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromHsluv(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hsluv.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHpluvGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHpluv();
-        var differentTuple = GetDifferent(unicolour1.Hsluv.Triplet).Tuple;
-        var unicolour2 = Unicolour.FromHpluv(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hpluv.Triplet);
-    }
-
-    [Test]
-    public void NotEqualIctcpGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromIctcp();
-        var differentTuple = GetDifferent(unicolour1.Ictcp.Triplet, 0.001).Tuple;
-        var unicolour2 = Unicolour.FromIctcp(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Ictcp.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualJzazbzGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromJzazbz();
-        var differentTuple = GetDifferent(unicolour1.Jzazbz.Triplet, 0.001).Tuple;
-        var unicolour2 = Unicolour.FromJzazbz(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Jzazbz.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualJzczhzGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromJzczhz();
-        var differentTuple = GetDifferent(unicolour1.Jzczhz.Triplet, 0.001).Tuple;
-        var unicolour2 = Unicolour.FromJzczhz(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Jzczhz.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualOklabGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromOklab();
-        var differentTuple = GetDifferent(unicolour1.Oklab.Triplet, 0.01).Tuple;
-        var unicolour2 = Unicolour.FromOklab(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Oklab.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualOklchGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromOklch();
-        var differentTuple = GetDifferent(unicolour1.Oklch.Triplet, 0.01).Tuple;
-        var unicolour2 = Unicolour.FromOklch(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Oklch.Triplet);
-    }
-        
-    [Test]
-    public void NotEqualCam02GivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam02();
-        var differentTuple = GetDifferent(unicolour1.Cam02.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromCam02(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Cam02.Triplet);
-    }
-        
-    [Test]
-    public void NotEqualCam16GivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromCam16();
-        var differentTuple = GetDifferent(unicolour1.Cam16.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromCam16(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Cam16.Triplet);
-    }
-    
-    [Test]
-    public void NotEqualHctGivesNotEqualObjects()
-    {
-        var unicolour1 = RandomColours.UnicolourFromHct();
-        var differentTuple = GetDifferent(unicolour1.Hct.Triplet, 1.0).Tuple;
-        var unicolour2 = Unicolour.FromHct(differentTuple, unicolour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.Hct.Triplet);
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
+        var differentTuple = GetDifferent(unicolour1.GetRepresentation(colourSpace).Triplet).Tuple;
+        var unicolour2 = new Unicolour(colourSpace, differentTuple, unicolour1.Alpha.A + 0.1);
+        AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.GetRepresentation(colourSpace).Triplet);
     }
     
     [Test]

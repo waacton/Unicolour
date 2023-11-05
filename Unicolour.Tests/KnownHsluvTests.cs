@@ -11,35 +11,35 @@ public class KnownHsluvTests
     public void Red()
     {
         var red = ColourLimits.Rgb[ColourLimit.Red];
-        AssertUtils.AssertTriplet<Hsluv>(red, new(12.177, 100.00, 53.237), Tolerance);
+        TestUtils.AssertTriplet<Hsluv>(red, new(12.177, 100.00, 53.237), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = ColourLimits.Rgb[ColourLimit.Green];
-        AssertUtils.AssertTriplet<Hsluv>(green, new(127.72, 100.00, 87.736), Tolerance);
+        TestUtils.AssertTriplet<Hsluv>(green, new(127.72, 100.00, 87.736), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue];
-        AssertUtils.AssertTriplet<Hsluv>(blue, new(265.87, 100.00, 32.301), Tolerance);
+        TestUtils.AssertTriplet<Hsluv>(blue, new(265.87, 100.00, 32.301), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        AssertUtils.AssertTriplet<Hsluv>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Hsluv>(black, new(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = ColourLimits.Rgb[ColourLimit.White];
-        AssertUtils.AssertTriplet<Hsluv>(white, new(180.0, 0.0, 100.0), Tolerance);
+        TestUtils.AssertTriplet<Hsluv>(white, new(180.0, 0.0, 100.0), Tolerance);
     }
     
     /*
@@ -52,7 +52,7 @@ public class KnownHsluvTests
     public void SnapshotTestColour(TestColour testColour)
     {
         var hex = testColour.Hex!;
-        var unicolour = Unicolour.FromHex(hex);
+        var unicolour = new Unicolour(hex);
         var info = $"{hex} \n-> RGB: {unicolour.Rgb} \n-> XYZ: {unicolour.Xyz} \n-> LUV: {unicolour.Luv} \n-> LCH: {unicolour.Lchuv}";
         
         ColourTriplet HandleNoHue(ColourTriplet triplet, bool hasHue) => hasHue ? triplet : triplet.WithHueOverride(0);
@@ -71,6 +71,6 @@ public class KnownHsluvTests
 
     private static void AssertSnapshot(ColourTriplet actual, ColourTriplet expected, double tolerance, string info)
     {
-        AssertUtils.AssertTriplet(actual, expected, tolerance, info);
+        TestUtils.AssertTriplet(actual, expected, tolerance, info);
     }
 }

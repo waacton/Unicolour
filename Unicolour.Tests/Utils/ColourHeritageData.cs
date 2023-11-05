@@ -12,7 +12,7 @@ internal class ColourHeritageData
     
     internal ColourHeritageData(Unicolour unicolour)
     {
-        var all = AssertUtils.AllColourSpaces.ToDictionary(x => x, unicolour.GetRepresentation);
+        var all = TestUtils.AllColourSpaces.ToDictionary(x => x, unicolour.GetRepresentation);
         heritages = all.ToDictionary(x => x.Key, x => x.Value.Heritage);
         greyscale = all.ToDictionary(x => x.Key, x => x.Value.UseAsGreyscale);
         hued = all.ToDictionary(x => x.Key, x => x.Value.UseAsHued);

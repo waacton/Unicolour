@@ -8,85 +8,85 @@ public class MixIctcpTests
     [Test]
     public void SameColour()
     {
-        var unicolour1 = Unicolour.FromIctcp(0.5, -0.25, 0.25, 0.5);
-        var unicolour2 = Unicolour.FromIctcp(0.5, -0.25, 0.25, 0.5);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, 0.25, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, 0.75, false);
-        var mixed3 = unicolour1.MixIctcp(unicolour2, 0.75, false);
-        var mixed4 = unicolour2.MixIctcp(unicolour1, 0.25, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0.5, -0.25, 0.25, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.5, -0.25, 0.25, 0.5);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 0.25, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 0.75, false);
+        var mixed3 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 0.75, false);
+        var mixed4 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 0.25, false);
         
-        AssertMixed(mixed1, (0.5, -0.25, 0.25, 0.5));
-        AssertMixed(mixed2, (0.5, -0.25, 0.25, 0.5));
-        AssertMixed(mixed3, (0.5, -0.25, 0.25, 0.5));
-        AssertMixed(mixed4, (0.5, -0.25, 0.25, 0.5));
+        AssertMix(mixed1, (0.5, -0.25, 0.25, 0.5));
+        AssertMix(mixed2, (0.5, -0.25, 0.25, 0.5));
+        AssertMix(mixed3, (0.5, -0.25, 0.25, 0.5));
+        AssertMix(mixed4, (0.5, -0.25, 0.25, 0.5));
     }
     
     [Test]
     public void Equidistant()
     {
-        var unicolour1 = Unicolour.FromIctcp(0.0, -0.5, -0.5, 0.0);
-        var unicolour2 = Unicolour.FromIctcp(0.5, 0.5, 0.5);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, 0.5, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, 0.5, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0.0, -0.5, -0.5, 0.0);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.5, 0.5, 0.5);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 0.5, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 0.5, false);
         
-        AssertMixed(mixed1, (0.25, 0.0, 0.0, 0.5));
-        AssertMixed(mixed2, (0.25, 0.0, 0.0, 0.5));
+        AssertMix(mixed1, (0.25, 0.0, 0.0, 0.5));
+        AssertMix(mixed2, (0.25, 0.0, 0.0, 0.5));
     }
     
     [Test]
     public void CloserToEndColour()
     {
-        var unicolour1 = Unicolour.FromIctcp(0, 0.5, -0.5);
-        var unicolour2 = Unicolour.FromIctcp(0.8, -0.5, 0.5, 0.5);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, 0.75, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, 0.75, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0, 0.5, -0.5);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.8, -0.5, 0.5, 0.5);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 0.75, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 0.75, false);
 
-        AssertMixed(mixed1, (0.6, -0.25, 0.25, 0.625));
-        AssertMixed(mixed2, (0.2, 0.25, -0.25, 0.875));
+        AssertMix(mixed1, (0.6, -0.25, 0.25, 0.625));
+        AssertMix(mixed2, (0.2, 0.25, -0.25, 0.875));
     }
     
     [Test]
     public void CloserToStartColour()
     {
-        var unicolour1 = Unicolour.FromIctcp(0, 0.5, -0.5);
-        var unicolour2 = Unicolour.FromIctcp(0.8, -0.5, 0.5, 0.5);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, 0.25, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, 0.25, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0, 0.5, -0.5);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.8, -0.5, 0.5, 0.5);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 0.25, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 0.25, false);
         
-        AssertMixed(mixed1, (0.2, 0.25, -0.25, 0.875));
-        AssertMixed(mixed2, (0.6, -0.25, 0.25, 0.625));
+        AssertMix(mixed1, (0.2, 0.25, -0.25, 0.875));
+        AssertMix(mixed2, (0.6, -0.25, 0.25, 0.625));
     }
     
     [Test]
     public void BeyondEndColour()
     {
-        var unicolour1 = Unicolour.FromIctcp(0.2, -0.125, 0.125, 0.8);
-        var unicolour2 = Unicolour.FromIctcp(0.3, 0.125, -0.125, 0.9);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, 1.5, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, 1.5, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0.2, -0.125, 0.125, 0.8);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.3, 0.125, -0.125, 0.9);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 1.5, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, 1.5, false);
 
-        AssertMixed(mixed1, (0.35, 0.25, -0.25, 0.95));
-        AssertMixed(mixed2, (0.15, -0.25, 0.25, 0.75));
+        AssertMix(mixed1, (0.35, 0.25, -0.25, 0.95));
+        AssertMix(mixed2, (0.15, -0.25, 0.25, 0.75));
     }
     
     [Test]
     public void BeyondStartColour()
     {
-        var unicolour1 = Unicolour.FromIctcp(0.2, -0.125, 0.125, 0.8);
-        var unicolour2 = Unicolour.FromIctcp(0.3, 0.125, -0.125, 0.9);
-        var mixed1 = unicolour1.MixIctcp(unicolour2, -0.5, false);
-        var mixed2 = unicolour2.MixIctcp(unicolour1, -0.5, false);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0.2, -0.125, 0.125, 0.8);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0.3, 0.125, -0.125, 0.9);
+        var mixed1 = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, -0.5, false);
+        var mixed2 = unicolour2.Mix(ColourSpace.Ictcp, unicolour1, -0.5, false);
 
-        AssertMixed(mixed1, (0.15, -0.25, 0.25, 0.75));
-        AssertMixed(mixed2, (0.35, 0.25, -0.25, 0.95));
+        AssertMix(mixed1, (0.15, -0.25, 0.25, 0.75));
+        AssertMix(mixed2, (0.35, 0.25, -0.25, 0.95));
     }
     
     [Test]
     public void BeyondMaxAlpha()
     {
-        var unicolour1 = Unicolour.FromIctcp(0, 0, 0, 0.5);
-        var unicolour2 = Unicolour.FromIctcp(0, 0, 0, 1.5);
-        var mixed = unicolour1.MixIctcp(unicolour2, 3);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0, 0, 0, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0, 0, 0, 1.5);
+        var mixed = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(2.0));
         Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(1.0));
     }
@@ -94,9 +94,9 @@ public class MixIctcpTests
     [Test]
     public void BeyondMinAlpha()
     {
-        var unicolour1 = Unicolour.FromIctcp(0, 0, 0, 0.5);
-        var unicolour2 = Unicolour.FromIctcp(0, 0, 0, -0.5);
-        var mixed = unicolour1.MixIctcp(unicolour2, 3);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, 0, 0, 0, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, 0, 0, 0, -0.5);
+        var mixed = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(-1.0));
         Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(0.0));
     }
@@ -104,14 +104,14 @@ public class MixIctcpTests
     [TestCaseSource(typeof(AlphaInterpolationUtils), nameof(AlphaInterpolationUtils.PremultipliedNoHueComponent))]
     public void PremultiplyAlpha(AlphaTriplet start, AlphaTriplet end, double amount, AlphaTriplet expected)
     {
-        var unicolour1 = Unicolour.FromIctcp(start.Triplet.Tuple, start.Alpha);
-        var unicolour2 = Unicolour.FromIctcp(end.Triplet.Tuple, end.Alpha);
-        var mixed = unicolour1.MixIctcp(unicolour2, amount, premultiplyAlpha: true);
-        AssertMixed(mixed, expected.Tuple);
+        var unicolour1 = new Unicolour(ColourSpace.Ictcp, start.Triplet.Tuple, start.Alpha);
+        var unicolour2 = new Unicolour(ColourSpace.Ictcp, end.Triplet.Tuple, end.Alpha);
+        var mixed = unicolour1.Mix(ColourSpace.Ictcp, unicolour2, amount, premultiplyAlpha: true);
+        AssertMix(mixed, expected.Tuple);
     }
 
-    private static void AssertMixed(Unicolour unicolour, (double first, double second, double third, double alpha) expected)
+    private static void AssertMix(Unicolour unicolour, (double first, double second, double third, double alpha) expected)
     {
-        AssertUtils.AssertMixed(unicolour.Ictcp.Triplet, unicolour.Alpha.A, expected);
+        TestUtils.AssertMixed(unicolour.Ictcp.Triplet, unicolour.Alpha.A, expected);
     }
 }

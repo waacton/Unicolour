@@ -29,7 +29,7 @@ internal static class Utils
         return useSubtraction ? modulus + remainder : remainder; 
     }
     
-    internal static (int r255, int g255, int b255, int a255) ParseColourHex(string colourHex)
+    internal static (double r, double g, double b, double a) ParseColourHex(string colourHex)
     {
         var hex = colourHex.TrimStart('#');
         if (hex.Length is not (6 or 8))
@@ -37,11 +37,11 @@ internal static class Utils
             throw new ArgumentException($"{colourHex} contains invalid number of characters");
         }
         
-        var r255 = Parse(hex, 0);
-        var g255 = Parse(hex, 2);
-        var b255 = Parse(hex, 4);
-        var a255 = hex.Length == 8 ? Parse(hex, 6) : 255;
-        return (r255, g255, b255, a255);
+        var r = Parse(hex, 0) / 255.0;
+        var g = Parse(hex, 2) / 255.0;
+        var b = Parse(hex, 4) / 255.0;
+        var a = hex.Length == 8 ? Parse(hex, 6) / 255.0 : 1.0;
+        return (r, g, b, a);
     }
 
     private static int Parse(string hex, int startIndex)

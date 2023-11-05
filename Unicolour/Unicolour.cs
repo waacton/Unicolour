@@ -56,47 +56,30 @@ public partial class Unicolour : IEquatable<Unicolour>
     public string Description => string.Join(" ", ColourDescription.Get(Hsl));
     public Temperature Temperature => Temperature.Get(Xyz);
     
-    private Unicolour(Configuration config, ColourRepresentation initialRepresentation, Alpha alpha)
+    internal Unicolour(ColourSpace colourSpace, Configuration config, ColourHeritage heritage, double first, double second, double third, double alpha = 1.0)
     {
+        if (colourSpace == ColourSpace.Rgb255)
+        {
+            colourSpace = ColourSpace.Rgb;
+            first /= 255.0;
+            second /= 255.0;
+            third /= 255.0;
+        }
+        
         Config = config;
-        Alpha = alpha;
-        InitialRepresentation = initialRepresentation;
-        InitialColourSpace = GetSpace(InitialRepresentation);
+        Alpha = new Alpha(alpha);
+        InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
+        InitialColourSpace = colourSpace;
         SetBackingField(InitialColourSpace);
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
-    public double DeltaE76(Unicolour sample) => Comparison.DeltaE76(this, sample);
-    public double DeltaE94(Unicolour sample, bool isForTextiles = false) => Comparison.DeltaE94(this, sample, isForTextiles);
-    public double DeltaE00(Unicolour sample) => Comparison.DeltaE00(this, sample);
-    public double DeltaEItp(Unicolour sample) => Comparison.DeltaEItp(this, sample);
-    public double DeltaEz(Unicolour sample) => Comparison.DeltaEz(this, sample);
-    public double DeltaEHyab(Unicolour sample) => Comparison.DeltaEHyab(this, sample);
-    public double DeltaEOk(Unicolour sample) => Comparison.DeltaEOk(this, sample);
-    public double DeltaECam02(Unicolour sample) => Comparison.DeltaECam02(this, sample);
-    public double DeltaECam16(Unicolour sample) => Comparison.DeltaECam16(this, sample);
-    
-    public Unicolour MixRgb(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Rgb, this, other, amount, premultiplyAlpha);
-    public Unicolour MixRgbLinear(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.RgbLinear, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHsb(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hsb, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHsl(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hsl, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHwb(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hwb, this, other, amount, premultiplyAlpha);
-    public Unicolour MixXyz(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Xyz, this, other, amount, premultiplyAlpha);
-    public Unicolour MixXyy(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Xyy, this, other, amount, premultiplyAlpha);
-    public Unicolour MixLab(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Lab, this, other, amount, premultiplyAlpha);
-    public Unicolour MixLchab(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Lchab, this, other, amount, premultiplyAlpha);
-    public Unicolour MixLuv(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Luv, this, other, amount, premultiplyAlpha);
-    public Unicolour MixLchuv(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Lchuv, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHsluv(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hsluv, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHpluv(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hpluv, this, other, amount, premultiplyAlpha);
-    public Unicolour MixIctcp(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Ictcp, this, other, amount, premultiplyAlpha);
-    public Unicolour MixJzazbz(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Jzazbz, this, other, amount, premultiplyAlpha);
-    public Unicolour MixJzczhz(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Jzczhz, this, other, amount, premultiplyAlpha);
-    public Unicolour MixOklab(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Oklab, this, other, amount, premultiplyAlpha);
-    public Unicolour MixOklch(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Oklch, this, other, amount, premultiplyAlpha);
-    public Unicolour MixCam02(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Cam02, this, other, amount, premultiplyAlpha);
-    public Unicolour MixCam16(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Cam16, this, other, amount, premultiplyAlpha);
-    public Unicolour MixHct(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true) => Interpolation.Mix(ColourSpace.Hct, this, other, amount, premultiplyAlpha);
+    public double Difference(DeltaE deltaE, Unicolour reference) => Comparison.Difference(deltaE, this, reference);
+
+    public Unicolour Mix(ColourSpace colourSpace, Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
+    {
+        return Interpolation.Mix(colourSpace, this, other, amount, premultiplyAlpha);
+    }
     
     public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);
     public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this);
@@ -109,12 +92,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
         var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
-        return FromXyz(newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
+        return new Unicolour(ColourSpace.Xyz, newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
     }
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {InitialColourSpace} {InitialRepresentation}, alpha {Alpha.A}" };
+        var parts = new List<string> { $"from {InitialColourSpace} {InitialRepresentation} alpha {Alpha}" };
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);

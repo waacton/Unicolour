@@ -12,21 +12,21 @@ public class KnownJzczhzTests
     public void Red()
     {
         var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(Jzazbz203Config);
-        AssertUtils.AssertTriplet<Jzczhz>(red, new(0.13438, 0.16252, 43.502), Tolerance);
+        TestUtils.AssertTriplet<Jzczhz>(red, new(0.13438, 0.16252, 43.502), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(Jzazbz203Config);
-        AssertUtils.AssertTriplet<Jzczhz>(green, new(0.17681, 0.1614, 132.5), Tolerance);
+        TestUtils.AssertTriplet<Jzczhz>(green, new(0.17681, 0.1614, 132.5), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(Jzazbz203Config);
-        AssertUtils.AssertTriplet<Jzczhz>(blue, new(0.09577, 0.19029, 257.61), Tolerance);
+        TestUtils.AssertTriplet<Jzczhz>(blue, new(0.09577, 0.19029, 257.61), Tolerance);
     }
     
     [Test]

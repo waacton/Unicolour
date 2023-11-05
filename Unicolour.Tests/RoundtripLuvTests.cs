@@ -13,7 +13,7 @@ public class RoundtripLuvTests
     {
         var original = new Luv(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Luv.FromXyz(Luv.ToXyz(original, XyzConfig), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LuvTriplets))]
@@ -21,6 +21,6 @@ public class RoundtripLuvTests
     {
         var original = new Luv(triplet.First, triplet.Second, triplet.Third);
         var viaLchuv = Lchuv.ToLuv(Lchuv.FromLuv(original));
-        AssertUtils.AssertTriplet(viaLchuv.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(viaLchuv.Triplet, original.Triplet, Tolerance);
     }
 }

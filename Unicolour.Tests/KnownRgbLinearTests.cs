@@ -19,8 +19,8 @@ public class KnownRgbLinearTests
     public void Red(ConfigUtils.RgbType rgbType, double linear, double nonlinear)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var red = Unicolour.FromRgbLinear(config, linear, 0, 0);
-        AssertUtils.AssertTriplet(red.Rgb.Triplet, new(nonlinear, 0, 0), Tolerance);
+        var red = new Unicolour(ColourSpace.RgbLinear, config, linear, 0, 0);
+        TestUtils.AssertTriplet(red.Rgb.Triplet, new(nonlinear, 0, 0), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.0, 0.0)]
@@ -35,8 +35,8 @@ public class KnownRgbLinearTests
     public void Green(ConfigUtils.RgbType rgbType, double linear, double nonlinear)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var green = Unicolour.FromRgbLinear(config, 0, linear, 0);
-        AssertUtils.AssertTriplet(green.Rgb.Triplet, new(0, nonlinear, 0), Tolerance);
+        var green = new Unicolour(ColourSpace.RgbLinear, config, 0, linear, 0);
+        TestUtils.AssertTriplet(green.Rgb.Triplet, new(0, nonlinear, 0), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.0, 0.0)]
@@ -51,8 +51,8 @@ public class KnownRgbLinearTests
     public void Blue(ConfigUtils.RgbType rgbType, double linear, double nonlinear)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var blue = Unicolour.FromRgbLinear(config, 0, 0, linear);
-        AssertUtils.AssertTriplet(blue.Rgb.Triplet, new(0, 0, nonlinear), Tolerance);
+        var blue = new Unicolour(ColourSpace.RgbLinear, config, 0, 0, linear);
+        TestUtils.AssertTriplet(blue.Rgb.Triplet, new(0, 0, nonlinear), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.3127, 0.3290)]
@@ -61,7 +61,7 @@ public class KnownRgbLinearTests
     public void Black(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var black = Unicolour.FromRgbLinear(config, 0, 0, 0);
+        var black = new Unicolour(ColourSpace.RgbLinear, config, 0, 0, 0);
         Assert.That(black.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(0.00005));
         Assert.That(black.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(0.00005));
         Assert.That(black.Xyy.Luminance, Is.EqualTo(0).Within(Tolerance));
@@ -73,7 +73,7 @@ public class KnownRgbLinearTests
     public void White(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var white = Unicolour.FromRgbLinear(config, 1, 1, 1);
+        var white = new Unicolour(ColourSpace.RgbLinear, config, 1, 1, 1);
         Assert.That(white.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(0.00005));
         Assert.That(white.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(0.00005));
         Assert.That(white.Xyy.Luminance, Is.EqualTo(1).Within(Tolerance));

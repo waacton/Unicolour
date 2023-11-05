@@ -50,17 +50,17 @@ public class ConfigureXyzTests
         Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
         Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
         
-        var unicolour = Unicolour.FromRgb(Configuration.Default, 0.5, 0.25, 0.75);
-        var unicolourNoConfig = Unicolour.FromRgb(0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, Configuration.Default, 0.5, 0.25, 0.75);
+        var unicolourNoConfig = new Unicolour(ColourSpace.Rgb, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.200757, 0.119618, 0.506757);
         var expectedLab = new ColourTriplet(41.1553, 51.4108, -56.4485);
         var expectedLuv = new ColourTriplet(41.1553, 16.3709, -86.7190);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
-        AssertUtils.AssertTriplet<Xyz>(unicolourNoConfig, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolourNoConfig, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolourNoConfig, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolourNoConfig, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolourNoConfig, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolourNoConfig, expectedLuv, LuvTolerance);
     }
 
     [Test]
@@ -87,13 +87,13 @@ public class ConfigureXyzTests
         var rgbLinearToXyzMatrix = RgbLinear.RgbLinearToXyzMatrix(config.Rgb, config.Xyz);
         Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
-        var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.187691, 0.115771, 0.381093);
         var expectedLab = new ColourTriplet(40.5359, 46.0847, -57.1158);
         var expectedLuv = new ColourTriplet(40.5359, 18.7523, -78.2057);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
     }
 
     [Test]
@@ -109,13 +109,13 @@ public class ConfigureXyzTests
         var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
         var config = new Configuration(adobeRgbConfig, d65XyzConfig);
         
-        var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.234243, 0.134410, 0.535559);
         var expectedLab = new ColourTriplet(43.4203, 57.3600, -55.4259);
         var expectedLuv = new ColourTriplet(43.4203, 25.4480, -87.3268);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
     }
 
     [Test]
@@ -131,13 +131,13 @@ public class ConfigureXyzTests
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
         var config = new Configuration(adobeRgbConfig, d50XyzConfig);
         
-        var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.221673, 0.130920, 0.402670);
         var expectedLab = new ColourTriplet(42.9015, 52.4152, -55.9013);
         var expectedLuv = new ColourTriplet(42.9015, 29.0751, -78.5576);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
     }
 
     [Test]
@@ -153,13 +153,13 @@ public class ConfigureXyzTests
         var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
         var config = new Configuration(wideGamutRgbConfig, d65XyzConfig);
         
-        var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.251993, 0.102404, 0.550393);
         var expectedLab = new ColourTriplet(38.2704, 87.2838, -65.7493);
         var expectedLuv = new ColourTriplet(38.2704, 47.3837, -99.6819);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
     }
 
     [Test]
@@ -175,13 +175,13 @@ public class ConfigureXyzTests
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
         var config = new Configuration(wideGamutRgbConfig, d50XyzConfig);
         
-        var unicolour = Unicolour.FromRgb(config, 0.5, 0.25, 0.75);
+        var unicolour = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.238795, 0.099490, 0.413181);
         var expectedLab = new ColourTriplet(37.7508, 82.3084, -66.1402);
         var expectedLuv = new ColourTriplet(37.7508, 55.1488, -91.6044);
-        AssertUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
-        AssertUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
-        AssertUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
+        TestUtils.AssertTriplet<Xyz>(unicolour, expectedXyz, XyzTolerance);
+        TestUtils.AssertTriplet<Lab>(unicolour, expectedLab, LabTolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, expectedLuv, LuvTolerance);
     }
 
     [TestCase(Illuminant.D65, 0.312727, 0.329023)]
@@ -200,7 +200,7 @@ public class ConfigureXyzTests
     {
         Configuration Config(Illuminant illuminant) => new(RgbConfiguration.StandardRgb, new XyzConfiguration(WhitePoint.From(illuminant)));
 
-        var initialA = Unicolour.FromRgb(Config(Illuminant.A), 1, 1, 1);
+        var initialA = new Unicolour(ColourSpace.Rgb, Config(Illuminant.A), 1, 1, 1);
         var convertedToC = initialA.ConvertToConfiguration(Config(Illuminant.C));
         var convertedToD50 = convertedToC.ConvertToConfiguration(Config(Illuminant.D50));
         var convertedToD55 = convertedToD50.ConvertToConfiguration(Config(Illuminant.D55));
@@ -213,17 +213,17 @@ public class ConfigureXyzTests
         var convertedToA = convertedToF11.ConvertToConfiguration(Config(Illuminant.A));
         
         ColourTriplet WhitePointTriplet(Illuminant illuminant) => WhitePoint.From(illuminant).AsXyzMatrix().ToTriplet();
-        AssertUtils.AssertTriplet<Xyz>(initialA, WhitePointTriplet(Illuminant.A), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToC, WhitePointTriplet(Illuminant.C), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD50, WhitePointTriplet(Illuminant.D50), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD55, WhitePointTriplet(Illuminant.D55), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD65, WhitePointTriplet(Illuminant.D65), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD75, WhitePointTriplet(Illuminant.D75), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToE, WhitePointTriplet(Illuminant.E), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF2, WhitePointTriplet(Illuminant.F2), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF7, WhitePointTriplet(Illuminant.F7), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF11, WhitePointTriplet(Illuminant.F11), XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToA, WhitePointTriplet(Illuminant.A), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(initialA, WhitePointTriplet(Illuminant.A), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToC, WhitePointTriplet(Illuminant.C), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD50, WhitePointTriplet(Illuminant.D50), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD55, WhitePointTriplet(Illuminant.D55), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD65, WhitePointTriplet(Illuminant.D65), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD75, WhitePointTriplet(Illuminant.D75), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToE, WhitePointTriplet(Illuminant.E), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF2, WhitePointTriplet(Illuminant.F2), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF7, WhitePointTriplet(Illuminant.F7), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF11, WhitePointTriplet(Illuminant.F11), XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToA, WhitePointTriplet(Illuminant.A), XyzTolerance);
     }
 
     [Test]
@@ -231,7 +231,7 @@ public class ConfigureXyzTests
     {
         Configuration Config(Illuminant illuminant) => new(RgbConfiguration.StandardRgb, new XyzConfiguration(WhitePoint.From(illuminant)));
 
-        var initialA = Unicolour.FromRgb(Config(Illuminant.A), 0, 0, 0);
+        var initialA = new Unicolour(ColourSpace.Rgb, Config(Illuminant.A), 0, 0, 0);
         var convertedToC = initialA.ConvertToConfiguration(Config(Illuminant.C));
         var convertedToD50 = convertedToC.ConvertToConfiguration(Config(Illuminant.D50));
         var convertedToD55 = convertedToD50.ConvertToConfiguration(Config(Illuminant.D55));
@@ -244,17 +244,17 @@ public class ConfigureXyzTests
         var convertedToA = convertedToF11.ConvertToConfiguration(Config(Illuminant.A));
 
         ColourTriplet zeroes = new(0, 0, 0);
-        AssertUtils.AssertTriplet<Xyz>(initialA, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToC, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD50, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD55, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD65, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToD75, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToE, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF2, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF7, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToF11, zeroes, XyzTolerance);
-        AssertUtils.AssertTriplet<Xyz>(convertedToA, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(initialA, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToC, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD50, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD55, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD65, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToD75, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToE, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF2, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF7, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToF11, zeroes, XyzTolerance);
+        TestUtils.AssertTriplet<Xyz>(convertedToA, zeroes, XyzTolerance);
     }
     
     [TestCase(Illuminant.A)]
@@ -282,7 +282,7 @@ public class ConfigureXyzTests
         var rgbConfig = RgbConfig(WhitePoint.From(rgbIlluminant), RgbConfiguration.StandardRgb);
         var rgb = RgbLinear.FromXyz(expectedXyz, rgbConfig, XyzConfiguration.D65);
         var xyz = RgbLinear.ToXyz(rgb, rgbConfig, XyzConfiguration.D65);
-        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     
     [TestCase(Illuminant.A)]
@@ -309,7 +309,7 @@ public class ConfigureXyzTests
         var camConfig = CamConfig(WhitePoint.From(camIlluminant), CamConfiguration.StandardRgb);
         var cam = Cam02.FromXyz(expectedXyz, camConfig, XyzConfiguration.D65);
         var xyz = Cam02.ToXyz(cam, camConfig, XyzConfiguration.D65);
-        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     
     [TestCase(Illuminant.A)]
@@ -336,6 +336,6 @@ public class ConfigureXyzTests
         var camConfig = CamConfig(WhitePoint.From(camIlluminant), CamConfiguration.StandardRgb);
         var cam = Cam16.FromXyz(expectedXyz, camConfig, XyzConfiguration.D65);
         var xyz = Cam16.ToXyz(cam, camConfig, XyzConfiguration.D65);
-        AssertUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
 }

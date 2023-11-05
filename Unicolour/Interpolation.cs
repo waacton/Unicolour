@@ -26,7 +26,7 @@ internal static class Interpolation
         
         var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
-        return GetConstructor(colourSpace).Invoke(startColour.Config, heritage, first, second, third, alpha);
+        return new Unicolour(colourSpace, startColour.Config, heritage, first, second, third, alpha);
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
@@ -113,35 +113,5 @@ internal static class Interpolation
         {
             throw new InvalidOperationException("Can only mix unicolours with the same configuration reference");
         }
-    }
-
-    private delegate Unicolour UnicolourConstructor(Configuration config, ColourHeritage heritage, double first, double second, double third, double alpha = 1.0);
-    private static UnicolourConstructor GetConstructor(ColourSpace colourSpace)
-    {
-        return colourSpace switch
-        {
-            ColourSpace.Rgb => Unicolour.FromRgb,
-            ColourSpace.RgbLinear => Unicolour.FromRgbLinear,
-            ColourSpace.Hsb => Unicolour.FromHsb,
-            ColourSpace.Hsl => Unicolour.FromHsl,
-            ColourSpace.Hwb => Unicolour.FromHwb,
-            ColourSpace.Xyz => Unicolour.FromXyz,
-            ColourSpace.Xyy => Unicolour.FromXyy,
-            ColourSpace.Lab => Unicolour.FromLab,
-            ColourSpace.Lchab => Unicolour.FromLchab,
-            ColourSpace.Luv => Unicolour.FromLuv,
-            ColourSpace.Lchuv => Unicolour.FromLchuv,
-            ColourSpace.Hsluv => Unicolour.FromHsluv,
-            ColourSpace.Hpluv => Unicolour.FromHpluv,
-            ColourSpace.Ictcp => Unicolour.FromIctcp,
-            ColourSpace.Jzazbz => Unicolour.FromJzazbz,
-            ColourSpace.Jzczhz => Unicolour.FromJzczhz,
-            ColourSpace.Oklab => Unicolour.FromOklab,
-            ColourSpace.Oklch => Unicolour.FromOklch,
-            ColourSpace.Cam02 => Unicolour.FromCam02,
-            ColourSpace.Cam16 => Unicolour.FromCam16,
-            ColourSpace.Hct => Unicolour.FromHct,
-            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
-        };
     }
 }

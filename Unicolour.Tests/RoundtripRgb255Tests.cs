@@ -26,8 +26,8 @@ public class RoundtripRgb255Tests
 
     private static void AssertRoundtrip(ColourTriplet triplet, Rgb original, Rgb roundtrip)
     {
-        AssertUtils.AssertTriplet(original.Byte255.Triplet, triplet, Tolerance);
-        AssertUtils.AssertTriplet(roundtrip.Byte255.Triplet, triplet, Tolerance);
-        AssertUtils.AssertTriplet(roundtrip.Byte255.Triplet, original.Byte255.Triplet, Tolerance);
+        TestUtils.AssertTriplet(original.Byte255.Triplet, triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, original.Byte255.Triplet, Tolerance);
     }
 }

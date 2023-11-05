@@ -13,7 +13,7 @@ public class RoundtripOklabTests
     {
         var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Oklab.FromXyz(Oklab.ToXyz(original, XyzConfig), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklabTriplets))]
@@ -21,6 +21,6 @@ public class RoundtripOklabTests
     {
         var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Oklch.ToOklab(Oklch.FromOklab(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

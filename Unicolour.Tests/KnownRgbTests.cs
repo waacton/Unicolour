@@ -13,7 +13,7 @@ public class KnownRgbTests
     public void Red(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var red = Unicolour.FromRgb(config, 1, 0, 0);
+        var red = new Unicolour(ColourSpace.Rgb, config, 1, 0, 0);
         Assert.That(red.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(Tolerance));
         Assert.That(red.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(Tolerance));
     }
@@ -24,7 +24,7 @@ public class KnownRgbTests
     public void Green(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var green = Unicolour.FromRgb(config, 0, 1, 0);
+        var green = new Unicolour(ColourSpace.Rgb, config, 0, 1, 0);
         Assert.That(green.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(Tolerance));
         Assert.That(green.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(Tolerance));
     }
@@ -35,7 +35,7 @@ public class KnownRgbTests
     public void Blue(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var blue = Unicolour.FromRgb(config, 0, 0, 1);
+        var blue = new Unicolour(ColourSpace.Rgb, config, 0, 0, 1);
         Assert.That(blue.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(Tolerance));
         Assert.That(blue.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(Tolerance));
     }
@@ -46,7 +46,7 @@ public class KnownRgbTests
     public void Black(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var black = Unicolour.FromRgb(config, 0, 0, 0);
+        var black = new Unicolour(ColourSpace.Rgb, config, 0, 0, 0);
         Assert.That(black.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(0.00005));
         Assert.That(black.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(0.00005));
         Assert.That(black.Xyy.Luminance, Is.EqualTo(0).Within(Tolerance));
@@ -58,7 +58,7 @@ public class KnownRgbTests
     public void White(ConfigUtils.RgbType rgbType, double expectedX, double expectedY)
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
-        var white = Unicolour.FromRgb(config, 1, 1, 1);
+        var white = new Unicolour(ColourSpace.Rgb, config, 1, 1, 1);
         Assert.That(white.Xyy.Chromaticity.X, Is.EqualTo(expectedX).Within(0.00005));
         Assert.That(white.Xyy.Chromaticity.Y, Is.EqualTo(expectedY).Within(0.00005));
         Assert.That(white.Xyy.Luminance, Is.EqualTo(1).Within(Tolerance));

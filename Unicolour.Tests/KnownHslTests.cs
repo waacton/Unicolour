@@ -11,34 +11,34 @@ public class KnownHslTests
     public void Red()
     {
         var red = ColourLimits.Rgb[ColourLimit.Red];
-        AssertUtils.AssertTriplet<Hsl>(red, new(0, 1.0, 0.5), Tolerance);
+        TestUtils.AssertTriplet<Hsl>(red, new(0, 1.0, 0.5), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = ColourLimits.Rgb[ColourLimit.Green];
-        AssertUtils.AssertTriplet<Hsl>(green, new(120, 1.0, 0.5), Tolerance);
+        TestUtils.AssertTriplet<Hsl>(green, new(120, 1.0, 0.5), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue];
-        AssertUtils.AssertTriplet<Hsl>(blue, new(240, 1.0, 0.5), Tolerance);
+        TestUtils.AssertTriplet<Hsl>(blue, new(240, 1.0, 0.5), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        AssertUtils.AssertTriplet<Hsl>(black, new(0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Hsl>(black, new(0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = ColourLimits.Rgb[ColourLimit.White];
-        AssertUtils.AssertTriplet<Hsl>(white, new(0, 0.0, 1.0), Tolerance);
+        TestUtils.AssertTriplet<Hsl>(white, new(0, 0.0, 1.0), Tolerance);
     }
 }

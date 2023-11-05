@@ -12,7 +12,7 @@ public class KnownLchabTests
     public void Red(Illuminant illuminant, double l, double c, double h)
     {
         var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchab>(red, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchab>(red, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 87.7347, 119.7759, 136.0160)]
@@ -20,7 +20,7 @@ public class KnownLchabTests
     public void Green(Illuminant illuminant, double l, double c, double h)
     {
         var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchab>(green, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchab>(green, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 32.2970, 133.8076, 306.2849)]
@@ -28,7 +28,7 @@ public class KnownLchabTests
     public void Blue(Illuminant illuminant, double l, double c, double h)
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchab>(blue, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchab>(blue, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.0, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownLchabTests
     public void Black(Illuminant illuminant, double l, double c, double h)
     {
         var black = ColourLimits.Rgb[ColourLimit.Black].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchab>(black, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchab>(black, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 100.0000, 0.0, 270.0)]
@@ -44,6 +44,6 @@ public class KnownLchabTests
     public void White(Illuminant illuminant, double l, double c, double h)
     {
         var white = ColourLimits.Rgb[ColourLimit.White].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchab>(white, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchab>(white, new(l, c, h), Tolerance);
     }
 }

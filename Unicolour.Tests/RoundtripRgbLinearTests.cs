@@ -14,7 +14,7 @@ public class RoundtripRgbLinearTests
     {
         var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = RgbLinear.FromXyz(RgbLinear.ToXyz(original, RgbConfig, XyzConfig), RgbConfig, XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbLinearTriplets))]
@@ -22,6 +22,6 @@ public class RoundtripRgbLinearTests
     {
         var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Rgb.ToRgbLinear(Rgb.FromRgbLinear(original, RgbConfig), RgbConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

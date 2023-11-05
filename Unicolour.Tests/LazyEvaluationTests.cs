@@ -1,6 +1,5 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,105 +11,78 @@ public class LazyEvaluationTests
     // RGB255 is the only colour space that's not handled with its own backing field
     // (is a kind of sub-space behind RGB)
     private static readonly List<ColourSpace> ColourSpacesWithBackingFields =
-        AssertUtils.AllColourSpaces.Except(new [] { ColourSpace.Rgb255 }).ToList();
-
-    private static readonly List<TestCaseData> TestCases = new()
-    {
-        #pragma warning disable CS8974 // Converting method group to non-delegate type
-        new TestCaseData(RandomColours.UnicolourFromRgb).SetName("Rgb"),
-        new TestCaseData(RandomColours.UnicolourFromRgbLinear).SetName("RgbLinear"),
-        new TestCaseData(RandomColours.UnicolourFromHsb).SetName("Hsb"),
-        new TestCaseData(RandomColours.UnicolourFromHsl).SetName("Hsl"),
-        new TestCaseData(RandomColours.UnicolourFromHwb).SetName("Hwb"),
-        new TestCaseData(RandomColours.UnicolourFromXyz).SetName("Xyz"),
-        new TestCaseData(RandomColours.UnicolourFromXyy).SetName("Xyy"),
-        new TestCaseData(RandomColours.UnicolourFromLab).SetName("Lab"),
-        new TestCaseData(RandomColours.UnicolourFromLchab).SetName("Lchab"),
-        new TestCaseData(RandomColours.UnicolourFromLuv).SetName("Luv"),
-        new TestCaseData(RandomColours.UnicolourFromLchuv).SetName("Lchuv"),
-        new TestCaseData(RandomColours.UnicolourFromHsluv).SetName("Hsluv"),
-        new TestCaseData(RandomColours.UnicolourFromHpluv).SetName("Hpluv"),
-        new TestCaseData(RandomColours.UnicolourFromIctcp).SetName("Ictcp"),
-        new TestCaseData(RandomColours.UnicolourFromJzazbz).SetName("Jzazbz"),
-        new TestCaseData(RandomColours.UnicolourFromJzczhz).SetName("Jzczhz"),
-        new TestCaseData(RandomColours.UnicolourFromOklab).SetName("Oklab"),
-        new TestCaseData(RandomColours.UnicolourFromOklch).SetName("Oklch"),
-        new TestCaseData(RandomColours.UnicolourFromCam02).SetName("Cam02"),
-        new TestCaseData(RandomColours.UnicolourFromCam16).SetName("Cam16"),
-        new TestCaseData(RandomColours.UnicolourFromHct).SetName("Hct")
-        #pragma warning restore CS8974 // Converting method group to non-delegate type
-    };
+        TestUtils.AllColourSpaces.Except(new [] { ColourSpace.Rgb255 }).ToList();
     
-    [TestCaseSource(nameof(TestCases))]
-    public void InitialUnicolour(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void InitialUnicolour(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterEquality(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterEquality(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
-        var other = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        var other = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.Equals(other);
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterMix(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterMix(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
-        var other = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        var other = RandomColours.UnicolourFrom(colourSpace);
         var initialColourSpace = unicolour.InitialColourSpace;
         _ = Interpolation.Mix(initialColourSpace, unicolour, other, 0.5, true);
         AssertBackingFields(unicolour);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterHex(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterHex(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.Hex;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterIsInDisplayGamut(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterIsInDisplayGamut(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.IsInDisplayGamut;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterRelativeLuminance(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterRelativeLuminance(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.RelativeLuminance;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.RgbLinear);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterDescription(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterDescription(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.Description;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Hsl);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterTemperature(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterTemperature(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.Temperature;
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void AfterConfigurationConversion(Func<Unicolour> unicolourFunction)
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterConfigurationConversion(ColourSpace colourSpace)
     {
-        var unicolour = unicolourFunction();
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.ConvertToConfiguration(Configuration.Default);
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
     }

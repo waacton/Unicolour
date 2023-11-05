@@ -13,6 +13,6 @@ public class RoundtripXyyTests
     {
         var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Xyy.FromXyz(Xyy.ToXyz(original), XyzConfig);
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

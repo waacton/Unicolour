@@ -13,7 +13,7 @@ public class ContrastTests
         var red = ColourLimits.Rgb[ColourLimit.Red];
         var green = ColourLimits.Rgb[ColourLimit.Green];
         var blue = ColourLimits.Rgb[ColourLimit.Blue];
-        var random = RandomColours.UnicolourFromRgb();
+        var random = RandomColours.UnicolourFrom(ColourSpace.Rgb);
         
         AssertKnownContrast(black, white, 21);
         AssertKnownContrast(red, green, 2.91);
@@ -26,7 +26,7 @@ public class ContrastTests
     public void BeyondMinRgbLuminance()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        var beyondMinRgb = Unicolour.FromRgb(-0.25, -0.5, -0.75);
+        var beyondMinRgb = new Unicolour(ColourSpace.Rgb, -0.25, -0.5, -0.75);
         Assert.That(beyondMinRgb.RelativeLuminance, Is.LessThan(black.RelativeLuminance));
         AssertRelativeLuminance(beyondMinRgb);
     }
@@ -35,7 +35,7 @@ public class ContrastTests
     public void BeyondMaxRgbLuminance()
     {
         var white = ColourLimits.Rgb[ColourLimit.White];
-        var beyondMaxRgb = Unicolour.FromRgb(1.25, 1.5, 1.75);
+        var beyondMaxRgb = new Unicolour(ColourSpace.Rgb, 1.25, 1.5, 1.75);
         Assert.That(beyondMaxRgb.RelativeLuminance, Is.GreaterThan(white.RelativeLuminance));
         AssertRelativeLuminance(beyondMaxRgb);
     }
@@ -43,8 +43,8 @@ public class ContrastTests
     [Test]
     public void NaNContrast()
     {
-        var notNumber = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
-        var grey = Unicolour.FromRgb(0.5, 0.5, 0.5);
+        var notNumber = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var grey = new Unicolour(ColourSpace.Rgb, 0.5, 0.5, 0.5);
         
         AssertKnownContrast(notNumber, grey, double.NaN);
         AssertKnownContrast(grey, notNumber, double.NaN);

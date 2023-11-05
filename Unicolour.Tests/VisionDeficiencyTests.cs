@@ -24,7 +24,7 @@ public class VisionDeficiencyTests
         var unicolour = ColourLimits.Rgb[colourLimit];
         var simulatedColour = unicolour.SimulateProtanopia();
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
-        AssertUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
+        TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
     [TestCase(ColourLimit.Red, 163, 144, 0)]
@@ -40,7 +40,7 @@ public class VisionDeficiencyTests
         var unicolour = ColourLimits.Rgb[colourLimit];
         var simulatedColour = unicolour.SimulateDeuteranopia();
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
-        AssertUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
+        TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
     [TestCase(ColourLimit.Red, 255, 0, 13)]
@@ -56,7 +56,7 @@ public class VisionDeficiencyTests
         var unicolour = ColourLimits.Rgb[colourLimit];
         var simulatedColour = unicolour.SimulateTritanopia();
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
-        AssertUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
+        TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
     
     [TestCase(ColourLimit.Red, 127, 127, 127)]
@@ -72,13 +72,13 @@ public class VisionDeficiencyTests
         var unicolour = ColourLimits.Rgb[colourLimit];
         var simulatedColour = unicolour.SimulateAchromatopsia();
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
-        AssertUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
+        TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
 
     [Test]
     public void ProtanopiaNotNumber()
     {
-        var unicolour = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
+        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = unicolour.SimulateProtanopia();
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
@@ -86,7 +86,7 @@ public class VisionDeficiencyTests
     [Test]
     public void DeuteranopiaNotNumber()
     {
-        var unicolour = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
+        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = unicolour.SimulateDeuteranopia();
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
@@ -94,7 +94,7 @@ public class VisionDeficiencyTests
     [Test]
     public void TritanopiaNotNumber()
     {
-        var unicolour = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
+        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = unicolour.SimulateTritanopia();
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
@@ -102,7 +102,7 @@ public class VisionDeficiencyTests
     [Test]
     public void AchromatopsiaNotNumber()
     {
-        var unicolour = Unicolour.FromRgb(double.NaN, double.NaN, double.NaN);
+        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = unicolour.SimulateAchromatopsia();
         Assert.That(simulatedColour.Rgb.IsNaN);
     }

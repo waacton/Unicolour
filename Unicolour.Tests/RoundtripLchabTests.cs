@@ -12,6 +12,6 @@ public class RoundtripLchabTests
     {
         var original = new Lchab(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Lchab.FromLab(Lchab.ToLab(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

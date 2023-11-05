@@ -1,46 +1,43 @@
 ﻿namespace Wacton.Unicolour;
 
-internal enum ColourSpace 
-{ 
-    Rgb, Rgb255, RgbLinear, Hsb, Hsl, Hwb, Xyz, Xyy, Lab, Lchab, Luv, Lchuv, Hsluv, Hpluv, 
-    Ictcp, Jzazbz, Jzczhz, Oklab, Oklch, Cam02, Cam16, Hct 
-}
-
+/*
+ * ColourSpace information needs to be held outwith ColourRepresentation object
+ * otherwise the ColourRepresentation needs to be evaluated just to obtain the ColourSpace it represents
+ */
 public partial class Unicolour
 {
-    /*
-     * ColourSpace information needs to be held outwith ColourRepresentation object
-     * otherwise the ColourRepresentation needs to be evaluated just to obtain the ColourSpace it represents
-     */
-    private static ColourSpace GetSpace<T>(T representation) where T : ColourRepresentation => TypeToSpace[representation.GetType()];
-    private static readonly Dictionary<Type, ColourSpace> TypeToSpace = new()
+    private static ColourRepresentation CreateRepresentation(
+        ColourSpace colourSpace, double first, double second, double third, 
+        Configuration config, ColourHeritage heritage)
     {
-        { typeof(Rgb), ColourSpace.Rgb },
-        { typeof(Rgb255), ColourSpace.Rgb255 },
-        { typeof(RgbLinear), ColourSpace.RgbLinear },
-        { typeof(Hsb), ColourSpace.Hsb },
-        { typeof(Hsl), ColourSpace.Hsl },
-        { typeof(Hwb), ColourSpace.Hwb },
-        { typeof(Xyz), ColourSpace.Xyz },
-        { typeof(Xyy), ColourSpace.Xyy },
-        { typeof(Lab), ColourSpace.Lab },
-        { typeof(Lchab), ColourSpace.Lchab },
-        { typeof(Luv), ColourSpace.Luv },
-        { typeof(Lchuv), ColourSpace.Lchuv },
-        { typeof(Hsluv), ColourSpace.Hsluv },
-        { typeof(Hpluv), ColourSpace.Hpluv },
-        { typeof(Ictcp), ColourSpace.Ictcp },
-        { typeof(Jzazbz), ColourSpace.Jzazbz },
-        { typeof(Jzczhz), ColourSpace.Jzczhz },
-        { typeof(Oklab), ColourSpace.Oklab },
-        { typeof(Oklch), ColourSpace.Oklch },
-        { typeof(Cam02), ColourSpace.Cam02 },
-        { typeof(Cam16), ColourSpace.Cam16 },
-        { typeof(Hct), ColourSpace.Hct }
-    };
-
-    internal List<ColourRepresentation> GetRepresentations(List<ColourSpace> colourSpaces) => colourSpaces.Select(GetRepresentation).ToList();
-    internal ColourRepresentation GetRepresentation(ColourSpace colourSpace)
+        return colourSpace switch
+        {
+            ColourSpace.Rgb => new Rgb(first, second, third, heritage),
+            ColourSpace.RgbLinear => new RgbLinear(first, second, third, heritage),
+            ColourSpace.Hsb => new Hsb(first, second, third, heritage),
+            ColourSpace.Hsl => new Hsl(first, second, third, heritage),
+            ColourSpace.Hwb => new Hwb(first, second, third, heritage),
+            ColourSpace.Xyz => new Xyz(first, second, third, heritage),
+            ColourSpace.Xyy => new Xyy(first, second, third, heritage),
+            ColourSpace.Lab => new Lab(first, second, third, heritage),
+            ColourSpace.Lchab => new Lchab(first, second, third, heritage),
+            ColourSpace.Luv => new Luv(first, second, third, heritage),
+            ColourSpace.Lchuv => new Lchuv(first, second, third, heritage),
+            ColourSpace.Hsluv => new Hsluv(first, second, third, heritage),
+            ColourSpace.Hpluv => new Hpluv(first, second, third, heritage),
+            ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
+            ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
+            ColourSpace.Jzczhz => new Jzczhz(first, second, third, heritage),
+            ColourSpace.Oklab => new Oklab(first, second, third, heritage),
+            ColourSpace.Oklch => new Oklch(first, second, third, heritage),
+            ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
+            ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
+            ColourSpace.Hct => new Hct(first, second, third, heritage),
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
+        };
+    }
+    
+    public ColourRepresentation GetRepresentation(ColourSpace colourSpace)
     {
         return colourSpace switch
         {

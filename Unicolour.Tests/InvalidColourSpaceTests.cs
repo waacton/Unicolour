@@ -5,7 +5,7 @@ using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
-public class InvalidUnicolourTests
+public class InvalidColourSpaceTests
 {
     private const ColourSpace GoodColourSpace = ColourSpace.Rgb;
     private const ColourSpace BadColourSpace = (ColourSpace)int.MaxValue;
@@ -15,7 +15,21 @@ public class InvalidUnicolourTests
     [SetUp]
     public void Init()
     {
-        unicolour = Unicolour.FromXyz(0.1, 0.2, 0.3);
+        unicolour = new Unicolour(ColourSpace.Xyz, 0.1, 0.2, 0.3);
+    }
+    
+    [Test]
+    public void InvalidConstructor()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Unicolour(BadColourSpace, 0, 0, 0));
+    }
+    
+    [Test]
+    public void InvalidInterpolationInput()
+    {
+        var unicolour1 = new Unicolour(ColourSpace.Rgb, 0.1, 0.2, 0.3);
+        var unicolour2 = new Unicolour(ColourSpace.Rgb, 0.7, 0.8, 0.9);
+        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(BadColourSpace, unicolour1, unicolour2, 0.5, true));
     }
 
     [Test]

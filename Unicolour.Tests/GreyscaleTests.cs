@@ -31,7 +31,7 @@ public class GreyscaleTests
     [TestCase(0.99999999999, 1.0, 1.0, false)]
     [TestCase(1.0, 0.99999999999, 1.0, false)]
     [TestCase(1.0, 1.0, 0.99999999999, false)]
-    public void Rgb(double r, double g, double b, bool expected) => AssertUnicolour(Unicolour.FromRgb(r, g, b), expected);
+    public void Rgb(double r, double g, double b, bool expected) => AssertUnicolour(new(ColourSpace.Rgb, r, g, b), expected);
     
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(-0.00000000001, 0.0, -0.0, true)]
@@ -54,7 +54,7 @@ public class GreyscaleTests
     [TestCase(0.99999999999, 1.0, 1.0, false)]
     [TestCase(1.0, 0.99999999999, 1.0, false)]
     [TestCase(1.0, 1.0, 0.99999999999, false)]
-    public void RgbLinear(double r, double g, double b, bool expected) => AssertUnicolour(Unicolour.FromRgbLinear(r, g, b), expected);
+    public void RgbLinear(double r, double g, double b, bool expected) => AssertUnicolour(new(ColourSpace.RgbLinear, r, g, b), expected);
 
     [TestCase(180.0, 0.0, 0.5, true)]
     [TestCase(180.0, -0.00000000001, 0.5, true)]
@@ -62,7 +62,7 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.0, true)]
     [TestCase(180.0, 0.5, -0.00000000001, true)]
     [TestCase(180.0, 0.5, 0.00000000001, false)]
-    public void Hsb(double h, double s, double b, bool expected) => AssertUnicolour(Unicolour.FromHsb(h, s, b), expected);
+    public void Hsb(double h, double s, double b, bool expected) => AssertUnicolour(new(ColourSpace.Hsb, h, s, b), expected);
 
     [TestCase(180.0, 0.0, 0.5, true)]
     [TestCase(180.0, -0.00000000001, 0.5, true)]
@@ -73,7 +73,7 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 1.0, true)]
     [TestCase(180.0, 0.5, 1.00000000001, true)]
     [TestCase(180.0, 0.5, 0.99999999999, false)]
-    public void Hsl(double h, double s, double l, bool expected) => AssertUnicolour(Unicolour.FromHsl(h, s, l), expected);
+    public void Hsl(double h, double s, double l, bool expected) => AssertUnicolour(new(ColourSpace.Hsl, h, s, l), expected);
     
     [TestCase(180.0, 1.0, 0.0, true)]
     [TestCase(180.0, 1.00000000001, 0.0, true)]
@@ -87,7 +87,7 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.5, true)]
     [TestCase(180.0, 0.5, 0.50000000001, true)]
     [TestCase(180.0, 0.5, 0.49999999999, false)]
-    public void Hwb(double h, double w, double b, bool expected) => AssertUnicolour(Unicolour.FromHwb(h, w, b), expected);
+    public void Hwb(double h, double w, double b, bool expected) => AssertUnicolour(new(ColourSpace.Hwb, h, w, b), expected);
 
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(0.0, -0.00000000001, 0.0, true)]
@@ -96,7 +96,7 @@ public class GreyscaleTests
     [TestCase(0.5, 0.5, 0.5, false)]
     [TestCase(0.25, 0.5, 0.75, false)]
     [TestCase(0.95047, 1.0, 1.08883, false)]
-    public void Xyz(double x, double y, double z, bool expected) => AssertUnicolour(Unicolour.FromXyz(x, y, z), expected);
+    public void Xyz(double x, double y, double z, bool expected) => AssertUnicolour(new(ColourSpace.Xyz, x, y, z), expected);
     
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(0.0, 0.0, -0.00000000001, true)]
@@ -104,7 +104,7 @@ public class GreyscaleTests
     [TestCase(1.0, 1.0, 0.0, true)]
     [TestCase(1.0, 1.0, -0.00000000001, true)]
     [TestCase(1.0, 1.0, 0.00000000001, false)]
-    public void Xyy(double x, double y, double upperY, bool expected) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY), expected);
+    public void Xyy(double x, double y, double upperY, bool expected) => AssertUnicolour(new(ColourSpace.Xyy, x, y, upperY), expected);
 
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
@@ -117,7 +117,7 @@ public class GreyscaleTests
     [TestCase(100.0, 50, -50, true)]
     [TestCase(100.00000000001, 50, -50, true)]
     [TestCase(99.99999999999, 50, -50, false)]
-    public void Lab(double l, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromLab(l, a, b), expected);
+    public void Lab(double l, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Lab, l, a, b), expected);
 
     [TestCase(50.0, 0.0, 180.0, true)]
     [TestCase(50.0, -0.00000000001, 180.0, true)]
@@ -128,7 +128,7 @@ public class GreyscaleTests
     [TestCase(100.0, 50.0, 180.0, true)]
     [TestCase(100.00000000001, 50.0, 180.0, true)]
     [TestCase(99.99999999999, 50.0, 180.0, false)]
-    public void Lchab(double l, double c, double h, bool expected) => AssertUnicolour(Unicolour.FromLchab(l, c, h), expected);
+    public void Lchab(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Lchab, l, c, h), expected);
 
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
@@ -141,7 +141,7 @@ public class GreyscaleTests
     [TestCase(100.0, 50, -50, true)]
     [TestCase(100.00000000001, 50, -50, true)]
     [TestCase(99.99999999999, 50, -50, false)]
-    public void Luv(double l, double u, double v, bool expected) => AssertUnicolour(Unicolour.FromLuv(l, u, v), expected);
+    public void Luv(double l, double u, double v, bool expected) => AssertUnicolour(new(ColourSpace.Luv, l, u, v), expected);
 
     [TestCase(50.0, 0.0, 180.0, true)]
     [TestCase(50.0, -0.00000000001, 180.0, true)]
@@ -152,7 +152,7 @@ public class GreyscaleTests
     [TestCase(100.0, 50.0, 180.0, true)]
     [TestCase(100.00000000001, 50.0, 180.0, true)]
     [TestCase(99.99999999999, 50.0, 180.0, false)]
-    public void Lchuv(double l, double c, double h, bool expected) => AssertUnicolour(Unicolour.FromLchuv(l, c, h), expected);
+    public void Lchuv(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Lchuv, l, c, h), expected);
 
     [TestCase(180.0, 0.0, 50, true)]
     [TestCase(180.0, -0.00000000001, 50, true)]
@@ -163,7 +163,7 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.0, true)]
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 0.99999999999, false)]
-    public void Hsluv(double h, double s, double l, bool expected) => AssertUnicolour(Unicolour.FromHsluv(h, s, l), expected);
+    public void Hsluv(double h, double s, double l, bool expected) => AssertUnicolour(new(ColourSpace.Hsluv, h, s, l), expected);
 
     [TestCase(180.0, 0.0, 50, true)]
     [TestCase(180.0, -0.00000000001, 50, true)]
@@ -174,7 +174,7 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.0, true)]
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 0.99999999999, false)]
-    public void Hpluv(double h, double s, double l, bool expected) => AssertUnicolour(Unicolour.FromHpluv(h, s, l), expected);
+    public void Hpluv(double h, double s, double l, bool expected) => AssertUnicolour(new(ColourSpace.Hpluv, h, s, l), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
@@ -185,7 +185,7 @@ public class GreyscaleTests
     [TestCase(-0.00000000001, 0.1, -0.1, true)]
     [TestCase(0.00000000001, 0.1, -0.1, false)]
     [TestCase(1.0, 0.1, -0.1, false)]
-    public void Ictcp(double i, double ct, double cp, bool expected) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp), expected);
+    public void Ictcp(double i, double ct, double cp, bool expected) => AssertUnicolour(new(ColourSpace.Ictcp, i, ct, cp), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
@@ -196,7 +196,7 @@ public class GreyscaleTests
     [TestCase(-0.00000000001, 0.1, -0.1, true)]
     [TestCase(0.00000000001, 0.1, -0.1, false)]
     [TestCase(1.0, 0.1, -0.1, false)]
-    public void Jzazbz(double jz, double az, double bz, bool expected) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz), expected);
+    public void Jzazbz(double jz, double az, double bz, bool expected) => AssertUnicolour(new(ColourSpace.Jzazbz, jz, az, bz), expected);
 
     [TestCase(0.5, 0.0, 180.0, true)]
     [TestCase(0.5, -0.00000000001, 180.0, true)]
@@ -205,7 +205,7 @@ public class GreyscaleTests
     [TestCase(-0.00000000001, 0.1, 180.0, true)]
     [TestCase(0.00000000001, 0.1, 180.0, false)]
     [TestCase(1.0, 0.1, 180.0, false)]
-    public void Jzczhz(double jz, double cz, double hz, bool expected) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz), expected);
+    public void Jzczhz(double jz, double cz, double hz, bool expected) => AssertUnicolour(new(ColourSpace.Jzczhz, jz, cz, hz), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
@@ -218,7 +218,7 @@ public class GreyscaleTests
     [TestCase(1.0, 0.1, -0.1, true)]
     [TestCase(1.00000000001, 0.1, -0.1, true)]
     [TestCase(0.99999999999, 0.1, -0.1, false)]
-    public void Oklab(double l, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromOklab(l, a, b), expected);
+    public void Oklab(double l, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Oklab, l, a, b), expected);
 
     [TestCase(0.5, 0.0, 180.0, true)]
     [TestCase(0.5, -0.00000000001, 180.0, true)]
@@ -229,21 +229,21 @@ public class GreyscaleTests
     [TestCase(1.0, 0.25, 180.0, true)]
     [TestCase(1.00000000001, 0.25, 180.0, true)]
     [TestCase(0.99999999999, 0.25, 180.0, false)]
-    public void Oklch(double l, double c, double h, bool expected) => AssertUnicolour(Unicolour.FromOklch(l, c, h), expected);
+    public void Oklch(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Oklch, l, c, h), expected);
     
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam02(j, a, b), expected);
+    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b), expected);
     
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(Unicolour.FromCam16(j, a, b), expected);
+    public void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam16, j, a, b), expected);
     
     [TestCase(180.0, 0.0, 50, true)]
     [TestCase(180.0, -0.00000000001, 50, true)]
@@ -254,7 +254,7 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.0, true)]
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 99.99999999999, false)]
-    public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(Unicolour.FromHct(h, c, t), expected);
+    public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(new(ColourSpace.Hct, h, c, t), expected);
 
     private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
     {
@@ -268,7 +268,7 @@ public class GreyscaleTests
             // if initial representation is non-greyscale
             // some downstream representations should have no greyscale or NaN heritage
             // though it's still possible for them to actually result in greyscale or NaN, especially with outlier values e.g. negatives
-            var spaces = AssertUtils.AllColourSpaces.Except(new[] { initialColourSpace }).ToList();
+            var spaces = TestUtils.AllColourSpaces.Except(new[] { initialColourSpace }).ToList();
             Assert.That(data.Heritages(spaces), Has.Some.EqualTo(ColourHeritage.None).Or.EqualTo(ColourHeritage.Hued));
         }
         else
@@ -298,7 +298,7 @@ public class GreyscaleTests
     private static void AssertDownstreamNotNaN(ColourSpace initialColourSpace, ColourHeritageData data)
     {
         var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
-        var spaces = AssertUtils.AllColourSpaces.Except(excludedSpaces).ToList();
+        var spaces = TestUtils.AllColourSpaces.Except(excludedSpaces).ToList();
         
         // if initial representation is greyscale, downstream non-NaN-producing representations should all be greyscale too
         // (adjacent hue spaces will also have hue, e.g. HSB -> HSL will carry hue even when greyscale)
@@ -322,7 +322,7 @@ public class GreyscaleTests
     private static void AssertDownstreamFromInitialMaybeNaN(ColourSpace initialColourSpace, ColourHeritageData data)
     {
         var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
-        var spaces = AssertUtils.AllColourSpaces.Except(excludedSpaces).ToList();
+        var spaces = TestUtils.AllColourSpaces.Except(excludedSpaces).ToList();
 
         // if initial representation is greyscale and NaN-producing, downstream representations should all be either greyscale or NaN
         var greyscaleOrNan = data.UseAsGreyscale(spaces).Zip(data.UseAsNaN(spaces), (a, b) => a || b).ToList();

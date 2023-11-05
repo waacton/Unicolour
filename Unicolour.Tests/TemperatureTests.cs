@@ -19,7 +19,7 @@ public class TemperatureTests
     public void Illuminants(Illuminant illuminant, double kelvins)
     {
         var whitePoint = WhitePoint.From(illuminant);
-        var unicolour = Unicolour.FromXyz(whitePoint.AsXyzMatrix().ToTriplet().Tuple);
+        var unicolour = new Unicolour(ColourSpace.Xyz, whitePoint.AsXyzMatrix().ToTriplet().Tuple);
         var temperature = unicolour.Temperature;
         Assert.That(temperature.Cct, Is.EqualTo(kelvins).Within(0.05));
         Assert.That(temperature.ToString().Contains(kelvins.ToString(CultureInfo.InvariantCulture)));
@@ -28,7 +28,7 @@ public class TemperatureTests
     [Test]
     public void Red()
     {
-        var unicolour = Unicolour.FromRgb(1, 0, 0);
+        var unicolour = new Unicolour(ColourSpace.Rgb, 1, 0, 0);
         Assert.That(unicolour.Temperature.Cct, Is.NaN);
         Assert.That(unicolour.Temperature.ToString(), Is.EqualTo("-"));
     }
@@ -36,7 +36,7 @@ public class TemperatureTests
     [Test]
     public void Green()
     {
-        var unicolour = Unicolour.FromRgb(0, 1, 0);
+        var unicolour = new Unicolour(ColourSpace.Rgb, 0, 1, 0);
         Assert.That(unicolour.Temperature.Cct, Is.EqualTo(6064.4).Within(0.05));
         Assert.That(unicolour.Temperature.ToString().Contains("6064.4 K"));
 
@@ -45,7 +45,7 @@ public class TemperatureTests
     [Test]
     public void Blue()
     {
-        var unicolour = Unicolour.FromRgb(0, 0, 1);
+        var unicolour = new Unicolour(ColourSpace.Rgb, 0, 0, 1);
         Assert.That(unicolour.Temperature.Cct, Is.NaN);
         Assert.That(unicolour.Temperature.ToString(), Is.EqualTo("-"));
     }
@@ -53,7 +53,7 @@ public class TemperatureTests
     [Test]
     public void Black()
     {
-        var unicolour = Unicolour.FromXyz(0, 0, 0);
+        var unicolour = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
         Assert.That(unicolour.Temperature.Cct, Is.NaN);
         Assert.That(unicolour.Temperature.ToString(), Is.EqualTo("-"));
     }

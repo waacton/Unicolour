@@ -12,7 +12,7 @@ public class KnownXyyTests
     public void Red(Illuminant illuminant, double x, double y, double expectedZ)
     {
         var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyy>(red, new(x, y, expectedZ), Tolerance);
+        TestUtils.AssertTriplet<Xyy>(red, new(x, y, expectedZ), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.300000, 0.600000, 0.715152)]
@@ -20,7 +20,7 @@ public class KnownXyyTests
     public void Green(Illuminant illuminant, double x, double y, double expectedZ)
     {
         var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyy>(green, new(x, y, expectedZ), Tolerance);
+        TestUtils.AssertTriplet<Xyy>(green, new(x, y, expectedZ), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.150000, 0.060000, 0.072175)]
@@ -28,7 +28,7 @@ public class KnownXyyTests
     public void Blue(Illuminant illuminant, double x, double y, double expectedZ)
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyy>(blue, new(x, y, expectedZ), Tolerance);
+        TestUtils.AssertTriplet<Xyy>(blue, new(x, y, expectedZ), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.000000)]
@@ -36,8 +36,8 @@ public class KnownXyyTests
     [TestCase(Illuminant.E, 0.333333, 0.333333, 0.000000)]
     public void Black(Illuminant illuminant, double x, double y, double luminance)
     {
-        var unicolour = Unicolour.FromRgb(ConfigUtils.GetConfigWithStandardRgb(illuminant), 0, 0, 0);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Rgb, ConfigUtils.GetConfigWithStandardRgb(illuminant), 0, 0, 0);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.000001)]
@@ -45,8 +45,8 @@ public class KnownXyyTests
     [TestCase(Illuminant.E, 0.333333, 0.333333, 0.000001)]
     public void NearBlack(Illuminant illuminant, double x, double y, double luminance)
     {
-        var unicolour = Unicolour.FromRgb(ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.00001, 0.00001, 0.00001);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Rgb, ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.00001, 0.00001, 0.00001);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 0.214041)]
@@ -54,8 +54,8 @@ public class KnownXyyTests
     [TestCase(Illuminant.E, 0.333333, 0.333333, 0.214041)]
     public void Grey(Illuminant illuminant, double x, double y, double luminance)
     {
-        var unicolour = Unicolour.FromRgb(ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.5, 0.5, 0.5);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Rgb, ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.5, 0.5, 0.5);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
 
     [TestCase(Illuminant.D65, 0.312727, 0.329023, 1.000000)]
@@ -63,8 +63,8 @@ public class KnownXyyTests
     [TestCase(Illuminant.E, 0.333333, 0.333333, 1.000000)]
     public void White(Illuminant illuminant, double x, double y, double luminance)
     {
-        var unicolour = Unicolour.FromRgb(ConfigUtils.GetConfigWithStandardRgb(illuminant), 1, 1, 1);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Rgb, ConfigUtils.GetConfigWithStandardRgb(illuminant), 1, 1, 1);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(-0.00000000001)]
@@ -72,7 +72,7 @@ public class KnownXyyTests
     [TestCase(0.00000000001)]
     public void ChromaticityY(double chromaticityY)
     {
-        var unicolour = Unicolour.FromXyy(0.5, chromaticityY, 1);
+        var unicolour = new Unicolour(ColourSpace.Xyy, 0.5, chromaticityY, 1);
         var xyz = unicolour.Xyz;
         
         var useZero = chromaticityY <= 0;

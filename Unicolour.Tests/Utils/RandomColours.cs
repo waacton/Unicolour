@@ -62,6 +62,37 @@ internal static class RandomColours
             HctTriplets.Add(Hct());
         }
     }
+    
+    internal static Unicolour UnicolourFrom(ColourSpace colourSpace) => new(colourSpace, GetRandomTriplet(colourSpace).Tuple, Alpha());
+    private static ColourTriplet GetRandomTriplet(ColourSpace colourSpace)
+    {
+        return colourSpace switch
+        {
+            ColourSpace.Rgb => Rgb(),
+            ColourSpace.Rgb255 => Rgb255(),
+            ColourSpace.RgbLinear => RgbLinear(),
+            ColourSpace.Hsb => Hsb(),
+            ColourSpace.Hsl => Hsl(),
+            ColourSpace.Hwb => Hwb(),
+            ColourSpace.Xyz => Xyz(),
+            ColourSpace.Xyy => Xyy(),
+            ColourSpace.Lab => Lab(),
+            ColourSpace.Lchab => Lchab(),
+            ColourSpace.Luv => Luv(),
+            ColourSpace.Lchuv => Lchuv(),
+            ColourSpace.Hsluv => Hsluv(),
+            ColourSpace.Hpluv => Hpluv(),
+            ColourSpace.Ictcp => Ictcp(),
+            ColourSpace.Jzazbz => Jzazbz(),
+            ColourSpace.Jzczhz => Jzczhz(),
+            ColourSpace.Oklab => Oklab(),
+            ColourSpace.Oklch => Oklch(),
+            ColourSpace.Cam02 => Cam02(),
+            ColourSpace.Cam16 => Cam16(),
+            ColourSpace.Hct => Hct(),
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
+        };
+    }
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     private static ColourTriplet Rgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
@@ -90,28 +121,6 @@ internal static class RandomColours
     
     private static double Rng() => Random.NextDouble();
     private static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
-    
-    public static Unicolour UnicolourFromRgb() => Unicolour.FromRgb(Rgb().Tuple, Alpha());
-    public static Unicolour UnicolourFromRgbLinear() => Unicolour.FromRgbLinear(RgbLinear().Tuple, Alpha());
-    public static Unicolour UnicolourFromHsb() => Unicolour.FromHsb(Hsb().Tuple, Alpha());
-    public static Unicolour UnicolourFromHsl() => Unicolour.FromHsl(Hsl().Tuple, Alpha());
-    public static Unicolour UnicolourFromHwb() => Unicolour.FromHwb(Hwb().Tuple, Alpha());
-    public static Unicolour UnicolourFromXyz() => Unicolour.FromXyz(Xyz().Tuple, Alpha());
-    public static Unicolour UnicolourFromXyy() => Unicolour.FromXyy(Xyy().Tuple, Alpha());
-    public static Unicolour UnicolourFromLab() => Unicolour.FromLab(Lab().Tuple, Alpha());
-    public static Unicolour UnicolourFromLchab() => Unicolour.FromLchab(Lchab().Tuple, Alpha());
-    public static Unicolour UnicolourFromLuv() => Unicolour.FromLuv(Luv().Tuple, Alpha());
-    public static Unicolour UnicolourFromLchuv() => Unicolour.FromLchuv(Lchuv().Tuple, Alpha());
-    public static Unicolour UnicolourFromHsluv() => Unicolour.FromHsluv(Hsluv().Tuple, Alpha());
-    public static Unicolour UnicolourFromHpluv() => Unicolour.FromHpluv(Hpluv().Tuple, Alpha());
-    public static Unicolour UnicolourFromIctcp() => Unicolour.FromIctcp(Ictcp().Tuple, Alpha());
-    public static Unicolour UnicolourFromJzazbz() => Unicolour.FromJzazbz(Jzazbz().Tuple, Alpha());
-    public static Unicolour UnicolourFromJzczhz() => Unicolour.FromJzczhz(Jzczhz().Tuple, Alpha());
-    public static Unicolour UnicolourFromOklab() => Unicolour.FromOklab(Oklab().Tuple, Alpha());
-    public static Unicolour UnicolourFromOklch() => Unicolour.FromOklch(Oklch().Tuple, Alpha());
-    public static Unicolour UnicolourFromCam02() => Unicolour.FromCam02(Cam02().Tuple, Alpha());
-    public static Unicolour UnicolourFromCam16() => Unicolour.FromCam16(Cam16().Tuple, Alpha());
-    public static Unicolour UnicolourFromHct() => Unicolour.FromHct(Hct().Tuple, Alpha());
 
     private static string Hex()
     {

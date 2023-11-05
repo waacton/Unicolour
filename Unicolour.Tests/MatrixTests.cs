@@ -194,10 +194,26 @@ public class MatrixTests
     }
     
     [Test]
-    public void ToTripletIncompatibleDimensions()
+    public void ToTripletIncompatibleRowDimensions()
     {
-        var matrix = new Matrix(DataA);
-        Assert.Throws<InvalidOperationException>(() => matrix.ToTriplet());
+        var notEnoughRows = new Matrix(new[,]
+        {
+            { 1.0 },
+            { 2.0 }
+        });
+        
+        Assert.Throws<InvalidOperationException>(() => notEnoughRows.ToTriplet());
+    }
+    
+    [Test]
+    public void ToTripletIncompatibleColumnDimensions()
+    {
+        var tooManyColumns = new Matrix(new[,]
+        {
+            { 1.0, 2.0 }
+        });
+        
+        Assert.Throws<InvalidOperationException>(() => tooManyColumns.ToTriplet());
     }
 
     private static void AssertMatrixMultiply(double[,] dataA, double[,] dataB, double[,] expected)

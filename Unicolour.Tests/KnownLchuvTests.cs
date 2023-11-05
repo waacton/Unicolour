@@ -12,7 +12,7 @@ public class KnownLchuvTests
     public void Red(Illuminant illuminant, double l, double c, double h)
     {
         var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchuv>(red, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchuv>(red, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 87.7347, 135.7804, 127.7236)]
@@ -20,7 +20,7 @@ public class KnownLchuvTests
     public void Green(Illuminant illuminant, double l, double c, double h)
     {
         var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchuv>(green, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchuv>(green, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 32.2970, 130.6812, 265.8727)]
@@ -28,7 +28,7 @@ public class KnownLchuvTests
     public void Blue(Illuminant illuminant, double l, double c, double h)
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchuv>(blue, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchuv>(blue, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.0, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownLchuvTests
     public void Black(Illuminant illuminant, double l, double c, double h)
     {
         var black = ColourLimits.Rgb[ColourLimit.Black].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Lchuv>(black, new(l, c, h), Tolerance);
+        TestUtils.AssertTriplet<Lchuv>(black, new(l, c, h), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 100.0000, 0.0)]

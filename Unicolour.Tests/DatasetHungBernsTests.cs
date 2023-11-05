@@ -45,7 +45,7 @@ public class DatasetHungBernsTests
     [TestCaseSource(nameof(ReferenceHues))]
     public void ReferenceXyy(Unicolour unicolour, Xyy xyy, Luv luv)
     {
-        AssertUtils.AssertTriplet<Xyy>(unicolour, xyy.Triplet, 0.00005);
+        TestUtils.AssertTriplet<Xyy>(unicolour, xyy.Triplet, 0.00005);
     }
     
     [TestCaseSource(nameof(ReferenceHues))]
@@ -54,7 +54,7 @@ public class DatasetHungBernsTests
         // for some reason, cyan Luv.V from the data table doesn't quite match Unicolour calculations
         // though no reason to distrust Unicolour since the conversions have been heavily tested
         var tolerance = unicolour.Equals(CyanRef) ? 0.4 : 0.15;
-        AssertUtils.AssertTriplet<Luv>(unicolour, luv.Triplet, tolerance);
+        TestUtils.AssertTriplet<Luv>(unicolour, luv.Triplet, tolerance);
     }
     
     [TestCaseSource(nameof(GroupedByHue))]

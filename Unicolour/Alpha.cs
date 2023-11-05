@@ -7,5 +7,5 @@ public record Alpha(double A)
     public int A255 => (int)Math.Round(ConstrainedA * 255);
     public string Hex => $"{A255:X2}";
     
-    public override string ToString() => $"{A}";
+    public override string ToString() => $"{A:F2}";
 }

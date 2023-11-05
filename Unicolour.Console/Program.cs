@@ -1,8 +1,8 @@
 ﻿using Spectre.Console;
 using Wacton.Unicolour;
 
-var white = Unicolour.FromHex("#000000");
-var black = Unicolour.FromHex("#FFFFFF");
+var white = new Unicolour("#000000");
+var black = new Unicolour("#FFFFFF");
 
 const int col1Width = 8;
 const int col2Width = 20;
@@ -14,8 +14,8 @@ while (true)
     var inputHex = AnsiConsole.Ask<string>("[dim]Colour hex:[/]");
     try
     {
-        var unicolour = Unicolour.FromHex(inputHex);
-        var useWhiteText = unicolour.DeltaE76(white) > unicolour.DeltaE76(black);
+        var unicolour = new Unicolour(inputHex);
+        var useWhiteText = unicolour.Difference(DeltaE.Cie76, white) > unicolour.Difference(DeltaE.Cie76, black);
         AnsiConsole.MarkupLine(GetBar(unicolour, useWhiteText));
         AnsiConsole.Write(GetTable(unicolour));
     }

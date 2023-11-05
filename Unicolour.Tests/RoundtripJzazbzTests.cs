@@ -16,6 +16,6 @@ public class RoundtripJzazbzTests
     {
         var original = new Jzazbz(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Jzczhz.ToJzazbz(Jzczhz.FromJzazbz(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

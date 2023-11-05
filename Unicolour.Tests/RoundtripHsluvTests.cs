@@ -12,6 +12,6 @@ public class RoundtripHsluvTests
     {
         var original = new Hsluv(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Hsluv.FromLchuv(Hsluv.ToLchuv(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

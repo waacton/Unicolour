@@ -11,28 +11,28 @@ public class KnownOklchTests
     public void Red()
     {
         var red = ColourLimits.Rgb[ColourLimit.Red];
-        AssertUtils.AssertTriplet<Oklch>(red, new(0.62796, 0.25768, 29.23), Tolerance);
+        TestUtils.AssertTriplet<Oklch>(red, new(0.62796, 0.25768, 29.23), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = ColourLimits.Rgb[ColourLimit.Green];
-        AssertUtils.AssertTriplet<Oklch>(green, new(0.86644, 0.29483, 142.50), Tolerance);
+        TestUtils.AssertTriplet<Oklch>(green, new(0.86644, 0.29483, 142.50), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue];
-        AssertUtils.AssertTriplet<Oklch>(blue, new(0.45201, 0.31321, 264.05), Tolerance);
+        TestUtils.AssertTriplet<Oklch>(blue, new(0.45201, 0.31321, 264.05), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        AssertUtils.AssertTriplet<Oklch>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Oklch>(black, new(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]

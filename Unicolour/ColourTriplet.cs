@@ -54,7 +54,11 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
     
     internal ColourTriplet WithUnpremultipliedAlpha(double alpha)
     {
-        if (alpha == 0) return new(First, Second, Third, HueIndex);
+        if (alpha == 0)
+        {
+            alpha = 1.0;
+        }
+        
         return HueIndex switch
         {
             0 => new(First, Second / alpha, Third / alpha, HueIndex),

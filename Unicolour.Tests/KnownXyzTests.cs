@@ -12,7 +12,7 @@ public class KnownXyzTests
     public void Red(Illuminant illuminant, double x, double y, double z)
     {
         var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyz>(red, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet<Xyz>(red, new(x, y, z), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.357576, 0.715152, 0.119192)]
@@ -20,7 +20,7 @@ public class KnownXyzTests
     public void Green(Illuminant illuminant, double x, double y, double z)
     {
         var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyz>(green, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet<Xyz>(green, new(x, y, z), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.180437, 0.072175, 0.950304)]
@@ -28,7 +28,7 @@ public class KnownXyzTests
     public void Blue(Illuminant illuminant, double x, double y, double z)
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyz>(blue, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet<Xyz>(blue, new(x, y, z), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.0, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownXyzTests
     public void Black(Illuminant illuminant, double x, double y, double z)
     {
         var black = ColourLimits.Rgb[ColourLimit.Black].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyz>(black, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet<Xyz>(black, new(x, y, z), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.950470, 1.000000, 1.088830)]
@@ -44,7 +44,7 @@ public class KnownXyzTests
     public void White(Illuminant illuminant, double x, double y, double z)
     {
         var white = ColourLimits.Rgb[ColourLimit.White].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminant));
-        AssertUtils.AssertTriplet<Xyz>(white, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet<Xyz>(white, new(x, y, z), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.312727, 0.329023)]
@@ -52,8 +52,8 @@ public class KnownXyzTests
     [TestCase(Illuminant.E, 0.333333, 0.333333)]
     public void BlackChromaticity(Illuminant illuminant, double x, double y)
     {
-        var unicolour = Unicolour.FromXyz(ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.0, 0.0, 0.0);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 0.0), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Xyz, ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.0, 0.0, 0.0);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 0.0), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.333333, 0.333333)]
@@ -61,8 +61,8 @@ public class KnownXyzTests
     [TestCase(Illuminant.E, 0.333333, 0.333333)]
     public void GreyChromaticity(Illuminant illuminant, double x, double y)
     {
-        var unicolour = Unicolour.FromXyz(ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.5, 0.5, 0.5);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 0.5), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Xyz, ConfigUtils.GetConfigWithStandardRgb(illuminant), 0.5, 0.5, 0.5);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 0.5), Tolerance);
     }
     
     [TestCase(Illuminant.D65, 0.333333, 0.333333)]
@@ -70,7 +70,7 @@ public class KnownXyzTests
     [TestCase(Illuminant.E, 0.333333, 0.333333)]
     public void WhiteChromaticity(Illuminant illuminant, double x, double y)
     {
-        var unicolour = Unicolour.FromXyz(ConfigUtils.GetConfigWithStandardRgb(illuminant), 1, 1, 1);
-        AssertUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 1.0), Tolerance);
+        var unicolour = new Unicolour(ColourSpace.Xyz, ConfigUtils.GetConfigWithStandardRgb(illuminant), 1, 1, 1);
+        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, 1.0), Tolerance);
     }
 }

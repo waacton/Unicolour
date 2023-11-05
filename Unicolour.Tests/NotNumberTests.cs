@@ -18,74 +18,74 @@ public class NotNumberTests
     };
     
     [TestCaseSource(nameof(testCases))]
-    public void Rgb(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgb(r, g, b));
+    public void Rgb(double r, double g, double b) => AssertUnicolour(new(ColourSpace.Rgb, r, g, b));
     
     [TestCaseSource(nameof(testCases))]
-    public void RgbLinear(double r, double g, double b) => AssertUnicolour(Unicolour.FromRgbLinear(r, g, b));
+    public void RgbLinear(double r, double g, double b) => AssertUnicolour(new(ColourSpace.RgbLinear, r, g, b));
 
     [TestCaseSource(nameof(testCases))]
-    public void Hsb(double h, double s, double b) => AssertUnicolour(Unicolour.FromHsb(h, s, b));
+    public void Hsb(double h, double s, double b) => AssertUnicolour(new(ColourSpace.Hsb, h, s, b));
 
     [TestCaseSource(nameof(testCases))]
-    public void Hsl(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsl(h, s, l));
+    public void Hsl(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hsl, h, s, l));
     
     [TestCaseSource(nameof(testCases))]
-    public void Hwb(double h, double w, double b) => AssertUnicolour(Unicolour.FromHwb(h, w, b));
+    public void Hwb(double h, double w, double b) => AssertUnicolour(new(ColourSpace.Hwb, h, w, b));
 
     [TestCaseSource(nameof(testCases))]
-    public void Xyz(double x, double y, double z) => AssertUnicolour(Unicolour.FromXyz(x, y, z));
+    public void Xyz(double x, double y, double z) => AssertUnicolour(new(ColourSpace.Xyz, x, y, z));
     
     [TestCaseSource(nameof(testCases))]
-    public void Xyy(double x, double y, double upperY) => AssertUnicolour(Unicolour.FromXyy(x, y, upperY));
+    public void Xyy(double x, double y, double upperY) => AssertUnicolour(new(ColourSpace.Xyy, x, y, upperY));
 
     [TestCaseSource(nameof(testCases))]
-    public void Lab(double l, double a, double b) => AssertUnicolour(Unicolour.FromLab(l, a, b));
+    public void Lab(double l, double a, double b) => AssertUnicolour(new(ColourSpace.Lab, l, a, b));
 
     [TestCaseSource(nameof(testCases))]
-    public void Lchab(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchab(l, c, h));
+    public void Lchab(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Lchab, l, c, h));
 
     [TestCaseSource(nameof(testCases))]
-    public void Luv(double l, double u, double v) => AssertUnicolour(Unicolour.FromLuv(l, u, v));
+    public void Luv(double l, double u, double v) => AssertUnicolour(new(ColourSpace.Luv, l, u, v));
 
     [TestCaseSource(nameof(testCases))]
-    public void Lchuv(double l, double c, double h) => AssertUnicolour(Unicolour.FromLchuv(l, c, h));
+    public void Lchuv(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Lchuv, l, c, h));
 
     [TestCaseSource(nameof(testCases))]
-    public void Hsluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHsluv(h, s, l));
+    public void Hsluv(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hsluv, h, s, l));
 
     [TestCaseSource(nameof(testCases))]
-    public void Hpluv(double h, double s, double l) => AssertUnicolour(Unicolour.FromHpluv(h, s, l));
+    public void Hpluv(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hpluv, h, s, l));
 
     [TestCaseSource(nameof(testCases))]
-    public void Ictcp(double i, double ct, double cp) => AssertUnicolour(Unicolour.FromIctcp(i, ct, cp));
+    public void Ictcp(double i, double ct, double cp) => AssertUnicolour(new(ColourSpace.Ictcp, i, ct, cp));
 
     [TestCaseSource(nameof(testCases))]
-    public void Jzazbz(double jz, double az, double bz) => AssertUnicolour(Unicolour.FromJzazbz(jz, az, bz));
+    public void Jzazbz(double jz, double az, double bz) => AssertUnicolour(new(ColourSpace.Jzazbz, jz, az, bz));
 
     [TestCaseSource(nameof(testCases))]
-    public void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(Unicolour.FromJzczhz(jz, cz, hz));
+    public void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(new(ColourSpace.Jzczhz, jz, cz, hz));
 
     [TestCaseSource(nameof(testCases))]
-    public void Oklab(double l, double a, double b) => AssertUnicolour(Unicolour.FromOklab(l, a, b));
+    public void Oklab(double l, double a, double b) => AssertUnicolour(new(ColourSpace.Oklab, l, a, b));
 
     [TestCaseSource(nameof(testCases))]
-    public void Oklch(double l, double c, double h) => AssertUnicolour(Unicolour.FromOklch(l, c, h));
+    public void Oklch(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Oklch, l, c, h));
     
     [TestCaseSource(nameof(testCases))]
-    public void Cam02(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam02(j, a, b));
+    public void Cam02(double j, double a, double b) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b));
     
     [TestCaseSource(nameof(testCases))]
-    public void Cam16(double j, double a, double b) => AssertUnicolour(Unicolour.FromCam16(j, a, b));
+    public void Cam16(double j, double a, double b) => AssertUnicolour(new(ColourSpace.Cam16, j, a, b));
     
     [TestCaseSource(nameof(testCases))]
-    public void Hct(double h, double c, double t) => AssertUnicolour(Unicolour.FromHct(h, c, t));
+    public void Hct(double h, double c, double t) => AssertUnicolour(new(ColourSpace.Hct, h, c, t));
     
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but are used as NaN
     [TestCaseSource(nameof(testCases))]
     public void IsNumberButUseAsNotNumber(double l, double u, double v)
     {
-        var unicolour = Unicolour.FromLuv(l, u, v);
+        var unicolour = new Unicolour(ColourSpace.Luv, l, u, v);
         Assert.That(unicolour.Luv.IsNaN, Is.True);
         Assert.That(unicolour.Xyz.IsNaN, Is.False);
         Assert.That(unicolour.Rgb.IsNaN, Is.False);
@@ -111,11 +111,12 @@ public class NotNumberTests
         Assert.That(initial.UseAsHued, Is.False);
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(unicolour.Hex, Is.EqualTo("-"));
+        Assert.That(unicolour.Rgb.Byte255.ConstrainedHex, Is.EqualTo("-"));
         Assert.That(unicolour.IsInDisplayGamut, Is.False);
         Assert.That(unicolour.RelativeLuminance, Is.NaN);
         Assert.That(unicolour.Description, Is.EqualTo("-"));
 
-        var spaces = AssertUtils.AllColourSpaces.Except(new [] { unicolour.InitialColourSpace }).ToList();
+        var spaces = TestUtils.AllColourSpaces.Except(new [] { unicolour.InitialColourSpace }).ToList();
         Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));
         Assert.That(data.UseAsNaN(spaces), Has.All.True);
         Assert.That(data.UseAsGreyscale(spaces), Has.All.False);

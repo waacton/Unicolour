@@ -47,6 +47,14 @@ public class ColourTripletTests
         new TestCaseData(new ColourTriplet(1, 5, -4.4, 2), 0.5, new ColourTriplet(2, 10, -4.4, 2))
     };
     
+    private static readonly List<TestCaseData> UnpremultipliedZeroAlphaTestData = new()
+    {
+        new TestCaseData(new ColourTriplet(1, 5, -4.4, null), 0.0, new ColourTriplet(1, 5, -4.4, null)),
+        new TestCaseData(new ColourTriplet(1, 5, -4.4, 0), 0.0, new ColourTriplet(1, 5, -4.4, 0)),
+        new TestCaseData(new ColourTriplet(1, 5, -4.4, 1), 0.0, null),
+        new TestCaseData(new ColourTriplet(1, 5, -4.4, 2), 0.0, new ColourTriplet(1, 5, -4.4, 2))
+    };
+    
     [TestCase(0, 0, 0)]
     [TestCase(0, 0.5, 1)]
     [TestCase(1, 1, 1)]
@@ -106,7 +114,7 @@ public class ColourTripletTests
         ColourTriplet hueOverrideTriplet = null!;
         Assert.DoesNotThrow(() => hueOverrideTriplet = triplet.WithHueOverride(hueOverride));
         Assert.That(hueOverrideTriplet.HueValue(), Is.EqualTo(hueOverride));
-        AssertUtils.AssertTriplet(hueOverrideTriplet, expectedTriplet, 0.00000000001);
+        TestUtils.AssertTriplet(hueOverrideTriplet, expectedTriplet, 0.00000000001);
     }
     
     [TestCaseSource(nameof(ModuloHueTestData))]
@@ -120,7 +128,7 @@ public class ColourTripletTests
 
         ColourTriplet hueModuloTriplet = null!;
         Assert.DoesNotThrow(() => hueModuloTriplet = triplet.WithHueModulo());
-        AssertUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
+        TestUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
     }
     
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]
@@ -134,10 +142,11 @@ public class ColourTripletTests
 
         ColourTriplet premultipliedAlphaTriplet = null!;
         Assert.DoesNotThrow(() => premultipliedAlphaTriplet = triplet.WithPremultipliedAlpha(alpha));
-        AssertUtils.AssertTriplet(premultipliedAlphaTriplet, expectedTriplet, 0.00000000001);
+        TestUtils.AssertTriplet(premultipliedAlphaTriplet, expectedTriplet, 0.00000000001);
     }
     
     [TestCaseSource(nameof(UnpremultipliedAlphaTestData))]
+    [TestCaseSource(nameof(UnpremultipliedZeroAlphaTestData))]
     public void UnpremultipliedAlpha(ColourTriplet triplet, double alpha, ColourTriplet expectedTriplet)
     {
         if (triplet.HueIndex is 1)
@@ -148,6 +157,6 @@ public class ColourTripletTests
 
         ColourTriplet unpremultipliedAlphaTriplet = null!;
         Assert.DoesNotThrow(() => unpremultipliedAlphaTriplet = triplet.WithUnpremultipliedAlpha(alpha));
-        AssertUtils.AssertTriplet(unpremultipliedAlphaTriplet, expectedTriplet, 0.00000000001);
+        TestUtils.AssertTriplet(unpremultipliedAlphaTriplet, expectedTriplet, 0.00000000001);
     }
 }

@@ -23,11 +23,11 @@ public class RoundtripHwbTests
         {
             var roundtripFromOriginal = Hwb.ToHsb(original);
             var roundtripFromScaled = Hwb.ToHsb(scaled);
-            AssertUtils.AssertTriplet(roundtripFromOriginal.Triplet, roundtripFromScaled.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtripFromOriginal.Triplet, roundtripFromScaled.Triplet, Tolerance);
         }
 
         var roundtrip = Hwb.FromHsb(Hwb.ToHsb(original));
         var expected = needsScaling ? scaled.Triplet : original.Triplet;
-        AssertUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
     }
 }

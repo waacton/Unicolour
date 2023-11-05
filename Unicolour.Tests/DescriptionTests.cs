@@ -385,7 +385,7 @@ public class DescriptionTests
         var hues = new List<double> {h, h + 360, h - 360};
         foreach (var hue in hues)
         {
-            var unicolour = Unicolour.FromHsl(hue, s, l);
+            var unicolour = new Unicolour(ColourSpace.Hsl, hue, s, l);
             Assert.That(unicolour.Description.Split(" ").Length, Is.LessThanOrEqualTo(3));
             Assert.That(unicolour.Description, Contains.Substring(included.ToString()));
             

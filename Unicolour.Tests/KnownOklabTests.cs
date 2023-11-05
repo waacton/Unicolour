@@ -13,35 +13,35 @@ public class KnownOklabTests
     public void Red()
     {
         var red = ColourLimits.Rgb[ColourLimit.Red];
-        AssertUtils.AssertTriplet<Oklab>(red, new(0.62796, 0.22486, 0.12585), Tolerance);
+        TestUtils.AssertTriplet<Oklab>(red, new(0.62796, 0.22486, 0.12585), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = ColourLimits.Rgb[ColourLimit.Green];
-        AssertUtils.AssertTriplet<Oklab>(green, new(0.86644, -0.23389, 0.1795), Tolerance);
+        TestUtils.AssertTriplet<Oklab>(green, new(0.86644, -0.23389, 0.1795), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = ColourLimits.Rgb[ColourLimit.Blue];
-        AssertUtils.AssertTriplet<Oklab>(blue, new(0.45201, -0.03246, -0.31153), Tolerance);
+        TestUtils.AssertTriplet<Oklab>(blue, new(0.45201, -0.03246, -0.31153), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = ColourLimits.Rgb[ColourLimit.Black];
-        AssertUtils.AssertTriplet<Oklab>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Oklab>(black, new(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = ColourLimits.Rgb[ColourLimit.White];
-        AssertUtils.AssertTriplet<Oklab>(white, new(1.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Oklab>(white, new(1.0, 0.0, 0.0), Tolerance);
     }
     
     // Oklab actually provides test values 🙌 (https://bottosson.github.io/posts/oklab/#table-of-example-xyz-and-oklab-pairs)
@@ -82,13 +82,13 @@ public class KnownOklabTests
     private static void AssertFromXyzD50(ColourTriplet xyz, ColourTriplet expectedOklab)
     {
         // create unicolour from default D65 XYZ whitepoint
-        var fromXyzD65 = Unicolour.FromXyz(xyz.Tuple);
+        var fromXyzD65 = new Unicolour(ColourSpace.Xyz, xyz.Tuple);
         var rgb = fromXyzD65.Rgb;
         
         // using the D65 RGB, create a unicolour based in D50 XYZ
         var configXyzD50 = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         
-        var toXyzD50 = Unicolour.FromRgb(configXyzD50, rgb.Triplet.Tuple);
+        var toXyzD50 = new Unicolour(ColourSpace.Rgb, configXyzD50, rgb.Triplet.Tuple);
         var oklabFromXyzD50 = toXyzD50.Oklab;
         
         // since Oklab specifically uses a D65 whitepoint

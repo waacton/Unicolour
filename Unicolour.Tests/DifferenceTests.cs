@@ -1,13 +1,24 @@
 ﻿namespace Wacton.Unicolour.Tests;
 
-using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 public class DifferenceTests
 {
     private const double Tolerance = 0.00005;
-    private static Unicolour RandomColour() => RandomColours.UnicolourFromRgb();
+    
+    // ReSharper disable once CollectionNeverQueried.Local
+    private static readonly List<(Unicolour reference, Unicolour sample)> ReferenceSamplePairs = new();
+    static DifferenceTests()
+    {
+        for (var i = 0; i < 100; i++)
+        {
+            var reference = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+            var sample = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+            ReferenceSamplePairs.Add((reference, sample));
+        }
+    }
 
     [TestCase(ColourLimit.Black, ColourLimit.White, 100.000000)]
     [TestCase(ColourLimit.Red, ColourLimit.Green, 170.565257)]
@@ -17,11 +28,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 170.565257)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 258.682686)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 176.314083)]
-    public void DeltaE76(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Cie76(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaE76(sample);
+        var delta = reference.Difference(DeltaE.Cie76, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -34,11 +45,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 68.800069)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 100.577051)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 70.580743)]
-    public void DeltaE94Graphics(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Cie94Graphics(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaE94(sample, false);
+        var delta = reference.Difference(DeltaE.Cie94, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.0005));
     }
 
@@ -51,11 +62,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 64.530477)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 92.093048)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 71.003011)]
-    public void DeltaE94Textiles(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Cie94Textiles(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaE94(sample, true);
+        var delta = reference.Difference(DeltaE.Cie94Textiles, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -69,11 +80,45 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 86.608245)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 83.185881)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 52.881375)]
-    public void DeltaE00(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Ciede2000(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaE00(sample);
+        var delta = reference.Difference(DeltaE.Ciede2000, sample);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
+    }
+    
+    // Cmc is not symmetric
+    [TestCase(ColourLimit.Black, ColourLimit.White, 195.694716)]
+    [TestCase(ColourLimit.Red, ColourLimit.Green, 108.449110)]
+    [TestCase(ColourLimit.Green, ColourLimit.Blue, 100.565250)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Red, 76.450069)]
+    [TestCase(ColourLimit.White, ColourLimit.Black, 67.480171)]
+    [TestCase(ColourLimit.Green, ColourLimit.Red, 65.837219)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Green, 124.001222)]
+    [TestCase(ColourLimit.Red, ColourLimit.Blue, 109.761942)]
+    public void CmcAcceptability(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    {
+        var reference = ColourLimits.Rgb[referenceColour];
+        var sample = ColourLimits.Rgb[sampleColour];
+        var delta = reference.Difference(DeltaE.CmcAcceptability, sample);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
+    }
+    
+    // Cmc is not symmetric
+    [TestCase(ColourLimit.Black, ColourLimit.White, 97.847358)]
+    [TestCase(ColourLimit.Red, ColourLimit.Green, 105.146203)]
+    [TestCase(ColourLimit.Green, ColourLimit.Blue, 94.630593)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Red, 73.359104)]
+    [TestCase(ColourLimit.White, ColourLimit.Black, 33.740085)]
+    [TestCase(ColourLimit.Green, ColourLimit.Red, 62.338288)]
+    [TestCase(ColourLimit.Blue, ColourLimit.Green, 110.145001)]
+    [TestCase(ColourLimit.Red, ColourLimit.Blue, 108.570712)]
+    public void CmcPerceptibility(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    {
+        var reference = ColourLimits.Rgb[referenceColour];
+        var sample = ColourLimits.Rgb[sampleColour];
+        var delta = reference.Difference(DeltaE.CmcPerceptibility, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -86,11 +131,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 239.982435)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 234.838743)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 322.659678)]
-    public void DeltaEItp(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Itp(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaEItp(sample);
+        var delta = reference.Difference(DeltaE.Itp, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -103,11 +148,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 0.195524)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 0.271571)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 0.281457)]
-    public void DeltaEz(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Z(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaEz(sample);
+        var delta = reference.Difference(DeltaE.Z, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -119,11 +164,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 201.534889)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 308.110214)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 196.009473)]
-    public void DeltaEHyab(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Hyab(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaEHyab(sample);
+        var delta = reference.Difference(DeltaE.Hyab, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -135,11 +180,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 0.519797)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 0.673409)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 0.537117)]
-    public void DeltaEOk(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Ok(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaEOk(sample);
+        var delta = reference.Difference(DeltaE.Ok, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -151,11 +196,11 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 76.105436)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 92.321874)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 84.119853)]
-    public void DeltaCam02(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Cam02(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaECam02(sample);
+        var delta = reference.Difference(DeltaE.Cam02, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -167,99 +212,40 @@ public class DifferenceTests
     [TestCase(ColourLimit.Green, ColourLimit.Red, 22.523082)]
     [TestCase(ColourLimit.Blue, ColourLimit.Green, 24.596320)]
     [TestCase(ColourLimit.Red, ColourLimit.Blue, 20.689226)]
-    public void DeltaCam16(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
+    public void Cam16(ColourLimit referenceColour, ColourLimit sampleColour, double expectedDelta)
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.DeltaECam16(sample);
+        var delta = reference.Difference(DeltaE.Cam16, sample);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
-    [Test]
-    public void RandomSymmetricDeltaE76() => AssertRandomSymmetricDeltas(Comparison.DeltaE76);
-    
-    [Test]
-    public void RandomSymmetricDeltaE00() => AssertRandomSymmetricDeltas(Comparison.DeltaE00);
-    
-    [Test]
-    public void RandomSymmetricDeltaEItp() => AssertRandomSymmetricDeltas(Comparison.DeltaEItp);
-    
-    [Test]
-    public void RandomSymmetricDeltaEz() => AssertRandomSymmetricDeltas(Comparison.DeltaEz);
-    
-    [Test]
-    public void RandomSymmetricDeltaEHyab() => AssertRandomSymmetricDeltas(Comparison.DeltaEHyab);
-    
-    [Test]
-    public void RandomSymmetricDeltaEOk() => AssertRandomSymmetricDeltas(Comparison.DeltaEOk);
-    
-    [Test]
-    public void RandomSymmetricDeltaECam02() => AssertRandomSymmetricDeltas(Comparison.DeltaECam02);
-
-    [Test]
-    public void RandomSymmetricDeltaECam16() => AssertRandomSymmetricDeltas(Comparison.DeltaECam16);
-
-    [Test]
-    public void NotNumberDeltaE76() => AssertNotNumberDeltas(Comparison.DeltaE76, ColourSpace.Lab);
-    
-    [Test]
-    public void NotNumberDeltaE94ForGraphics() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample), ColourSpace.Lab);
-    
-    [Test]
-    public void NotNumberDeltaE94ForTextiles() => AssertNotNumberDeltas((reference, sample) => reference.DeltaE94(sample, true), ColourSpace.Lab);
-    
-    [Test]
-    public void NotNumberDeltaE00() => AssertNotNumberDeltas(Comparison.DeltaE00, ColourSpace.Lab);
-    
-    [Test]
-    public void NotNumberDeltaEItp() => AssertNotNumberDeltas(Comparison.DeltaEItp, ColourSpace.Ictcp);
-
-    [Test]
-    public void NotNumberDeltaEz() => AssertNotNumberDeltas(Comparison.DeltaEz, ColourSpace.Jzczhz);
-    
-    [Test]
-    public void NotNumberDeltaEHyab() => AssertNotNumberDeltas(Comparison.DeltaEHyab, ColourSpace.Lab);
-    
-    [Test]
-    public void NotNumberDeltaEOk() => AssertNotNumberDeltas(Comparison.DeltaEOk, ColourSpace.Oklab);
-    
-    [Test]
-    public void NotNumberDeltaECam02() => AssertNotNumberDeltas(Comparison.DeltaECam02, ColourSpace.Cam02);
-    
-    [Test]
-    public void NotNumberDeltaECam16() => AssertNotNumberDeltas(Comparison.DeltaECam16, ColourSpace.Cam16);
-
-    private static void AssertRandomSymmetricDeltas(Func<Unicolour, Unicolour, double> getDelta)
+    [Test, Combinatorial]
+    public static void RandomSymmetric(
+        [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
+        [ValueSource(nameof(ReferenceSamplePairs))] (Unicolour reference, Unicolour sample) pair)
     {
-        for (var i = 0; i < 100; i++)
-        {
-            var reference = RandomColour();
-            var sample = RandomColour();
-            Assert.That(getDelta(reference, sample), Is.EqualTo(getDelta(sample, reference)));
-        }
+        var reference = pair.reference;
+        var sample = pair.sample;
+        Assert.That(reference.Difference(deltaE, sample), Is.EqualTo(sample.Difference(deltaE, reference)));
     }
-
-    private static void AssertNotNumberDeltas(Func<Unicolour, Unicolour, double> getDelta, ColourSpace colourSpace)
+    
+    [TestCase(DeltaE.Cie76, ColourSpace.Lab)]
+    [TestCase(DeltaE.Cie94, ColourSpace.Lab)]
+    [TestCase(DeltaE.Cie94Textiles, ColourSpace.Lab)]
+    [TestCase(DeltaE.Ciede2000, ColourSpace.Lab)]
+    [TestCase(DeltaE.CmcAcceptability, ColourSpace.Lab)]
+    [TestCase(DeltaE.CmcPerceptibility, ColourSpace.Lab)]
+    [TestCase(DeltaE.Itp, ColourSpace.Ictcp)]
+    [TestCase(DeltaE.Z, ColourSpace.Jzczhz)]
+    [TestCase(DeltaE.Hyab, ColourSpace.Lab)]
+    [TestCase(DeltaE.Ok, ColourSpace.Oklab)]
+    [TestCase(DeltaE.Cam02, ColourSpace.Cam02)]
+    [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
+    public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)
     {
-        var unicolour = GetUnicolour(colourSpace, double.NaN, double.NaN, double.NaN);
-        var delta = getDelta(unicolour, unicolour);
+        var unicolour = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
+        var delta = unicolour.Difference(deltaE, unicolour);
         Assert.That(delta, Is.NaN);
-    }
-    
-    private delegate Unicolour UnicolourConstructor(double first, double second, double third, double alpha = 1.0);
-    private static Unicolour GetUnicolour(ColourSpace colourSpace, double first, double second, double third)
-    {
-        UnicolourConstructor constructor = colourSpace switch
-        {
-            ColourSpace.Lab => Unicolour.FromLab,
-            ColourSpace.Ictcp => Unicolour.FromIctcp,
-            ColourSpace.Jzczhz => Unicolour.FromJzczhz,
-            ColourSpace.Oklab => Unicolour.FromOklab,
-            ColourSpace.Cam02 => Unicolour.FromCam02,
-            ColourSpace.Cam16 => Unicolour.FromCam16,
-            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
-        };
-
-        return constructor.Invoke(first, second, third);
     }
 }

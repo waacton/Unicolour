@@ -17,7 +17,7 @@ public class RoundtripHsbTests
     {
         var original = new Hsb(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Hsb.FromRgb(Hsb.ToRgb(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HsbTriplets))]
@@ -30,7 +30,7 @@ public class RoundtripHsbTests
     {
         var original = new Hsb(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Hsl.ToHsb(Hsl.FromHsb(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HsbTriplets))]
@@ -43,6 +43,6 @@ public class RoundtripHsbTests
     {
         var original = new Hsb(triplet.First, triplet.Second, triplet.Third);
         var roundtrip = Hwb.ToHsb(Hwb.FromHsb(original));
-        AssertUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

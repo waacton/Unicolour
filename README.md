@@ -8,11 +8,14 @@ Unicolour is a .NET library written in C# for working with colour:
 - Colour space conversion
 - Colour mixing / colour interpolation
 - Colour comparison
-- Colour properties
+- Colour information
 - Colour gamut mapping
 
+Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
+
 ## Overview 🧭
-A `Unicolour` encapsulates a single colour and its representation across different colour spaces. It supports:
+A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
+It supports:
 - RGB
 - Linear RGB
 - HSB/HSV
@@ -46,12 +49,40 @@ For each forward transformation there is a corresponding reverse transformation.
 XYZ is considered the root colour space.
 </details>
 
-The following colour properties are available on each `Unicolour`:
-- Hex representation
-- Relative luminance
-- Temperature (CCT and Duv)
+## Quickstart ⚡
+| Colour&nbsp;space                       | Create                          | Get            |
+|-----------------------------------------|---------------------------------|----------------|
+| RGB&nbsp;(Hex)                          | `new(hex)`                      | `.Hex`         |
+| RGB&nbsp;(0–255)                        | `new(ColourSpace.Rgb255, ⋯)`    | `.Rgb.Byte255` |
+| RGB                                     | `new(ColourSpace.Rgb, ⋯)`       | `.Rgb`         |
+| Linear&nbsp;RGB                         | `new(ColourSpace.RgbLinear, ⋯)` | `.RgbLinear`   |
+| HSB/HSV                                 | `new(ColourSpace.Hsb, ⋯)`       | `.Hsb`         |
+| HSL                                     | `new(ColourSpace.Hsl, ⋯)`       | `.Hsl`         |
+| HWB                                     | `new(ColourSpace.Hwb, ⋯)`       | `.Hwb`         |
+| CIEXYZ                                  | `new(ColourSpace.Xyz, ⋯)`       | `.Xyz`         |
+| CIExyY                                  | `new(ColourSpace.Xyy, ⋯)`       | `.Xyy`         |
+| CIELAB                                  | `new(ColourSpace.Lab, ⋯)`       | `.Lab`         |
+| CIELCh<sub>ab</sub>                     | `new(ColourSpace.Lchab, ⋯)`     | `.Lchab`       |
+| CIELUV                                  | `new(ColourSpace.Luv, ⋯)`       | `.Luv`         |
+| CIELCh<sub>uv</sub>                     | `new(ColourSpace.Lchuv, ⋯)`     | `.Lchuv`       |
+| HSLuv                                   | `new(ColourSpace.Hsluv, ⋯)`     | `.Hsluv`       |
+| HPLuv                                   | `new(ColourSpace.Hpluv, ⋯)`     | `.Hpluv`       |
+| IC<sub>T</sub>C<sub>P</sub>             | `new(ColourSpace.Ictcp, ⋯)`     | `.Ictcp`       |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `new(ColourSpace.Jzazbz, ⋯)`    | `.Jzazbz`      |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `new(ColourSpace.Jzczhz, ⋯)`    | `.Jzczhz`      |
+| Oklab                                   | `new(ColourSpace.Oklab, ⋯)`     | `.Oklab`       |
+| Oklch                                   | `new(ColourSpace.Oklch, ⋯)`     | `.Oklch`       |
+| CIECAM02                                | `new(ColourSpace.Cam02, ⋯)`     | `.Cam02`       |
+| CAM16                                   | `new(ColourSpace.Cam16, ⋯)`     | `.Cam16`       |
+| HCT                                     | `new(ColourSpace.Hct, ⋯)`       | `.Hct`         |
 
-Unicolour can be used to calculate colour difference via:
+## Features 🔦
+A `Unicolour` can be instantiated using any of the supported colour spaces.
+Conversion to other colour spaces is handled by Unicolour, and the results can be accessed through properties.
+
+Two colours can be mixed / interpolated through any colour space, with or without premultiplied alpha.
+
+Colour difference or colour distance can be calculated using:
 - ΔE<sub>76</sub> (CIE76)
 - ΔE<sub>94</sub> (CIE94)
 - ΔE<sub>00</sub> (CIEDE2000)
@@ -62,6 +93,11 @@ Unicolour can be used to calculate colour difference via:
 - ΔE<sub>OK</sub>
 - ΔE<sub>CAM02</sub>
 - ΔE<sub>CAM16</sub>
+  
+The following colour information is available:
+- Hex representation
+- Relative luminance
+- Temperature (CCT and Duv)
 
 Simulation of colour vision deficiency (CVD) / colour blindness is supported for:
 - Protanopia (no red perception)
@@ -69,8 +105,7 @@ Simulation of colour vision deficiency (CVD) / colour blindness is supported for
 - Tritanopia (no blue perception)
 - Achromatopsia (no colour perception)
 
-If a colour is outwith the display gamut, the closest in-gamut colour can be obtained using the provided
-gamut mapping algorithm, which meets CSS specifications.
+If a colour is outwith the display gamut, the closest in-gamut colour can be obtained using the provided gamut mapping algorithm, which meets CSS specifications.
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
 These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
@@ -79,35 +114,6 @@ This library was initially written for personal projects since existing librarie
 The goal of this library is to be accurate, intuitive, and easy to use.
 Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
 It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
-
-Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
-
-## Quickstart ⚡
-| Colour space                            | Enum                    | Create                            | Get            |
-|-----------------------------------------|-------------------------|-----------------------------------|----------------|
-| RGB (Hex)                               | -                       | `new(hex)`                        | `.Hex`         |
-| RGB (0-255)                             | `ColourSpace.Rgb255`    | `new(ColourSpace.Rgb255, ...)`    | `.Rgb.Byte255` |
-| RGB                                     | `ColourSpace.Rgb`       | `new(ColourSpace.Rgb, ...)`       | `.Rgb`         |
-| Linear RGB                              | `ColourSpace.RgbLinear` | `new(ColourSpace.RgbLinear, ...)` | `.RgbLinear`   |
-| HSB/HSV                                 | `ColourSpace.Hsb`       | `new(ColourSpace.Hsb, ...)`       | `.Hsb`         |
-| HSL                                     | `ColourSpace.Hsl`       | `new(ColourSpace.Hsl, ...)`       | `.Hsl`         |
-| HWB                                     | `ColourSpace.Hwb`       | `new(ColourSpace.Hwb, ...)`       | `.Hwb`         |
-| CIEXYZ                                  | `ColourSpace.Xyz`       | `new(ColourSpace.Xyz, ...)`       | `.Xyz`         |
-| CIExyY                                  | `ColourSpace.Xyy`       | `new(ColourSpace.Xyy, ...)`       | `.Xyy`         |
-| CIELAB                                  | `ColourSpace.Lab`       | `new(ColourSpace.Lab, ...)`       | `.Lab`         |
-| CIELCh<sub>ab</sub>                     | `ColourSpace.Lchab`     | `new(ColourSpace.Lchab, ...)`     | `.Lchab`       |
-| CIELUV                                  | `ColourSpace.Luv`       | `new(ColourSpace.Luv, ...)`       | `.Luv`         |
-| CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `new(ColourSpace.Lchuv, ...)`     | `.Lchuv`       |
-| HSLuv                                   | `ColourSpace.Hsluv`     | `new(ColourSpace.Hsluv, ...)`     | `.Hsluv`       |
-| HPLuv                                   | `ColourSpace.Hpluv`     | `new(ColourSpace.Hpluv, ...)`     | `.Hpluv`       |
-| IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `new(ColourSpace.Ictcp, ...)`     | `.Ictcp`       |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `new(ColourSpace.Jzazbz, ...)`    | `.Jzazbz`      |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `new(ColourSpace.Jzczhz, ...)`    | `.Jzczhz`      |
-| Oklab                                   | `ColourSpace.Oklab`     | `new(ColourSpace.Oklab, ...)`     | `.Oklab`       |
-| Oklch                                   | `ColourSpace.Oklch`     | `new(ColourSpace.Oklch, ...)`     | `.Oklch`       |
-| CIECAM02                                | `ColourSpace.Cam02`     | `new(ColourSpace.Cam02, ...)`     | `.Cam02`       |
-| CAM16                                   | `ColourSpace.Cam16`     | `new(ColourSpace.Cam16, ...)`     | `.Cam16`       |
-| HCT                                     | `ColourSpace.Hct`       | `new(ColourSpace.Hct, ...)`       | `.Hct`         |
 
 ## How to use 🌈
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -236,7 +242,6 @@ var achromatopsia = unicolour.SimulateAchromatopsia();
 ```
 
 ## Examples ✨
-
 This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to:
 1. Generate gradients through different colour spaces
 2. Render the colour spectrum with different colour vision deficiencies

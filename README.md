@@ -82,7 +82,7 @@ Conversion to other colour spaces is handled by Unicolour, and the results can b
 
 Two colours can be mixed / interpolated through any colour space, with or without premultiplied alpha.
 
-Colour difference or colour distance can be calculated using:
+Colour difference / colour distance can be calculated using various delta E metrics:
 - ΔE<sub>76</sub> (CIE76)
 - ΔE<sub>94</sub> (CIE94)
 - ΔE<sub>00</sub> (CIEDE2000)
@@ -296,6 +296,32 @@ var unicolour = new Unicolour(ColourSpace.Rgb255, config, 255, 20, 147);
 Configuration is also available for CAM02 & CAM16 viewing conditions,
 IC<sub>T</sub>C<sub>P</sub> scalar,
 and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> scalar.
+
+The default white point used by all colour spaces is D65.
+This table lists which `Configuration` property determines the white point of each colour space.
+
+| Colour&nbsp;space                       | Configuration       |
+|-----------------------------------------|---------------------|
+| RGB                                     | `RgbConfiguration`  |
+| Linear&nbsp;RGB                         | `RgbConfiguration`  |
+| HSB/HSV                                 | `RgbConfiguration`  |
+| HSL                                     | `RgbConfiguration`  |
+| HWB                                     | `RgbConfiguration`  |
+| CIEXYZ                                  | `XyzConfiguration`  |
+| CIExyY                                  | `XyzConfiguration`  |
+| CIELAB                                  | `XyzConfiguration`  |
+| CIELUV                                  | `XyzConfiguration`  |
+| CIELCh<sub>uv</sub>                     | `XyzConfiguration`  |
+| HSLuv                                   | `XyzConfiguration`  |
+| HPLuv                                   | `XyzConfiguration`  |
+| IC<sub>T</sub>C<sub>P</sub>             | None _(always D65)_ |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | None _(always D65)_ |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | None _(always D65)_ |
+| Oklab                                   | None _(always D65)_ |
+| Oklch                                   | None _(always D65)_ |
+| CIECAM02                                | `CamConfiguration`  |
+| CAM16                                   | `CamConfiguration`  |
+| HCT                                     | None _(always D65)_ |
 
 A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
 

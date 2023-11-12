@@ -293,9 +293,9 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Companding.InverseGamma(value, 2.2)
 );
 
-// manual configuration for equal-energy (10° observer) XYZ
+// manual configuration for Illuminant C (10° observer) XYZ
 var xyzConfig = new XyzConfiguration(
-    whitePoint: WhitePoint.From(Illuminant.E, Observer.Supplementary10)
+    whitePoint: WhitePoint.From(Illuminant.C, Observer.Supplementary10)
 );
 
 var config = new Configuration(rgbConfig, xyzConfig);

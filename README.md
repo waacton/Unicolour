@@ -340,19 +340,19 @@ var srgbConfig = new Configuration(RgbConfiguration.StandardRgb);
 var unicolourSrgb = new Unicolour(ColourSpace.Rgb, srgbConfig, 0, 1, 0);                         
 Console.WriteLine(unicolourSrgb.Rgb); // 0.00 1.00 0.00
 
-// pure sRGB green -> Display P3
+// ⟶ Display P3
 var displayP3Config = new Configuration(RgbConfiguration.DisplayP3);
 var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); 
 Console.WriteLine(unicolourDisplayP3.Rgb); // 0.46 0.99 0.30
 
-// pure sRGB green -> Rec. 2020
-var rec202Config = new Configuration(RgbConfiguration.Rec2020);
-var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config);
+// ⟶ Rec. 2020
+var rec2020Config = new Configuration(RgbConfiguration.Rec2020);
+var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec2020Config);
 Console.WriteLine(unicolourRec2020.Rgb); // 0.57 0.96 0.27
 ```
 
 ## 🔮 Datasets
-Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour/).
+Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
 
 Commonly used sets of colours:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colours

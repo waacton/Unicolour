@@ -11,9 +11,17 @@ Unicolour is a .NET library written in C# for working with colour:
 - Colour information
 - Colour gamut mapping
 
+[🧭 Overview](#-overview)<br/>
+[⚡ Quickstart](#-quickstart)<br/>
+[🔦 Features](#-features)<br/>
+[🌈 How to use](#-how-to-use)<br/>
+[✨ Examples](#-examples)<br/>
+[💡 Configuration](#-configuration)<br/>
+[🔮 Datasets](#-datasets)<br/>
+
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
-## Overview 🧭
+## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
 It supports:
 - RGB
@@ -49,7 +57,12 @@ For each forward transformation there is a corresponding reverse transformation.
 XYZ is considered the root colour space.
 </details>
 
-## Quickstart ⚡
+This library was initially written for personal projects since existing libraries had complex APIs or missing features.
+The goal of this library is to be accurate, intuitive, and easy to use.
+Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
+It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
+
+## ⚡ Quickstart
 | Colour&nbsp;space                       | Create                          | Get            |
 |-----------------------------------------|---------------------------------|----------------|
 | RGB&nbsp;(Hex)                          | `new(hex)`                      | `.Hex`         |
@@ -76,7 +89,7 @@ XYZ is considered the root colour space.
 | CAM16                                   | `new(ColourSpace.Cam16, ⋯)`     | `.Cam16`       |
 | HCT                                     | `new(ColourSpace.Hct, ⋯)`       | `.Hct`         |
 
-## Features 🔦
+## 🔦 Features
 A `Unicolour` can be instantiated using any of the supported colour spaces.
 Conversion to other colour spaces is handled by Unicolour, and the results can be accessed through properties.
 
@@ -109,14 +122,9 @@ If a colour is outwith the display gamut, the closest in-gamut colour can be obt
 The algorithm implemented in Unicolour conforms to CSS specifications.
 
 Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
-These [can be overridden](#advanced-configuration-) using the `Configuration` parameter.
+These [can be overridden](#-configuration) using the `Configuration` parameter.
 
-This library was initially written for personal projects since existing libraries had complex APIs or missing features.
-The goal of this library is to be accurate, intuitive, and easy to use.
-Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
-It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
-
-## How to use 🌈
+## 🌈 How to use
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
 ```
 dotnet add package Wacton.Unicolour
@@ -242,7 +250,7 @@ var tritanopia = unicolour.SimulateTritanopia();
 var achromatopsia = unicolour.SimulateAchromatopsia();
 ```
 
-## Examples ✨
+## ✨ Examples
 This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to:
 1. Generate gradients through different colour spaces
 2. Render the colour spectrum with different colour vision deficiencies
@@ -258,7 +266,7 @@ There is also a [console application](Unicolour.Console/Program.cs) that uses `U
 
 ![Colour information from hex value](Unicolour.Console/colour-info.png)
 
-## Advanced configuration 💡
+## 💡 Configuration
 A `Configuration` parameter can be used to customise the RGB model (e.g. Display P3, Rec. 2020)
 and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
 
@@ -301,28 +309,28 @@ and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> scalar.
 The default white point used by all colour spaces is D65.
 This table lists which `Configuration` property determines the white point of each colour space.
 
-| Colour&nbsp;space                       | Configuration       |
-|-----------------------------------------|---------------------|
-| RGB                                     | `RgbConfiguration`  |
-| Linear&nbsp;RGB                         | `RgbConfiguration`  |
-| HSB/HSV                                 | `RgbConfiguration`  |
-| HSL                                     | `RgbConfiguration`  |
-| HWB                                     | `RgbConfiguration`  |
-| CIEXYZ                                  | `XyzConfiguration`  |
-| CIExyY                                  | `XyzConfiguration`  |
-| CIELAB                                  | `XyzConfiguration`  |
-| CIELUV                                  | `XyzConfiguration`  |
-| CIELCh<sub>uv</sub>                     | `XyzConfiguration`  |
-| HSLuv                                   | `XyzConfiguration`  |
-| HPLuv                                   | `XyzConfiguration`  |
-| IC<sub>T</sub>C<sub>P</sub>             | None _(always D65)_ |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | None _(always D65)_ |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | None _(always D65)_ |
-| Oklab                                   | None _(always D65)_ |
-| Oklch                                   | None _(always D65)_ |
-| CIECAM02                                | `CamConfiguration`  |
-| CAM16                                   | `CamConfiguration`  |
-| HCT                                     | None _(always D65)_ |
+| Colour&nbsp;space                       | White&nbsp;point&nbsp;configuration |
+|-----------------------------------------|-------------------------------------|
+| RGB                                     | `RgbConfiguration`                  |
+| Linear&nbsp;RGB                         | `RgbConfiguration`                  |
+| HSB/HSV                                 | `RgbConfiguration`                  |
+| HSL                                     | `RgbConfiguration`                  |
+| HWB                                     | `RgbConfiguration`                  |
+| CIEXYZ                                  | `XyzConfiguration`                  |
+| CIExyY                                  | `XyzConfiguration`                  |
+| CIELAB                                  | `XyzConfiguration`                  |
+| CIELUV                                  | `XyzConfiguration`                  |
+| CIELCh<sub>uv</sub>                     | `XyzConfiguration`                  |
+| HSLuv                                   | `XyzConfiguration`                  |
+| HPLuv                                   | `XyzConfiguration`                  |
+| IC<sub>T</sub>C<sub>P</sub>             | None (always D65)                   |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | None (always D65)                   |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | None (always D65)                   |
+| Oklab                                   | None (always D65)                   |
+| Oklch                                   | None (always D65)                   |
+| CIECAM02                                | `CamConfiguration`                  |
+| CAM16                                   | `CamConfiguration`                  |
+| HCT                                     | None (always D65)                   |
 
 A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
 
@@ -341,6 +349,34 @@ Console.WriteLine(unicolourDisplayP3.Rgb); // 0.46 0.99 0.30
 var rec202Config = new Configuration(RgbConfiguration.Rec2020);
 var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec202Config);
 Console.WriteLine(unicolourRec2020.Rgb); // 0.57 0.96 0.27
+```
+
+## 🔮 Datasets
+Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour/).
+
+Commonly used sets of colours:
+- [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colours
+- [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) colour rendition chart
+
+Colour data used in academic literature:
+- [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
+- [Ebner-Fairchild](https://doi.org/10.1117/12.298269) constant perceived-hue data
+
+Example usage:
+
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/)
+```
+dotnet add package Wacton.Unicolour.Datasets
+```
+
+2. Import the package
+```c#
+using Wacton.Unicolour.Datasets;
+```
+
+3. Reference the predefined `Unicolour`
+```c#
+var unicolour = Css.DeepPink;
 ```
 
 ---

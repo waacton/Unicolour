@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour.Datasets;
 
+// https://zenodo.org/records/3367463 · https://doi.org/10.1002/col.5080200506
 public static class HungBerns
 {
     private static readonly Xyy WhiteXyy = new(0.3101, 0.3163, 1.000);

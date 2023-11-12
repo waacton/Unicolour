@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Unicolour.Datasets\Unicolour.Datasets.csproj" />
       <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 

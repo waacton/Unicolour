@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour.Datasets;
 
+// https://zenodo.org/records/3362536 · https://doi.org/10.1117/12.298269
 public static class EbnerFairchild
 {
     private static readonly Xyz WhiteXyz = new(0.9501, 1.0000, 1.0881);

@@ -75,10 +75,10 @@ internal static class TestUtils
     
     public static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
     {
-        Assert.That(triplet.First, Is.EqualTo(expected.first).Within(MixTolerance));
-        Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(MixTolerance));
-        Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(MixTolerance));
-        Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance));
+        Assert.That(triplet.First, Is.EqualTo(expected.first).Within(MixTolerance), "First");
+        Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(MixTolerance), "Second");
+        Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(MixTolerance), "Third");
+        Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance), "Alpha");
     }
 
     public static void AssertNoPropertyError(Unicolour unicolour)

@@ -59,23 +59,23 @@ public class EqualityTests
     public void DifferentConfigurationObjects()
     {
         var rgbConfig1 = new RgbConfiguration(
-            Chromaticity.StandardRgb.R,
+            RgbModels.StandardRgb.R,
             new Chromaticity(0.25, 0.75),
             new Chromaticity(0.5, 0.5),
             new WhitePoint(0.9, 1.0, 1.1),
-            Companding.StandardRgb.FromLinear,
-            Companding.StandardRgb.ToLinear);
+            RgbModels.StandardRgb.FromLinear,
+            RgbModels.StandardRgb.ToLinear);
         var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05));
         var camConfig1 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark);
         var config1 = new Configuration(rgbConfig1, xyzConfig1, camConfig1);
         
         var rgbConfig2 = new RgbConfiguration(
-            Chromaticity.StandardRgb.R,
+            RgbModels.StandardRgb.R,
             new Chromaticity(0.75, 0.25),
             new Chromaticity(0.5, 0.5), 
             new WhitePoint(0.9, 1.0, 1.1),
-            Companding.StandardRgb.FromLinear,
-            Companding.StandardRgb.ToLinear);
+            RgbModels.StandardRgb.FromLinear,
+            RgbModels.StandardRgb.ToLinear);
         var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001));
         var camConfig2 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim);
         var config2 = new Configuration(rgbConfig2, xyzConfig2, camConfig2);

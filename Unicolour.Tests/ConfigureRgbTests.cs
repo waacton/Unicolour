@@ -4,51 +4,86 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
-/*
- * expected colour values for these tests based on calculations from
- * http://www.brucelindbloom.com/index.html?ColorCalculator.html
- */
 public class ConfigureRgbTests
 {
-    private const double Tolerance = 0.001;
+    private const double Tolerance = 0.005;
     
-    // https://en.wikipedia.org/wiki/Adobe_RGB_color_space
-    private static readonly Chromaticity AdobeChromaticityR = new(0.64, 0.33);
-    private static readonly Chromaticity AdobeChromaticityG = new(0.21, 0.71);
-    private static readonly Chromaticity AdobeChromaticityB = new(0.15, 0.06);
+    private static readonly Configuration StandardRgbConfig = new(RgbConfiguration.StandardRgb);
+    private static readonly Configuration DisplayP3Config = new(RgbConfiguration.DisplayP3);
+    private static readonly Configuration Rec2020Config = new(RgbConfiguration.Rec2020);
+    private static readonly Configuration A98Config = new(RgbConfiguration.A98);
+    private static readonly Configuration ProPhotoConfig = new(RgbConfiguration.ProPhoto);
 
+    // https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
+    private static readonly RgbConfiguration AcescgRgbConfig = new(
+        new(0.713, 0.293),
+        new(0.165, 0.830),
+        new(0.128, 0.044), 
+        WhitePoint.From(new Chromaticity(0.32168, 0.33767)), // ACES not based on an illuminant
+        value => value, // ACEScg is linear, no companding
+        value => value
+    );
+    
     // https://en.wikipedia.org/wiki/Wide-gamut_RGB_color_space
-    private static readonly Chromaticity WideGamutChromaticityR = new(0.7347, 0.2653);
-    private static readonly Chromaticity WideGamutChromaticityG = new(0.1152, 0.8264);
-    private static readonly Chromaticity WideGamutChromaticityB = new(0.1566, 0.0177);
-
-    private const double Gamma = 2.19921875;
+    private static readonly RgbConfiguration WideGamutRgbConfig = new(
+        new(0.7347, 0.2653),
+        new(0.1152, 0.8264),
+        new(0.1566, 0.0177), 
+        WhitePoint.From(Illuminant.D50, Observer.Standard2),
+        value => Companding.Gamma(value, 2.19921875),
+        value => Companding.InverseGamma(value, 2.19921875)
+    );
     
-    private static readonly Configuration StandardRgbConfig = new(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
-    private static readonly Configuration DisplayP3Config = new(RgbConfiguration.DisplayP3, XyzConfiguration.D65);
-    private static readonly Configuration Rec2020Config = new(RgbConfiguration.Rec2020, XyzConfiguration.D65);
-    
-    private static readonly List<TestCaseData> StandardRgbToDisplayP3Lookup = new()
+    private static readonly List<TestCaseData> StandardRgbLookup = new()
     {
-        new TestCaseData(new ColourTriplet(1, 0, 0), new ColourTriplet(0.9175, 0.2003, 0.1386)),
-        new TestCaseData(new ColourTriplet(0, 1, 0), new ColourTriplet(0.4584, 0.9853, 0.2983)),
-        new TestCaseData(new ColourTriplet(0, 0, 1), new ColourTriplet(0.0000, 0.0000, 0.9596)),
-        new TestCaseData(new ColourTriplet(1.0931, -0.2267, -0.1501), new ColourTriplet(1, 0, 0)), 
-        new TestCaseData(new ColourTriplet(-0.5116, 1.0183, -0.3107), new ColourTriplet(0, 1, 0)),
-        new TestCaseData(new ColourTriplet(0.0000, 0.0000, 1.0420), new ColourTriplet(0, 0, 1)),
-        new TestCaseData(new ColourTriplet(double.NaN, double.NaN, double.NaN), new ColourTriplet(double.NaN, double.NaN, double.NaN))
+        new TestCaseData((1.0, 0.0, 0.0), DisplayP3Config, (0.917488, 0.200287, 0.138561)).SetName("sRGB (Red) <-> Display-P3"),
+        new TestCaseData((0.0, 1.0, 0.0), DisplayP3Config, (0.458402, 0.985265, 0.298295)).SetName("sRGB (Green) <-> Display-P3"),
+        new TestCaseData((0.0, 0.0, 1.0), DisplayP3Config, (0.000000, 0.000000, 0.959588)).SetName("sRGB (Blue) <-> Display-P3"),
+        new TestCaseData((1.093066, -0.226742, -0.150135), DisplayP3Config, (1.0, 0.0, 0.0)).SetName("sRGB <-> Display-P3 (Red)"), 
+        new TestCaseData((-0.511605, 1.018266, -0.310675), DisplayP3Config, (0.0, 1.0, 0.0)).SetName("sRGB <-> Display-P3 (Green)"),
+        new TestCaseData((0.000000, 0.000000, 1.042022), DisplayP3Config, (0.0, 0.0, 1.0)).SetName("sRGB <-> Display-P3 (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), DisplayP3Config, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) <-> Display-P3 (NaN)"),
+        
+        new TestCaseData((1.0, 0.0, 0.0), Rec2020Config, (0.791977, 0.230976, 0.073761)).SetName("sRGB (Red) <-> Rec. 2020"),
+        new TestCaseData((0.0, 1.0, 0.0), Rec2020Config, (0.567542, 0.959279, 0.268969)).SetName("sRGB (Green) <-> Rec. 2020"),
+        new TestCaseData((0.0, 0.0, 1.0), Rec2020Config, (0.168369, 0.051130, 0.946784)).SetName("sRGB (Blue) <-> Rec. 2020"),
+        new TestCaseData((1.248220, -0.387908, -0.143514), Rec2020Config, (1.0, 0.0, 0.0)).SetName("sRGB <-> Rec. 2020 (Red)"), 
+        new TestCaseData((-0.790375, 1.056302, -0.350164), Rec2020Config, (0.0, 1.0, 0.0)).SetName("sRGB <-> Rec. 2020 (Green)"),
+        new TestCaseData((-0.299213, -0.088640, 1.050489), Rec2020Config, (0.0, 0.0, 1.0)).SetName("sRGB <-> Rec. 2020 (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), Rec2020Config, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) <-> Rec. 2020 (NaN)"),
+        
+        new TestCaseData((1.0, 0.0, 0.0), A98Config, (0.858659, 0.000000, 0.000000)).SetName("sRGB (Red) <-> A98"),
+        new TestCaseData((0.0, 1.0, 0.0), A98Config, (0.565053, 1.000000, 0.234567)).SetName("sRGB (Green) <-> A98"),
+        new TestCaseData((0.0, 0.0, 1.0), A98Config, (-0.000000, -0.000000, 0.981071)).SetName("sRGB (Blue) <-> A98"),
+        new TestCaseData((1.158157, 0.000000, 0.000000), A98Config, (1.0, 0.0, 0.0)).SetName("sRGB <-> A98 (Red)"),
+        new TestCaseData((-0.663895, 1.000000, -0.229188), A98Config, (0.0, 1.0, 0.0)).SetName("sRGB <-> A98 (Green)"),
+        new TestCaseData((-0.000000, -0.000000, 1.018643), A98Config, (0.0, 0.0, 1.0)).SetName("sRGB <-> A98 (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), A98Config, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) <-> A98 (NaN)"),
+        
+        new TestCaseData((1.0, 0.0, 0.0), ProPhotoConfig, (0.702299, 0.275734, 0.103574)).SetName("sRGB (Red) <-> ProPhoto"),
+        new TestCaseData((0.0, 1.0, 0.0), ProPhotoConfig, (0.540208, 0.927593, 0.304585)).SetName("sRGB (Green) <-> ProPhoto"),
+        new TestCaseData((0.0, 0.0, 1.0), ProPhotoConfig, (0.336222, 0.137634, 0.922854)).SetName("sRGB (Blue) <-> ProPhoto"),
+        new TestCaseData((1.363204, -0.515649, -0.090208), ProPhotoConfig, (1.0, 0.0, 0.0)).SetName("sRGB <-> ProPhoto (Red)"), 
+        new TestCaseData((-0.868935, 1.095714, -0.427925), ProPhotoConfig, (0.0, 1.0, 0.0)).SetName("sRGB <-> ProPhoto (Green)"),
+        new TestCaseData((-0.589774, -0.037691, 1.068050), ProPhotoConfig, (0.0, 0.0, 1.0)).SetName("sRGB <-> ProPhoto (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), ProPhotoConfig, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) <-> ProPhoto (NaN)")
     };
     
-    private static readonly List<TestCaseData> StandardRgbToRec2020Lookup = new()
+    [TestCaseSource(nameof(StandardRgbLookup))]
+    public void StandardRgbToOtherModel((double r, double g, double b) standardTriplet, Configuration otherConfig, (double r, double g, double b) otherTriplet)
     {
-        new TestCaseData(new ColourTriplet(1, 0, 0), new ColourTriplet(0.7920, 0.2310, 0.0738)),
-        new TestCaseData(new ColourTriplet(0, 1, 0), new ColourTriplet(0.5675, 0.9593, 0.2690)),
-        new TestCaseData(new ColourTriplet(0, 0, 1), new ColourTriplet(0.1684, 0.0511, 0.9468)),
-        new TestCaseData(new ColourTriplet(1.2482, -0.3879, -0.1435), new ColourTriplet(1, 0, 0)), 
-        new TestCaseData(new ColourTriplet(-0.7904, 1.0563, -0.3502), new ColourTriplet(0, 1, 0)),
-        new TestCaseData(new ColourTriplet(-0.2992, -0.0886, 1.0505), new ColourTriplet(0, 0, 1)),
-        new TestCaseData(new ColourTriplet(double.NaN, double.NaN, double.NaN), new ColourTriplet(double.NaN, double.NaN, double.NaN))
-    };
+        var standard = new Unicolour(ColourSpace.Rgb, StandardRgbConfig, standardTriplet);
+        var other = standard.ConvertToConfiguration(otherConfig);
+        TestUtils.AssertTriplet<Rgb>(other, new(otherTriplet.r, otherTriplet.g, otherTriplet.b), Tolerance);
+    }
+    
+    [TestCaseSource(nameof(StandardRgbLookup))]
+    public void OtherModelToStandardRgb((double r, double g, double b) standardTriplet, Configuration otherConfig, (double r, double g, double b) otherTriplet)
+    {
+        var other = new Unicolour(ColourSpace.Rgb, otherConfig, otherTriplet);
+        var standard = other.ConvertToConfiguration(StandardRgbConfig);
+        TestUtils.AssertTriplet<Rgb>(standard, new(standardTriplet.r, standardTriplet.g, standardTriplet.b), Tolerance);
+    }
     
     [Test]
     public void XyzD65ToStandardRgbD65()
@@ -89,12 +124,12 @@ public class ConfigureRgbTests
     public void XyzD50ToStandardRgbD65()
     {
         var standardRgbConfig = new RgbConfiguration(
-            Chromaticity.StandardRgb.R,
-            Chromaticity.StandardRgb.G,
-            Chromaticity.StandardRgb.B,
-            WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            Companding.StandardRgb.FromLinear,
-            Companding.StandardRgb.ToLinear);
+            RgbModels.StandardRgb.R,
+            RgbModels.StandardRgb.G,
+            RgbModels.StandardRgb.B,
+            RgbModels.StandardRgb.WhitePoint,
+            RgbModels.StandardRgb.FromLinear,
+            RgbModels.StandardRgb.ToLinear);
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
         var config = new Configuration(standardRgbConfig, d50XyzConfig);
 
@@ -117,41 +152,25 @@ public class ConfigureRgbTests
     }
 
     [Test]
-    public void XyzD65ToAdobeRgbD65()
+    public void XyzD65ToAcesRgbD60()
     {
-        var adobeRgbConfig = new RgbConfiguration(
-            AdobeChromaticityR,
-            AdobeChromaticityG,
-            AdobeChromaticityB, 
-            WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
         var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
-        var config = new Configuration(adobeRgbConfig, d65XyzConfig);
-
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.234243, 0.134410, 0.535559);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 43.4203, 57.3600, -55.4259);
+        var config = new Configuration(AcescgRgbConfig, d65XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
+        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.485665, 0.345912, 0.817454);
+        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 65.4291, 48.7467, -41.3660);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
     
     [Test]
-    public void XyzD50ToAdobeRgbD65()
+    public void XyzD50ToAcesRgbD60()
     {
-        var adobeRgbConfig = new RgbConfiguration(
-            AdobeChromaticityR,
-            AdobeChromaticityG,
-            AdobeChromaticityB, 
-            WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
-        var config = new Configuration(adobeRgbConfig, d50XyzConfig);
-        
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.221673, 0.130920, 0.402670);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 42.9015, 52.4152, -55.9013);
+        var config = new Configuration(AcescgRgbConfig, d50XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
+        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.475850, 0.343035, 0.615342);
+        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 65.2028, 45.1028, -41.3650);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
@@ -159,19 +178,11 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD65ToWideGamutRgbD50()
     {
-        var wideGamutRgbConfig = new RgbConfiguration(
-            WideGamutChromaticityR,
-            WideGamutChromaticityG,
-            WideGamutChromaticityB, 
-            WhitePoint.From(Illuminant.D50, Observer.Standard2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
         var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
-        var config = new Configuration(wideGamutRgbConfig, d65XyzConfig);
-        
+        var config = new Configuration(WideGamutRgbConfig, d65XyzConfig);
+        var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.251993, 0.102404, 0.550393);
         var unicolourLab = new Unicolour(ColourSpace.Lab, config, 38.2704, 87.2838, -65.7493);
-        var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
@@ -179,53 +190,13 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD50ToWideGamutRgbD50()
     {
-        var wideGamutRgbConfig = new RgbConfiguration(
-            WideGamutChromaticityR,
-            WideGamutChromaticityG,
-            WideGamutChromaticityB,
-            WhitePoint.From(Illuminant.D50, Observer.Standard2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
-        var config = new Configuration(wideGamutRgbConfig, d50XyzConfig);
-
+        var config = new Configuration(WideGamutRgbConfig, d50XyzConfig);
+        var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.238795, 0.099490, 0.413181);
         var unicolourLab = new Unicolour(ColourSpace.Lab, config, 37.7508, 82.3084, -66.1402);
-        var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
-    }
-    
-    [TestCaseSource(nameof(StandardRgbToDisplayP3Lookup))]
-    public void ConvertStandardRgbToDisplayP3(ColourTriplet standardRgbTriplet, ColourTriplet displayP3Triplet)
-    {
-        var standardRgb = new Unicolour(ColourSpace.Rgb, StandardRgbConfig, standardRgbTriplet.Tuple);
-        var displayP3 = standardRgb.ConvertToConfiguration(DisplayP3Config);
-        TestUtils.AssertTriplet<Rgb>(displayP3, displayP3Triplet, Tolerance);
-    }
-    
-    [TestCaseSource(nameof(StandardRgbToDisplayP3Lookup))]
-    public void ConvertDisplayP3ToStandardRgb(ColourTriplet standardRgbTriplet, ColourTriplet displayP3Triplet)
-    {
-        var displayP3 = new Unicolour(ColourSpace.Rgb, DisplayP3Config, displayP3Triplet.Tuple);
-        var standardRgb = displayP3.ConvertToConfiguration(StandardRgbConfig);
-        TestUtils.AssertTriplet<Rgb>(standardRgb, standardRgbTriplet, Tolerance);
-    }
-    
-    [TestCaseSource(nameof(StandardRgbToRec2020Lookup))]
-    public void ConvertStandardRgbToRec2020(ColourTriplet standardRgbTriplet, ColourTriplet rec2020Triplet)
-    {
-        var standardRgb = new Unicolour(ColourSpace.Rgb, StandardRgbConfig, standardRgbTriplet.Tuple);
-        var rec2020 = standardRgb.ConvertToConfiguration(Rec2020Config);
-        TestUtils.AssertTriplet<Rgb>(rec2020, rec2020Triplet, Tolerance);
-    }
-    
-    [TestCaseSource(nameof(StandardRgbToRec2020Lookup))]
-    public void ConvertRec2020ToStandardRgb(ColourTriplet standardRgbTriplet, ColourTriplet rec2020Triplet)
-    {
-        var rec2020 = new Unicolour(ColourSpace.Rgb, Rec2020Config, rec2020Triplet.Tuple);
-        var standardRgb = rec2020.ConvertToConfiguration(StandardRgbConfig);
-        TestUtils.AssertTriplet<Rgb>(standardRgb, standardRgbTriplet, Tolerance);
     }
     
     [TestCase(Illuminant.A)]

@@ -280,7 +280,7 @@ and the white point of the XYZ colour space (e.g. D50 reference white used by IC
 ```c#
 // built-in configuration for Rec. 2020 RGB + D65 XYZ
 var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
-var unicolour = new Unicolour(ColourSpace.Rgb255, config, 255, 20, 147);
+var unicolour = new Unicolour(ColourSpace.Rgb255, config, 204, 64, 132);
 ```
 
 ```c#
@@ -290,8 +290,8 @@ var rgbConfig = new RgbConfiguration(
     chromaticityG: new(0.1152, 0.8264),
     chromaticityB: new(0.1566, 0.0177),
     whitePoint: WhitePoint.From(Illuminant.D50),
-    fromLinear: value => Companding.Gamma(value, 2.2),
-    toLinear: value => Companding.InverseGamma(value, 2.2)
+    fromLinear: value => Companding.Gamma(value, 2.19921875),
+    toLinear: value => Companding.InverseGamma(value, 2.19921875)
 );
 
 // manual configuration for Illuminant C (10° observer) XYZ

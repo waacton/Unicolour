@@ -50,7 +50,69 @@ It supports:
 <details>
 <summary>Diagram of colour space relationships</summary>
 
-![Diagram of colour space relationships](Unicolour/Resources/diagram.png)
+```mermaid
+%%{
+  init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#4C566A",
+    "primaryTextColor": "#ECEFF4",
+    "primaryBorderColor": "#2E3440",
+    "lineColor": "#8FBCBB",
+    "secondaryColor": "#404046",
+    "tertiaryColor": "#404046"
+    }
+  }
+}%%
+
+flowchart TD
+  XYY(xyY)
+  RGBLIN(Linear RGB)
+  RGB(RGB)
+  HSB(HSB)
+  HSL(HSL)
+  HWB(HWB)
+  XYZ(XYZ)
+  LAB(LAB)
+  LCHAB(LCHab)
+  LUV(LUV)
+  LCHUV(LCHuv)
+  HSLUV(HSLuv)
+  HPLUV(HPLuv)
+  ICTCP(ICtCp)
+  JZAZBZ(JzAzBz)
+  JZCZHZ(JzCzHz)
+  OKLAB(Oklab)
+  OKLCH(Oklch)
+  CAM02(CAM02)
+  CAM02UCS(CAM02-UCS)
+  CAM16(CAM16)
+  CAM16UCS(CAM16-UCS)
+  HCT(HCT)
+
+  XYZ --> XYY
+  XYZ --> RGBLIN
+  RGBLIN --> RGB
+  RGB --> HSB
+  HSB --> HSL
+  HSB --> HWB
+  XYZ --> LAB
+  LAB --> LCHAB
+  XYZ --> LUV
+  LUV --> LCHUV
+  LCHUV --> HSLUV
+  LCHUV --> HPLUV
+  XYZ --> ICTCP
+  XYZ --> JZAZBZ
+  JZAZBZ --> JZCZHZ
+  XYZ --> OKLAB
+  OKLAB --> OKLCH
+  XYZ --> CAM02
+  CAM02 -.-> CAM02UCS
+  XYZ --> CAM16
+  CAM16 -.-> CAM16UCS
+  XYZ --> HCT
+```
 
 This diagram summarises how colour space conversions are implemented in Unicolour.
 Arrows indicate forward transformations from one space to another.

@@ -8,13 +8,15 @@ public record WhitePoint(double X, double Y, double Z)
     internal Matrix AsXyzMatrix() => Matrix.FromTriplet(X, Y, Z).Select(x => x / 100.0);
     public override string ToString() => $"({X}, {Y}, {Z})";
 
-    public static WhitePoint StandardRgb => From(Illuminant.D65);
-    public static WhitePoint DisplayP3 => From(Illuminant.D65);
-    public static WhitePoint Rec2020 => From(Illuminant.D65);
-    
     public static WhitePoint From(Illuminant illuminant, Observer observer = Observer.Standard2)
     {
         return ByIlluminant[observer][illuminant];
+    }
+
+    public static WhitePoint From(Chromaticity chromaticity)
+    {
+        var xyz = Xyy.ToXyz(new(chromaticity.X, chromaticity.Y, 1));
+        return new WhitePoint(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
     }
 
     // as far as I'm aware, these are the latest ASTM standards

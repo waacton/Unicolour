@@ -67,12 +67,12 @@ public class ConfigureXyzTests
     public void StandardRgbD65ToXyzD50()
     {
         var standardRgbConfig = new RgbConfiguration(
-            Chromaticity.StandardRgb.R,
-            Chromaticity.StandardRgb.G,
-            Chromaticity.StandardRgb.B,
+            RgbModels.StandardRgb.R,
+            RgbModels.StandardRgb.G,
+            RgbModels.StandardRgb.B,
             WhitePoint.From(Illuminant.D65, Observer.Standard2),
-            Companding.StandardRgb.FromLinear,
-            Companding.StandardRgb.ToLinear);
+            RgbModels.StandardRgb.FromLinear,
+            RgbModels.StandardRgb.ToLinear);
         var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
         var config = new Configuration(standardRgbConfig, d50XyzConfig);
         

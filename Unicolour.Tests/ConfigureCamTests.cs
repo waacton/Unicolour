@@ -54,7 +54,7 @@ public class ConfigureCamTests
     public void InvalidSurround()
     {
         const Surround badSurround = (Surround)int.MaxValue;
-        var camConfig = new CamConfiguration(WhitePoint.StandardRgb, 0, 0, badSurround);
+        var camConfig = new CamConfiguration(RgbModels.StandardRgb.WhitePoint, 0, 0, badSurround);
         Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.F; });
         Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.C; });
         Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.Nc; });

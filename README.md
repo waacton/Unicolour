@@ -21,7 +21,7 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 5. ✨ [Examples](#-examples)
 6. 💡 [Configuration](#-configuration)
 7. 🔮 [Datasets](#-datasets)
-8. 🦺 [Work in progress](#-next-version)
+8. 🦺 [Work in progress](#-work-in-progress)
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces.

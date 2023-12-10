@@ -448,6 +448,7 @@ Version 4 of Unicolour is in development and aims to provide more new features:
 - 🌡️ Create a `Unicolour` from temperature (CCT and Duv)
 - 🎯 More accurate calculation of temperature (CCT and Duv) 
 - 📈 Create a `Unicolour` from a spectral power distribution
+- 🚥 More modes of hue interpolation
 - 🎨 More default RGB models (e.g. A98, ProPhoto)
 
 ---

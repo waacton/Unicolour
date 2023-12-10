@@ -21,6 +21,7 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 5. ✨ [Examples](#-examples)
 6. 💡 [Configuration](#-configuration)
 7. 🔮 [Datasets](#-datasets)
+8. 🦺 [Work in progress](#-next-version)
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
@@ -441,6 +442,13 @@ using Wacton.Unicolour.Datasets;
 ```c#
 var unicolour = Css.DeepPink;
 ```
+
+## 🦺 Work in progress
+Version 4 of Unicolour is in development and aims to provide more new features:
+- 🌡️ Create a `Unicolour` from temperature (CCT and Duv)
+- 🎯 More accurate calculation of temperature (CCT and Duv) 
+- 📈 Create a `Unicolour` from a spectral power distribution
+- 🎨 More default RGB models (e.g. A98, ProPhoto)
 
 ---
 

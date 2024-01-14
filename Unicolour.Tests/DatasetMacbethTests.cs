@@ -9,7 +9,7 @@ using static Datasets.Macbeth;
 
 public class DatasetMacbethTests
 {
-    private static readonly Configuration ConfigIlluminantC = new(xyzConfiguration: new XyzConfiguration(WhitePoint.From(Illuminant.C)));
+    private static readonly Configuration ConfigIlluminantC = new(xyzConfiguration: new XyzConfiguration(Illuminant.C, Observer.Degree2));
     
     // https://poynton.ca/notes/color/GretagMacbeth-ColorChecker.html
     private static readonly List<TestCaseData> XyyTestData = new()

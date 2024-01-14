@@ -84,7 +84,7 @@ public class KnownCam02Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(WhitePoint.From(Illuminant.D65), CamConfiguration.LuxToLuminance(lux), background, surround);
+        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
         var (x, y, z) = camConfig.WhitePoint.AsXyzMatrix().ToTriplet();
         var xyz = new Xyz(x, y, z);
         var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
@@ -104,7 +104,7 @@ public class KnownCam02Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(WhitePoint.From(Illuminant.D65), CamConfiguration.LuxToLuminance(lux), background, surround);
+        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
         var xyz = new Xyz(0, 0, 0);
         var expectedModel = new Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Ucs(0, 0, 0);

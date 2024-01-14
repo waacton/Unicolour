@@ -88,7 +88,7 @@ public class KnownOklabTests
         // using the D65 RGB, create a unicolour based in D50 XYZ
         var configXyzD50 = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         
-        var toXyzD50 = new Unicolour(ColourSpace.Rgb, configXyzD50, rgb.Triplet.Tuple);
+        var toXyzD50 = new Unicolour(configXyzD50, ColourSpace.Rgb, rgb.Triplet.Tuple);
         var oklabFromXyzD50 = toXyzD50.Oklab;
         
         // since Oklab specifically uses a D65 whitepoint

@@ -61,8 +61,8 @@ public class PremultipliedAlphaTests
     {
         var yellowConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         var pinkConfig = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50);
-        var yellow = new Unicolour(ColourSpace.Rgb, yellowConfig, 0.76, 0.62, 0.03, alpha: 0.4);
-        var pink = new Unicolour(ColourSpace.Rgb, pinkConfig, 0.84, 0.19, 0.72, alpha: 0.6);
+        var yellow = new Unicolour(yellowConfig, ColourSpace.Rgb, 0.76, 0.62, 0.03, alpha: 0.4);
+        var pink = new Unicolour(pinkConfig, ColourSpace.Rgb, 0.84, 0.19, 0.72, alpha: 0.6);
         TestUtils.AssertTriplet<Lab>(yellow, new(66.93, 4.87, 68.62), 0.05);
         TestUtils.AssertTriplet<Lab>(pink, new(53.50, 82.67, -33.90), 0.05);
         
@@ -88,8 +88,8 @@ public class PremultipliedAlphaTests
     {
         var yellowConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         var pinkConfig = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50);
-        var yellow = new Unicolour(ColourSpace.Rgb, yellowConfig, 0.76, 0.62, 0.03, alpha: 0.4);
-        var pink = new Unicolour(ColourSpace.Rgb, pinkConfig, 0.84, 0.19, 0.72, alpha: 0.6);
+        var yellow = new Unicolour(yellowConfig, ColourSpace.Rgb, 0.76, 0.62, 0.03, alpha: 0.4);
+        var pink = new Unicolour(pinkConfig, ColourSpace.Rgb, 0.84, 0.19, 0.72, alpha: 0.6);
         TestUtils.AssertTriplet<Lchab>(yellow, new(66.93, 68.79, 85.94), 0.05);
         TestUtils.AssertTriplet<Lchab>(pink, new(53.50, 89.35, 337.7), 0.05);
         

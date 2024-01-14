@@ -31,6 +31,8 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> Cam02Triplets = new();
     public static readonly List<ColourTriplet> Cam16Triplets = new();
     public static readonly List<ColourTriplet> HctTriplets = new();
+    public static readonly List<Temperature> Temperatures = new();
+    public static readonly List<Chromaticity> Chromaticities = new();
     // ReSharper restore CollectionNeverQueried.Global
     
     static RandomColours()
@@ -60,6 +62,8 @@ internal static class RandomColours
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
             HctTriplets.Add(Hct());
+            Temperatures.Add(Temperature());
+            Chromaticities.Add(Chromaticity());
         }
     }
     
@@ -119,6 +123,9 @@ internal static class RandomColours
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
     private static double Alpha() => Random.NextDouble();
     
+    private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));
+    private static Chromaticity Chromaticity() => new(Rng(0, 0.75), Rng(0, 0.85));
+
     private static double Rng() => Random.NextDouble();
     private static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
 

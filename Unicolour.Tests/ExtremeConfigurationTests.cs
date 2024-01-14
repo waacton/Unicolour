@@ -16,7 +16,7 @@ public class ExtremeConfigurationTests
             new WhitePoint(whitePoint, whitePoint, whitePoint), 
             _ => linear, _ => linear);
         var config = new Configuration(rgbConfiguration: rgbConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Rgb, config, 1.00, 0.08, 0.58));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Rgb, 1.00, 0.08, 0.58));
     }
     
     [Test, Combinatorial]
@@ -25,7 +25,7 @@ public class ExtremeConfigurationTests
     {
         var xyzConfig = new XyzConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint));
         var config = new Configuration(xyzConfiguration: xyzConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Xyz, config, 0.4676, 0.2387, 0.2974));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Xyz, 0.4676, 0.2387, 0.2974));
     }
     
     [Test, Combinatorial]
@@ -33,7 +33,7 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double scalar)
     {
         var config = new Configuration(ictcpScalar: scalar);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Ictcp, config, 0.38, 0.12, 0.19));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.38, 0.12, 0.19));
     }
     
     [Test, Combinatorial]
@@ -41,7 +41,7 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double scalar)
     {
         var config = new Configuration(jzazbzScalar: scalar);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Jzazbz, config, 0.106, 0.107, 0.005));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.106, 0.107, 0.005));
     }
     
     [Test, Combinatorial]
@@ -52,7 +52,7 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfiguration: camConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Cam02, config, 62.86, 40.81, -1.18));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02, 62.86, 40.81, -1.18));
     }
     
     [Test, Combinatorial]
@@ -63,6 +63,6 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfiguration: camConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.Cam16, config, 62.47, 42.60, -1.36));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16, 62.47, 42.60, -1.36));
     }
 }

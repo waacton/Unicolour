@@ -7,7 +7,6 @@ using NUnit.Framework.Constraints;
 
 public class InvalidColourSpaceTests
 {
-    private const ColourSpace GoodColourSpace = ColourSpace.Rgb;
     private const ColourSpace BadColourSpace = (ColourSpace)int.MaxValue;
 
     private Unicolour? unicolour;
@@ -30,22 +29,6 @@ public class InvalidColourSpaceTests
         var unicolour1 = new Unicolour(ColourSpace.Rgb, 0.1, 0.2, 0.3);
         var unicolour2 = new Unicolour(ColourSpace.Rgb, 0.7, 0.8, 0.9);
         Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(BadColourSpace, unicolour1, unicolour2, 0.5, true));
-    }
-
-    [Test]
-    public void InvalidColourSpaceGet()
-    {
-        const string genericMethodName = "Get";
-        AssertDoesNotThrow(() => InvokePrivateGenericMethod(genericMethodName, typeof(ColourRepresentation), GoodColourSpace));
-        AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateGenericMethod(genericMethodName, typeof(ColourRepresentation), BadColourSpace));
-    }
-    
-    [Test]
-    public void InvalidColourSpaceSet()
-    {
-        const string methodName = "SetBackingField";
-        AssertDoesNotThrow(() => InvokePrivateMethod(methodName, GoodColourSpace));
-        AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateMethod(methodName, BadColourSpace));
     }
     
     [Test]

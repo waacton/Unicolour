@@ -6,33 +6,7 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class SmokeTests
 {
-    [TestCase("000000")]
-    [TestCase("FFFFFF")]
-    [TestCase("798081")]
-    [TestCase("#000000")]
-    [TestCase("#FFFFFF")]
-    [TestCase("#798081")]
-    public void Hex(string hex)
-    {
-        var expected = new Unicolour(hex);
-        AssertNoError(expected, new Unicolour(hex));
-        AssertNoError(expected, new Unicolour(Configuration.Default, hex));
-    }
-    
-    [TestCase("00000000")]
-    [TestCase("FFFFFFFF")]
-    [TestCase("79808180")]
-    [TestCase("#00000000")]
-    [TestCase("#FFFFFFFF")]
-    [TestCase("#79808180")]
-    public void HexAlpha(string hex)
-    {
-        var expected = new Unicolour(hex);
-        AssertNoError(expected, new Unicolour(hex));
-        AssertNoError(expected, new Unicolour(Configuration.Default, hex));
-    }
-
-    private static readonly List<TestCaseData> TestCases = new()
+    private static readonly List<TestCaseData> ColourSpaceTestCases = new()
     {
         new TestCaseData(ColourSpace.Rgb255, 0, 0, 0, 0),
         new TestCaseData(ColourSpace.Rgb255, 255, 255, 255, 1),
@@ -102,29 +76,148 @@ public class SmokeTests
         new TestCaseData(ColourSpace.Hct, 180, 60, 50, 0.5)
     };
     
-    
-    [TestCaseSource(nameof(TestCases))]
-    public void Unicolour(ColourSpace colourSpace, double first, double second, double third, double alpha)
+    [TestCaseSource(nameof(ColourSpaceTestCases))]
+    public void UnicolourNoAlpha(ColourSpace colourSpace, double first, double second, double third, double alpha)
     {
         var tuple = (first, second, third);
         var expected = new Unicolour(colourSpace, first, second, third);
         AssertNoError(expected, new Unicolour(colourSpace, tuple));
         AssertNoError(expected, new Unicolour(colourSpace, first, second, third));
-        AssertNoError(expected, new Unicolour(colourSpace, Configuration.Default, tuple));
-        AssertNoError(expected, new Unicolour(colourSpace, Configuration.Default, first, second, third));
+        AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, tuple));
+        AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, first, second, third));
     }
     
-    [TestCaseSource(nameof(TestCases))]
-    public void UnicolourAlpha(ColourSpace colourSpace, double first, double second, double third, double alpha)
+    [TestCaseSource(nameof(ColourSpaceTestCases))]
+    public void UnicolourWithAlpha(ColourSpace colourSpace, double first, double second, double third, double alpha)
     {
         var tuple = (first, second, third);
         var alphaTuple = (first, second, third, alpha);
         var expected = new Unicolour(colourSpace, first, second, third, alpha);
         AssertNoError(expected, new Unicolour(colourSpace, tuple, alpha));
+        AssertNoError(expected, new Unicolour(colourSpace, alphaTuple));
         AssertNoError(expected, new Unicolour(colourSpace, first, second, third, alpha));
-        AssertNoError(expected, new Unicolour(colourSpace, Configuration.Default, tuple, alpha));
-        AssertNoError(expected, new Unicolour(colourSpace, Configuration.Default, alphaTuple));
-        AssertNoError(expected, new Unicolour(colourSpace, Configuration.Default, first, second, third, alpha));
+        AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, tuple, alpha));
+        AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, alphaTuple));
+        AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, first, second, third, alpha));
+    }
+    
+    private static readonly List<string> HexDigit6Values = new() { "000000", "FFFFFF", "798081", "#000000", "#FFFFFF", "#798081" };
+    private static readonly List<string> HexDigit8Values = new() { "00000000", "FFFFFFFF", "79808180", "#00000000", "#FFFFFFFF", "#79808180" };
+    private static readonly List<double> AlphaOverrideValues = new() { 0.0, 0.5, 1.0 };
+    
+    [Test]
+    public void HexDigit6(
+        [ValueSource(nameof(HexDigit6Values))] string hex)
+    {
+        var expected = new Unicolour(hex);
+        AssertNoError(expected, new Unicolour(hex));
+        AssertNoError(expected, new Unicolour(Configuration.Default, hex));
+    }
+    
+    [Test]
+    public void HexDigit8(
+        [ValueSource(nameof(HexDigit8Values))] string hex)
+    {
+        var expected = new Unicolour(hex);
+        AssertNoError(expected, new Unicolour(hex));
+        AssertNoError(expected, new Unicolour(Configuration.Default, hex));
+    }
+    
+    [Test]
+    public void HexDigit6WithAlphaOverride(
+        [ValueSource(nameof(HexDigit6Values))] string hex,
+        [ValueSource(nameof(AlphaOverrideValues))] double alphaOverride)
+    {
+        var expected = new Unicolour(hex, alphaOverride);
+        AssertNoError(expected, new Unicolour(hex, alphaOverride));
+        AssertNoError(expected, new Unicolour(Configuration.Default, hex, alphaOverride));
+    }
+    
+    [Test]
+    public void HexDigit8WithAlphaOverride(
+        [ValueSource(nameof(HexDigit8Values))] string hex,
+        [ValueSource(nameof(AlphaOverrideValues))] double alphaOverride)
+    {
+        var expected = new Unicolour(hex, alphaOverride);
+        AssertNoError(expected, new Unicolour(hex, alphaOverride));
+        AssertNoError(expected, new Unicolour(Configuration.Default, hex, alphaOverride));
+    }
+
+    private static readonly List<double> CctValues = new() { 400, 500, 1000, 6504, 20000, 25000, 1e9 };
+    private static readonly List<double> DuvValues = new() { -0.05, 0, 0.05 };
+    private static readonly List<Locus> LocusValues = new() { Locus.Blackbody, Locus.Daylight };
+    private static readonly List<double> LuminanceValues = new() { 1.0, 0.5, 0.0 };
+    
+    [Test]
+    public void TemperatureOnlyCct(
+        [ValueSource(nameof(CctValues))] double cct)
+    {
+        var expected = new Unicolour(cct);
+        AssertNoError(expected, new Unicolour(cct));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct));
+    }
+    
+    [Test, Combinatorial]
+    public void TemperatureWithDuv(
+        [ValueSource(nameof(CctValues))] double cct, 
+        [ValueSource(nameof(DuvValues))] double duv)
+    {
+        var expected = new Unicolour(cct, duv);
+        AssertNoError(expected, new Unicolour(cct, duv));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, duv));
+    }
+    
+    [Test, Combinatorial]
+    public void TemperatureWithLocus(
+        [ValueSource(nameof(CctValues))] double cct,
+        [ValueSource(nameof(LocusValues))] Locus locus)
+    {
+        var expected = new Unicolour(cct, locus);
+        AssertNoError(expected, new Unicolour(cct, locus));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, locus));
+    }
+    
+    [Test, Combinatorial]
+    public void TemperatureWithLuminance(
+        [ValueSource(nameof(CctValues))] double cct,
+        [ValueSource(nameof(LuminanceValues))] double luminance)
+    {
+        var expected = new Unicolour(cct, luminance: luminance);
+        AssertNoError(expected, new Unicolour(cct, luminance: luminance));
+        AssertNoError(expected, new Unicolour(cct, Locus.Blackbody, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, Locus.Blackbody, luminance));
+        AssertNoError(expected, new Unicolour(cct, 0.0, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, 0.0, luminance));
+    }
+    
+    [Test, Combinatorial]
+    public void TemperatureWithDuvAndLuminance(
+        [ValueSource(nameof(CctValues))] double cct,
+        [ValueSource(nameof(DuvValues))] double duv,
+        [ValueSource(nameof(LuminanceValues))] double luminance)
+    {
+        var expected = new Unicolour(cct, duv, luminance);
+        AssertNoError(expected, new Unicolour(cct, duv, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, duv, luminance));
+    }
+
+    [Test, Combinatorial]
+    public void TemperatureWithLocusAndLuminance(
+        [ValueSource(nameof(CctValues))] double cct,
+        [ValueSource(nameof(LocusValues))] Locus locus,
+        [ValueSource(nameof(LuminanceValues))] double luminance)
+    {
+        var expected = new Unicolour(cct, locus, luminance);
+        AssertNoError(expected, new Unicolour(cct, locus, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, cct, locus, luminance));
+    }
+
+    [Test]
+    public void SpectralPowerDistribution()
+    {
+        var expected = new Unicolour(Spd.D65);
+        AssertNoError(expected, new Unicolour(Spd.D65));
+        AssertNoError(expected, new Unicolour(Configuration.Default, Spd.D65));
     }
 
     private static void AssertNoError(Unicolour expected, Unicolour unicolour)

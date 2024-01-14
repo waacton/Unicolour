@@ -7,6 +7,9 @@ using NUnit.Framework;
 
 internal static class TestUtils
 {
+    // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
+    internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
+
     public static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
     public static readonly List<TestCaseData> AllColourSpacesTestCases = new()
     {
@@ -31,6 +34,40 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Cam02),
         new TestCaseData(ColourSpace.Cam16),
         new TestCaseData(ColourSpace.Hct)
+    };
+    
+    public static readonly List<TestCaseData> AllIlluminantsTestCases = new()
+    {
+        new TestCaseData(Illuminant.A),
+        new TestCaseData(Illuminant.C),
+        new TestCaseData(Illuminant.D50),
+        new TestCaseData(Illuminant.D55),
+        new TestCaseData(Illuminant.D65),
+        new TestCaseData(Illuminant.D75),
+        new TestCaseData(Illuminant.E),
+        new TestCaseData(Illuminant.F2),
+        new TestCaseData(Illuminant.F7),
+        new TestCaseData(Illuminant.F11)
+    };
+
+    internal static readonly Dictionary<string, Illuminant> Illuminants = new()
+    {
+        { nameof(Illuminant.A), Illuminant.A },
+        { nameof(Illuminant.C), Illuminant.C },
+        { nameof(Illuminant.D50), Illuminant.D50 },
+        { nameof(Illuminant.D55), Illuminant.D55 },
+        { nameof(Illuminant.D65), Illuminant.D65 },
+        { nameof(Illuminant.D75), Illuminant.D75 },
+        { nameof(Illuminant.E), Illuminant.E },
+        { nameof(Illuminant.F2), Illuminant.F2 },
+        { nameof(Illuminant.F7), Illuminant.F7 },
+        { nameof(Illuminant.F11), Illuminant.F11 }
+    };
+    
+    internal static readonly Dictionary<string, Observer> Observers = new()
+    {
+        { nameof(Observer.Degree2), Observer.Degree2 },
+        { nameof(Observer.Degree10), Observer.Degree10 }
     };
     
     public static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
@@ -91,6 +128,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Alpha);
             AccessProperty(() => unicolour.Cam02);
             AccessProperty(() => unicolour.Cam16);
+            AccessProperty(() => unicolour.Chromaticity);
             AccessProperty(() => unicolour.Config);
             AccessProperty(() => unicolour.Description);
             AccessProperty(() => unicolour.Hct);
@@ -123,6 +161,34 @@ internal static class TestUtils
         {
             _ = getProperty();
         }
+    }
+    
+    public static void AssertEqual<T>(T object1, T object2)
+    {
+        if (object1 == null || object2 == null)
+        {
+            Assert.Fail();
+            return;
+        }
+        
+        Assert.That(object1, Is.EqualTo(object2));
+        Assert.That(object1.Equals(object2));
+        Assert.That(object1.GetHashCode(), Is.EqualTo(object2.GetHashCode()));
+        Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
+    }
+
+    public static void AssertNotEqual<T>(T object1, T object2)
+    {
+        if (object1 == null || object2 == null)
+        {
+            Assert.Fail();
+            return;
+        }
+        
+        Assert.That(object1, Is.Not.EqualTo(object2));
+        Assert.That(object1.Equals(object2), Is.False);
+        Assert.That(object1.GetHashCode(), Is.Not.EqualTo(object2.GetHashCode()));
+        Assert.That(object1.ToString(), Is.Not.EqualTo(object2.ToString()));
     }
     
     private static readonly Dictionary<Type, ColourSpace> RepresentationTypeToColourSpace = new()

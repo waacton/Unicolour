@@ -29,7 +29,7 @@ internal static class Utils
         return useSubtraction ? modulus + remainder : remainder; 
     }
     
-    internal static (double r, double g, double b, double a) ParseColourHex(string colourHex)
+    internal static (double r, double g, double b, double a) ParseHex(string colourHex)
     {
         var hex = colourHex.TrimStart('#');
         if (hex.Length is not (6 or 8))

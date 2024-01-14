@@ -22,8 +22,34 @@ public record Xyz : ColourRepresentation
     
     /*
      * XYZ is considered the root colour representation (in terms of Unicolour implementation)
-     * so does not contain any forward (from another space) or reverse (back to original space) functions
+     * so does not contain any transformations to/from another colour space
+     * however, XYZ can be computed from a spectral power distribution
+     * ----------
+     * XYZ is a transform of SPD
+     * Forward: https://en.wikipedia.org/wiki/CIE_1931_color_space#Computing_XYZ_from_spectral_data
+     * Reverse: n/a
+     *          - infinite SPD possibilities from single XYZ (metamerism: https://en.wikipedia.org/wiki/Metamerism_(color))
+     *          - although potentially https://doi.org/10.1111/cgf.12676 calculates one good SPD (roundtrip conversion obviously not possible)
      */
+    
+    // TODO: check if different in E308-22
+    // follows ASTM standard practice https://doi.org/10.1520/E0308-18
+    // including integration approximation with summation and limiting to range 360 - 780 nm
+    internal static Xyz FromSpd(Spd spd, Observer observer)
+    {
+        var delta = spd.WavelengthDelta;
+        var wavelengths = Spd.ExpectedWavelengths(interval: delta);
+        var xSum = wavelengths.Sum(wavelength => spd.SpectralPower(wavelength) * observer.ColourMatchX(wavelength) * delta);
+        var ySum = wavelengths.Sum(wavelength => spd.SpectralPower(wavelength) * observer.ColourMatchY(wavelength) * delta);
+        var zSum = wavelengths.Sum(wavelength => spd.SpectralPower(wavelength) * observer.ColourMatchZ(wavelength) * delta);
+
+        var k = 100 / ySum;
+        var x = xSum * k;
+        var y = ySum * k;
+        var z = zSum * k;
+        
+        return new Xyz(x / 100.0, y / 100.0, z / 100.0);
+    }
 
     // only for potential debugging or diagnostics
     // until there is an "official" HCT -> XYZ reverse transform

@@ -19,9 +19,10 @@ public static class ConfigUtils
         };
     }
     
-    internal static Configuration GetConfigWithStandardRgb(Illuminant illuminant)
+    internal static Configuration GetConfigWithStandardRgb(string illuminantName)
     {
-        var xyzConfig = new XyzConfiguration(WhitePoint.From(illuminant));
+        var illuminant = TestUtils.Illuminants[illuminantName];
+        var xyzConfig = new XyzConfiguration(illuminant, Observer.Degree2);
         return new Configuration(RgbConfiguration.StandardRgb, xyzConfig);
     }
     

@@ -112,9 +112,13 @@ public class NotNumberTests
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(unicolour.Hex, Is.EqualTo("-"));
         Assert.That(unicolour.Rgb.Byte255.ConstrainedHex, Is.EqualTo("-"));
+        Assert.That(unicolour.Chromaticity.Xy, Is.EqualTo((double.NaN, double.NaN)));
+        Assert.That(unicolour.Chromaticity.Uv, Is.EqualTo((double.NaN, double.NaN)));
         Assert.That(unicolour.IsInDisplayGamut, Is.False);
         Assert.That(unicolour.RelativeLuminance, Is.NaN);
         Assert.That(unicolour.Description, Is.EqualTo("-"));
+        Assert.That(unicolour.Temperature.Cct, Is.NaN);
+        Assert.That(unicolour.Temperature.Duv, Is.NaN);
 
         var spaces = TestUtils.AllColourSpaces.Except(new [] { unicolour.InitialColourSpace }).ToList();
         Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));

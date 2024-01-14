@@ -17,6 +17,14 @@ public class EqualityTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void SameReferenceNotNumber(ColourSpace colourSpace)
+    {
+        var unicolour1 = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
+        var unicolour2 = unicolour1;
+        AssertUnicoloursEqual(unicolour1, unicolour2);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void DifferentType(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
@@ -134,16 +142,39 @@ public class EqualityTests
         AssertEqual(unicolour1.Hct, unicolour2.Hct);
         AssertEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertEqual(unicolour1.Hex, unicolour2.Hex);
+        AssertEqual(unicolour1.Chromaticity, unicolour2.Chromaticity);
         AssertEqual(unicolour1.IsInDisplayGamut, unicolour2.IsInDisplayGamut);
         AssertEqual(unicolour1.RelativeLuminance, unicolour2.RelativeLuminance);
         AssertEqual(unicolour1.Description, unicolour2.Description);
         AssertEqual(unicolour1.Temperature, unicolour2.Temperature);
-        AssertEqual(unicolour1, unicolour2);
 
         if (unicolour1.Xyz.HctToXyzSearchResult != null)
         {
             AssertEqual(unicolour1.Xyz.HctToXyzSearchResult, unicolour2.Xyz.HctToXyzSearchResult);
         }
+
+        AssertConfigurationEqual(unicolour1.Config, unicolour2.Config);
+        AssertEqual(unicolour1, unicolour2);
+    }
+    
+    private static void AssertConfigurationEqual(Configuration config1, Configuration config2)
+    {
+        AssertEqual(config1, config2);
+        AssertEqual(config1.Rgb, config2.Rgb);
+        AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
+        AssertEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
+        AssertEqual(config1.Rgb.ChromaticityB, config2.Rgb.ChromaticityB);
+        AssertEqual(config1.Rgb.WhitePoint, config2.Rgb.WhitePoint);
+        AssertEqual(config1.Rgb.CompandFromLinear, config2.Rgb.CompandFromLinear);
+        AssertEqual(config1.Rgb.InverseCompandToLinear, config2.Rgb.InverseCompandToLinear);
+        AssertEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
+        AssertEqual(config1.Xyz.Observer, config2.Xyz.Observer);
+        AssertEqual(config1.Xyz.Planckian, config2.Xyz.Planckian);
+        AssertEqual(config1.Cam.WhitePoint, config2.Cam.WhitePoint);
+        AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
+        AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);
+        AssertEqual(config1.IctcpScalar, config2.IctcpScalar);
+        AssertEqual(config1.JzazbzScalar, config2.JzazbzScalar);
     }
 
     private static void AssertUnicoloursNotEqual(Unicolour unicolour1, Unicolour unicolour2, Func<Unicolour, ColourTriplet> getTriplet)
@@ -152,32 +183,7 @@ public class EqualityTests
         AssertNotEqual(unicolour1.Alpha, unicolour2.Alpha);
         AssertNotEqual(unicolour1, unicolour2);
     }
-    
-    private static void AssertEqual<T>(T object1, T object2)
-    {
-        if (object1 == null || object2 == null)
-        {
-            Assert.Fail();
-            return;
-        }
-        
-        Assert.That(object1, Is.EqualTo(object2));
-        Assert.That(object1.Equals(object2));
-        Assert.That(object1.GetHashCode(), Is.EqualTo(object2.GetHashCode()));
-        Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
-    }
 
-    private static void AssertNotEqual<T>(T object1, T object2)
-    {
-        if (object1 == null || object2 == null)
-        {
-            Assert.Fail();
-            return;
-        }
-        
-        Assert.That(object1, Is.Not.EqualTo(object2));
-        Assert.That(object1.Equals(object2), Is.False);
-        Assert.That(object1.GetHashCode(), Is.Not.EqualTo(object2.GetHashCode()));
-        Assert.That(object1.ToString(), Is.Not.EqualTo(object2.ToString()));
-    }
+    private static void AssertEqual<T>(T object1, T object2) => TestUtils.AssertEqual(object1, object2);
+    private static void AssertNotEqual<T>(T object1, T object2) => TestUtils.AssertNotEqual(object1, object2);
 }

@@ -17,11 +17,11 @@ internal static class GamutMapping
         var config = unicolour.Config;
         var rgb = unicolour.Rgb;
         var alpha = unicolour.Alpha.A;
-        if (unicolour.IsInDisplayGamut) return new Unicolour(ColourSpace.Rgb, config, rgb.Triplet.Tuple, alpha);
+        if (unicolour.IsInDisplayGamut) return new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple, alpha);
         
         var oklch = unicolour.Oklch;
-        if (oklch.L >= 1.0) return new Unicolour(ColourSpace.Rgb, config, 1, 1, 1, alpha);
-        if (oklch.L <= 0.0) return new Unicolour(ColourSpace.Rgb, config, 0, 0, 0, alpha);
+        if (oklch.L >= 1.0) return new Unicolour(config, ColourSpace.Rgb, 1, 1, 1, alpha);
+        if (oklch.L <= 0.0) return new Unicolour(config, ColourSpace.Rgb, 0, 0, 0, alpha);
 
         const double jnd = 0.02;
         const double epsilon = 0.0001;
@@ -80,7 +80,7 @@ internal static class GamutMapping
         // b) the algorithm converged on an OKLCH that is out of RGB gamut (happens ~5% of the time for me with using random OKLCH inputs)
         return current.IsInDisplayGamut ? current : FromRgbWithClipping(current.Rgb);
         
-        Unicolour FromOklchWithChroma(double chroma) => new(ColourSpace.Oklch, config, oklch.L, chroma, oklch.H, alpha);
-        Unicolour FromRgbWithClipping(Rgb unclippedRgb) => new(ColourSpace.Rgb, config, unclippedRgb.ConstrainedTriplet.Tuple, alpha);
+        Unicolour FromOklchWithChroma(double chroma) => new(config, ColourSpace.Oklch, oklch.L, chroma, oklch.H, alpha);
+        Unicolour FromRgbWithClipping(Rgb unclippedRgb) => new(config, ColourSpace.Rgb, unclippedRgb.ConstrainedTriplet.Tuple, alpha);
     }
 }

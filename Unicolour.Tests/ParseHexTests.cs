@@ -17,18 +17,18 @@ public class ParseHexTests
     [Test]
     public void ThrowsExceptionWhenInvalidLength() 
     {
-        Assert.Throws<NullReferenceException>(() => ParseColourHex(null!));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(string.Empty));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(1)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(2)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(3)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(4)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(5)));
-        Assert.That(ParseColourHex(GetString(6)), Is.EqualTo((170/255.0, 170/255.0, 170/255.0, 255/255.0)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(7)));
-        Assert.That(ParseColourHex(GetString(8)), Is.EqualTo((170/255.0, 170/255.0, 170/255.0, 170/255.0)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(9)));
-        Assert.Throws<ArgumentException>(() => ParseColourHex(GetString(10)));
+        Assert.Throws<NullReferenceException>(() => ParseHex(null!));
+        Assert.Throws<ArgumentException>(() => ParseHex(string.Empty));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(1)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(2)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(3)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(4)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(5)));
+        Assert.That(ParseHex(GetString(6)), Is.EqualTo((170/255.0, 170/255.0, 170/255.0, 255/255.0)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(7)));
+        Assert.That(ParseHex(GetString(8)), Is.EqualTo((170/255.0, 170/255.0, 170/255.0, 170/255.0)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(9)));
+        Assert.Throws<ArgumentException>(() => ParseHex(GetString(10)));
     }
 
     [TestCaseSource(nameof(GeneratePotentialHexStrings))]
@@ -36,11 +36,11 @@ public class ParseHexTests
     {
         if (potentialHex.All(Uri.IsHexDigit))
         {
-            Assert.DoesNotThrow(() => ParseColourHex(potentialHex));
+            Assert.DoesNotThrow(() => ParseHex(potentialHex));
         }
         else
         {
-            Assert.Throws<ArgumentException>(() => ParseColourHex(potentialHex));
+            Assert.Throws<ArgumentException>(() => ParseHex(potentialHex));
         }
     }
 
@@ -64,14 +64,14 @@ public class ParseHexTests
     private static void AssertHexParse(string hex)
     {
         var systemColor = SystemColorUtils.HexToRgb255(hex);
-        var parsed = ParseColourHex(hex);
+        var parsed = ParseHex(hex);
         Assert.That(parsed.r * 255, Is.EqualTo(systemColor.r255), hex);
         Assert.That(parsed.g * 255, Is.EqualTo(systemColor.g255), hex);
         Assert.That(parsed.b * 255, Is.EqualTo(systemColor.b255), hex);
         Assert.That(parsed.a * 255, Is.EqualTo(systemColor.a255), hex);
     }
     
-    private static (double r, double g, double b, double a) ParseColourHex(string hex) => Wacton.Unicolour.Utils.ParseColourHex(hex);
+    private static (double r, double g, double b, double a) ParseHex(string hex) => Wacton.Unicolour.Utils.ParseHex(hex);
 
     private static string GetString(int length) => new(GetChars(length));
 

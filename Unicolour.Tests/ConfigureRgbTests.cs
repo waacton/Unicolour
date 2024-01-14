@@ -19,7 +19,7 @@ public class ConfigureRgbTests
         new(0.713, 0.293),
         new(0.165, 0.830),
         new(0.128, 0.044), 
-        WhitePoint.From(new Chromaticity(0.32168, 0.33767)), // ACES not based on an illuminant
+        new Chromaticity(0.32168, 0.33767).ToWhitePoint(1.0), // ACES not based on an illuminant
         value => value, // ACEScg is linear, no companding
         value => value
     );
@@ -29,7 +29,7 @@ public class ConfigureRgbTests
         new(0.7347, 0.2653),
         new(0.1152, 0.8264),
         new(0.1566, 0.0177), 
-        WhitePoint.From(Illuminant.D50, Observer.Standard2),
+        Illuminant.D50.GetWhitePoint(Observer.Degree2),
         value => Companding.Gamma(value, 2.19921875),
         value => Companding.InverseGamma(value, 2.19921875)
     );
@@ -72,7 +72,7 @@ public class ConfigureRgbTests
     [TestCaseSource(nameof(StandardRgbLookup))]
     public void StandardRgbToOtherModel((double r, double g, double b) standardTriplet, Configuration otherConfig, (double r, double g, double b) otherTriplet)
     {
-        var standard = new Unicolour(ColourSpace.Rgb, StandardRgbConfig, standardTriplet);
+        var standard = new Unicolour(StandardRgbConfig, ColourSpace.Rgb, standardTriplet);
         var other = standard.ConvertToConfiguration(otherConfig);
         TestUtils.AssertTriplet<Rgb>(other, new(otherTriplet.r, otherTriplet.g, otherTriplet.b), Tolerance);
     }
@@ -80,7 +80,7 @@ public class ConfigureRgbTests
     [TestCaseSource(nameof(StandardRgbLookup))]
     public void OtherModelToStandardRgb((double r, double g, double b) standardTriplet, Configuration otherConfig, (double r, double g, double b) otherTriplet)
     {
-        var other = new Unicolour(ColourSpace.Rgb, otherConfig, otherTriplet);
+        var other = new Unicolour(otherConfig, ColourSpace.Rgb, otherTriplet);
         var standard = other.ConvertToConfiguration(StandardRgbConfig);
         TestUtils.AssertTriplet<Rgb>(standard, new(standardTriplet.r, standardTriplet.g, standardTriplet.b), Tolerance);
     }
@@ -109,9 +109,9 @@ public class ConfigureRgbTests
         Assert.That(xyzToRgbLinearMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
         Assert.That(xyzToRgbLinearMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
         
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, Configuration.Default, 0.200757, 0.119618, 0.506757);
+        var unicolourXyz = new Unicolour(Configuration.Default, ColourSpace.Xyz, 0.200757, 0.119618, 0.506757);
         var unicolourXyzNoConfig = new Unicolour(ColourSpace.Xyz, 0.200757, 0.119618, 0.506757);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, Configuration.Default, 41.1553, 51.4108, -56.4485);
+        var unicolourLab = new Unicolour(Configuration.Default, ColourSpace.Lab, 41.1553, 51.4108, -56.4485);
         var unicolourLabNoConfig = new Unicolour(ColourSpace.Lab, 41.1553, 51.4108, -56.4485);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
@@ -130,7 +130,7 @@ public class ConfigureRgbTests
             RgbModels.StandardRgb.WhitePoint,
             RgbModels.StandardRgb.FromLinear,
             RgbModels.StandardRgb.ToLinear);
-        var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
+        var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
         var config = new Configuration(standardRgbConfig, d50XyzConfig);
 
         // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
@@ -144,8 +144,8 @@ public class ConfigureRgbTests
         var xyzToRgbLinearMatrix = RgbLinear.RgbLinearToXyzMatrix(config.Rgb, config.Xyz).Inverse();
         Assert.That(xyzToRgbLinearMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.187691, 0.115771, 0.381093);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 40.5359, 46.0847, -57.1158);
+        var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.187691, 0.115771, 0.381093);
+        var unicolourLab = new Unicolour(config, ColourSpace.Lab, 40.5359, 46.0847, -57.1158);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
@@ -154,11 +154,11 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD65ToAcesRgbD60()
     {
-        var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
+        var d65XyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
         var config = new Configuration(AcescgRgbConfig, d65XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.485665, 0.345912, 0.817454);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 65.4291, 48.7467, -41.3660);
+        var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.485665, 0.345912, 0.817454);
+        var unicolourLab = new Unicolour(config, ColourSpace.Lab, 65.4291, 48.7467, -41.3660);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
@@ -166,11 +166,11 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD50ToAcesRgbD60()
     {
-        var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
+        var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
         var config = new Configuration(AcescgRgbConfig, d50XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.475850, 0.343035, 0.615342);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 65.2028, 45.1028, -41.3650);
+        var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.475850, 0.343035, 0.615342);
+        var unicolourLab = new Unicolour(config, ColourSpace.Lab, 65.2028, 45.1028, -41.3650);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
@@ -178,11 +178,11 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD65ToWideGamutRgbD50()
     {
-        var d65XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D65));
+        var d65XyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
         var config = new Configuration(WideGamutRgbConfig, d65XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.251993, 0.102404, 0.550393);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 38.2704, 87.2838, -65.7493);
+        var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.251993, 0.102404, 0.550393);
+        var unicolourLab = new Unicolour(config, ColourSpace.Lab, 38.2704, 87.2838, -65.7493);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
@@ -190,32 +190,23 @@ public class ConfigureRgbTests
     [Test]
     public void XyzD50ToWideGamutRgbD50()
     {
-        var d50XyzConfig = new XyzConfiguration(WhitePoint.From(Illuminant.D50));
+        var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
         var config = new Configuration(WideGamutRgbConfig, d50XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
-        var unicolourXyz = new Unicolour(ColourSpace.Xyz, config, 0.238795, 0.099490, 0.413181);
-        var unicolourLab = new Unicolour(ColourSpace.Lab, config, 37.7508, 82.3084, -66.1402);
+        var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.238795, 0.099490, 0.413181);
+        var unicolourLab = new Unicolour(config, ColourSpace.Lab, 37.7508, 82.3084, -66.1402);
         TestUtils.AssertTriplet<Rgb>(unicolourXyz, expectedRgb, Tolerance);
         TestUtils.AssertTriplet<Rgb>(unicolourLab, expectedRgb, Tolerance);
     }
     
-    [TestCase(Illuminant.A)]
-    [TestCase(Illuminant.C)]
-    [TestCase(Illuminant.D50)]
-    [TestCase(Illuminant.D55)]
-    [TestCase(Illuminant.D65)]
-    [TestCase(Illuminant.D75)]
-    [TestCase(Illuminant.E)]
-    [TestCase(Illuminant.F2)]
-    [TestCase(Illuminant.F7)]
-    [TestCase(Illuminant.F11)]
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
     public void XyzWhitePointRoundTrip(Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(RgbConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);
         var expectedRgb = RgbLinear.FromXyz(initialXyz, RgbConfiguration.StandardRgb, initialXyzConfig);
 
-        var xyzConfig = new XyzConfiguration(WhitePoint.From(xyzIlluminant));
+        var xyzConfig = new XyzConfiguration(xyzIlluminant, Observer.Degree2);
         var xyz = RgbLinear.ToXyz(expectedRgb, RgbConfiguration.StandardRgb, xyzConfig);
         var rgb = RgbLinear.FromXyz(xyz, RgbConfiguration.StandardRgb, xyzConfig);
         TestUtils.AssertTriplet(rgb.Triplet, expectedRgb.Triplet, 0.00000000001);

@@ -26,7 +26,7 @@ internal static class Interpolation
         
         var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
-        return new Unicolour(colourSpace, startColour.Config, heritage, first, second, third, alpha);
+        return new Unicolour(startColour.Config, heritage, colourSpace, first, second, third, alpha);
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(

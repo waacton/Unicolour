@@ -5,6 +5,7 @@ using Wacton.Unicolour.Example;
 GenerateColourSpaceGradients();
 GenerateVisionDeficiencyGradients();
 GenerateAlphaInterpolation();
+GenerateTemperature();
 return;
 
 void GenerateColourSpaceGradients()
@@ -151,4 +152,34 @@ void GenerateAlphaInterpolation()
     );
 
     image.Save("alpha-interpolation.png");
+}
+
+void GenerateTemperature()
+{
+    const int width = 1200;
+    const int rows = 1; 
+    const int rowHeight = 120;
+
+    var scaledPoints = new List<Unicolour>();
+    for (var i = 1000; i <= 13000; i += 100)
+    {
+        var rgb = new Unicolour(i).Rgb;
+        var rgbComponents = new[] { rgb.R, rgb.G, rgb.B };
+        var max = rgbComponents.Max();
+        var scaledRgb = rgbComponents.Select(x => x / max).ToArray();
+        var scaledUnicolour = new Unicolour(ColourSpace.Rgb, scaledRgb[0], scaledRgb[1], scaledRgb[2]);
+        scaledPoints.Add(scaledUnicolour);
+    }
+    
+    var text = Css.Black;
+    
+    var scaled = Gradient.Draw(("CCT (1,000 K - 13,000 K)", text), width, rowHeight, scaledPoints.ToArray(), 
+        (start, end, amount) => start.Mix(ColourSpace.Rgb, end, amount, true));
+    
+    var image = new Image<Rgba32>(width, rowHeight * rows);
+    image.Mutate(context => context
+        .DrawImage(scaled, new Point(0, rowHeight * 0), 1f)
+    );
+
+    image.Save("temperature.png");
 }

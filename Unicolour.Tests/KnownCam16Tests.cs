@@ -35,7 +35,7 @@ public class KnownCam16Tests
     public void Blue()
     {
         var xyz = new Xyz(0.23446234045762356, 0.23897966766938545, 0.6049634765734733);
-        var camConfig = new CamConfiguration(WhitePoint.From(Illuminant.D65), 40, 20, Surround.Average);
+        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), 40, 20, Surround.Average);
         
         var expectedModel = new Model(
             J: 45.54426472036036,
@@ -63,7 +63,7 @@ public class KnownCam16Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(WhitePoint.From(Illuminant.D65), CamConfiguration.LuxToLuminance(lux), background, surround);
+        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
         var (x, y, z) = camConfig.WhitePoint.AsXyzMatrix().ToTriplet();
         var xyz = new Xyz(x, y, z);
         var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
@@ -85,7 +85,7 @@ public class KnownCam16Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(WhitePoint.From(Illuminant.D65), CamConfiguration.LuxToLuminance(lux), background, surround);
+        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
         var xyz = new Xyz(0, 0, 0);
         var expectedModel = new Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Ucs(0, 0, 0);

@@ -2,61 +2,65 @@
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
-    private Rgb? rgb;
-    private RgbLinear? rgbLinear;
-    private Hsb? hsb;
-    private Hsl? hsl;
-    private Hwb? hwb;
-    private Xyz? xyz;
-    private Xyy? xyy;
-    private Lab? lab;
-    private Lchab? lchab;
-    private Luv? luv;
-    private Lchuv? lchuv;
-    private Hsluv? hsluv;
-    private Hpluv? hpluv;
-    private Ictcp? ictcp;
-    private Jzazbz? jzazbz;
-    private Jzczhz? jzczhz;
-    private Oklab? oklab;
-    private Oklch? oklch;
-    private Cam02? cam02;
-    private Cam16? cam16;
-    private Hct? hct;
+    private readonly Lazy<Rgb> rgb = null!;
+    private readonly Lazy<RgbLinear> rgbLinear = null!;
+    private readonly Lazy<Hsb> hsb = null!;
+    private readonly Lazy<Hsl> hsl = null!;
+    private readonly Lazy<Hwb> hwb = null!;
+    private readonly Lazy<Xyz> xyz = null!;
+    private readonly Lazy<Xyy> xyy = null!;
+    private readonly Lazy<Lab> lab = null!;
+    private readonly Lazy<Lchab> lchab = null!;
+    private readonly Lazy<Luv> luv = null!;
+    private readonly Lazy<Lchuv> lchuv = null!;
+    private readonly Lazy<Hsluv> hsluv = null!;
+    private readonly Lazy<Hpluv> hpluv = null!;
+    private readonly Lazy<Ictcp> ictcp = null!;
+    private readonly Lazy<Jzazbz> jzazbz = null!;
+    private readonly Lazy<Jzczhz> jzczhz = null!;
+    private readonly Lazy<Oklab> oklab = null!;
+    private readonly Lazy<Oklch> oklch = null!;
+    private readonly Lazy<Cam02> cam02 = null!;
+    private readonly Lazy<Cam16> cam16 = null!;
+    private readonly Lazy<Hct> hct = null!;
+    private readonly Lazy<Temperature> temperature = null!;
     
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
-    public Rgb Rgb => Get<Rgb>(ColourSpace.Rgb);
-    public RgbLinear RgbLinear => Get<RgbLinear>(ColourSpace.RgbLinear);
-    public Hsb Hsb => Get<Hsb>(ColourSpace.Hsb);
-    public Hsl Hsl => Get<Hsl>(ColourSpace.Hsl);
-    public Hwb Hwb => Get<Hwb>(ColourSpace.Hwb);
-    public Xyz Xyz => Get<Xyz>(ColourSpace.Xyz);
-    public Xyy Xyy => Get<Xyy>(ColourSpace.Xyy);
-    public Lab Lab => Get<Lab>(ColourSpace.Lab);
-    public Lchab Lchab => Get<Lchab>(ColourSpace.Lchab);
-    public Luv Luv => Get<Luv>(ColourSpace.Luv);
-    public Lchuv Lchuv => Get<Lchuv>(ColourSpace.Lchuv);
-    public Hsluv Hsluv => Get<Hsluv>(ColourSpace.Hsluv);
-    public Hpluv Hpluv => Get<Hpluv>(ColourSpace.Hpluv);
-    public Ictcp Ictcp => Get<Ictcp>(ColourSpace.Ictcp);
-    public Jzazbz Jzazbz => Get<Jzazbz>(ColourSpace.Jzazbz);
-    public Jzczhz Jzczhz => Get<Jzczhz>(ColourSpace.Jzczhz);
-    public Oklab Oklab => Get<Oklab>(ColourSpace.Oklab);
-    public Oklch Oklch => Get<Oklch>(ColourSpace.Oklch);
-    public Cam02 Cam02 => Get<Cam02>(ColourSpace.Cam02);
-    public Cam16 Cam16 => Get<Cam16>(ColourSpace.Cam16);
-    public Hct Hct => Get<Hct>(ColourSpace.Hct);
+    
+    public Rgb Rgb => rgb.Value;
+    public RgbLinear RgbLinear => rgbLinear.Value;
+    public Hsb Hsb => hsb.Value;
+    public Hsl Hsl => hsl.Value;
+    public Hwb Hwb => hwb.Value;
+    public Xyz Xyz => xyz.Value;
+    public Xyy Xyy => xyy.Value;
+    public Lab Lab => lab.Value;
+    public Lchab Lchab => lchab.Value;
+    public Luv Luv => luv.Value;
+    public Lchuv Lchuv => lchuv.Value;
+    public Hsluv Hsluv => hsluv.Value;
+    public Hpluv Hpluv => hpluv.Value;
+    public Ictcp Ictcp => ictcp.Value;
+    public Jzazbz Jzazbz => jzazbz.Value;
+    public Jzczhz Jzczhz => jzczhz.Value;
+    public Oklab Oklab => oklab.Value;
+    public Oklch Oklch => oklch.Value;
+    public Cam02 Cam02 => cam02.Value;
+    public Cam16 Cam16 => cam16.Value;
+    public Hct Hct => hct.Value;
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
     public string Hex => !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
+    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
     public double RelativeLuminance => RgbLinear.RelativeLuminance;
     public string Description => string.Join(" ", ColourDescription.Get(Hsl));
-    public Temperature Temperature => Temperature.Get(Xyz);
-    
-    internal Unicolour(ColourSpace colourSpace, Configuration config, ColourHeritage heritage, double first, double second, double third, double alpha = 1.0)
+    public Temperature Temperature => temperature.Value;
+
+    internal Unicolour(Configuration config, ColourHeritage heritage,
+        ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
         if (colourSpace == ColourSpace.Rgb255)
         {
@@ -70,7 +74,31 @@ public partial class Unicolour : IEquatable<Unicolour>
         Alpha = new Alpha(alpha);
         InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
         InitialColourSpace = colourSpace;
-        SetBackingField(InitialColourSpace);
+        
+        rgb = new Lazy<Rgb>(EvaluateRgb);
+        rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
+        hsb = new Lazy<Hsb>(EvaluateHsb);
+        hsl = new Lazy<Hsl>(EvaluateHsl);
+        hwb = new Lazy<Hwb>(EvaluateHwb);
+        xyz = new Lazy<Xyz>(EvaluateXyz);
+        xyy = new Lazy<Xyy>(EvaluateXyy);
+        lab = new Lazy<Lab>(EvaluateLab);
+        lchab = new Lazy<Lchab>(EvaluateLchab);
+        luv = new Lazy<Luv>(EvaluateLuv);
+        lchuv = new Lazy<Lchuv>(EvaluateLchuv);
+        hsluv = new Lazy<Hsluv>(EvaluateHsluv);
+        hpluv = new Lazy<Hpluv>(EvaluateHpluv);
+        ictcp = new Lazy<Ictcp>(EvaluateIctcp);
+        jzazbz = new Lazy<Jzazbz>(EvaluateJzazbz);
+        jzczhz = new Lazy<Jzczhz>(EvaluateJzczhz);
+        oklab = new Lazy<Oklab>(EvaluateOklab);
+        oklch = new Lazy<Oklch>(EvaluateOklch);
+        cam02 = new Lazy<Cam02>(EvaluateCam02);
+        cam16 = new Lazy<Cam16>(EvaluateCam16);
+        hct = new Lazy<Hct>(EvaluateHct);
+
+        // this will get overridden when called by the derived constructor that takes temperature as a parameter 
+        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -92,7 +120,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
         var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
-        return new Unicolour(ColourSpace.Xyz, newConfig, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
+        return new Unicolour(newConfig, ColourSpace.Xyz, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
     }
     
     public override string ToString()

@@ -43,8 +43,8 @@ public class CamConfiguration
      * they suggest 200 lux -> ~11.72 luminance, but the formula above gives ~12.73 luminance
      * and they appear to ignore the division by 5 and incorporate XYZ luminance (Y)
      */
-    public static readonly CamConfiguration StandardRgb = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(64), 20, Surround.Average);
-    public static readonly CamConfiguration Hct = new(WhitePoint.From(Illuminant.D65), LuxToLuminance(200) * 5 * DefaultHctY(), DefaultHctY() * 100, Surround.Average);
+    public static readonly CamConfiguration StandardRgb = new(Illuminant.D65.GetWhitePoint(Observer.Degree2), LuxToLuminance(64), 20, Surround.Average);
+    public static readonly CamConfiguration Hct = new(Illuminant.D65.GetWhitePoint(Observer.Degree2), LuxToLuminance(200) * 5 * DefaultHctY(), DefaultHctY() * 100, Surround.Average);
     internal static double LuxToLuminance(double lux) => lux / Math.PI / 5.0;
 
     // just for HCT, use specific XYZ configuration

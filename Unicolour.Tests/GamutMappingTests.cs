@@ -128,7 +128,7 @@ public class GamutMappingTests
     public void YellowOutOfGamut()
     {
         const double tolerance = 0.001;
-        var yellowDisplayP3 = new Unicolour(ColourSpace.Rgb, new Configuration(RgbConfiguration.DisplayP3), 1, 1, 0);
+        var yellowDisplayP3 = new Unicolour(new Configuration(RgbConfiguration.DisplayP3), ColourSpace.Rgb, 1, 1, 0);
         var yellowStandardRgb = yellowDisplayP3.ConvertToConfiguration(new Configuration(RgbConfiguration.StandardRgb));
         TestUtils.AssertTriplet<Rgb>(yellowDisplayP3, new(1.00000, 1.00000, 0.00000), tolerance);
         TestUtils.AssertTriplet<Rgb>(yellowStandardRgb, new(1.00000, 1.00000, -0.34630), tolerance);

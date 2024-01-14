@@ -35,6 +35,8 @@ public record Jzazbz : ColourRepresentation
     private const double d0 = 1.6295499532821566e-11;
     // ReSharper restore InconsistentNaming
 
+    private static readonly WhitePoint JzazbzWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+
     private static readonly Matrix M1 = new(new[,]
     {
         { +0.41478972, +0.579999, +0.0146480 },
@@ -52,7 +54,7 @@ public record Jzazbz : ColourRepresentation
     internal static Jzazbz FromXyz(Xyz xyz, double jzazbzScalar, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, JzazbzWhitePoint);
         var d65ScaledMatrix = d65Matrix.Scale(jzazbzScalar).Select(x => Math.Max(x, 0));
         var (x65, y65, z65) = d65ScaledMatrix.ToTriplet();
         
@@ -83,7 +85,7 @@ public record Jzazbz : ColourRepresentation
         var z65 = z65Prime;
         var d65ScaledMatrix = Matrix.FromTriplet(x65, y65, z65);
         var d65Matrix = d65ScaledMatrix.Scale(1 / jzazbzScalar);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, JzazbzWhitePoint, xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(jzazbz));
     }
 }

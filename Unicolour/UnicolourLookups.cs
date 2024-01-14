@@ -1,42 +1,7 @@
 ﻿namespace Wacton.Unicolour;
 
-/*
- * ColourSpace information needs to be held outwith ColourRepresentation object
- * otherwise the ColourRepresentation needs to be evaluated just to obtain the ColourSpace it represents
- */
 public partial class Unicolour
 {
-    private static ColourRepresentation CreateRepresentation(
-        ColourSpace colourSpace, double first, double second, double third, 
-        Configuration config, ColourHeritage heritage)
-    {
-        return colourSpace switch
-        {
-            ColourSpace.Rgb => new Rgb(first, second, third, heritage),
-            ColourSpace.RgbLinear => new RgbLinear(first, second, third, heritage),
-            ColourSpace.Hsb => new Hsb(first, second, third, heritage),
-            ColourSpace.Hsl => new Hsl(first, second, third, heritage),
-            ColourSpace.Hwb => new Hwb(first, second, third, heritage),
-            ColourSpace.Xyz => new Xyz(first, second, third, heritage),
-            ColourSpace.Xyy => new Xyy(first, second, third, heritage),
-            ColourSpace.Lab => new Lab(first, second, third, heritage),
-            ColourSpace.Lchab => new Lchab(first, second, third, heritage),
-            ColourSpace.Luv => new Luv(first, second, third, heritage),
-            ColourSpace.Lchuv => new Lchuv(first, second, third, heritage),
-            ColourSpace.Hsluv => new Hsluv(first, second, third, heritage),
-            ColourSpace.Hpluv => new Hpluv(first, second, third, heritage),
-            ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
-            ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
-            ColourSpace.Jzczhz => new Jzczhz(first, second, third, heritage),
-            ColourSpace.Oklab => new Oklab(first, second, third, heritage),
-            ColourSpace.Oklch => new Oklch(first, second, third, heritage),
-            ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
-            ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
-            ColourSpace.Hct => new Hct(first, second, third, heritage),
-            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
-        };
-    }
-    
     public ColourRepresentation GetRepresentation(ColourSpace colourSpace)
     {
         return colourSpace switch
@@ -66,86 +31,36 @@ public partial class Unicolour
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
-
-    /*
-     * getting a value will trigger a chain of gets and conversions if the intermediary values have not been calculated yet
-     * e.g. if Unicolour is created from RGB, and the first request is for LAB:
-     * - Get(ColourSpace.Lab); lab is null, execute: lab = Lab.FromXyz(Xyz, Config)
-     * - Get(ColourSpace.Xyz); xyz is null, execute: xyz = Rgb.ToXyz(Rgb, Config)
-     * - Get(ColourSpace.Rgb); rgb is not null, return value
-     * - xyz is evaluated from rgb and stored
-     * - lab is evaluated from xyz and stored
-     */
-    private T Get<T>(ColourSpace targetSpace) where T : ColourRepresentation
-    {
-        var backingRepresentation = GetBackingField(targetSpace);
-        if (backingRepresentation == null)
-        {
-            SetBackingField(targetSpace);
-            backingRepresentation = GetBackingField(targetSpace);
-        }
-
-        return (backingRepresentation as T)!;
-    }
-
-    private ColourRepresentation? GetBackingField(ColourSpace colourSpace)
+    
+    private static ColourRepresentation CreateRepresentation(
+        ColourSpace colourSpace, double first, double second, double third, 
+        Configuration config, ColourHeritage heritage)
     {
         return colourSpace switch
         {
-            ColourSpace.Rgb => rgb,
-            ColourSpace.RgbLinear => rgbLinear,
-            ColourSpace.Hsb => hsb,
-            ColourSpace.Hsl => hsl,
-            ColourSpace.Hwb => hwb,
-            ColourSpace.Xyz => xyz,
-            ColourSpace.Xyy => xyy,
-            ColourSpace.Lab => lab,
-            ColourSpace.Lchab => lchab,
-            ColourSpace.Luv => luv,
-            ColourSpace.Lchuv => lchuv,
-            ColourSpace.Hsluv => hsluv,
-            ColourSpace.Hpluv => hpluv,
-            ColourSpace.Ictcp => ictcp,
-            ColourSpace.Jzazbz => jzazbz,
-            ColourSpace.Jzczhz => jzczhz,
-            ColourSpace.Oklab => oklab,
-            ColourSpace.Oklch => oklch,
-            ColourSpace.Cam02 => cam02,
-            ColourSpace.Cam16 => cam16,
-            ColourSpace.Hct => hct,
+            ColourSpace.Rgb => new Rgb(first, second, third, heritage),
+            ColourSpace.RgbLinear => new RgbLinear(first, second, third, heritage),
+            ColourSpace.Hsb => new Hsb(first, second, third, heritage),
+            ColourSpace.Hsl => new Hsl(first, second, third, heritage),
+            ColourSpace.Hwb => new Hwb(first, second, third, heritage),
+            ColourSpace.Xyz => new Xyz(first, second, third, heritage),
+            ColourSpace.Xyy => new Xyy(first, second, third, heritage),
+            ColourSpace.Lab => new Lab(first, second, third, heritage),
+            ColourSpace.Lchab => new Lchab(first, second, third, heritage),
+            ColourSpace.Luv => new Luv(first, second, third, heritage),
+            ColourSpace.Lchuv => new Lchuv(first, second, third, heritage),
+            ColourSpace.Hsluv => new Hsluv(first, second, third, heritage),
+            ColourSpace.Hpluv => new Hpluv(first, second, third, heritage),
+            ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
+            ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
+            ColourSpace.Jzczhz => new Jzczhz(first, second, third, heritage),
+            ColourSpace.Oklab => new Oklab(first, second, third, heritage),
+            ColourSpace.Oklch => new Oklch(first, second, third, heritage),
+            ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
+            ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
+            ColourSpace.Hct => new Hct(first, second, third, heritage),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
-    }
-
-    private void SetBackingField(ColourSpace targetSpace)
-    {
-        Action setField = targetSpace switch
-        {
-            ColourSpace.Rgb => () => rgb = EvaluateRgb(),
-            ColourSpace.RgbLinear => () => rgbLinear = EvaluateRgbLinear(),
-            ColourSpace.Hsb => () => hsb = EvaluateHsb(),
-            ColourSpace.Hsl => () => hsl = EvaluateHsl(),
-            ColourSpace.Hwb => () => hwb = EvaluateHwb(),
-            ColourSpace.Xyz => () => xyz = EvaluateXyz(),
-            ColourSpace.Xyy => () => xyy = EvaluateXyy(),
-            ColourSpace.Lab => () => lab = EvaluateLab(),
-            ColourSpace.Lchab => () => lchab = EvaluateLchab(),
-            ColourSpace.Luv => () => luv = EvaluateLuv(),
-            ColourSpace.Lchuv => () => lchuv = EvaluateLchuv(),
-            ColourSpace.Hsluv => () => hsluv = EvaluateHsluv(),
-            ColourSpace.Hpluv => () => hpluv = EvaluateHpluv(),
-            ColourSpace.Ictcp => () => ictcp = EvaluateIctcp(),
-            ColourSpace.Jzazbz => () => jzazbz = EvaluateJzazbz(),
-            ColourSpace.Jzczhz => () => jzczhz = EvaluateJzczhz(),
-            ColourSpace.Oklab => () => oklab = EvaluateOklab(),
-            ColourSpace.Oklch => () => oklch = EvaluateOklch(),
-            ColourSpace.Cam02 => () => cam02 = EvaluateCam02(),
-            ColourSpace.Cam16 => () => cam16 = EvaluateCam16(),
-            ColourSpace.Hct => () => hct = EvaluateHct(),
-            _ => throw new ArgumentOutOfRangeException(nameof(targetSpace), targetSpace, null)
-        };
-
-        setField();
     }
     
     /*

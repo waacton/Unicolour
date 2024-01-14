@@ -26,6 +26,8 @@ public record Ictcp : ColourRepresentation
      * -------
      * currently only support PQ transfer function, not HLG (https://en.wikipedia.org/wiki/Hybrid_log%E2%80%93gamma)
      */
+    
+    private static readonly WhitePoint IctcpWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
 
     private static readonly Matrix M1 = new(new[,]
     {
@@ -40,11 +42,11 @@ public record Ictcp : ColourRepresentation
         { 6610, -13613, 7003 },
         { 17933, -17390, -543 }
     }).Scale(1 / 4096.0);
-
+    
     internal static Ictcp FromXyz(Xyz xyz, double ictcpScalar, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, IctcpWhitePoint);
         var d65ScaledMatrix = d65Matrix.Scale(ictcpScalar);
         var lmsMatrix = M1.Multiply(d65ScaledMatrix);
         var lmsPrimeMatrix = lmsMatrix.Select(Pq.Smpte.InverseEotf);
@@ -59,7 +61,7 @@ public record Ictcp : ColourRepresentation
         var lmsMatrix = lmsPrimeMatrix.Select(Pq.Smpte.Eotf);
         var d65ScaledMatrix = lmsMatrix.Scale(1 / ictcpScalar);
         var d65Matrix = M1.Inverse().Multiply(d65ScaledMatrix);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, IctcpWhitePoint, xyzConfig.WhitePoint);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(ictcp));
     }
 }

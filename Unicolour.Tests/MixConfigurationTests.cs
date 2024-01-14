@@ -16,8 +16,8 @@ public class MixConfigurationTests
     [Test]
     public void DefaultConfig()
     {
-        var unicolour1 = new Unicolour(ColourSpace.Rgb, Configuration.Default, 0.5, 0.25, 0.75, 0.5);
-        var unicolour2 = new Unicolour(ColourSpace.Rgb, Configuration.Default, 0.5, 0.25, 0.75, 0.5);
+        var unicolour1 = new Unicolour(Configuration.Default, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
+        var unicolour2 = new Unicolour(Configuration.Default, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
         AssertNoError(unicolour1, unicolour2);
     }
     
@@ -25,8 +25,8 @@ public class MixConfigurationTests
     public void SameConfig()
     {
         var config = GetConfig();
-        var unicolour1 = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75, 0.5);
-        var unicolour2 = new Unicolour(ColourSpace.Rgb, config, 0.5, 0.25, 0.75, 0.5);
+        var unicolour1 = new Unicolour(config, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
+        var unicolour2 = new Unicolour(config, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
         AssertNoError(unicolour1, unicolour2);
     }
     
@@ -35,8 +35,8 @@ public class MixConfigurationTests
     {
         var config1 = GetConfig();
         var config2 = GetConfig();
-        var unicolour1 = new Unicolour(ColourSpace.Rgb, config1, 0.5, 0.25, 0.75, 0.5);
-        var unicolour2 = new Unicolour(ColourSpace.Rgb, config2, 0.5, 0.25, 0.75, 0.5);
+        var unicolour1 = new Unicolour(config1, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
+        var unicolour2 = new Unicolour(config2, ColourSpace.Rgb, 0.5, 0.25, 0.75, 0.5);
         AssertError(unicolour1, unicolour2);
     }
 

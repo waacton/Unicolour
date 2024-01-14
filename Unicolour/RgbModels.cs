@@ -7,7 +7,7 @@ public static class RgbModels
         public static readonly Chromaticity R = new(0.6400, 0.3300);
         public static readonly Chromaticity G = new(0.3000, 0.6000);
         public static readonly Chromaticity B = new(0.1500, 0.0600);
-        public static WhitePoint WhitePoint => WhitePoint.From(Illuminant.D65);
+        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
         
         public static double FromLinear(double linear)
         {
@@ -33,7 +33,7 @@ public static class RgbModels
         public static readonly Chromaticity R = new(0.680, 0.320);
         public static readonly Chromaticity G = new(0.265, 0.690);
         public static readonly Chromaticity B = new(0.150, 0.060);
-        public static WhitePoint WhitePoint => WhitePoint.From(Illuminant.D65);
+        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
         
         public static double FromLinear(double value) => StandardRgb.FromLinear(value);
         public static double ToLinear(double value) => StandardRgb.ToLinear(value);
@@ -46,7 +46,7 @@ public static class RgbModels
         public static readonly Chromaticity R = new(0.708, 0.292);
         public static readonly Chromaticity G = new(0.170, 0.797);
         public static readonly Chromaticity B = new(0.131, 0.046);
-        public static WhitePoint WhitePoint => WhitePoint.From(Illuminant.D65);
+        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
         
         private const double Alpha = 1.09929682680944;
         private const double Beta = 0.018053968510807;
@@ -74,10 +74,10 @@ public static class RgbModels
     
     public static class A98
     {
-        public static readonly Chromaticity R = new(0.6400,	0.3300);
+        public static readonly Chromaticity R = new(0.6400, 0.3300);
         public static readonly Chromaticity G = new(0.2100, 0.7100);
         public static readonly Chromaticity B = new(0.1500, 0.0600);
-        public static WhitePoint WhitePoint => WhitePoint.From(Illuminant.D65);
+        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
         
         public static double FromLinear(double linear)
         {
@@ -97,7 +97,7 @@ public static class RgbModels
         public static readonly Chromaticity R = new(0.734699, 0.265301);
         public static readonly Chromaticity G = new(0.159597, 0.840403);
         public static readonly Chromaticity B = new(0.036598, 0.000105);
-        public static WhitePoint WhitePoint => WhitePoint.From(Illuminant.D50);
+        public static WhitePoint WhitePoint => Illuminant.D50.GetWhitePoint(Observer.Degree2);
         
         private const double Et = 1 / 512.0;
 

@@ -24,6 +24,8 @@ public record Hct : ColourRepresentation
      * Forward: https://material.io/blog/science-of-color-design
      * Reverse: n/a - no published reverse transform and I don't want to port Google code, so using my own naive search
      */
+    
+    private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
 
     internal static Cam16 Cam16Component(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct, XyzConfiguration.D65);
     internal static Lab LabComponent(Xyz xyz) => Lab.FromXyz(xyz, XyzConfiguration.D65);
@@ -31,7 +33,7 @@ public record Hct : ColourRepresentation
     internal static Hct FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, WhitePoint.From(Illuminant.D65));
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, HctWhitePoint);
         var d65Xyz = new Xyz(d65Matrix.ToTriplet(), ColourHeritage.From(xyz));
         
         var cam16 = Cam16Component(d65Xyz);
@@ -49,7 +51,7 @@ public record Hct : ColourRepresentation
         var result = FindBestJ(targetY, hct);
         var d65Xyz = result.Converged ? result.Data.Xyz : new Xyz(double.NaN, double.NaN, double.NaN);
         var d65Matrix =  Matrix.FromTriplet(d65Xyz.Triplet);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, WhitePoint.From(Illuminant.D65), xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, HctWhitePoint, xyzConfig.WhitePoint);
         var xyz = new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(hct))
         {
             HctToXyzSearchResult = result

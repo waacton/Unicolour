@@ -99,7 +99,7 @@ public record Cam16 : ColourRepresentation
         return new ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
     
-    public static Cam16 FromXyz(Xyz xyz, CamConfiguration camConfig, XyzConfiguration xyzConfig)
+    internal static Cam16 FromXyz(Xyz xyz, CamConfiguration camConfig, XyzConfiguration xyzConfig)
     {
         var view = ViewingConditions(camConfig);
 
@@ -147,7 +147,7 @@ public record Cam16 : ColourRepresentation
         return new Cam16(new Model(j, c, h, m, s, q), camConfig, ColourHeritage.From(xyz));
     }
     
-    public static Xyz ToXyz(Cam16 cam, CamConfiguration camConfig, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Cam16 cam, CamConfiguration camConfig, XyzConfiguration xyzConfig)
     {
         var view = ViewingConditions(camConfig);
         

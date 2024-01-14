@@ -162,9 +162,7 @@ public static class Css
     public static readonly Unicolour Yellow = new(Config, "#FFFF00");
     public static readonly Unicolour YellowGreen = new(Config, "#9ACD32");
 
-    // TODO: hex constructor that takes hex with 0-1 alpha
-    // (will need to handle alpha present in both hex string and alpha param)
-    public static readonly Unicolour Transparent = new(Config, "#00000000");
+    public static readonly Unicolour Transparent = new(Config, "#000000", alphaOverride: 0);
     
     public static IEnumerable<Unicolour> All => new List<Unicolour>
     {

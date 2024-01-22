@@ -15,7 +15,7 @@ internal static class Comparison
         return (l1 + 0.05) / (l2 + 0.05);
     }
     
-    internal static double Difference(DeltaE deltaE, Unicolour reference, Unicolour sample)
+    internal static double Difference(Unicolour reference, Unicolour sample, DeltaE deltaE)
     {
         return deltaE switch
         {

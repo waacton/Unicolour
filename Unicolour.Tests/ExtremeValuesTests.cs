@@ -62,6 +62,6 @@ public class ExtremeValuesTests
     {
         var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
         var unicolour2 = RandomColours.UnicolourFrom(colourSpace);
-        TestUtils.AssertNoPropertyError(unicolour1.Mix(colourSpace, unicolour2, amount));
+        TestUtils.AssertNoPropertyError(unicolour1.Mix(unicolour2, colourSpace, amount));
     }
 }

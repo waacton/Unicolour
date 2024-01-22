@@ -48,7 +48,7 @@ internal static class GamutMapping
             }
 
             var clipped = FromRgbWithClipping(current.Rgb);
-            var deltaE = clipped.Difference(DeltaE.Ok, current);
+            var deltaE = clipped.Difference(current, DeltaE.Ok);
             
             var isNoticeableDifference = deltaE >= jnd;
             if (isNoticeableDifference)

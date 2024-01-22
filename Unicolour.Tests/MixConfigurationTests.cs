@@ -48,18 +48,18 @@ public class MixConfigurationTests
     private static void AssertNoError(Unicolour unicolour1, Unicolour unicolour2)
     {
         Assert.That(unicolour1.Config.Id, Is.EqualTo(unicolour2.Config.Id));
-        Assert.DoesNotThrow(() => unicolour1.Mix(ColourSpace.Rgb, unicolour2, 0.5, false));
-        Assert.DoesNotThrow(() => unicolour2.Mix(ColourSpace.Rgb, unicolour1, 0.5, false));
-        Assert.DoesNotThrow(() => unicolour1.Mix(ColourSpace.Hsb, unicolour2, 0.5, false));
-        Assert.DoesNotThrow(() => unicolour2.Mix(ColourSpace.Hsb, unicolour1, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour1.Mix(unicolour2, ColourSpace.Rgb, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour2.Mix(unicolour1, ColourSpace.Rgb, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour1.Mix(unicolour2, ColourSpace.Hsb, 0.5, false));
+        Assert.DoesNotThrow(() => unicolour2.Mix(unicolour1, ColourSpace.Hsb, 0.5, false));
     }
     
     private static void AssertError(Unicolour unicolour1, Unicolour unicolour2)
     {
         Assert.That(unicolour1.Config.Id, Is.Not.EqualTo(unicolour2.Config.Id));
-        Assert.Throws<InvalidOperationException>(() => unicolour1.Mix(ColourSpace.Rgb, unicolour2, 0.5, false));
-        Assert.Throws<InvalidOperationException>(() => unicolour2.Mix(ColourSpace.Rgb, unicolour1, 0.5, false));
-        Assert.Throws<InvalidOperationException>(() => unicolour1.Mix(ColourSpace.Hsb, unicolour2, 0.5, false));
-        Assert.Throws<InvalidOperationException>(() => unicolour2.Mix(ColourSpace.Hsb, unicolour1, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.Mix(unicolour2, ColourSpace.Rgb, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.Mix(unicolour1, ColourSpace.Rgb, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour1.Mix(unicolour2, ColourSpace.Hsb, 0.5, false));
+        Assert.Throws<InvalidOperationException>(() => unicolour2.Mix(unicolour1, ColourSpace.Hsb, 0.5, false));
     }
 }

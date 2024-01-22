@@ -11,10 +11,10 @@ public class PremultipliedAlphaTests
         var red = new Unicolour(ColourSpace.Rgb, 1, 0, 0, alpha: 1);
         var transparentBlack = new Unicolour(ColourSpace.Rgb, 0, 0, 0, alpha: 0);
         
-        var notPremultipliedAlpha1 = red.Mix(ColourSpace.Rgb, transparentBlack, premultiplyAlpha: false);
-        var notPremultipliedAlpha2 = transparentBlack.Mix(ColourSpace.Rgb, red, premultiplyAlpha: false);
-        var withPremultipliedAlpha1 = red.Mix(ColourSpace.Rgb, transparentBlack);
-        var withPremultipliedAlpha2 = transparentBlack.Mix(ColourSpace.Rgb, red);
+        var notPremultipliedAlpha1 = red.Mix(transparentBlack, ColourSpace.Rgb, premultiplyAlpha: false);
+        var notPremultipliedAlpha2 = transparentBlack.Mix(red, ColourSpace.Rgb, premultiplyAlpha: false);
+        var withPremultipliedAlpha1 = red.Mix(transparentBlack, ColourSpace.Rgb);
+        var withPremultipliedAlpha2 = transparentBlack.Mix(red, ColourSpace.Rgb);
         
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0.5, 0, 0), TestUtils.MixTolerance);
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0.5, 0, 0), TestUtils.MixTolerance);
@@ -28,10 +28,10 @@ public class PremultipliedAlphaTests
         var transparentBlack = new Unicolour(ColourSpace.Rgb, 0, 0, 0, alpha: 0);
         var blue = new Unicolour(ColourSpace.Rgb, 0, 0, 1, alpha: 1);
         
-        var notPremultipliedAlpha1 = transparentBlack.Mix(ColourSpace.Rgb, blue, premultiplyAlpha: false);
-        var notPremultipliedAlpha2 = blue.Mix(ColourSpace.Rgb, transparentBlack, premultiplyAlpha: false);
-        var withPremultipliedAlpha1 = transparentBlack.Mix(ColourSpace.Rgb, blue);
-        var withPremultipliedAlpha2 = blue.Mix(ColourSpace.Rgb, transparentBlack);
+        var notPremultipliedAlpha1 = transparentBlack.Mix(blue, ColourSpace.Rgb, premultiplyAlpha: false);
+        var notPremultipliedAlpha2 = blue.Mix(transparentBlack, ColourSpace.Rgb, premultiplyAlpha: false);
+        var withPremultipliedAlpha1 = transparentBlack.Mix(blue, ColourSpace.Rgb);
+        var withPremultipliedAlpha2 = blue.Mix(transparentBlack, ColourSpace.Rgb);
         
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0, 0, 0.5), TestUtils.MixTolerance);
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0, 0, 0.5), TestUtils.MixTolerance);
@@ -45,10 +45,10 @@ public class PremultipliedAlphaTests
         var purple = new Unicolour(ColourSpace.Rgb, 0.24, 0.12, 0.98, alpha: 0.4);
         var pink = new Unicolour(ColourSpace.Rgb, 0.62, 0.26, 0.64, alpha: 0.6);
         
-        var notPremultipliedAlpha1 = purple.Mix(ColourSpace.Rgb, pink, premultiplyAlpha: false);
-        var notPremultipliedAlpha2 = pink.Mix(ColourSpace.Rgb, purple, premultiplyAlpha: false);
-        var withPremultipliedAlpha1 = purple.Mix(ColourSpace.Rgb, pink);
-        var withPremultipliedAlpha2 = pink.Mix(ColourSpace.Rgb, purple);
+        var notPremultipliedAlpha1 = purple.Mix(pink, ColourSpace.Rgb, premultiplyAlpha: false);
+        var notPremultipliedAlpha2 = pink.Mix(purple, ColourSpace.Rgb, premultiplyAlpha: false);
+        var withPremultipliedAlpha1 = purple.Mix(pink, ColourSpace.Rgb);
+        var withPremultipliedAlpha2 = pink.Mix(purple, ColourSpace.Rgb);
         
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0.43, 0.19, 0.81), TestUtils.MixTolerance);
         TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0.43, 0.19, 0.81), TestUtils.MixTolerance);
@@ -72,10 +72,10 @@ public class PremultipliedAlphaTests
 
         yellow = new Unicolour(ColourSpace.Lab, yellow.Lab.Triplet.Tuple, yellow.Alpha.A);
         pink = new Unicolour(ColourSpace.Lab, pink.Lab.Triplet.Tuple, pink.Alpha.A);
-        var notPremultipliedAlpha1 = yellow.Mix(ColourSpace.Lab, pink, premultiplyAlpha: false);
-        var notPremultipliedAlpha2 = pink.Mix(ColourSpace.Lab, yellow, premultiplyAlpha: false);
-        var withPremultipliedAlpha1 = yellow.Mix(ColourSpace.Lab, pink);
-        var withPremultipliedAlpha2 = pink.Mix(ColourSpace.Lab, yellow);
+        var notPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lab, premultiplyAlpha: false);
+        var notPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lab, premultiplyAlpha: false);
+        var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lab);
+        var withPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lab);
         
         TestUtils.AssertTriplet<Lab>(notPremultipliedAlpha1, new(60.22, 43.77, 17.36), 0.05);
         TestUtils.AssertTriplet<Lab>(notPremultipliedAlpha2, new(60.22, 43.77, 17.36), 0.05);
@@ -99,10 +99,10 @@ public class PremultipliedAlphaTests
 
         yellow = new Unicolour(ColourSpace.Lchab, yellow.Lchab.Triplet.Tuple, yellow.Alpha.A);
         pink = new Unicolour(ColourSpace.Lchab, pink.Lchab.Triplet.Tuple, pink.Alpha.A);
-        var notPremultipliedAlpha1 = yellow.Mix(ColourSpace.Lchab, pink, premultiplyAlpha: false);
-        var notPremultipliedAlpha2 = pink.Mix(ColourSpace.Lchab, yellow, premultiplyAlpha: false);
-        var withPremultipliedAlpha1 = yellow.Mix(ColourSpace.Lchab, pink);
-        var withPremultipliedAlpha2 = pink.Mix(ColourSpace.Lchab, yellow);
+        var notPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lchab, premultiplyAlpha: false);
+        var notPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lchab, premultiplyAlpha: false);
+        var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lchab);
+        var withPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lchab);
         
         TestUtils.AssertTriplet<Lchab>(notPremultipliedAlpha1, new(60.22, 79.07, 31.82), 0.05);
         TestUtils.AssertTriplet<Lchab>(notPremultipliedAlpha2, new(60.22, 79.07, 31.82), 0.05);

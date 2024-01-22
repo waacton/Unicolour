@@ -2,7 +2,7 @@
 
 internal static class Interpolation
 {
-    internal static Unicolour Mix(ColourSpace colourSpace, Unicolour startColour, Unicolour endColour, double distance, bool premultiplyAlpha)
+    internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, bool premultiplyAlpha)
     {
         GuardConfiguration(startColour, endColour);
         

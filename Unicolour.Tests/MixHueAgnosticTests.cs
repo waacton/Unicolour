@@ -28,10 +28,10 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.25), Third.At(0.75), 0.5);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.25), Third.At(0.75), 0.5);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.25, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.75, false);
-        var mixed3 = unicolour1.Mix(ColourSpace, unicolour2, 0.75, false);
-        var mixed4 = unicolour2.Mix(ColourSpace, unicolour1, 0.25, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, false);
+        var mixed3 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, false);
+        var mixed4 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, false);
         
         AssertMix(mixed1, (First.At(0.5), Second.At(0.25), Third.At(0.75), 0.5));
         AssertMix(mixed2, (First.At(0.5), Second.At(0.25), Third.At(0.75), 0.5));
@@ -44,8 +44,8 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), Third.At(0.0), 0.0);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), Third.At(0.5), 0.2);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.5, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.5, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, false);
         
         AssertMix(mixed1, (First.At(0.25), Second.At(0.5), Third.At(0.25), 0.1));
         AssertMix(mixed2, (First.At(0.25), Second.At(0.5), Third.At(0.25), 0.1));
@@ -56,8 +56,8 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.0), Second.At(1.0), Third.At(0.5));
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.0), Third.At(0.0), 0.5);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.75, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.75, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, false);
 
         AssertMix(mixed1, (First.At(0.375), Second.At(0.25), Third.At(0.125), 0.625));
         AssertMix(mixed2, (First.At(0.125), Second.At(0.75), Third.At(0.375), 0.875));
@@ -68,8 +68,8 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.0), Second.At(1.0), Third.At(0.5));
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.0), Third.At(0.0), 0.5);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.25, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.25, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, false);
         
         AssertMix(mixed1, (First.At(0.125), Second.At(0.75), Third.At(0.375), 0.875));
         AssertMix(mixed2, (First.At(0.375), Second.At(0.25), Third.At(0.125), 0.625));
@@ -80,8 +80,8 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.2), Second.At(0.4), Third.At(0.6), 0.8);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.3), Second.At(0.6), Third.At(0.4), 0.9);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 1.5, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 1.5, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 1.5, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 1.5, false);
 
         AssertMix(mixed1, (First.At(0.35), Second.At(0.7), Third.At(0.3), 0.95));
         AssertMix(mixed2, (First.At(0.15), Second.At(0.3), Third.At(0.7), 0.75));
@@ -92,8 +92,8 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.2), Second.At(0.4), Third.At(0.6), 0.8);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.3), Second.At(0.6), Third.At(0.4), 0.9);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, -0.5, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, -0.5, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, -0.5, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, -0.5, false);
 
         AssertMix(mixed1, (First.At(0.15), Second.At(0.3), Third.At(0.7), 0.75));
         AssertMix(mixed2, (First.At(0.35), Second.At(0.7), Third.At(0.3), 0.95));
@@ -104,7 +104,7 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, 0, 0, 0, 0.5);
         var unicolour2 = new Unicolour(ColourSpace, 0, 0, 0, 1.5);
-        var mixed = unicolour1.Mix(ColourSpace, unicolour2, 3);
+        var mixed = unicolour1.Mix(unicolour2, ColourSpace, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(2.0));
         Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(1.0));
     }
@@ -114,7 +114,7 @@ public abstract class MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, 0, 0, 0, 0.5);
         var unicolour2 = new Unicolour(ColourSpace, 0, 0, 0, -0.5);
-        var mixed = unicolour1.Mix(ColourSpace, unicolour2, 3);
+        var mixed = unicolour1.Mix(unicolour2, ColourSpace, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(-1.0));
         Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(0.0));
     }

@@ -46,7 +46,7 @@ public class MixHueNoComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
         var unicolour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
-        var mixed = unicolour1.Mix(ColourSpace, unicolour2, amount, premultiplyAlpha: true);
+        var mixed = unicolour1.Mix(unicolour2, ColourSpace, amount, premultiplyAlpha: true);
         AssertMix(mixed, expected.Tuple);
     }
 }

@@ -102,11 +102,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
-    public double Difference(DeltaE deltaE, Unicolour reference) => Comparison.Difference(deltaE, this, reference);
+    public double Difference(Unicolour reference, DeltaE deltaE) => Comparison.Difference(this, reference, deltaE);
 
-    public Unicolour Mix(ColourSpace colourSpace, Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
+    public Unicolour Mix(Unicolour other, ColourSpace colourSpace, double amount = 0.5, bool premultiplyAlpha = true)
     {
-        return Interpolation.Mix(colourSpace, this, other, amount, premultiplyAlpha);
+        return Interpolation.Mix(this, other, colourSpace, amount, premultiplyAlpha);
     }
     
     public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);

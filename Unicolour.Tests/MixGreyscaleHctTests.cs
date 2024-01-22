@@ -21,10 +21,10 @@ public class MixGreyscaleHctTests
         var hctWhite = new Unicolour(ColourSpace.Hct, 180, 100, 100); // full tone = white
         
         var green = new Unicolour(ColourSpace.Hct, 120, 100, 50);
-        var fromRgbBlack = rgbBlack.Mix(ColourSpace.Hct, green, 0.5, false);
-        var fromRgbWhite = rgbWhite.Mix(ColourSpace.Hct, green, 0.5, false);
-        var fromHctBlack = hctBlack.Mix(ColourSpace.Hct, green, 0.5, false);
-        var fromHctWhite = hctWhite.Mix(ColourSpace.Hct, green, 0.5, false);
+        var fromRgbBlack = rgbBlack.Mix(green, ColourSpace.Hct, 0.5, false);
+        var fromRgbWhite = rgbWhite.Mix(green, ColourSpace.Hct, 0.5, false);
+        var fromHctBlack = hctBlack.Mix(green, ColourSpace.Hct, 0.5, false);
+        var fromHctWhite = hctWhite.Mix(green, ColourSpace.Hct, 0.5, false);
         
         // no obvious way to create known HCT value when starting from non-HCT space
         // so need to calculate what the expected Chroma will be for RGB-white
@@ -47,10 +47,10 @@ public class MixGreyscaleHctTests
         var hctWhite = new Unicolour(ColourSpace.Hct, 180, 100, 100); // full tone = white
         
         var blue = new Unicolour(ColourSpace.Hct, 240, 100, 50);
-        var toRgbBlack = blue.Mix(ColourSpace.Hct, rgbBlack, 0.5, false);
-        var toRgbWhite = blue.Mix(ColourSpace.Hct, rgbWhite, 0.5, false);
-        var toHctBlack = blue.Mix(ColourSpace.Hct, hctBlack, 0.5, false);
-        var toHctWhite = blue.Mix(ColourSpace.Hct, hctWhite, 0.5, false);
+        var toRgbBlack = blue.Mix(rgbBlack, ColourSpace.Hct, 0.5, false);
+        var toRgbWhite = blue.Mix(rgbWhite, ColourSpace.Hct, 0.5, false);
+        var toHctBlack = blue.Mix(hctBlack, ColourSpace.Hct, 0.5, false);
+        var toHctWhite = blue.Mix(hctWhite, ColourSpace.Hct, 0.5, false);
         
         // no obvious way to create known HCT value when starting from non-HCT space
         // so need to calculate what the expected Chroma will be for RGB-white
@@ -74,9 +74,9 @@ public class MixGreyscaleHctTests
         var white = new Unicolour(ColourSpace.Rgb, 1, 1, 1);
         var grey = new Unicolour(ColourSpace.Rgb, 0.5, 0.5, 0.5);
 
-        var blackToWhite = black.Mix(ColourSpace.Hct, white, 0.5, false);
-        var blackToGrey = black.Mix(ColourSpace.Hct, grey, 0.5, false);
-        var whiteToGrey = white.Mix(ColourSpace.Hct, grey, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Hct, 0.5, false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Hct, 0.5, false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Hct, 0.5, false);
         
         // colours created from RGB therefore hue does not change
         // (except for HCT for RGB-black, which converts to a different hue than other greyscales)
@@ -96,9 +96,9 @@ public class MixGreyscaleHctTests
         var white = new Unicolour(ColourSpace.Hct, 300, 0, 100);
         var grey = new Unicolour(ColourSpace.Hct, 100, 0, 50);
 
-        var blackToWhite = black.Mix(ColourSpace.Hct, white, 0.5, false);
-        var blackToGrey = black.Mix(ColourSpace.Hct, grey, 0.5, false);
-        var whiteToGrey = white.Mix(ColourSpace.Hct, grey, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Hct, 0.5, false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Hct, 0.5, false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Hct, 0.5, false);
         
         AssertGrey(blackToWhite.Rgb);
         AssertGrey(blackToGrey.Rgb);

@@ -28,7 +28,7 @@ public class InvalidColourSpaceTests
     {
         var unicolour1 = new Unicolour(ColourSpace.Rgb, 0.1, 0.2, 0.3);
         var unicolour2 = new Unicolour(ColourSpace.Rgb, 0.7, 0.8, 0.9);
-        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(BadColourSpace, unicolour1, unicolour2, 0.5, true));
+        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(unicolour1, unicolour2, BadColourSpace, 0.5, true));
     }
     
     [Test]

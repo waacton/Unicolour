@@ -15,7 +15,7 @@ while (true)
     try
     {
         var unicolour = new Unicolour(inputHex);
-        var useWhiteText = unicolour.Difference(DeltaE.Cie76, white) > unicolour.Difference(DeltaE.Cie76, black);
+        var useWhiteText = unicolour.Difference(white, DeltaE.Cie76) > unicolour.Difference(black, DeltaE.Cie76);
         AnsiConsole.MarkupLine(GetBar(unicolour, useWhiteText));
         AnsiConsole.Write(GetTable(unicolour));
     }

@@ -13,6 +13,6 @@ public class InvalidDeltaETests
     {
         var unicolour1 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
         var unicolour2 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
-        Assert.Throws<ArgumentOutOfRangeException>(() => unicolour1.Difference(BadDeltaE, unicolour2));
+        Assert.Throws<ArgumentOutOfRangeException>(() => unicolour1.Difference(unicolour2, BadDeltaE));
     }
 }

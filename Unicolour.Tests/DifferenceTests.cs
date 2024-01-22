@@ -32,7 +32,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Cie76, sample);
+        var delta = reference.Difference(sample, DeltaE.Cie76);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -49,7 +49,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Cie94, sample);
+        var delta = reference.Difference(sample, DeltaE.Cie94);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(0.0005));
     }
 
@@ -66,7 +66,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Cie94Textiles, sample);
+        var delta = reference.Difference(sample, DeltaE.Cie94Textiles);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -84,7 +84,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Ciede2000, sample);
+        var delta = reference.Difference(sample, DeltaE.Ciede2000);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -101,7 +101,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.CmcAcceptability, sample);
+        var delta = reference.Difference(sample, DeltaE.CmcAcceptability);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -118,7 +118,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.CmcPerceptibility, sample);
+        var delta = reference.Difference(sample, DeltaE.CmcPerceptibility);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -135,7 +135,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Itp, sample);
+        var delta = reference.Difference(sample, DeltaE.Itp);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -152,7 +152,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Z, sample);
+        var delta = reference.Difference(sample, DeltaE.Z);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -168,7 +168,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Hyab, sample);
+        var delta = reference.Difference(sample, DeltaE.Hyab);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -184,7 +184,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Ok, sample);
+        var delta = reference.Difference(sample, DeltaE.Ok);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -200,7 +200,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Cam02, sample);
+        var delta = reference.Difference(sample, DeltaE.Cam02);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
 
@@ -216,7 +216,7 @@ public class DifferenceTests
     {
         var reference = ColourLimits.Rgb[referenceColour];
         var sample = ColourLimits.Rgb[sampleColour];
-        var delta = reference.Difference(DeltaE.Cam16, sample);
+        var delta = reference.Difference(sample, DeltaE.Cam16);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -227,7 +227,7 @@ public class DifferenceTests
     {
         var reference = pair.reference;
         var sample = pair.sample;
-        Assert.That(reference.Difference(deltaE, sample), Is.EqualTo(sample.Difference(deltaE, reference)));
+        Assert.That(reference.Difference(sample, deltaE), Is.EqualTo(sample.Difference(reference, deltaE)));
     }
     
     [TestCase(DeltaE.Cie76, ColourSpace.Lab)]
@@ -245,7 +245,7 @@ public class DifferenceTests
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)
     {
         var unicolour = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
-        var delta = unicolour.Difference(deltaE, unicolour);
+        var delta = unicolour.Difference(unicolour, deltaE);
         Assert.That(delta, Is.NaN);
     }
 }

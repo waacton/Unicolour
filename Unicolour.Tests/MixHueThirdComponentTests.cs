@@ -30,8 +30,8 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 0, 0.0);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 340, 0.2);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.5, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.5, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, false);
         
         AssertMix(mixed1, (First.At(0.25), Second.At(0.5), 350, 0.1));
         AssertMix(mixed2, (First.At(0.25), Second.At(0.5), 350, 0.1));
@@ -42,8 +42,8 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 300);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 60, 0.5);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.75, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.75, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, false);
 
         AssertMix(mixed1, (First.At(0.125), Second.At(0.25), 30, 0.625));
         AssertMix(mixed2, (First.At(0.375), Second.At(0.75), 330, 0.875));
@@ -54,8 +54,8 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 300);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 60, 0.5);
-        var mixed1 = unicolour1.Mix(ColourSpace, unicolour2, 0.25, false);
-        var mixed2 = unicolour2.Mix(ColourSpace, unicolour1, 0.25, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, false);
         
         AssertMix(mixed1, (First.At(0.375), Second.At(0.75), 330, 0.875));
         AssertMix(mixed2, (First.At(0.125), Second.At(0.25), 30, 0.625));
@@ -75,7 +75,7 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
         var unicolour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
-        var mixed = unicolour1.Mix(ColourSpace, unicolour2, amount, premultiplyAlpha: true);
+        var mixed = unicolour1.Mix(unicolour2, ColourSpace, amount, premultiplyAlpha: true);
         AssertMix(mixed, expected.Tuple);
     }
 }

@@ -8,8 +8,8 @@ public class CamConfiguration
     public WhitePoint WhitePoint { get; }
     public double AdaptingLuminance { get; } // [L_A] Luminance of adapting field (brightness of the room where the colour is being viewed)
     public double BackgroundLuminance { get; } // [Y_b] Luminance of background (brightness of the area surrounding the colour)
+    public Surround Surround { get; } // 0 = dark (movie theatre), 1 = dim (bright TV in dim room), 2 = average (surface colours)
     
-    internal readonly Surround Surround; // 0 = dark (movie theatre), 1 = dim (bright TV in dim room), 2 = average (surface colours)
     internal double F => Surround switch
     {
         Surround.Dark => 0.8,

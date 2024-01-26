@@ -45,12 +45,12 @@ public partial class Unicolour
     }
     
     public Unicolour(Configuration config, string hex) : 
-        this(config, ColourSpace.Rgb, Utils.ParseHex(hex))
+        this(config, ColourSpace.Rgb, Parse(hex))
     {
     }
 
     public Unicolour(Configuration config, string hex, double alphaOverride) :
-        this(config, ColourSpace.Rgb, Utils.ParseHex(hex) with { a = alphaOverride })
+        this(config, ColourSpace.Rgb, Parse(hex) with { a = alphaOverride })
     {
     }
 

@@ -52,6 +52,9 @@
       <Compile Update="Unicolour.Lookups.cs">
         <DependentUpon>Unicolour.cs</DependentUpon>
       </Compile>
+      <Compile Update="Unicolour.Unseen.cs">
+        <DependentUpon>Unicolour.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

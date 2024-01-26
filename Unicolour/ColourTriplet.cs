@@ -30,12 +30,13 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
         };
     }
 
-    internal ColourTriplet WithHueModulo()
+    internal ColourTriplet WithHueModulo(bool allow360 = false)
     {
+        var degrees = allow360 ? 361 : 360;
         return HueIndex switch
         {
-            0 => new(First.Modulo(360), Second, Third, HueIndex),
-            2 => new(First, Second, Third.Modulo(360), HueIndex),
+            0 => new(First.Modulo(degrees), Second, Third, HueIndex),
+            2 => new(First, Second, Third.Modulo(degrees), HueIndex),
             null => new(First, Second, Third, HueIndex),
             _ => throw new ArgumentOutOfRangeException()
         };

@@ -2,21 +2,21 @@
 
 internal static class Interpolation
 {
-    internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, bool premultiplyAlpha)
+    internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, HueSpan hueSpan, bool premultiplyAlpha)
     {
-        GuardConfiguration(startColour, endColour);
+        (Unicolour start, Unicolour end, Configuration config) = AdjustConfiguration(startColour, endColour);
         
-        var startRepresentation = startColour.GetRepresentation(colourSpace);
-        var startAlpha = startColour.Alpha;
-        var endRepresentation = endColour.GetRepresentation(colourSpace);
-        var endAlpha = endColour.Alpha;
+        var startRepresentation = start.GetRepresentation(colourSpace);
+        var startAlpha = start.Alpha;
+        var endRepresentation = end.GetRepresentation(colourSpace);
+        var endAlpha = end.Alpha;
 
-        (ColourTriplet start, ColourTriplet end) = GetTripletsToInterpolate(
+        (ColourTriplet startTriplet, ColourTriplet endTriplet) = GetTripletsToInterpolate(
             (startRepresentation, startAlpha), 
             (endRepresentation, endAlpha),
-            premultiplyAlpha);
+            hueSpan, premultiplyAlpha);
         
-        var triplet = InterpolateTriplet(start, end, distance).WithHueModulo();
+        var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo();
         var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
         
         if (premultiplyAlpha)
@@ -26,13 +26,19 @@ internal static class Interpolation
         
         var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
-        return new Unicolour(startColour.Config, heritage, colourSpace, first, second, third, alpha);
+        return new Unicolour(config, heritage, colourSpace, first, second, third, alpha);
+    }
+    
+    private static (Unicolour start, Unicolour end, Configuration config) AdjustConfiguration(Unicolour start, Unicolour end)
+    {
+        var config = start.Config;
+        return end.Config == config ? (start, end, config) : (start, end.ConvertToConfiguration(config), config);
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
         (ColourRepresentation representation, Alpha alpha) start, 
-        (ColourRepresentation representation, Alpha alpha) end, 
-        bool premultiplyAlpha)
+        (ColourRepresentation representation, Alpha alpha) end,
+        HueSpan hueSpan, bool premultiplyAlpha)
     {
         ColourTriplet startTriplet;
         ColourTriplet endTriplet;
@@ -42,7 +48,7 @@ internal static class Interpolation
         var hasHueComponent = start.representation.HasHueComponent || end.representation.HasHueComponent;
         if (hasHueComponent)
         {
-            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation);
+            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation, hueSpan);
         }
         else
         {
@@ -59,14 +65,10 @@ internal static class Interpolation
         return (startTriplet, endTriplet);
     }
     
-    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation)
+    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation, HueSpan hueSpan)
     {
-        var startTriplet = startRepresentation.Triplet;
-        var endTriplet = endRepresentation.Triplet;
-        
-        (ColourTriplet, ColourTriplet) HueResult(double startHue, double endHue) => (
-            startTriplet.WithHueOverride(startHue), 
-            endTriplet.WithHueOverride(endHue));
+        var startTriplet = startRepresentation.Triplet.WithHueModulo(allow360: true);
+        var endTriplet = endRepresentation.Triplet.WithHueModulo(allow360: true);
 
         var startHasHue = startRepresentation.UseAsHued;
         var endHasHue = endRepresentation.UseAsHued;
@@ -75,24 +77,35 @@ internal static class Interpolation
         // don't change hue if one colour is greyscale (e.g. black n/a° to green 120° should always stay at hue 120°)
         var startHue = ignoreHue || startHasHue ? startTriplet.HueValue() : endTriplet.HueValue();
         var endHue = ignoreHue || endHasHue ? endTriplet.HueValue() : startTriplet.HueValue();
-    
-        if (startHue > endHue)
-        {
-            var endViaZero = endHue + 360;
-            var interpolateViaZero = Math.Abs(startHue - endViaZero) < Math.Abs(startHue - endHue);
-            return HueResult(startHue, interpolateViaZero ? endViaZero : endHue);
-        }
-    
-        if (endHue > startHue)
-        {
-            var startViaZero = startHue + 360;
-            var interpolateViaZero = Math.Abs(endHue - startViaZero) < Math.Abs(endHue - startHue);
-            return HueResult(interpolateViaZero ? startViaZero : startHue, endHue);
-        }
-    
-        return HueResult(startHue, endHue);
+        
+        (startHue, endHue) = AdjustHues(startHue, endHue, hueSpan);
+        var adjustedStartHue = startTriplet.WithHueOverride(startHue);
+        var adjustedEndHue = endTriplet.WithHueOverride(endHue);
+        return (adjustedStartHue, adjustedEndHue);
     }
 
+    private static (double start, double end) AdjustHues(double start, double end, HueSpan hueSpan)
+    {
+        return hueSpan switch
+        {
+            HueSpan.Shorter => (end - start) switch
+            {
+                > 180 => (start + 360, end),
+                < -180 => (start, end + 360),
+                _ => (start, end)
+            },
+            HueSpan.Longer => (end - start) switch
+            {
+                > 0 and < 180 => (start + 360, end),
+                > -180 and <= 0 => (start, end + 360),
+                _ => (start, end)
+            },
+            HueSpan.Increasing => (start, end < start ? end + 360 : end),
+            HueSpan.Decreasing => (start < end ? start + 360 : start, end),
+            _ => throw new ArgumentOutOfRangeException(nameof(hueSpan), hueSpan, null)
+        };
+    }
+    
     private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
     {
         var first = Interpolate(start.First, end.First, distance);
@@ -104,14 +117,14 @@ internal static class Interpolation
     internal static double Interpolate(double startValue, double endValue, double distance)
     {
         var difference = endValue - startValue;
-        return startValue + (difference * distance);
+        return startValue + difference * distance;
     }
-    
-    private static void GuardConfiguration(Unicolour unicolour1, Unicolour unicolour2)
-    {
-        if (unicolour1.Config != unicolour2.Config)
-        {
-            throw new InvalidOperationException("Can only mix unicolours with the same configuration reference");
-        }
-    }
+}
+
+public enum HueSpan
+{
+    Shorter,
+    Longer,
+    Increasing,
+    Decreasing
 }

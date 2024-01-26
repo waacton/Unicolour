@@ -16,10 +16,10 @@ public class MixGreyscaleJzczhzTests
         var jchWhite = new Unicolour(ColourSpace.Jzczhz, 1, 0.5, 180); // full lightness = white
         
         var green = new Unicolour(ColourSpace.Jzczhz, 0.5, 0.5, 120);
-        var fromJabBlack = jabBlack.Mix(green, ColourSpace.Jzczhz, 0.5, false);
-        var fromJabWhite = jabWhite.Mix(green, ColourSpace.Jzczhz, 0.5, false);
-        var fromJchBlack = jchBlack.Mix(green, ColourSpace.Jzczhz, 0.5, false);
-        var fromJchWhite = jchWhite.Mix(green, ColourSpace.Jzczhz, 0.5, false);
+        var fromJabBlack = jabBlack.Mix(green, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var fromJabWhite = jabWhite.Mix(green, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var fromJchBlack = jchBlack.Mix(green, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var fromJchWhite = jchWhite.Mix(green, ColourSpace.Jzczhz, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromJabBlack.Jzczhz.Triplet, new(0.25, 0.25, 120));
@@ -37,10 +37,10 @@ public class MixGreyscaleJzczhzTests
         var jcWhite = new Unicolour(ColourSpace.Jzczhz, 1, 0.5, 180); // full lightness = white
         
         var blue = new Unicolour(ColourSpace.Jzczhz, 0.5, 0.5, 240);
-        var toJzazbzBlack = blue.Mix(jabBlack, ColourSpace.Jzczhz, 0.5, false);
-        var toJzazbzWhite = blue.Mix(jabWhite, ColourSpace.Jzczhz, 0.5, false);
-        var toJzczhzBlack = blue.Mix(jchBlack, ColourSpace.Jzczhz, 0.5, false);
-        var toJzczhzWhite = blue.Mix(jcWhite, ColourSpace.Jzczhz, 0.5, false);
+        var toJzazbzBlack = blue.Mix(jabBlack, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var toJzazbzWhite = blue.Mix(jabWhite, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var toJzczhzBlack = blue.Mix(jchBlack, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var toJzczhzWhite = blue.Mix(jcWhite, ColourSpace.Jzczhz, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toJzazbzBlack.Jzczhz.Triplet, new(0.25, 0.25, 240));
@@ -56,9 +56,9 @@ public class MixGreyscaleJzczhzTests
         var white = new Unicolour(ColourSpace.Jzazbz, 1, 0, 0);
         var grey = new Unicolour(ColourSpace.Jzazbz, 0.5, 0, 0);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Jzczhz, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Jzazbz.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Jzazbz.Triplet, new(0.25, 0, 0));
@@ -77,9 +77,9 @@ public class MixGreyscaleJzczhzTests
         var white = new Unicolour(ColourSpace.Jzczhz, 1, 0, 300);
         var grey = new Unicolour(ColourSpace.Jzczhz, 0.5, 0, 100);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Jzczhz, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Jzazbz.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Jzazbz.Triplet, new(0.25, 0, 0));

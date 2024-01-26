@@ -14,15 +14,21 @@ return;
 
 void QuickstartExamples()
 {
-    var red = new Unicolour("#FF0000");
+    var cyan = new Unicolour("#00FFFF");
+    Console.WriteLine(cyan.Hsl); // 180.0° 100.0% 50.0%
+
+    var yellow = new Unicolour(ColourSpace.Rgb255, 255, 255, 0);
+    Console.WriteLine(yellow.Hex); // #FFFF00
+    
+    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
     var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
 
-    // RGB: [1, 0, 0] ⟶ [0, 0, 1] = [0.5, 0, 0.5]
+    /* RGB: [1, 0, 0] ⟶ [0, 0, 1] = [0.5, 0, 0.5] */
     var purple = red.Mix(blue, ColourSpace.Rgb);
     Console.WriteLine(purple.Rgb); // 0.50 0.00 0.50
     Console.WriteLine(purple.Hex); // #800080
 
-    // HSL: [0, 1, 0.5] ⟶ [240, 1, 0.5] = [300, 1, 0.5]
+    /* HSL: [0, 1, 0.5] ⟶ [240, 1, 0.5] = [300, 1, 0.5] */
     var magenta = red.Mix(blue, ColourSpace.Hsl); 
     Console.WriteLine(magenta.Rgb); // 1.00 0.00 1.00
     Console.WriteLine(magenta.Hex); // #FF00FF
@@ -33,7 +39,7 @@ void QuickstartExamples()
     Console.WriteLine(difference); // 100.0000
 
     var equalTristimulus = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-    Console.WriteLine(equalTristimulus.Chromaticity); // (0.3333, 0.3333)
+    Console.WriteLine(equalTristimulus.Chromaticity.Xy); // (0.3333, 0.3333)
     Console.WriteLine(equalTristimulus.Chromaticity.Uv); // (0.2105, 0.3158)
     Console.WriteLine(equalTristimulus.Temperature); // 5455.5 K (Δuv -0.00442)
 }
@@ -134,25 +140,22 @@ void GenerateVisionDeficiencyGradients()
     // not using OKLCH for the spectrum because the uniform luminance results in flat gradient for Achromatopsia
     var colourPoints = new Unicolour[]
     {
-        new(ColourSpace.Hsb, 0, 0.666, 1), new(ColourSpace.Hsb, 30, 0.666, 1), new(ColourSpace.Hsb, 60, 0.666, 1),
-        new(ColourSpace.Hsb, 90, 0.666, 1), new(ColourSpace.Hsb, 120, 0.666, 1), new(ColourSpace.Hsb, 150, 0.666, 1),
-        new(ColourSpace.Hsb, 180, 0.666, 1), new(ColourSpace.Hsb, 210, 0.666, 1), new(ColourSpace.Hsb, 240, 0.666, 1),
-        new(ColourSpace.Hsb, 270, 0.666, 1), new(ColourSpace.Hsb, 300, 0.666, 1), new(ColourSpace.Hsb, 330, 0.666, 1),
+        new(ColourSpace.Hsb, 0, 0.666, 1),
         new(ColourSpace.Hsb, 360, 0.666, 1)
     };
 
     var darkText = new Unicolour("#404046");
     
     var none = Gradient.Draw(("No deficiency", darkText), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount));
+        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount, HueSpan.Increasing));
     var protanopia = Gradient.Draw(("Protanopia", darkText), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount).SimulateProtanopia());
+        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount, HueSpan.Increasing).SimulateProtanopia());
     var deuteranopia = Gradient.Draw(("Deuteranopia", darkText), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount).SimulateDeuteranopia());
+        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount, HueSpan.Increasing).SimulateDeuteranopia());
     var tritanopia = Gradient.Draw(("Tritanopia", darkText), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount).SimulateTritanopia());
+        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount, HueSpan.Increasing).SimulateTritanopia());
     var achromatopsia = Gradient.Draw(("Achromatopsia", darkText), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount).SimulateAchromatopsia());
+        (start, end, amount) => start.Mix(end, ColourSpace.Hsb, amount, HueSpan.Increasing).SimulateAchromatopsia());
 
     var image = new Image<Rgba32>(width, rowHeight * rows);
     image.Mutate(context => context
@@ -176,9 +179,9 @@ void GenerateAlphaInterpolation()
     var text = Css.Black;
     
     var premultiplied = Gradient.Draw(("With premultiplied alpha", text), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount, true));
+        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount, premultiplyAlpha: true));
     var notPremultiplied = Gradient.Draw(("Without premultiplied alpha", text), width, rowHeight, colourPoints, 
-        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount, false));
+        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount, premultiplyAlpha: false));
     
     var image = new Image<Rgba32>(width, rowHeight * rows);
     image.Mutate(context => context
@@ -209,7 +212,7 @@ void GenerateTemperature()
     var text = Css.Black;
     
     var scaled = Gradient.Draw(("CCT (1,000 K - 13,000 K)", text), width, rowHeight, scaledPoints.ToArray(), 
-        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount, true));
+        (start, end, amount) => start.Mix(end, ColourSpace.Rgb, amount));
     
     var image = new Image<Rgba32>(width, rowHeight * rows);
     image.Mutate(context => context

@@ -24,21 +24,21 @@ public class InvalidColourSpaceTests
     }
     
     [Test]
-    public void InvalidInterpolationInput()
-    {
-        var unicolour1 = new Unicolour(ColourSpace.Rgb, 0.1, 0.2, 0.3);
-        var unicolour2 = new Unicolour(ColourSpace.Rgb, 0.7, 0.8, 0.9);
-        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(unicolour1, unicolour2, BadColourSpace, 0.5, true));
-    }
-    
-    [Test]
-    public void InvalidXyzEvaluation()
+    public void InvalidUnicolourProperty()
     {
         const string fieldName = "InitialColourSpace";
         SetPrivateField(fieldName, BadColourSpace);
         
         const string methodName = "EvaluateXyz";
         AssertThrows<ArgumentOutOfRangeException>(() => InvokePrivateMethod(methodName));
+    }
+    
+    [Test]
+    public void InvalidInterpolationParameter()
+    {
+        var unicolour1 = new Unicolour(ColourSpace.Rgb, 0.1, 0.2, 0.3);
+        var unicolour2 = new Unicolour(ColourSpace.Rgb, 0.7, 0.8, 0.9);
+        Assert.Throws<ArgumentOutOfRangeException>(() => Interpolation.Mix(unicolour1, unicolour2, BadColourSpace, 0.5, HueSpan.Shorter, true));
     }
 
     private static void AssertDoesNotThrow(Action action) => Assert.DoesNotThrow(action.Invoke);

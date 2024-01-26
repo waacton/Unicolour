@@ -30,8 +30,8 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 0, 0.0);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 340, 0.2);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, premultiplyAlpha: false);
         
         AssertMix(mixed1, (First.At(0.25), Second.At(0.5), 350, 0.1));
         AssertMix(mixed2, (First.At(0.25), Second.At(0.5), 350, 0.1));
@@ -42,8 +42,8 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 300);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 60, 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, premultiplyAlpha: false);
 
         AssertMix(mixed1, (First.At(0.125), Second.At(0.25), 30, 0.625));
         AssertMix(mixed2, (First.At(0.375), Second.At(0.75), 330, 0.875));
@@ -54,11 +54,71 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     {
         var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(1.0), 300);
         var unicolour2 = new Unicolour(ColourSpace, First.At(0.0), Second.At(0.0), 60, 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, false);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, premultiplyAlpha: false);
         
         AssertMix(mixed1, (First.At(0.375), Second.At(0.75), 330, 0.875));
         AssertMix(mixed2, (First.At(0.125), Second.At(0.25), 30, 0.625));
+    }
+    
+    [TestCase(HueSpan.Shorter, 0)]
+    [TestCase(HueSpan.Longer, 180)]
+    [TestCase(HueSpan.Increasing, 0)]
+    [TestCase(HueSpan.Decreasing, 0)]
+    public void Span0(HueSpan hueSpan, double expected)
+    {
+        var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 0, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 0, 0.5);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        
+        AssertMix(mixed1, (First.At(0.5), Second.At(0.5), expected, 0.5));
+        AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expected, 0.5));
+    }
+    
+    [TestCase(HueSpan.Shorter, 180, 180)]
+    [TestCase(HueSpan.Longer, 0, 0)]
+    [TestCase(HueSpan.Increasing, 180, 0)]
+    [TestCase(HueSpan.Decreasing, 0, 180)]
+    public void Span120(HueSpan hueSpan, double expectedForward, double expectedBackward)
+    {
+        var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 120, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 240, 0.5);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        
+        AssertMix(mixed1, (First.At(0.5), Second.At(0.5), expectedForward, 0.5));
+        AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expectedBackward, 0.5));
+    }
+    
+    [TestCase(HueSpan.Shorter, 0, 0)]
+    [TestCase(HueSpan.Longer, 180, 180)]
+    [TestCase(HueSpan.Increasing, 180, 0)]
+    [TestCase(HueSpan.Decreasing, 0, 180)]
+    public void Span360(HueSpan hueSpan, double expectedForward, double expectedBackward)
+    {
+        var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 0, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 360, 0.5);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        
+        AssertMix(mixed1, (First.At(0.5), Second.At(0.5), expectedForward, 0.5));
+        AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expectedBackward, 0.5));
+    }
+    
+    [TestCase(HueSpan.Shorter, 135, 135)]
+    [TestCase(HueSpan.Longer, 315, 315)]
+    [TestCase(HueSpan.Increasing, 135, 315)]
+    [TestCase(HueSpan.Decreasing, 315, 135)]
+    public void SpanUneven(HueSpan hueSpan, double expectedForward, double expectedBackward)
+    {
+        var unicolour1 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 90, 0.5);
+        var unicolour2 = new Unicolour(ColourSpace, First.At(0.5), Second.At(0.5), 180, 0.5);
+        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        
+        AssertMix(mixed1, (First.At(0.5), Second.At(0.5), expectedForward, 0.5));
+        AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expectedBackward, 0.5));
     }
     
     public static readonly List<TestCaseData> PremultipliedAlphaTestData = new()

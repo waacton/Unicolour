@@ -39,7 +39,7 @@ public class LazyBackingFieldsTests
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
         var other = RandomColours.UnicolourFrom(colourSpace);
         var initialColourSpace = unicolour.InitialColourSpace;
-        _ = Interpolation.Mix(unicolour, other, initialColourSpace, 0.5, true);
+        _ = Interpolation.Mix(unicolour, other, initialColourSpace, 0.5, HueSpan.Shorter, true);
         AssertBackingFieldsNotEvaluated(unicolour, ColourSpacesWithBackingFields.Except(new []{ colourSpace }).ToList());
         AssertBackingFieldEvaluated(unicolour, colourSpace);
     }

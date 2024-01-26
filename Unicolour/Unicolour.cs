@@ -52,11 +52,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
-    public string Hex => !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
+    public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
     public double RelativeLuminance => RgbLinear.RelativeLuminance;
-    public string Description => string.Join(" ", ColourDescription.Get(Hsl));
+    public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Temperature Temperature => temperature.Value;
 
     internal Unicolour(Configuration config, ColourHeritage heritage,

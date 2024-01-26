@@ -104,9 +104,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
     public double Difference(Unicolour reference, DeltaE deltaE) => Comparison.Difference(this, reference, deltaE);
 
-    public Unicolour Mix(Unicolour other, ColourSpace colourSpace, double amount = 0.5, bool premultiplyAlpha = true)
+    public Unicolour Mix(Unicolour other, ColourSpace colourSpace, double amount = 0.5, HueSpan hueSpan = HueSpan.Shorter, bool premultiplyAlpha = true)
     {
-        return Interpolation.Mix(this, other, colourSpace, amount, premultiplyAlpha);
+        return Interpolation.Mix(this, other, colourSpace, amount, hueSpan, premultiplyAlpha);
     }
     
     public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);

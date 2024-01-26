@@ -45,5 +45,13 @@
             <_Parameter1>$(AssemblyName).Datasets</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Unicolour.Constructors.cs">
+        <DependentUpon>Unicolour.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Unicolour.Lookups.cs">
+        <DependentUpon>Unicolour.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 
 </Project>

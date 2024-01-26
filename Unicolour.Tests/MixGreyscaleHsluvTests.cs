@@ -19,10 +19,10 @@ public class MixGreyscaleHsluvTests
         var hsluvWhite = new Unicolour(ColourSpace.Hsluv, 180, 0, 100); // no saturation = greyscale
         
         var green = new Unicolour(ColourSpace.Hsluv, 120, 100, 50);
-        var fromRgbBlack = rgbBlack.Mix(green, ColourSpace.Hsluv, 0.5, false);
-        var fromRgbWhite = rgbWhite.Mix(green, ColourSpace.Hsluv, 0.5, false);
-        var fromHsluvBlack = hsluvBlack.Mix(green, ColourSpace.Hsluv, 0.5, false);
-        var fromHsluvWhite = hsluvWhite.Mix(green, ColourSpace.Hsluv, 0.5, false);
+        var fromRgbBlack = rgbBlack.Mix(green, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var fromRgbWhite = rgbWhite.Mix(green, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var fromHsluvBlack = hsluvBlack.Mix(green, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var fromHsluvWhite = hsluvWhite.Mix(green, ColourSpace.Hsluv, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromRgbBlack.Hsluv.Triplet, new(120, 50, 25));
@@ -40,10 +40,10 @@ public class MixGreyscaleHsluvTests
         var hsluvWhite = new Unicolour(ColourSpace.Hsluv, 180, 0, 100); // no saturation = greyscale
         
         var blue = new Unicolour(ColourSpace.Hsluv, 240, 100, 50);
-        var toRgbBlack = blue.Mix(rgbBlack, ColourSpace.Hsluv, 0.5, false);
-        var toRgbWhite = blue.Mix(rgbWhite, ColourSpace.Hsluv, 0.5, false);
-        var toHsluvBlack = blue.Mix(hsluvBlack, ColourSpace.Hsluv, 0.5, false);
-        var toHsluvWhite = blue.Mix(hsluvWhite, ColourSpace.Hsluv, 0.5, false);
+        var toRgbBlack = blue.Mix(rgbBlack, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var toRgbWhite = blue.Mix(rgbWhite, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var toHsluvBlack = blue.Mix(hsluvBlack, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var toHsluvWhite = blue.Mix(hsluvWhite, ColourSpace.Hsluv, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toRgbBlack.Hsluv.Triplet, new(240, 50, 25));
@@ -59,9 +59,9 @@ public class MixGreyscaleHsluvTests
         var white = new Unicolour(ColourSpace.Luv, 100, 0, 0);
         var grey = new Unicolour(ColourSpace.Luv, 50, 0, 0);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Hsluv, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Hsluv, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Hsluv, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Hsluv, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));
@@ -80,9 +80,9 @@ public class MixGreyscaleHsluvTests
         var white = new Unicolour(ColourSpace.Hsluv, 300, 0, 100);
         var grey = new Unicolour(ColourSpace.Hsluv, 100, 0, 50);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Hsluv, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Hsluv, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Hsluv, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Hsluv, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Hsluv, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
         AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));

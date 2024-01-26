@@ -16,10 +16,10 @@ public class MixGreyscaleOklchTests
         var oklchWhite = new Unicolour(ColourSpace.Oklch, 1, 0.5, 180); // full lightness = white
         
         var green = new Unicolour(ColourSpace.Oklch, 0.5, 0.5, 120);
-        var fromOklabBlack = oklabBlack.Mix(green, ColourSpace.Oklch, 0.5, false);
-        var fromOklabWhite = oklabWhite.Mix(green, ColourSpace.Oklch, 0.5, false);
-        var fromOklchBlack = oklchBlack.Mix(green, ColourSpace.Oklch, 0.5, false);
-        var fromOklchWhite = oklchWhite.Mix(green, ColourSpace.Oklch, 0.5, false);
+        var fromOklabBlack = oklabBlack.Mix(green, ColourSpace.Oklch, premultiplyAlpha: false);
+        var fromOklabWhite = oklabWhite.Mix(green, ColourSpace.Oklch, premultiplyAlpha: false);
+        var fromOklchBlack = oklchBlack.Mix(green, ColourSpace.Oklch, premultiplyAlpha: false);
+        var fromOklchWhite = oklchWhite.Mix(green, ColourSpace.Oklch, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
@@ -37,10 +37,10 @@ public class MixGreyscaleOklchTests
         var oklchWhite = new Unicolour(ColourSpace.Oklch, 1, 0.5, 180); // full lightness = white
         
         var blue = new Unicolour(ColourSpace.Oklch, 0.5, 0.5, 240);
-        var toOklabBlack = blue.Mix(oklabBlack, ColourSpace.Oklch, 0.5, false);
-        var toOklabWhite = blue.Mix(oklabWhite, ColourSpace.Oklch, 0.5, false);
-        var toOklchBlack = blue.Mix(oklchBlack, ColourSpace.Oklch, 0.5, false);
-        var toOklchWhite = blue.Mix(oklchWhite, ColourSpace.Oklch, 0.5, false);
+        var toOklabBlack = blue.Mix(oklabBlack, ColourSpace.Oklch, premultiplyAlpha: false);
+        var toOklabWhite = blue.Mix(oklabWhite, ColourSpace.Oklch, premultiplyAlpha: false);
+        var toOklchBlack = blue.Mix(oklchBlack, ColourSpace.Oklch, premultiplyAlpha: false);
+        var toOklchWhite = blue.Mix(oklchWhite, ColourSpace.Oklch, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
         AssertTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
@@ -56,9 +56,9 @@ public class MixGreyscaleOklchTests
         var white = new Unicolour(ColourSpace.Oklab, 1, 0, 0);
         var grey = new Unicolour(ColourSpace.Oklab, 0.5, 0, 0);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Oklch, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Oklch, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Oklch, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
@@ -77,9 +77,9 @@ public class MixGreyscaleOklchTests
         var white = new Unicolour(ColourSpace.Oklch, 1, 0, 300);
         var grey = new Unicolour(ColourSpace.Oklch, 0.5, 0, 100);
 
-        var blackToWhite = black.Mix(white, ColourSpace.Oklch, 0.5, false);
-        var blackToGrey = black.Mix(grey, ColourSpace.Oklch, 0.5, false);
-        var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, 0.5, false);
+        var blackToWhite = black.Mix(white, ColourSpace.Oklch, premultiplyAlpha: false);
+        var blackToGrey = black.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
+        var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         
         AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
         AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));

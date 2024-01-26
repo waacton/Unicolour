@@ -31,6 +31,18 @@ public class ColourTripletTests
         new TestCaseData(new ColourTriplet(-270, 450, 810, 2), new ColourTriplet(-270, 450, 90, 2))
     };
     
+    private static readonly List<TestCaseData> ModuloHue360TestData = new()
+    {
+        new TestCaseData(new ColourTriplet(360, 360, 360, null), false, new ColourTriplet(360, 360, 360, null)).SetName("Hue index null, 360 not allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, null), true, new ColourTriplet(360, 360, 360, null)).SetName("Hue index null, 360 allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 0), false, new ColourTriplet(0, 360, 360, 0)).SetName("Hue index 0, 360 not allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 0), true, new ColourTriplet(360, 360, 360, 0)).SetName("Hue index 0, 360 allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 1), false, null).SetName("Hue index 1, 360 not allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 1), true, null).SetName("Hue index 1, 360 allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 2), false, new ColourTriplet(360, 360, 0, 2)).SetName("Hue index 2, 360 not allowed"),
+        new TestCaseData(new ColourTriplet(360, 360, 360, 2), true, new ColourTriplet(360, 360, 360, 2)).SetName("Hue index 2, 360 allowed")
+    };
+    
     private static readonly List<TestCaseData> PremultipliedAlphaTestData = new()
     {
         new TestCaseData(new ColourTriplet(2, 10, -8.8, null), 0.5, new ColourTriplet(1, 5, -4.4, null)),
@@ -128,6 +140,20 @@ public class ColourTripletTests
 
         ColourTriplet hueModuloTriplet = null!;
         Assert.DoesNotThrow(() => hueModuloTriplet = triplet.WithHueModulo());
+        TestUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
+    }
+    
+    [TestCaseSource(nameof(ModuloHue360TestData))]
+    public void ModuloHue360(ColourTriplet triplet, bool allow360, ColourTriplet expectedTriplet)
+    {
+        if (triplet.HueIndex is 1)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => triplet.WithHueModulo());
+            return;
+        }
+
+        ColourTriplet hueModuloTriplet = null!;
+        Assert.DoesNotThrow(() => hueModuloTriplet = triplet.WithHueModulo(allow360));
         TestUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
     }
     

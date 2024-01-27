@@ -43,7 +43,7 @@ This library was initially written for personal projects since existing librarie
 The goal of this library is to be [accurate, intuitive, and easy to use](#-quickstart).
 Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
 
-Unicolour is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
+Unicolour also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
 
 ## 🔆 Installation
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -62,7 +62,7 @@ Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 ```
 
 ## ⚡ Quickstart
-The simplest way to get started is to make a `Unicolour` and use it to see how the colour is [represented in a different colour space](#convert-between-colour-and-temperature).
+The simplest way to get started is to make a `Unicolour` and use it to see how the colour is [represented in a different colour space](#convert-between-colour-spaces).
 ```c#
 var cyan = new Unicolour("#00FFFF");
 Console.WriteLine(cyan.Hsl); // 180.0° 100.0% 50.0%

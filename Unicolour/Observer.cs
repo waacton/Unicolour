@@ -5,7 +5,7 @@ public class Observer
     public static readonly Observer Degree2 = new(Cmf.Degree2, "1931 2\u00b0");
     public static readonly Observer Degree10 = new(Cmf.Degree10, "1964 10\u00b0");
     
-    public string? Name { get; }
+    public string Name { get; }
 
     private readonly Cmf cmf;
     public Observer(Cmf cmf, string name = "(unnamed)")

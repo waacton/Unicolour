@@ -40,10 +40,10 @@ public class Illuminant
         { (F11, Observer.Degree10), new(103.863, 100.000, 65.607) }
     };
     
-    public string? Name { get; }
+    public string Name { get; }
 
     private readonly Spd spd = new();
-    public Illuminant(Spd spd, string? name = null)
+    public Illuminant(Spd spd, string name = "(unnamed)")
     {
         this.spd = spd;
         Name = name;

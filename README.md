@@ -7,46 +7,137 @@
 Unicolour is a .NET library written in C# for working with colour:
 - Colour space conversion
 - Colour mixing / colour interpolation
-- Colour comparison
-- Colour information
+- Colour difference / colour distance
+- Colour temperature
 - Colour gamut mapping
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
 **Contents**
 1. 🧭 [Overview](#-overview)
-2. ⚡ [Quickstart](#-quickstart)
-3. 🔦 [Features](#-features)
-4. 🌈 [How to use](#-how-to-use)
-5. ✨ [Examples](#-examples)
-6. 💡 [Configuration](#-configuration)
+2. 🔆 [Installation](#-installation)
+3. ⚡ [Quickstart](#-quickstart)
+4. 🌈 [Features](#-features)
+5. 💡 [Configuration](#-configuration)
+6. ✨ [Examples](#-examples)
 7. 🔮 [Datasets](#-datasets)
-8. 🦺 [Work in progress](#-work-in-progress)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single colour and its representation across different colour spaces.
-It supports:
-- RGB
-- Linear RGB
-- HSB/HSV
-- HSL
-- HWB
-- CIEXYZ
-- CIExyY
-- CIELAB
-- CIELCh<sub>ab</sub>
-- CIELUV
-- CIELCh<sub>uv</sub>
-- HSLuv
-- HPLuv
-- IC<sub>T</sub>C<sub>P</sub>
-- J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>
-- J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>
-- Oklab
-- Oklch
-- CIECAM02
-- CAM16
-- HCT
+A `Unicolour` encapsulates a single colour and its representation across [different colour spaces](#convert-between-colour-spaces).
+It can also be used to [mix and compare colours](#mix-colours), as well as a [variety of other useful functionality](#-features).
+
+> **Supported colour spaces**
+>
+> RGB · Linear&nbsp;RGB · HSB/HSV · HSL · HWB · 
+> CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv · 
+> IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
+> Oklab · Oklch · 
+> CIECAM02 · CAM16 · 
+> HCT
+> ```c#
+> Unicolour pink = new("#FF1493");
+> Console.WriteLine(pink.Oklab); // 0.65 +0.26 -0.01
+> ```
+
+This library was initially written for personal projects since existing libraries had complex APIs, missing features, or inaccurate conversions.
+The goal of this library is to be [accurate, intuitive, and easy to use](#-quickstart).
+Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
+
+Unicolour is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
+
+## 🔆 Installation
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
+```
+dotnet add package Wacton.Unicolour
+```
+
+2. Import the package
+```c#
+using Wacton.Unicolour;
+```
+
+3. Use the package
+```c#
+Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
+```
+
+## ⚡ Quickstart
+The simplest way to get started is to make a `Unicolour` and use it to see how the colour is [represented in a different colour space](#convert-between-colour-and-temperature).
+```c#
+var cyan = new Unicolour("#00FFFF");
+Console.WriteLine(cyan.Hsl); // 180.0° 100.0% 50.0%
+
+var yellow = new Unicolour(ColourSpace.Rgb255, 255, 255, 0);
+Console.WriteLine(yellow.Hex); // #FFFF00
+```
+
+Colours can be [mixed or interpolated](#mix-colours) using any colour space.
+```c#
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+
+/* RGB: [1, 0, 0] ⟶ [0, 0, 1] = [0.5, 0, 0.5] */
+var purple = red.Mix(blue, ColourSpace.Rgb);
+Console.WriteLine(purple.Rgb); // 0.50 0.00 0.50
+Console.WriteLine(purple.Hex); // #800080
+
+/* HSL: [0, 1, 0.5] ⟶ [240, 1, 0.5] = [300, 1, 0.5] */
+var magenta = red.Mix(blue, ColourSpace.Hsl); 
+Console.WriteLine(magenta.Rgb); // 1.00 0.00 1.00
+Console.WriteLine(magenta.Hex); // #FF00FF
+```
+
+The [difference or distance](#compare-colours) between colours can be calculated using any delta E metric.
+```c#
+var white = new Unicolour(ColourSpace.Oklab, 1.0, 0.0, 0.0);
+var black = new Unicolour(ColourSpace.Oklab, 0.0, 0.0, 0.0);
+var difference = white.Difference(black, DeltaE.Ciede2000);
+Console.WriteLine(difference); // 100.0000
+```
+
+Other useful colour information is available, such as chromaticity coordinates and [temperature](#convert-between-colour-and-temperature).
+```c#
+var equalTristimulus = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
+Console.WriteLine(equalTristimulus.Chromaticity.Xy); // (0.3333, 0.3333)
+Console.WriteLine(equalTristimulus.Chromaticity.Uv); // (0.2105, 0.3158)
+Console.WriteLine(equalTristimulus.Temperature); // 5455.5 K (Δuv -0.00442)
+```
+
+Reference white points (e.g. D65) and the RGB model (e.g. sRGB) [can be configured](#-configuration).
+
+## 🌈 Features
+
+### Convert between colour spaces
+Unicolour calculates all transformations required to convert from one colour space to any other,
+so there is no need to manually chain multiple functions and removes the risk of rounding errors.
+```c#
+Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
+var (l, c, h) = colour.Oklch.Triplet;
+```
+| Colour&nbsp;space                       | Enum                    | Property       |
+|-----------------------------------------|-------------------------|----------------|
+| RGB&nbsp;(0–255)                        | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
+| RGB                                     | `ColourSpace.Rgb`       | `.Rgb`         |
+| Linear&nbsp;RGB                         | `ColourSpace.RgbLinear` | `.RgbLinear`   |
+| HSB/HSV                                 | `ColourSpace.Hsb`       | `.Hsb`         |
+| HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
+| HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
+| CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
+| CIExyY                                  | `ColourSpace.Xyy`       | `.Xyy`         |
+| CIELAB                                  | `ColourSpace.Lab`       | `.Lab`         |
+| CIELCh<sub>ab</sub>                     | `ColourSpace.Lchab`     | `.Lchab`       |
+| CIELUV                                  | `ColourSpace.Luv`       | `.Luv`         |
+| CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `.Lchuv`       |
+| HSLuv                                   | `ColourSpace.Hsluv`     | `.Hsluv`       |
+| HPLuv                                   | `ColourSpace.Hpluv`     | `.Hpluv`       |
+| IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `.Ictcp`       |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
+| Oklab                                   | `ColourSpace.Oklab`     | `.Oklab`       |
+| Oklch                                   | `ColourSpace.Oklch`     | `.Oklch`       |
+| CIECAM02                                | `ColourSpace.Cam02`     | `.Cam02`       |
+| CAM16                                   | `ColourSpace.Cam16`     | `.Cam16`       |
+| HCT                                     | `ColourSpace.Hct`       | `.Hct`         |
 
 <details>
 <summary>Diagram of colour space relationships</summary>
@@ -121,299 +212,223 @@ For each forward transformation there is a corresponding reverse transformation.
 XYZ is considered the root colour space.
 </details>
 
-This library was initially written for personal projects since existing libraries had complex APIs or missing features.
-The goal of this library is to be accurate, intuitive, and easy to use.
-Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
-It is also [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
-
-## ⚡ Quickstart
-| Colour&nbsp;space                       | Create                          | Get            |
-|-----------------------------------------|---------------------------------|----------------|
-| RGB&nbsp;(Hex)                          | `new(hex)`                      | `.Hex`         |
-| RGB&nbsp;(0–255)                        | `new(ColourSpace.Rgb255, ⋯)`    | `.Rgb.Byte255` |
-| RGB                                     | `new(ColourSpace.Rgb, ⋯)`       | `.Rgb`         |
-| Linear&nbsp;RGB                         | `new(ColourSpace.RgbLinear, ⋯)` | `.RgbLinear`   |
-| HSB/HSV                                 | `new(ColourSpace.Hsb, ⋯)`       | `.Hsb`         |
-| HSL                                     | `new(ColourSpace.Hsl, ⋯)`       | `.Hsl`         |
-| HWB                                     | `new(ColourSpace.Hwb, ⋯)`       | `.Hwb`         |
-| CIEXYZ                                  | `new(ColourSpace.Xyz, ⋯)`       | `.Xyz`         |
-| CIExyY                                  | `new(ColourSpace.Xyy, ⋯)`       | `.Xyy`         |
-| CIELAB                                  | `new(ColourSpace.Lab, ⋯)`       | `.Lab`         |
-| CIELCh<sub>ab</sub>                     | `new(ColourSpace.Lchab, ⋯)`     | `.Lchab`       |
-| CIELUV                                  | `new(ColourSpace.Luv, ⋯)`       | `.Luv`         |
-| CIELCh<sub>uv</sub>                     | `new(ColourSpace.Lchuv, ⋯)`     | `.Lchuv`       |
-| HSLuv                                   | `new(ColourSpace.Hsluv, ⋯)`     | `.Hsluv`       |
-| HPLuv                                   | `new(ColourSpace.Hpluv, ⋯)`     | `.Hpluv`       |
-| IC<sub>T</sub>C<sub>P</sub>             | `new(ColourSpace.Ictcp, ⋯)`     | `.Ictcp`       |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `new(ColourSpace.Jzazbz, ⋯)`    | `.Jzazbz`      |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `new(ColourSpace.Jzczhz, ⋯)`    | `.Jzczhz`      |
-| Oklab                                   | `new(ColourSpace.Oklab, ⋯)`     | `.Oklab`       |
-| Oklch                                   | `new(ColourSpace.Oklch, ⋯)`     | `.Oklch`       |
-| CIECAM02                                | `new(ColourSpace.Cam02, ⋯)`     | `.Cam02`       |
-| CAM16                                   | `new(ColourSpace.Cam16, ⋯)`     | `.Cam16`       |
-| HCT                                     | `new(ColourSpace.Hct, ⋯)`       | `.Hct`         |
-
-## 🔦 Features
-A `Unicolour` can be instantiated using any of the supported colour spaces.
-Conversion to other colour spaces is handled by Unicolour, and the results can be accessed through properties.
-
-Two colours can be mixed / interpolated through any colour space, with or without premultiplied alpha.
-
-Colour difference / colour distance can be calculated using various delta E metrics:
-- ΔE<sub>76</sub> (CIE76)
-- ΔE<sub>94</sub> (CIE94)
-- ΔE<sub>00</sub> (CIEDE2000)
-- ΔE<sub>CMC</sub> (CMC l:c)
-- ΔE<sub>ITP</sub>
-- ΔE<sub>z</sub>
-- ΔE<sub>HyAB</sub>
-- ΔE<sub>OK</sub>
-- ΔE<sub>CAM02</sub>
-- ΔE<sub>CAM16</sub>
-  
-The following colour information is available:
-- Hex representation
-- Relative luminance
-- Temperature (CCT and Duv)
-
-Simulation of colour vision deficiency (CVD) / colour blindness is supported for:
-- Protanopia (no red perception)
-- Deuteranopia (no green perception)
-- Tritanopia (no blue perception)
-- Achromatopsia (no colour perception)
-
-If a colour is outwith the display gamut, the closest in-gamut colour can be obtained using gamut mapping.
-The algorithm implemented in Unicolour conforms to CSS specifications.
-
-Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of the XYZ colour space.
-These [can be overridden](#-configuration) using the `Configuration` parameter.
-
-## 🌈 How to use
-1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
-```
-dotnet add package Wacton.Unicolour
-```
-
-2. Import the package
+### Mix colours
+Two colours can be mixed by [interpolating between them in any colour space](#-examples), 
+taking into account cyclic hue, interpolation distance, and alpha premultiplication.
 ```c#
-using Wacton.Unicolour;
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
+var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing); 
 ```
+| Hue&nbsp;span                  | Enum                 |
+|--------------------------------|----------------------|
+| Shorter&nbsp;👈&nbsp;_default_ | `HueSpan.Shorter`    |
+| Longer                         | `HueSpan.Longer`     |
+| Increasing                     | `HueSpan.Increasing` |
+| Decreasing                     | `HueSpan.Decreasing` |
 
-3. Create a `Unicolour`
+### Compare colours
+Two methods of comparing colours are available: contrast and difference.
+Difference is calculated according to a specific delta E (ΔE) metric.
 ```c#
-var unicolour = new Unicolour("#FF1493");
-var unicolour = new Unicolour(ColourSpace.Rgb255, 255, 20, 147);
-var unicolour = new Unicolour(ColourSpace.Rgb, 1.00, 0.08, 0.58);
-var unicolour = new Unicolour(ColourSpace.RgbLinear, 1.00, 0.01, 0.29);
-var unicolour = new Unicolour(ColourSpace.Hsb, 327.6, 0.922, 1.000);
-var unicolour = new Unicolour(ColourSpace.Hsl, 327.6, 1.000, 0.539);
-var unicolour = new Unicolour(ColourSpace.Hwb, 327.6, 0.078, 0.000);
-var unicolour = new Unicolour(ColourSpace.Xyz, 0.4676, 0.2387, 0.2974);
-var unicolour = new Unicolour(ColourSpace.Xyy, 0.4658, 0.2378, 0.2387);
-var unicolour = new Unicolour(ColourSpace.Lab, 55.96, 84.54, -5.7);
-var unicolour = new Unicolour(ColourSpace.Lchab, 55.96, 84.73, 356.1);
-var unicolour = new Unicolour(ColourSpace.Luv, 55.96, 131.47, -24.35);
-var unicolour = new Unicolour(ColourSpace.Lchuv, 55.96, 133.71, 349.5);
-var unicolour = new Unicolour(ColourSpace.Hsluv, 349.5, 100.0, 56.0);
-var unicolour = new Unicolour(ColourSpace.Hpluv, 349.5, 303.2, 56.0);
-var unicolour = new Unicolour(ColourSpace.Ictcp, 0.38, 0.12, 0.19);
-var unicolour = new Unicolour(ColourSpace.Jzazbz, 0.106, 0.107, 0.005);
-var unicolour = new Unicolour(ColourSpace.Jzczhz, 0.106, 0.107, 2.6);
-var unicolour = new Unicolour(ColourSpace.Oklab, 0.65, 0.26, -0.01);
-var unicolour = new Unicolour(ColourSpace.Oklch, 0.65, 0.26, 356.9);
-var unicolour = new Unicolour(ColourSpace.Cam02, 62.86, 40.81, -1.18);
-var unicolour = new Unicolour(ColourSpace.Cam16, 62.47, 42.60, -1.36);
-var unicolour = new Unicolour(ColourSpace.Hct, 358.2, 100.38, 55.96);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+var contrast = red.Contrast(blue);
+var difference = red.Difference(blue, DeltaE.Cie76);
 ```
+| Delta&nbsp;E                                                             | Enum                       |
+|--------------------------------------------------------------------------|----------------------------|
+| ΔE<sub>76</sub>&nbsp;(CIE76)                                             | `DeltaE.Cie76`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
+| ΔE<sub>00</sub>&nbsp;(CIEDE2000)                                         | `DeltaE.Ciede2000`         |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
+| ΔE<sub>ITP</sub>                                                         | `DeltaE.Itp`               |
+| ΔE<sub>z</sub>                                                           | `DeltaE.Z`                 |
+| ΔE<sub>HyAB</sub>                                                        | `DeltaE.Hyab`              |
+| ΔE<sub>OK</sub>                                                          | `DeltaE.Ok`                |
+| ΔE<sub>CAM02</sub>                                                       | `DeltaE.Cam02`             |
+| ΔE<sub>CAM16</sub>                                                       | `DeltaE.Cam16`             |
 
-4. Get colour space representations
+### Convert between colour and temperature
+Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) can be obtained from a colour, and can be used to create a colour.
+CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
 ```c#
-var rgb = unicolour.Rgb;
-var rgbLinear = unicolour.RgbLinear;
-var hsb = unicolour.Hsb;
-var hsl = unicolour.Hsl;
-var hwb = unicolour.Hwb;
-var xyz = unicolour.Xyz;
-var xyy = unicolour.Xyy;
-var lab = unicolour.Lab;
-var lchab = unicolour.Lchab;
-var luv = unicolour.Luv;
-var lchuv = unicolour.Lchuv;
-var hsluv = unicolour.Hsluv;
-var hpluv = unicolour.Hpluv;
-var ictcp = unicolour.Ictcp;
-var jzazbz = unicolour.Jzazbz;
-var jzczhz = unicolour.Jzczhz;
-var oklab = unicolour.Oklab;
-var oklch = unicolour.Oklch;
-var cam02 = unicolour.Cam02;
-var cam16 = unicolour.Cam16;
-var hct = unicolour.Hct;
+var d50 = new Unicolour(ColourSpace.Xyy, 0.3457, 0.3585, 1.0);
+var (cct, duv) = d50.Temperature;
+
+var d65 = new Unicolour(6504, 0.0032);
+var (x, y) = d65.Chromaticity;
 ```
 
-5. Get colour properties
+### Map colour into display gamut
+Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut colour.
+The gamut mapping algorithm conforms to CSS specifications.
 ```c#
-var hex = unicolour.Hex;
-var relativeLuminance = unicolour.RelativeLuminance;
-var temperature = unicolour.Temperature;
-var inGamut = unicolour.IsInDisplayGamut;
+var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
+var inGamut = colour.MapToGamut();
 ```
 
-6. Mix colours (interpolate between them)
+### Create colour from spectral power distribution
+A spectral power distribution (SPD) can be used to create a colour.
+Wavelengths should be provided in either 1 nm or 5 nm intervals, and omitted wavelengths are assumed to have zero spectral power.
 ```c#
-var mixed = unicolour1.Mix(ColourSpace.Rgb, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.RgbLinear, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hsb, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hsl, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hwb, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Xyz, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Xyy, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Lab, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Lchab, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Luv, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Lchuv, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hsluv, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hpluv, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Ictcp, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Jzazbz, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Jzczhz, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Oklab, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Oklch, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Cam02, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Cam16, unicolour2);
-var mixed = unicolour1.Mix(ColourSpace.Hct, unicolour2);
+var spd = new Spd
+{
+    { 575, 0.5 }, 
+    { 580, 1.0 }, 
+    { 585, 0.5 }
+};
+        
+var intenseYellow = new Unicolour(spd);
 ```
 
-7. Compare colours
+### Simulate colour vision deficiency
+A new `Unicolour` can be generated that simulates how a colour appears to someone with a particular colour vision deficiency (CVD) or colour blindness.
 ```c#
-var contrast = unicolour1.Contrast(unicolour2);
-var difference = unicolour1.Difference(DeltaE.Cie76, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Cie94, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Cie94Textiles, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Ciede2000, unicolour2);
-var difference = unicolour1.Difference(DeltaE.CmcAcceptability, unicolour2);
-var difference = unicolour1.Difference(DeltaE.CmcPerceptibility, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Itp, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Z, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Hyab, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Ok, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Cam02, unicolour2);
-var difference = unicolour1.Difference(DeltaE.Cam16, unicolour2);
+var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
+var noRed = colour.SimulateProtanopia();
 ```
+| Colour&nbsp;vision&nbsp;deficiency                  | Method                    |
+|-----------------------------------------------------|---------------------------|
+| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `SimulateProtanopia()`    |
+| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `SimulateDeuteranopia()`  |
+| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `SimulateTritanopia()`    |
+| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `SimulateAchromatopsia()` |
 
-8. Map colour to display gamut
+### Handle invalid values
+It is possible for invalid or unreasonable values to be used in calculations,
+either because conversion formulas have limitations or because a user passes them as arguments.
+Although these values don't make sense to use, they should propagate safely and avoid triggering exceptions.
 ```c#
-var mapped = unicolour.MapToGamut();
+var bad1 = new Unicolour(ColourSpace.Oklab, double.NegativeInfinity, double.NaN, double.Epsilon);
+var bad2 = new Unicolour(ColourSpace.Cam16, double.NaN, double.MaxValue, double.MinValue);
+var bad3 = bad1.Mix(bad2, ColourSpace.Hct, amount: double.PositiveInfinity);
 ```
 
-9. Simulate colour vision deficiency
+### Sensible defaults, highly configurable
+Unicolour uses sRGB as the default RGB model and standard illuminant D65 (2° observer) as the default white point of all colour spaces,
+ensuring consistency and a suitable starting point for simple applications.
+These [can be overridden](#-configuration) using the `Configuration` parameter, and common configurations have been predefined.
 ```c#
-var protanopia = unicolour.SimulateProtanopia();
-var deuteranopia = unicolour.SimulateDeuteranopia();
-var tritanopia = unicolour.SimulateTritanopia();
-var achromatopsia = unicolour.SimulateAchromatopsia();
+var defaultConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
+var colour = new Unicolour(defaultConfig, ColourSpace.Rgb255, 192, 255, 238);
 ```
-
-## ✨ Examples
-This repo contains an [example project](Unicolour.Example/Program.cs) that uses `Unicolour` to:
-1. Generate gradients through different colour spaces
-2. Render the colour spectrum with different colour vision deficiencies
-3. Demonstrate interpolation with and without premultiplied alpha
-
-![Gradients through different colour spaces generated from Unicolour](Unicolour.Example/gradients.png)
-
-![Gradients for different colour vision deficiencies generated from Unicolour](Unicolour.Example/vision-deficiency.png)
-
-![Interpolation from red to transparent to blue, with and without premultiplied alpha](Unicolour.Example/alpha-interpolation.png)
-
-There is also a [console application](Unicolour.Console/Program.cs) that uses `Unicolour` to show colour information for a given hex value:
-
-![Colour information from hex value](Unicolour.Console/colour-info.png)
 
 ## 💡 Configuration
-A `Configuration` parameter can be used to customise the RGB model (e.g. Display P3, Rec. 2020)
-and the white point of the XYZ colour space (e.g. D50 reference white used by ICC profiles).
+The `Configuration` parameter can be used to customise how colour is processed.
 
-- RGB configuration requires red, green, and blue chromaticity coordinates, the reference white point, and the companding functions.
-  Default configuration for sRGB, Display P3, and Rec. 2020 is provided.
-
-- XYZ configuration only requires the reference white point.
-  Default configuration for D65 and D50 (2° observer) is provided.
-
+Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
 ```c#
-// built-in configuration for Rec. 2020 RGB + D65 XYZ
-var config = new Configuration(RgbConfiguration.Rec2020, XyzConfiguration.D65);
-var unicolour = new Unicolour(ColourSpace.Rgb255, config, 204, 64, 132);
+Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
+Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
 ```
 
+Example configuration with manually defined wide-gamut RGB & illuminant C (10° observer) XYZ:
 ```c#
-// manual configuration for wide-gamut RGB
 var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),
     chromaticityG: new(0.1152, 0.8264),
     chromaticityB: new(0.1566, 0.0177),
-    whitePoint: WhitePoint.From(Illuminant.D50),
+    whitePoint: Illuminant.D50.GetWhitePoint(Observer.Degree2),
     fromLinear: value => Companding.Gamma(value, 2.19921875),
     toLinear: value => Companding.InverseGamma(value, 2.19921875)
 );
 
-// manual configuration for Illuminant C (10° observer) XYZ
-var xyzConfig = new XyzConfiguration(
-    whitePoint: WhitePoint.From(Illuminant.C, Observer.Supplementary10)
-);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10);
 
 var config = new Configuration(rgbConfig, xyzConfig);
-var unicolour = new Unicolour(ColourSpace.Rgb255, config, 255, 20, 147);
+var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);
 ```
 
-Configuration is also available for CAM02 & CAM16 viewing conditions,
-IC<sub>T</sub>C<sub>P</sub> scalar,
-and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> scalar.
+A `Configuration` is composed of sub-configurations.
+Each sub-configuration is optional and will fall back to a [sensible default](#sensible-defaults-highly-configurable) if not provided.
 
-The default white point used by all colour spaces is D65.
-This table lists which `Configuration` property determines the white point of each colour space.
+### `RgbConfiguration`
+ Defines the RGB model, most commonly used to specify a wider gamut than standard RGB (sRGB).
+- Predefined 
+  - sRGB 👈 _default_
+  - Display P3
+  - Rec. 2020
+  - A98
+  - ProPhoto
+- Parameters
+  - Red, green, and blue chromaticity coordinates
+  - Reference white point
+  - Companding functions to and from linear values
 
-| Colour&nbsp;space                       | White&nbsp;point&nbsp;configuration |
-|-----------------------------------------|-------------------------------------|
-| RGB                                     | `RgbConfiguration`                  |
-| Linear&nbsp;RGB                         | `RgbConfiguration`                  |
-| HSB/HSV                                 | `RgbConfiguration`                  |
-| HSL                                     | `RgbConfiguration`                  |
-| HWB                                     | `RgbConfiguration`                  |
-| CIEXYZ                                  | `XyzConfiguration`                  |
-| CIExyY                                  | `XyzConfiguration`                  |
-| CIELAB                                  | `XyzConfiguration`                  |
-| CIELUV                                  | `XyzConfiguration`                  |
-| CIELCh<sub>uv</sub>                     | `XyzConfiguration`                  |
-| HSLuv                                   | `XyzConfiguration`                  |
-| HPLuv                                   | `XyzConfiguration`                  |
-| IC<sub>T</sub>C<sub>P</sub>             | None (always D65)                   |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | None (always D65)                   |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | None (always D65)                   |
-| Oklab                                   | None (always D65)                   |
-| Oklch                                   | None (always D65)                   |
-| CIECAM02                                | `CamConfiguration`                  |
-| CAM16                                   | `CamConfiguration`                  |
-| HCT                                     | None (always D65)                   |
+### `XyzConfiguration`
+Defines the white point for colour spaces that need no other configuration, as well as the observer to use for temperature calculations.
+- Predefined
+    - D65 (2° observer) 👈 _default_
+    - D50 (2° observer)
+- Parameters
+    - Reference white point or illuminant
+    - Observer
 
-A `Unicolour` can be converted to a different configuration, which enables conversions between different RGB and XYZ models.
+### `CamConfiguration`
+Defines the viewing conditions for CAM02 and CAM16, which take into account the surrounding environment to determine how a colour is perceived.
+- Predefined
+    - sRGB (ambient illumination 64 lux, grey world assumption) 👈 _default_
+    - HCT
+- Parameters
+    - Reference white point
+    - Adapting luminance
+    - Background luminance
+
+### `IctcpScalar` & `JzazbzScalar`
+There is ambiguity and no clear consensus about how XYZ values should be scaled before calculating IC<sub>T</sub>C<sub>P</sub> and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>.
+These scalars can be changed to match the behaviour of other implementations if needed.
+
+### White points
+All colour spaces are impacted by the reference white point.
+Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
+When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+
+| White&nbsp;point&nbsp;configuration  | Affected&nbsp;colour&nbsp;spaces                                                                                                      |
+|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                   | RGB · Linear&nbsp;RGB · HSB/HSV · HSL · HWB                                                                                           |
+| `XyzConfiguration`                   | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                         |
+| `CamConfiguration`                   | CIECAM02 · CAM16                                                                                                                      | 
+| None (always D65/2°)                 | IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · HCT | 
+
+### Convert between configurations
+A `Unicolour` can be converted to a different configuration,
+in turn enabling conversions between different RGB models, XYZ white points, CAM viewing conditions, etc.
 
 ```c#
-// pure sRGB green
+/* pure sRGB green */
 var srgbConfig = new Configuration(RgbConfiguration.StandardRgb);
-var unicolourSrgb = new Unicolour(ColourSpace.Rgb, srgbConfig, 0, 1, 0);                         
-Console.WriteLine(unicolourSrgb.Rgb); // 0.00 1.00 0.00
+var srgbColour = new Unicolour(srgbConfig, ColourSpace.Rgb, 0, 1, 0);                         
+Console.WriteLine(srgbColour.Rgb); // 0.00 1.00 0.00
 
-// ⟶ Display P3
+/* ⟶ Display P3 */
 var displayP3Config = new Configuration(RgbConfiguration.DisplayP3);
-var unicolourDisplayP3 = unicolourSrgb.ConvertToConfiguration(displayP3Config); 
-Console.WriteLine(unicolourDisplayP3.Rgb); // 0.46 0.99 0.30
+var displayP3Colour = srgbColour.ConvertToConfiguration(displayP3Config); 
+Console.WriteLine(displayP3Colour.Rgb); // 0.46 0.99 0.30
 
-// ⟶ Rec. 2020
+/* ⟶ Rec. 2020 */
 var rec2020Config = new Configuration(RgbConfiguration.Rec2020);
-var unicolourRec2020 = unicolourDisplayP3.ConvertToConfiguration(rec2020Config);
-Console.WriteLine(unicolourRec2020.Rgb); // 0.57 0.96 0.27
+var rec2020Colour = displayP3Colour.ConvertToConfiguration(rec2020Config);
+Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ```
+
+## ✨ Examples
+This repo contains an [example project](Unicolour.Example/Program.cs) that uses Unicolour to:
+1. Generate gradients through each colour space
+   ![Gradients through different colour spaces, generated from Unicolour](Unicolour.Example/gradients.png)
+2. Render the colour spectrum with different colour vision deficiencies
+   ![Spectrum rendered with different colour vision deficiencies, generated from Unicolour](Unicolour.Example/vision-deficiency.png)
+3. Demonstrate interpolation with and without premultiplied alpha
+   ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, generated from Unicolour](Unicolour.Example/alpha-interpolation.png)
+4. Visualise correlated colour temperature (CCT) from 1,000 K to 13,000 K
+   ![Visualisation of temperature from 1,000 K to 13,000 K, generated from Unicolour](Unicolour.Example/temperature.png)
+
+There is also a [console application](Unicolour.Console/Program.cs) that uses Unicolour to show colour information for a given hex value.
+
+![Colour information from hex value](Unicolour.Console/colour-info.png)
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
@@ -442,14 +457,6 @@ using Wacton.Unicolour.Datasets;
 ```c#
 var unicolour = Css.DeepPink;
 ```
-
-## 🦺 Work in progress
-Version 4 of Unicolour is in development and aims to provide more new features:
-- 🌡️ Create a `Unicolour` from temperature (CCT and Duv)
-- 🎯 More accurate calculation of temperature (CCT and Duv) 
-- 📈 Create a `Unicolour` from a spectral power distribution
-- 🚥 More modes of hue interpolation
-- 🎨 More default RGB models (e.g. A98, ProPhoto)
 
 ---
 

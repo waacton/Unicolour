@@ -8,27 +8,26 @@
         <RootNamespace>Wacton.Unicolour.Datasets</RootNamespace>
         <LangVersion>10</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.0</Version>
+        <Version>2.0.0</Version>
         <Authors>William Acton</Authors>
         <Description>Datasets for use with 🌈 Wacton.Unicolour</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
-        <PackageIcon>Unicolour.png</PackageIcon>
+        <PackageIcon>Resources\Unicolour.Datasets.png</PackageIcon>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
         <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset</PackageTags>
-        <PackageReleaseNotes>Predefine datasets for use with Wacton.Unicolour</PackageReleaseNotes>
+        <PackageReleaseNotes>Predefine datasets for use with Wacton.Unicolour v4</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+        <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="..\Unicolour\Resources\Unicolour.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-        <Link>Unicolour.png</Link>
-      </None>
+        <None Update="Resources\Unicolour.Datasets.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>

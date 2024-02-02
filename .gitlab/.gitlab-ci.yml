@@ -1,12 +1,12 @@
 image: mcr.microsoft.com/dotnet/sdk:6.0
 
 stages:
-    - build
-    - test
-    - security-scan
+    - 🦺 build
+    - 🧪 test
+    - 🛃 security-scan
 
 build:
-    stage: build
+    stage: 🦺 build
     script:
         - "dotnet build Unicolour"
     artifacts:
@@ -18,7 +18,7 @@ build:
 # however coverage report is not in a useful format, so create a report from it (https://github.com/danielpalme/ReportGenerator) which requires installing as a tool
 # finally, cat the coverage report summary so it is displayed in the job log - which can then be regex'd from gitlab (https://docs.gitlab.com/ee/ci/yaml/index.html#coverage)
 test:
-    stage: test
+    stage: 🧪 test
     script:
         - 'dotnet test 
             --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
@@ -49,13 +49,13 @@ include:
     - template: Security/Secret-Detection.gitlab-ci.yml
 
 dependency_scanning:
-    stage: security-scan
+    stage: 🛃 security-scan
 
 license_scanning:
-    stage: security-scan
+    stage: 🛃 security-scan
     
 sast:
-    stage: security-scan
+    stage: 🛃 security-scan
 
 .secret-analyzer:
-    stage: security-scan
+    stage: 🛃 security-scan

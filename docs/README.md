@@ -45,7 +45,7 @@ This library was initially written for personal projects since existing librarie
 The goal of this library is to be [accurate, intuitive, and easy to use](#-quickstart).
 Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
 
-Unicolour is [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
+Unicolour is [extensively tested](https://github.com/waacton/Unicolour/tree/main/Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
 
 ## 🔆 Installation
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -142,78 +142,7 @@ var (l, c, h) = colour.Oklch.Triplet;
 | CAM16                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                     | `ColourSpace.Hct`       | `.Hct`         |
 
-<details>
-<summary>Diagram of colour space relationships</summary>
 
-```mermaid
-%%{
-  init: {
-  "theme": "base",
-  "themeVariables": {
-    "primaryColor": "#4C566A",
-    "primaryTextColor": "#ECEFF4",
-    "primaryBorderColor": "#2E3440",
-    "lineColor": "#8FBCBB",
-    "secondaryColor": "#404046",
-    "tertiaryColor": "#404046"
-    }
-  }
-}%%
-
-flowchart TD
-  XYY(xyY)
-  RGBLIN(Linear RGB)
-  RGB(RGB)
-  HSB(HSB)
-  HSL(HSL)
-  HWB(HWB)
-  XYZ(XYZ)
-  LAB(LAB)
-  LCHAB(LCHab)
-  LUV(LUV)
-  LCHUV(LCHuv)
-  HSLUV(HSLuv)
-  HPLUV(HPLuv)
-  ICTCP(ICtCp)
-  JZAZBZ(JzAzBz)
-  JZCZHZ(JzCzHz)
-  OKLAB(Oklab)
-  OKLCH(Oklch)
-  CAM02(CAM02)
-  CAM02UCS(CAM02-UCS)
-  CAM16(CAM16)
-  CAM16UCS(CAM16-UCS)
-  HCT(HCT)
-
-  XYZ --> XYY
-  XYZ --> RGBLIN
-  RGBLIN --> RGB
-  RGB --> HSB
-  HSB --> HSL
-  HSB --> HWB
-  XYZ --> LAB
-  LAB --> LCHAB
-  XYZ --> LUV
-  LUV --> LCHUV
-  LCHUV --> HSLUV
-  LCHUV --> HPLUV
-  XYZ --> ICTCP
-  XYZ --> JZAZBZ
-  JZAZBZ --> JZCZHZ
-  XYZ --> OKLAB
-  OKLAB --> OKLCH
-  XYZ --> CAM02
-  CAM02 -.-> CAM02UCS
-  XYZ --> CAM16
-  CAM16 -.-> CAM16UCS
-  XYZ --> HCT
-```
-
-This diagram summarises how colour space conversions are implemented in Unicolour.
-Arrows indicate forward transformations from one space to another.
-For each forward transformation there is a corresponding reverse transformation.
-XYZ is considered the root colour space.
-</details>
 
 ### Mix colours
 Two colours can be mixed by [interpolating between them in any colour space](#-examples),
@@ -422,19 +351,19 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ```
 
 ## ✨ Examples
-This repo contains an [example project](Unicolour.Example/Program.cs) that uses Unicolour to:
+This repo contains an [example project](https://github.com/waacton/Unicolour/tree/main/Unicolour.Example/Program.cs) that uses Unicolour to:
 1. Generate gradients through each colour space
-   ![Gradients through different colour spaces, generated from Unicolour](docs/gradients.png)
+   ![Gradients through different colour spaces, generated from Unicolour](gradients.png)
 2. Render the colour spectrum with different colour vision deficiencies
-   ![Spectrum rendered with different colour vision deficiencies, generated from Unicolour](docs/vision-deficiency.png)
+   ![Spectrum rendered with different colour vision deficiencies, generated from Unicolour](vision-deficiency.png)
 3. Demonstrate interpolation with and without premultiplied alpha
-   ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, generated from Unicolour](docs/alpha-interpolation.png)
+   ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, generated from Unicolour](alpha-interpolation.png)
 4. Visualise correlated colour temperature (CCT) from 1,000 K to 13,000 K
-   ![Visualisation of temperature from 1,000 K to 13,000 K, generated from Unicolour](docs/temperature.png)
+   ![Visualisation of temperature from 1,000 K to 13,000 K, generated from Unicolour](temperature.png)
 
-There is also a [console application](Unicolour.Console/Program.cs) that uses Unicolour to show colour information for a given hex value.
+There is also a [console application](https://github.com/waacton/Unicolour/tree/main/Unicolour.Console/Program.cs) that uses Unicolour to show colour information for a given hex value.
 
-![Colour information from hex value](docs/colour-info.png)
+![Colour information from hex value](colour-info.png)
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
@@ -467,3 +396,5 @@ var unicolour = Css.DeepPink;
 ---
 
 [Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2024 William Acton.
+
+Also available in [American](README_us.md) 🇺🇸.

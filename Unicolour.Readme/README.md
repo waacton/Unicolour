@@ -45,7 +45,7 @@ This library was initially written for personal projects since existing librarie
 The goal of this library is to be [accurate, intuitive, and easy to use](#-quickstart).
 Although performance is not a priority, conversions are only calculated once; when first evaluated (either on access or as part of an intermediate conversion step) the result is stored for future use.
 
-Unicolour is [extensively tested](Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
+Unicolour is [extensively tested](../Unicolour.Tests), including verification of roundtrip conversions, validation using known colour values, and 100% line coverage and branch coverage.
 
 ## 🔆 Installation
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour/)
@@ -422,7 +422,7 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ```
 
 ## ✨ Examples
-This repo contains an [example project](Unicolour.Example/Program.cs) that uses Unicolour to:
+This repo contains an [example project](../Unicolour.Example/Program.cs) that uses Unicolour to:
 1. Generate gradients through each colour space
    ![Gradients through different colour spaces, generated from Unicolour](docs/gradients.png)
 2. Render the colour spectrum with different colour vision deficiencies
@@ -432,7 +432,7 @@ This repo contains an [example project](Unicolour.Example/Program.cs) that uses 
 4. Visualise correlated colour temperature (CCT) from 1,000 K to 13,000 K
    ![Visualisation of temperature from 1,000 K to 13,000 K, generated from Unicolour](docs/temperature.png)
 
-There is also a [console application](Unicolour.Console/Program.cs) that uses Unicolour to show colour information for a given hex value.
+There is also a [console application](../Unicolour.Console/Program.cs) that uses Unicolour to show colour information for a given hex value.
 
 ![Colour information from hex value](docs/colour-info.png)
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: "en-GB" }}">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% seo %}
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    {% include head-custom.html %}
+</head>
+<body>
+<div class="container-lg px-3 my-5 markdown-body">
+    {% if site.title and site.title != page.title %}
+    <h1><a href="{{ "/" | absolute_url }}">{{ site.title }}</a></h1>
+    {% endif %}
+
+    {{ content }}
+
+    <!-- default "primer" layout edited to remove footer -->
+    <!-- https://blog.jakelee.co.uk/removing-github-pages-improve-this-page/ -->
+
+    <!--    {% if site.github.private != true and site.github.license %}-->
+    <!--    <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">-->
+    <!--        This site is open source. {% github_edit_link "Improve this page" %}.-->
+    <!--    </div>-->
+    <!--    {% endif %}-->
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+<script>anchors.add();</script>
+</body>
+
+<!-- can potentially use this HTML file to trigger mermaid to render (not supported in GitHub Pages 😑, https://github.com/orgs/community/discussions/13761) -->
+<!-- if I only knew what I was doing -->
+<!-- https://stackoverflow.com/questions/53883747/how-to-make-github-pages-markdown-support-mermaid-diagram -->
+<!-- https://github.com/mermaid-js/mermaid/issues/772 -->
+
+<!--{%- if content contains 'mermaid' -%}-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>-->
+<!--<script>-->
+<!--    const config = {-->
+<!--        startOnLoad:true,-->
+<!--        theme: 'forest',-->
+<!--        flowchart: {-->
+<!--            useMaxWidth:false,-->
+<!--            htmlLabels:true-->
+<!--        }-->
+<!--    };-->
+<!--    mermaid.initialize(config);-->
+<!--    window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid')); &lt;!&ndash; my rendered page does not have this selector &ndash;&gt;-->
+<!--</script>-->
+<!--{% endif %}-->
+
+</html>

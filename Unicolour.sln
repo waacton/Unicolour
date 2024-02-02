@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Datasets", "Unico
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Console", "Unicolour.Console\Unicolour.Console.csproj", "{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Readme", "Unicolour.Readme\Unicolour.Readme.csproj", "{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

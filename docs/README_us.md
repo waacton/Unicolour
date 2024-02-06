@@ -10,8 +10,10 @@ Unicolour is a .NET library written in C# for working with color:
 - Color space conversion
 - Color mixing / color interpolation
 - Color difference / color distance
+- Color chromaticity
 - Color temperature
 - Color gamut mapping
+- Dominant wavelengths & imaginary colors
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 

@@ -27,7 +27,7 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single color and its representation across [different color spaces](#convert-between-color-spaces).
-It can also be used to [mix and compare colors](#mix-colors), as well as a [variety of other useful functionality](#-features).
+It can be used to [mix and compare colors](#mix-colors), as well as [other useful tools](#-features) for working with color.
 
 > **Supported color spaces**
 >

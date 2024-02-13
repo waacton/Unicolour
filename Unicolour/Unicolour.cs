@@ -24,6 +24,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Cam16> cam16 = null!;
     private readonly Lazy<Hct> hct = null!;
     private readonly Lazy<Temperature> temperature = null!;
+    private readonly Lazy<Spectral.Intersects?> spectralIntersects = null!;
     
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
@@ -57,8 +58,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public bool IsInDisplayGamut => Rgb.IsInGamut;
     public double RelativeLuminance => RgbLinear.RelativeLuminance;
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
+    public double DominantWavelength => spectralIntersects.Value?.DominantWavelength() ?? double.NaN;
+    public double ExcitationPurity => spectralIntersects.Value?.ExcitationPurity() ?? double.NaN;
+    public bool IsImaginary => spectralIntersects.Value?.IsImaginary() ?? !Xyy.UseAsGreyscale;
     public Temperature Temperature => temperature.Value;
-
+    
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
@@ -97,6 +101,11 @@ public partial class Unicolour : IEquatable<Unicolour>
         cam16 = new Lazy<Cam16>(EvaluateCam16);
         hct = new Lazy<Hct>(EvaluateHct);
 
+        spectralIntersects = new Lazy<Spectral.Intersects?>(() =>
+            Xyy.UseAsNaN || Xyy.UseAsGreyscale
+                ? null
+                : Config.Xyz.Spectral.FindBoundaryIntersects(Chromaticity));
+        
         // this will get overridden when called by the derived constructor that takes temperature as a parameter 
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
     }

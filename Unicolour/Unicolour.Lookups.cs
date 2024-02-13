@@ -169,7 +169,7 @@ public partial class Unicolour
         return InitialColourSpace switch
         {
             ColourSpace.Xyy => (Xyy)InitialRepresentation,
-            _ => Xyy.FromXyz(Xyz, Config.Xyz)
+            _ => Xyy.FromXyz(Xyz, Config.Xyz.WhiteChromaticity)
         };
     }
 

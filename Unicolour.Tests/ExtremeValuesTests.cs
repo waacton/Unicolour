@@ -32,12 +32,21 @@ public class ExtremeValuesTests
     }
     
     [Test, Combinatorial]
+    public void CreateFromChromaticity(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double x, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double y, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double luminance)
+    {
+        TestUtils.AssertNoPropertyError(new Unicolour(new Chromaticity(x, y), luminance));
+    }
+    
+    [Test, Combinatorial]
     public void CreateFromTemperature(
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double cct, 
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double duv, 
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double luminance)
     {
-        TestUtils.AssertNoPropertyError(new Unicolour(cct, duv, luminance));
+        TestUtils.AssertNoPropertyError(new Unicolour(new Temperature(cct, duv), luminance));
     }
     
     [Test, Combinatorial]

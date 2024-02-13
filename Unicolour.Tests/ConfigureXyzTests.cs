@@ -191,7 +191,7 @@ public class ConfigureXyzTests
     {
         var illuminant = TestUtils.Illuminants[illuminantName];
         var xyzConfig = new XyzConfiguration(illuminant, Observer.Degree2);
-        var chromaticity = xyzConfig.ChromaticityWhite;
+        var chromaticity = xyzConfig.WhiteChromaticity;
         Assert.That(Math.Round(chromaticity.X, 6), Is.EqualTo(Math.Round(expectedX, 6)));
         Assert.That(Math.Round(chromaticity.Y, 6), Is.EqualTo(Math.Round(expectedY, 6)));
     }

@@ -382,7 +382,7 @@ public class DescriptionTests
 
     private static void AssertDescription(double h, double s, double l, ColourDescription included, List<ColourDescription> excluded)
     {
-        var hues = new List<double> {h, h + 360, h - 360};
+        var hues = new List<double> { h, h + 360, h - 360 };
         foreach (var hue in hues)
         {
             var unicolour = new Unicolour(ColourSpace.Hsl, hue, s, l);

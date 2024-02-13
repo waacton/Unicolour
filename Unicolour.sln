@@ -4,13 +4,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour", "Unicolour\Unic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Tests", "Unicolour.Tests\Unicolour.Tests.csproj", "{43CC17D1-2A95-4554-9900-D97FA9CEA2D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Example", "Unicolour.Example\Unicolour.Example.csproj", "{DA851ED7-FCE5-4A17-818A-ED80BE673EBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Gradients", "Example.Gradients\Example.Gradients.csproj", "{DA851ED7-FCE5-4A17-818A-ED80BE673EBB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Datasets", "Unicolour.Datasets\Unicolour.Datasets.csproj", "{4CE26106-3B57-4C0F-9AB4-0C7A3C34F91F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Console", "Unicolour.Console\Unicolour.Console.csproj", "{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Console", "Example.Console\Example.Console.csproj", "{D59F060C-178E-4FFE-8908-5C39F7D7DFDF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Readme", "Unicolour.Readme\Unicolour.Readme.csproj", "{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Diagrams", "Example.Diagrams\Example.Diagrams.csproj", "{D3002594-7C64-48CE-BD72-16AB4B0B8C61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +44,9 @@ Global
 		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E6EE4C6-4E37-469B-B6DA-0C016EC79ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -2,16 +2,16 @@ namespace Wacton.Unicolour;
 
 public class Illuminant
 {
-    public static readonly Illuminant A = new(Spd.A, nameof(A));
-    public static readonly Illuminant C = new(Spd.C, nameof(C));
-    public static readonly Illuminant D50 = new(Spd.D50, nameof(D50));
-    public static readonly Illuminant D55 = new(Spd.D55, nameof(D55));
-    public static readonly Illuminant D65 = new(Spd.D65, nameof(D65));
-    public static readonly Illuminant D75 = new(Spd.D75, nameof(D75));
-    public static readonly Illuminant E = new(Spd.E, nameof(E));
-    public static readonly Illuminant F2 = new(Spd.F2, nameof(F2));
-    public static readonly Illuminant F7 = new(Spd.F7, nameof(F7));
-    public static readonly Illuminant F11 = new(Spd.F11, nameof(F11));
+    public static readonly Illuminant A = new(Spd.A, $"Illuminant {nameof(A)}");
+    public static readonly Illuminant C = new(Spd.C, $"Illuminant {nameof(C)}");
+    public static readonly Illuminant D50 = new(Spd.D50, $"Illuminant {nameof(D50)}");
+    public static readonly Illuminant D55 = new(Spd.D55, $"Illuminant {nameof(D55)}");
+    public static readonly Illuminant D65 = new(Spd.D65, $"Illuminant {nameof(D65)}");
+    public static readonly Illuminant D75 = new(Spd.D75, $"Illuminant {nameof(D75)}");
+    public static readonly Illuminant E = new(Spd.E, $"Illuminant {nameof(E)}");
+    public static readonly Illuminant F2 = new(Spd.F2, $"Illuminant {nameof(F2)}");
+    public static readonly Illuminant F7 = new(Spd.F7, $"Illuminant {nameof(F7)}");
+    public static readonly Illuminant F11 = new(Spd.F11, $"Illuminant {nameof(F11)}");
     
     // as far as I'm aware, these are the latest ASTM standards
     // and the 2 degree observers are an exact match with calculations on the calculator at http://www.brucelindbloom.com/
@@ -43,7 +43,7 @@ public class Illuminant
     public string Name { get; }
 
     private readonly Spd spd = new();
-    public Illuminant(Spd spd, string name = "(unnamed)")
+    public Illuminant(Spd spd, string name = Utils.Unnamed)
     {
         this.spd = spd;
         Name = name;
@@ -51,7 +51,7 @@ public class Illuminant
     
     // allows white point to be defined explicitly, not relative to an observer
     private readonly WhitePoint? whitePoint;
-    public Illuminant(WhitePoint whitePoint, string name = "(unnamed)")
+    public Illuminant(WhitePoint whitePoint, string name = Utils.Unnamed)
     {
         this.whitePoint = whitePoint;
         Name = name;
@@ -74,5 +74,5 @@ public class Illuminant
         return WhitePoint.FromXyz(xyz);
     }
     
-    public override string ToString() => $"Illuminant {Name}";
+    public override string ToString() => Name;
 }

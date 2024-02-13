@@ -93,7 +93,7 @@ public class KnownTemperatureTests
         
         // however, the blackbody CCT should be similar no matter how they are constructed
         var blackbodyTemperature = Temperature.FromChromaticity(fromChromaticity.Chromaticity, TestUtils.PlanckianObserverDegree2);
-        var fromBlackbodyCct = new Unicolour(config, blackbodyTemperature.Cct, blackbodyTemperature.Duv);
+        var fromBlackbodyCct = new Unicolour(config, blackbodyTemperature);
         Assert.That(fromBlackbodyCct.Temperature.Cct, Is.EqualTo(fromChromaticity.Temperature.Cct).Within(0.75));
         Assert.That(fromBlackbodyCct.Temperature.Duv, Is.EqualTo(fromChromaticity.Temperature.Duv).Within(0.0005));
         Assert.That(fromChromaticity.Temperature.Cct, Is.EqualTo(fromColour.Temperature.Cct).Within(0.75));

@@ -10,8 +10,8 @@ internal static class TestUtils
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
 
-    public static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
-    public static readonly List<TestCaseData> AllColourSpacesTestCases = new()
+    internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
+    internal static readonly List<TestCaseData> AllColourSpacesTestCases = new()
     {
         new TestCaseData(ColourSpace.Rgb),
         new TestCaseData(ColourSpace.RgbLinear),
@@ -36,7 +36,7 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Hct)
     };
     
-    public static readonly List<TestCaseData> AllIlluminantsTestCases = new()
+    internal static readonly List<TestCaseData> AllIlluminantsTestCases = new()
     {
         new TestCaseData(Illuminant.A),
         new TestCaseData(Illuminant.C),
@@ -70,11 +70,11 @@ internal static class TestUtils
         { nameof(Observer.Degree10), Observer.Degree10 }
     };
     
-    public static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
+    internal static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
         
-    public const double MixTolerance = 0.00000000005;
+    internal const double MixTolerance = 0.00000000005;
 
-    public static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
+    internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
     {
         var details = $"Expected --- {expected}\nActual ----- {actual}";
         string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
@@ -83,7 +83,7 @@ internal static class TestUtils
         AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
-    public static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
         var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
         var colourRepresentation = unicolour.GetRepresentation(colourSpace);
@@ -110,7 +110,7 @@ internal static class TestUtils
             failMessage);
     }
     
-    public static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
+    internal static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
     {
         Assert.That(triplet.First, Is.EqualTo(expected.first).Within(MixTolerance), "First");
         Assert.That(triplet.Second, Is.EqualTo(expected.second).Within(MixTolerance), "Second");
@@ -118,7 +118,7 @@ internal static class TestUtils
         Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance), "Alpha");
     }
 
-    public static void AssertNoPropertyError(Unicolour unicolour)
+    internal static void AssertNoPropertyError(Unicolour unicolour)
     {
         Assert.DoesNotThrow(AccessProperties);
         return;
@@ -131,6 +131,8 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Chromaticity);
             AccessProperty(() => unicolour.Config);
             AccessProperty(() => unicolour.Description);
+            AccessProperty(() => unicolour.DominantWavelength);
+            AccessProperty(() => unicolour.ExcitationPurity);
             AccessProperty(() => unicolour.Hct);
             AccessProperty(() => unicolour.Hex);
             AccessProperty(() => unicolour.Hpluv);
@@ -139,6 +141,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Hsluv);
             AccessProperty(() => unicolour.Hwb);
             AccessProperty(() => unicolour.Ictcp);
+            AccessProperty(() => unicolour.IsImaginary);
             AccessProperty(() => unicolour.IsInDisplayGamut);
             AccessProperty(() => unicolour.Jzazbz);
             AccessProperty(() => unicolour.Jzczhz);
@@ -163,7 +166,7 @@ internal static class TestUtils
         }
     }
     
-    public static void AssertEqual<T>(T object1, T object2)
+    internal static void AssertEqual<T>(T object1, T object2)
     {
         if (object1 == null || object2 == null)
         {
@@ -177,7 +180,7 @@ internal static class TestUtils
         Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
     }
 
-    public static void AssertNotEqual<T>(T object1, T object2)
+    internal static void AssertNotEqual<T>(T object1, T object2)
     {
         if (object1 == null || object2 == null)
         {

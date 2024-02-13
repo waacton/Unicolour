@@ -46,7 +46,7 @@ public record Hpluv : ColourRepresentation
                 break;
             default:
             {
-                var maxChroma = BoundingLines.CalculateMaxChroma(lchLightness);
+                var maxChroma = CalculateMaxChroma(lchLightness);
                 saturation = chroma / maxChroma * 100;
                 lightness = lchLightness;
                 break;
@@ -76,7 +76,7 @@ public record Hpluv : ColourRepresentation
                 break;
             default:
             {
-                var maxChroma = BoundingLines.CalculateMaxChroma(hslLightness);
+                var maxChroma = CalculateMaxChroma(hslLightness);
                 chroma = maxChroma / 100 * saturation;
                 lightness = hslLightness;
                 break;
@@ -85,4 +85,11 @@ public record Hpluv : ColourRepresentation
         
         return new Lchuv(lightness, chroma, hue, ColourHeritage.From(hpluv));
     }
+    
+    private static double CalculateMaxChroma(double lightness)
+    {
+        return Hsluv.GetBoundingLines(lightness).Select(DistanceFromOrigin).Min();
+    }
+    
+    private static double DistanceFromOrigin(Line line) => Math.Abs(line.Intercept) / Math.Sqrt(Math.Pow(line.Slope, 2) + 1);
 }

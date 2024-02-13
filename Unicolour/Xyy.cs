@@ -29,14 +29,14 @@ public record Xyy : ColourRepresentation
      * Reverse: https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space
      */
     
-    internal static Xyy FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
+    internal static Xyy FromXyz(Xyz xyz, Chromaticity whiteChromaticity)
     {
         var (x, y, z) = xyz.Triplet;
         var normalisation = x + y + z;
         var isBlack = normalisation == 0.0;
-        
-        var chromaticityX = isBlack ? xyzConfig.ChromaticityWhite.X : x / normalisation;
-        var chromaticityY = isBlack ? xyzConfig.ChromaticityWhite.Y : y / normalisation;
+
+        var chromaticityX = isBlack ? whiteChromaticity.X : x / normalisation;
+        var chromaticityY = isBlack ? whiteChromaticity.Y : y / normalisation;
         var luminance = isBlack ? 0 : y;
         return new Xyy(chromaticityX, chromaticityY, luminance, ColourHeritage.From(xyz));
     }

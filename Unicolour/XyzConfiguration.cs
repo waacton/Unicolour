@@ -2,40 +2,35 @@
 
 public class XyzConfiguration
 {
-    public WhitePoint WhitePoint { get; }
-    public Chromaticity ChromaticityWhite => GetChromaticity(WhitePoint);
-    public Observer Observer { get; }
-    internal Planckian Planckian { get; }
+    public static readonly XyzConfiguration D65 = new(Illuminant.D65, Observer.Degree2, nameof(D65));
+    public static readonly XyzConfiguration D50 = new(Illuminant.D50, Observer.Degree2, nameof(D50));
     
-    public static readonly XyzConfiguration D65 = new(Illuminant.D65, Observer.Degree2);
-    public static readonly XyzConfiguration D50 = new(Illuminant.D50, Observer.Degree2);
+    public WhitePoint WhitePoint { get; }
+    public Chromaticity WhiteChromaticity => WhitePoint.ToChromaticity();
+    public Observer Observer { get; }
+    internal Spectral Spectral { get; }
+    internal Planckian Planckian { get; }
+    public string Name { get; }
 
     // even if white point has been hardcoded, still need observer to calculate CCT
-    public XyzConfiguration(WhitePoint whitePoint) : 
-        this(whitePoint, Observer.Degree2)
+    public XyzConfiguration(WhitePoint whitePoint, string name = Utils.Unnamed) : 
+        this(whitePoint, Observer.Degree2, name)
     {
     }
     
-    public XyzConfiguration(Illuminant illuminant, Observer observer) : 
-        this(illuminant.GetWhitePoint(observer), observer)
+    public XyzConfiguration(Illuminant illuminant, Observer observer, string name = Utils.Unnamed) : 
+        this(illuminant.GetWhitePoint(observer), observer, name)
     {
     }
     
-    public XyzConfiguration(WhitePoint whitePoint, Observer observer)
+    public XyzConfiguration(WhitePoint whitePoint, Observer observer, string name = Utils.Unnamed)
     {
         WhitePoint = whitePoint;
         Observer = observer;
+        Spectral = new Spectral(observer, WhiteChromaticity);
         Planckian = new Planckian(observer);
+        Name = name;
     }
-
-    private static Chromaticity GetChromaticity(WhitePoint whitePoint)
-    {
-        var x = whitePoint.X / 100.0;
-        var y = whitePoint.Y / 100.0;
-        var z = whitePoint.Z / 100.0;
-        var normalisation = x + y + z;
-        return new(x / normalisation, y / normalisation);
-    }
-
-    public override string ToString() => $"XYZ {WhitePoint}";
+    
+    public override string ToString() => $"{Name} · white point {WhitePoint}";
 }

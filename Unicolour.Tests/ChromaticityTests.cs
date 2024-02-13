@@ -5,6 +5,17 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class ChromaticityTests
 {
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void SameAsXyy(ColourTriplet triplet)
+    {
+        var chromaticity = new Chromaticity(triplet.First, triplet.Second);
+        var luminance = triplet.Third;
+        var fromChromaticity = new Unicolour(chromaticity, luminance);
+        var fromXyy = new Unicolour(ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance);
+        TestUtils.AssertTriplet(fromChromaticity.Xyy.Triplet, fromXyy.Xyy.Triplet, 0.0);
+        Assert.That(fromChromaticity.Chromaticity, Is.EqualTo(fromXyy.Chromaticity));
+    }
+    
     // https://en.wikipedia.org/wiki/Standard_illuminant#White_points_of_standard_illuminants
     [TestCase(0.44757, 0.40745, nameof(Illuminant.A), nameof(Observer.Degree2))]
     [TestCase(0.45117, 0.40594, nameof(Illuminant.A), nameof(Observer.Degree10))]

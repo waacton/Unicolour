@@ -4,6 +4,11 @@ using System.Globalization;
 
 internal static class Utils
 {
+    internal const string Unnamed = "(unnamed)";
+    
+    // based on smallest value required for monochromatic light to be treated as intersecting the spectral locus (see: Spectral.Intersect.IsOnSegment)
+    // only intended for when a little bit of rounding is necessary
+    internal static bool IsEffectivelyZero(this double x) => Math.Abs(x) < 5e-14;
     internal static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
     internal static double Clamp(this int x, int min, int max) => x < min ? min : x > max ? max : x;
     internal static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);

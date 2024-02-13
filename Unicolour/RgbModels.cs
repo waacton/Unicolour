@@ -25,7 +25,7 @@ public static class RgbModels
                     : Companding.InverseGamma((value + 0.055) / 1.055, 2.4));
         }
 
-        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "sRGB");
     }
     
     public static class DisplayP3
@@ -38,7 +38,7 @@ public static class RgbModels
         public static double FromLinear(double value) => StandardRgb.FromLinear(value);
         public static double ToLinear(double value) => StandardRgb.ToLinear(value);
 
-        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Display P3");
     }
     
     public static class Rec2020
@@ -69,7 +69,7 @@ public static class RgbModels
             });
         }
 
-        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 2020");
     }
     
     public static class A98
@@ -89,7 +89,7 @@ public static class RgbModels
             return Companding.ReflectWhenNegative(nonlinear, value => Companding.InverseGamma(value, 563 / 256.0));
         }
 
-        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "A98 RGB");
     }
     
     public static class ProPhoto
@@ -117,6 +117,6 @@ public static class RgbModels
                     : Companding.InverseGamma(value, 1.8));
         }
 
-        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ProPhoto RGB");
     }
 }

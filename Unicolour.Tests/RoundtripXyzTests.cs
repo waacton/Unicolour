@@ -25,7 +25,7 @@ public class RoundtripXyzTests
     public void ViaXyy(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Xyy.ToXyz(Xyy.FromXyz(original, XyzConfig));
+        var roundtrip = Xyy.ToXyz(Xyy.FromXyz(original, XyzConfig.WhiteChromaticity));
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     

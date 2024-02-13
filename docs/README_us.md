@@ -10,9 +10,10 @@ Unicolour is a .NET library written in C# for working with color:
 - Color space conversion
 - Color mixing / color interpolation
 - Color difference / color distance
+- Color gamut mapping
 - Color chromaticity
 - Color temperature
-- Color gamut mapping
+- Wavelength attributes
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
@@ -98,12 +99,14 @@ var difference = white.Difference(black, DeltaE.Ciede2000);
 Console.WriteLine(difference); // 100.0000
 ```
 
-Other useful color information is available, such as chromaticity coordinates and [temperature](#convert-between-color-and-temperature).
+Other useful color information is available, such as chromaticity coordinates, 
+[temperature](#convert-between-color-and-temperature), and [dominant wavelength](#get-wavelength-attributes).
 ```c#
 var equalTristimulus = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
 Console.WriteLine(equalTristimulus.Chromaticity.Xy); // (0.3333, 0.3333)
 Console.WriteLine(equalTristimulus.Chromaticity.Uv); // (0.2105, 0.3158)
 Console.WriteLine(equalTristimulus.Temperature); // 5455.5 K (Δuv -0.00442)
+Console.WriteLine(equalTristimulus.DominantWavelength); // 596.1
 ```
 
 Reference white points (e.g. D65) and the RGB model (e.g. sRGB) [can be configured](#-configuration).
@@ -146,7 +149,7 @@ var (l, c, h) = color.Oklch.Triplet;
 
 
 ### Mix colors
-Two colors can be mixed by [interpolating between them in any color space](#-examples),
+Two colors can be mixed by [interpolating between them in any color space](#gradients),
 taking into account cyclic hue, interpolation distance, and alpha premultiplication.
 ```c#
 var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
@@ -187,23 +190,25 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔE<sub>CAM02</sub>                                                       | `DeltaE.Cam02`             |
 | ΔE<sub>CAM16</sub>                                                       | `DeltaE.Cam16`             |
 
-### Convert between color and temperature
-Correlated color temperature (CCT) and delta UV (∆<sub>uv</sub>) can be obtained from a color, and can be used to create a color.
-CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
-```c#
-var d50 = new Unicolour(ColourSpace.Xyy, 0.3457, 0.3585, 1.0);
-var (cct, duv) = d50.Temperature;
-
-var d65 = new Unicolour(6504, 0.0032);
-var (x, y) = d65.Chromaticity;
-```
-
 ### Map color into display gamut
 Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut color.
 The gamut mapping algorithm conforms to CSS specifications.
 ```c#
 var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
 var inGamut = outOfGamut.MapToGamut();
+```
+
+### Convert between color and temperature
+Correlated color temperature (CCT) and delta UV (∆<sub>uv</sub>) can be obtained from a color, and can be used to create a color.
+CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
+```c#
+var chromaticity = new Chromaticity(0.3457, 0.3585);
+var d50 = new Unicolour(chromaticity);
+var (cct, duv) = d50.Temperature;
+
+var temperature = new Temperature(6504, 0.0032);
+var d65 = new Unicolour(temperature);
+var (x, y) = d65.Chromaticity;
 ```
 
 ### Create color from spectral power distribution
@@ -218,6 +223,25 @@ var spd = new Spd
 };
         
 var intenseYellow = new Unicolour(spd);
+```
+
+### Get wavelength attributes
+The dominant wavelength and excitation purity of a color can be derived using the spectral locus.
+Wavelengths from 360 nm to 700 nm are supported.
+```c#
+var chromaticity = new Chromaticity(0.1, 0.8);
+var hyperGreen = new Unicolour(chromaticity);
+var dominantWavelength = hyperGreen.DominantWavelength;
+var excitationPurity = hyperGreen.ExcitationPurity;
+```
+
+### Detect imaginary colors
+Whether or not a color is imaginary — one that cannot be produced by the eye — can be determined using the spectral locus.
+They are the colors that lie outside of the horseshoe-shaped curve of the [CIE xy chromaticity diagram](#diagrams).
+```c#
+var chromaticity = new Chromaticity(0.05, 0.05);
+var impossibleBlue = new Unicolour(chromaticity);
+var isImaginary = impossibleBlue.IsImaginary;
 ```
 
 ### Simulate color vision deficiency
@@ -254,7 +278,7 @@ var color = new Unicolour(defaultConfig, ColourSpace.Rgb255, 192, 255, 238);
 ```
 
 ## 💡 Configuration
-The `Configuration` parameter can be used to customize how color is processed.
+The `Configuration` parameter can be used to define the context of the color.
 
 Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
 ```c#
@@ -269,8 +293,8 @@ var rgbConfig = new RgbConfiguration(
     chromaticityG: new(0.1152, 0.8264),
     chromaticityB: new(0.1566, 0.0177),
     whitePoint: Illuminant.D50.GetWhitePoint(Observer.Degree2),
-    fromLinear: value => Companding.Gamma(value, 2.19921875),
-    toLinear: value => Companding.InverseGamma(value, 2.19921875)
+    fromLinear: value => Math.Pow(value, 1 / 2.19921875),
+    toLinear: value => Math.Pow(value, 2.19921875)
 );
 
 var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10);
@@ -352,19 +376,59 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ```
 
 ## ✨ Examples
-This repo contains an [example project](https://github.com/waacton/Unicolour/tree/main/Unicolour.Example/Program.cs) that uses Unicolour to:
-1. Generate gradients through each color space
-   ![Gradients through different color spaces, generated from Unicolour](gradients.png)
-2. Render the color spectrum with different color vision deficiencies
-   ![Spectrum rendered with different color vision deficiencies, generated from Unicolour](vision-deficiency.png)
-3. Demonstrate interpolation with and without premultiplied alpha
-   ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, generated from Unicolour](alpha-interpolation.png)
-4. Visualize correlated color temperature (CCT) from 1,000 K to 13,000 K
-   ![Visualization of temperature from 1,000 K to 13,000 K, generated from Unicolour](temperature.png)
+This repository contains multiple projects to show examples of Unicolour being used to create:
+1. [Images of gradients](#gradients)
+2. [Diagrams of color data](#diagrams)
+3. [A colorful console application](#console)
 
-There is also a [console application](https://github.com/waacton/Unicolour/tree/main/Unicolour.Console/Program.cs) that uses Unicolour to show color information for a given hex value.
+### Gradients
+Example code to create images of gradients using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/tree/main/Example.Gradients/Program.cs) project.
 
-![Color information from hex value](colour-info.png)
+| ![Gradients generated through different color spaces, created with Unicolour](gradient-color-spaces.png) |
+|-----------------------------------------------------------------------------------------------------------------|
+| _Gradients generated through each color space_                                                                 |
+
+| ![Visualization of temperature from 1,000 K to 13,000 K, created with Unicolour](gradient-temperature.png) |
+|-----------------------------------------------------------------------------------------------------------------|
+| _Visualization of temperature from 1,000 K to 13,000 K_                                                         |
+
+| ![Color spectrum rendered with different color vision deficiencies, created with Unicolour](gradient-vision-deficiency.png) |
+|------------------------------------------------------------------------------------------------------------------------------------|
+| _Color spectrum rendered with different color vision deficiencies_                                                               |
+
+| ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, created with Unicolour](gradient-alpha-interpolation.png) |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha_                                                                 |
+   
+### Diagrams
+Example code to create diagrams of color data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/tree/main/Example.Diagrams/Program.cs) project.
+
+| ![CIE xy chromaticity diagram with sRGB gamut, created with Unicolour](diagram-xy-chromaticity-rgb.png) |
+|--------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with sRGB gamut_                                                                |
+
+| ![CIE xy chromaticity diagram with Planckian or blackbody locus, created with Unicolour](diagram-xy-chromaticity-blackbody.png) |
+|--------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      |
+
+| ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](diagram-spectral-locus.png) |
+|---------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                           |
+ 
+| ![CIE 1960 color space, created with Unicolour](diagram-uv-chromaticity.png) |
+|------------------------------------------------------------------------------------|
+| _CIE 1960 color space_                                                            |
+
+| ![CIE 1960 color space with Planckian or blackbody locus, created with Unicolour](diagram-uv-chromaticity-blackbody.png) |
+|--------------------------------------------------------------------------------------------------------------------------------|
+| _CIE 1960 color space with Planckian or blackbody locus_                                                                      |
+
+### Console
+Example code to create a colorful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console) can be seen in the [Example.Console](https://github.com/waacton/Unicolour/tree/main/Example.Console/Program.cs) project.
+
+| ![Console application showing color information from hex value, created with Unicolour](console-color-info.png) |
+|------------------------------------------------------------------------------------------------------------------------|
+| Console application showing color information from hex value                                                          |
 
 ## 🔮 Datasets
 Some color datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

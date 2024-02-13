@@ -2,7 +2,7 @@ namespace Wacton.Unicolour;
 
 using static Planckian;
 
-public record Temperature(double Cct, double Duv)
+public record Temperature(double Cct, double Duv = 0.0)
 {
     public double Cct { get; } = Cct;
     public double Duv { get; } = Duv;
@@ -23,7 +23,7 @@ public record Temperature(double Cct, double Duv)
     {
         return locus switch
         {
-            Locus.Blackbody => new Temperature(cct, 0),
+            Locus.Blackbody => new Temperature(cct, Duv: 0),
             Locus.Daylight => FromChromaticity(Daylight.GetChromaticity(cct), planckian),
             _ => throw new ArgumentOutOfRangeException(nameof(locus), locus, null)
         };

@@ -5,6 +5,15 @@ using static Wacton.Unicolour.Utils;
 
 public class UtilsTests
 {
+    [TestCase(0.0, true)]
+    [TestCase(0.00000000000004, true)]
+    [TestCase(0.00000000000005, false)]
+    [TestCase(0.00000000000006, false)]
+    [TestCase(-0.00000000000004, true)]
+    [TestCase(-0.00000000000005, false)]
+    [TestCase(-0.00000000000006, false)]
+    public void EffectivelyZero(double value, bool expected) => Assert.That(value.IsEffectivelyZero(), Is.EqualTo(expected));
+    
     [TestCase(0.5)]
     [TestCase(0.0)]
     [TestCase(1.0)]

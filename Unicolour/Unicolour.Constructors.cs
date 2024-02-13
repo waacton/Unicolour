@@ -53,20 +53,21 @@ public partial class Unicolour
         this(config, ColourSpace.Rgb, Parse(hex) with { a = alphaOverride })
     {
     }
+    
+    /* construction from chromaticity */
+    public Unicolour(Chromaticity chromaticity, double luminance = 1.0) :
+        this(Configuration.Default, chromaticity, luminance)
+    {
+    }
+    
+    public Unicolour(Configuration config, Chromaticity chromaticity, double luminance = 1.0) :
+        this(config, ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance)
+    {
+    }
 
     /* construction from temperature */
-    public Unicolour(double cct, double duv, double luminance = 1.0) : 
-        this(Configuration.Default, cct, duv, luminance)
-    {
-    }
-    
     public Unicolour(double cct, Locus locus = Locus.Blackbody, double luminance = 1.0) : 
         this(Configuration.Default, cct, locus, luminance)
-    {
-    }
-    
-    public Unicolour(Configuration config, double cct, double duv, double luminance = 1.0) : 
-        this(config, new Temperature(cct, duv), luminance)
     {
     }
     
@@ -75,7 +76,12 @@ public partial class Unicolour
     {
     }
     
-    internal Unicolour(Configuration config, Temperature temperature, double luminance) :
+    public Unicolour(Temperature temperature, double luminance = 1.0) : 
+        this(Configuration.Default, temperature, luminance)
+    {
+    }
+    
+    public Unicolour(Configuration config, Temperature temperature, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, TemperatureToXyyTuple(temperature, config.Xyz.Observer, luminance))
     {
         this.temperature = new Lazy<Temperature>(() => temperature);

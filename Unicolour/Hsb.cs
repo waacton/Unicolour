@@ -31,7 +31,7 @@ public record Hsb : ColourRepresentation
     internal static Hsb FromRgb(Rgb rgb)
     {
         var (r, g, b) = rgb.ConstrainedTriplet;
-        var components = new[] {r, g, b};
+        var components = new[] { r, g, b };
         var xMax = components.Max();
         var xMin = components.Min();
         var chroma = xMax - xMin;

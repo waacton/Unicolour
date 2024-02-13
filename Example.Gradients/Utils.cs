@@ -1,4 +1,4 @@
-namespace Wacton.Unicolour.Example;
+namespace Wacton.Unicolour.Example.Gradients;
 
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -6,7 +6,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
-internal static class Gradient
+internal static class Utils
 {
     private const bool RenderOutOfGamutAsTransparent = false;
 

@@ -8,8 +8,10 @@
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <AssemblyName>Wacton.Unicolour.Console</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Console</RootNamespace>
+        <AssemblyName>Wacton.Unicolour.Example.Console</AssemblyName>
+        <RootNamespace>Wacton.Unicolour.Example.Console</RootNamespace>
+        <Company>William Acton</Company>
+        <Product>Wacton.Unicolour.Example.Console</Product>
     </PropertyGroup>
 
     <ItemGroup>

@@ -142,11 +142,37 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(hex, alphaOverride));
         AssertNoError(expected, new Unicolour(Configuration.Default, hex, alphaOverride));
     }
+    
+    private static readonly List<double> ChromaticityValues = new() { 0.0, 0.25, 0.4, 0.5, 0.6, 0.75, 1.0 };
+    private static readonly List<double> LuminanceValues = new() { 1.0, 0.5, 0.0 };
+    
+    [Test]
+    public void Chromaticity(
+        [ValueSource(nameof(ChromaticityValues))] double x,
+        [ValueSource(nameof(ChromaticityValues))] double y)
+    {
+        var chromaticity = new Chromaticity(x, y);
+        var expected = new Unicolour(chromaticity);
+        AssertNoError(expected, new Unicolour(chromaticity));
+        AssertNoError(expected, new Unicolour(Configuration.Default, chromaticity));
+    }
+    
+    [Test]
+    public void ChromaticityWithLuminance(
+        [ValueSource(nameof(ChromaticityValues))] double x,
+        [ValueSource(nameof(ChromaticityValues))] double y,
+        [ValueSource(nameof(LuminanceValues))] double luminance)
+    {
+        var chromaticity = new Chromaticity(x, y);
+        var expected = new Unicolour(chromaticity, luminance);
+        AssertNoError(expected, new Unicolour(chromaticity, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, chromaticity, luminance));
+    }
+
 
     private static readonly List<double> CctValues = new() { 400, 500, 1000, 6504, 20000, 25000, 1e9 };
     private static readonly List<double> DuvValues = new() { -0.05, 0, 0.05 };
     private static readonly List<Locus> LocusValues = new() { Locus.Blackbody, Locus.Daylight };
-    private static readonly List<double> LuminanceValues = new() { 1.0, 0.5, 0.0 };
     
     [Test]
     public void TemperatureOnlyCct(
@@ -162,9 +188,10 @@ public class SmokeTests
         [ValueSource(nameof(CctValues))] double cct, 
         [ValueSource(nameof(DuvValues))] double duv)
     {
-        var expected = new Unicolour(cct, duv);
-        AssertNoError(expected, new Unicolour(cct, duv));
-        AssertNoError(expected, new Unicolour(Configuration.Default, cct, duv));
+        var temperature = new Temperature(cct, duv);
+        var expected = new Unicolour(temperature);
+        AssertNoError(expected, new Unicolour(temperature));
+        AssertNoError(expected, new Unicolour(Configuration.Default, temperature));
     }
     
     [Test, Combinatorial]
@@ -196,9 +223,10 @@ public class SmokeTests
         [ValueSource(nameof(DuvValues))] double duv,
         [ValueSource(nameof(LuminanceValues))] double luminance)
     {
-        var expected = new Unicolour(cct, duv, luminance);
-        AssertNoError(expected, new Unicolour(cct, duv, luminance));
-        AssertNoError(expected, new Unicolour(Configuration.Default, cct, duv, luminance));
+        var temperature = new Temperature(cct, duv);
+        var expected = new Unicolour(temperature, luminance);
+        AssertNoError(expected, new Unicolour(temperature, luminance));
+        AssertNoError(expected, new Unicolour(Configuration.Default, temperature, luminance));
     }
 
     [Test, Combinatorial]

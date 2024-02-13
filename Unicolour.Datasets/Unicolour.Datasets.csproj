@@ -20,14 +20,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="Resources\Unicolour.Datasets.png">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 
 </Project>

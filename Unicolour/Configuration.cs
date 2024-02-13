@@ -26,5 +26,5 @@ public class Configuration
         JzazbzScalar = jzazbzScalar;
     }
     
-    public override string ToString() => $"{Id}";
+    public override string ToString() => $"RGB:[{Rgb.Name}] · XYZ:[{Xyz.Name}] · CAM:[{Cam.Name}] · Id:[{Id}]";
 }

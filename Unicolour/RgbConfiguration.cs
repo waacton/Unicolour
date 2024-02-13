@@ -14,14 +14,16 @@ public class RgbConfiguration
     public WhitePoint WhitePoint { get; }
     public Func<double, double> CompandFromLinear { get; }
     public Func<double, double> InverseCompandToLinear { get; }
-    
+    public string Name { get; }
+
     public RgbConfiguration(
         Chromaticity chromaticityR, 
         Chromaticity chromaticityG, 
         Chromaticity chromaticityB,
         WhitePoint whitePoint,
         Func<double, double> fromLinear, 
-        Func<double, double> toLinear)
+        Func<double, double> toLinear,
+        string name = Utils.Unnamed)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
@@ -29,7 +31,8 @@ public class RgbConfiguration
         WhitePoint = whitePoint;
         CompandFromLinear = fromLinear;
         InverseCompandToLinear = toLinear;
+        Name = name;
     }
 
-    public override string ToString() => $"RGB {WhitePoint} {ChromaticityR} {ChromaticityG} {ChromaticityB}";
+    public override string ToString() => Name;
 }

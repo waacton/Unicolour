@@ -43,12 +43,12 @@ public record Xyz : ColourRepresentation
         var ySum = wavelengths.Sum(wavelength => spd.SpectralPower(wavelength) * observer.ColourMatchY(wavelength) * delta);
         var zSum = wavelengths.Sum(wavelength => spd.SpectralPower(wavelength) * observer.ColourMatchZ(wavelength) * delta);
 
-        var k = 100 / ySum;
-        var x = xSum * k;
-        var y = ySum * k;
-        var z = zSum * k;
-        
-        return new Xyz(x / 100.0, y / 100.0, z / 100.0);
+        // note: could support a notion of "absolute" XYZ by simply returning without dividing by ySum
+        // though unclear if actually useful
+        var x = xSum / ySum;
+        var y = ySum / ySum;
+        var z = zSum / ySum;
+        return new Xyz(x, y, z);
     }
 
     // only for potential debugging or diagnostics

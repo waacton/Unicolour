@@ -6,9 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
-        <AssemblyName>Wacton.Unicolour.Example</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Example</RootNamespace>
+        <AssemblyName>Wacton.Unicolour.Example.Gradients</AssemblyName>
+        <RootNamespace>Wacton.Unicolour.Example.Gradients</RootNamespace>
         <Authors>William Acton</Authors>
+        <Product>Wacton.Unicolour.Example.Gradients</Product>
     </PropertyGroup>
 
     <ItemGroup>

@@ -8,11 +8,11 @@ using System.Linq;
 // NamedColours.csv is a list of 145 colours taken from https://en.wikipedia.org/wiki/X11_color_names
 internal static class NamedColours
 {
-    public static readonly List<TestColour> All;
+    internal static readonly List<TestColour> All;
 
     static NamedColours()
     {
-        var csvData = File.ReadAllLines(Path.Combine("Utils", "NamedColours.csv"));
+        var csvData = File.ReadAllLines(Path.Combine("Data", "NamedColours.csv"));
         All = csvData.Skip(1).Select(CreateNamedColour).ToList();
     }
     

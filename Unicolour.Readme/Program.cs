@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using Wacton.Unicolour;
+using Wacton.Unicolour.Datasets;
 
 var sourceRoot = Path.GetFullPath("./docs");
 var solutionRoot = AppDomain.CurrentDomain.BaseDirectory.Split("Unicolour.Readme")[0];
@@ -246,4 +247,11 @@ void ConfigConvert()
     var rec2020Config = new Configuration(RgbConfiguration.Rec2020);
     var rec2020Colour = displayP3Colour.ConvertToConfiguration(rec2020Config);
     Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
+}
+
+void Datasets()
+{
+    var pink = Css.DeepPink;
+    var mapped = Colourmaps.Viridis.Map(0.5);
+    var green = Xkcd.NastyGreen;
 }

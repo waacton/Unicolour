@@ -7,11 +7,11 @@ using Newtonsoft.Json.Linq;
 
 internal static class HsluvTestColour
 {
-    public static readonly List<TestColour> All = new();
+    internal static readonly List<TestColour> All = new();
 
     static HsluvTestColour()
     {
-        var snapshotText = File.ReadAllText(Path.Combine("Utils", "HSLuv-snapshot-rev4.json"));
+        var snapshotText = File.ReadAllText(Path.Combine("Data", "HSLuv-snapshot-rev4.json"));
         var snapshotJson = JObject.Parse(snapshotText);
         
         foreach (var (hex, jsonData) in snapshotJson)

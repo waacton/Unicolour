@@ -10,176 +10,317 @@ using static Datasets.Css;
 public class DatasetCssTests
 {
     // https://www.w3.org/TR/css-color-4/#named-colors
-    private static readonly List<TestCaseData> Rgb255TestData = new()
+    private static readonly Dictionary<string, ColourTriplet> Rgb255Lookup = new()
     {
-        new TestCaseData(AliceBlue, 240, 248, 255).SetName("Alice Blue"),
-        new TestCaseData(AntiqueWhite, 250, 235, 215).SetName("Antique White"),
-        new TestCaseData(Aqua, 0, 255, 255).SetName("Aqua"),
-        new TestCaseData(Aquamarine, 127, 255, 212).SetName("Aquamarine"),
-        new TestCaseData(Azure, 240, 255, 255).SetName("Azure"),
-        new TestCaseData(Beige, 245, 245, 220).SetName("Beige"),
-        new TestCaseData(Bisque, 255, 228, 196).SetName("Bisque"),
-        new TestCaseData(Black, 0, 0, 0).SetName("Black"),
-        new TestCaseData(BlanchedAlmond, 255, 235, 205).SetName("Blanched Almond"),
-        new TestCaseData(Blue, 0, 0, 255).SetName("Blue"),
-        new TestCaseData(BlueViolet, 138, 43, 226).SetName("Blue Violet"),
-        new TestCaseData(Brown, 165, 42, 42).SetName("Brown"),
-        new TestCaseData(Burlywood, 222, 184, 135).SetName("Burlywood"),
-        new TestCaseData(CadetBlue, 95, 158, 160).SetName("Cadet Blue"),
-        new TestCaseData(Chartreuse, 127, 255, 0).SetName("Chartreuse"),
-        new TestCaseData(Chocolate, 210, 105, 30).SetName("Chocolate"),
-        new TestCaseData(Coral, 255, 127, 80).SetName("Coral"),
-        new TestCaseData(CornflowerBlue, 100, 149, 237).SetName("Cornflower Blue"),
-        new TestCaseData(Cornsilk, 255, 248, 220).SetName("Cornsilk"),
-        new TestCaseData(Crimson, 220, 20, 60).SetName("Crimson"),
-        new TestCaseData(Cyan, 0, 255, 255).SetName("Cyan"),
-        new TestCaseData(DarkBlue, 0, 0, 139).SetName("Dark Blue"),
-        new TestCaseData(DarkCyan, 0, 139, 139).SetName("Dark Cyan"),
-        new TestCaseData(DarkGoldenrod, 184, 134, 11).SetName("Dark Goldenrod"),
-        new TestCaseData(DarkGray, 169, 169, 169).SetName("Dark Gray"),
-        new TestCaseData(DarkGreen, 0, 100, 0).SetName("Dark Green"),
-        new TestCaseData(DarkGrey, 169, 169, 169).SetName("Dark Grey"),
-        new TestCaseData(DarkKhaki, 189, 183, 107).SetName("Dark Khaki"),
-        new TestCaseData(DarkMagenta, 139, 0, 139).SetName("Dark Magenta"),
-        new TestCaseData(DarkOliveGreen, 85, 107, 47).SetName("Dark Olive Green"),
-        new TestCaseData(DarkOrange, 255, 140, 0).SetName("Dark Orange"),
-        new TestCaseData(DarkOrchid, 153, 50, 204).SetName("Dark Orchid"),
-        new TestCaseData(DarkRed, 139, 0, 0).SetName("Dark Red"),
-        new TestCaseData(DarkSalmon, 233, 150, 122).SetName("Dark Salmon"),
-        new TestCaseData(DarkSeaGreen, 143, 188, 143).SetName("Dark Sea Green"),
-        new TestCaseData(DarkSlateBlue, 72, 61, 139).SetName("Dark Slate Blue"),
-        new TestCaseData(DarkSlateGray, 47, 79, 79).SetName("Dark Slate Gray"),
-        new TestCaseData(DarkSlateGrey, 47, 79, 79).SetName("Dark Slate Grey"),
-        new TestCaseData(DarkTurquoise, 0, 206, 209).SetName("Dark Turquoise"),
-        new TestCaseData(DarkViolet, 148, 0, 211).SetName("Dark Violet"),
-        new TestCaseData(DeepPink, 255, 20, 147).SetName("Deep Pink"),
-        new TestCaseData(DeepSkyBlue, 0, 191, 255).SetName("Deep Sky Blue"),
-        new TestCaseData(DimGray, 105, 105, 105).SetName("Dim Gray"),
-        new TestCaseData(DimGrey, 105, 105, 105).SetName("Dim Grey"),
-        new TestCaseData(DodgerBlue, 30, 144, 255).SetName("Dodger Blue"),
-        new TestCaseData(FireBrick, 178, 34, 34).SetName("Fire Brick"),
-        new TestCaseData(FloralWhite, 255, 250, 240).SetName("Floral White"),
-        new TestCaseData(ForestGreen, 34, 139, 34).SetName("Forest Green"),
-        new TestCaseData(Fuchsia, 255, 0, 255).SetName("Fuchsia"),
-        new TestCaseData(Gainsboro, 220, 220, 220).SetName("Gainsboro"),
-        new TestCaseData(GhostWhite, 248, 248, 255).SetName("Ghost White"),
-        new TestCaseData(Gold, 255, 215, 0).SetName("Gold"),
-        new TestCaseData(Goldenrod, 218, 165, 32).SetName("Goldenrod"),
-        new TestCaseData(Gray, 128, 128, 128).SetName("Gray"),
-        new TestCaseData(Green, 0, 128, 0).SetName("Green"),
-        new TestCaseData(GreenYellow, 173, 255, 47).SetName("Green Yellow"),
-        new TestCaseData(Grey, 128, 128, 128).SetName("Grey"),
-        new TestCaseData(Honeydew, 240, 255, 240).SetName("Honeydew"),
-        new TestCaseData(HotPink, 255, 105, 180).SetName("Hot Pink"),
-        new TestCaseData(IndianRed, 205, 92, 92).SetName("Indian Red"),
-        new TestCaseData(Indigo, 75, 0, 130).SetName("Indigo"),
-        new TestCaseData(Ivory, 255, 255, 240).SetName("Ivory"),
-        new TestCaseData(Khaki, 240, 230, 140).SetName("Khaki"),
-        new TestCaseData(Lavender, 230, 230, 250).SetName("Lavender"),
-        new TestCaseData(LavenderBlush, 255, 240, 245).SetName("Lavender Blush"),
-        new TestCaseData(LawnGreen, 124, 252, 0).SetName("Lawn Green"),
-        new TestCaseData(LemonChiffon, 255, 250, 205).SetName("Lemon Chiffon"),
-        new TestCaseData(LightBlue, 173, 216, 230).SetName("Light Blue"),
-        new TestCaseData(LightCoral, 240, 128, 128).SetName("Light Coral"),
-        new TestCaseData(LightCyan, 224, 255, 255).SetName("Light Cyan"),
-        new TestCaseData(LightGoldenrodYellow, 250, 250, 210).SetName("Light Goldenrod Yellow"),
-        new TestCaseData(LightGray, 211, 211, 211).SetName("Light Gray"),
-        new TestCaseData(LightGreen, 144, 238, 144).SetName("Light Green"),
-        new TestCaseData(LightGrey, 211, 211, 211).SetName("Light Grey"),
-        new TestCaseData(LightPink, 255, 182, 193).SetName("Light Pink"),
-        new TestCaseData(LightSalmon, 255, 160, 122).SetName("Light Salmon"),
-        new TestCaseData(LightSeaGreen, 32, 178, 170).SetName("Light Sea Green"),
-        new TestCaseData(LightSkyBlue, 135, 206, 250).SetName("Light Sky Blue"),
-        new TestCaseData(LightSlateGray, 119, 136, 153).SetName("Light Slate Gray"),
-        new TestCaseData(LightSlateGrey, 119, 136, 153).SetName("Light Slate Grey"),
-        new TestCaseData(LightSteelBlue, 176, 196, 222).SetName("Light Steel Blue"),
-        new TestCaseData(LightYellow, 255, 255, 224).SetName("Light Yellow"),
-        new TestCaseData(Lime, 0, 255, 0).SetName("Lime"),
-        new TestCaseData(LimeGreen, 50, 205, 50).SetName("Lime Green"),
-        new TestCaseData(Linen, 250, 240, 230).SetName("Linen"),
-        new TestCaseData(Magenta, 255, 0, 255).SetName("Magenta"),
-        new TestCaseData(Maroon, 128, 0, 0).SetName("Maroon"),
-        new TestCaseData(MediumAquamarine, 102, 205, 170).SetName("Medium Aquamarine"),
-        new TestCaseData(MediumBlue, 0, 0, 205).SetName("Medium Blue"),
-        new TestCaseData(MediumOrchid, 186, 85, 211).SetName("Medium Orchid"),
-        new TestCaseData(MediumPurple, 147, 112, 219).SetName("Medium Purple"),
-        new TestCaseData(MediumSeaGreen, 60, 179, 113).SetName("Medium Sea Green"),
-        new TestCaseData(MediumSlateBlue, 123, 104, 238).SetName("Medium Slate Blue"),
-        new TestCaseData(MediumSpringGreen, 0, 250, 154).SetName("Medium Spring Green"),
-        new TestCaseData(MediumTurquoise, 72, 209, 204).SetName("Medium Turquoise"),
-        new TestCaseData(MediumVioletRed, 199, 21, 133).SetName("Medium Violet Red"),
-        new TestCaseData(MidnightBlue, 25, 25, 112).SetName("Midnight Blue"),
-        new TestCaseData(MintCream, 245, 255, 250).SetName("Mint Cream"),
-        new TestCaseData(MistyRose, 255, 228, 225).SetName("Misty Rose"),
-        new TestCaseData(Moccasin, 255, 228, 181).SetName("Moccasin"),
-        new TestCaseData(NavajoWhite, 255, 222, 173).SetName("Navajo White"),
-        new TestCaseData(Navy, 0, 0, 128).SetName("Navy"),
-        new TestCaseData(OldLace, 253, 245, 230).SetName("Old Lace"),
-        new TestCaseData(Olive, 128, 128, 0).SetName("Olive"),
-        new TestCaseData(OliveDrab, 107, 142, 35).SetName("Olive Drab"),
-        new TestCaseData(Orange, 255, 165, 0).SetName("Orange"),
-        new TestCaseData(OrangeRed, 255, 69, 0).SetName("Orange Red"),
-        new TestCaseData(Orchid, 218, 112, 214).SetName("Orchid"),
-        new TestCaseData(PaleGoldenrod, 238, 232, 170).SetName("Pale Goldenrod"),
-        new TestCaseData(PaleGreen, 152, 251, 152).SetName("Pale Green"),
-        new TestCaseData(PaleTurquoise, 175, 238, 238).SetName("Pale Turquoise"),
-        new TestCaseData(PaleVioletRed, 219, 112, 147).SetName("Pale Violet Red"),
-        new TestCaseData(PapayaWhip, 255, 239, 213).SetName("Papaya Whip"),
-        new TestCaseData(PeachPuff, 255, 218, 185).SetName("Peach Puff"),
-        new TestCaseData(Peru, 205, 133, 63).SetName("Peru"),
-        new TestCaseData(Pink, 255, 192, 203).SetName("Pink"),
-        new TestCaseData(Plum, 221, 160, 221).SetName("Plum"),
-        new TestCaseData(PowderBlue, 176, 224, 230).SetName("Powder Blue"),
-        new TestCaseData(Purple, 128, 0, 128).SetName("Purple"),
-        new TestCaseData(RebeccaPurple, 102, 51, 153).SetName("Rebecca Purple"),
-        new TestCaseData(Red, 255, 0, 0).SetName("Red"),
-        new TestCaseData(RosyBrown, 188, 143, 143).SetName("Rosy Brown"),
-        new TestCaseData(RoyalBlue, 65, 105, 225).SetName("Royal Blue"),
-        new TestCaseData(SaddleBrown, 139, 69, 19).SetName("Saddle Brown"),
-        new TestCaseData(Salmon, 250, 128, 114).SetName("Salmon"),
-        new TestCaseData(SandyBrown, 244, 164, 96).SetName("Sandy Brown"),
-        new TestCaseData(SeaGreen, 46, 139, 87).SetName("Sea Green"),
-        new TestCaseData(Seashell, 255, 245, 238).SetName("Seashell"),
-        new TestCaseData(Sienna, 160, 82, 45).SetName("Sienna"),
-        new TestCaseData(Silver, 192, 192, 192).SetName("Silver"),
-        new TestCaseData(SkyBlue, 135, 206, 235).SetName("Sky Blue"),
-        new TestCaseData(SlateBlue, 106, 90, 205).SetName("Slate Blue"),
-        new TestCaseData(SlateGray, 112, 128, 144).SetName("Slate Gray"),
-        new TestCaseData(SlateGrey, 112, 128, 144).SetName("Slate Grey"),
-        new TestCaseData(Snow, 255, 250, 250).SetName("Snow"),
-        new TestCaseData(SpringGreen, 0, 255, 127).SetName("Spring Green"),
-        new TestCaseData(SteelBlue, 70, 130, 180).SetName("Steel Blue"),
-        new TestCaseData(Tan, 210, 180, 140).SetName("Tan"),
-        new TestCaseData(Teal, 0, 128, 128).SetName("Teal"),
-        new TestCaseData(Thistle, 216, 191, 216).SetName("Thistle"),
-        new TestCaseData(Tomato, 255, 99, 71).SetName("Tomato"),
-        new TestCaseData(Turquoise, 64, 224, 208).SetName("Turquoise"),
-        new TestCaseData(Violet, 238, 130, 238).SetName("Violet"),
-        new TestCaseData(Wheat, 245, 222, 179).SetName("Wheat"),
-        new TestCaseData(White, 255, 255, 255).SetName("White"),
-        new TestCaseData(WhiteSmoke, 245, 245, 245).SetName("White Smoke"),
-        new TestCaseData(Yellow, 255, 255, 0).SetName("Yellow"),
-        new TestCaseData(YellowGreen, 154, 205, 50).SetName("Yellow Green")
+        { "aliceblue", new(240, 248, 255) },
+        { "antiquewhite", new(250, 235, 215) },
+        { "aqua", new(0, 255, 255) },
+        { "aquamarine", new(127, 255, 212) },
+        { "azure", new(240, 255, 255) },
+        { "beige", new(245, 245, 220) },
+        { "bisque", new(255, 228, 196) },
+        { "black", new(0, 0, 0) },
+        { "blanchedalmond", new(255, 235, 205) },
+        { "blue", new(0, 0, 255) },
+        { "blueviolet", new(138, 43, 226) },
+        { "brown", new(165, 42, 42) },
+        { "burlywood", new(222, 184, 135) },
+        { "cadetblue", new(95, 158, 160) },
+        { "chartreuse", new(127, 255, 0) },
+        { "chocolate", new(210, 105, 30) },
+        { "coral", new(255, 127, 80) },
+        { "cornflowerblue", new(100, 149, 237) },
+        { "cornsilk", new(255, 248, 220) },
+        { "crimson", new(220, 20, 60) },
+        { "cyan", new(0, 255, 255) },
+        { "darkblue", new(0, 0, 139) },
+        { "darkcyan", new(0, 139, 139) },
+        { "darkgoldenrod", new(184, 134, 11) },
+        { "darkgray", new(169, 169, 169) },
+        { "darkgreen", new(0, 100, 0) },
+        { "darkgrey", new(169, 169, 169) },
+        { "darkkhaki", new(189, 183, 107) },
+        { "darkmagenta", new(139, 0, 139) },
+        { "darkolivegreen", new(85, 107, 47) },
+        { "darkorange", new(255, 140, 0) },
+        { "darkorchid", new(153, 50, 204) },
+        { "darkred", new(139, 0, 0) },
+        { "darksalmon", new(233, 150, 122) },
+        { "darkseagreen", new(143, 188, 143) },
+        { "darkslateblue", new(72, 61, 139) },
+        { "darkslategray", new(47, 79, 79) },
+        { "darkslategrey", new(47, 79, 79) },
+        { "darkturquoise", new(0, 206, 209) },
+        { "darkviolet", new(148, 0, 211) },
+        { "deeppink", new(255, 20, 147) },
+        { "deepskyblue", new(0, 191, 255) },
+        { "dimgray", new(105, 105, 105) },
+        { "dimgrey", new(105, 105, 105) },
+        { "dodgerblue", new(30, 144, 255) },
+        { "firebrick", new(178, 34, 34) },
+        { "floralwhite", new(255, 250, 240) },
+        { "forestgreen", new(34, 139, 34) },
+        { "fuchsia", new(255, 0, 255) },
+        { "gainsboro", new(220, 220, 220) },
+        { "ghostwhite", new(248, 248, 255) },
+        { "gold", new(255, 215, 0) },
+        { "goldenrod", new(218, 165, 32) },
+        { "gray", new(128, 128, 128) },
+        { "green", new(0, 128, 0) },
+        { "greenyellow", new(173, 255, 47) },
+        { "grey", new(128, 128, 128) },
+        { "honeydew", new(240, 255, 240) },
+        { "hotpink", new(255, 105, 180) },
+        { "indianred", new(205, 92, 92) },
+        { "indigo", new(75, 0, 130) },
+        { "ivory", new(255, 255, 240) },
+        { "khaki", new(240, 230, 140) },
+        { "lavender", new(230, 230, 250) },
+        { "lavenderblush", new(255, 240, 245) },
+        { "lawngreen", new(124, 252, 0) },
+        { "lemonchiffon", new(255, 250, 205) },
+        { "lightblue", new(173, 216, 230) },
+        { "lightcoral", new(240, 128, 128) },
+        { "lightcyan", new(224, 255, 255) },
+        { "lightgoldenrodyellow", new(250, 250, 210) },
+        { "lightgray", new(211, 211, 211) },
+        { "lightgreen", new(144, 238, 144) },
+        { "lightgrey", new(211, 211, 211) },
+        { "lightpink", new(255, 182, 193) },
+        { "lightsalmon", new(255, 160, 122) },
+        { "lightseagreen", new(32, 178, 170) },
+        { "lightskyblue", new(135, 206, 250) },
+        { "lightslategray", new(119, 136, 153) },
+        { "lightslategrey", new(119, 136, 153) },
+        { "lightsteelblue", new(176, 196, 222) },
+        { "lightyellow", new(255, 255, 224) },
+        { "lime", new(0, 255, 0) },
+        { "limegreen", new(50, 205, 50) },
+        { "linen", new(250, 240, 230) },
+        { "magenta", new(255, 0, 255) },
+        { "maroon", new(128, 0, 0) },
+        { "mediumaquamarine", new(102, 205, 170) },
+        { "mediumblue", new(0, 0, 205) },
+        { "mediumorchid", new(186, 85, 211) },
+        { "mediumpurple", new(147, 112, 219) },
+        { "mediumseagreen", new(60, 179, 113) },
+        { "mediumslateblue", new(123, 104, 238) },
+        { "mediumspringgreen", new(0, 250, 154) },
+        { "mediumturquoise", new(72, 209, 204) },
+        { "mediumvioletred", new(199, 21, 133) },
+        { "midnightblue", new(25, 25, 112) },
+        { "mintcream", new(245, 255, 250) },
+        { "mistyrose", new(255, 228, 225) },
+        { "moccasin", new(255, 228, 181) },
+        { "navajowhite", new(255, 222, 173) },
+        { "navy", new(0, 0, 128) },
+        { "oldlace", new(253, 245, 230) },
+        { "olive", new(128, 128, 0) },
+        { "olivedrab", new(107, 142, 35) },
+        { "orange", new(255, 165, 0) },
+        { "orangered", new(255, 69, 0) },
+        { "orchid", new(218, 112, 214) },
+        { "palegoldenrod", new(238, 232, 170) },
+        { "palegreen", new(152, 251, 152) },
+        { "paleturquoise", new(175, 238, 238) },
+        { "palevioletred", new(219, 112, 147) },
+        { "papayawhip", new(255, 239, 213) },
+        { "peachpuff", new(255, 218, 185) },
+        { "peru", new(205, 133, 63) },
+        { "pink", new(255, 192, 203) },
+        { "plum", new(221, 160, 221) },
+        { "powderblue", new(176, 224, 230) },
+        { "purple", new(128, 0, 128) },
+        { "rebeccapurple", new(102, 51, 153) },
+        { "red", new(255, 0, 0) },
+        { "rosybrown", new(188, 143, 143) },
+        { "royalblue", new(65, 105, 225) },
+        { "saddlebrown", new(139, 69, 19) },
+        { "salmon", new(250, 128, 114) },
+        { "sandybrown", new(244, 164, 96) },
+        { "seagreen", new(46, 139, 87) },
+        { "seashell", new(255, 245, 238) },
+        { "sienna", new(160, 82, 45) },
+        { "silver", new(192, 192, 192) },
+        { "skyblue", new(135, 206, 235) },
+        { "slateblue", new(106, 90, 205) },
+        { "slategray", new(112, 128, 144) },
+        { "slategrey", new(112, 128, 144) },
+        { "snow", new(255, 250, 250) },
+        { "springgreen", new(0, 255, 127) },
+        { "steelblue", new(70, 130, 180) },
+        { "tan", new(210, 180, 140) },
+        { "teal", new(0, 128, 128) },
+        { "thistle", new(216, 191, 216) },
+        { "tomato", new(255, 99, 71) },
+        { "turquoise", new(64, 224, 208) },
+        { "violet", new(238, 130, 238) },
+        { "wheat", new(245, 222, 179) },
+        { "white", new(255, 255, 255) },
+        { "whitesmoke", new(245, 245, 245) },
+        { "yellow", new(255, 255, 0) },
+        { "yellowgreen", new(154, 205, 50) },
+        { "transparent", new(0, 0, 0) }
     };
     
-    private static readonly List<TestCaseData> DuplicateTestData = new()
+    private static readonly List<TestCaseData> Rgb255TestData = new()
     {
-        new TestCaseData(Cyan, Aqua).SetName("Cyan"),
-        new TestCaseData(Magenta, Fuchsia).SetName("Magenta"),
-        new TestCaseData(DarkGrey, DarkGray).SetName("Dark Grey"),
-        new TestCaseData(DarkSlateGrey, DarkSlateGray).SetName("Dark Slate Grey"),
-        new TestCaseData(DimGrey, DimGray).SetName("Dim Grey"),
-        new TestCaseData(Grey, Gray).SetName("Grey"),
-        new TestCaseData(LightGrey, LightGray).SetName("Light Grey"),
-        new TestCaseData(LightSlateGrey, LightSlateGray).SetName("Light Slate Grey"),
-        new TestCaseData(SlateGrey, SlateGray).SetName("Slate Grey")
+        new TestCaseData("aliceblue", AliceBlue),
+        new TestCaseData("antiquewhite", AntiqueWhite),
+        new TestCaseData("aqua", Aqua),
+        new TestCaseData("aquamarine", Aquamarine),
+        new TestCaseData("azure", Azure),
+        new TestCaseData("beige", Beige),
+        new TestCaseData("bisque", Bisque),
+        new TestCaseData("black", Black),
+        new TestCaseData("blanchedalmond", BlanchedAlmond),
+        new TestCaseData("blue", Blue),
+        new TestCaseData("blueviolet", BlueViolet),
+        new TestCaseData("brown", Brown),
+        new TestCaseData("burlywood", Burlywood),
+        new TestCaseData("cadetblue", CadetBlue),
+        new TestCaseData("chartreuse", Chartreuse),
+        new TestCaseData("chocolate", Chocolate),
+        new TestCaseData("coral", Coral),
+        new TestCaseData("cornflowerblue", CornflowerBlue),
+        new TestCaseData("cornsilk", Cornsilk),
+        new TestCaseData("crimson", Crimson),
+        new TestCaseData("cyan", Cyan),
+        new TestCaseData("darkblue", DarkBlue),
+        new TestCaseData("darkcyan", DarkCyan),
+        new TestCaseData("darkgoldenrod", DarkGoldenrod),
+        new TestCaseData("darkgray", DarkGray),
+        new TestCaseData("darkgreen", DarkGreen),
+        new TestCaseData("darkgrey", DarkGrey),
+        new TestCaseData("darkkhaki", DarkKhaki),
+        new TestCaseData("darkmagenta", DarkMagenta),
+        new TestCaseData("darkolivegreen", DarkOliveGreen),
+        new TestCaseData("darkorange", DarkOrange),
+        new TestCaseData("darkorchid", DarkOrchid),
+        new TestCaseData("darkred", DarkRed),
+        new TestCaseData("darksalmon", DarkSalmon),
+        new TestCaseData("darkseagreen", DarkSeaGreen),
+        new TestCaseData("darkslateblue", DarkSlateBlue),
+        new TestCaseData("darkslategray", DarkSlateGray),
+        new TestCaseData("darkslategrey", DarkSlateGrey),
+        new TestCaseData("darkturquoise", DarkTurquoise),
+        new TestCaseData("darkviolet", DarkViolet),
+        new TestCaseData("deeppink", DeepPink),
+        new TestCaseData("deepskyblue", DeepSkyBlue),
+        new TestCaseData("dimgray", DimGray),
+        new TestCaseData("dimgrey", DimGrey),
+        new TestCaseData("dodgerblue", DodgerBlue),
+        new TestCaseData("firebrick", FireBrick),
+        new TestCaseData("floralwhite", FloralWhite),
+        new TestCaseData("forestgreen", ForestGreen),
+        new TestCaseData("fuchsia", Fuchsia),
+        new TestCaseData("gainsboro", Gainsboro),
+        new TestCaseData("ghostwhite", GhostWhite),
+        new TestCaseData("gold", Gold),
+        new TestCaseData("goldenrod", Goldenrod),
+        new TestCaseData("gray", Gray),
+        new TestCaseData("green", Green),
+        new TestCaseData("greenyellow", GreenYellow),
+        new TestCaseData("grey", Grey),
+        new TestCaseData("honeydew", Honeydew),
+        new TestCaseData("hotpink", HotPink),
+        new TestCaseData("indianred", IndianRed),
+        new TestCaseData("indigo", Indigo),
+        new TestCaseData("ivory", Ivory),
+        new TestCaseData("khaki", Khaki),
+        new TestCaseData("lavender", Lavender),
+        new TestCaseData("lavenderblush", LavenderBlush),
+        new TestCaseData("lawngreen", LawnGreen),
+        new TestCaseData("lemonchiffon", LemonChiffon),
+        new TestCaseData("lightblue", LightBlue),
+        new TestCaseData("lightcoral", LightCoral),
+        new TestCaseData("lightcyan", LightCyan),
+        new TestCaseData("lightgoldenrodyellow", LightGoldenrodYellow),
+        new TestCaseData("lightgray", LightGray),
+        new TestCaseData("lightgreen", LightGreen),
+        new TestCaseData("lightgrey", LightGrey),
+        new TestCaseData("lightpink", LightPink),
+        new TestCaseData("lightsalmon", LightSalmon),
+        new TestCaseData("lightseagreen", LightSeaGreen),
+        new TestCaseData("lightskyblue", LightSkyBlue),
+        new TestCaseData("lightslategray", LightSlateGray),
+        new TestCaseData("lightslategrey", LightSlateGrey),
+        new TestCaseData("lightsteelblue", LightSteelBlue),
+        new TestCaseData("lightyellow", LightYellow),
+        new TestCaseData("lime", Lime),
+        new TestCaseData("limegreen", LimeGreen),
+        new TestCaseData("linen", Linen),
+        new TestCaseData("magenta", Magenta),
+        new TestCaseData("maroon", Maroon),
+        new TestCaseData("mediumaquamarine", MediumAquamarine),
+        new TestCaseData("mediumblue", MediumBlue),
+        new TestCaseData("mediumorchid", MediumOrchid),
+        new TestCaseData("mediumpurple", MediumPurple),
+        new TestCaseData("mediumseagreen", MediumSeaGreen),
+        new TestCaseData("mediumslateblue", MediumSlateBlue),
+        new TestCaseData("mediumspringgreen", MediumSpringGreen),
+        new TestCaseData("mediumturquoise", MediumTurquoise),
+        new TestCaseData("mediumvioletred", MediumVioletRed),
+        new TestCaseData("midnightblue", MidnightBlue),
+        new TestCaseData("mintcream", MintCream),
+        new TestCaseData("mistyrose", MistyRose),
+        new TestCaseData("moccasin", Moccasin),
+        new TestCaseData("navajowhite", NavajoWhite),
+        new TestCaseData("navy", Navy),
+        new TestCaseData("oldlace", OldLace),
+        new TestCaseData("olive", Olive),
+        new TestCaseData("olivedrab", OliveDrab),
+        new TestCaseData("orange", Orange),
+        new TestCaseData("orangered", OrangeRed),
+        new TestCaseData("orchid", Orchid),
+        new TestCaseData("palegoldenrod", PaleGoldenrod),
+        new TestCaseData("palegreen", PaleGreen),
+        new TestCaseData("paleturquoise", PaleTurquoise),
+        new TestCaseData("palevioletred", PaleVioletRed),
+        new TestCaseData("papayawhip", PapayaWhip),
+        new TestCaseData("peachpuff", PeachPuff),
+        new TestCaseData("peru", Peru),
+        new TestCaseData("pink", Pink),
+        new TestCaseData("plum", Plum),
+        new TestCaseData("powderblue", PowderBlue),
+        new TestCaseData("purple", Purple),
+        new TestCaseData("rebeccapurple", RebeccaPurple),
+        new TestCaseData("red", Red),
+        new TestCaseData("rosybrown", RosyBrown),
+        new TestCaseData("royalblue", RoyalBlue),
+        new TestCaseData("saddlebrown", SaddleBrown),
+        new TestCaseData("salmon", Salmon),
+        new TestCaseData("sandybrown", SandyBrown),
+        new TestCaseData("seagreen", SeaGreen),
+        new TestCaseData("seashell", Seashell),
+        new TestCaseData("sienna", Sienna),
+        new TestCaseData("silver", Silver),
+        new TestCaseData("skyblue", SkyBlue),
+        new TestCaseData("slateblue", SlateBlue),
+        new TestCaseData("slategray", SlateGray),
+        new TestCaseData("slategrey", SlateGrey),
+        new TestCaseData("snow", Snow),
+        new TestCaseData("springgreen", SpringGreen),
+        new TestCaseData("steelblue", SteelBlue),
+        new TestCaseData("tan", Tan),
+        new TestCaseData("teal", Teal),
+        new TestCaseData("thistle", Thistle),
+        new TestCaseData("tomato", Tomato),
+        new TestCaseData("turquoise", Turquoise),
+        new TestCaseData("violet", Violet),
+        new TestCaseData("wheat", Wheat),
+        new TestCaseData("white", White),
+        new TestCaseData("whitesmoke", WhiteSmoke),
+        new TestCaseData("yellow", Yellow),
+        new TestCaseData("yellowgreen", YellowGreen),
+        new TestCaseData("transparent", Css.Transparent)
     };
 
     [TestCaseSource(nameof(Rgb255TestData))]
-    public void Rgb255(Unicolour unicolour, int expectedR, int expectedG, int expectedB)
+    public void Rgb255(string name, Unicolour unicolour)
     {
-        var expectedRgb255 = new Rgb255(expectedR, expectedG, expectedB);
-        TestUtils.AssertTriplet<Rgb255>(unicolour, expectedRgb255.Triplet, 0);
+        var expected = Rgb255Lookup[name];
+        TestUtils.AssertTriplet<Rgb255>(unicolour, expected, 0);
     }
 
     [Test]
@@ -188,6 +329,19 @@ public class DatasetCssTests
         TestUtils.AssertTriplet<Rgb255>(Css.Transparent, new(0, 0, 0), 0);
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
+    
+    private static readonly List<TestCaseData> DuplicateTestData = new()
+    {
+        new TestCaseData(Cyan, Aqua).SetName("cyan = aqua"),
+        new TestCaseData(Magenta, Fuchsia).SetName("magenta = fuchsia"),
+        new TestCaseData(DarkGrey, DarkGray).SetName("darkgrey = darkgray"),
+        new TestCaseData(DarkSlateGrey, DarkSlateGray).SetName("darkslategrey = darkslategray"),
+        new TestCaseData(DimGrey, DimGray).SetName("dimgrey = dimgray"),
+        new TestCaseData(Grey, Gray).SetName("grey = gray"),
+        new TestCaseData(LightGrey, LightGray).SetName("lightgrey = lightgray"),
+        new TestCaseData(LightSlateGrey, LightSlateGray).SetName("lightslategrey = lightslategray"),
+        new TestCaseData(SlateGrey, SlateGray).SetName("slategrey = slategray")
+    };
     
     [TestCaseSource(nameof(DuplicateTestData))]
     public void Duplicates(Unicolour unicolour1, Unicolour unicolour2)
@@ -211,319 +365,33 @@ public class DatasetCssTests
         Assert.That(Css.All.Distinct().Count(), Is.EqualTo(139));
     }
 
-    [TestCase("aliceblue")]
-    [TestCase("antiquewhite")]
-    [TestCase("aqua")]
-    [TestCase("aquamarine")]
-    [TestCase("azure")]
-    [TestCase("beige")]
-    [TestCase("bisque")]
-    [TestCase("black")]
-    [TestCase("blanchedalmond")]
-    [TestCase("blue")]
-    [TestCase("blueviolet")]
-    [TestCase("brown")]
-    [TestCase("burlywood")]
-    [TestCase("cadetblue")]
-    [TestCase("chartreuse")]
-    [TestCase("chocolate")]
-    [TestCase("coral")]
-    [TestCase("cornflowerblue")]
-    [TestCase("cornsilk")]
-    [TestCase("crimson")]
-    [TestCase("cyan")]
-    [TestCase("darkblue")]
-    [TestCase("darkcyan")]
-    [TestCase("darkgoldenrod")]
-    [TestCase("darkgray")]
-    [TestCase("darkgreen")]
-    [TestCase("darkgrey")]
-    [TestCase("darkkhaki")]
-    [TestCase("darkmagenta")]
-    [TestCase("darkolivegreen")]
-    [TestCase("darkorange")]
-    [TestCase("darkorchid")]
-    [TestCase("darkred")]
-    [TestCase("darksalmon")]
-    [TestCase("darkseagreen")]
-    [TestCase("darkslateblue")]
-    [TestCase("darkslategray")]
-    [TestCase("darkslategrey")]
-    [TestCase("darkturquoise")]
-    [TestCase("darkviolet")]
-    [TestCase("deeppink")]
-    [TestCase("deepskyblue")]
-    [TestCase("dimgray")]
-    [TestCase("dimgrey")]
-    [TestCase("dodgerblue")]
-    [TestCase("firebrick")]
-    [TestCase("floralwhite")]
-    [TestCase("forestgreen")]
-    [TestCase("fuchsia")]
-    [TestCase("gainsboro")]
-    [TestCase("ghostwhite")]
-    [TestCase("gold")]
-    [TestCase("goldenrod")]
-    [TestCase("gray")]
-    [TestCase("green")]
-    [TestCase("greenyellow")]
-    [TestCase("grey")]
-    [TestCase("honeydew")]
-    [TestCase("hotpink")]
-    [TestCase("indianred")]
-    [TestCase("indigo")]
-    [TestCase("ivory")]
-    [TestCase("khaki")]
-    [TestCase("lavender")]
-    [TestCase("lavenderblush")]
-    [TestCase("lawngreen")]
-    [TestCase("lemonchiffon")]
-    [TestCase("lightblue")]
-    [TestCase("lightcoral")]
-    [TestCase("lightcyan")]
-    [TestCase("lightgoldenrodyellow")]
-    [TestCase("lightgray")]
-    [TestCase("lightgreen")]
-    [TestCase("lightgrey")]
-    [TestCase("lightpink")]
-    [TestCase("lightsalmon")]
-    [TestCase("lightseagreen")]
-    [TestCase("lightskyblue")]
-    [TestCase("lightslategray")]
-    [TestCase("lightslategrey")]
-    [TestCase("lightsteelblue")]
-    [TestCase("lightyellow")]
-    [TestCase("lime")]
-    [TestCase("limegreen")]
-    [TestCase("linen")]
-    [TestCase("magenta")]
-    [TestCase("maroon")]
-    [TestCase("mediumaquamarine")]
-    [TestCase("mediumblue")]
-    [TestCase("mediumorchid")]
-    [TestCase("mediumpurple")]
-    [TestCase("mediumseagreen")]
-    [TestCase("mediumslateblue")]
-    [TestCase("mediumspringgreen")]
-    [TestCase("mediumturquoise")]
-    [TestCase("mediumvioletred")]
-    [TestCase("midnightblue")]
-    [TestCase("mintcream")]
-    [TestCase("mistyrose")]
-    [TestCase("moccasin")]
-    [TestCase("navajowhite")]
-    [TestCase("navy")]
-    [TestCase("oldlace")]
-    [TestCase("olive")]
-    [TestCase("olivedrab")]
-    [TestCase("orange")]
-    [TestCase("orangered")]
-    [TestCase("orchid")]
-    [TestCase("palegoldenrod")]
-    [TestCase("palegreen")]
-    [TestCase("paleturquoise")]
-    [TestCase("palevioletred")]
-    [TestCase("papayawhip")]
-    [TestCase("peachpuff")]
-    [TestCase("peru")]
-    [TestCase("pink")]
-    [TestCase("plum")]
-    [TestCase("powderblue")]
-    [TestCase("purple")]
-    [TestCase("rebeccapurple")]
-    [TestCase("red")]
-    [TestCase("rosybrown")]
-    [TestCase("royalblue")]
-    [TestCase("saddlebrown")]
-    [TestCase("salmon")]
-    [TestCase("sandybrown")]
-    [TestCase("seagreen")]
-    [TestCase("seashell")]
-    [TestCase("sienna")]
-    [TestCase("silver")]
-    [TestCase("skyblue")]
-    [TestCase("slateblue")]
-    [TestCase("slategray")]
-    [TestCase("slategrey")]
-    [TestCase("snow")]
-    [TestCase("springgreen")]
-    [TestCase("steelblue")]
-    [TestCase("tan")]
-    [TestCase("teal")]
-    [TestCase("thistle")]
-    [TestCase("tomato")]
-    [TestCase("transparent")]
-    [TestCase("turquoise")]
-    [TestCase("violet")]
-    [TestCase("wheat")]
-    [TestCase("white")]
-    [TestCase("whitesmoke")]
-    [TestCase("yellow")]
-    [TestCase("yellowgreen")]
-    public void Name(string name)
+    private static readonly List<string> Names = Rgb255Lookup.Keys.ToList();
+    
+    [Test]
+    public void Name([ValueSource(nameof(Names))] string name)
     {
         var unicolour = FromName(name);
         Assert.That(unicolour, Is.Not.Null);
+        
+        var expected = Rgb255Lookup[name];
+        TestUtils.AssertTriplet<Rgb255>(unicolour!, expected, 0);
     }
 
-    [TestCase("\taliceblue\n")]
-    [TestCase("\ta ntiquewhit e\n")]
-    [TestCase("\ta qu a\n")]
-    [TestCase("\ta quamarin e\n")]
-    [TestCase("\ta zur e\n")]
-    [TestCase("\tb eig e\n")]
-    [TestCase("\tb isqu e\n")]
-    [TestCase("\tb lac k\n")]
-    [TestCase("\tb lanchedalmon d\n")]
-    [TestCase("\tb lu e\n")]
-    [TestCase("\tb lueviole t\n")]
-    [TestCase("\tb row n\n")]
-    [TestCase("\tb urlywoo d\n")]
-    [TestCase("\tc adetblu e\n")]
-    [TestCase("\tc hartreus e\n")]
-    [TestCase("\tc hocolat e\n")]
-    [TestCase("\tc ora l\n")]
-    [TestCase("\tc ornflowerblu e\n")]
-    [TestCase("\tc ornsil k\n")]
-    [TestCase("\tc rimso n\n")]
-    [TestCase("\tc ya n\n")]
-    [TestCase("\td arkblu e\n")]
-    [TestCase("\td arkcya n\n")]
-    [TestCase("\td arkgoldenro d\n")]
-    [TestCase("\td arkgra y\n")]
-    [TestCase("\td arkgree n\n")]
-    [TestCase("\td arkgre y\n")]
-    [TestCase("\td arkkhak i\n")]
-    [TestCase("\td arkmagent a\n")]
-    [TestCase("\td arkolivegree n\n")]
-    [TestCase("\td arkorang e\n")]
-    [TestCase("\td arkorchi d\n")]
-    [TestCase("\td arkre d\n")]
-    [TestCase("\td arksalmo n\n")]
-    [TestCase("\td arkseagree n\n")]
-    [TestCase("\td arkslateblu e\n")]
-    [TestCase("\td arkslategra y\n")]
-    [TestCase("\td arkslategre y\n")]
-    [TestCase("\td arkturquois e\n")]
-    [TestCase("\td arkviole t\n")]
-    [TestCase("\td eeppin k\n")]
-    [TestCase("\td eepskyblu e\n")]
-    [TestCase("\td imgra y\n")]
-    [TestCase("\td imgre y\n")]
-    [TestCase("\td odgerblu e\n")]
-    [TestCase("\tf irebric k\n")]
-    [TestCase("\tf loralwhit e\n")]
-    [TestCase("\tf orestgree n\n")]
-    [TestCase("\tf uchsi a\n")]
-    [TestCase("\tg ainsbor o\n")]
-    [TestCase("\tg hostwhit e\n")]
-    [TestCase("\tg ol d\n")]
-    [TestCase("\tg oldenro d\n")]
-    [TestCase("\tg ra y\n")]
-    [TestCase("\tg ree n\n")]
-    [TestCase("\tg reenyello w\n")]
-    [TestCase("\tg re y\n")]
-    [TestCase("\th oneyde w\n")]
-    [TestCase("\th otpin k\n")]
-    [TestCase("\ti ndianre d\n")]
-    [TestCase("\ti ndig o\n")]
-    [TestCase("\ti vor y\n")]
-    [TestCase("\tk hak i\n")]
-    [TestCase("\tl avende r\n")]
-    [TestCase("\tl avenderblus h\n")]
-    [TestCase("\tl awngree n\n")]
-    [TestCase("\tl emonchiffo n\n")]
-    [TestCase("\tl ightblu e\n")]
-    [TestCase("\tl ightcora l\n")]
-    [TestCase("\tl ightcya n\n")]
-    [TestCase("\tl ightgoldenrodyello w\n")]
-    [TestCase("\tl ightgra y\n")]
-    [TestCase("\tl ightgree n\n")]
-    [TestCase("\tl ightgre y\n")]
-    [TestCase("\tl ightpin k\n")]
-    [TestCase("\tl ightsalmo n\n")]
-    [TestCase("\tl ightseagree n\n")]
-    [TestCase("\tl ightskyblu e\n")]
-    [TestCase("\tl ightslategra y\n")]
-    [TestCase("\tl ightslategre y\n")]
-    [TestCase("\tl ightsteelblu e\n")]
-    [TestCase("\tl ightyello w\n")]
-    [TestCase("\tl im e\n")]
-    [TestCase("\tl imegree n\n")]
-    [TestCase("\tl ine n\n")]
-    [TestCase("\tm agent a\n")]
-    [TestCase("\tm aroo n\n")]
-    [TestCase("\tm ediumaquamarin e\n")]
-    [TestCase("\tm ediumblu e\n")]
-    [TestCase("\tm ediumorchi d\n")]
-    [TestCase("\tm ediumpurpl e\n")]
-    [TestCase("\tm ediumseagree n\n")]
-    [TestCase("\tm ediumslateblu e\n")]
-    [TestCase("\tm ediumspringgree n\n")]
-    [TestCase("\tm ediumturquois e\n")]
-    [TestCase("\tm ediumvioletre d\n")]
-    [TestCase("\tm idnightblu e\n")]
-    [TestCase("\tm intcrea m\n")]
-    [TestCase("\tm istyros e\n")]
-    [TestCase("\tm occasi n\n")]
-    [TestCase("\tn avajowhit e\n")]
-    [TestCase("\tn av y\n")]
-    [TestCase("\to ldlac e\n")]
-    [TestCase("\to liv e\n")]
-    [TestCase("\to livedra b\n")]
-    [TestCase("\to rang e\n")]
-    [TestCase("\to rangere d\n")]
-    [TestCase("\to rchi d\n")]
-    [TestCase("\tp alegoldenro d\n")]
-    [TestCase("\tp alegree n\n")]
-    [TestCase("\tp aleturquois e\n")]
-    [TestCase("\tp alevioletre d\n")]
-    [TestCase("\tp apayawhi p\n")]
-    [TestCase("\tp eachpuf f\n")]
-    [TestCase("\tp er u\n")]
-    [TestCase("\tp in k\n")]
-    [TestCase("\tp lu m\n")]
-    [TestCase("\tp owderblu e\n")]
-    [TestCase("\tp urpl e\n")]
-    [TestCase("\tr ebeccapurpl e\n")]
-    [TestCase("\tr e d\n")]
-    [TestCase("\tr osybrow n\n")]
-    [TestCase("\tr oyalblu e\n")]
-    [TestCase("\ts addlebrow n\n")]
-    [TestCase("\ts almo n\n")]
-    [TestCase("\ts andybrow n\n")]
-    [TestCase("\ts eagree n\n")]
-    [TestCase("\ts eashel l\n")]
-    [TestCase("\ts ienn a\n")]
-    [TestCase("\ts ilve r\n")]
-    [TestCase("\ts kyblu e\n")]
-    [TestCase("\ts lateblu e\n")]
-    [TestCase("\ts lategra y\n")]
-    [TestCase("\ts lategre y\n")]
-    [TestCase("\ts no w\n")]
-    [TestCase("\ts pringgree n\n")]
-    [TestCase("\ts teelblu e\n")]
-    [TestCase("\tt a n\n")]
-    [TestCase("\tt ea l\n")]
-    [TestCase("\tt histl e\n")]
-    [TestCase("\tt omat o\n")]
-    [TestCase("\tt ransparen t\n")]
-    [TestCase("\tt urquois e\n")]
-    [TestCase("\tv iole t\n")]
-    [TestCase("\tw hea t\n")]
-    [TestCase("\tw hit e\n")]
-    [TestCase("\tw hitesmok e\n")]
-    [TestCase("\ty ello w\n")]
-    [TestCase("\ty ellowgre en\n")]
-    public void NameWithWhitespace(string name)
+    private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
+    private static string AddWhitespaceAndUppercase(string text)
+    {
+        var multicase = string.Concat(text.Select((x, i) => i % 2 == 0 ? char.ToLower(x) : char.ToUpper(x)));
+        return multicase.Insert(multicase.Length, "\n").Insert(multicase.Length - 1, " ").Insert(0, "\t").Insert(2, " ");
+    }
+    
+    [Test]
+    public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
     {
         var unicolour = FromName(name);
         Assert.That(unicolour, Is.Not.Null);
     }
     
-    // some of these names taken from https://en.wikipedia.org/wiki/X11_color_names but are not defined in the CSS specification
-    // other names look like they should exist based on other names, but don't
-    // also: only handling casing and whitespace, not attempting to strip punctuation
+    // names taken from https://en.wikipedia.org/wiki/X11_color_names but are not defined in the CSS specification
     [TestCase("light goldenrod")]
     [TestCase("navy blue")]
     [TestCase("web gray")]
@@ -531,22 +399,26 @@ public class DatasetCssTests
     [TestCase("web green")]
     [TestCase("web maroon")]
     [TestCase("web purple")]
+    // names that look like they should exist based on other names
     [TestCase("goldenrod yellow")]
     [TestCase("olive green")]
     [TestCase("medium goldenrod")]
     [TestCase("medium red")]
     [TestCase("violet red")]
+    [TestCase("periwinkle")]
+    // misspellings
     [TestCase("biege")]
     [TestCase("chartruese")]
     [TestCase("dodgeblue")]
     [TestCase("orang")]
     [TestCase("stealblue")]
     [TestCase("tourquise")]
-    [TestCase("periwinkle")]
+    // common text and numbers
     [TestCase("unicolour")]
-    [TestCase("a")]
-    [TestCase("\"aliceblue\"")]
+    [TestCase("abc")]
     [TestCase("123")]
+    // punctuation and whitespace
+    [TestCase("\"aliceblue\"")]
     [TestCase(".")]
     [TestCase(" ")]
     [TestCase("")]

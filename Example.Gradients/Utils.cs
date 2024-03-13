@@ -11,39 +11,34 @@ internal static class Utils
     private const bool RenderOutOfGamutAsTransparent = false;
 
     internal delegate Unicolour Mix(Unicolour start, Unicolour end, double amount);
-
-    internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, 
-        Unicolour[] colourPoints, Mix mix)
+    internal delegate Unicolour GetColour(int index);
+    
+    internal static Unicolour GetMixedColour(Unicolour[] colourPoints, int column, int width, Mix mix)
+    {
+        var segmentCount = colourPoints.Length - 1;
+        var segmentWidth = width / segmentCount;
+        var segmentIndex = column / segmentWidth;
+        var segmentDistance = column % segmentWidth / (double) segmentWidth;
+        var segmentStartColour = colourPoints[segmentIndex];
+        var segmentEndColour = colourPoints[segmentIndex + 1];
+        return mix(segmentStartColour, segmentEndColour, segmentDistance);
+    }
+    
+    internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, GetColour getColour)
     {
         var image = new Image<Rgba32>(width, height);
 
-        var sectionCount = colourPoints.Length - 1;
-        var sectionWidth = width / sectionCount;
-
-        for (var sectionIndex = 0; sectionIndex < sectionCount; sectionIndex++)
+        for (var column = 0; column < width; column++)
         {
-            var startColour = colourPoints[sectionIndex];
-            var endColour = colourPoints[sectionIndex + 1];
-            SetSectionPixels(image, sectionWidth, sectionIndex, height, startColour, endColour, mix);
+            var colour = getColour(column);
+            SetColumnPixels(image, column, height, colour);
         }
         
         SetLabel(image, label.text, label.colour);
         return image;
     }
-
-    private static void SetSectionPixels(Image<Rgba32> image, int sectionWidth, int sectionIndex, int height,
-        Unicolour startColour, Unicolour endColour, Mix mix)
-    {
-        for (var pixelIndex = 0; pixelIndex < sectionWidth; pixelIndex++)
-        {
-            var distance = pixelIndex / (double)(sectionWidth - 1);
-            var colour = mix(startColour, endColour, distance);
-            var column = sectionWidth * sectionIndex + pixelIndex;
-            SetImageColumnPixels(image, column, height, colour);
-        }
-    }
-
-    private static void SetImageColumnPixels(Image<Rgba32> image, int column, int height, Unicolour colour)
+    
+    private static void SetColumnPixels(Image<Rgba32> image, int column, int height, Unicolour colour)
     {
         for (var row = 0; row < height; row++)
         {
@@ -53,12 +48,48 @@ internal static class Utils
     
     private static void SetLabel(Image<Rgba32> image, string text, Unicolour colour)
     {
+        const int fontSize = 24;
         FontCollection collection = new();
         var fontFamily = collection.Add("Inconsolata-Regular.ttf");
-        var font = fontFamily.CreateFont(24);
+        var font = fontFamily.CreateFont(fontSize);
 
-        var textLocation = new PointF(16, 16);
+        var row = image.Height / 2.0 - fontSize / 2.0;
+        var textLocation = new PointF(16, (int)row);
         image.Mutate(context => context.DrawText(text, font, AsRgba32(colour), textLocation));
+    }
+
+    internal static Image<Rgba32> DrawRows(List<Image<Rgba32>> rows, int rowWidth, int rowHeight)
+    {
+        var rowIndex = 0;
+        var image = new Image<Rgba32>(rowWidth, rowHeight * rows.Count);
+        image.Mutate(context =>
+        {
+            foreach (var gradient in rows)
+            {
+                context.DrawImage(gradient, Location(rowIndex++), 1f);
+            }
+        });
+
+        return image;
+
+        Point Location(int index) => new(0, rowHeight * index);
+    }
+    
+    internal static Image<Rgba32> DrawColumns(List<Image<Rgba32>> columns, int columnWidth, int columnHeight)
+    {
+        var columnIndex = 0;
+        var image = new Image<Rgba32>(columnWidth * columns.Count, columnHeight);
+        image.Mutate(context =>
+        {
+            foreach (var gradient in columns)
+            {
+                context.DrawImage(gradient, Location(columnIndex++), 1f);
+            }
+        });
+
+        return image;
+
+        Point Location(int index) => new(columnWidth * index, 0);
     }
 
     private static Rgba32 AsRgba32(Unicolour unicolour)

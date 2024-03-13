@@ -26,10 +26,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="Utils\NamedColours.csv">
+      <None Update="Data\HSLuv-snapshot-rev4.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Utils\HSLuv-snapshot-rev4.json">
+      <None Update="Data\NamedColours.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\Cubehelix-custom">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\Cubehelix-default">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

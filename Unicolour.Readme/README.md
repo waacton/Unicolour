@@ -447,7 +447,7 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ```
 
 ## ✨ Examples
-This repository contains multiple projects to show examples of Unicolour being used to create:
+This repository contains projects showing how Unicolour can be used to create:
 1. [Images of gradients](#gradients)
 2. [Diagrams of colour data](#diagrams)
 3. [A colourful console application](#console)
@@ -470,7 +470,11 @@ Example code to create images of gradients using 📷 [SixLabors.ImageSharp](htt
 | ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, created with Unicolour](docs/gradient-alpha-interpolation.png) |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | _Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha_                                                                 |
-   
+
+| ![Perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](docs/gradient-maps.png) |
+|------------------------------------------------------------------------------------------------------------|
+| _Perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                                    |
+
 ### Diagrams
 Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](../Example.Diagrams/Program.cs) project.
 
@@ -497,16 +501,26 @@ Example code to create diagrams of colour data using 📈 [ScottPlot](https://gi
 ### Console
 Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console) can be seen in the [Example.Console](../Example.Console/Program.cs) project.
 
-| ![Console application showing colour information from hex value, created with Unicolour](docs/console-colour-info.png) |
-|------------------------------------------------------------------------------------------------------------------------|
-| Console application showing colour information from hex value                                                          |
+| ![Console application displaying colour information from a hex value, created with Unicolour](docs/console-colour-info.png) |
+|-----------------------------------------------------------------------------------------------------------------------------|
+| Console application displaying colour information from a hex value                                                          |
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
 
 Commonly used sets of colours:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colours
+- [xkcd](https://xkcd.com/color/rgb/) colour survey results
 - [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) colour rendition chart
+
+Perceptually uniform colourmaps / palettes:
+- [Viridis, Plasma, Inferno & Magma](https://bids.github.io/colormap/) (sequential)
+- [Cividis](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0199239) (sequential)
+- [Mako, Rocket, Crest & Flare](https://seaborn.pydata.org/tutorial/color_palettes.html#perceptually-uniform-palettes) (sequential)
+- [Vlag & Icefire](https://seaborn.pydata.org/tutorial/color_palettes.html#perceptually-uniform-diverging-palettes) (diverging)
+- [Twilight & Twilight Shifted](https://github.com/bastibe/twilight) (cyclic)
+- [Turbo](https://blog.research.google/2019/08/turbo-improved-rainbow-colormap-for.html) (rainbow)
+- [Cubehelix](https://people.phy.cam.ac.uk/dag9/CUBEHELIX/) (sequential)
 
 Colour data used in academic literature:
 - [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
@@ -526,7 +540,9 @@ using Wacton.Unicolour.Datasets;
 
 3. Reference the predefined `Unicolour`
 ```c#
-var unicolour = Css.DeepPink;
+var pink = Css.DeepPink;
+var mapped = Colourmaps.Viridis.Map(0.5);
+var green = Xkcd.NastyGreen;
 ```
 
 ---

@@ -116,30 +116,9 @@ internal class Spectral
         
         internal bool IsImaginary()
         {
-            (double x, double y) nearDelta = (Sample.X - Near.Chromaticity.X, Sample.Y - Near.Chromaticity.Y);
-            (double x, double y) farDelta = (Sample.X - Far.Chromaticity.X, Sample.Y - Far.Chromaticity.Y);
-
-            // if sample is effectively the same chromaticity as the intersect point
-            // it is on the boundary and should be treated as monochromatic light
-            var isMonochromatic = Math.Abs(nearDelta.x).IsEffectivelyZero() && Math.Abs(nearDelta.y).IsEffectivelyZero();
-            if (isMonochromatic) return false;
-
-            (int near, int far) signX = (Math.Sign(nearDelta.x), Math.Sign(farDelta.x));
-            (int near, int far) signY = (Math.Sign(nearDelta.y), Math.Sign(farDelta.y));
-        
-            // both intersects are in the same direction; outside of spectral locus
-            bool IsSameDirection((int near, int far) signs)
-            {
-                if (signs is { near: 0, far: 0 })
-                {
-                    return false;
-                }
-
-                return signs.near == signs.far;
-            }
-        
-            var isImaginary = IsSameDirection(signX) || IsSameDirection(signY);
-            return isImaginary;
+            var excitationPurity = ExcitationPurity();
+            var isEffectivelyOne = (1.0 - excitationPurity).IsEffectivelyZero();
+            return excitationPurity > 1 && !isEffectivelyOne;
         }
 
         public override string ToString() => $"{Near} & {Far}";

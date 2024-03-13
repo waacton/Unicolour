@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour.Datasets;
 
+// https://xritephoto.com/documents/literature/en/ColorData-1p_EN.pdf · https://en.wikipedia.org/wiki/ColorChecker
 public static class Macbeth
 {
     /*

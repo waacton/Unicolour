@@ -29,13 +29,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="ThirdPartyNotices\" />
-    </ItemGroup>
     
     <ItemGroup>
-        <None Include="ThirdPartyNotices\*" Pack="true" Visible="false" PackagePath="ThirdPartyNotices"/>
+        <None Include="ThirdPartyNotices\*" Pack="true" PackagePath="ThirdPartyNotices"/>
     </ItemGroup>
     
 </Project>

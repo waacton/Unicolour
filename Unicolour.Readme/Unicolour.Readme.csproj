@@ -22,7 +22,7 @@
         <None Update="docs\favicon.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\gradient-colour-spaces.png">
+        <None Update="docs\gradient-spaces.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\gradient-temperature.png">
@@ -52,7 +52,7 @@
         <None Update="docs\diagram-uv-chromaticity-blackbody.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\console-colour-info.png">
+        <None Update="docs\console-info.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

@@ -34,7 +34,7 @@ void ColourSpaces()
 
     var columnHeight = columns.First().Height;
     var image = Utils.DrawColumns(columns, columnWidth, columnHeight);
-    image.Save(Path.Combine(outputDirectory, "gradient-colour-spaces.png"));
+    image.Save(Path.Combine(outputDirectory, "gradient-spaces.png"));
     return;
     
     Image<Rgba32> DrawColumn(Unicolour[] colourPoints)

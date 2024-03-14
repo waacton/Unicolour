@@ -320,7 +320,8 @@ Defines the RGB model, most commonly used to specify a wider gamut than standard
   - Companding functions to and from linear values
 
 ### `XyzConfiguration`
-Defines the white point for color spaces that need no other configuration, as well as the observer to use for temperature calculations.
+Defines the XYZ white point (which is also [inherited by color spaces that do not need a specific configuration](#white-points)),
+as well as the observer to use for temperature calculations.
 - Predefined
   - D65 (2° observer) 👈 _default_
   - D50 (2° observer)
@@ -345,7 +346,7 @@ These scalars can be changed to match the behaviour of other implementations if 
 ### White points
 All color spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of color spaces, as shown in the table below.
-When a [conversion to or from XYZ space](#convert-between-color-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+When a [conversion between color spaces](#convert-between-color-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
 | White&nbsp;point&nbsp;configuration  | Affected&nbsp;colour&nbsp;spaces                                                                                                      |
 |--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -384,9 +385,9 @@ This repository contains projects showing how Unicolour can be used to create:
 ### Gradients
 Example code to create images of gradients using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/tree/main/Example.Gradients/Program.cs) project.
 
-| ![Gradients generated through different color spaces, created with Unicolour](gradient-color-spaces.png) |
-|-----------------------------------------------------------------------------------------------------------------|
-| _Gradients generated through each color space_                                                                 |
+| ![Gradients generated through different color spaces, created with Unicolour](gradient-spaces.png) |
+|----------------------------------------------------------------------------------------------------------|
+| _Gradients generated through each color space_                                                          |
 
 | ![Visualization of temperature from 1,000 K to 13,000 K, created with Unicolour](gradient-temperature.png) |
 |-----------------------------------------------------------------------------------------------------------------|
@@ -430,9 +431,9 @@ Example code to create diagrams of color data using 📈 [ScottPlot](https://git
 ### Console
 Example code to create a colorful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console) can be seen in the [Example.Console](https://github.com/waacton/Unicolour/tree/main/Example.Console/Program.cs) project.
 
-| ![Console application displaying color information from a hex value, created with Unicolour](console-color-info.png) |
-|-----------------------------------------------------------------------------------------------------------------------------|
-| Console application displaying color information from a hex value                                                          |
+| ![Console application displaying color information from a hex value, created with Unicolour](console-info.png) |
+|----------------------------------------------------------------------------------------------------------------------|
+| Console application displaying color information from a hex value                                                   |
 
 ## 🔮 Datasets
 Some color datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

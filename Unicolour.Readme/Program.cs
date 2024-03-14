@@ -252,6 +252,6 @@ void ConfigConvert()
 void Datasets()
 {
     var pink = Css.DeepPink;
-    var mapped = Colourmaps.Viridis.Map(0.5);
     var green = Xkcd.NastyGreen;
+    var mapped = Colourmaps.Viridis.Map(0.5);
 }

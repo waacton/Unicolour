@@ -346,7 +346,7 @@ These scalars can be changed to match the behaviour of other implementations if 
 ### White points
 All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
-When a [conversion between colour spaces](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
 | White&nbsp;point&nbsp;configuration  | Affected&nbsp;colour&nbsp;spaces                                                                                                      |
 |--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
@@ -471,8 +471,8 @@ using Wacton.Unicolour.Datasets;
 3. Reference the predefined `Unicolour`
 ```c#
 var pink = Css.DeepPink;
-var mapped = Colourmaps.Viridis.Map(0.5);
 var green = Xkcd.NastyGreen;
+var mapped = Colourmaps.Viridis.Map(0.5);
 ```
 
 ---

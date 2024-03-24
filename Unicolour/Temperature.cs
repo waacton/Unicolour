@@ -17,7 +17,7 @@ public record Temperature(double Cct, double Duv = 0.0)
      * - D65 chromaticity is ~(0.3127, 0.3290) ... [although there is seemingly no consensus on what the actual accurate value should be]
      * - D65 chromaticity does not lie on the blackbody locus, but is ~0.0032 uv above it ... [on isotherm perpendicular to blackbody locus]
      * - Therefore, chromaticity ~(0.3127, 0.3290) should have a temperature ~(6504 K, Duv 0.003)
-     * - Why is the blackbody temperature is actually 6502.7 K? 🤷 Suggests D65 isn't actually on the 6504 isotherm? 🤷
+     * - Why is the blackbody temperature actually 6502.7 K? 🤷 Suggests D65 isn't actually on the 6504 isotherm? 🤷
      */
     internal static Temperature FromCct(double cct, Locus locus, Planckian planckian)
     {

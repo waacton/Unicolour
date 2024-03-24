@@ -21,6 +21,9 @@ public class NotNumberTests
     public void Rgb(double r, double g, double b) => AssertUnicolour(new(ColourSpace.Rgb, r, g, b));
     
     [TestCaseSource(nameof(testCases))]
+    public void Rgb255(double r, double g, double b) => AssertUnicolour(new(ColourSpace.Rgb255, r, g, b));
+    
+    [TestCaseSource(nameof(testCases))]
     public void RgbLinear(double r, double g, double b) => AssertUnicolour(new(ColourSpace.RgbLinear, r, g, b));
 
     [TestCaseSource(nameof(testCases))]
@@ -55,6 +58,27 @@ public class NotNumberTests
 
     [TestCaseSource(nameof(testCases))]
     public void Hpluv(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hpluv, h, s, l));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Ypbpr(double y, double pb, double pr) => AssertUnicolour(new(ColourSpace.Ypbpr, y, pb, pr));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Ycbcr(double y, double cb, double cr) => AssertUnicolour(new(ColourSpace.Ycbcr, y, cb, cr));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Ycgco(double y, double cg, double co) => AssertUnicolour(new(ColourSpace.Ycbcr, y, cg, co));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Yuv(double y, double u, double v) => AssertUnicolour(new(ColourSpace.Yuv, y, u, v));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Yiq(double y, double i, double q) => AssertUnicolour(new(ColourSpace.Yiq, y, i, q));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Ydbdr(double y, double db, double dr) => AssertUnicolour(new(ColourSpace.Ydbdr, y, db, dr));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Ipt(double i, double p, double t) => AssertUnicolour(new(ColourSpace.Ipt, i, p, t));
 
     [TestCaseSource(nameof(testCases))]
     public void Ictcp(double i, double ct, double cp) => AssertUnicolour(new(ColourSpace.Ictcp, i, ct, cp));

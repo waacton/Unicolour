@@ -14,7 +14,8 @@ public class RoundtripIctcpTests
     {
         // Ictcp -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Ictcp(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Ictcp.FromXyz(Ictcp.ToXyz(original, IctcpScalar, XyzConfig), IctcpScalar, XyzConfig);
+        var xyz = Ictcp.ToXyz(original, IctcpScalar, XyzConfig);
+        var roundtrip = Ictcp.FromXyz(xyz, IctcpScalar, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, DefaultTolerance);
     }
 }

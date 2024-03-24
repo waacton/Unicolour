@@ -14,7 +14,8 @@ public class RoundtripCam02Tests
     {
         // CAM <-> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Cam02(triplet.First, triplet.Second, triplet.Third, CamConfig);
-        var roundtrip = Cam02.FromXyz(Cam02.ToXyz(original, CamConfig, XyzConfig), CamConfig, XyzConfig);
+        var xyz = Cam02.ToXyz(original, CamConfig, XyzConfig);
+        var roundtrip = Cam02.FromXyz(xyz, CamConfig, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
     }
     

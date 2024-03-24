@@ -12,35 +12,35 @@ public class KnownOklabTests
     [Test]
     public void Red()
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red];
+        var red = StandardRgb.Red;
         TestUtils.AssertTriplet<Oklab>(red, new(0.62796, 0.22486, 0.12585), Tolerance);
     }
     
     [Test]
     public void Green()
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green];
+        var green = StandardRgb.Green;
         TestUtils.AssertTriplet<Oklab>(green, new(0.86644, -0.23389, 0.1795), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var blue = StandardRgb.Blue;
         TestUtils.AssertTriplet<Oklab>(blue, new(0.45201, -0.03246, -0.31153), Tolerance);
     }
     
     [Test]
     public void Black()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var black = StandardRgb.Black;
         TestUtils.AssertTriplet<Oklab>(black, new(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
-        var white = ColourLimits.Rgb[ColourLimit.White];
+        var white = StandardRgb.White;
         TestUtils.AssertTriplet<Oklab>(white, new(1.0, 0.0, 0.0), Tolerance);
     }
     

@@ -10,35 +10,35 @@ public class KnownHctTests
     [Test]
     public void Red()
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red];
+        var red = StandardRgb.Red;
         TestUtils.AssertTriplet<Hct>(red, new(27.408, 113.358, 53.241), 0.005);
     }
     
     [Test]
     public void Green()
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green];
+        var green = StandardRgb.Green;
         TestUtils.AssertTriplet<Hct>(green, new(142.139, 108.410, 87.737), 0.005);
     }
     
     [Test]
     public void Blue()
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var blue = StandardRgb.Blue;
         TestUtils.AssertTriplet<Hct>(blue, new(282.788, 87.230, 32.302), 0.005);
     }
     
     [Test]
     public void Black()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var black = StandardRgb.Black;
         TestUtils.AssertTriplet<Hct>(black, new(0.000, 0.000, 0.000), 0.005);
     }
     
     [Test]
     public void White()
     {
-        var white = ColourLimits.Rgb[ColourLimit.White];
+        var white = StandardRgb.White;
         TestUtils.AssertTriplet<Hct>(white, HctWhiteTriplet, 0.005);
     }
     

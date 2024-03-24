@@ -41,6 +41,7 @@ void ProcessReadme()
         .Replace("Colour&", "Color&")
         .Replace(" colour", " color")
         .Replace("-colour", "-color")
+        .Replace(" grey ", " gray ")
         .Replace("ise ", "ize ")
         .Replace("ises ", "izes ")
         .Replace("isation ", "ization ");

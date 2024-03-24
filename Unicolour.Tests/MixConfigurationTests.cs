@@ -61,8 +61,8 @@ public class MixConfigurationTests
     private static Configuration GetConfig(bool defaultConfig = true)
     {
         return defaultConfig
-            ? new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, CamConfiguration.StandardRgb)
-            : new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50, CamConfiguration.Hct);
+            ? new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65, YbrConfiguration.Rec601, CamConfiguration.StandardRgb)
+            : new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50, YbrConfiguration.Rec709, CamConfiguration.Hct);
     }
 
     private static void AssertConfig(Unicolour unicolour1, Unicolour unicolour2, bool expectSameId)

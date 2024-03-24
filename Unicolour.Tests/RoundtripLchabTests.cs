@@ -11,7 +11,8 @@ public class RoundtripLchabTests
     public void ViaLab(ColourTriplet triplet)
     {
         var original = new Lchab(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Lchab.FromLab(Lchab.ToLab(original));
+        var lab = Lchab.ToLab(original);
+        var roundtrip = Lchab.FromLab(lab);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

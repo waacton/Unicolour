@@ -8,11 +8,11 @@ public class ContrastTests
     [Test]
     public void KnownContrasts()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
-        var white = ColourLimits.Rgb[ColourLimit.White];
-        var red = ColourLimits.Rgb[ColourLimit.Red];
-        var green = ColourLimits.Rgb[ColourLimit.Green];
-        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var black = StandardRgb.Black;
+        var white = StandardRgb.White;
+        var red = StandardRgb.Red;
+        var green = StandardRgb.Green;
+        var blue = StandardRgb.Blue;
         var random = RandomColours.UnicolourFrom(ColourSpace.Rgb);
         
         AssertKnownContrast(black, white, 21);
@@ -25,7 +25,7 @@ public class ContrastTests
     [Test]
     public void BeyondMinRgbLuminance()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var black = StandardRgb.Black;
         var beyondMinRgb = new Unicolour(ColourSpace.Rgb, -0.25, -0.5, -0.75);
         Assert.That(beyondMinRgb.RelativeLuminance, Is.LessThan(black.RelativeLuminance));
         AssertRelativeLuminance(beyondMinRgb);
@@ -34,7 +34,7 @@ public class ContrastTests
     [Test]
     public void BeyondMaxRgbLuminance()
     {
-        var white = ColourLimits.Rgb[ColourLimit.White];
+        var white = StandardRgb.White;
         var beyondMaxRgb = new Unicolour(ColourSpace.Rgb, 1.25, 1.5, 1.75);
         Assert.That(beyondMaxRgb.RelativeLuminance, Is.GreaterThan(white.RelativeLuminance));
         AssertRelativeLuminance(beyondMaxRgb);

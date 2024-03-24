@@ -2,61 +2,112 @@
 
 public static class RgbModels
 {
+    // https://www.color.org/chardata/rgb/srgb.xalter · https://en.wikipedia.org/wiki/SRGB
     public static class StandardRgb
     {
-        public static readonly Chromaticity R = new(0.6400, 0.3300);
-        public static readonly Chromaticity G = new(0.3000, 0.6000);
-        public static readonly Chromaticity B = new(0.1500, 0.0600);
-        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        public static readonly Chromaticity R = Rec709.R;
+        public static readonly Chromaticity G = Rec709.G;
+        public static readonly Chromaticity B = Rec709.B;
+        public static readonly WhitePoint WhitePoint = D65;
         
         public static double FromLinear(double linear)
         {
             return Companding.ReflectWhenNegative(linear, value =>
-                value <= 0.0031308
-                    ? 12.92 * value
-                    : 1.055 * Companding.Gamma(value, 2.4) - 0.055);
+            {
+                return value switch
+                {
+                    <= 0.0031308 => 12.92 * value,
+                    _ => 1.055 * Companding.Gamma(value, 2.4) - 0.055
+                };
+            });
         }
         
         public static double ToLinear(double nonlinear)
         {
             return Companding.ReflectWhenNegative(nonlinear, value =>
-                value <= 0.04045
-                    ? value / 12.92
-                    : Companding.InverseGamma((value + 0.055) / 1.055, 2.4));
+            {
+                return value switch
+                {
+                    <= 0.04045 => value / 12.92,
+                    _ => Companding.InverseGamma((value + 0.055) / 1.055, 2.4)
+                };
+            });
         }
 
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "sRGB");
     }
     
+    // https://www.color.org/chardata/rgb/DisplayP3.xalter · https://en.wikipedia.org/wiki/DCI-P3#P3_colorimetry
     public static class DisplayP3
     {
         public static readonly Chromaticity R = new(0.680, 0.320);
         public static readonly Chromaticity G = new(0.265, 0.690);
         public static readonly Chromaticity B = new(0.150, 0.060);
-        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
-        
+        public static readonly WhitePoint WhitePoint = D65;
         public static double FromLinear(double value) => StandardRgb.FromLinear(value);
         public static double ToLinear(double value) => StandardRgb.ToLinear(value);
-
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Display P3");
     }
     
+    // SD · https://www.itu.int/rec/R-REC-BT.601/ · https://en.wikipedia.org/wiki/Rec._601#Primary_chromaticities
+    // NOTE: gamma correction uses the more accurate Rec. 2020 calculation (https://www.itu.int/rec/T-REC-H.273) otherwise roundtrip less reliable
+    public static class Rec601Line625
+    {
+        public static readonly Chromaticity R = Rec1700Line625.R;
+        public static readonly Chromaticity G = Rec1700Line625.G;
+        public static readonly Chromaticity B = Rec1700Line625.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => Rec2020.FromLinear(linear);
+        public static double ToLinear(double nonlinear) => Rec2020.ToLinear(nonlinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 601 (625-line)");
+    }
+    
+    // SD · https://www.itu.int/rec/R-REC-BT.601/ · https://en.wikipedia.org/wiki/Rec._601#Primary_chromaticities
+    // NOTE: gamma correction uses the more accurate Rec. 2020 calculation (https://www.itu.int/rec/T-REC-H.273) otherwise roundtrip less reliable
+    public static class Rec601Line525
+    {
+        public static readonly Chromaticity R = Rec1700Line525.R;
+        public static readonly Chromaticity G = Rec1700Line525.G;
+        public static readonly Chromaticity B = Rec1700Line525.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => Rec2020.FromLinear(linear);
+        public static double ToLinear(double nonlinear) => Rec2020.ToLinear(nonlinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 601 (525-line)");
+    }
+    
+    // HD · https://www.itu.int/rec/R-REC-BT.709/ · https://en.wikipedia.org/wiki/Rec._709#Primary_chromaticities
+    // NOTE: gamma correction uses the more accurate Rec. 2020 calculation (https://www.itu.int/rec/T-REC-H.273) otherwise roundtrip less reliable
+    public static class Rec709
+    {
+        public static readonly Chromaticity R = new(0.6400, 0.3300);
+        public static readonly Chromaticity G = new(0.3000, 0.6000);
+        public static readonly Chromaticity B = new(0.1500, 0.0600);
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => Rec2020.FromLinear(linear);
+        public static double ToLinear(double nonlinear) => Rec2020.ToLinear(nonlinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 709");
+    }
+    
+    // UHD · https://www.itu.int/rec/R-REC-BT.2020/ · https://en.wikipedia.org/wiki/Rec._2020#System_colorimetry
     public static class Rec2020
     {
         public static readonly Chromaticity R = new(0.708, 0.292);
         public static readonly Chromaticity G = new(0.170, 0.797);
         public static readonly Chromaticity B = new(0.131, 0.046);
-        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        public static readonly WhitePoint WhitePoint = D65;
         
-        private const double Alpha = 1.09929682680944;
-        private const double Beta = 0.018053968510807;
+        internal const double Alpha = 1.09929682680944;
+        internal const double Beta = 0.018053968510807;
         
         public static double FromLinear(double linear)
         {
             return Companding.ReflectWhenNegative(linear, e =>
             {
-                if (e < Beta) return 4.5 * e;
-                return Alpha * Math.Pow(e, 0.45) - (Alpha - 1);
+                return e switch
+                {
+                    >= Beta => Alpha * Math.Pow(e, 0.45) - (Alpha - 1),
+                    _ => 4.5 * e
+                };
             });
         }
 
@@ -64,59 +115,282 @@ public static class RgbModels
         {
             return Companding.ReflectWhenNegative(nonlinear, ePrime =>
             {
-                if (ePrime < Beta * 4.5) return ePrime / 4.5;
-                return Math.Pow((ePrime + (Alpha - 1)) / Alpha, 1 / 0.45);
+                return ePrime switch
+                {
+                    >= Beta * 4.5 => Math.Pow((ePrime + (Alpha - 1)) / Alpha, 1 / 0.45),
+                    _ => ePrime / 4.5
+                };
             });
         }
 
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 2020");
     }
     
+    // https://en.wikipedia.org/wiki/Adobe_RGB_color_space#Specifications
     public static class A98
     {
         public static readonly Chromaticity R = new(0.6400, 0.3300);
         public static readonly Chromaticity G = new(0.2100, 0.7100);
         public static readonly Chromaticity B = new(0.1500, 0.0600);
-        public static WhitePoint WhitePoint => Illuminant.D65.GetWhitePoint(Observer.Degree2);
-        
-        public static double FromLinear(double linear)
-        {
-            return Companding.ReflectWhenNegative(linear, value => Companding.Gamma(value, 563 / 256.0));
-        }
-
-        public static double ToLinear(double nonlinear)
-        {
-            return Companding.ReflectWhenNegative(nonlinear, value => Companding.InverseGamma(value, 563 / 256.0));
-        }
-
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 563 / 256.0);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 563 / 256.0);
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "A98 RGB");
     }
     
+    // https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space
     public static class ProPhoto
     {
         public static readonly Chromaticity R = new(0.734699, 0.265301);
         public static readonly Chromaticity G = new(0.159597, 0.840403);
         public static readonly Chromaticity B = new(0.036598, 0.000105);
-        public static WhitePoint WhitePoint => Illuminant.D50.GetWhitePoint(Observer.Degree2);
+        public static readonly WhitePoint WhitePoint = D50;
         
         private const double Et = 1 / 512.0;
 
         public static double FromLinear(double linear)
         {
-            return Companding.ReflectWhenNegative(linear, value => 
-                value < Et 
-                    ? 16 * value 
-                    : Companding.Gamma(value, 1.8));
+            return Companding.ReflectWhenNegative(linear, value =>
+            {
+                return value switch
+                {
+                    < Et => 16 * value,
+                    _ => Companding.Gamma(value, 1.8)
+                };
+            });
         }
 
         public static double ToLinear(double nonlinear)
         {
-            return Companding.ReflectWhenNegative(nonlinear, value => 
-                value < Et * 16 
-                    ? value / 16.0 
-                    : Companding.InverseGamma(value, 1.8));
+            return Companding.ReflectWhenNegative(nonlinear, value =>
+            {
+                return value switch
+                {
+                    < Et * 16 => value / 16.0,
+                    _ => Companding.InverseGamma(value, 1.8)
+                };
+            });
         }
 
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ProPhoto RGB");
+    }
+    
+    // http://doi.org/10.1889/1.2433175 · https://en.wikipedia.org/wiki/XvYCC
+    // linear transfer functions are an extended form of Rec. 2020; uses the full alpha & beta values, otherwise roundtrip less reliable
+    public static class XvYcc
+    {
+        public static readonly Chromaticity R = Rec709.R;
+        public static readonly Chromaticity G = Rec709.G;
+        public static readonly Chromaticity B = Rec709.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        
+        private const double Alpha = Rec2020.Alpha;
+        private const double Beta = Rec2020.Beta;
+        
+        public static double FromLinear(double linear)
+        {
+            return linear switch
+            {
+                <= -Beta => -Alpha * Math.Pow(-linear, 0.45) + (Alpha - 1),
+                >= Beta => Alpha * Math.Pow(linear, 0.45) - (Alpha - 1),
+                _ => 4.5 * linear
+            };
+        }
+        
+        public static double ToLinear(double nonlinear)
+        {
+            return nonlinear switch
+            {
+                <= -Beta * 4.5 => -Math.Pow((nonlinear - (Alpha - 1)) / -Alpha, 1 / 0.45),
+                >= Beta * 4.5 => Math.Pow((nonlinear + (Alpha - 1)) / Alpha, 1 / 0.45),
+                _ => nonlinear / 4.5
+            };
+        }
+        
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "xvYCC");
+    }
+    
+    /*
+     * ========================================
+     * Analog systems
+     * ========================================
+     */
+    
+    // https://www.itu.int/rec/R-REC-BT.470-6-199811-S · https://en.wikipedia.org/wiki/PAL#Colorimetry · https://en.wikipedia.org/wiki/Gamma_correction#Analog_TV
+    // seems to have been superseded by "625 PAL" from Rec. 1700 - note the change of gamma
+    public static class Pal
+    {
+        public static readonly Chromaticity R = Rec470SystemNotM.R;
+        public static readonly Chromaticity G = Rec470SystemNotM.G;
+        public static readonly Chromaticity B = Rec470SystemNotM.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.8);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.8);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "PAL (Rec. 470)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.470-6-199811-S · https://en.wikipedia.org/wiki/PAL#Colorimetry · https://en.wikipedia.org/wiki/Gamma_correction#Analog_TV
+    // seems to have been superseded by "525 PAL" from Rec. 1700 - note the change of RGB chromaticity and gamma
+    // (https://en.wikipedia.org/wiki/PAL#Colorimetry appears to incorrectly list PAL-M gamma as 2.2, but Rec. 470-6 is clearly 2.8 for M/PAL)
+    public static class PalM
+    {
+        public static readonly Chromaticity R = Rec470SystemM.R;
+        public static readonly Chromaticity G = Rec470SystemM.G;
+        public static readonly Chromaticity B = Rec470SystemM.B;
+        public static readonly WhitePoint WhitePoint = C;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.8);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.8);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "PAL-M (Rec. 470)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.1700
+    // seems to supersede all non-M PAL systems in Rec. 470 (which use 625-line) - note the change of gamma
+    // effectively the same as PAL/SECAM RGB on http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+    public static class Pal625
+    {
+        public static readonly Chromaticity R = Rec1700Line625.R;
+        public static readonly Chromaticity G = Rec1700Line625.G;
+        public static readonly Chromaticity B = Rec1700Line625.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.2);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.2);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "PAL 625 (Rec. 1700)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.1700
+    // seems to supersede PAL-M in Rec. 470 (which uses 525-line) - note the change of RGB chromaticity and gamma
+    public static class Pal525
+    {
+        public static readonly Chromaticity R = Rec1700Line525.R;
+        public static readonly Chromaticity G = Rec1700Line525.G;
+        public static readonly Chromaticity B = Rec1700Line525.B;
+        public static readonly WhitePoint WhitePoint = C;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.2);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.2);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "PAL 525 (Rec. 1700)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.470-6-199811-S · https://en.wikipedia.org/wiki/NTSC#Colorimetry · https://en.wikipedia.org/wiki/Gamma_correction#Analog_TV
+    // seems to have been superseded by NTSC from Rec. 1700 / SMPTE 170M-2004 - note the change of gamma
+    // effectively the same as NTSC RGB on http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+    public static class Ntsc
+    {
+        public static readonly Chromaticity R = Rec470SystemM.R;
+        public static readonly Chromaticity G = Rec470SystemM.G;
+        public static readonly Chromaticity B = Rec470SystemM.B;
+        public static readonly WhitePoint WhitePoint = C;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.2);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.2);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "NTSC (Rec. 470)");
+    }
+    
+    // http://doi.org/10.1007/978-3-642-35947-7_12-2 · https://en.wikipedia.org/wiki/NTSC#SMPTE_C · https://en.wikipedia.org/wiki/Gamma_correction#Analog_TV
+    // effectively the same as SMPTE-C RGB on http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+    public static class NtscSmpteC
+    {
+        public static readonly Chromaticity R = SmpteC.R;
+        public static readonly Chromaticity G = SmpteC.G;
+        public static readonly Chromaticity B = SmpteC.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.2);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.2);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "NTSC (SMPTE-C)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.1700 (SMPTE 170M-2004)
+    // seems to supersede NTSC in Rec. 470 - note the change of gamma
+    // NOTE: gamma correction uses the more accurate Rec. 2020 calculation (https://www.itu.int/rec/T-REC-H.273) otherwise roundtrip less reliable
+    public static class Ntsc525
+    {
+        public static readonly Chromaticity R = Rec1700Line525.R;
+        public static readonly Chromaticity G = Rec1700Line525.G;
+        public static readonly Chromaticity B = Rec1700Line525.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => Rec2020.FromLinear(linear);
+        public static double ToLinear(double nonlinear) => Rec2020.ToLinear(nonlinear);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "NTSC 525 (Rec. 1700)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.470-6-199811-S · https://en.wikipedia.org/wiki/PAL#Colorimetry · https://en.wikipedia.org/wiki/Gamma_correction#Analog_TV
+    // seems to have been superseded by "625-line SECAM" from Rec. 1700 - note the change of gamma
+    // effectively the same as PAL/SECAM RGB on http://www.brucelindbloom.com/index.html?WorkingSpaceInfo.html#Specifications
+    public static class Secam
+    {
+        public static readonly Chromaticity R = Rec470SystemNotM.R;
+        public static readonly Chromaticity G = Rec470SystemNotM.G;
+        public static readonly Chromaticity B = Rec470SystemNotM.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.8);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.8);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "SECAM (Rec. 470)");
+    }
+    
+    // https://www.itu.int/rec/R-REC-BT.1700
+    // seems to supersede SECAM in Rec. 470 - note the change of gamma
+    public static class Secam625
+    {
+        public static readonly Chromaticity R = Rec1700Line625.R;
+        public static readonly Chromaticity G = Rec1700Line625.G;
+        public static readonly Chromaticity B = Rec1700Line625.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        public static double FromLinear(double linear) => SimpleGamma(linear, 2.2);
+        public static double ToLinear(double nonlinear) => SimpleInverseGamma(nonlinear, 2.2);
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "SECAM 625 (Rec. 1700)");
+    }
+    
+    /*
+     * ========================================
+     * useful values for models to reference
+     * https://www.itu.int/rec/T-REC-H.273
+     * ========================================
+     */
+    
+    private static readonly WhitePoint D65 = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+    private static readonly WhitePoint D50 = Illuminant.D50.GetWhitePoint(Observer.Degree2);
+    private static readonly WhitePoint C = Illuminant.C.GetWhitePoint(Observer.Degree2);
+    
+    private static double SimpleGamma(double linear, double gamma)
+    {
+        return Companding.ReflectWhenNegative(linear, value => Companding.Gamma(value, gamma));
+    }
+    
+    private static double SimpleInverseGamma(double nonlinear, double gamma)
+    {
+        return Companding.ReflectWhenNegative(nonlinear, value => Companding.InverseGamma(value, gamma));
+    }
+    
+    private static class Rec470SystemNotM
+    {
+        internal static readonly Chromaticity R = new(0.64, 0.33);
+        internal static readonly Chromaticity G = new(0.29, 0.60);
+        internal static readonly Chromaticity B = new(0.15, 0.06);
+    }
+    
+    private static class Rec470SystemM
+    {
+        internal static readonly Chromaticity R = new(0.67, 0.33);
+        internal static readonly Chromaticity G = new(0.21, 0.71);
+        internal static readonly Chromaticity B = new(0.14, 0.08);
+    }
+    
+    private static class SmpteC
+    {
+        internal static readonly Chromaticity R = new(0.630, 0.340);
+        internal static readonly Chromaticity G = new(0.310, 0.595);
+        internal static readonly Chromaticity B = new(0.155, 0.070);
+    }
+
+    private static class Rec1700Line625
+    {
+        internal static readonly Chromaticity R = Rec470SystemNotM.R;
+        internal static readonly Chromaticity G = Rec470SystemNotM.G;
+        internal static readonly Chromaticity B = Rec470SystemNotM.B;
+    }
+    
+    private static class Rec1700Line525
+    {
+        internal static readonly Chromaticity R = SmpteC.R;
+        internal static readonly Chromaticity G = SmpteC.G;
+        internal static readonly Chromaticity B = SmpteC.B;
     }
 }

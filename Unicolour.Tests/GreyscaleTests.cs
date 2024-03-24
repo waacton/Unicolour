@@ -33,6 +33,29 @@ public class GreyscaleTests
     [TestCase(1.0, 1.0, 0.99999999999, false)]
     public void Rgb(double r, double g, double b, bool expected) => AssertUnicolour(new(ColourSpace.Rgb, r, g, b), expected);
     
+    [TestCase(0, 0, 0, true)]
+    [TestCase(-1, 0, -0, true)]
+    [TestCase(-0, -1, 0, true)]
+    [TestCase(0, -0, -1, true)]
+    [TestCase(1, 0, 0, false)]
+    [TestCase(0, 1, 0, false)]
+    [TestCase(0, 0, 1, false)]
+    [TestCase(128, 128, 128, true)]
+    [TestCase(129, 128, 128, false)]
+    [TestCase(128, 129, 128, false)]
+    [TestCase(128, 128, 129, false)]
+    [TestCase(127, 128, 128, false)]
+    [TestCase(128, 127, 128, false)]
+    [TestCase(128, 128, 127, false)]
+    [TestCase(255, 255, 255, true)]
+    [TestCase(256, 255, 255, true)]
+    [TestCase(255, 256, 255, true)]
+    [TestCase(255, 255, 256, true)]
+    [TestCase(254, 255, 255, false)]
+    [TestCase(255, 254, 255, false)]
+    [TestCase(255, 255, 254, false)]
+    public void Rgb255(double r, double g, double b, bool expected) => AssertUnicolour(new(ColourSpace.Rgb255, r, g, b), expected);
+    
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(-0.00000000001, 0.0, -0.0, true)]
     [TestCase(-0.0, -0.00000000001, 0.0, true)]
@@ -175,6 +198,82 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 0.99999999999, false)]
     public void Hpluv(double h, double s, double l, bool expected) => AssertUnicolour(new(ColourSpace.Hpluv, h, s, l), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, false)]
+    [TestCase(-0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    [TestCase(1.00000000001, 0.1, -0.1, false)]
+    public void Ypbpr(double y, double pb, double pr, bool expected) => AssertUnicolour(new(ColourSpace.Ypbpr, y, pb, pr), expected);
+    
+    [TestCase(0, 128, 128, true)]
+    [TestCase(255, 128, 128, true)]
+    [TestCase(0, 128.00000000001, 128, false)]
+    [TestCase(0, 127.99999999999, 128, false)]
+    [TestCase(0, 128, 128.00000000001, false)]
+    [TestCase(0, 128, 127.99999999999, false)]
+    [TestCase(-0.00000000001, 128.00000000001, 127.9999999999, false)]
+    [TestCase(255.00000000001, 128.00000000001, 127.9999999999, false)]
+    public void Ycbcr(double y, double cb, double cr, bool expected) => AssertUnicolour(new(ColourSpace.Ycbcr, y, cb, cr), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, false)]
+    [TestCase(-0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    [TestCase(1.00000000001, 0.1, -0.1, false)]
+    public void Ycgco(double y, double cg, double co, bool expected) => AssertUnicolour(new(ColourSpace.Ycgco, y, cg, co), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, false)]
+    [TestCase(-0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    [TestCase(1.00000000001, 0.1, -0.1, false)]
+    public void Yuv(double y, double u, double v, bool expected) => AssertUnicolour(new(ColourSpace.Yuv, y, u, v), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, false)]
+    [TestCase(-0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    [TestCase(1.00000000001, 0.1, -0.1, false)]
+    public void Yiq(double y, double i, double q, bool expected) => AssertUnicolour(new(ColourSpace.Yiq, y, i, q), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, false)]
+    [TestCase(-0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    [TestCase(1.00000000001, 0.1, -0.1, false)]
+    public void Ydbdr(double y, double db, double dr, bool expected) => AssertUnicolour(new(ColourSpace.Ydbdr, y, db, dr), expected);
+    
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.1, -0.1, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, false)]
+    public void Ipt(double i, double p, double t, bool expected) => AssertUnicolour(new(ColourSpace.Ipt, i, p, t), expected);
 
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]

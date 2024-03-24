@@ -15,7 +15,8 @@ public class RoundtripJzazbzTests
     public void ViaJzczhz(ColourTriplet triplet)
     {
         var original = new Jzazbz(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Jzczhz.ToJzazbz(Jzczhz.FromJzazbz(original));
+        var jzczhz = Jzczhz.FromJzazbz(original);
+        var roundtrip = Jzczhz.ToJzazbz(jzczhz);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

@@ -11,7 +11,7 @@ public class KnownLabTests
     [TestCase(nameof(Illuminant.D50), 54.2917, 80.8125, 69.8851)]
     public void Red(string illuminantName, double l, double a, double b)
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Lab>(red, new(l, a, b), Tolerance);
     }
     
@@ -19,7 +19,7 @@ public class KnownLabTests
     [TestCase(nameof(Illuminant.D50), 87.8181, -79.2873, 80.9902)]
     public void Green(string illuminantName, double l, double a, double b)
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Lab>(green, new(l, a, b), Tolerance);
     }
     
@@ -27,7 +27,7 @@ public class KnownLabTests
     [TestCase(nameof(Illuminant.D50), 29.5676, 68.2986, -112.0294)]
     public void Blue(string illuminantName, double l, double a, double b)
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Lab>(blue, new(l, a, b), Tolerance);
     }
     
@@ -35,7 +35,7 @@ public class KnownLabTests
     [TestCase(nameof(Illuminant.D50), 0.0, 0.0, 0.0)]
     public void Black(string illuminantName, double l, double a, double b)
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var black = StandardRgb.Black.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Lab>(black, new(l, a, b), Tolerance);
     }
     
@@ -43,7 +43,7 @@ public class KnownLabTests
     [TestCase(nameof(Illuminant.D50), 100.0000, 0.0, 0.0)]
     public void White(string illuminantName, double l, double a, double b)
     {
-        var white = ColourLimits.Rgb[ColourLimit.White].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var white = StandardRgb.White.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Lab>(white, new(l, a, b), Tolerance);
     }
 }

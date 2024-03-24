@@ -46,9 +46,9 @@ public class ConfigureXyzTests
         };
         
         // testing default config values; other tests explicitly construct configs
-        var rgbLinearToXyzMatrix = RgbLinear.RgbLinearToXyzMatrix(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
-        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
-        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
+        var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
+        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrixA).Within(0.0005));
+        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrixB).Within(0.0000001));
         
         var unicolour = new Unicolour(Configuration.Default, ColourSpace.Rgb, 0.5, 0.25, 0.75);
         var unicolourNoConfig = new Unicolour(ColourSpace.Rgb, 0.5, 0.25, 0.75);
@@ -84,8 +84,9 @@ public class ConfigureXyzTests
             { 0.0139322, 0.0971045, 0.7141733 }
         };
         
-        var rgbLinearToXyzMatrix = RgbLinear.RgbLinearToXyzMatrix(config.Rgb, config.Xyz);
-        Assert.That(rgbLinearToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
+        var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
+        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint);
+        Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
         var unicolour = new Unicolour(config, ColourSpace.Rgb, 0.5, 0.25, 0.75);
         var expectedXyz = new ColourTriplet(0.187691, 0.115771, 0.381093);

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 internal static class RandomColours
 {
@@ -23,6 +24,13 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> LchuvTriplets = new();
     public static readonly List<ColourTriplet> HsluvTriplets = new();
     public static readonly List<ColourTriplet> HpluvTriplets = new();
+    public static readonly List<ColourTriplet> YpbprTriplets = new();
+    public static readonly List<ColourTriplet> YcbcrTriplets = new();
+    public static readonly List<ColourTriplet> YcgcoTriplets = new();
+    public static readonly List<ColourTriplet> YuvTriplets = new();
+    public static readonly List<ColourTriplet> YiqTriplets = new();
+    public static readonly List<ColourTriplet> YdbdrTriplets = new();
+    public static readonly List<ColourTriplet> IptTriplets = new();
     public static readonly List<ColourTriplet> IctcpTriplets = new();
     public static readonly List<ColourTriplet> JzazbzTriplets = new();
     public static readonly List<ColourTriplet> JzczhzTriplets = new();
@@ -33,11 +41,28 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> HctTriplets = new();
     public static readonly List<Temperature> Temperatures = new();
     public static readonly List<Chromaticity> Chromaticities = new();
+    
+    private static ColourTriplet ToNegative(ColourTriplet triplet) => new(-triplet.First, -triplet.Second, -triplet.Third);
+    public static List<ColourTriplet> NegativeRgb255Triplets => Rgb255Triplets.Select(ToNegative).ToList();
+    public static List<ColourTriplet> NegativeRgbTriplets => RgbTriplets.Select(ToNegative).ToList();
+    public static List<ColourTriplet> NegativeRgbLinearTriplets => RgbLinearTriplets.Select(ToNegative).ToList();
+    
+    public static List<ColourTriplet> Rgb255TripletsSubset => Rgb255Triplets.Take(100).ToList();
+    public static List<ColourTriplet> NegativeRgb255TripletsSubset => NegativeRgb255Triplets.Take(100).ToList();
+    
+    public static List<ColourTriplet> RgbTripletsSubset => RgbTriplets.Take(100).ToList();
+    public static List<ColourTriplet> NegativeRgbTripletsSubset => NegativeRgbTriplets.Take(100).ToList();
+    
+    public static List<ColourTriplet> RgbLinearTripletsSubset => RgbLinearTriplets.Take(100).ToList();
+    public static List<ColourTriplet> NegativeRgbLinearTripletsSubset => NegativeRgbLinearTriplets.Take(100).ToList();
+    
+    public static List<ColourTriplet> YpbprTripletsSubset => YpbprTriplets.Take(100).ToList();
+    public static List<ColourTriplet> YcbcrTripletsSubset => YcbcrTriplets.Take(100).ToList();
     // ReSharper restore CollectionNeverQueried.Global
     
     static RandomColours()
     {
-        for (var i = 0; i < 1024; i++)
+        for (var i = 0; i < 1000; i++)
         {
             HexStrings.Add(Hex());
             Rgb255Triplets.Add(Rgb255());
@@ -54,6 +79,13 @@ internal static class RandomColours
             LchuvTriplets.Add(Lchuv());
             HsluvTriplets.Add(Hsluv());
             HpluvTriplets.Add(Hpluv());
+            YpbprTriplets.Add(Ypbpr());
+            YcbcrTriplets.Add(Ycbcr());
+            YcgcoTriplets.Add(Ycgco());
+            YuvTriplets.Add(Yuv());
+            YiqTriplets.Add(Yiq());
+            YdbdrTriplets.Add(Ydbdr());
+            IptTriplets.Add(Ipt());
             IctcpTriplets.Add(Ictcp());
             JzazbzTriplets.Add(Jzazbz());
             JzczhzTriplets.Add(Jzczhz());
@@ -86,6 +118,13 @@ internal static class RandomColours
             ColourSpace.Lchuv => Lchuv(),
             ColourSpace.Hsluv => Hsluv(),
             ColourSpace.Hpluv => Hpluv(),
+            ColourSpace.Ypbpr => Ypbpr(),
+            ColourSpace.Ycbcr => Ycbcr(),
+            ColourSpace.Ycgco => Ycgco(),
+            ColourSpace.Yuv => Yuv(),
+            ColourSpace.Yiq => Yiq(),
+            ColourSpace.Ydbdr => Ydbdr(),
+            ColourSpace.Ipt => Ipt(),
             ColourSpace.Ictcp => Ictcp(),
             ColourSpace.Jzazbz => Jzazbz(),
             ColourSpace.Jzczhz => Jzczhz(),
@@ -113,6 +152,13 @@ internal static class RandomColours
     private static ColourTriplet Lchuv() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
     private static ColourTriplet Hsluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
     private static ColourTriplet Hpluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
+    private static ColourTriplet Ypbpr() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
+    private static ColourTriplet Ycbcr() => new(Rng(), Rng(0, 255), Rng(0, 255));
+    private static ColourTriplet Ycgco() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
+    private static ColourTriplet Yuv() => new(Rng(), Rng(-0.436, 0.436), Rng(-0.614, 0.614));
+    private static ColourTriplet Yiq() => new(Rng(), Rng(-0.595, 0.595), Rng(-0.522, 0.522));
+    private static ColourTriplet Ydbdr() => new(Rng(), Rng(-1.333, 1.333), Rng(-1.333, 1.333));
+    private static ColourTriplet Ipt() => new(Rng(), Rng(-0.75, 0.75), Rng(-0.75, 0.75)); 
     private static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
     private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
     private static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values

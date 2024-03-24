@@ -9,7 +9,8 @@ public class RoundtripTemperatureTests
     public void ViaChromaticity(Temperature temperature)
     {
         var original = temperature;
-        var roundtrip = Temperature.FromChromaticity(Temperature.ToChromaticity(original, Observer.Degree2), TestUtils.PlanckianObserverDegree2);
+        var chromaticity = Temperature.ToChromaticity(original, Observer.Degree2);
+        var roundtrip = Temperature.FromChromaticity(chromaticity, TestUtils.PlanckianObserverDegree2);
         Assert.That(roundtrip.Cct, Is.EqualTo(original.Cct).Within(1));
         Assert.That(roundtrip.Duv, Is.EqualTo(original.Duv).Within(0.00001));
     }

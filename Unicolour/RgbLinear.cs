@@ -35,52 +35,16 @@ public record RgbLinear : ColourRepresentation
     internal static RgbLinear FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var transformationMatrix = RgbLinearToXyzMatrix(rgbConfig, xyzConfig).Inverse();
-        var rgbLinearMatrix = transformationMatrix.Multiply(xyzMatrix);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
+        var rgbLinearMatrix = rgbToXyzMatrix.Inverse().Multiply(xyzMatrix);
         return new RgbLinear(rgbLinearMatrix.ToTriplet(), ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(RgbLinear rgbLinear, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
         var rgbLinearMatrix = Matrix.FromTriplet(rgbLinear.Triplet);
-        var transformationMatrix = RgbLinearToXyzMatrix(rgbConfig, xyzConfig);
-        var xyzMatrix = transformationMatrix.Multiply(rgbLinearMatrix);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
+        var xyzMatrix = rgbToXyzMatrix.Multiply(rgbLinearMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(rgbLinear));
-    }
-    
-    // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
-    internal static Matrix RgbLinearToXyzMatrix(RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
-    {
-        var cr = rgbConfig.ChromaticityR;
-        var cg = rgbConfig.ChromaticityG;
-        var cb = rgbConfig.ChromaticityB;
-
-        double X(Chromaticity c) => c.X / c.Y;
-        double Y(Chromaticity c) => 1;
-        double Z(Chromaticity c) => (1 - c.X - c.Y) / c.Y;
-
-        var (xr, yr, zr) = (X(cr), Y(cr), Z(cr));
-        var (xg, yg, zg) = (X(cg), Y(cg), Z(cg));
-        var (xb, yb, zb) = (X(cb), Y(cb), Z(cb));
-
-        var fromPrimaries = new Matrix(new[,]
-        {
-            { xr, xg, xb },
-            { yr, yg, yb },
-            { zr, zg, zb }
-        });
-        
-        var sourceWhite = rgbConfig.WhitePoint.AsXyzMatrix();
-        var (sr, sg, sb) = fromPrimaries.Inverse().Multiply(sourceWhite).ToTriplet();
-
-        var matrix = new Matrix(new[,]
-        {
-            { sr * xr, sg * xg, sb * xb },
-            { sr * yr, sg * yg, sb * yb },
-            { sr * zr, sg * zg, sb * zb }
-        });
-
-        var adaptedMatrix = Adaptation.WhitePoint(matrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
-        return adaptedMatrix;
     }
 }

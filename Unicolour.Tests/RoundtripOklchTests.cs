@@ -11,7 +11,8 @@ public class RoundtripOklchTests
     public void ViaOklab(ColourTriplet triplet)
     {
         var original = new Oklch(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Oklch.FromOklab(Oklch.ToOklab(original));
+        var oklab = Oklch.ToOklab(original);
+        var roundtrip = Oklch.FromOklab(oklab);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, DefaultTolerance);
     }
 }

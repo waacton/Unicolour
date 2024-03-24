@@ -16,7 +16,8 @@ public class RoundtripHslTests
     private static void AssertViaHsb(ColourTriplet triplet)
     {
         var original = new Hsl(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Hsl.FromHsb(Hsl.ToHsb(original));
+        var hsb = Hsl.ToHsb(original);
+        var roundtrip = Hsl.FromHsb(hsb);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

@@ -75,8 +75,9 @@ public class EqualityTests
             RgbModels.StandardRgb.ToLinear,
             "RGB 1");
         var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05), "XYZ 1");
+        var ybrConfig1 = new YbrConfiguration(0.299, 0.114, (16, 235), (16, 240), "YBR 1");
         var camConfig1 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark, "CAM 1");
-        var config1 = new Configuration(rgbConfig1, xyzConfig1, camConfig1);
+        var config1 = new Configuration(rgbConfig1, xyzConfig1, ybrConfig1, camConfig1);
         
         var rgbConfig2 = new RgbConfiguration(
             RgbModels.StandardRgb.R,
@@ -87,8 +88,9 @@ public class EqualityTests
             RgbModels.StandardRgb.ToLinear,
             "RGB 2");
         var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001), "XYZ 2");
+        var ybrConfig2 = new YbrConfiguration(0.300, 0.15, (0, 255), (0, 255), "YBR 2");
         var camConfig2 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim, "CAM 2");
-        var config2 = new Configuration(rgbConfig2, xyzConfig2, camConfig2);
+        var config2 = new Configuration(rgbConfig2, xyzConfig2, ybrConfig2, camConfig2);
 
         AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
         AssertNotEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
@@ -100,6 +102,7 @@ public class EqualityTests
         AssertNotEqual(config1, config2);
         AssertNotEqual(config1.Rgb, config2.Rgb);
         AssertNotEqual(config1.Xyz, config2.Xyz);
+        AssertNotEqual(config1.Ybr, config2.Ybr);
         AssertNotEqual(config1.Cam, config2.Cam);
     }
     
@@ -134,6 +137,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Hsluv, unicolour2.Hsluv);
         AssertEqual(unicolour1.Hwb, unicolour2.Hwb);
+        AssertEqual(unicolour1.Ipt, unicolour2.Ipt);
         AssertEqual(unicolour1.Ictcp, unicolour2.Ictcp);
         AssertEqual(unicolour1.IsImaginary, unicolour2.IsImaginary);
         AssertEqual(unicolour1.IsInDisplayGamut, unicolour2.IsInDisplayGamut);
@@ -152,6 +156,12 @@ public class EqualityTests
         AssertEqual(unicolour1.Temperature, unicolour2.Temperature);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Xyy, unicolour2.Xyy);
+        AssertEqual(unicolour1.Ycbcr, unicolour2.Ycbcr);
+        AssertEqual(unicolour1.Ycbcr, unicolour2.Ycbcr);
+        AssertEqual(unicolour1.Ycgco, unicolour2.Ycgco);
+        AssertEqual(unicolour1.Yiq, unicolour2.Yiq);
+        AssertEqual(unicolour1.Ypbpr, unicolour2.Ypbpr);
+        AssertEqual(unicolour1.Yuv, unicolour2.Yuv);
 
         if (unicolour1.Xyz.HctToXyzSearchResult != null)
         {
@@ -176,6 +186,11 @@ public class EqualityTests
         AssertEqual(config1.Xyz.Observer, config2.Xyz.Observer);
         AssertEqual(config1.Xyz.Spectral, config2.Xyz.Spectral);
         AssertEqual(config1.Xyz.Planckian, config2.Xyz.Planckian);
+        AssertEqual(config1.Ybr.Kr, config2.Ybr.Kr);
+        AssertEqual(config1.Ybr.Kg, config2.Ybr.Kg);
+        AssertEqual(config1.Ybr.Kb, config2.Ybr.Kb);
+        AssertEqual(config1.Ybr.RangeY, config2.Ybr.RangeY);
+        AssertEqual(config1.Ybr.RangeC, config2.Ybr.RangeC);
         AssertEqual(config1.Cam.WhitePoint, config2.Cam.WhitePoint);
         AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
         AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);

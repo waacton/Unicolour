@@ -17,7 +17,8 @@ public class RoundtripHexTests
     {
         var (r, g, b, _) = Wacton.Unicolour.Utils.ParseHex(hex);
         var original = new Rgb(r, g, b);
-        var roundtrip = Rgb.FromRgbLinear(Rgb.ToRgbLinear(original, RgbConfig), RgbConfig);
+        var rgbLinear = Rgb.ToRgbLinear(original, RgbConfig);
+        var roundtrip = Rgb.FromRgbLinear(rgbLinear, RgbConfig);
         AssertRoundtrip(hex, original, roundtrip);
     }
     
@@ -31,7 +32,8 @@ public class RoundtripHexTests
     {
         var (r, g, b, _) = Wacton.Unicolour.Utils.ParseHex(hex);
         var original = new Rgb(r, g, b);
-        var roundtrip = Hsb.ToRgb(Hsb.FromRgb(original));
+        var hsb = Hsb.FromRgb(original);
+        var roundtrip = Hsb.ToRgb(hsb);
         AssertRoundtrip(hex, original, roundtrip);
     }
 

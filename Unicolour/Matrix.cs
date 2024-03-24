@@ -1,5 +1,7 @@
 ﻿namespace Wacton.Unicolour;
 
+using System.Text;
+
 internal class Matrix
 {
     internal double[,] Data { get; }
@@ -114,5 +116,22 @@ internal class Matrix
         });
     }
 
-    public override string ToString() => $"{Rows}x{Cols}";
+    public override string ToString()
+    {
+        var stringBuilder = new StringBuilder($"{Rows}x{Cols} : ");
+        for (var row = 0; row < Rows; row++)
+        {
+            stringBuilder.Append("[");
+            for (var col = 0; col < Cols; col++)
+            {
+                var colSpace = col == Cols - 1 ? string.Empty : " ";
+                stringBuilder.Append($"{this[row, col]:F4}{colSpace}");
+            }
+            
+            var rowSpace = row == Rows - 1 ? string.Empty : " ";
+            stringBuilder.Append($"]{rowSpace}");
+        }
+
+        return stringBuilder.ToString();
+    }
 }

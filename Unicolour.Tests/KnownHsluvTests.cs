@@ -10,35 +10,35 @@ public class KnownHsluvTests
     [Test]
     public void Red()
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red];
+        var red = StandardRgb.Red;
         TestUtils.AssertTriplet<Hsluv>(red, new(12.177, 100.00, 53.237), Tolerance);
     }
     
     [Test]
     public void Green()
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green];
+        var green = StandardRgb.Green;
         TestUtils.AssertTriplet<Hsluv>(green, new(127.72, 100.00, 87.736), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var blue = StandardRgb.Blue;
         TestUtils.AssertTriplet<Hsluv>(blue, new(265.87, 100.00, 32.301), Tolerance);
     }
     
     [Test]
     public void Black()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var black = StandardRgb.Black;
         TestUtils.AssertTriplet<Hsluv>(black, new(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
-        var white = ColourLimits.Rgb[ColourLimit.White];
+        var white = StandardRgb.White;
         TestUtils.AssertTriplet<Hsluv>(white, new(180.0, 0.0, 100.0), Tolerance);
     }
     

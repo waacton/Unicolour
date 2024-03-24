@@ -12,7 +12,8 @@ public class RoundtripLabTests
     public void ViaXyz(ColourTriplet triplet)
     {
         var original = new Lab(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Lab.FromXyz(Lab.ToXyz(original, XyzConfig), XyzConfig);
+        var xyz = Lab.ToXyz(original, XyzConfig);
+        var roundtrip = Lab.FromXyz(xyz, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
@@ -20,7 +21,8 @@ public class RoundtripLabTests
     public void ViaLchab(ColourTriplet triplet)
     {
         var original = new Lab(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Lchab.ToLab(Lchab.FromLab(original));
+        var lchab = Lchab.FromLab(original);
+        var roundtrip = Lchab.ToLab(lchab);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

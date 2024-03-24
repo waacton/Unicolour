@@ -32,9 +32,10 @@ It can be used to [mix and compare colours](#mix-colours), as well as [other use
 
 > **Supported colour spaces**
 >
-> RGB · Linear&nbsp;RGB · HSB/HSV · HSL · HWB ·
+> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB ·
 > CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
-> IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
+> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
+> IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
 > Oklab · Oklch ·
 > CIECAM02 · CAM16 ·
 > HCT
@@ -126,7 +127,7 @@ var (l, c, h) = colour.Oklch.Triplet;
 | RGB&nbsp;(0–255)                        | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
 | RGB                                     | `ColourSpace.Rgb`       | `.Rgb`         |
 | Linear&nbsp;RGB                         | `ColourSpace.RgbLinear` | `.RgbLinear`   |
-| HSB/HSV                                 | `ColourSpace.Hsb`       | `.Hsb`         |
+| HSB&nbsp;/&nbsp;HSV                     | `ColourSpace.Hsb`       | `.Hsb`         |
 | HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
 | HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
 | CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
@@ -137,6 +138,13 @@ var (l, c, h) = colour.Oklch.Triplet;
 | CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `.Lchuv`       |
 | HSLuv                                   | `ColourSpace.Hsluv`     | `.Hsluv`       |
 | HPLuv                                   | `ColourSpace.Hpluv`     | `.Hpluv`       |
+| YPbPr                                   | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
+| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_  | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
+| YCgCo                                   | `ColourSpace.Ycgco`     | `.Ycgco`       |
+| YUV&nbsp;_(PAL)_                        | `ColourSpace.Yuv`       | `.Yuv`         |
+| YIQ&nbsp;_(NTSC)_                       | `ColourSpace.Yiq`       | `.Yiq`         |
+| YDbDr&nbsp;_(SECAM)_                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
+| IPT                                     | `ColourSpace.Ipt`       | `.Ipt`         |
 | IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `.Ictcp`       |
 | J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
 | J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
@@ -168,7 +176,7 @@ flowchart TD
   XYY(xyY)
   RGBLIN(Linear RGB)
   RGB(RGB)
-  HSB(HSB)
+  HSB(HSB / HSV)
   HSL(HSL)
   HWB(HWB)
   XYZ(XYZ)
@@ -178,6 +186,13 @@ flowchart TD
   LCHUV(LCHuv)
   HSLUV(HSLuv)
   HPLUV(HPLuv)
+  YPBPR(YPbPr)
+  YCBCR("YCbCr / YUV (digital)")
+  YCGCO("YCgCo")
+  YUV("YUV (PAL)")
+  YIQ("YIQ (NTSC)")
+  YDBDR("YDbDr (SECAM)")
+  IPT(IPT)
   ICTCP(ICtCp)
   JZAZBZ(JzAzBz)
   JZCZHZ(JzCzHz)
@@ -201,6 +216,13 @@ flowchart TD
   LUV --> LCHUV
   LCHUV --> HSLUV
   LCHUV --> HPLUV
+  RGB --> YPBPR
+  YPBPR --> YCBCR
+  RGB --> YCGCO
+  RGB --> YUV
+  YUV --> YIQ
+  YUV --> YDBDR
+  XYZ --> IPT
   XYZ --> ICTCP
   XYZ --> JZAZBZ
   JZAZBZ --> JZCZHZ
@@ -378,13 +400,29 @@ A `Configuration` is composed of sub-configurations.
 Each sub-configuration is optional and will fall back to a [sensible default](#sensible-defaults-highly-configurable) if not provided.
 
 ### `RgbConfiguration`
-Defines the RGB model, most commonly used to specify a wider gamut than standard RGB (sRGB).
-- Predefined
-  - sRGB 👈 _default_
-  - Display P3
-  - Rec. 2020
-  - A98
-  - ProPhoto
+Defines the RGB model, often used to specify a wider gamut than standard RGB (sRGB).
+
+| Predefined                           | Property         |
+|--------------------------------------|------------------|
+| sRGB&nbsp;👈&nbsp;_default_          | `.StandardRgb`   |
+| Display&nbsp;P3                      | `.DisplayP3`     |
+| Rec.&nbsp;2020                       | `.Rec2020`       |
+| A98                                  | `.A98`           |
+| ProPhoto                             | `.ProPhoto`      |
+| Rec.&nbsp;601&nbsp;(625-line)        | `.Rec601Line625` |
+| Rec.&nbsp;601&nbsp;(525-line)        | `.Rec601Line525` |
+| Rec.&nbsp;709                        | `.Rec709`        |
+| xvYCC                                | `.XvYcc`         |
+| PAL&nbsp;(Rec.&nbsp;470)             | `.Pal`           |
+| PAL-M&nbsp;(Rec.&nbsp;470)           | `.PalM`          |
+| PAL&nbsp;625&nbsp;(Rec.&nbsp;1700)   | `.Pal625`        |
+| PAL&nbsp;525&nbsp;(Rec.&nbsp;1700)   | `.Pal525`        |
+| NTSC&nbsp;(Rec.&nbsp;470)            | `.Ntsc`          |
+| NTSC&nbsp;(SMPTE-C)                  | `.NtscSmpteC`    |
+| NTSC&nbsp;525&nbsp;(Rec.&nbsp;1700)  | `.Ntsc525`       |
+| SECAM&nbsp;(Rec.&nbsp;470)           | `.Secam`         |
+| SECAM&nbsp;625&nbsp;(Rec.&nbsp;1700) | `.Secam625`      |
+
 - Parameters
   - Red, green, and blue chromaticity coordinates
   - Reference white point
@@ -393,18 +431,40 @@ Defines the RGB model, most commonly used to specify a wider gamut than standard
 ### `XyzConfiguration`
 Defines the XYZ white point (which is also [inherited by colour spaces that do not need a specific configuration](#white-points)),
 as well as the observer to use for temperature calculations.
-- Predefined
-  - D65 (2° observer) 👈 _default_
-  - D50 (2° observer)
+
+| Predefined                                         | Property  |
+|----------------------------------------------------|-----------|
+| D65&nbsp;(2°&nbsp;observer)&nbsp;👈&nbsp;_default_ | `.D65`    |
+| D50&nbsp;(2°&nbsp;observer)                        | `.D50`    |
+
 - Parameters
   - Reference white point or illuminant
   - Observer
 
+### `YbrConfiguration`
+Defines the constants, scaling, and offsets required to convert to YPbPr and YCbCr.
+
+| Predefined                           | Property   |
+|--------------------------------------|------------|
+| Rec.&nbsp;601&nbsp;👈&nbsp;_default_ | `.Rec601`  |
+| Rec.&nbsp;709                        | `.Rec709`  |
+| Rec.&nbsp;2020                       | `.Rec2020` |
+| JPEG                                 | `.Jpeg`    |
+
+- Parameters
+  - Luma constants for component video separation
+  - Mapping ranges for digital encoding
+
 ### `CamConfiguration`
 Defines the viewing conditions for CAM02 and CAM16, which take into account the surrounding environment to determine how a colour is perceived.
-- Predefined
-  - sRGB (ambient illumination 64 lux, grey world assumption) 👈 _default_
-  - HCT
+
+| Predefined                  | Property       |
+|-----------------------------|----------------|
+| sRGB&nbsp;👈&nbsp;_default_ | `.StandardRgb` |
+| HCT                         | `.Hct`         |
+
+The predefined sRGB configuration refers to an ambient illumination of 64 lux under a grey world assumption.
+
 - Parameters
   - Reference white point
   - Adapting luminance
@@ -419,12 +479,12 @@ All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
-| White&nbsp;point&nbsp;configuration  | Affected&nbsp;colour&nbsp;spaces                                                                                                      |
-|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `RgbConfiguration`                   | RGB · Linear&nbsp;RGB · HSB/HSV · HSL · HWB                                                                                           |
-| `XyzConfiguration`                   | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                         |
-| `CamConfiguration`                   | CIECAM02 · CAM16                                                                                                                      | 
-| None (always D65/2°)                 | IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · HCT | 
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                               |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ |
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                  |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                               | 
+| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · HCT                                    | 
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

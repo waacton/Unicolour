@@ -10,35 +10,35 @@ public class KnownHwbTests
     [Test]
     public void Red()
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red];
+        var red = StandardRgb.Red;
         TestUtils.AssertTriplet<Hwb>(red, new(0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Green()
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green];
+        var green = StandardRgb.Green;
         TestUtils.AssertTriplet<Hwb>(green, new(120, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue];
+        var blue = StandardRgb.Blue;
         TestUtils.AssertTriplet<Hwb>(blue, new(240, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Black()
     {
-        var black = ColourLimits.Rgb[ColourLimit.Black];
+        var black = StandardRgb.Black;
         TestUtils.AssertTriplet<Hwb>(black, new(0, 0.0, 1.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
-        var white = ColourLimits.Rgb[ColourLimit.White];
+        var white = StandardRgb.White;
         TestUtils.AssertTriplet<Hwb>(white, new(0, 1.0, 0.0), Tolerance);
     }
 }

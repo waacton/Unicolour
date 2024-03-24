@@ -12,7 +12,8 @@ public class RoundtripOklabTests
     public void ViaXyz(ColourTriplet triplet)
     {
         var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Oklab.FromXyz(Oklab.ToXyz(original, XyzConfig), XyzConfig);
+        var xyz = Oklab.ToXyz(original, XyzConfig);
+        var roundtrip = Oklab.FromXyz(xyz, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
@@ -20,7 +21,8 @@ public class RoundtripOklabTests
     public void ViaOklch(ColourTriplet triplet)
     {
         var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Oklch.ToOklab(Oklch.FromOklab(original));
+        var oklch = Oklch.FromOklab(original);
+        var roundtrip = Oklch.ToOklab(oklch);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

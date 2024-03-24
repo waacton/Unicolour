@@ -6,6 +6,7 @@ public class Configuration
     
     public RgbConfiguration Rgb { get; }
     public XyzConfiguration Xyz { get; }
+    public YbrConfiguration Ybr { get; }
     public CamConfiguration Cam { get; }
     public double IctcpScalar { get; }
     public double JzazbzScalar { get; }
@@ -15,16 +16,18 @@ public class Configuration
     public Configuration(
         RgbConfiguration? rgbConfiguration = null, 
         XyzConfiguration? xyzConfiguration = null, 
+        YbrConfiguration? ybrConfiguration = null,
         CamConfiguration? camConfiguration = null,
         double ictcpScalar = 100, 
         double jzazbzScalar = 100)
     {
         Rgb = rgbConfiguration ?? RgbConfiguration.StandardRgb;
         Xyz = xyzConfiguration ?? XyzConfiguration.D65;
+        Ybr = ybrConfiguration ?? YbrConfiguration.Rec601;
         Cam = camConfiguration ?? CamConfiguration.StandardRgb;
         IctcpScalar = ictcpScalar;
         JzazbzScalar = jzazbzScalar;
     }
     
-    public override string ToString() => $"RGB:[{Rgb.Name}] · XYZ:[{Xyz.Name}] · CAM:[{Cam.Name}] · Id:[{Id}]";
+    public override string ToString() => $"RGB:[{Rgb.Name}] · XYZ:[{Xyz.Name}] · YBR:[{Ybr.Name}] · CAM:[{Cam.Name}] · Id:[{Id}]";
 }

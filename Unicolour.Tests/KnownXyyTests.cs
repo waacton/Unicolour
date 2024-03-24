@@ -11,7 +11,7 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.D50), 0.648427, 0.330856, 0.222504)]
     public void Red(string illuminantName, double x, double y, double expectedZ)
     {
-        var red = ColourLimits.Rgb[ColourLimit.Red].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Xyy>(red, new(x, y, expectedZ), Tolerance);
     }
     
@@ -19,7 +19,7 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.D50), 0.321142, 0.597873, 0.716879)]
     public void Green(string illuminantName, double x, double y, double expectedZ)
     {
-        var green = ColourLimits.Rgb[ColourLimit.Green].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Xyy>(green, new(x, y, expectedZ), Tolerance);
     }
     
@@ -27,7 +27,7 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.D50), 0.155883, 0.066041, 0.060617)]
     public void Blue(string illuminantName, double x, double y, double expectedZ)
     {
-        var blue = ColourLimits.Rgb[ColourLimit.Blue].ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
+        var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         TestUtils.AssertTriplet<Xyy>(blue, new(x, y, expectedZ), Tolerance);
     }
     

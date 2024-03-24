@@ -6,18 +6,36 @@ using Wacton.Unicolour.Tests.Utils;
 public class RoundtripRgbTests
 {
     private const double Tolerance = 0.00000005;
-    private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
+    private static readonly YbrConfiguration YbrConfig = YbrConfiguration.Rec601;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
-    public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet);
+    public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.NegativeRgbTriplets))]
+    public void ViaRgbLinearNegative(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
+    
+    // testing RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
+    [Test, Combinatorial]
+    public void ViaRgbLinearDifferentConfig(
+        [ValueSource(typeof(RandomColours), nameof(RandomColours.RgbTripletsSubset))] ColourTriplet triplet,
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
+        => AssertViaRgbLinear(triplet, rgbConfig);
+    
+    // testing negative RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
+    [Test, Combinatorial]
+    public void ViaRgbLinearNegativeDifferentConfig(
+        [ValueSource(typeof(RandomColours), nameof(RandomColours.NegativeRgbTripletsSubset))] ColourTriplet triplet,
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
+        => AssertViaRgbLinear(triplet, rgbConfig);
     
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
-    public void ViaRgbLinearFromNamed(TestColour namedColour) => AssertViaRgbLinear(namedColour.Rgb!);
+    public void ViaRgbLinearFromNamed(TestColour namedColour) => AssertViaRgbLinear(namedColour.Rgb!, RgbConfiguration.StandardRgb);
     
-    private static void AssertViaRgbLinear(ColourTriplet triplet)
+    private static void AssertViaRgbLinear(ColourTriplet triplet, RgbConfiguration rgbConfig)
     {
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Rgb.FromRgbLinear(Rgb.ToRgbLinear(original, RgbConfig), RgbConfig);
+        var rgbLinear = Rgb.ToRgbLinear(original, rgbConfig);
+        var roundtrip = Rgb.FromRgbLinear(rgbLinear, rgbConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
@@ -30,7 +48,35 @@ public class RoundtripRgbTests
     private static void AssertViaHsb(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Hsb.ToRgb(Hsb.FromRgb(original));
+        var hsb = Hsb.FromRgb(original);
+        var roundtrip = Hsb.ToRgb(hsb);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    public void ViaYpbpr(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
+        var ypbpr = Ypbpr.FromRgb(original, YbrConfig);
+        var roundtrip = Ypbpr.ToRgb(ypbpr, YbrConfig);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    public void ViaYcgco(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
+        var ycgco = Ycgco.FromRgb(original);
+        var roundtrip = Ycgco.ToRgb(ycgco);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    public void ViaYuv(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
+        var yuv = Yuv.FromRgb(original);
+        var roundtrip = Yuv.ToRgb(yuv);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

@@ -11,7 +11,8 @@ public class RoundtripHpluvTests
     public void ViaLchuv(ColourTriplet triplet)
     {
         var original = new Hpluv(triplet.First, triplet.Second, triplet.Third);
-        var roundtrip = Hpluv.FromLchuv(Hpluv.ToLchuv(original));
+        var lchuv = Hpluv.ToLchuv(original);
+        var roundtrip = Hpluv.FromLchuv(lchuv);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

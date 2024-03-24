@@ -26,6 +26,13 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Lchuv),
         new TestCaseData(ColourSpace.Hsluv),
         new TestCaseData(ColourSpace.Hpluv),
+        new TestCaseData(ColourSpace.Ypbpr),
+        new TestCaseData(ColourSpace.Ycbcr),
+        new TestCaseData(ColourSpace.Ycgco),
+        new TestCaseData(ColourSpace.Yuv),
+        new TestCaseData(ColourSpace.Yiq),
+        new TestCaseData(ColourSpace.Ydbdr),
+        new TestCaseData(ColourSpace.Ipt),
         new TestCaseData(ColourSpace.Ictcp),
         new TestCaseData(ColourSpace.Jzazbz),
         new TestCaseData(ColourSpace.Jzczhz),
@@ -68,6 +75,34 @@ internal static class TestUtils
     {
         { nameof(Observer.Degree2), Observer.Degree2 },
         { nameof(Observer.Degree10), Observer.Degree10 }
+    };
+    
+    internal static readonly List<RgbConfiguration> NonDefaultRgbConfigs = new()
+    {
+        RgbConfiguration.DisplayP3,
+        RgbConfiguration.Rec2020,
+        RgbConfiguration.A98,
+        RgbConfiguration.ProPhoto,
+        RgbConfiguration.XvYcc,
+        RgbConfiguration.Rec601Line625,
+        RgbConfiguration.Rec601Line525,
+        RgbConfiguration.Rec709,
+        RgbConfiguration.Pal,
+        RgbConfiguration.PalM,
+        RgbConfiguration.Pal625,
+        RgbConfiguration.Pal525,
+        RgbConfiguration.Ntsc,
+        RgbConfiguration.NtscSmpteC,
+        RgbConfiguration.Ntsc525,
+        RgbConfiguration.Secam,
+        RgbConfiguration.Secam625
+    };
+    
+    internal static readonly List<YbrConfiguration> NonDefaultYbrConfigs = new()
+    {
+        YbrConfiguration.Rec709,
+        YbrConfiguration.Rec2020,
+        YbrConfiguration.Jpeg
     };
     
     internal static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
@@ -143,6 +178,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Ictcp);
             AccessProperty(() => unicolour.IsImaginary);
             AccessProperty(() => unicolour.IsInDisplayGamut);
+            AccessProperty(() => unicolour.Ipt);
             AccessProperty(() => unicolour.Jzazbz);
             AccessProperty(() => unicolour.Jzczhz);
             AccessProperty(() => unicolour.Lab);
@@ -158,6 +194,12 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Temperature);
             AccessProperty(() => unicolour.Xyy);
             AccessProperty(() => unicolour.Xyz);
+            AccessProperty(() => unicolour.Ypbpr);
+            AccessProperty(() => unicolour.Ycbcr);
+            AccessProperty(() => unicolour.Ycgco);
+            AccessProperty(() => unicolour.Yuv);
+            AccessProperty(() => unicolour.Yiq);
+            AccessProperty(() => unicolour.Ydbdr);
         }
         
         void AccessProperty(Func<object> getProperty)
@@ -210,6 +252,13 @@ internal static class TestUtils
         { typeof(Lchuv), ColourSpace.Lchuv },
         { typeof(Hsluv), ColourSpace.Hsluv },
         { typeof(Hpluv), ColourSpace.Hpluv },
+        { typeof(Ypbpr), ColourSpace.Ypbpr },
+        { typeof(Ycbcr), ColourSpace.Ycbcr },
+        { typeof(Ycgco), ColourSpace.Ycgco },
+        { typeof(Yuv), ColourSpace.Yuv },
+        { typeof(Yiq), ColourSpace.Yiq },
+        { typeof(Ydbdr), ColourSpace.Ydbdr },
+        { typeof(Ipt), ColourSpace.Ipt },
         { typeof(Ictcp), ColourSpace.Ictcp },
         { typeof(Jzazbz), ColourSpace.Jzazbz },
         { typeof(Jzczhz), ColourSpace.Jzczhz },

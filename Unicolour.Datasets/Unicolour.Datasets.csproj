@@ -8,7 +8,7 @@
         <RootNamespace>Wacton.Unicolour.Datasets</RootNamespace>
         <LangVersion>10</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>2.1.0</Version>
+        <Version>2.2.0</Version>
         <Authors>William Acton</Authors>
         <Description>Datasets for use with 🌈 Wacton.Unicolour</Description>
         <Copyright>William Acton</Copyright>
@@ -16,7 +16,7 @@
         <PackageIcon>Resources\Unicolour.Datasets.png</PackageIcon>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
         <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset colormap colormaps colourmap colourmaps</PackageTags>
-        <PackageReleaseNotes>Add colour maps and xkcd dataset</PackageReleaseNotes>
+        <PackageReleaseNotes>Support YbrConfiguration</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

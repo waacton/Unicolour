@@ -2,7 +2,6 @@ namespace Wacton.Unicolour.Datasets;
 
 public static class Colourmaps
 {
-    public static readonly Colourmap Turbo = new Turbo();
     public static readonly Colourmap Viridis = new Viridis();
     public static readonly Colourmap Plasma = new Plasma();
     public static readonly Colourmap Inferno = new Inferno();
@@ -16,6 +15,7 @@ public static class Colourmaps
     public static readonly Colourmap Icefire = new Icefire();
     public static readonly Colourmap Twilight = new Twilight();
     public static readonly Colourmap TwilightShifted = new TwilightShifted();
+    public static readonly Colourmap Turbo = new Turbo();
     public static readonly Colourmap Cubehelix = new Cubehelix();
 }
 

@@ -38,6 +38,7 @@ void ProcessReadme()
     // could use regex but why bother? also want to be careful not to change spelling of "unicolour", "ColourSpace", etc.
     readmeUsText = readmeUsText
         .Replace("Colour ", "Color ")
+        .Replace("Colours ", "Colors ")
         .Replace("Colour&", "Color&")
         .Replace(" colour", " color")
         .Replace("-colour", "-color")

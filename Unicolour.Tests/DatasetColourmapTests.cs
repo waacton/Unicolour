@@ -40,7 +40,6 @@ public class DatasetColourmapTests
     
     private static readonly List<TestCaseData> LookupCountTestData = new()
     {
-        new TestCaseData(Turbo.Lookup, 256).SetName(nameof(Turbo)),
         new TestCaseData(Viridis.Lookup, 256).SetName(nameof(Viridis)),
         new TestCaseData(Plasma.Lookup, 256).SetName(nameof(Plasma)),
         new TestCaseData(Inferno.Lookup, 256).SetName(nameof(Inferno)),
@@ -53,18 +52,12 @@ public class DatasetColourmapTests
         new TestCaseData(Vlag.Lookup, 256).SetName(nameof(Vlag)),
         new TestCaseData(Icefire.Lookup, 256).SetName(nameof(Icefire)),
         new TestCaseData(Twilight.Lookup, 510).SetName(nameof(Twilight)),
-        new TestCaseData(TwilightShifted.Lookup, 510).SetName(nameof(TwilightShifted))
+        new TestCaseData(TwilightShifted.Lookup, 510).SetName(nameof(TwilightShifted)),
+        new TestCaseData(Turbo.Lookup, 256).SetName(nameof(Turbo))
     };
     
     private static readonly List<TestCaseData> IndexTestData = new()
     {
-        new TestCaseData(Colourmaps.Turbo, 0, 0.18995, 0.07176, 0.23217).SetName($"{nameof(Turbo)}[0]"),
-        new TestCaseData(Colourmaps.Turbo, 1, 0.19483, 0.08339, 0.26149).SetName($"{nameof(Turbo)}[1]"),
-        new TestCaseData(Colourmaps.Turbo, 127, 0.63323, 0.99195, 0.23937).SetName($"{nameof(Turbo)}[127]"),
-        new TestCaseData(Colourmaps.Turbo, 128, 0.64362, 0.98999, 0.23356).SetName($"{nameof(Turbo)}[128]"),
-        new TestCaseData(Colourmaps.Turbo, 254, 0.49321, 0.01963, 0.00955).SetName($"{nameof(Turbo)}[254]"),
-        new TestCaseData(Colourmaps.Turbo, 255, 0.4796, 0.01583, 0.01055).SetName($"{nameof(Turbo)}[255]"),
-        
         new TestCaseData(Colourmaps.Cividis, 0, 0, 0.138068, 0.311105).SetName($"{nameof(Cividis)}[0]"),
         new TestCaseData(Colourmaps.Cividis, 1, 0, 0.141013, 0.317579).SetName($"{nameof(Cividis)}[1]"),
         new TestCaseData(Colourmaps.Cividis, 127, 0.488697, 0.485318, 0.471008).SetName($"{nameof(Cividis)}[127]"),

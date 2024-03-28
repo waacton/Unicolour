@@ -76,7 +76,7 @@ var yellow = new Unicolour(ColourSpace.Rgb255, 255, 255, 0);
 Console.WriteLine(yellow.Hex); // #FFFF00
 ```
 
-Colours can be [mixed or interpolated](#mix-colors) using any color space.
+Colors can be [mixed or interpolated](#mix-colors) using any color space.
 ```c#
 var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
 var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
@@ -199,7 +199,7 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔE<sub>CAM16</sub>                                                       | `DeltaE.Cam16`             |
 
 ### Map color into display gamut
-Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut color.
+Colors that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut color.
 The gamut mapping algorithm conforms to CSS specifications.
 ```c#
 var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
@@ -425,8 +425,10 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ## ✨ Examples
 This repository contains projects showing how Unicolour can be used to create:
 1. [Images of gradients](#gradients)
-2. [Diagrams of color data](#diagrams)
-3. [A colorful console application](#console)
+2. [Heatmaps of luminance data](#heatmaps)
+3. [Diagrams of color data](#diagrams)
+4. [A colorful console application](#console)
+5. [3D visualization of color spaces in Unity](#unity)
 
 ### Gradients
 Example code to create images of gradients using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/tree/main/Example.Gradients/Program.cs) project.
@@ -450,6 +452,17 @@ Example code to create images of gradients using 📷 [SixLabors.ImageSharp](htt
 | ![Perceptually uniform colormaps from Unicolour.Datasets, created with Unicolour](gradient-maps.png) |
 |------------------------------------------------------------------------------------------------------------|
 | _Perceptually uniform colormaps from [Unicolour.Datasets](#-datasets)_                                    |
+
+### Heatmaps
+🦺 _Under construction - coming soon!_ 🦺
+
+| ![Heatmap of luminance data using perceptually uniform colormaps from Unicolour.Datasets, created with Unicolour](heatmap-preview-1.png)  |
+|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_Preview_:** _Heatmap of luminance data using perceptually uniform colormaps from [Unicolour.Datasets](#-datasets)_                          |
+
+| ![Heatmap of luminance data using perceptually uniform colormaps from Unicolour.Datasets, created with Unicolour](heatmap-preview-2.png) |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_Preview_:** _Heatmap of luminance data using perceptually uniform colormaps from [Unicolour.Datasets](#-datasets)_                         |
 
 ### Diagrams
 Example code to create diagrams of color data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/tree/main/Example.Diagrams/Program.cs) project.
@@ -479,7 +492,18 @@ Example code to create a colorful console application using ⌨️ [Spectre.Cons
 
 | ![Console application displaying color information from a hex value, created with Unicolour](console-info.png) |
 |----------------------------------------------------------------------------------------------------------------------|
-| Console application displaying color information from a hex value                                                   |
+| _Console application displaying color information from a hex value_                                                 |
+
+### Unity
+🦺 _Under construction - coming soon!_ 🦺
+
+| ![3D visualization of color spaces in Unity, created with Unicolour](unity-preview-1.png) |
+|-------------------------------------------------------------------------------------------------|
+| **_Preview_:** _3D visualization of color spaces in Unity_                                     |
+
+| ![3D visualization of color spaces in Unity, created with Unicolour](unity-preview-2.png) |
+|-------------------------------------------------------------------------------------------------|
+| **_Preview_:** _3D visualization of color spaces in Unity_                                     |
 
 ## 🔮 Datasets
 Some color datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

@@ -425,8 +425,10 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 ## ✨ Examples
 This repository contains projects showing how Unicolour can be used to create:
 1. [Images of gradients](#gradients)
-2. [Diagrams of colour data](#diagrams)
-3. [A colourful console application](#console)
+2. [Heatmaps of luminance data](#heatmaps)
+3. [Diagrams of colour data](#diagrams)
+4. [A colourful console application](#console)
+5. [3D visualisation of colour spaces in Unity](#unity)
 
 ### Gradients
 Example code to create images of gradients using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/tree/main/Example.Gradients/Program.cs) project.
@@ -450,6 +452,17 @@ Example code to create images of gradients using 📷 [SixLabors.ImageSharp](htt
 | ![Perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](gradient-maps.png) |
 |------------------------------------------------------------------------------------------------------------|
 | _Perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                                    |
+
+### Heatmaps
+🦺 _Under construction - coming soon!_ 🦺
+
+| ![Heatmap of luminance data using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](heatmap-preview-1.png)  |
+|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_Preview_:** _Heatmap of luminance data using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                          |
+
+| ![Heatmap of luminance data using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](heatmap-preview-2.png) |
+|------------------------------------------------------------------------------------------------------------------------------------------------|
+| **_Preview_:** _Heatmap of luminance data using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                         |
 
 ### Diagrams
 Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/tree/main/Example.Diagrams/Program.cs) project.
@@ -479,7 +492,18 @@ Example code to create a colourful console application using ⌨️ [Spectre.Con
 
 | ![Console application displaying colour information from a hex value, created with Unicolour](console-info.png) |
 |----------------------------------------------------------------------------------------------------------------------|
-| Console application displaying colour information from a hex value                                                   |
+| _Console application displaying colour information from a hex value_                                                 |
+
+### Unity
+🦺 _Under construction - coming soon!_ 🦺
+
+| ![3D visualisation of colour spaces in Unity, created with Unicolour](unity-preview-1.png) |
+|-------------------------------------------------------------------------------------------------|
+| **_Preview_:** _3D visualisation of colour spaces in Unity_                                     |
+
+| ![3D visualisation of colour spaces in Unity, created with Unicolour](unity-preview-2.png) |
+|-------------------------------------------------------------------------------------------------|
+| **_Preview_:** _3D visualisation of colour spaces in Unity_                                     |
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

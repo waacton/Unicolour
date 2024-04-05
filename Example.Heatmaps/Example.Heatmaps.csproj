@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+        <AssemblyName>Wacton.Unicolour.Example.Heatmaps</AssemblyName>
+        <RootNamespace>Wacton.Unicolour.Example.Heatmaps</RootNamespace>
+        <Authors>William Acton</Authors>
+        <Product>Wacton.Unicolour.Example.Gradients</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
+      <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Unicolour.Datasets\Unicolour.Datasets.csproj" />
+      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Inconsolata-Regular.ttf">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="moon.jpg">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="sun.jpg">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

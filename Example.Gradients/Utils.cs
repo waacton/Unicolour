@@ -8,6 +8,11 @@ using SixLabors.ImageSharp.Processing;
 
 internal static class Utils
 {
+    private const int FontSize = 24;
+    private static readonly FontCollection Collection = new();
+    private static readonly FontFamily FontFamily = Collection.Add("Inconsolata-Regular.ttf");
+    private static readonly Font Font = FontFamily.CreateFont(FontSize);
+    
     private const bool RenderOutOfGamutAsTransparent = false;
 
     internal delegate Unicolour Mix(Unicolour start, Unicolour end, double amount);
@@ -48,14 +53,9 @@ internal static class Utils
     
     private static void SetLabel(Image<Rgba32> image, string text, Unicolour colour)
     {
-        const int fontSize = 24;
-        FontCollection collection = new();
-        var fontFamily = collection.Add("Inconsolata-Regular.ttf");
-        var font = fontFamily.CreateFont(fontSize);
-
-        var row = image.Height / 2.0 - fontSize / 2.0;
+        var row = image.Height / 2.0 - FontSize / 2.0;
         var textLocation = new PointF(16, (int)row);
-        image.Mutate(context => context.DrawText(text, font, AsRgba32(colour), textLocation));
+        image.Mutate(context => context.DrawText(text, Font, AsRgba32(colour), textLocation));
     }
 
     internal static Image<Rgba32> DrawRows(List<Image<Rgba32>> rows, int rowWidth, int rowHeight)

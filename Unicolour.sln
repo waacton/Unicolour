@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unicolour.Readme", "Unicolo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Diagrams", "Example.Diagrams\Example.Diagrams.csproj", "{D3002594-7C64-48CE-BD72-16AB4B0B8C61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Heatmaps", "Example.Heatmaps\Example.Heatmaps.csproj", "{6C6CED98-DADB-4E43-99B2-0EEA8F1EBE84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3002594-7C64-48CE-BD72-16AB4B0B8C61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C6CED98-DADB-4E43-99B2-0EEA8F1EBE84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C6CED98-DADB-4E43-99B2-0EEA8F1EBE84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C6CED98-DADB-4E43-99B2-0EEA8F1EBE84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C6CED98-DADB-4E43-99B2-0EEA8F1EBE84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

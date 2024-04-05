@@ -509,14 +509,14 @@ Console.WriteLine(rec2020Colour.Rgb); // 0.57 0.96 0.27
 
 ## ✨ Examples
 This repository contains projects showing how Unicolour can be used to create:
-1. [Images of gradients](#gradients)
-2. [Heatmaps of luminance data](#heatmaps)
+1. [Gradient images](#gradients)
+2. [Heatmaps of luminance](#heatmaps)
 3. [Diagrams of colour data](#diagrams)
 4. [A colourful console application](#console)
 5. [3D visualisation of colour spaces in Unity](#unity)
 
 ### Gradients
-Example code to create images of gradients using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](Example.Gradients/Program.cs) project.
+Example code to create gradient images using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](Example.Gradients/Program.cs) project.
 
 | ![Gradients generated through different colour spaces, created with Unicolour](docs/gradient-spaces.png) |
 |----------------------------------------------------------------------------------------------------------|
@@ -539,15 +539,16 @@ Example code to create images of gradients using 📷 [SixLabors.ImageSharp](htt
 | _Perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                                    |
 
 ### Heatmaps
-🦺 _Under construction - coming soon!_ 🦺
+Example code to create heatmaps of luminance using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) with images from 🚀 [NASA](https://www.nasa.gov/)
+can be seen in the [Example.Heatmaps](Example.Heatmaps/Program.cs) project.
 
-| ![Heatmap of luminance data using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](docs/heatmap-preview-1.png)  |
-|-------------------------------------------------------------------------------------------------------------------------------------------------|
-| **_Preview_:** _Heatmap of luminance data using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                          |
+| ![Heatmap of the sun using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](docs/heatmaps-sun.png)                                              |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Heatmap of the ☀️ [sun](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001435/) using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_ |
 
-| ![Heatmap of luminance data using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](docs/heatmap-preview-2.png) |
-|------------------------------------------------------------------------------------------------------------------------------------------------|
-| **_Preview_:** _Heatmap of luminance data using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_                         |
+| ![Heatmap of the moon using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](docs/heatmaps-moon.png)                                             |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Heatmap of the 🌕 [moon](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001982/) using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_ |
 
 ### Diagrams
 Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](Example.Diagrams/Program.cs) project.

@@ -39,9 +39,9 @@ void Generate(string filename)
     var outputImages = new List<Image>
     {
         originalImage,
-        GetHeatmap(Colourmaps.Turbo, "Turbo"),
         GetHeatmap(Colourmaps.Cubehelix, "Cubehelix"),
         GetHeatmap(Colourmaps.Mako, "Mako"),
+        GetHeatmap(Colourmaps.Turbo, "Turbo"),
         GetHeatmap(Colourmaps.Icefire, "Icefire")
     };
 

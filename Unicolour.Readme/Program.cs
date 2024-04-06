@@ -45,7 +45,8 @@ void ProcessReadme()
         .Replace(" grey ", " gray ")
         .Replace("ise ", "ize ")
         .Replace("ises ", "izes ")
-        .Replace("isation ", "ization ");
+        .Replace("isation ", "ization ")
+        .Replace("isations ", "izations ");
     readmeUsText += Environment.NewLine;
     readmeUsText += $"Also available in [British]({readme}) \ud83c\uddec\ud83c\udde7.";
     File.WriteAllText(Path.Combine(sourceRoot, readmeAmerican), readmeUsText);

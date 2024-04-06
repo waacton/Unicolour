@@ -516,7 +516,8 @@ This repository contains projects showing how Unicolour can be used to create:
 5. [3D visualisation of colour spaces in Unity](#unity)
 
 ### Gradients
-Example code to create gradient images using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) can be seen in the [Example.Gradients](../Example.Gradients/Program.cs) project.
+Example code to create gradient images using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) 
+can be seen in the [Example.Gradients](../Example.Gradients/Program.cs) project.
 
 | ![Gradients generated through different colour spaces, created with Unicolour](docs/gradient-spaces.png) |
 |----------------------------------------------------------------------------------------------------------|
@@ -551,7 +552,8 @@ can be seen in the [Example.Heatmaps](../Example.Heatmaps/Program.cs) project.
 | _Heatmap of the 🌕 [moon](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001982/) using perceptually uniform colourmaps from [Unicolour.Datasets](#-datasets)_ |
 
 ### Diagrams
-Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) can be seen in the [Example.Diagrams](../Example.Diagrams/Program.cs) project.
+Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot) 
+can be seen in the [Example.Diagrams](../Example.Diagrams/Program.cs) project.
 
 | ![CIE xy chromaticity diagram with sRGB gamut, created with Unicolour](docs/diagram-xy-chromaticity-rgb.png) |
 |--------------------------------------------------------------------------------------------------------------|
@@ -574,22 +576,26 @@ Example code to create diagrams of colour data using 📈 [ScottPlot](https://gi
 | _CIE 1960 colour space with Planckian or blackbody locus_                                                                      |
 
 ### Console
-Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console) can be seen in the [Example.Console](../Example.Console/Program.cs) project.
+Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console) 
+can be seen in the [Example.Console](../Example.Console/Program.cs) project.
 
 | ![Console application displaying colour information from a hex value, created with Unicolour](docs/console-info.png) |
 |----------------------------------------------------------------------------------------------------------------------|
 | _Console application displaying colour information from a hex value_                                                 |
 
 ### Unity
-🦺 _Under construction - coming soon!_ 🦺
+Example code to create 3D visualisations of colour spaces using 🎮 [Unity](https://unity.com/)
+can be seen in the [Example.Unity](../Example.Unity) project.
 
-| ![3D visualisation of colour spaces in Unity, created with Unicolour](docs/unity-preview-1.png) |
-|-------------------------------------------------------------------------------------------------|
-| **_Preview_:** _3D visualisation of colour spaces in Unity_                                     |
+Try it out online in [Unity Play](https://play.unity.com/mg/other/webgl-builds-399177)!
 
-| ![3D visualisation of colour spaces in Unity, created with Unicolour](docs/unity-preview-2.png) |
-|-------------------------------------------------------------------------------------------------|
-| **_Preview_:** _3D visualisation of colour spaces in Unity_                                     |
+| ![3D visualisation of colour spaces in Unity, created with Unicolour](docs/unity-spaces.gif) |
+|----------------------------------------------------------------------------------------------|
+| _3D visualisation of colour spaces in Unity_                                                 |
+
+| ![3D movement through colour spaces in Unity, created with Unicolour](docs/unity-movement.gif) |
+|---------------------------------------------------------------------------------------------|
+| _3D movement through colour spaces in Unity_                                                |
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

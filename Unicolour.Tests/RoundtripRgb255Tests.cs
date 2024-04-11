@@ -71,6 +71,33 @@ public class RoundtripRgb255Tests
         var roundtrip = Yuv.ToRgb(yuv);
         AssertRoundtrip(triplet, original, roundtrip);
     }
+    
+    /*
+     * CMY / CMYK is not integrated into Unicolour
+     * and tests will need to change if calibrated CMYK using ICC profiles are implemented
+     * ----------
+     * NOTE: although RGB -> CMYK -> RGB results in same values
+     * cannot guarantee roundtrip of CMYK -> RGB -> CMYK
+     * e.g. CMYK[0.5, 0.5, 0.5, 0.5] = RGB[0.25, 0.25, 0.25] = CMYK[0, 0, 0, 0.75]
+     */
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    public void ViaCmyk(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
+        var cmyk = Cmyk.FromRgb(original);
+        var roundtrip = Cmyk.ToRgb(cmyk);
+        AssertRoundtrip(triplet, original, roundtrip);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    public void ViaCmy(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
+        var cmy = Cmy.FromRgb(original);
+        var roundtrip = Cmy.ToRgb(cmy);
+        AssertRoundtrip(triplet, original, roundtrip);
+    }
 
     private static void AssertRoundtrip(ColourTriplet triplet, Rgb original, Rgb roundtrip)
     {

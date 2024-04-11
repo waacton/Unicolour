@@ -1,1 +1,4 @@
 *.html linguist-detectable=false
+*.shader linguist-detectable=false
+*.shaders linguist-detectable=false
+*.cginc linguist-detectable=false

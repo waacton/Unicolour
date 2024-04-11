@@ -1,5 +1,6 @@
 ﻿using ScottPlot;
 using ScottPlot.Plottables;
+using ScottPlot.Primitives;
 using Wacton.Unicolour.Example.Diagrams;
 
 const string outputDirectory = "../../../../Unicolour.Readme/docs/";
@@ -28,22 +29,22 @@ void SpectralLocus()
     var rangeX = (0.0, 0.8);
     var rangeY = (0.0, 0.9);
     var plot = Utils.GetEmptyPlot(rangeX, rangeY, majorTickInterval: 0.1);
-    plot.DataBackground = Color.Gray(96);
-    plot.GetDefaultGrid().MajorLineStyle = new LineStyle { Color = Color.Gray(128) };
+    plot.DataBackground = new BackgroundStyle { Color = Color.Gray(96) };
+    plot.Grid.MajorLineColor = Color.Gray(128);
     
     var spectralCoordinates = spectralLocus.Select(colour => new Coordinates(colour.Chromaticity.X, colour.Chromaticity.Y)).ToList();
     var spectralLocusScatter = plot.Add.Scatter(spectralCoordinates);
     spectralLocusScatter.Color = Color.Gray(64);
     spectralLocusScatter.LineWidth = 1;
     spectralLocusScatter.MarkerStyle = MarkerStyle.None;
-
+    
     var firstCoordinate = new Coordinates(spectralLocus.First().Chromaticity.X, spectralLocus.First().Chromaticity.Y);
     var lastCoordinate = new Coordinates(spectralLocus.Last().Chromaticity.X, spectralLocus.Last().Chromaticity.Y);
     var lineOfPurples = plot.Add.Line(firstCoordinate, lastCoordinate);
     lineOfPurples.Color = new Color(255, 0, 255);
     lineOfPurples.LineWidth = 1;
     lineOfPurples.MarkerStyle = MarkerStyle.None;
-
+    
     foreach (var colour in spectralLocus)
     {
         var chromaticity = colour.Chromaticity;

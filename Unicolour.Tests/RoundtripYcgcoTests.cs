@@ -7,7 +7,7 @@ public class RoundtripYcgcoTests
 {
     private const double Tolerance = 0.0000000005;
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YuvTriplets))]
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YcgcoTriplets))]
     public void ViaRgb(ColourTriplet triplet)
     {
         var original = new Ycgco(triplet.First, triplet.Second, triplet.Third);

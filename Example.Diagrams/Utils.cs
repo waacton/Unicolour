@@ -134,13 +134,14 @@ internal static class Utils
         var nextMajorTick = min;
         for (var i = min; i < max + increment; i += increment)
         {
-            var isMajor = IsEffectivelyZero(i - nextMajorTick);
+            var rounded = Math.Round(i, 2);
+            var isMajor = IsEffectivelyZero(rounded - nextMajorTick);
             if (isMajor)
             {
                 nextMajorTick += majorTickInterval;
             }
             
-            ticks.Add(new Tick(i, isMajor ? $"{i:F2}" : string.Empty, isMajor));
+            ticks.Add(new Tick(rounded, isMajor ? $"{rounded:F2}" : string.Empty, isMajor));
         }
 
         return new NumericManual(ticks.ToArray());

@@ -32,7 +32,7 @@ It can be used to [mix and compare colors](#mix-colors), as well as [other usefu
 
 > **Supported color spaces**
 >
-> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB ·
+> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · CMYK <sup>[?](#cmyk)</sup> ·
 > CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
 > IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
@@ -130,6 +130,7 @@ var (l, c, h) = color.Oklch.Triplet;
 | HSB&nbsp;/&nbsp;HSV                     | `ColourSpace.Hsb`       | `.Hsb`         |
 | HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
 | HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
+| CMYK <sup>[?](#cmyk)</sup>              | -                       | -              |
 | CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
 | CIExyY                                  | `ColourSpace.Xyy`       | `.Xyy`         |
 | CIELAB                                  | `ColourSpace.Lab`       | `.Lab`         |
@@ -153,6 +154,20 @@ var (l, c, h) = color.Oklch.Triplet;
 | CIECAM02                                | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                     | `ColourSpace.Hct`       | `.Hct`         |
+
+> #### CMYK?
+> 
+> CMYK is not yet integrated into Unicolour, however [example code is provided for naive conversion of uncalibrated CMYK](https://github.com/waacton/Unicolour/tree/main/Unicolour/Cmyk.cs),
+> which is the conversion typically found online and in other libraries.
+> These functions can be copy/pasted to wherever Unicolour is being used, and are tested as part of the Unicolour test suite.
+>
+> There are two reasons CMYK is not yet available in the library itself:
+>
+> 1. CMYK is a device-dependent color space and requires parsing of ICC profiles to implement correctly
+> 2. Supporting color prints of 4 (e.g. FOGRA39 CMYK) or more (e.g. FOGRA55 CMYKOGV) requires major architectural decisions
+>
+> If Unicolour is ever able to support ICC profiles, the naive CMYK conversion will also be included.
+
 
 
 
@@ -509,8 +524,8 @@ Try it out online in [Unity Play](https://play.unity.com/mg/other/webgl-builds-3
 | _3D visualization of color spaces in Unity_                                                 |
 
 | ![3D movement through color spaces in Unity, created with Unicolour](unity-movement.gif) |
-|---------------------------------------------------------------------------------------------|
-| _3D movement through color spaces in Unity_                                                |
+|------------------------------------------------------------------------------------------------|
+| _3D movement through color spaces in Unity_                                                   |
 
 ## 🔮 Datasets
 Some color datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).

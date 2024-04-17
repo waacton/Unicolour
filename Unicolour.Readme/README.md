@@ -192,13 +192,13 @@ var (l, c, h) = colour.Oklch.Triplet;
 }%%
 
 flowchart TD
-  XYY(xyY)
   RGBLIN(Linear RGB)
   RGB(RGB)
   HSB(HSB / HSV)
   HSL(HSL)
   HWB(HWB)
   CMYK(CMYK)
+  XYY(xyY)
   XYZ(XYZ)
   LAB(LAB)
   LCHAB(LCHab)
@@ -229,24 +229,24 @@ flowchart TD
 
   RGB -.-> CMYK
   
-  XYZ --> XYY
   XYZ --> RGBLIN
   RGBLIN --> RGB
   RGB --> HSB
   HSB --> HSL
   HSB --> HWB
-  XYZ --> LAB
-  LAB --> LCHAB
-  XYZ --> LUV
-  LUV --> LCHUV
-  LCHUV --> HSLUV
-  LCHUV --> HPLUV
   RGB --> YPBPR
   YPBPR --> YCBCR
   RGB --> YCGCO
   RGB --> YUV
   YUV --> YIQ
   YUV --> YDBDR
+  XYZ --> XYY
+  XYZ --> LAB
+  LAB --> LCHAB
+  XYZ --> LUV
+  LUV --> LCHUV
+  LCHUV --> HSLUV
+  LCHUV --> HPLUV
   XYZ --> IPT
   XYZ --> ICTCP
   XYZ --> JZAZBZ

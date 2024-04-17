@@ -72,8 +72,9 @@ public class GamutMappingTests
     public void NoChromaOutOfGamut()
     {
         // OKLCH without chroma isn't processed by the gamut mapping algorithm (chroma is already considered to be converged, can't go lower)
-        // OKLCH (0.99999, 0, 0) corresponds to an out-of-gamut RGB (1.00010, 0.99998, 0.99974), so make sure RGB is brought into gamut anyway
-        var original = new Unicolour(ColourSpace.Oklch, 0.99999, 0, 0);
+        // OKLCH (0.99999999, 0, 0) corresponds to an out-of-gamut RGB (0.999999956, 0.999999995, 1.000000102)
+        // so make sure RGB is brought into gamut anyway
+        var original = new Unicolour(ColourSpace.Oklch, 0.99999999, 0, 0);
         var gamutMapped = original.MapToGamut();
         Assert.That(original.IsInDisplayGamut, Is.False);
         Assert.That(gamutMapped.IsInDisplayGamut, Is.True);
@@ -124,26 +125,29 @@ public class GamutMappingTests
         Assert.That(gamutMapped.Rgb.Triplet, Is.EqualTo(gamutMapped.Rgb.ConstrainedTriplet));
     }
     
-    [Test]
+    [Test] // https://www.w3.org/TR/css-color-4/#GM-chroma
     public void YellowOutOfGamut()
     {
-        const double tolerance = 0.001;
+        const double tripletTolerance = 0.00005;
         var yellowDisplayP3 = new Unicolour(new Configuration(RgbConfiguration.DisplayP3), ColourSpace.Rgb, 1, 1, 0);
         var yellowStandardRgb = yellowDisplayP3.ConvertToConfiguration(new Configuration(RgbConfiguration.StandardRgb));
-        TestUtils.AssertTriplet<Rgb>(yellowDisplayP3, new(1.00000, 1.00000, 0.00000), tolerance);
-        TestUtils.AssertTriplet<Rgb>(yellowStandardRgb, new(1.00000, 1.00000, -0.34630), tolerance);
-        TestUtils.AssertTriplet<Oklch>(yellowDisplayP3, new(0.96476, 0.24503, 110.23), tolerance);
-        TestUtils.AssertTriplet<Oklch>(yellowStandardRgb, new(0.96476, 0.24503, 110.23), tolerance);
+        TestUtils.AssertTriplet<Rgb>(yellowDisplayP3, new(1.00000, 1.00000, 0.00000), tripletTolerance);
+        TestUtils.AssertTriplet<Rgb>(yellowStandardRgb, new(1.00000, 1.00000, -0.34630), tripletTolerance);
+        
+        // different because Unicolour doesn't limit Oklab / Oklch to sRGB
+        TestUtils.AssertTriplet<Oklch>(yellowStandardRgb, new(0.96476, 0.24503, 110.23), tripletTolerance);
+        TestUtils.AssertTriplet<Oklch>(yellowDisplayP3, new(0.96798, 0.21101, 109.77), tripletTolerance);
 
         var gamutMappedDisplayP3 = yellowDisplayP3.MapToGamut();
         Assert.That(gamutMappedDisplayP3, Is.EqualTo(yellowDisplayP3));
         Assert.That(yellowDisplayP3.IsInDisplayGamut, Is.True);
         Assert.That(gamutMappedDisplayP3.IsInDisplayGamut, Is.True);
 
+        const double gamutMapTolerance = 0.0025;
         var gamutMappedStandardRgb = yellowStandardRgb.MapToGamut();
-        Assert.That(yellowStandardRgb.Oklch.C, Is.EqualTo(0.245).Within(tolerance));
+        Assert.That(yellowStandardRgb.Oklch.C, Is.EqualTo(0.245).Within(gamutMapTolerance));
         Assert.That(yellowStandardRgb.IsInDisplayGamut, Is.False);
-        Assert.That(gamutMappedStandardRgb.Oklch.C, Is.EqualTo(0.210).Within(tolerance));
+        Assert.That(gamutMappedStandardRgb.Oklch.C, Is.EqualTo(0.210).Within(gamutMapTolerance));
         Assert.That(gamutMappedStandardRgb.IsInDisplayGamut, Is.True);
     }
     

@@ -149,6 +149,9 @@ public class EqualityTests
         AssertEqual(unicolour1.Lchuv, unicolour2.Lchuv);
         AssertEqual(unicolour1.Oklab, unicolour2.Oklab);
         AssertEqual(unicolour1.Oklch, unicolour2.Oklch);
+        AssertEqual(unicolour1.Okhsl, unicolour2.Okhsl);
+        AssertEqual(unicolour1.Okhsv, unicolour2.Okhsv);
+        AssertEqual(unicolour1.Okhwb, unicolour2.Okhwb);
         AssertEqual(unicolour1.RelativeLuminance, unicolour2.RelativeLuminance);
         AssertEqual(unicolour1.Rgb, unicolour2.Rgb);
         AssertEqual(unicolour1.Rgb.Byte255, unicolour2.Rgb.Byte255);

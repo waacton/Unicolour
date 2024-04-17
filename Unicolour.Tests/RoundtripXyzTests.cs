@@ -80,8 +80,8 @@ public class RoundtripXyzTests
     public void ViaOklab(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
-        var oklab = Oklab.FromXyz(original, XyzConfig);
-        var roundtrip = Oklab.ToXyz(oklab, XyzConfig);
+        var oklab = Oklab.FromXyz(original, XyzConfig, RgbConfig);
+        var roundtrip = Oklab.ToXyz(oklab, XyzConfig, RgbConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     

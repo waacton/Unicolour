@@ -35,6 +35,15 @@ public class HuedTests
     public void Oklch() => AssertUnicolour(new(ColourSpace.Oklch, 0, 0, 180), new List<ColourSpace>());
     
     [Test]
+    public void Okhsv() => AssertUnicolour(new(ColourSpace.Okhsv, 180, 0, 0), new List<ColourSpace> { ColourSpace.Okhwb });
+    
+    [Test]
+    public void Okhsl() => AssertUnicolour(new(ColourSpace.Okhsl, 180, 0, 0), new List<ColourSpace>());
+    
+    [Test]
+    public void Okhwb() => AssertUnicolour(new(ColourSpace.Okhwb, 180, 0, 1), new List<ColourSpace> { ColourSpace.Okhsv });
+    
+    [Test]
     public void Hct() => AssertUnicolour(new(ColourSpace.Hct, 180, 0, 0), new List<ColourSpace>());
 
     private static void AssertUnicolour(Unicolour unicolour, List<ColourSpace> adjacentHuedSpaces)

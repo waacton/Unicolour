@@ -175,6 +175,103 @@ public static class RgbModels
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ProPhoto RGB");
     }
     
+    // https://ieeexplore.ieee.org/document/7289895 · https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
+    // ACES 2065-1 is linear (i.e. gamma of 1)
+    public static class Aces20651
+    {
+        public static readonly Chromaticity R = AcesAp0.R;
+        public static readonly Chromaticity G = AcesAp0.G;
+        public static readonly Chromaticity B = AcesAp0.B;
+        public static readonly WhitePoint WhitePoint = Aces;
+        public static double FromLinear(double linear) => linear;
+        public static double ToLinear(double nonlinear) => nonlinear;
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ACES 2065-1");
+    }
+    
+    // https://docs.acescentral.com/specifications/acescg/ · https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
+    // ACEScg is linear (i.e. gamma of 1)
+    public static class Acescg
+    {
+        public static readonly Chromaticity R = AcesAp1.R;
+        public static readonly Chromaticity G = AcesAp1.G;
+        public static readonly Chromaticity B = AcesAp1.B;
+        public static readonly WhitePoint WhitePoint = Aces;
+        public static double FromLinear(double linear) => linear;
+        public static double ToLinear(double nonlinear) => nonlinear;
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ACEScg");
+    }
+    
+    // https://docs.acescentral.com/specifications/acescct/ · https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
+    public static class Acescct
+    {
+        public static readonly Chromaticity R = AcesAp1.R;
+        public static readonly Chromaticity G = AcesAp1.G;
+        public static readonly Chromaticity B = AcesAp1.B;
+        public static readonly WhitePoint WhitePoint = Aces;
+        
+        internal static readonly double MaxLinearValue = 65504;
+        
+        public static double FromLinear(double linear)
+        {
+            return linear switch
+            {
+                <= 0.0078125 => 10.5402377416545 * linear + 0.0729055341958355,
+                _ => (Log2(linear) + 9.72) / 17.52
+            };
+        }
+        
+        public static double ToLinear(double nonlinear)
+        {
+            const double threshold = (15.999295387023411 + 9.72) / 17.52; // 15.999295387023411 = Log2(65504)
+            if (double.IsNaN(nonlinear)) return double.NaN;
+            return nonlinear switch
+            {
+                <= 0.155251141552511 => (nonlinear - 0.0729055341958355) / 10.5402377416545,
+                < threshold => Math.Pow(2, nonlinear * 17.52 - 9.72),
+                _ => MaxLinearValue
+            };
+        }
+        
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ACEScct");
+    }
+    
+    // https://docs.acescentral.com/specifications/acescc/ · https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
+    public static class Acescc
+    {
+        public static readonly Chromaticity R = AcesAp1.R;
+        public static readonly Chromaticity G = AcesAp1.G;
+        public static readonly Chromaticity B = AcesAp1.B;
+        public static readonly WhitePoint WhitePoint = Aces;
+        
+        internal static readonly double MinNonlinearValue = (Log2(Math.Pow(2, -16)) + 9.72) / 17.52;
+        internal static readonly double MaxLinearValue = 65504;
+        
+        public static double FromLinear(double linear)
+        {
+            const double threshold = 0.000030517578125; // Math.Pow(2, -15)
+            return linear switch
+            {
+                <= 0 => MinNonlinearValue,
+                < threshold => (Log2(Math.Pow(2, -16) + linear * 0.5) + 9.72) / 17.52,
+                _ => (Log2(linear) + 9.72) / 17.52
+            };
+        }
+        
+        public static double ToLinear(double nonlinear)
+        {
+            const double threshold = (15.999295387023411 + 9.72) / 17.52; // 15.999295387023411 = Log2(65504)
+            if (double.IsNaN(nonlinear)) return double.NaN;
+            return nonlinear switch
+            {
+                <= (9.72 - 15) / 17.52 => (Math.Pow(2, nonlinear * 17.52 - 9.72) - Math.Pow(2, -16)) * 2,
+                < threshold => Math.Pow(2, nonlinear * 17.52 - 9.72),
+                _ => MaxLinearValue
+            };
+        }
+        
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "ACEScc");
+    }
+    
     // http://doi.org/10.1889/1.2433175 · https://en.wikipedia.org/wiki/XvYCC
     // linear transfer functions are an extended form of Rec. 2020; uses the full alpha & beta values, otherwise roundtrip less reliable
     public static class XvYcc
@@ -348,6 +445,7 @@ public static class RgbModels
     private static readonly WhitePoint D65 = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     private static readonly WhitePoint D50 = Illuminant.D50.GetWhitePoint(Observer.Degree2);
     private static readonly WhitePoint C = Illuminant.C.GetWhitePoint(Observer.Degree2);
+    private static readonly WhitePoint Aces = new Chromaticity(0.32168, 0.33767).ToWhitePoint();
     
     private static double SimpleGamma(double linear, double gamma)
     {
@@ -358,6 +456,8 @@ public static class RgbModels
     {
         return Companding.ReflectWhenNegative(nonlinear, value => Companding.InverseGamma(value, gamma));
     }
+    
+    private static double Log2(double x) => Math.Log(x, 2);
     
     private static class Rec470SystemNotM
     {
@@ -392,5 +492,19 @@ public static class RgbModels
         internal static readonly Chromaticity R = SmpteC.R;
         internal static readonly Chromaticity G = SmpteC.G;
         internal static readonly Chromaticity B = SmpteC.B;
+    }
+    
+    private static class AcesAp0
+    {
+        internal static readonly Chromaticity R = new(0.7347, 0.2653);
+        internal static readonly Chromaticity G = new(0.0000, 1.0000);
+        internal static readonly Chromaticity B = new(0.0001, -0.0770);
+    }
+    
+    private static class AcesAp1
+    {
+        internal static readonly Chromaticity R = new(0.713, 0.293);
+        internal static readonly Chromaticity G = new(0.165, 0.830);
+        internal static readonly Chromaticity B = new(0.128, 0.044);
     }
 }

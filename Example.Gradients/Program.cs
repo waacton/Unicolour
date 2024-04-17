@@ -66,6 +66,9 @@ void ColourSpaces()
             Utils.Draw(("JzCzHz", text), columnWidth, rowHeight, GetColour(ColourSpace.Jzczhz)),
             Utils.Draw(("OKLAB", text), columnWidth, rowHeight, GetColour(ColourSpace.Oklab)),
             Utils.Draw(("OKLCH", text), columnWidth, rowHeight, GetColour(ColourSpace.Oklch)),
+            Utils.Draw(("OKHSV", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhsv)),
+            Utils.Draw(("OKHSL", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhsl)),
+            Utils.Draw(("OKHWB", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhwb)),
             Utils.Draw(("CAM02", text), columnWidth, rowHeight, GetColour(ColourSpace.Cam02)),
             Utils.Draw(("CAM16", text), columnWidth, rowHeight, GetColour(ColourSpace.Cam16)),
             Utils.Draw(("HCT", text), columnWidth, rowHeight, GetColour(ColourSpace.Hct))

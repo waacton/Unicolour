@@ -9,8 +9,8 @@ public class MixHeritageTests
 {
     private static readonly List<ColourSpace> HuedSpaces = new()
     {
-        ColourSpace.Hsb, ColourSpace.Hsl, ColourSpace.Hwb, ColourSpace.Lchab, ColourSpace.Lchuv, 
-        ColourSpace.Hsluv, ColourSpace.Hpluv, ColourSpace.Jzczhz, ColourSpace.Oklch, ColourSpace.Hct
+        ColourSpace.Hsb, ColourSpace.Hsl, ColourSpace.Hwb, ColourSpace.Lchab, ColourSpace.Lchuv, ColourSpace.Hsluv, ColourSpace.Hpluv,
+        ColourSpace.Jzczhz, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Hct
     };
 
     private static readonly List<ColourSpace> NonHuedSpaces = TestUtils.AllColourSpaces.Except(HuedSpaces).ToList();

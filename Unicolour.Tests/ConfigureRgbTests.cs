@@ -6,18 +6,11 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class ConfigureRgbTests
 {
+    // many of these test values come from sources that use slightly different white point values
+    // which introduces errors during the XYZ chromatic adaptation to convert from one RGB config to another
     private const double Tolerance = 0.005;
-
-    // https://en.wikipedia.org/wiki/Academy_Color_Encoding_System
-    private static readonly RgbConfiguration AcescgRgbConfig = new(
-        new(0.713, 0.293),
-        new(0.165, 0.830),
-        new(0.128, 0.044), 
-        new Chromaticity(0.32168, 0.33767).ToWhitePoint(1.0), // ACES not based on an illuminant
-        value => value, // ACEScg is linear, no companding
-        value => value
-    );
     
+    // example of an RGB model that is not predefined in Unicolour
     // https://en.wikipedia.org/wiki/Wide-gamut_RGB_color_space
     private static readonly RgbConfiguration WideGamutRgbConfig = new(
         new(0.7347, 0.2653),
@@ -64,6 +57,38 @@ public class ConfigureRgbTests
         new TestCaseData((-0.589774, -0.037691, 1.068050), RgbConfiguration.ProPhoto, (0.0, 0.0, 1.0)).SetName("sRGB ↔ ProPhoto (Blue)"),
         new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.ProPhoto, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ ProPhoto (NaN)"),
         
+        new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.Aces20651, (0.43963, 0.08978, 0.01754)).SetName("sRGB (Red) ↔ ACES2065-1"),
+        new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.Aces20651, (0.38299, 0.81344, 0.11155)).SetName("sRGB (Green) ↔ ACES2065-1"),
+        new TestCaseData((0.0, 0.0, 1.0), RgbConfiguration.Aces20651, (0.17738, 0.09678, 0.87091)).SetName("sRGB (Blue) ↔ ACES2065-1"),
+        new TestCaseData((1.49604, -0.56246, -0.13027), RgbConfiguration.Aces20651, (1.0, 0.0, 0.0)).SetName("sRGB ↔ ACES2065-1 (Red)"), 
+        new TestCaseData((-1.05681, 1.14887, -0.42752), RgbConfiguration.Aces20651, (0.0, 1.0, 0.0)).SetName("sRGB ↔ ACES2065-1 (Green)"),
+        new TestCaseData((-0.65576, -0.34279, 1.07066), RgbConfiguration.Aces20651, (0.0, 0.0, 1.0)).SetName("sRGB ↔ ACES2065-1 (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.Aces20651, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ ACES2065-1 (NaN)"),
+        
+        new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.Acescg, (0.61310, 0.07019, 0.02062)).SetName("sRGB (Red) ↔ ACEScg"),
+        new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.Acescg, (0.33952, 0.91635, 0.10957)).SetName("sRGB (Green) ↔ ACEScg"),
+        new TestCaseData((0.0, 0.0, 1.0), RgbConfiguration.Acescg, (0.04738, 0.01345, 0.86981)).SetName("sRGB (Blue) ↔ ACEScg"),
+        new TestCaseData((1.26268, -0.39625, -0.16803), RgbConfiguration.Acescg, (1.0, 0.0, 0.0)).SetName("sRGB ↔ ACEScg (Red)"), 
+        new TestCaseData((-0.81051, 1.05953, -0.39439), RgbConfiguration.Acescg, (0.0, 1.0, 0.0)).SetName("sRGB ↔ ACEScg (Green)"),
+        new TestCaseData((-0.31948, -0.10334, 1.06446), RgbConfiguration.Acescg, (0.0, 0.0, 1.0)).SetName("sRGB ↔ ACEScg (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.Acescg, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ ACEScg (NaN)"),
+            
+        new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.Acescct, (0.51451, 0.33604, 0.23515)).SetName("sRGB (Red) ↔ ACEScct"),
+        new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.Acescct, (0.46584, 0.54760, 0.37271)).SetName("sRGB (Green) ↔ ACEScct"),
+        new TestCaseData((0.0, 0.0, 1.0), RgbConfiguration.Acescct, (0.30368, 0.20000, 0.54331)).SetName("sRGB (Blue) ↔ ACEScct"),
+        new TestCaseData((0.94593, -0.30309, -0.14919), RgbConfiguration.Acescct, (0.5, 0.0, 0.0)).SetName("sRGB ↔ ACEScct (Red)"), 
+        new TestCaseData((-0.61043, 0.79024, -0.30175), RgbConfiguration.Acescct, (0.0, 0.5, 0.0)).SetName("sRGB ↔ ACEScct (Green)"),
+        new TestCaseData((-0.24854, -0.11444, 0.79403), RgbConfiguration.Acescct, (0.0, 0.0, 0.5)).SetName("sRGB ↔ ACEScct (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.Acescct, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ ACEScct (NaN)"),
+        
+        new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.Acescc, (0.51451, 0.33604, 0.23515)).SetName("sRGB (Red) ↔ ACEScc"),
+        new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.Acescc, (0.46584, 0.54760, 0.37271)).SetName("sRGB (Green) ↔ ACEScc"),
+        new TestCaseData((0.0, 0.0, 1.0), RgbConfiguration.Acescc, (0.30368, 0.20000, 0.54331)).SetName("sRGB (Blue) ↔ ACEScc"),
+        new TestCaseData((0.94322, -0.28412, -0.10689), RgbConfiguration.Acescc, (0.5, 0.0, 0.0)).SetName("sRGB ↔ ACEScc (Red)"), 
+        new TestCaseData((-0.59929, 0.78955, -0.28269), RgbConfiguration.Acescc, (0.0, 0.5, 0.0)).SetName("sRGB ↔ ACEScc (Green)"),
+        new TestCaseData((-0.22522, -0.05314, 0.79329), RgbConfiguration.Acescc, (0.0, 0.0, 0.5)).SetName("sRGB ↔ ACEScc (Blue)"),
+        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.Acescc, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ ACEScc (NaN)"),
+        
         // same chromaticity coordinates as sRGB
         new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.Rec709, (1.0, 0.0, 0.0)).SetName("sRGB (Red) ↔ Rec. 709"),
         new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.Rec709, (0.0, 1.0, 0.0)).SetName("sRGB (Green) ↔ Rec. 709"),
@@ -105,7 +130,7 @@ public class ConfigureRgbTests
         new TestCaseData((0.101597, 0.135451, 1.002629), RgbConfiguration.NtscSmpteC, (0.0, 0.0, 1.0)).SetName("sRGB ↔ NTSC SMPTE-C (Blue)"),
         new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.NtscSmpteC, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ NTSC SMPTE-C (NaN)"),
     };
-    
+
     [TestCaseSource(nameof(StandardRgbLookup))]
     public void StandardRgbToOtherModel((double r, double g, double b) standardTriplet, RgbConfiguration rgbConfig, (double r, double g, double b) otherTriplet)
     {
@@ -198,7 +223,7 @@ public class ConfigureRgbTests
     public void XyzD65ToAcesRgbD60()
     {
         var d65XyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
-        var config = new Configuration(AcescgRgbConfig, d65XyzConfig);
+        var config = new Configuration(RgbConfiguration.Acescg, d65XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.485665, 0.345912, 0.817454);
         var unicolourLab = new Unicolour(config, ColourSpace.Lab, 65.4291, 48.7467, -41.3660);
@@ -210,7 +235,7 @@ public class ConfigureRgbTests
     public void XyzD50ToAcesRgbD60()
     {
         var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
-        var config = new Configuration(AcescgRgbConfig, d50XyzConfig);
+        var config = new Configuration(RgbConfiguration.Acescg, d50XyzConfig);
         var expectedRgb = new ColourTriplet(0.5, 0.25, 0.75);
         var unicolourXyz = new Unicolour(config, ColourSpace.Xyz, 0.475850, 0.343035, 0.615342);
         var unicolourLab = new Unicolour(config, ColourSpace.Lab, 65.2028, 45.1028, -41.3650);

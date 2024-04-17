@@ -96,6 +96,15 @@ public class NotNumberTests
     public void Oklch(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Oklch, l, c, h));
     
     [TestCaseSource(nameof(testCases))]
+    public void Okhsv(double h, double s, double v) => AssertUnicolour(new(ColourSpace.Okhsv, h, s, v));
+
+    [TestCaseSource(nameof(testCases))]
+    public void Okhsl(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Okhsl, h, s, l));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Okhwb(double h, double w, double b) => AssertUnicolour(new(ColourSpace.Okhwb, h, w, b));
+    
+    [TestCaseSource(nameof(testCases))]
     public void Cam02(double j, double a, double b) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b));
     
     [TestCaseSource(nameof(testCases))]

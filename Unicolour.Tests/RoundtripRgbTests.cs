@@ -11,8 +11,8 @@ public class RoundtripRgbTests
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
     public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.NegativeRgbTriplets))]
-    public void ViaRgbLinearNegative(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.UnboundRgbTriplets))]
+    public void ViaRgbLinearUnbound(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
     
     // testing RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
     [Test, Combinatorial]
@@ -21,10 +21,10 @@ public class RoundtripRgbTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
         => AssertViaRgbLinear(triplet, rgbConfig);
     
-    // testing negative RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
+    // testing unbound RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
     [Test, Combinatorial]
-    public void ViaRgbLinearNegativeDifferentConfig(
-        [ValueSource(typeof(RandomColours), nameof(RandomColours.NegativeRgbTripletsSubset))] ColourTriplet triplet,
+    public void ViaRgbLinearUnboundDifferentConfig(
+        [ValueSource(typeof(RandomColours), nameof(RandomColours.UnboundRgbTripletsSubset))] ColourTriplet triplet,
         [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
         => AssertViaRgbLinear(triplet, rgbConfig);
     
@@ -36,6 +36,24 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var rgbLinear = Rgb.ToRgbLinear(original, rgbConfig);
         var roundtrip = Rgb.FromRgbLinear(rgbLinear, rgbConfig);
+        
+        // ACEScc is not fully roundtrip compatible as it does not support linear <= 0 or nonlinear >= ~1.468
+        if (rgbConfig == RgbConfiguration.Acescc)
+        {
+            var lower = RgbModels.Acescc.MinNonlinearValue;
+            var upper = RgbModels.Acescc.FromLinear(RgbModels.Acescc.MaxLinearValue);
+            AssertBoundedRoundtrip(original, roundtrip, lower, upper);
+            return;
+        }
+
+        // ACEScct is not fully roundtrip compatible as it does not support nonlinear >= ~1.468
+        if (rgbConfig == RgbConfiguration.Acescct)
+        {
+            var upper = RgbModels.Acescct.FromLinear(RgbModels.Acescct.MaxLinearValue);
+            AssertBoundedRoundtrip(original, roundtrip, double.MinValue, upper);
+            return;
+        }
+        
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
@@ -101,5 +119,11 @@ public class RoundtripRgbTests
         var cmy = Cmy.FromRgb(original);
         var roundtrip = Cmy.ToRgb(cmy);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    private static void AssertBoundedRoundtrip(Rgb original, Rgb roundtrip, double lower, double upper)
+    {
+        var boundOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
+        TestUtils.AssertTriplet(roundtrip.Triplet, boundOriginal.Triplet, Tolerance);
     }
 }

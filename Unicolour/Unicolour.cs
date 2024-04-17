@@ -27,6 +27,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Jzczhz> jzczhz;
     private readonly Lazy<Oklab> oklab;
     private readonly Lazy<Oklch> oklch;
+    private readonly Lazy<Okhsv> okhsv;
+    private readonly Lazy<Okhsl> okhsl;
+    private readonly Lazy<Okhwb> okhwb;
     private readonly Lazy<Cam02> cam02;
     private readonly Lazy<Cam16> cam16;
     private readonly Lazy<Hct> hct;
@@ -61,6 +64,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Jzczhz Jzczhz => jzczhz.Value;
     public Oklab Oklab => oklab.Value;
     public Oklch Oklch => oklch.Value;
+    public Okhsv Okhsv => okhsv.Value;
+    public Okhsl Okhsl => okhsl.Value;
+    public Okhwb Okhwb => okhwb.Value;
     public Cam02 Cam02 => cam02.Value;
     public Cam16 Cam16 => cam16.Value;
     public Hct Hct => hct.Value;
@@ -118,6 +124,9 @@ public partial class Unicolour : IEquatable<Unicolour>
         jzczhz = new Lazy<Jzczhz>(EvaluateJzczhz);
         oklab = new Lazy<Oklab>(EvaluateOklab);
         oklch = new Lazy<Oklch>(EvaluateOklch);
+        okhsv = new Lazy<Okhsv>(EvaluateOkhsv);
+        okhsl = new Lazy<Okhsl>(EvaluateOkhsl);
+        okhwb = new Lazy<Okhwb>(EvaluateOkhwb);
         cam02 = new Lazy<Cam02>(EvaluateCam02);
         cam16 = new Lazy<Cam16>(EvaluateCam16);
         hct = new Lazy<Hct>(EvaluateHct);

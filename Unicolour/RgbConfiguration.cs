@@ -7,6 +7,10 @@ public class RgbConfiguration
     public static readonly RgbConfiguration Rec2020 = RgbModels.Rec2020.RgbConfiguration;
     public static readonly RgbConfiguration A98 = RgbModels.A98.RgbConfiguration;
     public static readonly RgbConfiguration ProPhoto = RgbModels.ProPhoto.RgbConfiguration;
+    public static readonly RgbConfiguration Aces20651 = RgbModels.Aces20651.RgbConfiguration;
+    public static readonly RgbConfiguration Acescg = RgbModels.Acescg.RgbConfiguration;
+    public static readonly RgbConfiguration Acescct = RgbModels.Acescct.RgbConfiguration;
+    public static readonly RgbConfiguration Acescc = RgbModels.Acescc.RgbConfiguration;
     public static readonly RgbConfiguration Rec601Line625 = RgbModels.Rec601Line625.RgbConfiguration;
     public static readonly RgbConfiguration Rec601Line525 = RgbModels.Rec601Line525.RgbConfiguration;
     public static readonly RgbConfiguration Rec709 = RgbModels.Rec709.RgbConfiguration;

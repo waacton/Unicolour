@@ -36,25 +36,32 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> JzczhzTriplets = new();
     public static readonly List<ColourTriplet> OklabTriplets = new();
     public static readonly List<ColourTriplet> OklchTriplets = new();
+    public static readonly List<ColourTriplet> OkhsvTriplets = new();
+    public static readonly List<ColourTriplet> OkhslTriplets = new();
+    public static readonly List<ColourTriplet> OkhwbTriplets = new();
     public static readonly List<ColourTriplet> Cam02Triplets = new();
     public static readonly List<ColourTriplet> Cam16Triplets = new();
     public static readonly List<ColourTriplet> HctTriplets = new();
     public static readonly List<Temperature> Temperatures = new();
     public static readonly List<Chromaticity> Chromaticities = new();
+
+    private static double UnboundRgb(double x) => Random.Next(0, 2) == 0 ? -x : x + 1;
+    private static double UnboundRgb255(double x) => Random.Next(0, 2) == 0 ? -x : x + 255;
+    private static ColourTriplet ToUnboundRgb(ColourTriplet triplet) => new(UnboundRgb(triplet.First), UnboundRgb(triplet.Second), UnboundRgb(triplet.Third));
+    private static ColourTriplet ToUnboundRgb255(ColourTriplet triplet) => new(UnboundRgb255(triplet.First), UnboundRgb255(triplet.Second), UnboundRgb255(triplet.Third));
     
-    private static ColourTriplet ToNegative(ColourTriplet triplet) => new(-triplet.First, -triplet.Second, -triplet.Third);
-    public static List<ColourTriplet> NegativeRgb255Triplets => Rgb255Triplets.Select(ToNegative).ToList();
-    public static List<ColourTriplet> NegativeRgbTriplets => RgbTriplets.Select(ToNegative).ToList();
-    public static List<ColourTriplet> NegativeRgbLinearTriplets => RgbLinearTriplets.Select(ToNegative).ToList();
+    public static List<ColourTriplet> UnboundRgb255Triplets => Rgb255Triplets.Select(ToUnboundRgb255).ToList();
+    public static List<ColourTriplet> UnboundRgbTriplets => RgbTriplets.Select(ToUnboundRgb).ToList();
+    public static List<ColourTriplet> UnboundRgbLinearTriplets => RgbLinearTriplets.Select(ToUnboundRgb).ToList();
     
     public static List<ColourTriplet> Rgb255TripletsSubset => Rgb255Triplets.Take(100).ToList();
-    public static List<ColourTriplet> NegativeRgb255TripletsSubset => NegativeRgb255Triplets.Take(100).ToList();
+    public static List<ColourTriplet> UnboundRgb255TripletsSubset => UnboundRgb255Triplets.Take(100).ToList();
     
     public static List<ColourTriplet> RgbTripletsSubset => RgbTriplets.Take(100).ToList();
-    public static List<ColourTriplet> NegativeRgbTripletsSubset => NegativeRgbTriplets.Take(100).ToList();
+    public static List<ColourTriplet> UnboundRgbTripletsSubset => UnboundRgbTriplets.Take(100).ToList();
     
     public static List<ColourTriplet> RgbLinearTripletsSubset => RgbLinearTriplets.Take(100).ToList();
-    public static List<ColourTriplet> NegativeRgbLinearTripletsSubset => NegativeRgbLinearTriplets.Take(100).ToList();
+    public static List<ColourTriplet> UnboundRgbLinearTripletsSubset => UnboundRgbLinearTriplets.Take(100).ToList();
     
     public static List<ColourTriplet> YpbprTripletsSubset => YpbprTriplets.Take(100).ToList();
     public static List<ColourTriplet> YcbcrTripletsSubset => YcbcrTriplets.Take(100).ToList();
@@ -91,6 +98,9 @@ internal static class RandomColours
             JzczhzTriplets.Add(Jzczhz());
             OklabTriplets.Add(Oklab());
             OklchTriplets.Add(Oklch());
+            OkhsvTriplets.Add(Okhsv());
+            OkhslTriplets.Add(Okhsl());
+            OkhwbTriplets.Add(Okhwb());
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
             HctTriplets.Add(Hct());
@@ -130,6 +140,9 @@ internal static class RandomColours
             ColourSpace.Jzczhz => Jzczhz(),
             ColourSpace.Oklab => Oklab(),
             ColourSpace.Oklch => Oklch(),
+            ColourSpace.Okhsv => Okhsv(),
+            ColourSpace.Okhsl => Okhsl(),
+            ColourSpace.Okhwb => Okhwb(),
             ColourSpace.Cam02 => Cam02(),
             ColourSpace.Cam16 => Cam16(),
             ColourSpace.Hct => Hct(),
@@ -164,6 +177,9 @@ internal static class RandomColours
     private static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values
     private static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
     private static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
+    private static ColourTriplet Okhsv() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Okhsl() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Okhwb() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 

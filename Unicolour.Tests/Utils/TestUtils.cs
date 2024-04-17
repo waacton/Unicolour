@@ -38,6 +38,9 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Jzczhz),
         new TestCaseData(ColourSpace.Oklab),
         new TestCaseData(ColourSpace.Oklch),
+        new TestCaseData(ColourSpace.Okhsl),
+        new TestCaseData(ColourSpace.Okhsv),
+        new TestCaseData(ColourSpace.Okhwb),
         new TestCaseData(ColourSpace.Cam02),
         new TestCaseData(ColourSpace.Cam16),
         new TestCaseData(ColourSpace.Hct)
@@ -84,6 +87,10 @@ internal static class TestUtils
         RgbConfiguration.A98,
         RgbConfiguration.ProPhoto,
         RgbConfiguration.XvYcc,
+        RgbConfiguration.Aces20651,
+        RgbConfiguration.Acescg,
+        RgbConfiguration.Acescct,
+        RgbConfiguration.Acescc,
         RgbConfiguration.Rec601Line625,
         RgbConfiguration.Rec601Line525,
         RgbConfiguration.Rec709,
@@ -187,6 +194,9 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Luv);
             AccessProperty(() => unicolour.Oklab);
             AccessProperty(() => unicolour.Oklch);
+            AccessProperty(() => unicolour.Okhsl);
+            AccessProperty(() => unicolour.Okhsv);
+            AccessProperty(() => unicolour.Okhwb);
             AccessProperty(() => unicolour.RelativeLuminance);
             AccessProperty(() => unicolour.Rgb);
             AccessProperty(() => unicolour.Rgb.Byte255);
@@ -264,6 +274,9 @@ internal static class TestUtils
         { typeof(Jzczhz), ColourSpace.Jzczhz },
         { typeof(Oklab), ColourSpace.Oklab },
         { typeof(Oklch), ColourSpace.Oklch },
+        { typeof(Okhsv), ColourSpace.Okhsv },
+        { typeof(Okhsl), ColourSpace.Okhsl },
+        { typeof(Okhwb), ColourSpace.Okhwb },
         { typeof(Cam02), ColourSpace.Cam02 },
         { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Hct), ColourSpace.Hct }

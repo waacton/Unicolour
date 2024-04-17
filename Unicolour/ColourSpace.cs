@@ -28,6 +28,9 @@ public enum ColourSpace
     Jzczhz,
     Oklab,
     Oklch,
+    Okhsv,
+    Okhsl,
+    Okhwb,
     Cam02,
     Cam16,
     Hct

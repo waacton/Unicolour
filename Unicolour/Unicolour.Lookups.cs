@@ -32,6 +32,9 @@ public partial class Unicolour
             ColourSpace.Jzczhz => Jzczhz,
             ColourSpace.Oklab => Oklab,
             ColourSpace.Oklch => Oklch,
+            ColourSpace.Okhsv => Okhsv,
+            ColourSpace.Okhsl => Okhsl,
+            ColourSpace.Okhwb => Okhwb,
             ColourSpace.Cam02 => Cam02,
             ColourSpace.Cam16 => Cam16,
             ColourSpace.Hct => Hct,
@@ -70,6 +73,9 @@ public partial class Unicolour
             ColourSpace.Jzczhz => new Jzczhz(first, second, third, heritage),
             ColourSpace.Oklab => new Oklab(first, second, third, heritage),
             ColourSpace.Oklch => new Oklch(first, second, third, heritage),
+            ColourSpace.Okhsv => new Okhsv(first, second, third, heritage),
+            ColourSpace.Okhsl => new Okhsl(first, second, third, heritage),
+            ColourSpace.Okhwb => new Okhwb(first, second, third, heritage),
             ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Hct => new Hct(first, second, third, heritage),
@@ -188,8 +194,11 @@ public partial class Unicolour
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.IctcpScalar, Config.Xyz),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
             ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
-            ColourSpace.Oklab => Oklab.ToXyz(Oklab, Config.Xyz),
-            ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz),
+            ColourSpace.Oklab => Oklab.ToXyz(Oklab, Config.Xyz, Config.Rgb),
+            ColourSpace.Oklch => Oklab.ToXyz(Oklab, Config.Xyz, Config.Rgb),
+            ColourSpace.Okhsv => Oklab.ToXyz(Oklab, Config.Xyz, Config.Rgb),
+            ColourSpace.Okhsl => Oklab.ToXyz(Oklab, Config.Xyz, Config.Rgb),
+            ColourSpace.Okhwb => Oklab.ToXyz(Oklab, Config.Xyz, Config.Rgb),
             ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Config.Cam, Config.Xyz),
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Config.Cam, Config.Xyz),
             ColourSpace.Hct => Hct.ToXyz(Hct, Config.Xyz),
@@ -366,7 +375,10 @@ public partial class Unicolour
         {
             ColourSpace.Oklab => (Oklab)InitialRepresentation,
             ColourSpace.Oklch => Oklch.ToOklab(Oklch),
-            _ => Oklab.FromXyz(Xyz, Config.Xyz)
+            ColourSpace.Okhsv => Okhsv.ToOklab(Okhsv, Config.Xyz, Config.Rgb),
+            ColourSpace.Okhsl => Okhsl.ToOklab(Okhsl, Config.Xyz, Config.Rgb),
+            ColourSpace.Okhwb => Okhsv.ToOklab(Okhsv, Config.Xyz, Config.Rgb),
+            _ => Oklab.FromXyz(Xyz, Config.Xyz, Config.Rgb)
         };
     }
 
@@ -376,6 +388,34 @@ public partial class Unicolour
         {
             ColourSpace.Oklch => (Oklch)InitialRepresentation,
             _ => Oklch.FromOklab(Oklab)
+        };
+    }
+    
+    private Okhsv EvaluateOkhsv()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Okhsv => (Okhsv)InitialRepresentation,
+            ColourSpace.Okhwb => Okhwb.ToOkhsv(Okhwb),
+            _ => Okhsv.FromOklab(Oklab, Config.Xyz, Config.Rgb)
+        };
+    }
+    
+    private Okhsl EvaluateOkhsl()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Okhsl => (Okhsl)InitialRepresentation,
+            _ => Okhsl.FromOklab(Oklab, Config.Xyz, Config.Rgb)
+        };
+    }
+    
+    private Okhwb EvaluateOkhwb()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Okhwb => (Okhwb)InitialRepresentation,
+            _ => Okhwb.FromOkhsv(Okhsv)
         };
     }
     

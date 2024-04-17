@@ -297,6 +297,57 @@ public class RangeClampTests
     }
     
     [Test]
+    public void OkhsvRange()
+    {
+        Range hRange = new(0.0, 360.0);
+        Range sRange = new(0.0, 1.0);
+        Range bRange = new(0.0, 1.0);
+        var beyondMax = new Okhsv(hRange.BeyondMax, sRange.BeyondMax, bRange.BeyondMax);
+        var beyondMin = new Okhsv(hRange.BeyondMin, sRange.BeyondMin, bRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedV, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
+    public void OkhslRange()
+    {
+        Range hRange = new(0.0, 360.0);
+        Range sRange = new(0.0, 1.0);
+        Range lRange = new(0.0, 1.0);
+        var beyondMax = new Okhsl(hRange.BeyondMax, sRange.BeyondMax, lRange.BeyondMax);
+        var beyondMin = new Okhsl(hRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedL, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
+    public void OkhwbRange()
+    {
+        Range hRange = new(0.0, 360.0);
+        Range wRange = new(0.0, 1.0);
+        Range bRange = new(0.0, 1.0);
+        var beyondMax = new Okhwb(hRange.BeyondMax, wRange.BeyondMax, bRange.BeyondMax);
+        var beyondMin = new Okhwb(hRange.BeyondMin, wRange.BeyondMin, bRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedW, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedB, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
     public void HctRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);

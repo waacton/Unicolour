@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Wacton.Unicolour.Example.Web",
   "resources": {
-    "hash": "sha256-4XShKx3bEb8bfrJ4jEDbCA1xgMlfi/OW0spJXwQQrQw=",
+    "hash": "sha256-M1ghSzO/WFYo/MebyfYGiVCXw50+cHcWYIMkoyj5+MA=",
     "jsModuleNative": {
       "dotnet.native.8.0.3.ir284go4ny.js": "sha256-D4sYBYmDfH/YekgYRgX959/2RG6k28sJSHmcsn+iikk="
     },
@@ -207,8 +207,8 @@
       "System.Xml.XmlSerializer.wasm": "sha256-qu7VGSlaZOqgt5JZMsE/L8ilWK5lt4teZLY9QKCkJyY=",
       "System.Xml.XPath.wasm": "sha256-tUNAS6Z4TprhskLHOnOya2pco3KDsCcBMfZ+htb0HBU=",
       "System.Xml.XPath.XDocument.wasm": "sha256-+MKQ87TsMm829Otiz6wsdCFe0uZLksddhf2MXc9bIUk=",
-      "Wacton.Unicolour.Example.Web.wasm": "sha256-vszeHs4uP/8fOaQ0gvfiNDmKOgIewDQRHXFGQbg7aVE=",
-      "Wacton.Unicolour.wasm": "sha256-CXxgrwod/FbXYVGYObcZdraKtzYIBVq6eUyQtLWlJfw=",
+      "Wacton.Unicolour.Example.Web.wasm": "sha256-awFvaZ54TldbckD0tessb4IOGceDCUAG8w/MItmAdgw=",
+      "Wacton.Unicolour.wasm": "sha256-U9v+ZH5GWbmiPjYPMZG573LGU64F/GoI1QXNluLQhOU=",
       "WindowsBase.wasm": "sha256-lcr0/6rzYJrl+fMl5kvdeCiSzrQwR47frxhGjlR++DI="
     }
   },

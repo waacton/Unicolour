@@ -319,7 +319,7 @@
         outOfGamut = !currentColour.IsInDisplayGamut;
         
         inGamutCss = Utils.ToCss(currentColour, 100);
-        outGamutCss = Utils.ToCss(currentColour, outOfGamut ? 100 : 50);
+        outGamutCss = Utils.ToCss(currentColour, outOfGamut ? 50 : 100);
 
         var rgbString = conversionError ? "NaN" : currentColour.Rgb.ToString();
         var hexString = outOfGamut ? "#------" : currentColour.Hex;

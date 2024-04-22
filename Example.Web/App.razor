@@ -103,17 +103,11 @@
         letter-spacing: 0.25rem;
     }
     
-    @@media screen and (max-width: 600px) {
-        .title-text {
-            font-size: 1.75rem;
-        }
-    }
-    
     .max-width-wrapper {
         max-width: 720px;
         margin-left: auto;
         margin-right: auto;
-        padding: 64px 64px 0 64px;
+        padding: 64px 32px 0 32px;
     }
     
     .column {
@@ -260,6 +254,16 @@
         font-size: 1rem;
         letter-spacing: 0.05rem;
         white-space: pre;
+    }
+    
+    @@media screen and (max-width: 720px) {
+        .icon {
+            height: 32px;
+        }
+        
+        .title-text {
+            font-size: 1.75rem;
+        }
     }
 </style>
 

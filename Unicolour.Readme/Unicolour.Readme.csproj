@@ -67,6 +67,9 @@
         <None Update="docs\unity-movement.gif">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="docs\web-picker.png">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

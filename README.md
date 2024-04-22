@@ -17,7 +17,7 @@ Unicolour is a .NET library written in C# for working with colour:
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
-See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) created with Unicolour.
+See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a colour picker for any colour space — created with Unicolour.
 
 **Contents**
 1. 🧭 [Overview](#-overview)
@@ -547,7 +547,8 @@ This repository contains projects showing how Unicolour can be used to create:
 2. [Heatmaps of luminance](#heatmaps)
 3. [Diagrams of colour data](#diagrams)
 4. [A colourful console application](#console)
-5. [3D visualisation of colour spaces in Unity](#unity)
+5. [A colour picker web application](#web)
+6. [3D visualisations of colour spaces in Unity](#unity)
 
 ### Gradients
 Example code to create gradient images using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) 
@@ -616,6 +617,16 @@ can be seen in the [Example.Console](Example.Console/Program.cs) project.
 | ![Console application displaying colour information from a hex value, created with Unicolour](docs/console-info.png) |
 |----------------------------------------------------------------------------------------------------------------------|
 | _Console application displaying colour information from a hex value_                                                 |
+
+### Web
+Example code to create a client-side colour picker web application using 🕸️ [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
+can be seen in the [Example.Web](Example.Web) project.
+
+See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
+
+| ![Web application for picking colours in any colour space, created with Unicolour](docs/web-picker.png) |
+|---------------------------------------------------------------------------------------------------------|
+| _Web application for picking colours in any colour space_                                               |
 
 ### Unity
 Example code to create 3D visualisations of colour spaces using 🎮 [Unity](https://unity.com/)

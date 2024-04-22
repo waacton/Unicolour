@@ -1,4 +1,6 @@
 *.html linguist-detectable=false
+*.css linguist-detectable=false
+*.razor linguist-detectable=false
 *.shader linguist-detectable=false
 *.shaders linguist-detectable=false
 *.cginc linguist-detectable=false

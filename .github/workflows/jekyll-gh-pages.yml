@@ -39,8 +39,8 @@ jobs:
       # this is the only other customised part of the default Jekyll workflow
       # which copies the colour-picker app folder which was excluded from Jekyll
       # (because it is a Blazor app and has no business being processed by Jekyll) 
-      # NOTE: the destination folder ./_site/[app-folder] translates to website.xyz/[repo-name]/[app-folder]
-      # so colour-picker/index.html will need to have <base href="/[repo-name]/[app-folder]/" /> i.e.. <base href="/Unicolour/colour-picker/" />
+      # NOTE: the destination folder ./_site/[app-folder] translates to [custom-domain.xyz]/[app-folder]
+      # so /colour-picker/index.html will need to have <base href="/[app-folder]/" /> i.e.. <base href="/colour-picker/" />
       - name: Copy Blazor folder
         run: |
           sudo cp -r ./docs/colour-picker/. ./_site/colour-picker

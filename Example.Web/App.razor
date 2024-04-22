@@ -22,8 +22,7 @@
     <div class="column">
         <div class="column dark-background">
             <div class="colour-space-row">
-                @* flex: 0 1 33% - initial size of 33%, won't grow or shrink *@
-                <select name="colour-spaces" class="monospace" style="flex: 0 0 33%" @onchange="SetColourSpace">
+                <select class="colour-space-select monospace" @onchange="SetColourSpace">
                     @foreach (var colourSpace in ColourLookup.RangeLookup.Keys)
                     {
                         <option value="@colourSpace">@colourSpace</option>
@@ -97,7 +96,7 @@
     }
     
     .title-text {
-        color: @inGamutCss;
+        color: @(conversionError ? light.Hex : inGamutCss);
         font-variant: all-small-caps;
         font-size: 2rem;
         letter-spacing: 0.25rem;
@@ -141,10 +140,14 @@
         background-color: var(--dark);
         color: var(--light);
         width: 100%;
-        height: 2.5rem;
+        height: 3rem;
         border: 1px solid var(--dark);
         border-radius: 0.5rem;
         filter: drop-shadow(0 0 0.05rem var(--light));
+    }
+    
+    .colour-space-select {
+        flex: 0 0 33%;
     }
         
     .slider-wrapper {
@@ -264,6 +267,10 @@
         .title-text {
             font-size: 1.75rem;
         }
+        
+        .colour-space-select {
+            flex: 0 0 50%;
+        }
     }
 </style>
 
@@ -282,6 +289,8 @@
     private readonly Slider slider2 = new(1, 20);
     private readonly Slider slider3 = new(2, 147);
 
+    private bool conversionError;
+    private bool outOfGamut;
     private string inGamutCss = null!;
     private string outGamutCss = null!;
 
@@ -306,11 +315,11 @@
     private void UpdateColour()
     {
         currentColour = new Unicolour(currentSpace, slider1.Value, slider2.Value, slider3.Value);
-        inGamutCss = Utils.ToCss(currentColour, 100);
-        outGamutCss = Utils.ToCss(currentColour, currentColour.IsInDisplayGamut ? 100 : 50);
+        conversionError = Utils.HasConversionError(currentColour);
+        outOfGamut = !currentColour.IsInDisplayGamut;
         
-        var conversionError = Utils.HasConversionError(currentColour);
-        var outOfGamut = !currentColour.IsInDisplayGamut;
+        inGamutCss = Utils.ToCss(currentColour, 100);
+        outGamutCss = Utils.ToCss(currentColour, outOfGamut ? 100 : 50);
 
         var rgbString = conversionError ? "NaN" : currentColour.Rgb.ToString();
         var hexString = outOfGamut ? "#------" : currentColour.Hex;

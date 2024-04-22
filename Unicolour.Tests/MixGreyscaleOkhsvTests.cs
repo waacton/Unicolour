@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 // greyscale Oklab has no hue - shouldn't assume to start at red (0 degrees) when mixing
-// greyscale Oklch has a hue so it should be used (it just can't be seen until there is some saturation & value)
+// greyscale Okhsv has a hue so it should be used (it just can't be seen until there is some saturation & value)
 public class MixGreyscaleOkhsvTests
 {
     [Test]

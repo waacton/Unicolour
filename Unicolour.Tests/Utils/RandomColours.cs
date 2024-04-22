@@ -166,7 +166,7 @@ internal static class RandomColours
     private static ColourTriplet Hsluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
     private static ColourTriplet Hpluv() => new(Rng(0, 360), Rng(0, 100), Rng(0, 100));
     private static ColourTriplet Ypbpr() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
-    private static ColourTriplet Ycbcr() => new(Rng(), Rng(0, 255), Rng(0, 255));
+    private static ColourTriplet Ycbcr() => new(Rng(0, 255), Rng(0, 255), Rng(0, 255));
     private static ColourTriplet Ycgco() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
     private static ColourTriplet Yuv() => new(Rng(), Rng(-0.436, 0.436), Rng(-0.614, 0.614));
     private static ColourTriplet Yiq() => new(Rng(), Rng(-0.595, 0.595), Rng(-0.522, 0.522));

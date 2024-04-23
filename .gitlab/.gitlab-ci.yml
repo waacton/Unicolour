@@ -49,9 +49,6 @@ include:
 
 dependency_scanning:
     stage: 🛃 security-scan
-
-license_scanning:
-    stage: 🛃 security-scan
     
 sast:
     stage: 🛃 security-scan

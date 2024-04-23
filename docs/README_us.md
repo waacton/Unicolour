@@ -17,7 +17,7 @@ Unicolour is a .NET library written in C# for working with color:
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
-See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a color picker for any color space — created with Unicolour.
+See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a color picker for any color space — made with Unicolour.
 
 **Contents**
 1. 🧭 [Overview](#-overview)

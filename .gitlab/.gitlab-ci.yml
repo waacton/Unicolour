@@ -42,6 +42,7 @@ test:
 
 # security scanning
 # https://docs.gitlab.com/ee/user/application_security/#security-scanning-without-auto-devops
+# https://docs.gitlab.com/ee/user/application_security/#using-a-custom-scanning-stage
 include:
     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
     - template: Jobs/SAST.gitlab-ci.yml

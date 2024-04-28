@@ -87,7 +87,7 @@ public class MixGreyscaleOkhsvTests
         AssertTriplet(blackToGrey.Oklab.Triplet, new(Okhsv.ToeInverse(0.25), 0, 0));
         AssertTriplet(whiteToGrey.Oklab.Triplet, new(Okhsv.ToeInverse(0.75), 0, 0));
         
-        // colours created from HSB therefore hue changes
+        // colours created from Okhsv therefore hue changes
         AssertTriplet(blackToWhite.Okhsv.Triplet, new(330, 0, 0.5));
         AssertTriplet(blackToGrey.Okhsv.Triplet, new(50, 0, 0.25));
         AssertTriplet(whiteToGrey.Okhsv.Triplet, new(20, 0, 0.75));

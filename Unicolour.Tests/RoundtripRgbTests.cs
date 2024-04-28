@@ -72,6 +72,15 @@ public class RoundtripRgbTests
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    public void ViaHsi(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
+        var hsi = Hsi.FromRgb(original);
+        var roundtrip = Hsi.ToRgb(hsi);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
     public void ViaYpbpr(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);

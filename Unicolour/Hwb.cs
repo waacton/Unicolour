@@ -30,29 +30,29 @@ public record Hwb : ColourRepresentation
     
     internal static Hwb FromHsb(Hsb hsb)
     {
-        var (hue, s, b) = hsb.ConstrainedTriplet;
-        var whiteness = (1 - s) * b;
-        var blackness = 1 - b;
-        return new Hwb(hue, whiteness, blackness, ColourHeritage.From(hsb));
+        var (h, s, v) = hsb.ConstrainedTriplet;
+        var w = (1 - s) * v;
+        var b = 1 - v;
+        return new Hwb(h, w, b, ColourHeritage.From(hsb));
     }
     
     internal static Hsb ToHsb(Hwb hwb)
     {
-        var (hue, w, b) = hwb.ConstrainedTriplet;
+        var (h, w, b) = hwb.ConstrainedTriplet;
 
-        double brightness;
-        double saturation;
+        double v;
+        double s;
         if (hwb.IsGreyscale)
         {
-            brightness = w / (w + b);
-            saturation = 0;
+            v = w / (w + b);
+            s = 0;
         }
         else
         {
-            brightness = 1 - b;
-            saturation = brightness == 0.0 ? 0 : 1 - w / brightness;
+            v = 1 - b;
+            s = v == 0.0 ? 0 : 1 - w / v;
         }
         
-        return new Hsb(hue, saturation, brightness, ColourHeritage.From(hwb));
+        return new Hsb(h, s, v, ColourHeritage.From(hwb));
     }
 }

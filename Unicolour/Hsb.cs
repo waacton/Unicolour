@@ -36,25 +36,20 @@ public record Hsb : ColourRepresentation
         var xMin = components.Min();
         var chroma = xMax - xMin;
 
-        double hue;
-        if (chroma == 0.0) hue = 0;
-        else if (xMax == r) hue = 60 * (0 + (g - b) / chroma);
-        else if (xMax == g) hue = 60 * (2 + (b - r) / chroma);
-        else if (xMax == b) hue = 60 * (4 + (r - g) / chroma);
-        else hue = double.NaN;
-        var brightness = xMax;
-        var saturation = brightness == 0 ? 0 : chroma / brightness;
-        return new Hsb(hue.Modulo(360.0), saturation, brightness, ColourHeritage.From(rgb));
+        var h = GetHue(r, g, b);
+        var v = xMax;
+        var s = v == 0 ? 0 : chroma / v;
+        return new Hsb(h.Modulo(360.0), s, v, ColourHeritage.From(rgb));
     }
     
     internal static Rgb ToRgb(Hsb hsb)
     {
-        var (hue, saturation, brightness) = hsb.ConstrainedTriplet;
-        var chroma = brightness * saturation;
-        var h = hue / 60;
-        var x = chroma * (1 - Math.Abs(h % 2 - 1));
+        var (h, s, v) = hsb.ConstrainedTriplet;
+        var hPrime = h / 60.0;
+        var chroma = v * s;
+        var x = chroma * (1 - Math.Abs(hPrime % 2 - 1));
 
-        var (r, g, b) = h switch
+        var (r1, g1, b1) = hPrime switch
         {
             < 1 => (chroma, x, 0.0),
             < 2 => (x, chroma, 0.0),
@@ -64,9 +59,23 @@ public record Hsb : ColourRepresentation
             < 6 => (chroma, 0.0, x),
             _ => (0.0, 0.0, 0.0)
         };
+        
+        var m = v - chroma;
+        var (r, g, b) = (r1 + m, g1 + m, b1 + m);
+        return new Rgb(r, g, b, ColourHeritage.From(hsb));
+    }
 
-        var m = brightness - chroma;
-        var (red, green, blue) = (r + m, g + m, b + m);
-        return new Rgb(red, green, blue, ColourHeritage.From(hsb));
+    internal static double GetHue(double r, double g, double b)
+    {
+        var components = new[] { r, g, b };
+        var xMax = components.Max();
+        var xMin = components.Min();
+        var chroma = xMax - xMin;
+
+        if (chroma == 0.0) return 0;
+        if (xMax == r) return 60 * (0 + (g - b) / chroma);
+        if (xMax == g) return 60 * (2 + (b - r) / chroma);
+        if (xMax == b) return 60 * (4 + (r - g) / chroma);
+        return double.NaN;
     }
 }

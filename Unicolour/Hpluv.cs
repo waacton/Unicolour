@@ -30,60 +30,57 @@ public record Hpluv : ColourRepresentation
         
     internal static Hpluv FromLchuv(Lchuv lchuv)
     {
-        var (lchLightness, chroma, hue) = lchuv.ConstrainedTriplet;
-        double saturation;
-        double lightness;
-
-        switch (lchLightness)
+        var (lStar, c, h) = lchuv.ConstrainedTriplet;
+        
+        double s, l;
+        switch (lStar)
         {
             case > 99.9999999:
-                saturation = 0.0;
-                lightness = 100.0;
+                s = 0.0;
+                l = 100.0;
                 break;
             case < 0.00000001:
-                saturation = 0.0;
-                lightness = 0.0;
+                s = 0.0;
+                l = 0.0;
                 break;
             default:
             {
-                var maxChroma = CalculateMaxChroma(lchLightness);
-                saturation = chroma / maxChroma * 100;
-                lightness = lchLightness;
+                var maxC = CalculateMaxChroma(lStar);
+                s = c / maxC * 100;
+                l = lStar;
                 break;
             }
         }
         
-        return new Hpluv(hue, saturation, lightness, ColourHeritage.From(lchuv));
+        return new Hpluv(h, s, l, ColourHeritage.From(lchuv));
     }
     
     internal static Lchuv ToLchuv(Hpluv hpluv)
     {
-        var hue = hpluv.ConstrainedH;
-        var saturation = hpluv.S;
-        var hslLightness = hpluv.L;
-        double lightness;
-        double chroma;
-
-        switch (hslLightness)
+        var (_, s, l) = hpluv.Triplet;
+        var h = hpluv.ConstrainedH;
+        
+        double lStar, c;
+        switch (l)
         {
             case > 99.9999999:
-                lightness = 100.0;
-                chroma = 0.0;
+                lStar = 100.0;
+                c = 0.0;
                 break;
             case < 0.00000001:
-                lightness = 0.0;
-                chroma = 0.0;
+                lStar = 0.0;
+                c = 0.0;
                 break;
             default:
             {
-                var maxChroma = CalculateMaxChroma(hslLightness);
-                chroma = maxChroma / 100 * saturation;
-                lightness = hslLightness;
+                var maxC = CalculateMaxChroma(l);
+                c = maxC / 100 * s;
+                lStar = l;
                 break;
             }
         }
         
-        return new Lchuv(lightness, chroma, hue, ColourHeritage.From(hpluv));
+        return new Lchuv(lStar, c, h, ColourHeritage.From(hpluv));
     }
     
     private static double CalculateMaxChroma(double lightness)

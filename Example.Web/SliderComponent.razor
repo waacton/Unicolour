@@ -1,0 +1,43 @@
+<div class="slider-wrapper">
+    <input id="@Id" class="@($"gradient-{Id}")" type="range" min="@Slider.Min" max="@Slider.Max" step="@Slider.Step" value="@Slider.Value" @oninput="SetValue">
+    <label class="slider-value-text monospace text-on-dark">@Slider.ValueText</label>
+    <label class="slider-axis-text monospace text-on-dark">@Slider.AxisText</label>
+</div>
+
+@* <style> *@
+@*     :root { *@
+@*         --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px); *@
+@*         --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px); *@
+@*     } *@
+@*          *@
+@*     input[type=range]::-webkit-slider-thumb { *@
+@* *@
+@*         opacity: @(Slider.InRange ? "1" : "0"); *@
+@*     } *@
+@*      *@
+@*     input[type=range]::-moz-range-thumb { *@
+@*         opacity: @(Slider.InRange ? "1" : "0"); *@
+@*     } *@
+@*      *@
+@*     @($".gradient-{Id}") { *@
+@*         background-image: linear-gradient(to right, @Slider.CssGradient), linear-gradient(to right, @Slider.CssAlphaGradient), var(--dark-stripes); *@
+@*         background-repeat: no-repeat, repeat, repeat; *@
+@*         background-size: 100% 50%, 100%, 100%; *@
+@*         background-position: center, center, center; *@
+@*     } *@
+@* </style> *@
+
+@code {
+    private string Id { get; } = Guid.NewGuid().ToString();
+    [Parameter] public Slider Slider { get; set; } = null!;
+    [Parameter] public EventCallback OnValueChange { get; set; }
+    
+    private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
+    private void SetValue(ChangeEventArgs args) => SetValue(ParseValue(args));
+
+    private void SetValue(double value)
+    {
+        Slider.Value = value;
+        OnValueChange.InvokeAsync();
+    }
+}

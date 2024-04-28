@@ -1,6 +1,6 @@
 namespace Wacton.Unicolour.Example.Web;
 
-internal class Slider
+public class Slider
 {
     private readonly int index;
     internal double Value { get; set; }

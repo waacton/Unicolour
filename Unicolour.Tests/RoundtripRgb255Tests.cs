@@ -63,6 +63,15 @@ public class RoundtripRgb255Tests
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    public void ViaHsi(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
+        var hsi = Hsi.FromRgb(original);
+        var roundtrip = Hsi.ToRgb(hsi);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
     public void ViaYpbpr(ColourTriplet triplet)
     {

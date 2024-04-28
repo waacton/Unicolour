@@ -8,6 +8,7 @@ public enum ColourSpace
     Hsb,
     Hsl,
     Hwb,
+    Hsi,
     Xyz,
     Xyy,
     Lab,

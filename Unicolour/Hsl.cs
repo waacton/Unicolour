@@ -30,23 +30,23 @@ public record Hsl : ColourRepresentation
     
     internal static Hsl FromHsb(Hsb hsb)
     {
-        var (hue, hsbSaturation, brightness) = hsb.ConstrainedTriplet;
-        var lightness = brightness * (1 - hsbSaturation / 2);
-        var saturation = lightness is > 0.0 and < 1.0
-            ? (brightness - lightness) / Math.Min(lightness, 1 - lightness)
+        var (h, sv, v) = hsb.ConstrainedTriplet;
+        var l = v * (1 - sv / 2);
+        var sl = l is > 0.0 and < 1.0
+            ? (v - l) / Math.Min(l, 1 - l)
             : 0;
 
-        return new Hsl(hue, saturation, lightness, ColourHeritage.From(hsb));
+        return new Hsl(h, sl, l, ColourHeritage.From(hsb));
     }
     
     internal static Hsb ToHsb(Hsl hsl)
     {
-        var (hue, hslSaturation, lightness) = hsl.ConstrainedTriplet;
-        var brightness = lightness + hslSaturation * Math.Min(lightness, 1 - lightness);
-        var saturation = brightness > 0.0
-            ? 2 * (1 - lightness / brightness)
+        var (h, sl, l) = hsl.ConstrainedTriplet;
+        var v = l + sl * Math.Min(l, 1 - l);
+        var sv = v > 0.0
+            ? 2 * (1 - l / v)
             : 0;
 
-        return new Hsb(hue, saturation, brightness, ColourHeritage.From(hsl));
+        return new Hsb(h, sv, v, ColourHeritage.From(hsl));
     }
 }

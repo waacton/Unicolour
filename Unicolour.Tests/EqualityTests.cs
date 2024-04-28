@@ -134,6 +134,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Hex, unicolour2.Hex);
         AssertEqual(unicolour1.Hpluv, unicolour2.Hpluv);
         AssertEqual(unicolour1.Hsb, unicolour2.Hsb);
+        AssertEqual(unicolour1.Hsi, unicolour2.Hsi);
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Hsluv, unicolour2.Hsluv);
         AssertEqual(unicolour1.Hwb, unicolour2.Hwb);

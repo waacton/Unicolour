@@ -12,6 +12,7 @@ public partial class Unicolour
             ColourSpace.Hsb => Hsb,
             ColourSpace.Hsl => Hsl,
             ColourSpace.Hwb => Hwb,
+            ColourSpace.Hsi => Hsi,
             ColourSpace.Xyz => Xyz,
             ColourSpace.Xyy => Xyy,
             ColourSpace.Lab => Lab,
@@ -53,6 +54,7 @@ public partial class Unicolour
             ColourSpace.Hsb => new Hsb(first, second, third, heritage),
             ColourSpace.Hsl => new Hsl(first, second, third, heritage),
             ColourSpace.Hwb => new Hwb(first, second, third, heritage),
+            ColourSpace.Hsi => new Hsi(first, second, third, heritage),
             ColourSpace.Xyz => new Xyz(first, second, third, heritage),
             ColourSpace.Xyy => new Xyy(first, second, third, heritage),
             ColourSpace.Lab => new Lab(first, second, third, heritage),
@@ -109,6 +111,7 @@ public partial class Unicolour
             ColourSpace.Hsb => Hsb.ToRgb(Hsb),
             ColourSpace.Hsl => Hsb.ToRgb(Hsb),
             ColourSpace.Hwb => Hsb.ToRgb(Hsb),
+            ColourSpace.Hsi => Hsi.ToRgb(Hsi),
             ColourSpace.Ypbpr => Ypbpr.ToRgb(Ypbpr, Config.Ybr),
             ColourSpace.Ycbcr => Ypbpr.ToRgb(Ypbpr, Config.Ybr),
             ColourSpace.Ycgco => Ycgco.ToRgb(Ycgco),
@@ -128,6 +131,7 @@ public partial class Unicolour
             ColourSpace.Hsb => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Hsl => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Hwb => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Hsi => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Ypbpr => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Ycbcr => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Ycgco => Rgb.ToRgbLinear(Rgb, Config.Rgb),
@@ -166,7 +170,16 @@ public partial class Unicolour
             _ => Hwb.FromHsb(Hsb)
         };
     }
-
+    
+    private Hsi EvaluateHsi()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Hsi => (Hsi)InitialRepresentation,
+            _ => Hsi.FromRgb(Rgb)
+        };
+    }
+    
     private Xyz EvaluateXyz()
     {
         return InitialColourSpace switch
@@ -177,6 +190,7 @@ public partial class Unicolour
             ColourSpace.Hsb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Hsl => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Hwb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Hsi => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Xyy => Xyy.ToXyz(Xyy),
             ColourSpace.Lab => Lab.ToXyz(Lab, Config.Xyz),
             ColourSpace.Lchab => Lab.ToXyz(Lab, Config.Xyz),

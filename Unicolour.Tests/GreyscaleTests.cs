@@ -112,6 +112,14 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.49999999999, false)]
     public void Hwb(double h, double w, double b, bool expected) => AssertUnicolour(new(ColourSpace.Hwb, h, w, b), expected);
 
+    [TestCase(180.0, 0.0, 0.5, true)]
+    [TestCase(180.0, -0.00000000001, 0.5, true)]
+    [TestCase(180.0, 0.00000000001, 0.5, false)]
+    [TestCase(180.0, 0.5, 0.0, true)]
+    [TestCase(180.0, 0.5, -0.00000000001, true)]
+    [TestCase(180.0, 0.5, 0.00000000001, false)]
+    public void Hsi(double h, double s, double i, bool expected) => AssertUnicolour(new(ColourSpace.Hsi, h, s, i), expected);
+    
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(0.0, -0.00000000001, 0.0, true)]
     [TestCase(0.00000000001, 0.0, 0.00000000001, true)]

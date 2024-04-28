@@ -18,6 +18,7 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Hsb),
         new TestCaseData(ColourSpace.Hsl),
         new TestCaseData(ColourSpace.Hwb),
+        new TestCaseData(ColourSpace.Hsi),
         new TestCaseData(ColourSpace.Xyz),
         new TestCaseData(ColourSpace.Xyy),
         new TestCaseData(ColourSpace.Lab),
@@ -179,6 +180,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Hex);
             AccessProperty(() => unicolour.Hpluv);
             AccessProperty(() => unicolour.Hsb);
+            AccessProperty(() => unicolour.Hsi);
             AccessProperty(() => unicolour.Hsl);
             AccessProperty(() => unicolour.Hsluv);
             AccessProperty(() => unicolour.Hwb);
@@ -254,6 +256,7 @@ internal static class TestUtils
         { typeof(Hsb), ColourSpace.Hsb },
         { typeof(Hsl), ColourSpace.Hsl },
         { typeof(Hwb), ColourSpace.Hwb },
+        { typeof(Hsi), ColourSpace.Hsi },
         { typeof(Xyz), ColourSpace.Xyz },
         { typeof(Xyy), ColourSpace.Xyy },
         { typeof(Lab), ColourSpace.Lab },

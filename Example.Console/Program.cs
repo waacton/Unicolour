@@ -57,6 +57,7 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Hsl", $"{unicolour.Hsl}");
     table.AddRow("Hsb", $"{unicolour.Hsb}");
     table.AddRow("Hwb", $"{unicolour.Hwb}");
+    table.AddRow("Hsi", $"{unicolour.Hsi}");
     table.AddRow("Xyz", $"{unicolour.Xyz}");
     table.AddRow("Xyy", $"{unicolour.Xyy}");
     table.AddRow("Lab", $"{unicolour.Lab}");

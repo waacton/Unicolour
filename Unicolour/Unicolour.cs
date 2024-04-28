@@ -6,8 +6,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<RgbLinear> rgbLinear;
     private readonly Lazy<Hsb> hsb;
     private readonly Lazy<Hsl> hsl;
-    private readonly Lazy<Hsi> hsi;
     private readonly Lazy<Hwb> hwb;
+    private readonly Lazy<Hsi> hsi;
     private readonly Lazy<Xyz> xyz;
     private readonly Lazy<Xyy> xyy;
     private readonly Lazy<Lab> lab;
@@ -44,8 +44,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     public RgbLinear RgbLinear => rgbLinear.Value;
     public Hsb Hsb => hsb.Value;
     public Hsl Hsl => hsl.Value;
-    public Hsi Hsi => hsi.Value;
     public Hwb Hwb => hwb.Value;
+    public Hsi Hsi => hsi.Value;
     public Xyz Xyz => xyz.Value;
     public Xyy Xyy => xyy.Value;
     public Lab Lab => lab.Value;
@@ -105,8 +105,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
         hsb = new Lazy<Hsb>(EvaluateHsb);
         hsl = new Lazy<Hsl>(EvaluateHsl);
-        hsi = new Lazy<Hsi>(EvaluateHsi);
         hwb = new Lazy<Hwb>(EvaluateHwb);
+        hsi = new Lazy<Hsi>(EvaluateHsi);
         xyz = new Lazy<Xyz>(EvaluateXyz);
         xyy = new Lazy<Xyy>(EvaluateXyy);
         lab = new Lazy<Lab>(EvaluateLab);

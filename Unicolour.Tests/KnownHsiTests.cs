@@ -33,7 +33,7 @@ public class KnownHsiTests
     public void Black()
     {
         var black = StandardRgb.Black;
-        TestUtils.AssertTriplet<Hsi>(black, new(0, 1.0, 0.0), Tolerance);
+        TestUtils.AssertTriplet<Hsi>(black, new(0, 0.0, 0.0), Tolerance);
     }
     
     [Test]

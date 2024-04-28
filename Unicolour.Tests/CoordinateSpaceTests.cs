@@ -67,6 +67,13 @@ public class CoordinateSpaceTests
         AssertHwbToHsb(hsxUpperInRange, hsxUpperOutRange);
         AssertHwbToHsb(hsxLowerInRange, hsxLowerOutRange);
     }
+    
+    [Test] // NOTE: HSI is not bound to RGB gamut like the other HS* spaces, so can only assert hue
+    public void CylindricalHsiRectangularRgb()
+    {
+        AssertHsiToRgb(HueUpperInRange, HueUpperOutRange);
+        AssertHsiToRgb(HueLowerInRange, HueLowerOutRange);
+    }
 
     [Test]
     public void CylindricalLchabRectangularLab()
@@ -105,7 +112,17 @@ public class CoordinateSpaceTests
         AssertSourceTriplets(AsTriplets(rgbInRange), AsTriplets(rgbOutRange));
         AssertDestinationTriplets(AsTriplets(hsbFromInRange), AsTriplets(hsbFromOutRange));
     }
-
+    
+    private static void AssertHsiToRgb(double hueInRange, double hueOutRange)
+    {
+        var hsiInRange = new Hsi(hueInRange, 1, 1 / 3.0);
+        var hsiOutRange = new Hsi(hueOutRange, 1, 1 / 3.0);
+        var rgbFromInRange = Hsi.ToRgb(hsiInRange);
+        var rgbFromOutRange = Hsi.ToRgb(hsiOutRange);
+        AssertSourceTriplets(AsTriplets(hsiInRange), AsTriplets(hsiOutRange));
+        AssertTriplet(rgbFromOutRange.Triplet, rgbFromInRange.Triplet);
+    }
+    
     private static void AssertHsbToRgb(ColourTriplet inRange, ColourTriplet outRange)
     {
         var hsbInRange = new Hsb(inRange.First, inRange.Second, inRange.Third);

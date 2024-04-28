@@ -37,7 +37,7 @@ public record Hsi : ColourRepresentation
 
         var h = Hsb.GetHue(r, g, b);
         var i = (r + g + b) / 3.0;
-        var s = i == 0.0 ? 1 : 1 - xMin / i;
+        var s = i == 0.0 ? 0 : 1 - xMin / i;
         return new Hsi(h.Modulo(360.0), s, i, ColourHeritage.From(rgb));
     }
     

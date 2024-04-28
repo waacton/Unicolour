@@ -17,6 +17,7 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
         new(ColourSpace.Hsb, new Range(0, 1), new Range(0, 1)),
         new(ColourSpace.Hsl, new Range(0, 1), new Range(0, 1)),
         new(ColourSpace.Hwb, new Range(0, 1), new Range(0, 1)),
+        new(ColourSpace.Hsi, new Range(0, 1), new Range(0, 1)),
         new(ColourSpace.Hsluv, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Hpluv, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Okhsv, new Range(0, 1), new Range(0, 1)),

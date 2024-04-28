@@ -179,6 +179,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Hex);
             AccessProperty(() => unicolour.Hpluv);
             AccessProperty(() => unicolour.Hsb);
+            AccessProperty(() => unicolour.Hsi);
             AccessProperty(() => unicolour.Hsl);
             AccessProperty(() => unicolour.Hsluv);
             AccessProperty(() => unicolour.Hwb);
@@ -253,6 +254,7 @@ internal static class TestUtils
         { typeof(RgbLinear), ColourSpace.RgbLinear },
         { typeof(Hsb), ColourSpace.Hsb },
         { typeof(Hsl), ColourSpace.Hsl },
+        { typeof(Hsi), ColourSpace.Hsi },
         { typeof(Hwb), ColourSpace.Hwb },
         { typeof(Xyz), ColourSpace.Xyz },
         { typeof(Xyy), ColourSpace.Xyy },

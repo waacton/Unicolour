@@ -7,6 +7,7 @@ public enum ColourSpace
     RgbLinear,
     Hsb,
     Hsl,
+    Hsi,
     Hwb,
     Xyz,
     Xyy,

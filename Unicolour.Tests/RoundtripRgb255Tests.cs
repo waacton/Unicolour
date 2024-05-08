@@ -99,6 +99,15 @@ public class RoundtripRgb255Tests
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    public void ViaTsl(ColourTriplet triplet)
+    {
+        var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
+        var tsl = Tsl.FromRgb(original, YbrConfig);
+        var roundtrip = Tsl.ToRgb(tsl, YbrConfig);
+        AssertRoundtrip(triplet, original, roundtrip);
+    }
+    
     /*
      * CMY / CMYK is not integrated into Unicolour
      * and tests will need to change if calibrated CMYK using ICC profiles are implemented

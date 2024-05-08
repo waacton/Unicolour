@@ -27,6 +27,7 @@ public partial class Unicolour
             ColourSpace.Yuv => Yuv,
             ColourSpace.Yiq => Yiq,
             ColourSpace.Ydbdr => Ydbdr,
+            ColourSpace.Tsl => Tsl,
             ColourSpace.Ipt => Ipt,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
@@ -69,6 +70,7 @@ public partial class Unicolour
             ColourSpace.Yuv => new Yuv(first, second, third, heritage),
             ColourSpace.Yiq => new Yiq(first, second, third, heritage),
             ColourSpace.Ydbdr => new Ydbdr(first, second, third, heritage),
+            ColourSpace.Tsl => new Tsl(first, second, third, heritage),
             ColourSpace.Ipt => new Ipt(first, second, third, heritage),
             ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
             ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
@@ -118,6 +120,7 @@ public partial class Unicolour
             ColourSpace.Yuv => Yuv.ToRgb(Yuv),
             ColourSpace.Yiq => Yuv.ToRgb(Yuv),
             ColourSpace.Ydbdr => Yuv.ToRgb(Yuv),
+            ColourSpace.Tsl => Tsl.ToRgb(Tsl, Config.Ybr),
             _ => Rgb.FromRgbLinear(RgbLinear, Config.Rgb)
         };
     }
@@ -138,6 +141,7 @@ public partial class Unicolour
             ColourSpace.Yuv => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Yiq => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Ydbdr => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Tsl => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             _ => RgbLinear.FromXyz(Xyz, Config.Rgb, Config.Xyz)
         };
     }
@@ -204,6 +208,7 @@ public partial class Unicolour
             ColourSpace.Yuv => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Yiq => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Ydbdr => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Tsl => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Ipt => Ipt.ToXyz(Ipt, Config.Xyz),
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.IctcpScalar, Config.Xyz),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
@@ -343,6 +348,15 @@ public partial class Unicolour
         {
             ColourSpace.Ydbdr => (Ydbdr)InitialRepresentation,
             _ => Ydbdr.FromYuv(Yuv)
+        };
+    }
+    
+    private Tsl EvaluateTsl()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Tsl => (Tsl)InitialRepresentation,
+            _ => Tsl.FromRgb(Rgb, Config.Ybr)
         };
     }
     

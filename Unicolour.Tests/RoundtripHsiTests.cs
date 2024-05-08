@@ -5,7 +5,7 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class RoundtripHsiTests
 {
-    private const double Tolerance = 0.000000001;
+    private const double Tolerance = 0.0000000005;
 
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HsiTriplets))]
     public void ViaRgb(ColourTriplet triplet)

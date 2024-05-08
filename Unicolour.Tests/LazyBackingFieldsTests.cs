@@ -73,7 +73,7 @@ public class LazyBackingFieldsTests
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.RelativeLuminance;
-        AssertBackingFieldEvaluated(unicolour, ColourSpace.RgbLinear);
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]

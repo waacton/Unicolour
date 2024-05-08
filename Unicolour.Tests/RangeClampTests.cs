@@ -288,6 +288,23 @@ public class RangeClampTests
     }
     
     [Test]
+    public void TslRange()
+    {
+        Range tRange = new(0.0, 360.0);
+        Range sRange = new(0.0, 1.0);
+        Range lRange = new(0.0, 1.0);
+        var beyondMax = new Tsl(tRange.BeyondMax, sRange.BeyondMax, lRange.BeyondMax);
+        var beyondMin = new Tsl(tRange.BeyondMin, sRange.BeyondMin, lRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet, beyondMax.Triplet);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedT, x => x.ConstrainedTriplet.First);
+        AssertConstrainedValue(representations, x => x.ConstrainedS, x => x.ConstrainedTriplet.Second);
+        AssertConstrainedValue(representations, x => x.ConstrainedL, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
     public void JzczhzRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);

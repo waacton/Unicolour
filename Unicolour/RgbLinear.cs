@@ -13,9 +13,6 @@ public record RgbLinear : ColourRepresentation
     protected override double ConstrainedSecond => G.Clamp(0.0, 1.0);
     protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
     internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
-    
-    // https://www.w3.org/TR/WCAG21/#dfn-relative-luminance - effectively an approximation of Y from XYZ, but will stick to the specification
-    internal double RelativeLuminance => UseAsNaN ? double.NaN : 0.2126 * R + 0.7152 * G + 0.0722 * B;
 
     public RgbLinear(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
     internal RgbLinear(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}

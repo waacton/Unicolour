@@ -158,6 +158,7 @@ public class EqualityTests
         AssertEqual(unicolour1.Rgb.Byte255, unicolour2.Rgb.Byte255);
         AssertEqual(unicolour1.RgbLinear, unicolour2.RgbLinear);
         AssertEqual(unicolour1.Temperature, unicolour2.Temperature);
+        AssertEqual(unicolour1.Tsl, unicolour2.Tsl);
         AssertEqual(unicolour1.Xyz, unicolour2.Xyz);
         AssertEqual(unicolour1.Xyy, unicolour2.Xyy);
         AssertEqual(unicolour1.Ycbcr, unicolour2.Ycbcr);

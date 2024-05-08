@@ -31,6 +31,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> YuvTriplets = new();
     public static readonly List<ColourTriplet> YiqTriplets = new();
     public static readonly List<ColourTriplet> YdbdrTriplets = new();
+    public static readonly List<ColourTriplet> TslTriplets = new();
     public static readonly List<ColourTriplet> IptTriplets = new();
     public static readonly List<ColourTriplet> IctcpTriplets = new();
     public static readonly List<ColourTriplet> JzazbzTriplets = new();
@@ -94,6 +95,7 @@ internal static class RandomColours
             YuvTriplets.Add(Yuv());
             YiqTriplets.Add(Yiq());
             YdbdrTriplets.Add(Ydbdr());
+            TslTriplets.Add(Tsl());
             IptTriplets.Add(Ipt());
             IctcpTriplets.Add(Ictcp());
             JzazbzTriplets.Add(Jzazbz());
@@ -137,6 +139,7 @@ internal static class RandomColours
             ColourSpace.Yuv => Yuv(),
             ColourSpace.Yiq => Yiq(),
             ColourSpace.Ydbdr => Ydbdr(),
+            ColourSpace.Tsl => Tsl(),
             ColourSpace.Ipt => Ipt(),
             ColourSpace.Ictcp => Ictcp(),
             ColourSpace.Jzazbz => Jzazbz(),
@@ -175,6 +178,7 @@ internal static class RandomColours
     private static ColourTriplet Yuv() => new(Rng(), Rng(-0.436, 0.436), Rng(-0.614, 0.614));
     private static ColourTriplet Yiq() => new(Rng(), Rng(-0.595, 0.595), Rng(-0.522, 0.522));
     private static ColourTriplet Ydbdr() => new(Rng(), Rng(-1.333, 1.333), Rng(-1.333, 1.333));
+    private static ColourTriplet Tsl() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Ipt() => new(Rng(), Rng(-0.75, 0.75), Rng(-0.75, 0.75)); 
     private static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
     private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]

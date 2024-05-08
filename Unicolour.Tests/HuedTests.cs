@@ -32,6 +32,9 @@ public class HuedTests
     public void Hpluv() => AssertUnicolour(new(ColourSpace.Hpluv, 180, 0, 0), new List<ColourSpace> { ColourSpace.Lchuv, ColourSpace.Hsluv });
     
     [Test]
+    public void Tsl() => AssertUnicolour(new(ColourSpace.Tsl, 180, 0, 0), new List<ColourSpace>());
+    
+    [Test]
     public void Jzczhz() => AssertUnicolour(new(ColourSpace.Jzczhz, 0, 0, 180), new List<ColourSpace>());
     
     [Test]

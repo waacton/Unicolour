@@ -23,6 +23,7 @@ public enum ColourSpace
     Yuv,
     Yiq,
     Ydbdr,
+    Tsl,
     Ipt,
     Ictcp,
     Jzazbz,

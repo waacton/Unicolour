@@ -22,6 +22,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Yuv> yuv;
     private readonly Lazy<Yiq> yiq;
     private readonly Lazy<Ydbdr> ydbdr;
+    private readonly Lazy<Tsl> tsl;
     private readonly Lazy<Ipt> ipt;
     private readonly Lazy<Ictcp> ictcp;
     private readonly Lazy<Jzazbz> jzazbz;
@@ -60,6 +61,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Yuv Yuv => yuv.Value;
     public Yiq Yiq => yiq.Value;
     public Ydbdr Ydbdr => ydbdr.Value;
+    public Tsl Tsl => tsl.Value;
     public Ipt Ipt => ipt.Value;
     public Ictcp Ictcp => ictcp.Value;
     public Jzazbz Jzazbz => jzazbz.Value;
@@ -78,7 +80,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
-    public double RelativeLuminance => RgbLinear.RelativeLuminance;
+    public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public double DominantWavelength => spectralIntersects.Value?.DominantWavelength() ?? double.NaN;
     public double ExcitationPurity => spectralIntersects.Value?.ExcitationPurity() ?? double.NaN;
@@ -120,7 +122,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         ycgco = new Lazy<Ycgco>(EvaluateYcgco); 
         yuv = new Lazy<Yuv>(EvaluateYuv); 
         yiq = new Lazy<Yiq>(EvaluateYiq); 
-        ydbdr = new Lazy<Ydbdr>(EvaluateYdbdr); 
+        ydbdr = new Lazy<Ydbdr>(EvaluateYdbdr);
+        tsl = new Lazy<Tsl>(EvaluateTsl);
         ipt = new Lazy<Ipt>(EvaluateIpt);
         ictcp = new Lazy<Ictcp>(EvaluateIctcp);
         jzazbz = new Lazy<Jzazbz>(EvaluateJzazbz);

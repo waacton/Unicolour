@@ -68,7 +68,7 @@ public class CoordinateSpaceTests
         AssertHwbToHsb(hsxLowerInRange, hsxLowerOutRange);
     }
     
-    [Test] // NOTE: HSI is not bound to RGB gamut like the other HS* spaces, so can only assert hue
+    [Test] // NOTE: HSI is not bound to RGB gamut like other cylindrical forms of RGB, so can only assert hue
     public void CylindricalHsiRectangularRgb()
     {
         AssertHsiToRgb(HueUpperInRange, HueUpperOutRange);
@@ -87,6 +87,13 @@ public class CoordinateSpaceTests
     {
         AssertLchuvToLuv(HueUpperInRange, HueUpperOutRange);
         AssertLchuvToLuv(HueLowerInRange, HueLowerOutRange);
+    }
+    
+    [Test] // NOTE: TSL is not bound to RGB gamut like other cylindrical forms of RGB, so can only assert hue
+    public void CylindricalTslRectangularRgb()
+    {
+        AssertHsiToRgb(HueUpperInRange, HueUpperOutRange);
+        AssertHsiToRgb(HueLowerInRange, HueLowerOutRange);
     }
     
     [Test]

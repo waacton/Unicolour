@@ -5,21 +5,34 @@ using Wacton.Unicolour.Tests.Utils;
 
 public class ContrastTests
 {
-    [Test]
-    public void KnownContrasts()
+    [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 21)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 2.91)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 6.26)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 2.15)]
+    public void KnownContrast(string colour1Name, string colour2Name, double expected)
     {
-        var black = StandardRgb.Black;
-        var white = StandardRgb.White;
-        var red = StandardRgb.Red;
-        var green = StandardRgb.Green;
-        var blue = StandardRgb.Blue;
+        var colour1 = StandardRgb.Lookup[colour1Name];
+        var colour2 = StandardRgb.Lookup[colour2Name];
+        AssertKnownContrast(colour1, colour2, expected);
+
+    }
+
+    [Test]
+    public void RandomColourContrast()
+    {
         var random = RandomColours.UnicolourFrom(ColourSpace.Rgb);
-        
-        AssertKnownContrast(black, white, 21);
-        AssertKnownContrast(red, green, 2.91);
-        AssertKnownContrast(green, blue, 6.26);
-        AssertKnownContrast(blue, red, 2.15);
         AssertKnownContrast(random, random, 1);
+    }
+    
+    [Test]
+    public void NaNContrast()
+    {
+        var notNumber = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var grey = new Unicolour(ColourSpace.Rgb, 0.5, 0.5, 0.5);
+        
+        AssertKnownContrast(notNumber, grey, double.NaN);
+        AssertKnownContrast(grey, notNumber, double.NaN);
+        AssertKnownContrast(notNumber, notNumber, double.NaN);
     }
 
     [Test]
@@ -41,14 +54,19 @@ public class ContrastTests
     }
     
     [Test]
-    public void NaNContrast()
+    public void DifferentConfigInGamutLuminance()
     {
-        var notNumber = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var grey = new Unicolour(ColourSpace.Rgb, 0.5, 0.5, 0.5);
-        
-        AssertKnownContrast(notNumber, grey, double.NaN);
-        AssertKnownContrast(grey, notNumber, double.NaN);
-        AssertKnownContrast(notNumber, notNumber, double.NaN);
+        var standardRgb = new Unicolour(new Configuration(RgbConfiguration.StandardRgb), ColourSpace.Rgb, 1, 1, 0);
+        var displayP3 = standardRgb.ConvertToConfiguration(new Configuration(RgbConfiguration.DisplayP3));
+        Assert.That(displayP3.RelativeLuminance, Is.EqualTo(standardRgb.RelativeLuminance));
+    }
+    
+    [Test]
+    public void DifferentConfigOutOfGamutLuminance()
+    {
+        var displayP3 = new Unicolour(new Configuration(RgbConfiguration.DisplayP3), ColourSpace.Rgb, 1, 1, 0);
+        var standardRgb = displayP3.ConvertToConfiguration(new Configuration(RgbConfiguration.StandardRgb));
+        Assert.That(standardRgb.RelativeLuminance, Is.EqualTo(displayP3.RelativeLuminance));
     }
     
     private static void AssertKnownContrast(Unicolour colour1, Unicolour colour2, double expectedContrast)
@@ -64,6 +82,9 @@ public class ContrastTests
 
     private static void AssertRelativeLuminance(Unicolour unicolour)
     {
-        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(unicolour.Xyz.Y).Within(0.0005));
+        // WCAG relative luminance is defined according to sRGB https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+        var (r, g, b) = unicolour.RgbLinear.Triplet;
+        var expected = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
     }
 }

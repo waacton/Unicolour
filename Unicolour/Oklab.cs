@@ -53,6 +53,11 @@ public record Oklab : ColourRepresentation
      * LMS = M1 * RgbToXyz * Rgb
      * RgbToOklab = M1 * RgbToXyz
      * M1 = RgbToOklab * RgbToXyz^-1
+     * --------------------
+     * 💩💩💩 the "proper" way to define M1 is hidden in some random GitHub thread, instead of in any Oklab documentation
+     * https://github.com/w3c/csswg-drafts/issues/6642#issuecomment-945714988
+     * modern colour spaces seem to make it hard to implement things accurately (see also: XYB)
+     * will consider reworking M1 calculation if there's ever any complaints to my reverse engineering
      */
     
     private static readonly WhitePoint OklabWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);

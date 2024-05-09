@@ -20,7 +20,7 @@ public record Xyb : ColourRepresentation
     public override string ToString() => base.ToString();
     
     /*
-     * XYB is a transform of RGB
+     * XYB is a transform of RGB Linear
      * Forward: https://ds.jpeg.org/whitepapers/jpeg-xl-whitepaper.pdf
      * Reverse: n/a - not provided, using own implementation
      * 
@@ -32,7 +32,12 @@ public record Xyb : ColourRepresentation
     /*
      * NOTE: the final step of B -= Y is not documented in the JPEG XL white paper
      * but apparently the intention is that B = sGamma should be B = sGamma - Y 🤷
-     * (at least it makes the colour greyscale when X == 0 and B == 0, in the same way as LAB)
+     * (at least it makes the colour greyscale when X == 0 and B == 0, in the same way as LAB-like spaces)
+     * --------------------
+     * 💩💩💩 the only mention of this "subtract Y from B" is just some random Twitter post and a 10 second YouTube video
+     * so it's not particularly convincing that this extra step, which is left out of the white paper, should be performed
+     * https://github.com/Evercoder/culori/issues/200 · https://twitter.com/jonsneyers/status/1605321352143331328 · https://www.youtube.com/watch?v=rvhf6feXw7w
+     * modern colour spaces seem to make it hard to implement things accurately (see also: Oklab)
      */
 
     private const double Bias = 0.00379307325527544933;

@@ -34,9 +34,10 @@ It can be used to [mix and compare colours](#mix-colours), as well as [other use
 
 > **Supported colour spaces**
 >
-> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB ·
+> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI ·
 > CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
-> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
+> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
+> TSL · XYB ·
 > IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb ·
 > CIECAM02 · CAM16 ·
@@ -133,6 +134,7 @@ var (l, c, h) = colour.Oklch.Triplet;
 | HSB&nbsp;/&nbsp;HSV                     | `ColourSpace.Hsb`       | `.Hsb`         |
 | HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
 | HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
+| HSI                                     | `ColourSpace.Hsi`       | `.Hsi`         |
 | CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
 | CIExyY                                  | `ColourSpace.Xyy`       | `.Xyy`         |
 | CIELAB                                  | `ColourSpace.Lab`       | `.Lab`         |
@@ -147,6 +149,8 @@ var (l, c, h) = colour.Oklch.Triplet;
 | YUV&nbsp;_(PAL)_                        | `ColourSpace.Yuv`       | `.Yuv`         |
 | YIQ&nbsp;_(NTSC)_                       | `ColourSpace.Yiq`       | `.Yiq`         |
 | YDbDr&nbsp;_(SECAM)_                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
+| TSL                                     | `ColourSpace.Tsl`       | `.Tsl`         |
+| XYB                                     | `ColourSpace.Xyb`       | `.Xyb`         |
 | IPT                                     | `ColourSpace.Ipt`       | `.Ipt`         |
 | IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `.Ictcp`       |
 | J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
@@ -199,7 +203,7 @@ flowchart TD
   HSB(HSB / HSV)
   HSL(HSL)
   HWB(HWB)
-  CMYK(CMYK)
+  HSI(HSI)
   XYY(xyY)
   XYZ(XYZ)
   LAB(LAB)
@@ -214,6 +218,8 @@ flowchart TD
   YUV("YUV (PAL)")
   YIQ("YIQ (NTSC)")
   YDBDR("YDbDr (SECAM)")
+  TSL(TSL)
+  XYB(XYB)
   IPT(IPT)
   ICTCP(ICtCp)
   JZAZBZ(JzAzBz)
@@ -228,20 +234,23 @@ flowchart TD
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
   HCT(HCT)
+  CMYK(CMYK)
 
   RGB -.-> CMYK
-  
   XYZ --> RGBLIN
   RGBLIN --> RGB
   RGB --> HSB
   HSB --> HSL
   HSB --> HWB
+  RGB --> HSI
   RGB --> YPBPR
   YPBPR --> YCBCR
   RGB --> YCGCO
   RGB --> YUV
   YUV --> YIQ
   YUV --> YDBDR
+  RGB --> TSL
+  RGBLIN --> XYB
   XYZ --> XYY
   XYZ --> LAB
   LAB --> LCHAB
@@ -457,6 +466,58 @@ Defines the RGB model, often used to specify a wider gamut than standard RGB (sR
 | SECAM&nbsp;(Rec.&nbsp;470)           | `.Secam`         |
 | SECAM&nbsp;625&nbsp;(Rec.&nbsp;1700) | `.Secam625`      |
 
+<details>
+<summary>Diagram of RGB configurations</summary>
+
+```mermaid
+mindmap
+  root(RGB)
+    ("R 0.64 0.33<br>G 0.30 0.60<br>B 0.15 0.06")
+      ("D65")
+        ("sRGB")
+        ("Rec. 709")
+        ("xvYCC")
+    ("R 0.680 0.320<br>G 0.265 0.690<br>B 0.150 0.060")
+      ("D65")
+            ("Display P3")
+    ("R 0.708 0.292<br>G 0.170 0.797<br>B 0.131 0.046")
+      ("D65")
+        ("Rec. 2020")
+    ("R 0.64 0.33<br>G 0.21 0.71<br>B 0.15 0.06")
+      ("D65")
+        ("A98 RGB")
+    ("R 0.734699 0.265301<br>G 0.159597 0.840403<br>B 0.036598 0.000105")
+      ("D50")
+        ("ProPhoto RGB")
+    ("R 0.7347 0.2653<br>G 0.0000 1.0000<br>B 0.0001 -0.0770")
+      ("W 0.32168 0.33767")
+        ("ACES 2065-1")
+    ("R 0.713 0.293<br>G 0.165 0.830<br>B 0.128 0.044")
+      ("W 0.32168 0.33767")
+        ("ACEScg")
+        ("ACEScct")
+        ("ACEScc")
+    ("R 0.64 0.33<br>G 0.29 0.60<br>B 0.15 0.06")
+      ("D65")
+        ("Rec. 601 (625-line)")
+        ("PAL (Rec. 470)")
+        ("PAL 625 (Rec. 1700)")
+        ("SECAM (Rec. 470)")
+        ("SECAM 625 (Rec. 1700)")
+    ("R 0.67 0.33<br>G 0.21 0.71<br>B 0.14 0.08")
+      ("C")
+        ("PAL-M (Rec. 470)")
+        ("NTSC (Rec. 470)")
+    ("R 0.630 0.340<br>G 0.310 0.595<br>B 0.155 0.070")
+      ("C")
+        ("PAL 525 (Rec. 1700)")
+      ("D65")
+        ("Rec. 601 (525-line)")
+        ("NTSC (SMPTE-C)")
+        ("NTSC 525 (Rec. 1700)")
+```
+</details>
+
 - Parameters
   - Red, green, and blue chromaticity coordinates
   - Reference white point
@@ -513,12 +574,12 @@ All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
-| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                               |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ |
-| `XyzConfiguration`                  | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                  |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                               | 
-| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT            | 
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                                    |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 | 
+| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT                              | 
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

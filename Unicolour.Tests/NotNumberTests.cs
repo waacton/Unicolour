@@ -84,6 +84,9 @@ public class NotNumberTests
     public void Tsl(double t, double s, double l) => AssertUnicolour(new(ColourSpace.Tsl, t, s, l));
     
     [TestCaseSource(nameof(testCases))]
+    public void Xyb(double x, double y, double b) => AssertUnicolour(new(ColourSpace.Xyb, x, y, b));
+    
+    [TestCaseSource(nameof(testCases))]
     public void Ipt(double i, double p, double t) => AssertUnicolour(new(ColourSpace.Ipt, i, p, t));
 
     [TestCaseSource(nameof(testCases))]

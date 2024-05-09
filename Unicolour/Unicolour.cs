@@ -23,6 +23,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Yiq> yiq;
     private readonly Lazy<Ydbdr> ydbdr;
     private readonly Lazy<Tsl> tsl;
+    private readonly Lazy<Xyb> xyb;
     private readonly Lazy<Ipt> ipt;
     private readonly Lazy<Ictcp> ictcp;
     private readonly Lazy<Jzazbz> jzazbz;
@@ -62,6 +63,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Yiq Yiq => yiq.Value;
     public Ydbdr Ydbdr => ydbdr.Value;
     public Tsl Tsl => tsl.Value;
+    public Xyb Xyb => xyb.Value;
     public Ipt Ipt => ipt.Value;
     public Ictcp Ictcp => ictcp.Value;
     public Jzazbz Jzazbz => jzazbz.Value;
@@ -124,6 +126,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         yiq = new Lazy<Yiq>(EvaluateYiq); 
         ydbdr = new Lazy<Ydbdr>(EvaluateYdbdr);
         tsl = new Lazy<Tsl>(EvaluateTsl);
+        xyb = new Lazy<Xyb>(EvaluateXyb);
         ipt = new Lazy<Ipt>(EvaluateIpt);
         ictcp = new Lazy<Ictcp>(EvaluateIctcp);
         jzazbz = new Lazy<Jzazbz>(EvaluateJzazbz);

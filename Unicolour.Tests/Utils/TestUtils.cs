@@ -34,6 +34,7 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Yiq),
         new TestCaseData(ColourSpace.Ydbdr),
         new TestCaseData(ColourSpace.Tsl),
+        new TestCaseData(ColourSpace.Xyb),
         new TestCaseData(ColourSpace.Ipt),
         new TestCaseData(ColourSpace.Ictcp),
         new TestCaseData(ColourSpace.Jzazbz),
@@ -206,6 +207,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.RgbLinear);
             AccessProperty(() => unicolour.Temperature);
             AccessProperty(() => unicolour.Tsl);
+            AccessProperty(() => unicolour.Xyb);
             AccessProperty(() => unicolour.Xyy);
             AccessProperty(() => unicolour.Xyz);
             AccessProperty(() => unicolour.Ypbpr);
@@ -274,6 +276,7 @@ internal static class TestUtils
         { typeof(Yiq), ColourSpace.Yiq },
         { typeof(Ydbdr), ColourSpace.Ydbdr },
         { typeof(Tsl), ColourSpace.Tsl },
+        { typeof(Xyb), ColourSpace.Xyb },
         { typeof(Ipt), ColourSpace.Ipt },
         { typeof(Ictcp), ColourSpace.Ictcp },
         { typeof(Jzazbz), ColourSpace.Jzazbz },

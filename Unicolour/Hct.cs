@@ -23,6 +23,10 @@ public record Hct : ColourRepresentation
      * (just a combination of LAB & CAM16, but with specific XYZ & CAM configuration, so can't reuse existing colour space calculations)
      * Forward: https://material.io/blog/science-of-color-design
      * Reverse: n/a - no published reverse transform and I don't want to port Google code, so using my own naive search
+     *
+     * ⚠️
+     * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
+     * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
     
     private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);

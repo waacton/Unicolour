@@ -13,8 +13,8 @@ public class RoundtripRgbLinearTests
     public void ViaXyz(ColourTriplet triplet)
     {
         var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
-        var rgb = RgbLinear.ToXyz(original, RgbConfig, XyzConfig);
-        var roundtrip = RgbLinear.FromXyz(rgb, RgbConfig, XyzConfig);
+        var xyz = RgbLinear.ToXyz(original, RgbConfig, XyzConfig);
+        var roundtrip = RgbLinear.FromXyz(xyz, RgbConfig, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
@@ -61,6 +61,15 @@ public class RoundtripRgbLinearTests
             return;
         }
         
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbLinearTriplets))]
+    public void ViaXyb(ColourTriplet triplet)
+    {
+        var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
+        var xyb = Xyb.FromRgbLinear(original);
+        var roundtrip = Xyb.ToRgbLinear(xyb);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     

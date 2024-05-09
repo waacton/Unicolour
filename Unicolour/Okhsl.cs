@@ -28,6 +28,10 @@ public record Okhsl : ColourRepresentation
      * OKHSL is a transform of OKLAB
      * Forward: https://bottosson.github.io/posts/colorpicker/#hsl-2
      * Reverse: https://bottosson.github.io/posts/colorpicker/#hsl-2
+     *
+     * ⚠️
+     * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
+     * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
     
     internal static Okhsl FromOklab(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)

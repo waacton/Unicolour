@@ -62,6 +62,7 @@ void ColourSpaces()
             Utils.Draw(("YIQ", text), columnWidth, rowHeight, GetColour(ColourSpace.Yiq)),
             Utils.Draw(("YDbDr", text), columnWidth, rowHeight, GetColour(ColourSpace.Ydbdr)),
             Utils.Draw(("TSL", text), columnWidth, rowHeight, GetColour(ColourSpace.Tsl)),
+            Utils.Draw(("XYB", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyb)),
             Utils.Draw(("IPT", text), columnWidth, rowHeight, GetColour(ColourSpace.Ipt)),
             Utils.Draw(("ICtCp", text), columnWidth, rowHeight, GetColour(ColourSpace.Ictcp)),
             Utils.Draw(("JzAzBz", text), columnWidth, rowHeight, GetColour(ColourSpace.Jzazbz)),

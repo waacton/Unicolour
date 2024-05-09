@@ -72,6 +72,8 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Yuv", $"{unicolour.Yuv}");
     table.AddRow("Yiq", $"{unicolour.Yiq}");
     table.AddRow("Ydbdr", $"{unicolour.Ydbdr}");
+    table.AddRow("Tsl", $"{unicolour.Tsl}");
+    table.AddRow("Xyb", $"{unicolour.Xyb}");
     table.AddRow("Ipt", $"{unicolour.Ipt}");
     table.AddRow("Ictcp", $"{unicolour.Ictcp}");
     table.AddRow("Jzazbz", $"{unicolour.Jzazbz}");

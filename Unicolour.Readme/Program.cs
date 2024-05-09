@@ -26,7 +26,7 @@ void ProcessReadme()
         .Replace("../", "https://github.com/waacton/Unicolour/tree/main/");
 
     // until GitHub Pages supports Mermaid 😑 - just remove it
-    readmeDocsText = Regex.Replace(readmeDocsText, @"<details>(.|\n)*<\/details>", string.Empty);
+    readmeDocsText = Regex.Replace(readmeDocsText, @"<details>(.|\n)*?<\/details>", string.Empty);
 
     var readmeUkText = readmeDocsText;
     var readmeUsText = readmeDocsText;
@@ -40,6 +40,7 @@ void ProcessReadme()
         .Replace("Colour ", "Color ")
         .Replace("Colours ", "Colors ")
         .Replace("Colour&", "Color&")
+        .Replace("colour&", "color&")
         .Replace(" colour", " color")
         .Replace("-colour", "-color")
         .Replace(" grey ", " gray ")

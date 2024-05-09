@@ -23,9 +23,11 @@ public record Oklab : ColourRepresentation
      * OKLAB is a transform of XYZ 
      * Forward: https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
      * Reverse: https://bottosson.github.io/posts/oklab/#converting-from-xyz-to-oklab
+     *
+     * ⚠️
+     * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
+     * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
-    
-    private static readonly WhitePoint OklabWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     
     /*
      * NOTE: this definition of M1 is no longer used
@@ -52,6 +54,9 @@ public record Oklab : ColourRepresentation
      * RgbToOklab = M1 * RgbToXyz
      * M1 = RgbToOklab * RgbToXyz^-1
      */
+    
+    private static readonly WhitePoint OklabWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+    
     private static Matrix GetM1(Matrix rgbToXyzMatrix) => RgbToOklab.Multiply(rgbToXyzMatrix.Inverse());
     private static readonly Matrix RgbToOklab = new(new[,]
     {

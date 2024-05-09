@@ -26,6 +26,7 @@ public class MixHueNoComponentTests : MixHueAgnosticTests
         new(ColourSpace.Yuv, new Range(0, 1), new Range(-0.436, 0.436), new Range(-0.614, 0.614)),
         new(ColourSpace.Yiq, new Range(0, 1), new Range(-0.595, 0.595), new Range(-0.522, 0.522)),
         new(ColourSpace.Ydbdr, new Range(0, 1), new Range(-1.333, 1.333), new Range(-1.333, 1.333)),
+        new(ColourSpace.Xyb, new Range(-0.03, 0.03), new Range(0, 1), new Range(-0.4, 0.4)),
         new(ColourSpace.Ipt, new Range(0, 1), new Range(-0.75, 0.75), new Range(-0.75, 0.75)),
         new(ColourSpace.Ictcp, new Range(0, 1), new Range(-0.5, 0.5), new Range(-0.5, 0.5)),
         new(ColourSpace.Jzazbz, new Range(0, 0.16), new Range(-0.1, 0.1), new Range(-0.1, 0.1)),

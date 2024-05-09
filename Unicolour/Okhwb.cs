@@ -26,6 +26,10 @@ public record Okhwb : ColourRepresentation
      * OKHWB is a transform of OKHSV
      * Forward: https://bottosson.github.io/posts/colorpicker/#okhwb
      * Reverse: https://bottosson.github.io/posts/colorpicker/#okhwb
+     *
+     * ⚠️
+     * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
+     * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
     
     internal static Okhwb FromOkhsv(Okhsv okhsv)

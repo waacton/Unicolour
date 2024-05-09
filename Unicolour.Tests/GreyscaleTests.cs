@@ -280,6 +280,17 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.00000000001, false)]
     public void Tsl(double t, double s, double l, bool expected) => AssertUnicolour(new(ColourSpace.Tsl, t, s, l), expected);
     
+    [TestCase(0.0, 0.5, 0.0, true)]
+    [TestCase(0.00000000001, 0.5, 0.0, false)]
+    [TestCase(-0.00000000001, 0.5, 0.0, false)]
+    [TestCase(0.0, 0.5, 0.00000000001, false)]
+    [TestCase(0.0, 0.5, -0.00000000001, false)]
+    [TestCase(0.1, 0.0, -0.1, true)]
+    [TestCase(0.1, -0.00000000001, -0.1, true)]
+    [TestCase(0.1, 0.00000000001, -0.1, false)]
+    [TestCase(0.1, 1.0, -0.1, false)]
+    public void Xyb(double x, double y, double b, bool expected) => AssertUnicolour(new(ColourSpace.Xyb, x, y, b), expected);
+    
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
     [TestCase(0.5, -0.00000000001, 0.0, false)]

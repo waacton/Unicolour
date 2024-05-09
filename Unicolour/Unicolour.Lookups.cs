@@ -28,6 +28,7 @@ public partial class Unicolour
             ColourSpace.Yiq => Yiq,
             ColourSpace.Ydbdr => Ydbdr,
             ColourSpace.Tsl => Tsl,
+            ColourSpace.Xyb => Xyb,
             ColourSpace.Ipt => Ipt,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
@@ -71,6 +72,7 @@ public partial class Unicolour
             ColourSpace.Yiq => new Yiq(first, second, third, heritage),
             ColourSpace.Ydbdr => new Ydbdr(first, second, third, heritage),
             ColourSpace.Tsl => new Tsl(first, second, third, heritage),
+            ColourSpace.Xyb => new Xyb(first, second, third, heritage),
             ColourSpace.Ipt => new Ipt(first, second, third, heritage),
             ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
             ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
@@ -142,6 +144,7 @@ public partial class Unicolour
             ColourSpace.Yiq => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Ydbdr => Rgb.ToRgbLinear(Rgb, Config.Rgb),
             ColourSpace.Tsl => Rgb.ToRgbLinear(Rgb, Config.Rgb),
+            ColourSpace.Xyb => Xyb.ToRgbLinear(Xyb),
             _ => RgbLinear.FromXyz(Xyz, Config.Rgb, Config.Xyz)
         };
     }
@@ -209,6 +212,7 @@ public partial class Unicolour
             ColourSpace.Yiq => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Ydbdr => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Tsl => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
+            ColourSpace.Xyb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Ipt => Ipt.ToXyz(Ipt, Config.Xyz),
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Config.IctcpScalar, Config.Xyz),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Config.JzazbzScalar, Config.Xyz),
@@ -357,6 +361,15 @@ public partial class Unicolour
         {
             ColourSpace.Tsl => (Tsl)InitialRepresentation,
             _ => Tsl.FromRgb(Rgb, Config.Ybr)
+        };
+    }
+    
+    private Xyb EvaluateXyb()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Xyb => (Xyb)InitialRepresentation,
+            _ => Xyb.FromRgbLinear(RgbLinear)
         };
     }
     

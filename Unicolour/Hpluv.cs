@@ -26,6 +26,10 @@ public record Hpluv : ColourRepresentation
      * HPLUV is a transform of LCHUV 
      * Forward: https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L397
      * Reverse: https://github.com/hsluv/hsluv-haxe/blob/master/src/hsluv/Hsluv.hx#L380
+     *
+     * ⚠️
+     * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
+     * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
         
     internal static Hpluv FromLchuv(Lchuv lchuv)

@@ -31,7 +31,7 @@ internal static class ColourLookup
         { ColourSpace.Xyb, [new(-0.03, 0.03), new(0, 1.0), new(-0.4, 0.4)] },
         { ColourSpace.Ipt, [new(0, 1), new(-0.75, 0.75), new(-0.75, 0.75)] },
         { ColourSpace.Ictcp, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
-        { ColourSpace.Jzazbz, [new(0, 0.17), new(-0.10, 0.11), new(-0.16, 0.12)] },
+        { ColourSpace.Jzazbz, [new(0, 0.17), new(-0.11, 0.11), new(-0.16, 0.16)] },
         { ColourSpace.Jzczhz, [new(0, 0.17), new(0, 0.16), new(0, 360)] },
         { ColourSpace.Oklab, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
         { ColourSpace.Oklch, [new(0, 1), new(0, 0.5), new(0, 360)] },

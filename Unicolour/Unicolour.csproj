@@ -33,6 +33,14 @@
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
+
+        <None Update="Ref-ECG-CMYKOGV_FOGRA55_TAC300.icc">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+
+        <None Update="Coated_Fogra39L_VIGC_300.icc">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <!-- enables test module to access internal classes and methods -->

@@ -13,7 +13,7 @@ public class DominantWavelengthTests
     private static readonly Configuration RgbProPhotoXyzE = new(RgbConfiguration.ProPhoto, new XyzConfiguration(Illuminant.E, Observer.Degree2));
     private static readonly Configuration RgbProPhotoXyzA = new(RgbConfiguration.ProPhoto, new XyzConfiguration(Illuminant.A, Observer.Degree2));
     private static readonly Configuration RgbProPhotoXyzD75 = new(RgbConfiguration.ProPhoto, new XyzConfiguration(Illuminant.D75, Observer.Degree2));
-
+    
     /*
      * expected colour values for these tests based on calculations from
      * http://www.brucelindbloom.com/index.html?ColorCalculator.html
@@ -91,7 +91,7 @@ public class DominantWavelengthTests
         var hasLuminance = unicolour.Xyy.Luminance > 0;
         Assert.That(unicolour.DominantWavelength, Is.EqualTo(hasLuminance ? expectedWavelength : double.NaN).Within(0.25));
     }
-
+    
     private static readonly Dictionary<(Illuminant illuminant, Observer observer), Configuration> Configurations = new()
     {
         { (Illuminant.D65, Observer.Degree2), new(xyzConfiguration: new(Illuminant.D65, Observer.Degree2)) },
@@ -99,7 +99,7 @@ public class DominantWavelengthTests
         { (Illuminant.E, Observer.Degree2), new(xyzConfiguration: new(Illuminant.E, Observer.Degree2)) },
         { (Illuminant.E, Observer.Degree10), new(xyzConfiguration: new(Illuminant.E, Observer.Degree10)) }
     };
-
+    
     [Test]
     public void Monochromatic(
         [Range(360, 700)] int wavelength,
@@ -113,7 +113,7 @@ public class DominantWavelengthTests
         var unicolour = new Unicolour(config, new Spd { { wavelength, 1.0 } });
         Assert.That(unicolour.DominantWavelength, Is.EqualTo(wavelength).Within(0.000000005));
     }
-
+    
     /*
      * expected colour values for these tests based on calculations from
      * http://www.brucelindbloom.com/index.html?ColorCalculator.html
@@ -161,5 +161,45 @@ public class DominantWavelengthTests
     {
         var unicolour = new Unicolour(config, new Chromaticity(x, y));
         Assert.That(unicolour.DominantWavelength, Is.EqualTo(expectedWavelength).Within(0.25));
+    }
+    
+    [Test]
+    public void SampleBetweenWhiteAndNear()
+    {
+        // white point (0.333, 0.333), sample right & down (0.34, 0.32), near = line of purples, far = green boundary
+        // sample between: white point -> near (line of purples) = negative wavelength
+        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.34, 0.32));
+        Assert.That(unicolour.DominantWavelength, Is.Negative);
+        Assert.That(unicolour.IsImaginary, Is.False);
+    }
+    
+    [Test]
+    public void SampleBetweenWhiteAndFar()
+    {
+        // white point (0.333, 0.333), sample left & up (0.34, 0.32), near = line of purples, far = green boundary
+        // sample between: white point -> far (green boundary) = positive wavelength
+        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.32, 0.34));
+        Assert.That(unicolour.DominantWavelength, Is.Positive);
+        Assert.That(unicolour.IsImaginary, Is.False);
+    }
+    
+    [Test]
+    public void SampleImaginaryNearNegative()
+    {
+        // white point (0.333, 0.333), sample right & down (0.5, 0.1), near = line of purples, far = green boundary
+        // sample outside boundary: -> near (line of purples) = negative wavelength
+        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.5, 0.1));
+        Assert.That(unicolour.DominantWavelength, Is.Negative);
+        Assert.That(unicolour.IsImaginary, Is.True);
+    }
+    
+    [Test]
+    public void SampleImaginaryNearPositive()
+    {
+        // white point (0.333, 0.333), sample left & up (0.0, 0.9), near = green boundary, far = line of purples
+        // sample outside boundary: -> near (green boundary) = positive wavelength
+        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.0, 0.9));
+        Assert.That(unicolour.DominantWavelength, Is.Positive);
+        Assert.That(unicolour.IsImaginary, Is.True);
     }
 }

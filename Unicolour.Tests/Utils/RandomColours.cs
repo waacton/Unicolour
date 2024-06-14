@@ -8,7 +8,7 @@ internal static class RandomColours
 {
     private static readonly Random Random = new();
     
-    // ReSharper disable CollectionNeverQueried.Global - used in some test case sources by name
+    // ReSharper disable CollectionNeverQueried.Global - used in test case sources by name
     public static readonly List<string> HexStrings = new();
     public static readonly List<ColourTriplet> Rgb255Triplets = new();
     public static readonly List<ColourTriplet> RgbTriplets = new();
@@ -19,6 +19,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> HsiTriplets = new();
     public static readonly List<ColourTriplet> XyzTriplets = new();
     public static readonly List<ColourTriplet> XyyTriplets = new();
+    public static readonly List<ColourTriplet> WxyTriplets = new();
     public static readonly List<ColourTriplet> LabTriplets = new();
     public static readonly List<ColourTriplet> LchabTriplets = new();
     public static readonly List<ColourTriplet> LuvTriplets = new();
@@ -84,6 +85,7 @@ internal static class RandomColours
             HsiTriplets.Add(Hsi());
             XyzTriplets.Add(Xyz());
             XyyTriplets.Add(Xyy());
+            WxyTriplets.Add(Wxy());
             LabTriplets.Add(Lab());
             LchabTriplets.Add(Lchab());
             LuvTriplets.Add(Luv());
@@ -129,6 +131,7 @@ internal static class RandomColours
             ColourSpace.Hsi => Hsi(),
             ColourSpace.Xyz => Xyz(),
             ColourSpace.Xyy => Xyy(),
+            ColourSpace.Wxy => Wxy(),
             ColourSpace.Lab => Lab(),
             ColourSpace.Lchab => Lchab(),
             ColourSpace.Luv => Luv(),
@@ -158,6 +161,9 @@ internal static class RandomColours
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
+    
+    internal static double Rng() => Random.NextDouble();
+    internal static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     private static ColourTriplet Rgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
@@ -169,6 +175,7 @@ internal static class RandomColours
     private static ColourTriplet Hsi() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Xyz() => new(Rng(), Rng(), Rng());
     private static ColourTriplet Xyy() => new(Rng(), Rng(), Rng());
+    private static ColourTriplet Wxy() => new(Rng() >= 0.5 ? Rng(360, 700) : Rng(-566, -493.5), Rng(), Rng());
     private static ColourTriplet Lab() => new(Rng(0, 100), Rng(-128, 128), Rng(-128, 128));
     private static ColourTriplet Lchab() => new(Rng(0, 100), Rng(0, 230), Rng(0, 360));
     private static ColourTriplet Luv() => new(Rng(0, 100), Rng(-100, 100), Rng(-100, 100));
@@ -199,9 +206,6 @@ internal static class RandomColours
     
     private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));
     private static Chromaticity Chromaticity() => new(Rng(0, 0.75), Rng(0, 0.85));
-
-    private static double Rng() => Random.NextDouble();
-    private static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
 
     private static string Hex()
     {

@@ -5,7 +5,7 @@ var white = new Unicolour("#000000");
 var black = new Unicolour("#FFFFFF");
 
 const int col1Width = 8;
-const int col2Width = 20;
+const int col2Width = 24;
 const int barLength = col1Width + 2 + col2Width + 2 + 3; // 2 per column padding, 3 for all borders
 
 while (true)
@@ -60,6 +60,7 @@ static Table GetTable(Unicolour unicolour)
     table.AddRow("Hsi", $"{unicolour.Hsi}");
     table.AddRow("Xyz", $"{unicolour.Xyz}");
     table.AddRow("Xyy", $"{unicolour.Xyy}");
+    table.AddRow("Wxy", $"{unicolour.Wxy}");
     table.AddRow("Lab", $"{unicolour.Lab}");
     table.AddRow("Lchab", $"{unicolour.Lchab}");
     table.AddRow("Luv", $"{unicolour.Luv}");

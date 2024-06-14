@@ -49,6 +49,7 @@ void ColourSpaces()
             Utils.Draw(("HSI", text), columnWidth, rowHeight, GetColour(ColourSpace.Hsi)),
             Utils.Draw(("XYZ", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyz)),
             Utils.Draw(("xyY", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyy)),
+            Utils.Draw(("WXY", text), columnWidth, rowHeight, GetColour(ColourSpace.Wxy)),
             Utils.Draw(("LAB", text), columnWidth, rowHeight, GetColour(ColourSpace.Lab)),
             Utils.Draw(("LCHab", text), columnWidth, rowHeight, GetColour(ColourSpace.Lchab)),
             Utils.Draw(("LUV", text), columnWidth, rowHeight, GetColour(ColourSpace.Luv)),

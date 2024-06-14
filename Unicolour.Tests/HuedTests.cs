@@ -20,6 +20,9 @@ public class HuedTests
     public void Hsi() => AssertUnicolour(new(ColourSpace.Hsi, 180, 0, 0), new List<ColourSpace>());
     
     [Test]
+    public void Wxy() => AssertUnicolour(new(ColourSpace.Wxy, 530, 0, 0), new List<ColourSpace>());
+    
+    [Test]
     public void Lchab() => AssertUnicolour(new(ColourSpace.Lchab, 0, 0, 180), new List<ColourSpace>());
     
     [Test]

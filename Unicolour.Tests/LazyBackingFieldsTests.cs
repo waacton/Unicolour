@@ -85,6 +85,22 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterDominantWavelength(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        _ = unicolour.DominantWavelength;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Wxy);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterExcitationPurity(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        _ = unicolour.ExcitationPurity;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Wxy);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void AfterTemperature(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);

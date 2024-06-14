@@ -29,7 +29,18 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
             _ => throw new ArgumentOutOfRangeException()
         };
     }
-
+    
+    internal ColourTriplet WithDegreeMap(Func<double, double> degreeMap)
+    {
+        return HueIndex switch
+        {
+            0 => new(degreeMap(First), Second, Third, HueIndex),
+            2 => new(First, Second, degreeMap(Third), HueIndex),
+            null => new(First, Second, Third, HueIndex),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+    
     internal ColourTriplet WithHueModulo(bool allow360 = false)
     {
         var degrees = allow360 ? 361 : 360;

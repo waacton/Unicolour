@@ -10,6 +10,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Hsi> hsi;
     private readonly Lazy<Xyz> xyz;
     private readonly Lazy<Xyy> xyy;
+    private readonly Lazy<Wxy> wxy;
     private readonly Lazy<Lab> lab;
     private readonly Lazy<Lchab> lchab;
     private readonly Lazy<Luv> luv;
@@ -37,8 +38,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Cam16> cam16;
     private readonly Lazy<Hct> hct;
     private readonly Lazy<Temperature> temperature;
-    private readonly Lazy<Spectral.Intersects?> spectralIntersects;
-    
+
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
     
@@ -50,6 +50,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Hsi Hsi => hsi.Value;
     public Xyz Xyz => xyz.Value;
     public Xyy Xyy => xyy.Value;
+    public Wxy Wxy => wxy.Value;
     public Lab Lab => lab.Value;
     public Lchab Lchab => lchab.Value;
     public Luv Luv => luv.Value;
@@ -84,9 +85,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     public bool IsInDisplayGamut => Rgb.IsInGamut;
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
-    public double DominantWavelength => spectralIntersects.Value?.DominantWavelength() ?? double.NaN;
-    public double ExcitationPurity => spectralIntersects.Value?.ExcitationPurity() ?? double.NaN;
-    public bool IsImaginary => spectralIntersects.Value?.IsImaginary() ?? !Xyy.UseAsGreyscale;
+    public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
+    public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
+    public bool IsImaginary => Config.Xyz.Spectral.IsImaginary(Chromaticity);
     public Temperature Temperature => temperature.Value;
     
     internal Unicolour(Configuration config, ColourHeritage heritage,
@@ -113,6 +114,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         hsi = new Lazy<Hsi>(EvaluateHsi);
         xyz = new Lazy<Xyz>(EvaluateXyz);
         xyy = new Lazy<Xyy>(EvaluateXyy);
+        wxy = new Lazy<Wxy>(EvaluateWxy);
         lab = new Lazy<Lab>(EvaluateLab);
         lchab = new Lazy<Lchab>(EvaluateLchab);
         luv = new Lazy<Luv>(EvaluateLuv);
@@ -139,11 +141,6 @@ public partial class Unicolour : IEquatable<Unicolour>
         cam02 = new Lazy<Cam02>(EvaluateCam02);
         cam16 = new Lazy<Cam16>(EvaluateCam16);
         hct = new Lazy<Hct>(EvaluateHct);
-
-        spectralIntersects = new Lazy<Spectral.Intersects?>(() =>
-            Xyy.UseAsNaN || Xyy.UseAsGreyscale
-                ? null
-                : Config.Xyz.Spectral.FindBoundaryIntersects(Chromaticity));
         
         // this will get overridden when called by the derived constructor that takes temperature as a parameter 
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));

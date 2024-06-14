@@ -11,12 +11,21 @@ internal static class Interpolation
         var endRepresentation = end.GetRepresentation(colourSpace);
         var endAlpha = end.Alpha;
 
+        Func<double, double> mapToDegree = colourSpace == ColourSpace.Wxy
+            ? value => Wxy.WavelengthToDegree(value, config.Xyz)
+            : value => value;
+        
+        Func<double, double> mapFromDegree = colourSpace == ColourSpace.Wxy
+            ? value => Wxy.DegreeToWavelength(value, config.Xyz)
+            : value => value;
+
+
         (ColourTriplet startTriplet, ColourTriplet endTriplet) = GetTripletsToInterpolate(
             (startRepresentation, startAlpha), 
             (endRepresentation, endAlpha),
-            hueSpan, premultiplyAlpha);
+            hueSpan, premultiplyAlpha, mapToDegree);
         
-        var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo();
+        var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithDegreeMap(mapFromDegree);
         var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
         
         if (premultiplyAlpha)
@@ -26,6 +35,7 @@ internal static class Interpolation
         
         var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
+        
         return new Unicolour(config, heritage, colourSpace, first, second, third, alpha);
     }
     
@@ -38,7 +48,7 @@ internal static class Interpolation
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
         (ColourRepresentation representation, Alpha alpha) start, 
         (ColourRepresentation representation, Alpha alpha) end,
-        HueSpan hueSpan, bool premultiplyAlpha)
+        HueSpan hueSpan, bool premultiplyAlpha, Func<double, double> mapToDegree)
     {
         ColourTriplet startTriplet;
         ColourTriplet endTriplet;
@@ -48,7 +58,7 @@ internal static class Interpolation
         var hasHueComponent = start.representation.HasHueComponent || end.representation.HasHueComponent;
         if (hasHueComponent)
         {
-            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation, hueSpan);
+            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation, hueSpan, mapToDegree);
         }
         else
         {
@@ -65,10 +75,12 @@ internal static class Interpolation
         return (startTriplet, endTriplet);
     }
     
-    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(ColourRepresentation startRepresentation, ColourRepresentation endRepresentation, HueSpan hueSpan)
+    private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(
+        ColourRepresentation startRepresentation, ColourRepresentation endRepresentation, 
+        HueSpan hueSpan, Func<double, double> mapToDegree)
     {
-        var startTriplet = startRepresentation.Triplet.WithHueModulo(allow360: true);
-        var endTriplet = endRepresentation.Triplet.WithHueModulo(allow360: true);
+        var startTriplet = startRepresentation.Triplet.WithDegreeMap(mapToDegree).WithHueModulo(allow360: true);
+        var endTriplet = endRepresentation.Triplet.WithDegreeMap(mapToDegree).WithHueModulo(allow360: true);
 
         var startHasHue = startRepresentation.UseAsHued;
         var endHasHue = endRepresentation.UseAsHued;

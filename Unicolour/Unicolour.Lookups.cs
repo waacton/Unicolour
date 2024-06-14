@@ -15,6 +15,7 @@ public partial class Unicolour
             ColourSpace.Hsi => Hsi,
             ColourSpace.Xyz => Xyz,
             ColourSpace.Xyy => Xyy,
+            ColourSpace.Wxy => Wxy,
             ColourSpace.Lab => Lab,
             ColourSpace.Lchab => Lchab,
             ColourSpace.Luv => Luv,
@@ -59,6 +60,7 @@ public partial class Unicolour
             ColourSpace.Hsi => new Hsi(first, second, third, heritage),
             ColourSpace.Xyz => new Xyz(first, second, third, heritage),
             ColourSpace.Xyy => new Xyy(first, second, third, heritage),
+            ColourSpace.Wxy => new Wxy(first, second, third, heritage),
             ColourSpace.Lab => new Lab(first, second, third, heritage),
             ColourSpace.Lchab => new Lchab(first, second, third, heritage),
             ColourSpace.Luv => new Luv(first, second, third, heritage),
@@ -199,6 +201,7 @@ public partial class Unicolour
             ColourSpace.Hwb => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Hsi => RgbLinear.ToXyz(RgbLinear, Config.Rgb, Config.Xyz),
             ColourSpace.Xyy => Xyy.ToXyz(Xyy),
+            ColourSpace.Wxy => Xyy.ToXyz(Xyy),
             ColourSpace.Lab => Lab.ToXyz(Lab, Config.Xyz),
             ColourSpace.Lchab => Lab.ToXyz(Lab, Config.Xyz),
             ColourSpace.Luv => Luv.ToXyz(Luv, Config.Xyz),
@@ -234,7 +237,17 @@ public partial class Unicolour
         return InitialColourSpace switch
         {
             ColourSpace.Xyy => (Xyy)InitialRepresentation,
+            ColourSpace.Wxy => Wxy.ToXyy(Wxy, Config.Xyz),
             _ => Xyy.FromXyz(Xyz, Config.Xyz.WhiteChromaticity)
+        };
+    }
+    
+    private Wxy EvaluateWxy()
+    {
+        return InitialColourSpace switch
+        {
+            ColourSpace.Wxy => (Wxy)InitialRepresentation,
+            _ => Wxy.FromXyy(Xyy, Config.Xyz)
         };
     }
 

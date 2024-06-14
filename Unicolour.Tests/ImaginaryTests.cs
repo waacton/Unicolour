@@ -13,7 +13,7 @@ public class ImaginaryTests
         var unicolour = new Unicolour(ColourSpace.Rgb255, r, g, b);
         Assert.That(unicolour.IsImaginary, Is.False);
     }
-
+    
     [Test]
     public void Greyscale([Range(0, 1, 0.1)] double value)
     {
@@ -42,7 +42,7 @@ public class ImaginaryTests
         var unicolour = new Unicolour(config, new Spd { { wavelength, 1.0 } });
         Assert.That(unicolour.IsImaginary, Is.False);
     }
-
+    
     private const double Offset = 0.0000001;
     [TestCase(Edge.Bottom, 0, Offset, false)] // coordinates directly above are inside the boundary
     [TestCase(Edge.Bottom, 0, -Offset, true)]
@@ -78,6 +78,6 @@ public class ImaginaryTests
         var unicolour = new Unicolour(offsetChromaticity);
         Assert.That(unicolour.IsImaginary, Is.EqualTo(expectedImaginary));
     }
-
+    
     public enum Edge { Bottom, Left, Top, Right }
 }

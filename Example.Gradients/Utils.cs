@@ -45,9 +45,10 @@ internal static class Utils
     
     private static void SetColumnPixels(Image<Rgba32> image, int column, int height, Unicolour colour)
     {
+        var rgba32 = AsRgba32(colour);
         for (var row = 0; row < height; row++)
         {
-            image[column, row] = AsRgba32(colour);
+            image[column, row] = rgba32;
         }
     }
     

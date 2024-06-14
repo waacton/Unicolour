@@ -162,7 +162,7 @@ internal static class TestUtils
         Assert.That(triplet.Third, Is.EqualTo(expected.third).Within(MixTolerance), "Third");
         Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance), "Alpha");
     }
-
+    
     internal static void AssertNoPropertyError(Unicolour unicolour)
     {
         Assert.DoesNotThrow(AccessProperties);
@@ -207,6 +207,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.RgbLinear);
             AccessProperty(() => unicolour.Temperature);
             AccessProperty(() => unicolour.Tsl);
+            AccessProperty(() => unicolour.Wxy);
             AccessProperty(() => unicolour.Xyb);
             AccessProperty(() => unicolour.Xyy);
             AccessProperty(() => unicolour.Xyz);
@@ -263,6 +264,7 @@ internal static class TestUtils
         { typeof(Hsi), ColourSpace.Hsi },
         { typeof(Xyz), ColourSpace.Xyz },
         { typeof(Xyy), ColourSpace.Xyy },
+        { typeof(Wxy), ColourSpace.Wxy },
         { typeof(Lab), ColourSpace.Lab },
         { typeof(Lchab), ColourSpace.Lchab },
         { typeof(Luv), ColourSpace.Luv },

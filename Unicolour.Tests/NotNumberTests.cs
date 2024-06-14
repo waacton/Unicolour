@@ -43,6 +43,9 @@ public class NotNumberTests
     
     [TestCaseSource(nameof(testCases))]
     public void Xyy(double x, double y, double upperY) => AssertUnicolour(new(ColourSpace.Xyy, x, y, upperY));
+    
+    [TestCaseSource(nameof(testCases))]
+    public void Wxy(double w, double x, double y) => AssertUnicolour(new(ColourSpace.Wxy, w, x, y));
 
     [TestCaseSource(nameof(testCases))]
     public void Lab(double l, double a, double b) => AssertUnicolour(new(ColourSpace.Lab, l, a, b));

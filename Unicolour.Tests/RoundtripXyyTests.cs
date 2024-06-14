@@ -9,11 +9,20 @@ public class RoundtripXyyTests
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
-    public void XyyRoundTrip(ColourTriplet triplet)
+    public void ViaXyz(ColourTriplet triplet)
     {
         var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
         var xyz = Xyy.ToXyz(original);
         var roundtrip = Xyy.FromXyz(xyz, XyzConfig.WhiteChromaticity);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void ViaWxy(ColourTriplet triplet)
+    {
+        var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
+        var wxy = Wxy.FromXyy(original, XyzConfig);
+        var roundtrip = Wxy.ToXyy(wxy, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

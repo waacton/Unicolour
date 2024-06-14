@@ -11,6 +11,7 @@ public enum ColourSpace
     Hsi,
     Xyz,
     Xyy,
+    Wxy,
     Lab,
     Lchab,
     Luv,

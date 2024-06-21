@@ -80,11 +80,7 @@ internal static class Utils
                 data.Add(marker);
             }
         }
-
-        return data;
-    }
-        }
-
+        
         return data;
     }
     

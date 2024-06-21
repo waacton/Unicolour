@@ -2,41 +2,50 @@
 using Wacton.Unicolour;
 using Wacton.Unicolour.Datasets;
 
+const string repoReadme = "README.md";
+const string wxyReadme = "docs/wxy-colour-space.md";
+
 var sourceRoot = Path.GetFullPath("./docs");
 var solutionRoot = AppDomain.CurrentDomain.BaseDirectory.Split("Unicolour.Readme")[0];
 var docsRoot = Path.Combine(solutionRoot, "docs");
 
-ProcessReadme();
+ProcessRepoReadme();
+ProcessDocsReadme(Path.GetFullPath(repoReadme));
+ProcessDocsReadme(Path.GetFullPath(wxyReadme));
 CopyDirectory(sourceRoot, docsRoot);
 return;
 
-void ProcessReadme()
+void ProcessRepoReadme()
 {
-    const string readme = "README.md";
-    const string readmeAmerican = "README_us.md";
+    var text = File.ReadAllText(repoReadme);
+    var textForRepo = text.Replace("../", string.Empty);
     
-    var readmeText = File.ReadAllText(readme);
+    File.WriteAllText(Path.Combine(solutionRoot, repoReadme), textForRepo);
+}
 
-    var readmeRootText = readmeText
-        .Replace("../", string.Empty);
-    File.WriteAllText(Path.Combine(solutionRoot, readme), readmeRootText);
+void ProcessDocsReadme(string readmePath)
+{
+    var readmeFilename = Path.GetFileName(readmePath);
+    var readmeAmericanPath = readmePath.Replace(".md", "_us.md");
+    var readmeAmericanFilename = Path.GetFileName(readmeAmericanPath);
     
-    var readmeDocsText = readmeText
-        .Replace("docs/", string.Empty)
+    var text = File.ReadAllText(readmePath);
+    var textForDocs = text
+        .Replace("docs/", string.Empty) // docs directory is flat
         .Replace("../", "https://github.com/waacton/Unicolour/tree/main/");
-
+    
     // until GitHub Pages supports Mermaid 😑 - just remove it
-    readmeDocsText = Regex.Replace(readmeDocsText, @"<details>(.|\n)*?<\/details>", string.Empty);
+    textForDocs = Regex.Replace(textForDocs, @"<details>(.|\n)*?<\/details>", string.Empty);
 
-    var readmeUkText = readmeDocsText;
-    var readmeUsText = readmeDocsText;
+    var ukText = textForDocs;
+    var usText = textForDocs;
 
-    readmeUkText += Environment.NewLine;
-    readmeUkText += $"Also available in [American]({readmeAmerican}) \ud83c\uddfa\ud83c\uddf8.";
-    File.WriteAllText(Path.Combine(sourceRoot, readme), readmeUkText);
+    ukText += Environment.NewLine;
+    ukText += $"Also available in [American]({readmeAmericanFilename}) \ud83c\uddfa\ud83c\uddf8.";
+    File.WriteAllText(Path.Combine(sourceRoot, Path.GetFileName(readmePath)), ukText);
 
     // could use regex but why bother? also want to be careful not to change spelling of "unicolour", "ColourSpace", etc.
-    readmeUsText = readmeUsText
+    usText = usText
         .Replace("Colour ", "Color ")
         .Replace("Colours ", "Colors ")
         .Replace("Colour&", "Color&")
@@ -47,10 +56,11 @@ void ProcessReadme()
         .Replace("ise ", "ize ")
         .Replace("ises ", "izes ")
         .Replace("isation ", "ization ")
-        .Replace("isations ", "izations ");
-    readmeUsText += Environment.NewLine;
-    readmeUsText += $"Also available in [British]({readme}) \ud83c\uddec\ud83c\udde7.";
-    File.WriteAllText(Path.Combine(sourceRoot, readmeAmerican), readmeUsText);
+        .Replace("isations ", "izations ")
+        .Replace("metre", "meter");
+    usText += Environment.NewLine;
+    usText += $"Also available in [British]({readmeFilename}) \ud83c\uddec\ud83c\udde7.";
+    File.WriteAllText(Path.Combine(sourceRoot, Path.GetFileName(readmeAmericanPath)), usText);
 }
 
 void CopyDirectory(string sourcePath, string targetPath)

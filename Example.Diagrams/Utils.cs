@@ -68,10 +68,21 @@ internal static class Utils
                 var chromaticity = new Chromaticity(x, y);
                 var color = GetPlotColour(chromaticity);
                 if (color == null) continue;
+
+                var markerStyle = new MarkerStyle
+                {
+                    Fill = new FillStyle { Color = color.Value },
+                    Outline = new LineStyle { Color = Colors.Transparent, Width = 0f },
+                    Size = 1.5f
+                };
                 
-                var marker = new Marker { X = x, Y = y, Color = color.Value, Size = 2.5f };
+                var marker = new Marker { X = x, Y = y, MarkerStyle = markerStyle };
                 data.Add(marker);
             }
+        }
+
+        return data;
+    }
         }
 
         return data;
@@ -88,7 +99,14 @@ internal static class Utils
                 var color = GetPlotColour(chromaticity);
                 if (color == null) continue;
                 
-                var marker = new Marker { X = u, Y = v, Color = color.Value, Size = 2.5f };
+                var markerStyle = new MarkerStyle
+                {
+                    Fill = new FillStyle { Color = color.Value },
+                    Outline = new LineStyle { Color = Colors.Transparent, Width = 0f },
+                    Size = 2f
+                };
+                
+                var marker = new Marker { X = u, Y = v, MarkerStyle = markerStyle };
                 data.Add(marker);
             }
         }

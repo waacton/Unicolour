@@ -73,35 +73,35 @@ public class KnownWxyTests
     [Test]
     public void UltravioletPositive()
     {
-        var blue = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, 300, 0.5, 0.5);
-        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, blue.Xyy.Triplet, Tolerance);
+        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
     
     [Test]
     public void UltravioletNegative()
     {
-        var blue = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, -600, 0.5, 0.5);
-        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, blue.Xyy.Triplet, Tolerance);
+        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
     
     [Test]
     public void UltravioletPositiveComplementary()
     {
         var complementary = XyzConfiguration.D65.Spectral.MinNegativeWavelength;
-        var blue = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, 300, 0.5, 0.5);
-        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, blue.Xyy.Triplet, Tolerance);
+        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
     
     [Test]
     public void UltravioletNegativeComplementary()
     {
         var complementary = XyzConfiguration.D65.Spectral.MinNegativeWavelength;
-        var blue = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, -600, 0.5, 0.5);
-        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, blue.Xyy.Triplet, Tolerance);
+        TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
     
     [Test]

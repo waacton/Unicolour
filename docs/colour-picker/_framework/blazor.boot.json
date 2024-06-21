@@ -1,15 +1,15 @@
 {
   "mainAssemblyName": "Wacton.Unicolour.Example.Web",
   "resources": {
-    "hash": "sha256-cZ7ULK/guZ/oy2y7JZ9+nKLejk4iKynVkwZHCKy2X20=",
+    "hash": "sha256-b6pPsDzu5my2c7q7xjvbUGDuXgADM9DZGybSR0clFsU=",
     "jsModuleNative": {
-      "dotnet.native.8.0.4.xl5kp6zotc.js": "sha256-ju0+XWE0ihz554eKEj0HQ8Opa61xpbUIaX5/MNo8we4="
+      "dotnet.native.8.0.3.ir284go4ny.js": "sha256-D4sYBYmDfH/YekgYRgX959/2RG6k28sJSHmcsn+iikk="
     },
     "jsModuleRuntime": {
-      "dotnet.runtime.8.0.4.030b44tfm9.js": "sha256-JeVsECOqOie/Pe89n9PJNJaMmb5vJsAAxfXY8INN64A="
+      "dotnet.runtime.8.0.3.faxqb0emo7.js": "sha256-eQgtmRxLcbxYmADDa49CHs/GuJ7nM6d/UFWo4EVhuIw="
     },
     "wasmNative": {
-      "dotnet.native.wasm": "sha256-U1JSgnum2OTerSq8i5Y9L17deHEWJmae0djinSPLyJM="
+      "dotnet.native.wasm": "sha256-eVeGwMx+BfzNeU727VmCADSEBzGFWGkvJAX0XZdSVkQ="
     },
     "icu": {
       "icudt_CJK.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
@@ -207,8 +207,8 @@
       "System.Xml.XmlSerializer.wasm": "sha256-qu7VGSlaZOqgt5JZMsE/L8ilWK5lt4teZLY9QKCkJyY=",
       "System.Xml.XPath.wasm": "sha256-tUNAS6Z4TprhskLHOnOya2pco3KDsCcBMfZ+htb0HBU=",
       "System.Xml.XPath.XDocument.wasm": "sha256-+MKQ87TsMm829Otiz6wsdCFe0uZLksddhf2MXc9bIUk=",
-      "Wacton.Unicolour.Example.Web.wasm": "sha256-T2v1Fb87x7G6CyvxU3n3k3u1L/R6OpZ9WxbJtJBsNQs=",
-      "Wacton.Unicolour.wasm": "sha256-Rj5MvXtRR4Eof6TRJjeCECSQCbAZjiotcpYkomVYYCM=",
+      "Wacton.Unicolour.Example.Web.wasm": "sha256-AvUz2/ssJqxoD5GIIOxTfAhTylmDuY5lgBsZk3/3BII=",
+      "Wacton.Unicolour.wasm": "sha256-lgCBMYJ4eUvypHa5hc7Ia5txfnZyo55w3Wno1NiU9XE=",
       "WindowsBase.wasm": "sha256-lcr0/6rzYJrl+fMl5kvdeCiSzrQwR47frxhGjlR++DI="
     }
   },

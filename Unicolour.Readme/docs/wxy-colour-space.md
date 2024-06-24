@@ -9,7 +9,7 @@ The WXY colour space is composed of:
 - Relative luminance `Y`
 
 While the concepts themselves are not new _(see Helmholtz coordinates)_,
-I'm not aware of them being used in a colour space format like this.
+I'm not aware of them being used in this kind of colour space format.
 
 WXY is fully implemented in [Unicolour](https://github.com/waacton/Unicolour),
 allowing it to be converted to and from any other colour space, interpolated, and compared.
@@ -176,7 +176,7 @@ Console.WriteLine(colour.Hex); // #0FF993
 ```
 
 Here is a quick comparison of how different gamut mapping techniques handle
-monochromatic light (100% purity) at 0.5 luminance. On the left is basic RGB clipping,
+full-purity wavelength at 0.5 luminance. On the left is basic RGB clipping,
 in the middle the Oklch-based mapping from the CSS specification,
 and on the right the purity-reduction method described above.
 

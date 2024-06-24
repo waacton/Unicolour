@@ -9,7 +9,7 @@ The WXY color space is composed of:
 - Relative luminance `Y`
 
 While the concepts themselves are not new _(see Helmholtz coordinates)_,
-I'm not aware of them being used in a color space format like this.
+I'm not aware of them being used in this kind of color space format.
 
 WXY is fully implemented in [Unicolour](https://github.com/waacton/Unicolour),
 allowing it to be converted to and from any other color space, interpolated, and compared.
@@ -17,7 +17,7 @@ allowing it to be converted to and from any other color space, interpolated, and
 For example, it is trivial to take a WXY color and convert it to [RGB](https://en.wikipedia.org/wiki/RGB_color_spaces),
 the modern [Oklab & Oklch](https://bottosson.github.io/posts/oklab/) now available in CSS,
 Google's [HCT](https://material.io/blog/science-of-color-design) color system,
-or more obscure and specialised color spaces like [TSL](https://doi.org/10.1109/AFGR.2000.840612)
+or more obscure and specialized color spaces like [TSL](https://doi.org/10.1109/AFGR.2000.840612)
 and [XYB](https://ds.jpeg.org/whitepapers/jpeg-xl-whitepaper.pdf).
 
 ```c#
@@ -29,7 +29,7 @@ Console.WriteLine(yellow.Oklab); // 0.96 -0.07 +0.19
 ## ⏪ Background
 
 WXY is based on the [CIE xyY](https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space) color space
-but, instead of "colourfulness" being defined by the xy-chromaticity coordinates,
+but, instead of "colorfulness" being defined by the xy-chromaticity coordinates,
 it is defined relative to the spectral locus in terms of wavelength and purity.
 
 The spectral locus is the horseshoe-shaped curve on the xy-chromaticity diagram.
@@ -176,7 +176,7 @@ Console.WriteLine(colour.Hex); // #0FF993
 ```
 
 Here is a quick comparison of how different gamut mapping techniques handle
-monochromatic light (100% purity) at 0.5 luminance. On the left is basic RGB clipping,
+full-purity wavelength at 0.5 luminance. On the left is basic RGB clipping,
 in the middle the Oklch-based mapping from the CSS specification,
 and on the right the purity-reduction method described above.
 

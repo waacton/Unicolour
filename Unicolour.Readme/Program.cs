@@ -57,6 +57,7 @@ void ProcessDocsReadme(string readmePath)
         .Replace("ise ", "ize ")
         .Replace("ised ", "ized ")
         .Replace("ises ", "izes ")
+        .Replace("ising ", "izing ")
         .Replace("isation ", "ization ")
         .Replace("isations ", "izations ")
         .Replace("metre", "meter");

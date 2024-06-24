@@ -142,7 +142,7 @@ as seen in [this online demo](https://unicolour.wacton.xyz/colour-picker/).
 ## ⏏️ Gamut mapping
 
 Note in the image above that some parts of the sliders show a pattern instead of solid colors.
-This is my way of visualising that those colors cannot be displayed with sRGB because they are out of gamut.
+This is my way of visualizing that those colors cannot be displayed with sRGB because they are out of gamut.
 
 ![Unicolour picker with a WXY value of 530, 0.5, 0.7,
 which is not in the sRGB gamut](wxy-8.png)

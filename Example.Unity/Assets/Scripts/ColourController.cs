@@ -123,6 +123,7 @@ public class ColourController : MonoBehaviour
             { ColourSpace.Hsi, (new(0, 360), new(0, 1), new(0, 1)) },
             { ColourSpace.Xyz, (new(0, 0.9505), new(0, 1), new(0, 1.0888)) },
             { ColourSpace.Xyy, (new(0.15, 0.64), new(0.06, 0.6), new(0, 1)) },
+            { ColourSpace.Wxy, (new(-566.4, 700), new(0, 1), new(0, 1)) },
             { ColourSpace.Lab, (new(0, 100), new(-86.2, 98.2), new(-108, 94.5)) },
             { ColourSpace.Lchab, (new(0, 100), new(0, 134), new(0, 360)) },
             { ColourSpace.Luv, (new(0, 100), new(-83.1, 175), new(-134, 107)) },

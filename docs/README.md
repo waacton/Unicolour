@@ -35,7 +35,8 @@ It can be used to [mix and compare colours](#mix-colours), as well as [other use
 > **Supported colour spaces**
 >
 > RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI ·
-> CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
+> CIEXYZ · CIExyY · WXY ·
+> CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
 > TSL · XYB ·
 > IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
@@ -126,44 +127,45 @@ Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 var (l, c, h) = colour.Oklch.Triplet;
 ```
 
-| Colour&nbsp;space                       | Enum                    | Property       |
-|-----------------------------------------|-------------------------|----------------|
-| RGB&nbsp;(0–255)                        | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
-| RGB                                     | `ColourSpace.Rgb`       | `.Rgb`         |
-| Linear&nbsp;RGB                         | `ColourSpace.RgbLinear` | `.RgbLinear`   |
-| HSB&nbsp;/&nbsp;HSV                     | `ColourSpace.Hsb`       | `.Hsb`         |
-| HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
-| HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
-| HSI                                     | `ColourSpace.Hsi`       | `.Hsi`         |
-| CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
-| CIExyY                                  | `ColourSpace.Xyy`       | `.Xyy`         |
-| CIELAB                                  | `ColourSpace.Lab`       | `.Lab`         |
-| CIELCh<sub>ab</sub>                     | `ColourSpace.Lchab`     | `.Lchab`       |
-| CIELUV                                  | `ColourSpace.Luv`       | `.Luv`         |
-| CIELCh<sub>uv</sub>                     | `ColourSpace.Lchuv`     | `.Lchuv`       |
-| HSLuv                                   | `ColourSpace.Hsluv`     | `.Hsluv`       |
-| HPLuv                                   | `ColourSpace.Hpluv`     | `.Hpluv`       |
-| YPbPr                                   | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
-| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_  | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
-| YCgCo                                   | `ColourSpace.Ycgco`     | `.Ycgco`       |
-| YUV&nbsp;_(PAL)_                        | `ColourSpace.Yuv`       | `.Yuv`         |
-| YIQ&nbsp;_(NTSC)_                       | `ColourSpace.Yiq`       | `.Yiq`         |
-| YDbDr&nbsp;_(SECAM)_                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
-| TSL                                     | `ColourSpace.Tsl`       | `.Tsl`         |
-| XYB                                     | `ColourSpace.Xyb`       | `.Xyb`         |
-| IPT                                     | `ColourSpace.Ipt`       | `.Ipt`         |
-| IC<sub>T</sub>C<sub>P</sub>             | `ColourSpace.Ictcp`     | `.Ictcp`       |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
-| Oklab                                   | `ColourSpace.Oklab`     | `.Oklab`       |
-| Oklch                                   | `ColourSpace.Oklch`     | `.Oklch`       |
-| Okhsv                                   | `ColourSpace.Okhsv`     | `.Okhsv`       |
-| Okhsl                                   | `ColourSpace.Okhsl`     | `.Okhsl`       |
-| Okhwb                                   | `ColourSpace.Okhwb`     | `.Okhwb`       |
-| CIECAM02                                | `ColourSpace.Cam02`     | `.Cam02`       |
-| CAM16                                   | `ColourSpace.Cam16`     | `.Cam16`       |
-| HCT                                     | `ColourSpace.Hct`       | `.Hct`         |
-| CMYK <sup>[?](#cmyk)</sup>              | -                       | -              |
+| Colour&nbsp;space                                    | Enum                    | Property       |
+|------------------------------------------------------|-------------------------|----------------|
+| RGB&nbsp;(0–255)                                     | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
+| RGB                                                  | `ColourSpace.Rgb`       | `.Rgb`         |
+| Linear&nbsp;RGB                                      | `ColourSpace.RgbLinear` | `.RgbLinear`   |
+| HSB&nbsp;/&nbsp;HSV                                  | `ColourSpace.Hsb`       | `.Hsb`         |
+| HSL                                                  | `ColourSpace.Hsl`       | `.Hsl`         |
+| HWB                                                  | `ColourSpace.Hwb`       | `.Hwb`         |
+| HSI                                                  | `ColourSpace.Hsi`       | `.Hsi`         |
+| CIEXYZ                                               | `ColourSpace.Xyz`       | `.Xyz`         |
+| CIExyY                                               | `ColourSpace.Xyy`       | `.Xyy`         |
+| [WXY](https://unicolour.wacton.xyz/wxy-colour-space) | `ColourSpace.Wxy`       | `.Wxy`         |
+| CIELAB                                               | `ColourSpace.Lab`       | `.Lab`         |
+| CIELCh<sub>ab</sub>                                  | `ColourSpace.Lchab`     | `.Lchab`       |
+| CIELUV                                               | `ColourSpace.Luv`       | `.Luv`         |
+| CIELCh<sub>uv</sub>                                  | `ColourSpace.Lchuv`     | `.Lchuv`       |
+| HSLuv                                                | `ColourSpace.Hsluv`     | `.Hsluv`       |
+| HPLuv                                                | `ColourSpace.Hpluv`     | `.Hpluv`       |
+| YPbPr                                                | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
+| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_               | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
+| YCgCo                                                | `ColourSpace.Ycgco`     | `.Ycgco`       |
+| YUV&nbsp;_(PAL)_                                     | `ColourSpace.Yuv`       | `.Yuv`         |
+| YIQ&nbsp;_(NTSC)_                                    | `ColourSpace.Yiq`       | `.Yiq`         |
+| YDbDr&nbsp;_(SECAM)_                                 | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
+| TSL                                                  | `ColourSpace.Tsl`       | `.Tsl`         |
+| XYB                                                  | `ColourSpace.Xyb`       | `.Xyb`         |
+| IPT                                                  | `ColourSpace.Ipt`       | `.Ipt`         |
+| IC<sub>T</sub>C<sub>P</sub>                          | `ColourSpace.Ictcp`     | `.Ictcp`       |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>              | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>              | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
+| Oklab                                                | `ColourSpace.Oklab`     | `.Oklab`       |
+| Oklch                                                | `ColourSpace.Oklch`     | `.Oklch`       |
+| Okhsv                                                | `ColourSpace.Okhsv`     | `.Okhsv`       |
+| Okhsl                                                | `ColourSpace.Okhsl`     | `.Okhsl`       |
+| Okhwb                                                | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| CIECAM02                                             | `ColourSpace.Cam02`     | `.Cam02`       |
+| CAM16                                                | `ColourSpace.Cam16`     | `.Cam16`       |
+| HCT                                                  | `ColourSpace.Hct`       | `.Hct`         |
+| CMYK <sup>[?](#cmyk)</sup>                           | -                       | -              |
 
 > #### CMYK?
 > 
@@ -425,12 +427,12 @@ All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
-| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
-| `XyzConfiguration`                  | CIEXYZ · CIExyY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                                    |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 | 
-| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT                              | 
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                  |
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB  |
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                               |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                  | 
+| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT                               | 
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

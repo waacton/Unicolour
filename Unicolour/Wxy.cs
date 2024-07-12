@@ -17,7 +17,7 @@ public record Wxy : ColourRepresentation
     internal Wxy(double w, double x, double y, ColourHeritage heritage) : base(w, x, y, heritage) { }
     
     protected override string FirstString => UseAsHued ? $"{W:F1}nm" : "—nm";
-    protected override string SecondString => $"{X:F4}";
+    protected override string SecondString => $"{X * 100:F1}%";
     protected override string ThirdString => $"{Y:F4}";
     public override string ToString() => base.ToString();
     

@@ -135,7 +135,7 @@ void UvChromaticity()
     var rangeV = (0.0, 0.4);
     var plot = Utils.GetEmptyPlot(rangeU, rangeV, majorTickInterval: 0.05);
     
-    var fillMarkers = Utils.GetUvFillMarkers(rangeU, rangeV, increment: 0.001);
+    var fillMarkers = Utils.GetUvFillMarkers(rangeU, rangeV, increment: 0.00025);
     foreach (var marker in fillMarkers)
     {
         plot.Add.Plottable(marker);

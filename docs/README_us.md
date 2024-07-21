@@ -19,10 +19,6 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 
 See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a color picker for any color space — made with Unicolour.
 
-> **🦺 Currently under development:**
-> 
-> - CMYK color conversion using ICC profiles _([branch](https://github.com/waacton/Unicolour/tree/icc))_
-
 **Contents**
 1. 🧭 [Overview](#-overview)
 2. 🔆 [Installation](#-installation)
@@ -31,6 +27,10 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 5. 💡 [Configuration](#-configuration)
 6. ✨ [Examples](#-examples)
 7. 🔮 [Datasets](#-datasets)
+
+> **🦺 Currently under development:**
+>
+> - CMYK color conversion using ICC profiles _([branch](https://github.com/waacton/Unicolour/tree/icc))_
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single color and its representation across [30+ color spaces](#convert-between-color-spaces).

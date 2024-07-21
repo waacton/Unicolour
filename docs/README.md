@@ -19,9 +19,9 @@ Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net
 
 See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a colour picker for any colour space — made with Unicolour.
 
-> 🦺
-> Currently [under development](https://github.com/waacton/Unicolour/tree/icc):
-> CMYK colour conversion using ICC profiles
+> **🦺 Currently under development:**
+> 
+> - CMYK colour conversion using ICC profiles _([branch](https://github.com/waacton/Unicolour/tree/icc))_
 
 **Contents**
 1. 🧭 [Overview](#-overview)

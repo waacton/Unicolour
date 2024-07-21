@@ -1,6 +1,5 @@
 ﻿using ScottPlot;
 using ScottPlot.Plottables;
-using ScottPlot.Primitives;
 using Wacton.Unicolour.Example.Diagrams;
 
 const string outputDirectory = "../../../../Unicolour.Readme/docs/";
@@ -51,7 +50,8 @@ void SpectralLocus()
         var marker = new Marker
         {
             X = colour.Chromaticity.X, 
-            Y = colour.Chromaticity.Y, 
+            Y = colour.Chromaticity.Y,
+            Shape = MarkerShape.FilledCircle,
             Color = Utils.GetPlotColour(chromaticity)!.Value, 
             Size = 5f
         };

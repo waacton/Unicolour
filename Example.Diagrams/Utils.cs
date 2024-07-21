@@ -71,8 +71,10 @@ internal static class Utils
 
                 var markerStyle = new MarkerStyle
                 {
-                    Fill = new FillStyle { Color = color.Value },
-                    Outline = new LineStyle { Color = Colors.Transparent, Width = 0f },
+                    Shape = MarkerShape.FilledCircle,
+                    FillColor = color.Value,
+                    OutlineColor = Colors.Transparent,
+                    OutlineWidth = 0f,
                     Size = 1.5f
                 };
                 
@@ -97,8 +99,10 @@ internal static class Utils
                 
                 var markerStyle = new MarkerStyle
                 {
-                    Fill = new FillStyle { Color = color.Value },
-                    Outline = new LineStyle { Color = Colors.Transparent, Width = 0f },
+                    Shape = MarkerShape.FilledCircle,
+                    FillColor = color.Value,
+                    OutlineColor = Colors.Transparent,
+                    OutlineWidth = 0f,
                     Size = 2f
                 };
                 

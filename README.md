@@ -14,6 +14,7 @@ Unicolour is the most comprehensive .NET library for working with colour:
 - Colour chromaticity
 - Colour temperature
 - Wavelength attributes
+- ICC profiles for CMYK conversion
 
 Written in C# with zero dependencies and supports full cross-platform compatibility.
 

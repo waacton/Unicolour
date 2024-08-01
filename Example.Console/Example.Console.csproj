@@ -22,4 +22,10 @@
       <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="SWOP2006_Coated5v2.icc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

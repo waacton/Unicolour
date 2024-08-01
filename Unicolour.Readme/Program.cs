@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 using Wacton.Unicolour.Datasets;
+using Wacton.Unicolour.Icc;
 
 const string repoReadme = "README.md";
 const string wxyReadme = "docs/wxy-colour-space.md";
@@ -210,6 +211,18 @@ void FeatureCvd()
 {
     var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
     var noRed = colour.SimulateProtanopia();
+}
+
+void FeatureIcc()
+{
+    var iccConfig = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
+    var config = new Configuration(iccConfiguration: iccConfig);
+    
+    var navyRgb = new Unicolour(config, ColourSpace.Rgb255, 0, 0, 128);
+    Console.WriteLine(navyRgb.Icc); // 1.0000 0.8977 0.0001 0.2867 CMYK
+
+    var navyCmyk = new Unicolour(config, new Channels(1.0, 1.0, 0.0, 0.5));
+    Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
 }
 
 void FeatureInvalid()

@@ -30,10 +30,6 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 6. ✨ [Examples](#-examples)
 7. 🔮 [Datasets](#-datasets)
 
-> **🦺 Currently under development:**
->
-> - CMYK colour conversion using ICC profiles _([branch](https://github.com/waacton/Unicolour/tree/icc))_
-
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](#convert-between-colour-spaces).
 It can be used to [mix and compare colours](#mix-colours), as well as [other useful tools](#-features) for working with colour.
@@ -49,7 +45,7 @@ It can be used to [mix and compare colours](#mix-colours), as well as [other use
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb ·
 > CIECAM02 · CAM16 ·
 > HCT ·
-> CMYK <sup>[?](#cmyk)</sup>
+> CMYK <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
 > ```c#
 > Unicolour pink = new("#FF1493");
 > Console.WriteLine(pink.Oklab); // 0.65 +0.26 -0.01
@@ -133,59 +129,45 @@ Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 var (l, c, h) = colour.Oklch.Triplet;
 ```
 
-| Colour&nbsp;space                                    | Enum                    | Property       |
-|------------------------------------------------------|-------------------------|----------------|
-| RGB&nbsp;(0–255)                                     | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
-| RGB                                                  | `ColourSpace.Rgb`       | `.Rgb`         |
-| Linear&nbsp;RGB                                      | `ColourSpace.RgbLinear` | `.RgbLinear`   |
-| HSB&nbsp;/&nbsp;HSV                                  | `ColourSpace.Hsb`       | `.Hsb`         |
-| HSL                                                  | `ColourSpace.Hsl`       | `.Hsl`         |
-| HWB                                                  | `ColourSpace.Hwb`       | `.Hwb`         |
-| HSI                                                  | `ColourSpace.Hsi`       | `.Hsi`         |
-| CIEXYZ                                               | `ColourSpace.Xyz`       | `.Xyz`         |
-| CIExyY                                               | `ColourSpace.Xyy`       | `.Xyy`         |
-| [WXY](https://unicolour.wacton.xyz/wxy-colour-space) | `ColourSpace.Wxy`       | `.Wxy`         |
-| CIELAB                                               | `ColourSpace.Lab`       | `.Lab`         |
-| CIELCh<sub>ab</sub>                                  | `ColourSpace.Lchab`     | `.Lchab`       |
-| CIELUV                                               | `ColourSpace.Luv`       | `.Luv`         |
-| CIELCh<sub>uv</sub>                                  | `ColourSpace.Lchuv`     | `.Lchuv`       |
-| HSLuv                                                | `ColourSpace.Hsluv`     | `.Hsluv`       |
-| HPLuv                                                | `ColourSpace.Hpluv`     | `.Hpluv`       |
-| YPbPr                                                | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
-| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_               | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
-| YCgCo                                                | `ColourSpace.Ycgco`     | `.Ycgco`       |
-| YUV&nbsp;_(PAL)_                                     | `ColourSpace.Yuv`       | `.Yuv`         |
-| YIQ&nbsp;_(NTSC)_                                    | `ColourSpace.Yiq`       | `.Yiq`         |
-| YDbDr&nbsp;_(SECAM)_                                 | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
-| TSL                                                  | `ColourSpace.Tsl`       | `.Tsl`         |
-| XYB                                                  | `ColourSpace.Xyb`       | `.Xyb`         |
-| IPT                                                  | `ColourSpace.Ipt`       | `.Ipt`         |
-| IC<sub>T</sub>C<sub>P</sub>                          | `ColourSpace.Ictcp`     | `.Ictcp`       |
-| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>              | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
-| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>              | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
-| Oklab                                                | `ColourSpace.Oklab`     | `.Oklab`       |
-| Oklch                                                | `ColourSpace.Oklch`     | `.Oklch`       |
-| Okhsv                                                | `ColourSpace.Okhsv`     | `.Okhsv`       |
-| Okhsl                                                | `ColourSpace.Okhsl`     | `.Okhsl`       |
-| Okhwb                                                | `ColourSpace.Okhwb`     | `.Okhwb`       |
-| CIECAM02                                             | `ColourSpace.Cam02`     | `.Cam02`       |
-| CAM16                                                | `ColourSpace.Cam16`     | `.Cam16`       |
-| HCT                                                  | `ColourSpace.Hct`       | `.Hct`         |
-| CMYK <sup>[?](#cmyk)</sup>                           | -                       | -              |
-
-> #### CMYK?
-> 
-> CMYK is not yet integrated into Unicolour, however [example code is provided for naive conversion of uncalibrated CMYK](https://github.com/waacton/Unicolour/tree/main/Unicolour/Cmyk.cs),
-> which is the conversion typically found online and in other libraries.
-> These functions can be copy/pasted to wherever Unicolour is being used, and are tested as part of the Unicolour test suite.
->
-> There are two reasons CMYK is not yet available in the library itself:
->
-> 1. CMYK is a device-dependent colour space and requires parsing of ICC profiles to implement correctly
-> 2. Supporting colour prints of 4 (e.g. FOGRA39 CMYK) or more (e.g. FOGRA55 CMYKOGV) requires major architectural decisions
->
-> If Unicolour is ever able to support ICC profiles, the naive CMYK conversion will also be included.
-
+| Colour&nbsp;space                                                      | Enum                    | Property       |
+|------------------------------------------------------------------------|-------------------------|----------------|
+| RGB&nbsp;(0–255)                                                       | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
+| RGB                                                                    | `ColourSpace.Rgb`       | `.Rgb`         |
+| Linear&nbsp;RGB                                                        | `ColourSpace.RgbLinear` | `.RgbLinear`   |
+| HSB&nbsp;/&nbsp;HSV                                                    | `ColourSpace.Hsb`       | `.Hsb`         |
+| HSL                                                                    | `ColourSpace.Hsl`       | `.Hsl`         |
+| HWB                                                                    | `ColourSpace.Hwb`       | `.Hwb`         |
+| HSI                                                                    | `ColourSpace.Hsi`       | `.Hsi`         |
+| CIEXYZ                                                                 | `ColourSpace.Xyz`       | `.Xyz`         |
+| CIExyY                                                                 | `ColourSpace.Xyy`       | `.Xyy`         |
+| [WXY](https://unicolour.wacton.xyz/wxy-colour-space)                   | `ColourSpace.Wxy`       | `.Wxy`         |
+| CIELAB                                                                 | `ColourSpace.Lab`       | `.Lab`         |
+| CIELCh<sub>ab</sub>                                                    | `ColourSpace.Lchab`     | `.Lchab`       |
+| CIELUV                                                                 | `ColourSpace.Luv`       | `.Luv`         |
+| CIELCh<sub>uv</sub>                                                    | `ColourSpace.Lchuv`     | `.Lchuv`       |
+| HSLuv                                                                  | `ColourSpace.Hsluv`     | `.Hsluv`       |
+| HPLuv                                                                  | `ColourSpace.Hpluv`     | `.Hpluv`       |
+| YPbPr                                                                  | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
+| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_                                 | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
+| YCgCo                                                                  | `ColourSpace.Ycgco`     | `.Ycgco`       |
+| YUV&nbsp;_(PAL)_                                                       | `ColourSpace.Yuv`       | `.Yuv`         |
+| YIQ&nbsp;_(NTSC)_                                                      | `ColourSpace.Yiq`       | `.Yiq`         |
+| YDbDr&nbsp;_(SECAM)_                                                   | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
+| TSL                                                                    | `ColourSpace.Tsl`       | `.Tsl`         |
+| XYB                                                                    | `ColourSpace.Xyb`       | `.Xyb`         |
+| IPT                                                                    | `ColourSpace.Ipt`       | `.Ipt`         |
+| IC<sub>T</sub>C<sub>P</sub>                                            | `ColourSpace.Ictcp`     | `.Ictcp`       |
+| J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>                                | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
+| J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>                                | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
+| Oklab                                                                  | `ColourSpace.Oklab`     | `.Oklab`       |
+| Oklch                                                                  | `ColourSpace.Oklch`     | `.Oklch`       |
+| Okhsv                                                                  | `ColourSpace.Okhsv`     | `.Okhsv`       |
+| Okhsl                                                                  | `ColourSpace.Okhsl`     | `.Okhsl`       |
+| Okhwb                                                                  | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| CIECAM02                                                               | `ColourSpace.Cam02`     | `.Cam02`       |
+| CAM16                                                                  | `ColourSpace.Cam16`     | `.Cam16`       |
+| HCT                                                                    | `ColourSpace.Hct`       | `.Hct`         |
+| CMYK <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>             | -                       | `.Icc`         |
 
 
 
@@ -298,6 +280,30 @@ var noRed = colour.SimulateProtanopia();
 | Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `SimulateDeuteranopia()`  |
 | Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `SimulateTritanopia()`    |
 | Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `SimulateAchromatopsia()` |
+
+### Use ICC profiles for CMYK conversion
+Device-dependent colour prints of 4 (e.g. FOGRA39 CMYK) or more (e.g. FOGRA55 CMYKOGV) are supported through ICC profiles.
+If there is no ICC profile, or if the profile cannot be used, naive conversion for uncalibrated CMYK is used instead.
+```c#
+using Wacton.Unicolour.Icc;
+
+var iccConfig = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
+var config = new Configuration(iccConfiguration: iccConfig);
+
+var navyRgb = new Unicolour(config, ColourSpace.Rgb255, 0, 0, 128);
+Console.WriteLine(navyRgb.Icc); // 1.0000 0.8977 0.0001 0.2867 CMYK
+
+var navyCmyk = new Unicolour(config, new Channels(1.0, 1.0, 0.0, 0.5));
+Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
+```
+
+Only ICC profiles that meet the following criteria are supported:
+- Output device class (`prtr`)
+- CIELAB PCS (`Lab `)
+- A-to-B and B-to-A tags for the chosen rendering intent (e.g. `A2B1` and `B2A1` for relative colorimetric intent)
+- A-to-B and B-to-A tags containing LUT-8 or LUT-16 data (`mft1` or `mft2`)
+
+A wider variety of ICC profiles will be supported in future releases.
 
 ### Handle invalid values
 It is possible for invalid or unreasonable values to be used in calculations,

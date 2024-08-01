@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 // matches values produced by https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js
 public class KnownOkhslTests
@@ -51,16 +51,16 @@ public class KnownOkhslTests
         TestUtils.AssertTriplet<Okhsl>(grey, new(0.24965434119047608 * 360, 1.1616558204531687e-7, 0.5337598228073358), Tolerance);
     }
     
-    private static readonly List<TestCaseData> OklabData = new()
-    {
+    private static readonly List<TestCaseData> OklabData =
+    [
         new TestCaseData(new ColourTriplet(0.5, -0.5, 0.0), new ColourTriplet(0.5 * 360, 3.377334888701067, 0.42114056260896976)),
         new TestCaseData(new ColourTriplet(0.5, +0.5, 0.0), new ColourTriplet(0.0 * 360, 0.5241848002880121, 0.42114056260896976)),
         new TestCaseData(new ColourTriplet(0.5, 0.0, -0.5), new ColourTriplet(0.75 * 360, 1.0959445594370765, 0.42114056260896976)),
         new TestCaseData(new ColourTriplet(0.5, 0.0, +0.5), new ColourTriplet(0.25 * 360, -0.19759454578641367, 0.42114056260896976)),
         new TestCaseData(new ColourTriplet(0.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.0)), // Toe(0.0)
         new TestCaseData(new ColourTriplet(0.5, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.42114056260896976)), // Toe(0.5)
-        new TestCaseData(new ColourTriplet(1.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 1.0)) // Toe(1.0)
-    };
+        new TestCaseData(new ColourTriplet(1.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 1.0))
+    ];
 
     [TestCaseSource(nameof(OklabData))]
     public void FromOklab(ColourTriplet oklab, ColourTriplet expected)

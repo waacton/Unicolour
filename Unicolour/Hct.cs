@@ -69,8 +69,8 @@ public record Hct : ColourRepresentation
     // (albeit rather slowly...)
     private static HctToXyzSearchResult FindBestJ(double targetY, Hct hct)
     {
-        HctToXyzSearchData latest = GetStartingData(targetY, hct);
-        HctToXyzSearchData best = latest;
+        var latest = GetStartingData(targetY, hct);
+        var best = latest;
         
         var step = latest.J;
         var iterations = 0;
@@ -102,7 +102,7 @@ public record Hct : ColourRepresentation
     private static HctToXyzSearchData GetStartingData(double targetY, Hct hct)
     {
         var xzPairs = new List<(double, double)> { (0, 0), (0, 1), (1, 0), (1, 1) };
-        HctToXyzSearchData best = InitialData;
+        var best = InitialData;
         foreach (var (x, z) in xzPairs)
         {
             var j = Cam16.FromXyz(new Xyz(x, targetY, z), CamConfiguration.Hct, XyzConfiguration.D65).Model.J;

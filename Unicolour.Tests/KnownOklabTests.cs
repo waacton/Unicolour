@@ -1,9 +1,9 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 // matches values produced by https://github.com/bottosson/bottosson.github.io/blob/master/misc/colorpicker/colorconversion.js
 public class KnownOklabTests
@@ -71,13 +71,13 @@ public class KnownOklabTests
      * --------------------
      * Unicolour assumes B) and that the intention of OKLAB is that RGB -> OKLAB should match the example code
      */
-    private static readonly List<TestCaseData> TestData = new()
-    {
+    private static readonly List<TestCaseData> TestData =
+    [
         new TestCaseData(new ColourTriplet(0.950, 1.000, 1.089), new ColourTriplet(1.000, 0.000, 0.000)),
         new TestCaseData(new ColourTriplet(1.000, 0.000, 0.000), new ColourTriplet(0.450, 1.236, -0.019)),
         new TestCaseData(new ColourTriplet(0.000, 1.000, 0.000), new ColourTriplet(0.922, -0.671, 0.263)),
         new TestCaseData(new ColourTriplet(0.000, 0.000, 1.000), new ColourTriplet(0.153, -1.415, -0.449))
-    };
+    ];
     
     [TestCaseSource(nameof(TestData))]
     public void FromXyz(ColourTriplet xyz, ColourTriplet expected)

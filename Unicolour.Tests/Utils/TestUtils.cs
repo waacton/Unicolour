@@ -1,18 +1,21 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Wacton.Unicolour.Icc;
+
+namespace Wacton.Unicolour.Tests.Utils;
 
 internal static class TestUtils
 {
-    // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
-    internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
-
+    private static readonly Random Random = new();
+    internal static double RandomDouble() => Random.NextDouble();
+    internal static double RandomDouble(double min, double max) => Random.NextDouble() * (max - min) + min;
+    internal static int RandomInt(int max) => Random.Next(max);
+    
     internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
-    internal static readonly List<TestCaseData> AllColourSpacesTestCases = new()
-    {
+    internal static readonly List<TestCaseData> AllColourSpacesTestCases =
+    [
         new TestCaseData(ColourSpace.Rgb),
         new TestCaseData(ColourSpace.RgbLinear),
         new TestCaseData(ColourSpace.Hsb),
@@ -47,10 +50,10 @@ internal static class TestUtils
         new TestCaseData(ColourSpace.Cam02),
         new TestCaseData(ColourSpace.Cam16),
         new TestCaseData(ColourSpace.Hct)
-    };
+    ];
     
-    internal static readonly List<TestCaseData> AllIlluminantsTestCases = new()
-    {
+    internal static readonly List<TestCaseData> AllIlluminantsTestCases =
+    [
         new TestCaseData(Illuminant.A),
         new TestCaseData(Illuminant.C),
         new TestCaseData(Illuminant.D50),
@@ -61,7 +64,7 @@ internal static class TestUtils
         new TestCaseData(Illuminant.F2),
         new TestCaseData(Illuminant.F7),
         new TestCaseData(Illuminant.F11)
-    };
+    ];
 
     internal static readonly Dictionary<string, Illuminant> Illuminants = new()
     {
@@ -83,8 +86,8 @@ internal static class TestUtils
         { nameof(Observer.Degree10), Observer.Degree10 }
     };
     
-    internal static readonly List<RgbConfiguration> NonDefaultRgbConfigs = new()
-    {
+    internal static readonly List<RgbConfiguration> NonDefaultRgbConfigs =
+    [
         RgbConfiguration.DisplayP3,
         RgbConfiguration.Rec2020,
         RgbConfiguration.A98,
@@ -106,16 +109,25 @@ internal static class TestUtils
         RgbConfiguration.Ntsc525,
         RgbConfiguration.Secam,
         RgbConfiguration.Secam625
-    };
+    ];
     
-    internal static readonly List<YbrConfiguration> NonDefaultYbrConfigs = new()
-    {
+    internal static readonly List<YbrConfiguration> NonDefaultYbrConfigs =
+    [
         YbrConfiguration.Rec709,
         YbrConfiguration.Rec2020,
         YbrConfiguration.Jpeg
-    };
+    ];
+
+    private static readonly IccConfiguration IccFogra39 = new(IccFile.Fogra39.GetProfile(), Intent.RelativeColorimetric, "Fogra39 relative");
+    internal static readonly Configuration DefaultFogra39Config = new(iccConfiguration: IccFogra39);
     
-    internal static List<double> ExtremeDoubles = new() { double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
+    // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
+    internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
+    
+    internal static List<double> ExtremeDoubles =
+    [
+        double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN
+    ];
         
     internal const double MixTolerance = 0.00000000005;
 
@@ -186,10 +198,11 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Hsl);
             AccessProperty(() => unicolour.Hsluv);
             AccessProperty(() => unicolour.Hwb);
+            AccessProperty(() => unicolour.Icc);
             AccessProperty(() => unicolour.Ictcp);
+            AccessProperty(() => unicolour.Ipt);
             AccessProperty(() => unicolour.IsImaginary);
             AccessProperty(() => unicolour.IsInDisplayGamut);
-            AccessProperty(() => unicolour.Ipt);
             AccessProperty(() => unicolour.Jzazbz);
             AccessProperty(() => unicolour.Jzczhz);
             AccessProperty(() => unicolour.Lab);
@@ -229,7 +242,7 @@ internal static class TestUtils
     {
         if (object1 == null || object2 == null)
         {
-            Assert.Fail();
+            Assert.That(object1, Is.EqualTo(object2));
             return;
         }
         

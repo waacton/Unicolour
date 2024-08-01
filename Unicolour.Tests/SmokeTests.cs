@@ -1,13 +1,14 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class SmokeTests
 {
-    private static readonly List<TestCaseData> ColourSpaceTestCases = new()
-    {
+    private static readonly List<TestCaseData> ColourSpaceTestCases =
+    [
         new TestCaseData(ColourSpace.Rgb255, 0, 0, 0, 0),
         new TestCaseData(ColourSpace.Rgb255, 255, 255, 255, 1),
         new TestCaseData(ColourSpace.Rgb255, 127, 128, 129, 0.5),
@@ -116,7 +117,7 @@ public class SmokeTests
         new TestCaseData(ColourSpace.Hct, 0, 0, 0, 0),
         new TestCaseData(ColourSpace.Hct, 360, 120, 100, 1),
         new TestCaseData(ColourSpace.Hct, 180, 60, 50, 0.5)
-    };
+    ];
     
     [TestCaseSource(nameof(ColourSpaceTestCases))]
     public void UnicolourNoAlpha(ColourSpace colourSpace, double first, double second, double third, double alpha)
@@ -143,9 +144,9 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, colourSpace, first, second, third, alpha));
     }
     
-    private static readonly List<string> HexDigit6Values = new() { "000000", "FFFFFF", "798081", "#000000", "#FFFFFF", "#798081" };
-    private static readonly List<string> HexDigit8Values = new() { "00000000", "FFFFFFFF", "79808180", "#00000000", "#FFFFFFFF", "#79808180" };
-    private static readonly List<double> AlphaOverrideValues = new() { 0.0, 0.5, 1.0 };
+    private static readonly List<string> HexDigit6Values = ["000000", "FFFFFF", "798081", "#000000", "#FFFFFF", "#798081"];
+    private static readonly List<string> HexDigit8Values = ["00000000", "FFFFFFFF", "79808180", "#00000000", "#FFFFFFFF", "#79808180"];
+    private static readonly List<double> AlphaOverrideValues = [0.0, 0.5, 1.0];
     
     [Test]
     public void HexDigit6(
@@ -185,8 +186,8 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, hex, alphaOverride));
     }
     
-    private static readonly List<double> ChromaticityValues = new() { 0.0, 0.25, 0.4, 0.5, 0.6, 0.75, 1.0 };
-    private static readonly List<double> LuminanceValues = new() { 1.0, 0.5, 0.0 };
+    private static readonly List<double> ChromaticityValues = [0.0, 0.25, 0.4, 0.5, 0.6, 0.75, 1.0];
+    private static readonly List<double> LuminanceValues = [1.0, 0.5, 0.0];
     
     [Test]
     public void Chromaticity(
@@ -212,9 +213,9 @@ public class SmokeTests
     }
 
 
-    private static readonly List<double> CctValues = new() { 400, 500, 1000, 6504, 20000, 25000, 1e9 };
-    private static readonly List<double> DuvValues = new() { -0.05, 0, 0.05 };
-    private static readonly List<Locus> LocusValues = new() { Locus.Blackbody, Locus.Daylight };
+    private static readonly List<double> CctValues = [400, 500, 1000, 6504, 20000, 25000, 1e9];
+    private static readonly List<double> DuvValues = [-0.05, 0, 0.05];
+    private static readonly List<Locus> LocusValues = [Locus.Blackbody, Locus.Daylight];
     
     [Test]
     public void TemperatureOnlyCct(
@@ -288,6 +289,48 @@ public class SmokeTests
         var expected = new Unicolour(Spd.D65);
         AssertNoError(expected, new Unicolour(Spd.D65));
         AssertNoError(expected, new Unicolour(Configuration.Default, Spd.D65));
+    }
+    
+    private static readonly List<double[]> IccValues = [[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0], [0.5, 0.5, 0.5, 0.5]];
+    
+    [Test]
+    public void IccChannelsNoAlpha(
+        [ValueSource(nameof(IccValues))] double[] iccValues)
+    {
+        var profile = IccFile.Fogra39.GetProfile();
+        var config = new Configuration(iccConfiguration: new IccConfiguration(profile));
+        var expected = new Unicolour(config, new Channels(iccValues));
+        AssertNoError(expected, new Unicolour(config, new Channels(iccValues)));
+    }
+    
+    [Test, Sequential]
+    public void IccChannelsWithAlpha(
+        [ValueSource(nameof(IccValues))] double[] iccValues,
+        [Values(0, 1, 0.5)] double alpha)
+    {
+        var profile = IccFile.Fogra39.GetProfile();
+        var config = new Configuration(iccConfiguration: new IccConfiguration(profile));
+        var expected = new Unicolour(config, new Channels(iccValues), alpha);
+        AssertNoError(expected, new Unicolour(config, new Channels(iccValues), alpha));
+    }
+    
+    [Test]
+    public void IccChannelsUncalibratedNoAlpha(
+        [ValueSource(nameof(IccValues))] double[] iccValues)
+    {
+        var expected = new Unicolour(new Channels(iccValues));
+        AssertNoError(expected, new Unicolour(new Channels(iccValues)));
+        AssertNoError(expected, new Unicolour(Configuration.Default, new Channels(iccValues)));
+    }
+    
+    [Test, Sequential]
+    public void IccChannelsUncalibratedWithAlpha(
+        [ValueSource(nameof(IccValues))] double[] iccValues,
+        [Values(0, 1, 0.5)] double alpha)
+    {
+        var expected = new Unicolour(new Channels(iccValues), alpha);
+        AssertNoError(expected, new Unicolour(new Channels(iccValues), alpha));
+        AssertNoError(expected, new Unicolour(Configuration.Default, new Channels(iccValues), alpha));
     }
 
     private static void AssertNoError(Unicolour expected, Unicolour unicolour)

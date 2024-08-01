@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class ConfigureRgbTests
 {
@@ -23,8 +23,8 @@ public class ConfigureRgbTests
     
     // no reliable reference data for Rec. 601 (625-line or 525-line), xvYCC, PAL/PAL-M/SECAM with Rec. 470 gamma (2.8), NTSC-525 with Rec. 2020 gamma
     // but they are at least covered by roundtrip tests
-    private static readonly List<TestCaseData> StandardRgbLookup = new()
-    {
+    private static readonly List<TestCaseData> StandardRgbLookup =
+    [
         new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.DisplayP3, (0.917488, 0.200287, 0.138561)).SetName("sRGB (Red) ↔ Display-P3"),
         new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.DisplayP3, (0.458402, 0.985265, 0.298295)).SetName("sRGB (Green) ↔ Display-P3"),
         new TestCaseData((0.0, 0.0, 1.0), RgbConfiguration.DisplayP3, (0.000000, 0.000000, 0.959588)).SetName("sRGB (Blue) ↔ Display-P3"),
@@ -128,8 +128,8 @@ public class ConfigureRgbTests
         new TestCaseData((0.972945, 0.141795, -0.020960), RgbConfiguration.NtscSmpteC, (1.0, 0.0, 0.0)).SetName("sRGB ↔ NTSC SMPTE-C (Red)"), 
         new TestCaseData((0.248235, 0.984811, -0.054685), RgbConfiguration.NtscSmpteC, (0.0, 1.0, 0.0)).SetName("sRGB ↔ NTSC SMPTE-C (Green)"),
         new TestCaseData((0.101597, 0.135451, 1.002629), RgbConfiguration.NtscSmpteC, (0.0, 0.0, 1.0)).SetName("sRGB ↔ NTSC SMPTE-C (Blue)"),
-        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.NtscSmpteC, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ NTSC SMPTE-C (NaN)"),
-    };
+        new TestCaseData((double.NaN, double.NaN, double.NaN), RgbConfiguration.NtscSmpteC, (double.NaN, double.NaN, double.NaN)).SetName("sRGB (NaN) ↔ NTSC SMPTE-C (NaN)")
+    ];
 
     [TestCaseSource(nameof(StandardRgbLookup))]
     public void StandardRgbToOtherModel((double r, double g, double b) standardTriplet, RgbConfiguration rgbConfig, (double r, double g, double b) otherTriplet)

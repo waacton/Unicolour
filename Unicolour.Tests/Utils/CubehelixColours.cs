@@ -1,13 +1,13 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+namespace Wacton.Unicolour.Tests.Utils;
+
 internal static class CubehelixColours
 {
-    internal static readonly List<ColourTriplet> Default = new();
-    internal static readonly List<ColourTriplet> Custom = new();
+    internal static readonly List<ColourTriplet> Default = [];
+    internal static readonly List<ColourTriplet> Custom = [];
 
     static CubehelixColours()
     {

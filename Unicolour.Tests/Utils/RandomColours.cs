@@ -1,56 +1,54 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace Wacton.Unicolour.Tests.Utils;
+
 internal static class RandomColours
 {
-    private static readonly Random Random = new();
-    
     // ReSharper disable CollectionNeverQueried.Global - used in test case sources by name
-    public static readonly List<string> HexStrings = new();
-    public static readonly List<ColourTriplet> Rgb255Triplets = new();
-    public static readonly List<ColourTriplet> RgbTriplets = new();
-    public static readonly List<ColourTriplet> RgbLinearTriplets = new();
-    public static readonly List<ColourTriplet> HsbTriplets = new();
-    public static readonly List<ColourTriplet> HslTriplets = new();
-    public static readonly List<ColourTriplet> HwbTriplets = new();
-    public static readonly List<ColourTriplet> HsiTriplets = new();
-    public static readonly List<ColourTriplet> XyzTriplets = new();
-    public static readonly List<ColourTriplet> XyyTriplets = new();
-    public static readonly List<ColourTriplet> WxyTriplets = new();
-    public static readonly List<ColourTriplet> LabTriplets = new();
-    public static readonly List<ColourTriplet> LchabTriplets = new();
-    public static readonly List<ColourTriplet> LuvTriplets = new();
-    public static readonly List<ColourTriplet> LchuvTriplets = new();
-    public static readonly List<ColourTriplet> HsluvTriplets = new();
-    public static readonly List<ColourTriplet> HpluvTriplets = new();
-    public static readonly List<ColourTriplet> YpbprTriplets = new();
-    public static readonly List<ColourTriplet> YcbcrTriplets = new();
-    public static readonly List<ColourTriplet> YcgcoTriplets = new();
-    public static readonly List<ColourTriplet> YuvTriplets = new();
-    public static readonly List<ColourTriplet> YiqTriplets = new();
-    public static readonly List<ColourTriplet> YdbdrTriplets = new();
-    public static readonly List<ColourTriplet> TslTriplets = new();
-    public static readonly List<ColourTriplet> XybTriplets = new();
-    public static readonly List<ColourTriplet> IptTriplets = new();
-    public static readonly List<ColourTriplet> IctcpTriplets = new();
-    public static readonly List<ColourTriplet> JzazbzTriplets = new();
-    public static readonly List<ColourTriplet> JzczhzTriplets = new();
-    public static readonly List<ColourTriplet> OklabTriplets = new();
-    public static readonly List<ColourTriplet> OklchTriplets = new();
-    public static readonly List<ColourTriplet> OkhsvTriplets = new();
-    public static readonly List<ColourTriplet> OkhslTriplets = new();
-    public static readonly List<ColourTriplet> OkhwbTriplets = new();
-    public static readonly List<ColourTriplet> Cam02Triplets = new();
-    public static readonly List<ColourTriplet> Cam16Triplets = new();
-    public static readonly List<ColourTriplet> HctTriplets = new();
-    public static readonly List<Temperature> Temperatures = new();
-    public static readonly List<Chromaticity> Chromaticities = new();
+    public static readonly List<string> HexStrings = [];
+    public static readonly List<ColourTriplet> Rgb255Triplets = [];
+    public static readonly List<ColourTriplet> RgbTriplets = [];
+    public static readonly List<ColourTriplet> RgbLinearTriplets = [];
+    public static readonly List<ColourTriplet> HsbTriplets = [];
+    public static readonly List<ColourTriplet> HslTriplets = [];
+    public static readonly List<ColourTriplet> HwbTriplets = [];
+    public static readonly List<ColourTriplet> HsiTriplets = [];
+    public static readonly List<ColourTriplet> XyzTriplets = [];
+    public static readonly List<ColourTriplet> XyyTriplets = [];
+    public static readonly List<ColourTriplet> WxyTriplets = [];
+    public static readonly List<ColourTriplet> LabTriplets = [];
+    public static readonly List<ColourTriplet> LchabTriplets = [];
+    public static readonly List<ColourTriplet> LuvTriplets = [];
+    public static readonly List<ColourTriplet> LchuvTriplets = [];
+    public static readonly List<ColourTriplet> HsluvTriplets = [];
+    public static readonly List<ColourTriplet> HpluvTriplets = [];
+    public static readonly List<ColourTriplet> YpbprTriplets = [];
+    public static readonly List<ColourTriplet> YcbcrTriplets = [];
+    public static readonly List<ColourTriplet> YcgcoTriplets = [];
+    public static readonly List<ColourTriplet> YuvTriplets = [];
+    public static readonly List<ColourTriplet> YiqTriplets = [];
+    public static readonly List<ColourTriplet> YdbdrTriplets = [];
+    public static readonly List<ColourTriplet> TslTriplets = [];
+    public static readonly List<ColourTriplet> XybTriplets = [];
+    public static readonly List<ColourTriplet> IptTriplets = [];
+    public static readonly List<ColourTriplet> IctcpTriplets = [];
+    public static readonly List<ColourTriplet> JzazbzTriplets = [];
+    public static readonly List<ColourTriplet> JzczhzTriplets = [];
+    public static readonly List<ColourTriplet> OklabTriplets = [];
+    public static readonly List<ColourTriplet> OklchTriplets = [];
+    public static readonly List<ColourTriplet> OkhsvTriplets = [];
+    public static readonly List<ColourTriplet> OkhslTriplets = [];
+    public static readonly List<ColourTriplet> OkhwbTriplets = [];
+    public static readonly List<ColourTriplet> Cam02Triplets = [];
+    public static readonly List<ColourTriplet> Cam16Triplets = [];
+    public static readonly List<ColourTriplet> HctTriplets = [];
+    public static readonly List<Temperature> Temperatures = [];
+    public static readonly List<Chromaticity> Chromaticities = [];
 
-    private static double UnboundRgb(double x) => Random.Next(0, 2) == 0 ? -x : x + 1;
-    private static double UnboundRgb255(double x) => Random.Next(0, 2) == 0 ? -x : x + 255;
+    private static double UnboundRgb(double x) => TestUtils.RandomInt(2) == 0 ? -x : x + 1;
+    private static double UnboundRgb255(double x) => TestUtils.RandomInt(2) == 0 ? -x : x + 255;
     private static ColourTriplet ToUnboundRgb(ColourTriplet triplet) => new(UnboundRgb(triplet.First), UnboundRgb(triplet.Second), UnboundRgb(triplet.Third));
     private static ColourTriplet ToUnboundRgb255(ColourTriplet triplet) => new(UnboundRgb255(triplet.First), UnboundRgb255(triplet.Second), UnboundRgb255(triplet.Third));
     
@@ -117,7 +115,10 @@ internal static class RandomColours
         }
     }
     
-    internal static Unicolour UnicolourFrom(ColourSpace colourSpace) => new(colourSpace, GetRandomTriplet(colourSpace).Tuple, Alpha());
+    internal static Unicolour UnicolourFrom(ColourSpace colourSpace, Configuration? configuration = null)
+    {
+        return new Unicolour(configuration ?? Configuration.Default, colourSpace, GetRandomTriplet(colourSpace).Tuple, Alpha());
+    }
     private static ColourTriplet GetRandomTriplet(ColourSpace colourSpace)
     {
         return colourSpace switch
@@ -161,12 +162,12 @@ internal static class RandomColours
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
-    
-    internal static double Rng() => Random.NextDouble();
-    internal static double Rng(double min, double max) => Random.NextDouble() * (max - min) + min;
+
+    private static double Rng() => TestUtils.RandomDouble();
+    private static double Rng(double min, double max) => TestUtils.RandomDouble(min, max);
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
-    private static ColourTriplet Rgb255() => new(Random.Next(256), Random.Next(256), Random.Next(256));
+    private static ColourTriplet Rgb255() => new(TestUtils.RandomInt(256), TestUtils.RandomInt(256), TestUtils.RandomInt(256));
     private static ColourTriplet Rgb() => new(Rng(), Rng(), Rng());
     private static ColourTriplet RgbLinear() => new(Rng(), Rng(), Rng());
     private static ColourTriplet Hsb() => new(Rng(0, 360), Rng(), Rng());
@@ -202,7 +203,7 @@ internal static class RandomColours
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
-    private static double Alpha() => Random.NextDouble();
+    private static double Alpha() => TestUtils.RandomDouble();
     
     private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));
     private static Chromaticity Chromaticity() => new(Rng(0, 0.75), Rng(0, 0.85));
@@ -210,13 +211,13 @@ internal static class RandomColours
     private static string Hex()
     {
         const string hexChars = "0123456789abcdefABCDEF";
-        var useHash = Random.Next(0, 2) == 0;
-        var length = Random.Next(0, 2) == 0 ? 6 : 8;
+        var useHash = TestUtils.RandomInt(2) == 0;
+        var length = TestUtils.RandomInt(2) == 0 ? 6 : 8;
 
         var hex = useHash ? "#" : string.Empty;
         for (var i = 0; i < length; i++)
         {
-            hex += hexChars[Random.Next(hexChars.Length)];
+            hex += hexChars[TestUtils.RandomInt(hexChars.Length)];
         }
 
         return hex;

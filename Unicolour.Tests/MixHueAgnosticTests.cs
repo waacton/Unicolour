@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 /*
  * this base class handles all core mixing tests that are common to every colour space

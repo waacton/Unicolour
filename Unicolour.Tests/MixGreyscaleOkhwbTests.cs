@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 // greyscale Oklab has no hue - shouldn't assume to start at red (0 degrees) when mixing
 // greyscale Okhwb has a hue so it should be used (it just can't be seen while whiteness + blackness >= 1)

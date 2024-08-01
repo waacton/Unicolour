@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using System;
 using NUnit.Framework;
+
+namespace Wacton.Unicolour.Tests;
 
 public class InvalidLocusTests
 {

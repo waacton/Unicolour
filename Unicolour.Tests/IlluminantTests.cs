@@ -1,14 +1,14 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
+namespace Wacton.Unicolour.Tests;
+
 public class IlluminantTests
 {
-    public static readonly List<TestCaseData> PredefinedWhitePointTestData = new()
-    {
+    public static readonly List<TestCaseData> PredefinedWhitePointTestData =
+    [
         new TestCaseData(Spd.A, Illuminant.A, Observer.Degree2).SetName("A/2°"),
         new TestCaseData(Spd.C, Illuminant.C, Observer.Degree2).SetName("C/2°"),
         new TestCaseData(Spd.D50, Illuminant.D50, Observer.Degree2).SetName("D50/2°"),
@@ -19,7 +19,7 @@ public class IlluminantTests
         new TestCaseData(Spd.F2, Illuminant.F2, Observer.Degree2).SetName("F2/2°"),
         new TestCaseData(Spd.F7, Illuminant.F7, Observer.Degree2).SetName("F7/2°"),
         new TestCaseData(Spd.F11, Illuminant.F11, Observer.Degree2).SetName("F11/2°"),
-        
+
         new TestCaseData(Spd.A, Illuminant.A, Observer.Degree10).SetName("A/10°"),
         new TestCaseData(Spd.C, Illuminant.C, Observer.Degree10).SetName("C/10°"),
         new TestCaseData(Spd.D50, Illuminant.D50, Observer.Degree10).SetName("D50/10°"),
@@ -30,7 +30,7 @@ public class IlluminantTests
         new TestCaseData(Spd.F2, Illuminant.F2, Observer.Degree10).SetName("F2/10°"),
         new TestCaseData(Spd.F7, Illuminant.F7, Observer.Degree10).SetName("F7/10°"),
         new TestCaseData(Spd.F11, Illuminant.F11, Observer.Degree10).SetName("F11/10°")
-    };
+    ];
     
     [TestCaseSource(nameof(PredefinedWhitePointTestData))]
     public void PredefinedWhitePoints(Spd spd, Illuminant illuminant, Observer observer)
@@ -57,12 +57,12 @@ public class IlluminantTests
     }
 
     private static readonly Observer NotObserved = new(new Cmf(Cmf.RequiredWavelengths.ToDictionary(wavelength => wavelength, _ => (0.0, 0.0, 0.0))));
-    public static readonly List<TestCaseData> CustomWhitePointTestData = new()
-    {
+    public static readonly List<TestCaseData> CustomWhitePointTestData =
+    [
         new TestCaseData(Observer.Degree2).SetName("2°"),
         new TestCaseData(Observer.Degree10).SetName("10°"),
         new TestCaseData(NotObserved).SetName("Not Observed")
-    };
+    ];
     
     [TestCaseSource(nameof(CustomWhitePointTestData))]
     public void CustomWhitePoint(Observer observer)

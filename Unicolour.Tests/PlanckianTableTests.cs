@@ -1,10 +1,10 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
-using static Planckian;
+using static Wacton.Unicolour.Planckian;
+
+namespace Wacton.Unicolour.Tests;
 
 public class PlanckianTableTests
 {
@@ -42,7 +42,7 @@ public class PlanckianTableTests
         return new SearchResult(previous, closest, next, 0.25);
     }
 
-    private void AssertCoordinates(List<Coordinate> actual, List<Coordinate> expected)
+    private static void AssertCoordinates(List<Coordinate> actual, List<Coordinate> expected)
     {
         Assert.That(actual, Is.EquivalentTo(expected));
         for (var i = 0; i < expected.Count; i++)
@@ -51,7 +51,7 @@ public class PlanckianTableTests
         }
     }
     
-    private void AssertSearchResults(SearchResult actual, SearchResult expected)
+    private static void AssertSearchResults(SearchResult actual, SearchResult expected)
     {
         TestUtils.AssertEqual(actual.Previous, expected.Previous);
         TestUtils.AssertEqual(actual.Closest, expected.Closest);

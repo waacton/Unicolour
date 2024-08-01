@@ -6,6 +6,9 @@ using Wacton.Unicolour.Example.Gradients;
 
 const string outputDirectory = "../../../../Unicolour.Readme/docs/";
 
+var darkText = Css.Black;
+var lightText = Css.White;
+
 ColourSpaces();
 Temperature();
 VisionDeficiency();
@@ -18,7 +21,6 @@ void ColourSpaces()
     const int columnWidth = 800;
     const int rowHeight = 100;
     
-    var text = new Unicolour("#E8E8FF");
     var purple = new Unicolour(ColourSpace.Hsb, 260, 1.0, 0.33);
     var orange = new Unicolour(ColourSpace.Hsb, 30, 0.66, 1.0);
     var pink = new Unicolour("#FF1493");
@@ -27,9 +29,9 @@ void ColourSpaces()
     var green = new Unicolour(ColourSpace.Rgb, 0, 1, 0);
     var columns = new List<Image<Rgba32>>
     {
-        DrawColumn(new[] { purple, orange }),
-        DrawColumn(new[] { pink, cyan }),
-        DrawColumn(new[] { black, green })
+        DrawColumn([purple, orange]),
+        DrawColumn([pink, cyan]),
+        DrawColumn([black, green])
     };
 
     var columnHeight = columns.First().Height;
@@ -41,41 +43,41 @@ void ColourSpaces()
     {
         var gradients = new List<Image<Rgba32>>
         {
-            Utils.Draw(("RGB", text), columnWidth, rowHeight, GetColour(ColourSpace.Rgb)),
-            Utils.Draw(("RGB Linear", text), columnWidth, rowHeight, GetColour(ColourSpace.RgbLinear)),
-            Utils.Draw(("HSB", text), columnWidth, rowHeight, GetColour(ColourSpace.Hsb)),
-            Utils.Draw(("HSL", text), columnWidth, rowHeight, GetColour(ColourSpace.Hsl)),
-            Utils.Draw(("HWB", text), columnWidth, rowHeight, GetColour(ColourSpace.Hwb)),
-            Utils.Draw(("HSI", text), columnWidth, rowHeight, GetColour(ColourSpace.Hsi)),
-            Utils.Draw(("XYZ", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyz)),
-            Utils.Draw(("xyY", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyy)),
-            Utils.Draw(("WXY", text), columnWidth, rowHeight, GetColour(ColourSpace.Wxy)),
-            Utils.Draw(("LAB", text), columnWidth, rowHeight, GetColour(ColourSpace.Lab)),
-            Utils.Draw(("LCHab", text), columnWidth, rowHeight, GetColour(ColourSpace.Lchab)),
-            Utils.Draw(("LUV", text), columnWidth, rowHeight, GetColour(ColourSpace.Luv)),
-            Utils.Draw(("LCHuv", text), columnWidth, rowHeight, GetColour(ColourSpace.Lchuv)),
-            Utils.Draw(("HSLuv", text), columnWidth, rowHeight, GetColour(ColourSpace.Hsluv)),
-            Utils.Draw(("HPLuv", text), columnWidth, rowHeight, GetColour(ColourSpace.Hpluv)),
-            Utils.Draw(("YPbPr", text), columnWidth, rowHeight, GetColour(ColourSpace.Ypbpr)),
-            Utils.Draw(("YCbCr", text), columnWidth, rowHeight, GetColour(ColourSpace.Ycbcr)),
-            Utils.Draw(("YCgCo", text), columnWidth, rowHeight, GetColour(ColourSpace.Ycgco)),
-            Utils.Draw(("YUV", text), columnWidth, rowHeight, GetColour(ColourSpace.Yuv)),
-            Utils.Draw(("YIQ", text), columnWidth, rowHeight, GetColour(ColourSpace.Yiq)),
-            Utils.Draw(("YDbDr", text), columnWidth, rowHeight, GetColour(ColourSpace.Ydbdr)),
-            Utils.Draw(("TSL", text), columnWidth, rowHeight, GetColour(ColourSpace.Tsl)),
-            Utils.Draw(("XYB", text), columnWidth, rowHeight, GetColour(ColourSpace.Xyb)),
-            Utils.Draw(("IPT", text), columnWidth, rowHeight, GetColour(ColourSpace.Ipt)),
-            Utils.Draw(("ICtCp", text), columnWidth, rowHeight, GetColour(ColourSpace.Ictcp)),
-            Utils.Draw(("JzAzBz", text), columnWidth, rowHeight, GetColour(ColourSpace.Jzazbz)),
-            Utils.Draw(("JzCzHz", text), columnWidth, rowHeight, GetColour(ColourSpace.Jzczhz)),
-            Utils.Draw(("OKLAB", text), columnWidth, rowHeight, GetColour(ColourSpace.Oklab)),
-            Utils.Draw(("OKLCH", text), columnWidth, rowHeight, GetColour(ColourSpace.Oklch)),
-            Utils.Draw(("OKHSV", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhsv)),
-            Utils.Draw(("OKHSL", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhsl)),
-            Utils.Draw(("OKHWB", text), columnWidth, rowHeight, GetColour(ColourSpace.Okhwb)),
-            Utils.Draw(("CAM02", text), columnWidth, rowHeight, GetColour(ColourSpace.Cam02)),
-            Utils.Draw(("CAM16", text), columnWidth, rowHeight, GetColour(ColourSpace.Cam16)),
-            Utils.Draw(("HCT", text), columnWidth, rowHeight, GetColour(ColourSpace.Hct))
+            Utils.Draw(("RGB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Rgb)),
+            Utils.Draw(("RGB Linear", lightText), columnWidth, rowHeight, GetColour(ColourSpace.RgbLinear)),
+            Utils.Draw(("HSB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hsb)),
+            Utils.Draw(("HSL", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hsl)),
+            Utils.Draw(("HWB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hwb)),
+            Utils.Draw(("HSI", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hsi)),
+            Utils.Draw(("XYZ", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Xyz)),
+            Utils.Draw(("xyY", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Xyy)),
+            Utils.Draw(("WXY", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Wxy)),
+            Utils.Draw(("LAB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Lab)),
+            Utils.Draw(("LCHab", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Lchab)),
+            Utils.Draw(("LUV", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Luv)),
+            Utils.Draw(("LCHuv", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Lchuv)),
+            Utils.Draw(("HSLuv", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hsluv)),
+            Utils.Draw(("HPLuv", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hpluv)),
+            Utils.Draw(("YPbPr", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ypbpr)),
+            Utils.Draw(("YCbCr", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ycbcr)),
+            Utils.Draw(("YCgCo", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ycgco)),
+            Utils.Draw(("YUV", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Yuv)),
+            Utils.Draw(("YIQ", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Yiq)),
+            Utils.Draw(("YDbDr", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ydbdr)),
+            Utils.Draw(("TSL", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Tsl)),
+            Utils.Draw(("XYB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Xyb)),
+            Utils.Draw(("IPT", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ipt)),
+            Utils.Draw(("ICtCp", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Ictcp)),
+            Utils.Draw(("JzAzBz", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Jzazbz)),
+            Utils.Draw(("JzCzHz", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Jzczhz)),
+            Utils.Draw(("OKLAB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Oklab)),
+            Utils.Draw(("OKLCH", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Oklch)),
+            Utils.Draw(("OKHSV", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Okhsv)),
+            Utils.Draw(("OKHSL", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Okhsl)),
+            Utils.Draw(("OKHWB", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Okhwb)),
+            Utils.Draw(("CAM02", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Cam02)),
+            Utils.Draw(("CAM16", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Cam16)),
+            Utils.Draw(("HCT", lightText), columnWidth, rowHeight, GetColour(ColourSpace.Hct))
         };
 
         return Utils.DrawRows(gradients, columnWidth, rowHeight);
@@ -93,7 +95,6 @@ void Temperature()
     const int width = 1200;
     const int rowHeight = 120;
 
-    var text = Css.Black;
     var scaledPoints = new List<Unicolour>();
     for (var i = 1000; i <= 13000; i += 100)
     {
@@ -107,7 +108,7 @@ void Temperature()
 
     var rows = new List<Image<Rgba32>>
     {
-        Utils.Draw(("CCT (1,000 K - 13,000 K)", text), width, rowHeight, GetColour())
+        Utils.Draw(("CCT (1,000 K - 13,000 K)", darkText), width, rowHeight, GetColour())
     };
 
     var image = Utils.DrawRows(rows, width, rowHeight);
@@ -126,7 +127,6 @@ void VisionDeficiency()
     const int width = 1200;
     const int rowHeight = 100;
 
-    var text = new Unicolour("#404046");
     var colourPoints = new Unicolour[]
     {
         // not using OKLCH for the spectrum because the uniform luminance results in flat gradient for Achromatopsia
@@ -136,11 +136,11 @@ void VisionDeficiency()
     
     var rows = new List<Image<Rgba32>>
     {
-        Utils.Draw(("No deficiency", text), width, rowHeight, GetColour(Cvd.None)),
-        Utils.Draw(("Protanopia", text), width, rowHeight, GetColour(Cvd.Protanopia)),
-        Utils.Draw(("Deuteranopia", text), width, rowHeight, GetColour(Cvd.Deuteranopia)),
-        Utils.Draw(("Tritanopia", text), width, rowHeight, GetColour(Cvd.Tritanopia)),
-        Utils.Draw(("Achromatopsia", text), width, rowHeight, GetColour(Cvd.Achromatopsia))
+        Utils.Draw(("No deficiency", darkText), width, rowHeight, GetColour(Cvd.None)),
+        Utils.Draw(("Protanopia", darkText), width, rowHeight, GetColour(Cvd.Protanopia)),
+        Utils.Draw(("Deuteranopia", darkText), width, rowHeight, GetColour(Cvd.Deuteranopia)),
+        Utils.Draw(("Tritanopia", darkText), width, rowHeight, GetColour(Cvd.Tritanopia)),
+        Utils.Draw(("Achromatopsia", darkText), width, rowHeight, GetColour(Cvd.Achromatopsia))
     };
 
     var image = Utils.DrawRows(rows, width, rowHeight);
@@ -171,12 +171,11 @@ void AlphaInterpolation()
     const int width = 1000;
     const int rowHeight = 120;
 
-    var text = Css.Black;
     var colourPoints = new[] { Css.Red, Css.Transparent, Css.Blue };
     var rows = new List<Image<Rgba32>>
     {
-        Utils.Draw(("With premultiplied alpha", text), width, rowHeight, GetColour(true)),
-        Utils.Draw(("Without premultiplied alpha", text), width, rowHeight, GetColour(false))
+        Utils.Draw(("With premultiplied alpha", darkText), width, rowHeight, GetColour(true)),
+        Utils.Draw(("Without premultiplied alpha", darkText), width, rowHeight, GetColour(false))
     };
     
     var image = Utils.DrawRows(rows, width, rowHeight);

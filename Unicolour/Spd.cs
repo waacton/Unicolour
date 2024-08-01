@@ -59,7 +59,9 @@ public class Spd : Dictionary<int, double>
         var range = Enumerable.Range(StartWavelength, WavelengthCount);
         return range.Where(wavelength => wavelength % interval == 0).ToList();
     }
-    
+
+    public override string ToString() => this.Any() ? $"{this.First().Key} nm to {this.Last().Key} nm by {WavelengthDelta} nm" : "(no wavelength data)";
+
     internal static Spd A => new()
     {
         { 300, 0.930483 },

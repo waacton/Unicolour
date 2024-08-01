@@ -1,59 +1,59 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
+namespace Wacton.Unicolour.Tests;
+
 public class HuedTests
 {
     [Test]
-    public void Hsb() => AssertUnicolour(new(ColourSpace.Hsb, 180, 0, 0), new List<ColourSpace> { ColourSpace.Hsl, ColourSpace.Hwb });
+    public void Hsb() => AssertUnicolour(new(ColourSpace.Hsb, 180, 0, 0), [ColourSpace.Hsl, ColourSpace.Hwb]);
     
     [Test]
-    public void Hsl() => AssertUnicolour(new(ColourSpace.Hsl, 180, 0, 0), new List<ColourSpace> { ColourSpace.Hsb, ColourSpace.Hwb });
+    public void Hsl() => AssertUnicolour(new(ColourSpace.Hsl, 180, 0, 0), [ColourSpace.Hsb, ColourSpace.Hwb]);
     
     [Test]
-    public void Hwb() => AssertUnicolour(new(ColourSpace.Hwb, 180, 0, 1), new List<ColourSpace> { ColourSpace.Hsb, ColourSpace.Hsl });
+    public void Hwb() => AssertUnicolour(new(ColourSpace.Hwb, 180, 0, 1), [ColourSpace.Hsb, ColourSpace.Hsl]);
     
     [Test]
-    public void Hsi() => AssertUnicolour(new(ColourSpace.Hsi, 180, 0, 0), new List<ColourSpace>());
+    public void Hsi() => AssertUnicolour(new(ColourSpace.Hsi, 180, 0, 0), []);
     
     [Test]
-    public void Wxy() => AssertUnicolour(new(ColourSpace.Wxy, 530, 0, 0), new List<ColourSpace>());
+    public void Wxy() => AssertUnicolour(new(ColourSpace.Wxy, 530, 0, 0), []);
     
     [Test]
-    public void Lchab() => AssertUnicolour(new(ColourSpace.Lchab, 0, 0, 180), new List<ColourSpace>());
+    public void Lchab() => AssertUnicolour(new(ColourSpace.Lchab, 0, 0, 180), []);
     
     [Test]
-    public void Lchuv() => AssertUnicolour(new(ColourSpace.Lchuv, 0, 0, 180), new List<ColourSpace> { ColourSpace.Hsluv, ColourSpace.Hpluv });
+    public void Lchuv() => AssertUnicolour(new(ColourSpace.Lchuv, 0, 0, 180), [ColourSpace.Hsluv, ColourSpace.Hpluv]);
     
     [Test]
-    public void Hsluv() => AssertUnicolour(new(ColourSpace.Hsluv, 180, 0, 0), new List<ColourSpace> { ColourSpace.Lchuv, ColourSpace.Hpluv });
+    public void Hsluv() => AssertUnicolour(new(ColourSpace.Hsluv, 180, 0, 0), [ColourSpace.Lchuv, ColourSpace.Hpluv]);
     
     [Test]
-    public void Hpluv() => AssertUnicolour(new(ColourSpace.Hpluv, 180, 0, 0), new List<ColourSpace> { ColourSpace.Lchuv, ColourSpace.Hsluv });
+    public void Hpluv() => AssertUnicolour(new(ColourSpace.Hpluv, 180, 0, 0), [ColourSpace.Lchuv, ColourSpace.Hsluv]);
     
     [Test]
-    public void Tsl() => AssertUnicolour(new(ColourSpace.Tsl, 180, 0, 0), new List<ColourSpace>());
+    public void Tsl() => AssertUnicolour(new(ColourSpace.Tsl, 180, 0, 0), []);
     
     [Test]
-    public void Jzczhz() => AssertUnicolour(new(ColourSpace.Jzczhz, 0, 0, 180), new List<ColourSpace>());
+    public void Jzczhz() => AssertUnicolour(new(ColourSpace.Jzczhz, 0, 0, 180), []);
     
     [Test]
-    public void Oklch() => AssertUnicolour(new(ColourSpace.Oklch, 0, 0, 180), new List<ColourSpace>());
+    public void Oklch() => AssertUnicolour(new(ColourSpace.Oklch, 0, 0, 180), []);
     
     [Test]
-    public void Okhsv() => AssertUnicolour(new(ColourSpace.Okhsv, 180, 0, 0), new List<ColourSpace> { ColourSpace.Okhwb });
+    public void Okhsv() => AssertUnicolour(new(ColourSpace.Okhsv, 180, 0, 0), [ColourSpace.Okhwb]);
     
     [Test]
-    public void Okhsl() => AssertUnicolour(new(ColourSpace.Okhsl, 180, 0, 0), new List<ColourSpace>());
+    public void Okhsl() => AssertUnicolour(new(ColourSpace.Okhsl, 180, 0, 0), []);
     
     [Test]
-    public void Okhwb() => AssertUnicolour(new(ColourSpace.Okhwb, 180, 0, 1), new List<ColourSpace> { ColourSpace.Okhsv });
+    public void Okhwb() => AssertUnicolour(new(ColourSpace.Okhwb, 180, 0, 1), [ColourSpace.Okhsv]);
     
     [Test]
-    public void Hct() => AssertUnicolour(new(ColourSpace.Hct, 180, 0, 0), new List<ColourSpace>());
+    public void Hct() => AssertUnicolour(new(ColourSpace.Hct, 180, 0, 0), []);
 
     private static void AssertUnicolour(Unicolour unicolour, List<ColourSpace> adjacentHuedSpaces)
     {

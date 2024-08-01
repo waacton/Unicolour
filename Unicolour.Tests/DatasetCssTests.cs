@@ -1,11 +1,11 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
-using static Datasets.Css;
+using static Wacton.Unicolour.Datasets.Css;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DatasetCssTests
 {
@@ -163,8 +163,8 @@ public class DatasetCssTests
         { "transparent", new(0, 0, 0) }
     };
     
-    private static readonly List<TestCaseData> Rgb255TestData = new()
-    {
+    private static readonly List<TestCaseData> Rgb255TestData =
+    [
         new TestCaseData("aliceblue", AliceBlue),
         new TestCaseData("antiquewhite", AntiqueWhite),
         new TestCaseData("aqua", Aqua),
@@ -314,7 +314,7 @@ public class DatasetCssTests
         new TestCaseData("yellow", Yellow),
         new TestCaseData("yellowgreen", YellowGreen),
         new TestCaseData("transparent", Css.Transparent)
-    };
+    ];
 
     [TestCaseSource(nameof(Rgb255TestData))]
     public void Rgb255(string name, Unicolour unicolour)
@@ -330,8 +330,8 @@ public class DatasetCssTests
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
     
-    private static readonly List<TestCaseData> DuplicateTestData = new()
-    {
+    private static readonly List<TestCaseData> DuplicateTestData =
+    [
         new TestCaseData(Cyan, Aqua).SetName("cyan = aqua"),
         new TestCaseData(Magenta, Fuchsia).SetName("magenta = fuchsia"),
         new TestCaseData(DarkGrey, DarkGray).SetName("darkgrey = darkgray"),
@@ -341,7 +341,7 @@ public class DatasetCssTests
         new TestCaseData(LightGrey, LightGray).SetName("lightgrey = lightgray"),
         new TestCaseData(LightSlateGrey, LightSlateGray).SetName("lightslategrey = lightslategray"),
         new TestCaseData(SlateGrey, SlateGray).SetName("slategrey = slategray")
-    };
+    ];
     
     [TestCaseSource(nameof(DuplicateTestData))]
     public void Duplicates(Unicolour unicolour1, Unicolour unicolour2)

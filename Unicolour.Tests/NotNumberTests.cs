@@ -1,134 +1,147 @@
-﻿namespace Wacton.Unicolour.Tests;
-
+﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class NotNumberTests
 {
-    private static double[][] testCases =
-    {
-        new[] { double.NaN, 0, 0 },
-        new[] { 0, double.NaN, 0 },
-        new[] { 0, 0, double.NaN },
-        new[] { double.NaN, double.NaN, 0 },
-        new[] { double.NaN, 0, double.NaN },
-        new[] { 0, double.NaN, double.NaN },
-        new[] { double.NaN, double.NaN, double.NaN }
-    };
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Rgb(double r, double g, double b) => AssertUnicolour(new(ColourSpace.Rgb, r, g, b));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Rgb255(double r, double g, double b) => AssertUnicolour(new(ColourSpace.Rgb255, r, g, b));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void RgbLinear(double r, double g, double b) => AssertUnicolour(new(ColourSpace.RgbLinear, r, g, b));
+    private static readonly List<TestCaseData> TestData =
+    [
+        new TestCaseData(Configuration.Default, double.NaN, 0, 0),
+        new TestCaseData(Configuration.Default, 0, double.NaN, 0),
+        new TestCaseData(Configuration.Default, 0, 0, double.NaN),
+        new TestCaseData(Configuration.Default, double.NaN, double.NaN, 0),
+        new TestCaseData(Configuration.Default, double.NaN, 0, double.NaN),
+        new TestCaseData(Configuration.Default, 0, double.NaN, double.NaN),
+        new TestCaseData(Configuration.Default, double.NaN, double.NaN, double.NaN),
+        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, 0),
+        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, 0),
+        new TestCaseData(TestUtils.DefaultFogra39Config, 0, 0, double.NaN),
+        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, 0),
+        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, double.NaN),
+        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
+        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
+    ];
 
-    [TestCaseSource(nameof(testCases))]
-    public void Hsb(double h, double s, double b) => AssertUnicolour(new(ColourSpace.Hsb, h, s, b));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Rgb(Configuration config, double r, double g, double b) => AssertUnicolour(new(config, ColourSpace.Rgb, r, g, b));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Rgb255(Configuration config, double r, double g, double b) => AssertUnicolour(new(config, ColourSpace.Rgb255, r, g, b));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void RgbLinear(Configuration config, double r, double g, double b) => AssertUnicolour(new(config, ColourSpace.RgbLinear, r, g, b));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Hsl(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hsl, h, s, l));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Hwb(double h, double w, double b) => AssertUnicolour(new(ColourSpace.Hwb, h, w, b));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Hsi(double h, double s, double i) => AssertUnicolour(new(ColourSpace.Hsi, h, s, i));
+    [TestCaseSource(nameof(TestData))]
+    public void Hsb(Configuration config, double h, double s, double b) => AssertUnicolour(new(config, ColourSpace.Hsb, h, s, b));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Xyz(double x, double y, double z) => AssertUnicolour(new(ColourSpace.Xyz, x, y, z));
+    [TestCaseSource(nameof(TestData))]
+    public void Hsl(Configuration config, double h, double s, double l) => AssertUnicolour(new(config, ColourSpace.Hsl, h, s, l));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Xyy(double x, double y, double upperY) => AssertUnicolour(new(ColourSpace.Xyy, x, y, upperY));
+    [TestCaseSource(nameof(TestData))]
+    public void Hwb(Configuration config, double h, double w, double b) => AssertUnicolour(new(config, ColourSpace.Hwb, h, w, b));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Wxy(double w, double x, double y) => AssertUnicolour(new(ColourSpace.Wxy, w, x, y));
+    [TestCaseSource(nameof(TestData))]
+    public void Hsi(Configuration config, double h, double s, double i) => AssertUnicolour(new(config, ColourSpace.Hsi, h, s, i));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Lab(double l, double a, double b) => AssertUnicolour(new(ColourSpace.Lab, l, a, b));
+    [TestCaseSource(nameof(TestData))]
+    public void Xyz(Configuration config, double x, double y, double z) => AssertUnicolour(new(config, ColourSpace.Xyz, x, y, z));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Xyy(Configuration config, double x, double y, double upperY) => AssertUnicolour(new(config, ColourSpace.Xyy, x, y, upperY));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Wxy(Configuration config, double w, double x, double y) => AssertUnicolour(new(config, ColourSpace.Wxy, w, x, y));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Lchab(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Lchab, l, c, h));
+    [TestCaseSource(nameof(TestData))]
+    public void Lab(Configuration config, double l, double a, double b) => AssertUnicolour(new(config, ColourSpace.Lab, l, a, b));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Luv(double l, double u, double v) => AssertUnicolour(new(ColourSpace.Luv, l, u, v));
+    [TestCaseSource(nameof(TestData))]
+    public void Lchab(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Lchab, l, c, h));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Lchuv(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Lchuv, l, c, h));
+    [TestCaseSource(nameof(TestData))]
+    public void Luv(Configuration config, double l, double u, double v) => AssertUnicolour(new(config, ColourSpace.Luv, l, u, v));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Hsluv(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hsluv, h, s, l));
+    [TestCaseSource(nameof(TestData))]
+    public void Lchuv(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Lchuv, l, c, h));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Hpluv(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Hpluv, h, s, l));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Ypbpr(double y, double pb, double pr) => AssertUnicolour(new(ColourSpace.Ypbpr, y, pb, pr));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Ycbcr(double y, double cb, double cr) => AssertUnicolour(new(ColourSpace.Ycbcr, y, cb, cr));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Ycgco(double y, double cg, double co) => AssertUnicolour(new(ColourSpace.Ycbcr, y, cg, co));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Yuv(double y, double u, double v) => AssertUnicolour(new(ColourSpace.Yuv, y, u, v));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Yiq(double y, double i, double q) => AssertUnicolour(new(ColourSpace.Yiq, y, i, q));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Ydbdr(double y, double db, double dr) => AssertUnicolour(new(ColourSpace.Ydbdr, y, db, dr));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Tsl(double t, double s, double l) => AssertUnicolour(new(ColourSpace.Tsl, t, s, l));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Xyb(double x, double y, double b) => AssertUnicolour(new(ColourSpace.Xyb, x, y, b));
-    
-    [TestCaseSource(nameof(testCases))]
-    public void Ipt(double i, double p, double t) => AssertUnicolour(new(ColourSpace.Ipt, i, p, t));
+    [TestCaseSource(nameof(TestData))]
+    public void Hsluv(Configuration config, double h, double s, double l) => AssertUnicolour(new(config, ColourSpace.Hsluv, h, s, l));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Ictcp(double i, double ct, double cp) => AssertUnicolour(new(ColourSpace.Ictcp, i, ct, cp));
-
-    [TestCaseSource(nameof(testCases))]
-    public void Jzazbz(double jz, double az, double bz) => AssertUnicolour(new(ColourSpace.Jzazbz, jz, az, bz));
-
-    [TestCaseSource(nameof(testCases))]
-    public void Jzczhz(double jz, double cz, double hz) => AssertUnicolour(new(ColourSpace.Jzczhz, jz, cz, hz));
-
-    [TestCaseSource(nameof(testCases))]
-    public void Oklab(double l, double a, double b) => AssertUnicolour(new(ColourSpace.Oklab, l, a, b));
-
-    [TestCaseSource(nameof(testCases))]
-    public void Oklch(double l, double c, double h) => AssertUnicolour(new(ColourSpace.Oklch, l, c, h));
+    [TestCaseSource(nameof(TestData))]
+    public void Hpluv(Configuration config, double h, double s, double l) => AssertUnicolour(new(config, ColourSpace.Hpluv, h, s, l));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Okhsv(double h, double s, double v) => AssertUnicolour(new(ColourSpace.Okhsv, h, s, v));
+    [TestCaseSource(nameof(TestData))]
+    public void Ypbpr(Configuration config, double y, double pb, double pr) => AssertUnicolour(new(config, ColourSpace.Ypbpr, y, pb, pr));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Ycbcr(Configuration config, double y, double cb, double cr) => AssertUnicolour(new(config, ColourSpace.Ycbcr, y, cb, cr));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Ycgco(Configuration config, double y, double cg, double co) => AssertUnicolour(new(config, ColourSpace.Ycbcr, y, cg, co));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Yuv(Configuration config, double y, double u, double v) => AssertUnicolour(new(config, ColourSpace.Yuv, y, u, v));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Yiq(Configuration config, double y, double i, double q) => AssertUnicolour(new(config, ColourSpace.Yiq, y, i, q));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Ydbdr(Configuration config, double y, double db, double dr) => AssertUnicolour(new(config, ColourSpace.Ydbdr, y, db, dr));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Tsl(Configuration config, double t, double s, double l) => AssertUnicolour(new(config, ColourSpace.Tsl, t, s, l));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Xyb(Configuration config, double x, double y, double b) => AssertUnicolour(new(config, ColourSpace.Xyb, x, y, b));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Ipt(Configuration config, double i, double p, double t) => AssertUnicolour(new(config, ColourSpace.Ipt, i, p, t));
 
-    [TestCaseSource(nameof(testCases))]
-    public void Okhsl(double h, double s, double l) => AssertUnicolour(new(ColourSpace.Okhsl, h, s, l));
+    [TestCaseSource(nameof(TestData))]
+    public void Ictcp(Configuration config, double i, double ct, double cp) => AssertUnicolour(new(config, ColourSpace.Ictcp, i, ct, cp));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Jzazbz(Configuration config, double jz, double az, double bz) => AssertUnicolour(new(config, ColourSpace.Jzazbz, jz, az, bz));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Jzczhz(Configuration config, double jz, double cz, double hz) => AssertUnicolour(new(config, ColourSpace.Jzczhz, jz, cz, hz));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Oklab(Configuration config, double l, double a, double b) => AssertUnicolour(new(config, ColourSpace.Oklab, l, a, b));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Oklch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklch, l, c, h));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Okhwb(double h, double w, double b) => AssertUnicolour(new(ColourSpace.Okhwb, h, w, b));
+    [TestCaseSource(nameof(TestData))]
+    public void Okhsv(Configuration config, double h, double s, double v) => AssertUnicolour(new(config, ColourSpace.Okhsv, h, s, v));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Okhsl(Configuration config, double h, double s, double l) => AssertUnicolour(new(config, ColourSpace.Okhsl, h, s, l));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Cam02(double j, double a, double b) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b));
+    [TestCaseSource(nameof(TestData))]
+    public void Okhwb(Configuration config, double h, double w, double b) => AssertUnicolour(new(config, ColourSpace.Okhwb, h, w, b));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Cam16(double j, double a, double b) => AssertUnicolour(new(ColourSpace.Cam16, j, a, b));
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02, j, a, b));
     
-    [TestCaseSource(nameof(testCases))]
-    public void Hct(double h, double c, double t) => AssertUnicolour(new(ColourSpace.Hct, h, c, t));
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16, j, a, b));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Hct(Configuration config, double h, double c, double t) => AssertUnicolour(new(config, ColourSpace.Hct, h, c, t));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Icc(Configuration config, double c, double m, double y) => AssertUnicolour(new(config, new Channels(c, m, y, 0.0)));
     
     // LUV -> XYZ converts NaNs to 0s
     // which results in downstream RGB / HSB / HSL containing real values but are used as NaN
-    [TestCaseSource(nameof(testCases))]
-    public void IsNumberButUseAsNotNumber(double l, double u, double v)
+    [TestCaseSource(nameof(TestData))]
+    public void IsNumberButUseAsNotNumber(Configuration config, double l, double u, double v)
     {
         var unicolour = new Unicolour(ColourSpace.Luv, l, u, v);
         Assert.That(unicolour.Luv.IsNaN, Is.True);
@@ -164,6 +177,7 @@ public class NotNumberTests
         Assert.That(unicolour.Description, Is.EqualTo("-"));
         Assert.That(unicolour.Temperature.Cct, Is.NaN);
         Assert.That(unicolour.Temperature.Duv, Is.NaN);
+        Assert.That(unicolour.Icc.ToString().StartsWith("NaN"));
 
         var spaces = TestUtils.AllColourSpaces.Except(new [] { unicolour.InitialColourSpace }).ToList();
         Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));

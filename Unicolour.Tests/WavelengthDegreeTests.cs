@@ -1,8 +1,8 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class WavelengthDegreeTests
 {
@@ -10,15 +10,15 @@ public class WavelengthDegreeTests
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     
     // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
-    private static readonly List<double> Wavelengths = new();
-    private static readonly List<double> Degrees = new();
+    private static readonly List<double> Wavelengths = [];
+    private static readonly List<double> Degrees = [];
     
     static WavelengthDegreeTests()
     {
         for (var i = 0; i < 1000; i++)
         {
-            Wavelengths.Add(RandomColours.Rng() >= 0.5 ? RandomColours.Rng(360, 700) : RandomColours.Rng(-566, -493.5));
-            Degrees.Add(RandomColours.Rng(0, 360));
+            Wavelengths.Add(TestUtils.RandomDouble() >= 0.5 ? TestUtils.RandomDouble(360, 700) : TestUtils.RandomDouble(-566, -493.5));
+            Degrees.Add(TestUtils.RandomDouble(0, 360));
         }
         
         Wavelengths.Add(double.NaN);

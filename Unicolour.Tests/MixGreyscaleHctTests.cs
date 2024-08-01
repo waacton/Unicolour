@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 // note: HCT is a composite of LAB & CAM16, therefore there is no obvious rectangular/hueless space to compare against
 // so using RGB to generate non-HCT greyscales

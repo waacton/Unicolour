@@ -7,7 +7,7 @@ public class Rocket : Colourmap
     {
     }
     
-    public override Unicolour Map(double x) => InterpolateLookup(Lookup, x);
+    public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Rocket);
 
     public static readonly Unicolour[] Lookup = 

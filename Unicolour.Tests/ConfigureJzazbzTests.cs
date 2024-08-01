@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class ConfigureJzazbzTests
 {

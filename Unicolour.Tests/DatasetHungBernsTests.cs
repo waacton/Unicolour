@@ -1,16 +1,16 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
-using static Datasets.HungBerns;
+using static Wacton.Unicolour.Datasets.HungBerns;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DatasetHungBernsTests
 {
-    private static readonly List<TestCaseData> ReferenceHues = new()
-    {
+    private static readonly List<TestCaseData> ReferenceHues =
+    [
         new TestCaseData(RedRef, new Xyy(0.6195, 0.3516, 0.3090), new Luv(62.4, 173.3, 55.3)).SetName("Red"),
         new TestCaseData(RedYellowRef, new Xyy(0.4961, 0.4464, 0.6138), new Luv(82.6, 73.7, 90.7)).SetName("Red-yellow"),
         new TestCaseData(YellowRef, new Xyy(0.4276, 0.4984, 1.0041), new Luv(100.2, 12.5, 118.5)).SetName("Yellow"),
@@ -24,10 +24,10 @@ public class DatasetHungBernsTests
         new TestCaseData(MagentaRef, new Xyy(0.3236, 0.1734, 0.3683), new Luv(67.1, 79.5, -95.1)).SetName("Magenta"),
         new TestCaseData(MagentaRedRef, new Xyy(0.4191, 0.2314, 0.3553), new Luv(66.2, 119.2, -33.7)).SetName("Magenta-red"),
         new TestCaseData(White, new Xyy(0.3101, 0.3163, 1.0000), new Luv(100.0, 0.0, 0.0)).SetName("White")
-    };
+    ];
     
-    private static readonly List<TestCaseData> GroupedByHue = new()
-    {
+    private static readonly List<TestCaseData> GroupedByHue =
+    [
         new TestCaseData(AllRed).SetName("Red"),
         new TestCaseData(AllRedYellow).SetName("Red-yellow"),
         new TestCaseData(AllYellow).SetName("Yellow"),
@@ -40,7 +40,7 @@ public class DatasetHungBernsTests
         new TestCaseData(AllBlueMagenta).SetName("Blue-magenta"),
         new TestCaseData(AllMagenta).SetName("Magenta"),
         new TestCaseData(AllMagentaRed).SetName("Magenta-red")
-    };
+    ];
 
     [TestCaseSource(nameof(ReferenceHues))]
     public void ReferenceXyy(Unicolour unicolour, Xyy xyy, Luv luv)

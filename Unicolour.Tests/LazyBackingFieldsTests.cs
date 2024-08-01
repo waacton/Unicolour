@@ -1,10 +1,10 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class LazyBackingFieldsTests
 {
@@ -34,14 +34,19 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void AfterMix(ColourSpace colourSpace)
+    public void AfterIcc(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        _ = unicolour.Icc;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
+    }
+        
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterIccUncalibrated(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
-        var other = RandomColours.UnicolourFrom(colourSpace);
-        var initialColourSpace = unicolour.InitialColourSpace;
-        _ = Interpolation.Mix(unicolour, other, initialColourSpace, 0.5, HueSpan.Shorter, true);
-        AssertBackingFieldsNotEvaluated(unicolour, ColourSpacesWithBackingFields.Except(new []{ colourSpace }).ToList());
-        AssertBackingFieldEvaluated(unicolour, colourSpace);
+        _ = unicolour.Icc;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
@@ -53,6 +58,22 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterIsInDisplayGamut(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        _ = unicolour.IsInDisplayGamut;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterDescription(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        _ = unicolour.Description;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Hsl);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void AfterChromaticity(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
@@ -61,11 +82,11 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void AfterIsInDisplayGamut(ColourSpace colourSpace)
+    public void AfterIsImaginary(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
-        _ = unicolour.IsInDisplayGamut;
-        AssertBackingFieldEvaluated(unicolour, ColourSpace.Rgb);
+        _ = unicolour.IsImaginary;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyy);
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
@@ -77,11 +98,11 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void AfterDescription(ColourSpace colourSpace)
+    public void AfterTemperature(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
-        _ = unicolour.Description;
-        AssertBackingFieldEvaluated(unicolour, ColourSpace.Hsl);
+        _ = unicolour.Temperature;
+        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyy);
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
@@ -101,19 +122,22 @@ public class LazyBackingFieldsTests
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void AfterTemperature(ColourSpace colourSpace)
-    {
-        var unicolour = RandomColours.UnicolourFrom(colourSpace);
-        _ = unicolour.Temperature;
-        AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyy);
-    }
-    
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void AfterConfigurationConversion(ColourSpace colourSpace)
     {
         var unicolour = RandomColours.UnicolourFrom(colourSpace);
         _ = unicolour.ConvertToConfiguration(Configuration.Default);
         AssertBackingFieldEvaluated(unicolour, ColourSpace.Xyz);
+    }
+    
+    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
+    public void AfterMix(ColourSpace colourSpace)
+    {
+        var unicolour = RandomColours.UnicolourFrom(colourSpace);
+        var other = RandomColours.UnicolourFrom(colourSpace);
+        var initialColourSpace = unicolour.InitialColourSpace;
+        _ = Interpolation.Mix(unicolour, other, initialColourSpace, 0.5, HueSpan.Shorter, true);
+        AssertBackingFieldsNotEvaluated(unicolour, ColourSpacesWithBackingFields.Except(new []{ colourSpace }).ToList());
+        AssertBackingFieldEvaluated(unicolour, colourSpace);
     }
     
     private static void AssertBackingFieldsNotEvaluated(Unicolour unicolour, List<ColourSpace> colourSpaces)

@@ -1,7 +1,5 @@
 namespace Wacton.Unicolour.Example.Web;
 
-using Wacton.Unicolour;
-
 internal static class ColourLookup
 {
     internal static readonly Dictionary<ColourSpace, Range[]> RangeLookup = new()

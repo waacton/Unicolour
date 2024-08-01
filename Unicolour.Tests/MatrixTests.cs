@@ -1,9 +1,9 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System;
+﻿using System;
 using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
+
+namespace Wacton.Unicolour.Tests;
 
 public class MatrixTests
 {

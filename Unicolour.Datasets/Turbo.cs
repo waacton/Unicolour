@@ -7,7 +7,7 @@ public class Turbo : Colourmap
     {
     }
 
-    public override Unicolour Map(double x) => InterpolateLookup(Lookup, x);
+    public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Turbo);
     
     public static readonly Unicolour[] Lookup =

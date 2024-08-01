@@ -1,7 +1,7 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Cam;
+using static Wacton.Unicolour.Utils;
 
-using static Cam;
-using static Utils;
+namespace Wacton.Unicolour;
 
 public record Cam16 : ColourRepresentation
 {

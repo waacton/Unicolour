@@ -1,6 +1,6 @@
-namespace Wacton.Unicolour.Tests.Utils;
-
 using System;
+
+namespace Wacton.Unicolour.Tests.Utils;
 
 public static class ConfigUtils
 {

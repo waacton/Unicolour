@@ -1,7 +1,7 @@
-﻿namespace Wacton.Unicolour.Tests;
+﻿using NUnit.Framework;
+using static Wacton.Unicolour.Cam;
 
-using NUnit.Framework;
-using static Cam;
+namespace Wacton.Unicolour.Tests;
 
 public class KnownCam16Tests
 {

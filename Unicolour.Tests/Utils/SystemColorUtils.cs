@@ -1,6 +1,6 @@
-namespace Wacton.Unicolour.Tests.Utils;
-
 using System.Drawing;
+
+namespace Wacton.Unicolour.Tests.Utils;
 
 internal static class SystemColorUtils
 {

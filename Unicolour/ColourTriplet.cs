@@ -8,7 +8,7 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
     public (double, double, double) Tuple => (First, Second, Third);
     public int? HueIndex { get; } = HueIndex;
 
-    public double[] AsArray() => new[] { First, Second, Third };
+    public double[] ToArray() => new[] { First, Second, Third };
     
     internal double HueValue()
     {

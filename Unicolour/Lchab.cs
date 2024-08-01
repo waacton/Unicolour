@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
 
-using static Utils;
+namespace Wacton.Unicolour;
 
 public record Lchab : ColourRepresentation
 {

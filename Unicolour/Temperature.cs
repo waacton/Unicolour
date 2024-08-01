@@ -1,6 +1,6 @@
-namespace Wacton.Unicolour;
+using static Wacton.Unicolour.Planckian;
 
-using static Planckian;
+namespace Wacton.Unicolour;
 
 public record Temperature(double Cct, double Duv = 0.0)
 {

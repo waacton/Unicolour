@@ -1,8 +1,8 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Globalization;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class UnseenTests
 {

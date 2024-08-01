@@ -6,7 +6,7 @@
 [![tests passed](https://badgen.net/https/waacton.npkn.net/gitlab-test-badge/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
-Unicolour is a .NET library written in C# for working with colour:
+Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion
 - Colour mixing / colour interpolation
 - Colour difference / colour distance
@@ -14,6 +14,8 @@ Unicolour is a .NET library written in C# for working with colour:
 - Colour chromaticity
 - Colour temperature
 - Wavelength attributes
+
+Written in C# with zero dependencies and supports full cross-platform compatibility.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
@@ -315,6 +317,11 @@ These [can be overridden](#-configuration) using the `Configuration` parameter, 
 var defaultConfig = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D65);
 var colour = new Unicolour(defaultConfig, ColourSpace.Rgb255, 192, 255, 238);
 ```
+
+### Zero dependencies, quality controlled 
+Each line of artisan code is exquisitely handcrafted in small-batch programming sessions.
+There is no reliance on deprecated, obsolete, or unmaintained packages.
+Every line of code is tested, and any defect is Unicolour's responsibility.
 
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the colour.

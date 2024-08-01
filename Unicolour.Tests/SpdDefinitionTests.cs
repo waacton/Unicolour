@@ -1,13 +1,13 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
+namespace Wacton.Unicolour.Tests;
+
 public class SpdDefinitionTests
 {
-    public static readonly List<TestCaseData> PredefinedTestData = new()
-    {
+    public static readonly List<TestCaseData> PredefinedTestData =
+    [
         new TestCaseData(Spd.A).SetName(nameof(Spd.A)),
         new TestCaseData(Spd.C).SetName(nameof(Spd.C)),
         new TestCaseData(Spd.D50).SetName(nameof(Spd.D50)),
@@ -18,7 +18,7 @@ public class SpdDefinitionTests
         new TestCaseData(Spd.F2).SetName(nameof(Spd.F2)),
         new TestCaseData(Spd.F7).SetName(nameof(Spd.F7)),
         new TestCaseData(Spd.F11).SetName(nameof(Spd.F11))
-    };
+    ];
     
     [TestCaseSource(nameof(PredefinedTestData))]
     public void PredefinedValid(Spd spd)
@@ -87,13 +87,13 @@ public class SpdDefinitionTests
         Assert.That(spd.IsValid, Is.False);
     }
     
-    public static readonly List<TestCaseData> DaylightTestData = new()
-    {
+    public static readonly List<TestCaseData> DaylightTestData =
+    [
         new TestCaseData(5000, Spd.D50).SetName("5000 K"),
         new TestCaseData(5500, Spd.D55).SetName("5500 K"),
         new TestCaseData(6500, Spd.D65).SetName("6500 K"),
         new TestCaseData(7500, Spd.D75).SetName("7500 K")
-    };
+    ];
 
     [TestCaseSource(nameof(DaylightTestData))]
     public void DaylightSpd(int kelvins, Spd expectedSpd)
@@ -105,13 +105,13 @@ public class SpdDefinitionTests
         foreach (var (wavelength, spectralPower) in spd)
         {
             // predefined D55 & D75 SPDs only go to 780 nm
-            if (!expectedSpd.ContainsKey(wavelength))
+            if (!expectedSpd.TryGetValue(wavelength, out var value))
             {
                 continue;
             }
             
             // how does the CIE spectral power calculation not match the tabular data provided by CIE more closely? 🤷
-            Assert.That(spectralPower, Is.EqualTo(expectedSpd[wavelength]).Within(0.0175));
+            Assert.That(spectralPower, Is.EqualTo(value).Within(0.0175));
         }
     }
 }

@@ -1,10 +1,10 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
-using static Datasets.Xkcd;
+using static Wacton.Unicolour.Datasets.Xkcd;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DatasetXkcdTests
 {
@@ -962,8 +962,8 @@ public class DatasetXkcdTests
         { "yellowy green", "#bff128" }
     };
     
-    private static readonly List<TestCaseData> HexTestData = new()
-    {
+    private static readonly List<TestCaseData> HexTestData =
+    [
         new TestCaseData("acid green", AcidGreen),
         new TestCaseData("adobe", Adobe),
         new TestCaseData("algae green", AlgaeGreen),
@@ -1913,7 +1913,7 @@ public class DatasetXkcdTests
         new TestCaseData("yellowish", Yellowish),
         new TestCaseData("yellowy brown", YellowyBrown),
         new TestCaseData("yellowy green", YellowyGreen)
-    };
+    ];
 
     [TestCaseSource(nameof(HexTestData))]
     public void Hex(string name, Unicolour unicolour)

@@ -1,7 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class ExtremeValuesTests
 {
@@ -13,6 +14,7 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double third)
     {
         TestUtils.AssertNoPropertyError(new Unicolour(colourSpace, first, second, third));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, first, second, third));
     }
     
     [Test, Combinatorial]
@@ -21,6 +23,7 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double alpha)
     {
         TestUtils.AssertNoPropertyError(new Unicolour(ColourSpace.RgbLinear, luminance, luminance, luminance, alpha));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, ColourSpace.RgbLinear, luminance, luminance, luminance, alpha));
     }
     
     [Test, Combinatorial]
@@ -29,6 +32,7 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double alpha)
     {
         TestUtils.AssertNoPropertyError(new Unicolour(hex, alpha));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, hex, alpha));
     }
     
     [Test, Combinatorial]
@@ -38,6 +42,7 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double luminance)
     {
         TestUtils.AssertNoPropertyError(new Unicolour(new Chromaticity(x, y), luminance));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, new Chromaticity(x, y), luminance));
     }
     
     [Test, Combinatorial]
@@ -47,6 +52,7 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double luminance)
     {
         TestUtils.AssertNoPropertyError(new Unicolour(new Temperature(cct, duv), luminance));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, new Temperature(cct, duv), luminance));
     }
     
     [Test, Combinatorial]
@@ -61,7 +67,29 @@ public class ExtremeValuesTests
             { 0, power2 },
             { int.MaxValue, power3 }
         };
+        
         TestUtils.AssertNoPropertyError(new Unicolour(spd));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, spd));
+    }
+    
+    [Test, Combinatorial]
+    public void CreateFromIcc(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double first, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double second, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double third,
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double fourth)
+    {
+        TestUtils.AssertNoPropertyError(new Unicolour(new Channels(first, second, third, fourth)));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, new Channels(first, second, third, fourth)));
+    }
+    
+    [Test, Combinatorial]
+    public void CreateFromIccWithAlpha(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double channel,
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double alpha)
+    {
+        TestUtils.AssertNoPropertyError(new Unicolour(new Channels(channel, channel, channel, channel), alpha));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, new Channels(channel, channel, channel, channel), alpha));
     }
     
     [Test, Combinatorial]
@@ -71,6 +99,10 @@ public class ExtremeValuesTests
     {
         var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
         var unicolour2 = RandomColours.UnicolourFrom(colourSpace);
+        TestUtils.AssertNoPropertyError(unicolour1.Mix(unicolour2, colourSpace, amount));
+        
+        unicolour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        unicolour2 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
         TestUtils.AssertNoPropertyError(unicolour1.Mix(unicolour2, colourSpace, amount));
     }
 }

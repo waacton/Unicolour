@@ -1,9 +1,9 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+namespace Wacton.Unicolour.Tests.Utils;
 
 // NamedColours.csv is a list of 145 colours taken from https://en.wikipedia.org/wiki/X11_color_names
 internal static class NamedColours

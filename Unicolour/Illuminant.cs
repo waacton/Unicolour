@@ -64,7 +64,7 @@ public class Illuminant
 
         // if white point for illuminant/observer pair is predefined, use that, no need to calculate
         var lookupKey = (this, observer);
-        if (WhitePoints.TryGetValue(lookupKey, out WhitePoint? value))
+        if (WhitePoints.TryGetValue(lookupKey, out var value))
         {
             return value;
         }

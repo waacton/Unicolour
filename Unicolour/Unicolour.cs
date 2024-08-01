@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using Wacton.Unicolour.Icc;
+
+namespace Wacton.Unicolour;
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
@@ -37,10 +39,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Cam02> cam02;
     private readonly Lazy<Cam16> cam16;
     private readonly Lazy<Hct> hct;
+    private readonly Lazy<Channels> icc;
     private readonly Lazy<Temperature> temperature;
 
     internal readonly ColourRepresentation InitialRepresentation;
     internal readonly ColourSpace InitialColourSpace;
+    private readonly string source;
     
     public Rgb Rgb => rgb.Value;
     public RgbLinear RgbLinear => rgbLinear.Value;
@@ -77,19 +81,20 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam02 Cam02 => cam02.Value;
     public Cam16 Cam16 => cam16.Value;
     public Hct Hct => hct.Value;
+    public Channels Icc => icc.Value;
     public Alpha Alpha { get; }
     public Configuration Config { get; }
 
     public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
-    public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
+    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
+    public bool IsImaginary => Config.Xyz.Spectral.IsImaginary(Chromaticity);
+    public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
+    public Temperature Temperature => temperature.Value;
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
     public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
-    public bool IsImaginary => Config.Xyz.Spectral.IsImaginary(Chromaticity);
-    public Temperature Temperature => temperature.Value;
-    
+
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
@@ -142,8 +147,15 @@ public partial class Unicolour : IEquatable<Unicolour>
         cam16 = new Lazy<Cam16>(EvaluateCam16);
         hct = new Lazy<Hct>(EvaluateHct);
         
-        // this will get overridden when called by the derived constructor that takes temperature as a parameter 
+        // the following are overriden by the derived constructors
+        // that enable Unicolour to be constructed from entities other than colour spaces
+        icc = new Lazy<Channels>(() =>
+            Config.Icc.HasSupportedProfile
+                ? Channels.FromXyz(Xyz, Config.Icc, Config.Xyz)
+                : Channels.UncalibratedFromRgb(Rgb));
+        
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
+        source = $"{InitialColourSpace} {InitialRepresentation}";
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -153,6 +165,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         return Interpolation.Mix(this, other, colourSpace, amount, hueSpan, premultiplyAlpha);
     }
+    
+    // TODO: explore if this is worthwhile
+    // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
+    // {
+    //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
+    // }
     
     public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);
     public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this);
@@ -170,7 +188,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {InitialColourSpace} {InitialRepresentation} alpha {Alpha}" };
+        var parts = new List<string> { $"from {source}", $"alpha {Alpha}" };
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);
@@ -178,8 +196,6 @@ public partial class Unicolour : IEquatable<Unicolour>
 
         return string.Join(" · ", parts);
     }
-
-    // ----- the following is based on auto-generated code -----
 
     public bool Equals(Unicolour? other)
     {
@@ -192,8 +208,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         if (ReferenceEquals(null, obj)) return false;
         if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
-        return Equals((Unicolour) obj);
+        return obj.GetType() == GetType() && Equals((Unicolour) obj);
     }
 
     private bool ColourSpaceEquals(Unicolour other)

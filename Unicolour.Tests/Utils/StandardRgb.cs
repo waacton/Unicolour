@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
+﻿using System.Collections.Generic;
 
-using System.Collections.Generic;
+namespace Wacton.Unicolour.Tests.Utils;
 
 internal static class StandardRgb
 {

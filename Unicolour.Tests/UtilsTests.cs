@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
 using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class UtilsTests
 {

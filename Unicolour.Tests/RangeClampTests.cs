@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+
+namespace Wacton.Unicolour.Tests;
 
 public class RangeClampTests
 {

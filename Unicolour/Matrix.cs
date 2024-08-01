@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using System.Text;
 
-using System.Text;
+namespace Wacton.Unicolour;
 
 internal class Matrix
 {

@@ -1,8 +1,8 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System;
+﻿using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 /*
  * expected colour values for these tests based on calculations from

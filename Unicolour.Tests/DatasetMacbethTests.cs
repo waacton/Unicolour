@@ -1,19 +1,19 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Tests.Utils;
-using static Datasets.Macbeth;
+using static Wacton.Unicolour.Datasets.Macbeth;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DatasetMacbethTests
 {
     private static readonly Configuration ConfigIlluminantC = new(xyzConfiguration: new XyzConfiguration(Illuminant.C, Observer.Degree2));
     
     // https://poynton.ca/notes/color/GretagMacbeth-ColorChecker.html
-    private static readonly List<TestCaseData> XyyTestData = new()
-    {
+    private static readonly List<TestCaseData> XyyTestData =
+    [
         new TestCaseData(DarkSkin, 0.400, 0.350, 10.1).SetName("Dark skin"),
         new TestCaseData(LightSkin, 0.377, 0.345, 35.8).SetName("Light skin"),
         new TestCaseData(BlueSky, 0.247, 0.251, 19.3).SetName("Blue sky"),
@@ -38,7 +38,7 @@ public class DatasetMacbethTests
         new TestCaseData(Neutral5, 0.31, 0.316, 19.8).SetName("Neutral 5"),
         new TestCaseData(Neutral35, 0.31, 0.316, 9).SetName("Neutral 3.5"),
         new TestCaseData(Black, 0.31, 0.316, 3.1).SetName("Black")
-    };
+    ];
     
     [TestCaseSource(nameof(XyyTestData))]
     public void Xyy(Unicolour unicolour, double expectedX, double expectedY, double expectedLuminance)

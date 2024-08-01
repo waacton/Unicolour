@@ -1,14 +1,16 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
+namespace Wacton.Unicolour.Tests;
+
 public class GreyscaleTests
 {
-    private static readonly List<ColourSpace> NaNProducingSpaces = new()
-        { ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16, ColourSpace.Hct };
+    private static readonly List<ColourSpace> NaNProducingSpaces =
+    [
+        ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16, ColourSpace.Hct
+    ];
 
     [TestCase(0.0, 0.0, 0.0, true)]
     [TestCase(-0.00000000001, 0.0, -0.0, true)]

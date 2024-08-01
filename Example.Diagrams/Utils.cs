@@ -1,8 +1,8 @@
-namespace Wacton.Unicolour.Example.Diagrams;
-
 using ScottPlot;
 using ScottPlot.Plottables;
 using ScottPlot.TickGenerators;
+
+namespace Wacton.Unicolour.Example.Diagrams;
 
 internal static class Utils
 {

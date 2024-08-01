@@ -208,9 +208,9 @@ public static class RgbModels
         public static readonly Chromaticity G = AcesAp1.G;
         public static readonly Chromaticity B = AcesAp1.B;
         public static readonly WhitePoint WhitePoint = Aces;
-        
-        internal static readonly double MaxLinearValue = 65504;
-        
+
+        internal const double MaxLinearValue = 65504;
+
         public static double FromLinear(double linear)
         {
             return linear switch
@@ -244,8 +244,8 @@ public static class RgbModels
         public static readonly WhitePoint WhitePoint = Aces;
         
         internal static readonly double MinNonlinearValue = (Log2(Math.Pow(2, -16)) + 9.72) / 17.52;
-        internal static readonly double MaxLinearValue = 65504;
-        
+        internal const double MaxLinearValue = 65504;
+
         public static double FromLinear(double linear)
         {
             const double threshold = 0.000030517578125; // Math.Pow(2, -15)

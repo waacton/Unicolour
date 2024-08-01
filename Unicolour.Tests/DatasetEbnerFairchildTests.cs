@@ -1,15 +1,15 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
-using static Datasets.EbnerFairchild;
+using static Wacton.Unicolour.Datasets.EbnerFairchild;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DatasetEbnerFairchildTests
 {
-    private static readonly List<TestCaseData> ReferenceHues = new()
-    {
+    private static readonly List<TestCaseData> ReferenceHues =
+    [
         new TestCaseData(Hue0Ref, 0).SetName("0"),
         new TestCaseData(Hue24Ref, 24).SetName("24"),
         new TestCaseData(Hue48Ref, 48).SetName("48"),
@@ -25,10 +25,10 @@ public class DatasetEbnerFairchildTests
         new TestCaseData(Hue288Ref, 288).SetName("288"),
         new TestCaseData(Hue312Ref, 312).SetName("312"),
         new TestCaseData(Hue336Ref, 336).SetName("336")
-    };
+    ];
     
-    private static readonly List<TestCaseData> GroupedByHue = new()
-    {
+    private static readonly List<TestCaseData> GroupedByHue =
+    [
         new TestCaseData(AllHue0, 0, 21).SetName("0"),
         new TestCaseData(AllHue24, 24, 21).SetName("24"),
         new TestCaseData(AllHue48, 48, 21).SetName("48"),
@@ -44,7 +44,7 @@ public class DatasetEbnerFairchildTests
         new TestCaseData(AllHue288, 288, 24).SetName("288"),
         new TestCaseData(AllHue312, 312, 25).SetName("312"),
         new TestCaseData(AllHue336, 336, 21).SetName("336")
-    };
+    ];
     
     [TestCaseSource(nameof(ReferenceHues))]
     public void ReferenceHue(Unicolour unicolour, int expectedHue)

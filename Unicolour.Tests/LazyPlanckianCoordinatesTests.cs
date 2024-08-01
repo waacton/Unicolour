@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour.Tests;
+﻿using NUnit.Framework;
 
-using NUnit.Framework;
+namespace Wacton.Unicolour.Tests;
 
 public class LazyPlanckianCoordinatesTests
 {

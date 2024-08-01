@@ -157,7 +157,7 @@ internal class Spectral
     private readonly Dictionary<int, Chromaticity> wavelengthToChromaticityCache = new();
     private Chromaticity GetChromaticity(int wavelength)
     {
-        if (wavelengthToChromaticityCache.TryGetValue(wavelength, out Chromaticity? cached))
+        if (wavelengthToChromaticityCache.TryGetValue(wavelength, out var cached))
         {
             return cached;
         }

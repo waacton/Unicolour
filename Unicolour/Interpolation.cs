@@ -4,7 +4,7 @@ internal static class Interpolation
 {
     internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, HueSpan hueSpan, bool premultiplyAlpha)
     {
-        (Unicolour start, Unicolour end, Configuration config) = AdjustConfiguration(startColour, endColour);
+        var (start, end, config) = AdjustConfiguration(startColour, endColour);
         
         var startRepresentation = start.GetRepresentation(colourSpace);
         var startAlpha = start.Alpha;
@@ -19,8 +19,7 @@ internal static class Interpolation
             ? value => Wxy.DegreeToWavelength(value, config.Xyz)
             : value => value;
 
-
-        (ColourTriplet startTriplet, ColourTriplet endTriplet) = GetTripletsToInterpolate(
+        var (startTriplet, endTriplet) = GetTripletsToInterpolate(
             (startRepresentation, startAlpha), 
             (endRepresentation, endAlpha),
             hueSpan, premultiplyAlpha, mapToDegree);
@@ -38,6 +37,18 @@ internal static class Interpolation
         
         return new Unicolour(config, heritage, colourSpace, first, second, third, alpha);
     }
+    
+    // TODO: explore if this is worthwhile
+    // internal static Unicolour MixChannels(Unicolour startColour, Unicolour endColour, double distance, bool premultiplyAlpha)
+    // {
+    //     var (start, end, config) = AdjustConfiguration(startColour, endColour);
+    //     var startChannels = premultiplyAlpha ? start.Icc.Values.Select(x => x * start.Alpha.ConstrainedA) : start.Icc.Values;
+    //     var endChannels = premultiplyAlpha ? end.Icc.Values.Select(x => x * end.Alpha.ConstrainedA) : end.Icc.Values;
+    //     var mixedChannels = startChannels.Zip(endChannels, (s, e) => Interpolate(s, e, distance)).ToArray();
+    //     var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
+    //     var channels = premultiplyAlpha ? mixedChannels.Select(x => x / alpha).ToArray() : mixedChannels;
+    //     return new Unicolour(config, new Channels(channels), alpha);
+    // }
     
     private static (Unicolour start, Unicolour end, Configuration config) AdjustConfiguration(Unicolour start, Unicolour end)
     {

@@ -1,15 +1,15 @@
-﻿namespace Wacton.Unicolour.Tests;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class DifferenceTests
 {
     private const double Tolerance = 0.00005;
     
-    // ReSharper disable once CollectionNeverQueried.Local
-    private static readonly List<(Unicolour reference, Unicolour sample)> ReferenceSamplePairs = new();
+    // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
+    private static readonly List<(Unicolour reference, Unicolour sample)> ReferenceSamplePairs = [];
     static DifferenceTests()
     {
         for (var i = 0; i < 100; i++)

@@ -36,16 +36,9 @@ public abstract class Colourmap
         };
     }
     
-    protected static Unicolour InterpolateLookup(Unicolour[] lookup, double x)
+    protected static Unicolour InterpolateColourTable(Unicolour[] colourTable, double x)
     {
-        var exactIndex = Interpolation.Interpolate(0, lookup.Length - 1, x.Clamp(0.0, 1.0));
-        var lowerIndex = (int)Math.Floor(exactIndex);
-        var upperIndex = (int)Math.Ceiling(exactIndex);
-        if (lowerIndex == upperIndex) return lookup[lowerIndex];
-        
-        var mixAmount = exactIndex - lowerIndex;
-        var lowerColour = lookup[lowerIndex];
-        var upperColour = lookup[upperIndex];
+        var (lowerColour, upperColour, mixAmount) = Lut.Lookup(colourTable, x);
         return lowerColour.Mix(upperColour, ColourSpace.Rgb, mixAmount);
     }
 }

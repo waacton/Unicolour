@@ -1,7 +1,7 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
+namespace Wacton.Unicolour.Tests.Utils;
 
 internal class ColourHeritageData
 {

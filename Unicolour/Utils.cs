@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using System.Globalization;
 
-using System.Globalization;
+namespace Wacton.Unicolour;
 
 internal static class Utils
 {

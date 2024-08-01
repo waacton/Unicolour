@@ -1,9 +1,9 @@
-namespace Wacton.Unicolour.Tests;
-
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class ImaginaryTests
 {

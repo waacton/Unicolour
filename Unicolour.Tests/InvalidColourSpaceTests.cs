@@ -1,9 +1,9 @@
-namespace Wacton.Unicolour.Tests;
-
 using System;
 using System.Reflection;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+
+namespace Wacton.Unicolour.Tests;
 
 public class InvalidColourSpaceTests
 {

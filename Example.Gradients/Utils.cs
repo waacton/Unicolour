@@ -1,10 +1,10 @@
-namespace Wacton.Unicolour.Example.Gradients;
-
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+
+namespace Wacton.Unicolour.Example.Gradients;
 
 internal static class Utils
 {

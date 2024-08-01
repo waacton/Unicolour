@@ -1,17 +1,18 @@
-namespace Wacton.Unicolour.Tests;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class EqualityTests
 {
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void SameReference(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
         var unicolour2 = unicolour1;
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
@@ -19,7 +20,7 @@ public class EqualityTests
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void SameReferenceNotNumber(ColourSpace colourSpace)
     {
-        var unicolour1 = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
+        var unicolour1 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, double.NaN, double.NaN, double.NaN);
         var unicolour2 = unicolour1;
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
@@ -49,18 +50,33 @@ public class EqualityTests
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void EqualObjects(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
-        var unicolour2 = new Unicolour(colourSpace, unicolour1.GetRepresentation(colourSpace).Triplet.Tuple, unicolour1.Alpha.A);
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        var unicolour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, unicolour1.GetRepresentation(colourSpace).Triplet.Tuple, unicolour1.Alpha.A);
         AssertUnicoloursEqual(unicolour1, unicolour2);
     }
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void NotEqualObjects(ColourSpace colourSpace)
     {
-        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
+        var unicolour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
         var differentTuple = GetDifferent(unicolour1.GetRepresentation(colourSpace).Triplet).Tuple;
-        var unicolour2 = new Unicolour(colourSpace, differentTuple, unicolour1.Alpha.A + 0.1);
+        var unicolour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, unicolour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(unicolour1, unicolour2, unicolour => unicolour.GetRepresentation(colourSpace).Triplet);
+    }
+
+    [Test]
+    public void DifferentIccChannels()
+    {
+        var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
+        var channels2 = new Channels(0.75, 0.5, 0.5, 0.25);
+        AssertNotEqual(channels1, channels2);
+    }
+    
+    [Test]
+    public void NullIccChannels()
+    {
+        var channels = new Channels(0.25, 0.5, 0.5, 0.75);
+        Assert.That(channels.Equals(null), Is.False);
     }
     
     [Test]
@@ -77,7 +93,8 @@ public class EqualityTests
         var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05), "XYZ 1");
         var ybrConfig1 = new YbrConfiguration(0.299, 0.114, (16, 235), (16, 240), "YBR 1");
         var camConfig1 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark, "CAM 1");
-        var config1 = new Configuration(rgbConfig1, xyzConfig1, ybrConfig1, camConfig1);
+        var iccConfig1 = new IccConfiguration(IccFile.Fogra39.Path, Intent.Perceptual, "ICC 1");
+        var config1 = new Configuration(rgbConfig1, xyzConfig1, ybrConfig1, camConfig1, iccConfig1);
         
         var rgbConfig2 = new RgbConfiguration(
             RgbModels.StandardRgb.R,
@@ -90,7 +107,8 @@ public class EqualityTests
         var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001), "XYZ 2");
         var ybrConfig2 = new YbrConfiguration(0.300, 0.15, (0, 255), (0, 255), "YBR 2");
         var camConfig2 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim, "CAM 2");
-        var config2 = new Configuration(rgbConfig2, xyzConfig2, ybrConfig2, camConfig2);
+        var iccConfig2 = new IccConfiguration(IccFile.Swop2006.Path, Intent.Saturation, "ICC 2");
+        var config2 = new Configuration(rgbConfig2, xyzConfig2, ybrConfig2, camConfig2, iccConfig2);
 
         AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
         AssertNotEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
@@ -104,6 +122,7 @@ public class EqualityTests
         AssertNotEqual(config1.Xyz, config2.Xyz);
         AssertNotEqual(config1.Ybr, config2.Ybr);
         AssertNotEqual(config1.Cam, config2.Cam);
+        AssertNotEqual(config1.Icc, config2.Icc);
     }
     
     [Test]
@@ -138,8 +157,9 @@ public class EqualityTests
         AssertEqual(unicolour1.Hsl, unicolour2.Hsl);
         AssertEqual(unicolour1.Hsluv, unicolour2.Hsluv);
         AssertEqual(unicolour1.Hwb, unicolour2.Hwb);
-        AssertEqual(unicolour1.Ipt, unicolour2.Ipt);
+        AssertEqual(unicolour1.Icc, unicolour2.Icc);
         AssertEqual(unicolour1.Ictcp, unicolour2.Ictcp);
+        AssertEqual(unicolour1.Ipt, unicolour2.Ipt);
         AssertEqual(unicolour1.IsImaginary, unicolour2.IsImaginary);
         AssertEqual(unicolour1.IsInDisplayGamut, unicolour2.IsInDisplayGamut);
         AssertEqual(unicolour1.Jzazbz, unicolour2.Jzazbz);
@@ -201,6 +221,10 @@ public class EqualityTests
         AssertEqual(config1.Cam.WhitePoint, config2.Cam.WhitePoint);
         AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
         AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);
+        AssertEqual(config1.Cam.Surround, config2.Cam.Surround);
+        AssertEqual(config1.Icc.Profile, config2.Icc.Profile);
+        AssertEqual(config1.Icc.Intent, config2.Icc.Intent);
+        AssertEqual(config1.Icc.Error, config2.Icc.Error);
         AssertEqual(config1.IctcpScalar, config2.IctcpScalar);
         AssertEqual(config1.JzazbzScalar, config2.JzazbzScalar);
     }

@@ -1,7 +1,7 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 // greyscale RGB has no hue - shouldn't assume to start at red (0 degrees) when mixing
 // greyscale WXY has a hue so it should be used (it just can't be seen until there is some purity & luminance)
@@ -91,7 +91,7 @@ public class MixGreyscaleWxyTests
         AssertTriplet(whiteToGrey.Wxy.Triplet, new(20, 0, 0.75));
     }
     
-    private void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
+    private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
         var actualWithDegree = actual.WithDegreeMap(ToDegree).WithHueModulo();
         TestUtils.AssertTriplet(actualWithDegree, expected, TestUtils.MixTolerance);

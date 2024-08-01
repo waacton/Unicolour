@@ -1,10 +1,10 @@
-namespace Wacton.Unicolour.Tests;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class ParseHexTests
 {

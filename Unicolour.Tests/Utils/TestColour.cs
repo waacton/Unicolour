@@ -1,6 +1,6 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
+﻿using System.Linq;
 
-using System.Linq;
+namespace Wacton.Unicolour.Tests.Utils;
 
 public class TestColour
 {

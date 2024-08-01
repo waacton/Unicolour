@@ -1,13 +1,14 @@
-﻿namespace Wacton.Unicolour.Tests.Utils;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
+namespace Wacton.Unicolour.Tests.Utils;
+
 internal static class HsluvTestColour
 {
-    internal static readonly List<TestColour> All = new();
+    // ReSharper disable CollectionNeverQueried.Global - used in test case sources by name
+    internal static readonly List<TestColour> All = [];
 
     static HsluvTestColour()
     {

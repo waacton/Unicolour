@@ -1,7 +1,8 @@
-namespace Wacton.Unicolour.Tests;
-
 using NUnit.Framework;
+using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 public class RoundtripRgbTests
 {
@@ -116,19 +117,21 @@ public class RoundtripRgbTests
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
-    /*
-     * CMY / CMYK is not integrated into Unicolour
-     * and tests will need to change if calibrated CMYK using ICC profiles are implemented
-     */
-    
+    // although RGB -> CMYK -> RGB results in same values, cannot guarantee roundtrip of CMYK -> RGB -> CMYK
+    // e.g. CMYK[0.5, 0.5, 0.5, 0.5] = RGB[0.25, 0.25, 0.25] = CMYK[0, 0, 0, 0.75]
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
     public void ViaCmyk(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
-        var cmyk = Cmyk.FromRgb(original);
-        var roundtrip = Cmyk.ToRgb(cmyk);
+        var cmyk = Channels.UncalibratedFromRgb(original);
+        var roundtrip = Channels.UncalibratedToRgb(cmyk);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
+    
+    /*
+     * CMY is not, and will not be, fully integrated into Unicolour
+     * just here for the sake of completeness
+     */
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
     public void ViaCmy(ColourTriplet triplet)

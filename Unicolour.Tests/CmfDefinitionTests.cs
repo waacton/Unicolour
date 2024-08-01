@@ -1,16 +1,16 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
+namespace Wacton.Unicolour.Tests;
+
 public class CmfDefinitionTests
 {
-    public static readonly List<TestCaseData> PredefinedTestData = new()
-    {
+    public static readonly List<TestCaseData> PredefinedTestData =
+    [
         new TestCaseData(Cmf.Degree2).SetName("2°"),
         new TestCaseData(Cmf.Degree10).SetName("10°")
-    };
+    ];
     
     [TestCaseSource(nameof(PredefinedTestData))]
     public void PredefinedValid(Cmf cmf)

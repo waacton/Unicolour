@@ -1,8 +1,8 @@
-namespace Wacton.Unicolour.Tests;
-
 using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+
+namespace Wacton.Unicolour.Tests;
 
 /*
  * this base class handles all tests specific to
@@ -12,13 +12,13 @@ using Wacton.Unicolour.Tests.Utils;
 [TestFixtureSource(nameof(TestData))]
 public class MixHueThirdComponentTests : MixHueAgnosticTests
 {
-    private static readonly List<TestFixtureData> TestData = new()
-    {
+    private static readonly List<TestFixtureData> TestData =
+    [
         new(ColourSpace.Lchab, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Lchuv, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Jzczhz, new Range(0, 0.16), new Range(0, 0.16)),
         new(ColourSpace.Oklch, new Range(0, 1), new Range(0, 0.5))
-    };
+    ];
 
     public MixHueThirdComponentTests(ColourSpace colourSpace, Range first, Range second) 
         : base(colourSpace, first, second, new Range(0, 360))
@@ -121,14 +121,14 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
         AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expectedBackward, 0.5));
     }
     
-    public static readonly List<TestCaseData> PremultipliedAlphaTestData = new()
-    {
+    public static readonly List<TestCaseData> PremultipliedAlphaTestData =
+    [
         new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.00, new AlphaTriplet(new(0.500, 1.000, 90, 2), 0.250)),
         new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.25, new AlphaTriplet(new(0.750, 0.750, 135, 2), 0.375)),
         new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.50, new AlphaTriplet(new(0.875, 0.625, 180, 2), 0.500)),
         new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.75, new AlphaTriplet(new(0.950, 0.550, 225, 2), 0.625)),
         new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 1.00, new AlphaTriplet(new(1.000, 0.500, 270, 2), 0.750))
-    };
+    ];
     
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]
     public void PremultiplyAlpha(AlphaTriplet start, AlphaTriplet end, double amount, AlphaTriplet expected)

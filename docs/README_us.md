@@ -574,6 +574,7 @@ Commonly used sets of colors:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colors
 - [xkcd](https://xkcd.com/color/rgb/) color survey results
 - [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) color rendition chart
+- [Nord](https://www.nordtheme.com/) theme colors
 
 Perceptually uniform colormaps / palettes:
 - [Viridis, Plasma, Inferno & Magma](https://bids.github.io/colormap/) (sequential)

@@ -16,7 +16,7 @@
         <PackageIcon>Resources\Unicolour.Datasets.png</PackageIcon>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
         <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset colormap colormaps colourmap colourmaps</PackageTags>
-        <PackageReleaseNotes>Support YbrConfiguration</PackageReleaseNotes>
+        <PackageReleaseNotes>Add Nord dataset</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

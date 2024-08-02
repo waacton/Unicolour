@@ -390,7 +390,7 @@ var noRed = colour.SimulateProtanopia();
 
 ### Use ICC profiles for CMYK conversion
 Device-dependent colour prints of 4 (e.g. FOGRA39 CMYK) or more (e.g. FOGRA55 CMYKOGV) are supported through ICC profiles.
-If there is no ICC profile, or if the profile cannot be used, naive conversion for uncalibrated CMYK is used instead.
+If there is no ICC profile, or if the profile is incompatible, naive conversion for uncalibrated CMYK is used instead.
 ```c#
 using Wacton.Unicolour.Icc;
 

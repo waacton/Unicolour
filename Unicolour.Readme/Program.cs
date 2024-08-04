@@ -215,8 +215,8 @@ void FeatureCvd()
 
 void FeatureIcc()
 {
-    var iccConfig = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
-    var config = new Configuration(iccConfiguration: iccConfig);
+    var fogra39 = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
+    var config = new Configuration(iccConfiguration: fogra39);
     
     var navyRgb = new Unicolour(config, ColourSpace.Rgb255, 0, 0, 128);
     Console.WriteLine(navyRgb.Icc); // 1.0000 0.8977 0.0001 0.2867 CMYK

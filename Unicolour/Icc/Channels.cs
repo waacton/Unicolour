@@ -19,6 +19,7 @@ public record Channels(params double[] Values)
     {
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
+        // TODO: try/catch in case ICC profile data is corrupted?
         var channels = profile.FromXyz(xyz, xyzConfig, intent);
         return new Channels(channels)
         {
@@ -32,6 +33,7 @@ public record Channels(params double[] Values)
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
         channels.ColourSpace = profile.Header.DataColourSpace;
+        // TODO: try/catch in case ICC profile data is corrupted?
         var xyz = profile.ToXyz(channels.Values, xyzConfig, intent);
         return xyz;
     }

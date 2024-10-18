@@ -49,13 +49,13 @@ public partial class Unicolour
     public Unicolour(Configuration config, string hex) : 
         this(config, ColourSpace.Rgb, Parse(hex))
     {
-        source = $"{nameof(Hex)} {hex}";
+        source = new Lazy<string>(() => $"{nameof(Hex)} {hex}");
     }
 
     public Unicolour(Configuration config, string hex, double alphaOverride) :
         this(config, ColourSpace.Rgb, Parse(hex) with { a = alphaOverride })
     {
-        source = $"{nameof(Hex)} {hex}";
+        source = new Lazy<string>(() => $"{nameof(Hex)} {hex}");
     }
     
     /* construction from chromaticity */
@@ -67,7 +67,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Chromaticity chromaticity, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance)
     {
-        source = $"{nameof(Chromaticity)} {chromaticity}";
+        source = new Lazy<string>(() => $"{nameof(Chromaticity)} {chromaticity}");
     }
 
     /* construction from temperature */
@@ -90,7 +90,7 @@ public partial class Unicolour
         this(config, ColourSpace.Xyy, TemperatureToXyyTuple(temperature, config.Xyz.Observer, luminance))
     {
         this.temperature = new Lazy<Temperature>(() => temperature);
-        source = $"{nameof(Temperature)} {temperature}";
+        source = new Lazy<string>(() => $"{nameof(Temperature)} {temperature}");
     }
 
     private static (double x, double y, double upperY, double alpha) TemperatureToXyyTuple(Temperature temperature, Observer observer, double luminance)
@@ -108,7 +108,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Spd spd) : 
         this(config, ColourSpace.Xyz, SpdToXyzTuple(spd, config.Xyz.Observer))
     {
-        source = $"{nameof(Spd)} {spd}";
+        source = new Lazy<string>(() => $"{nameof(Spd)} {spd}");
     }
     
     private static (double x, double y, double z, double alpha) SpdToXyzTuple(Spd spd, Observer observer)
@@ -127,7 +127,7 @@ public partial class Unicolour
         this(config, config.Icc.ConnectingSpace, IccToTuple(channels, config.Icc, config.Xyz), alpha)
     {
         icc = new Lazy<Channels>(() => channels);
-        source = $"{nameof(Icc)} {channels}";
+        source = new Lazy<string>(() => $"{nameof(Icc)} {channels}");
     }
     
     private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, XyzConfiguration xyzConfig)

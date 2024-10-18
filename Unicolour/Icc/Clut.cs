@@ -51,7 +51,7 @@ internal class Clut
     /*
      * finds the section of the CLUT grid that is bound by the indexes of the input channels
      * where each coordinate that forms the bounding area is an array of output channel values
-     * then interpolates within that grid section to find a precise values for the output channels
+     * then interpolates within that grid section to find a precise value for the output channels
      * particularly tricky because it is generalised to N-dimensions
      * (Fogra39 CMYK -> LAB has a 4D CLUT grid, Fogra55 CMYKOGV has a 7D CLUT grid)
      * ----------

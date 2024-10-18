@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish Example.Web to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" platform="Any CPU" self_contained="true" target_folder="$PROJECT_DIR$/Example.Web/bin/Release/net8.0/publish" target_framework="net8.0" uuid_high="1038597555020318423" uuid_low="-8592506992553309891" />
+    <method v="2" />
+  </configuration>
+</component>

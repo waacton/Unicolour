@@ -41,11 +41,13 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Hct> hct;
     private readonly Lazy<Channels> icc;
     private readonly Lazy<Temperature> temperature;
-
-    internal readonly ColourRepresentation InitialRepresentation;
-    internal readonly ColourSpace InitialColourSpace;
-    private readonly string source;
+    private readonly Lazy<string> source;
     
+    public Alpha Alpha { get; }
+    public Configuration Config { get; }
+    internal readonly ColourSpace InitialColourSpace;
+    internal readonly ColourRepresentation InitialRepresentation;
+
     public Rgb Rgb => rgb.Value;
     public RgbLinear RgbLinear => rgbLinear.Value;
     public Hsb Hsb => hsb.Value;
@@ -82,8 +84,6 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam16 Cam16 => cam16.Value;
     public Hct Hct => hct.Value;
     public Channels Icc => icc.Value;
-    public Alpha Alpha { get; }
-    public Configuration Config { get; }
 
     public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public bool IsInDisplayGamut => Rgb.IsInGamut;
@@ -108,9 +108,9 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         Config = config;
         Alpha = new Alpha(alpha);
-        InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
         InitialColourSpace = colourSpace;
-        
+        InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
+
         rgb = new Lazy<Rgb>(EvaluateRgb);
         rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
         hsb = new Lazy<Hsb>(EvaluateHsb);
@@ -155,7 +155,7 @@ public partial class Unicolour : IEquatable<Unicolour>
                 : Channels.UncalibratedFromRgb(Rgb));
         
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
-        source = $"{InitialColourSpace} {InitialRepresentation}";
+        source = new Lazy<string>(() => $"{InitialColourSpace} {InitialRepresentation}");
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -188,7 +188,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {source}", $"alpha {Alpha}" };
+        var parts = new List<string> { $"from {source.Value}", $"alpha {Alpha}" };
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);

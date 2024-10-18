@@ -230,6 +230,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Yuv);
             AccessProperty(() => unicolour.Yiq);
             AccessProperty(() => unicolour.Ydbdr);
+            AccessProperty(unicolour.ToString);
         }
         
         void AccessProperty(Func<object> getProperty)

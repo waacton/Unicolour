@@ -283,12 +283,19 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, cct, locus, luminance));
     }
 
+    private static readonly Spd monochromaticSpd = new() { { 580, 1.0 } };
+    private static readonly Spd twoNmSpd = new() { { 578, 0.25 }, { 580, 1.0 }, { 582, 0.75 } };
+    private static readonly Spd fiveNmSpd = new() { { 575, 0.25 }, { 580, 1.0 }, { 585, 0.75 } };
+    private static readonly Spd noPowerSpd = new();
+    private static readonly List<Spd> SpdValues = [Spd.D65, monochromaticSpd, twoNmSpd, fiveNmSpd, noPowerSpd];
+
     [Test]
-    public void SpectralPowerDistribution()
+    public void SpectralPowerDistribution(
+        [ValueSource(nameof(SpdValues))] Spd spd)
     {
-        var expected = new Unicolour(Spd.D65);
-        AssertNoError(expected, new Unicolour(Spd.D65));
-        AssertNoError(expected, new Unicolour(Configuration.Default, Spd.D65));
+        var expected = new Unicolour(spd);
+        AssertNoError(expected, new Unicolour(spd));
+        AssertNoError(expected, new Unicolour(Configuration.Default, spd));
     }
     
     private static readonly List<double[]> IccValues = [[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0], [0.5, 0.5, 0.5, 0.5]];

@@ -6,7 +6,7 @@ namespace Benchmark;
 
 [SimpleJob(RuntimeMoniker.Net472)]
 [SimpleJob(RuntimeMoniker.Net80)]
-public class UnicolourConversion
+public class ConvertFromRgb
 {
     private const ColourSpace initialColourSpace = ColourSpace.Rgb;
     private readonly Random random = new();
@@ -15,6 +15,7 @@ public class UnicolourConversion
     [GlobalSetup]
     public void Setup()
     {
+        _ = Configuration.Default; // avoids the static initialisation being triggered by the first Unicolour constructor
         var r = random.NextDouble();
         var g = random.NextDouble();
         var b = random.NextDouble();

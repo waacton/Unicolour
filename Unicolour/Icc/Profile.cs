@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace Wacton.Unicolour.Icc;
 
 public class Profile
@@ -70,19 +72,6 @@ public class Profile
                 throw new ArgumentException($"[{FileInfo}] with intent [{intent}] is not supported: tag [{requiredSignature}] is required");
             }
         }
-
-        // NOTE: this will be removed once "lutAToB" and "lutBToA" types (v4+) are supported
-        foreach (var lutsSignature in lutsSignatures)
-        {
-            var tag = Tags.Single(x => x.Signature == lutsSignature);
-            using var stream = new MemoryStream(tag.Data);
-            var mftSignature = stream.ReadSignature();
-            if (mftSignature is not (Signatures.MultiFunctionTable1Byte or Signatures.MultiFunctionTable2Byte))
-            {
-                throw new ArgumentException($"[{FileInfo}] with intent [{intent}] is not supported: tag [{lutsSignature}] " +
-                                            $"expected [{Signatures.MultiFunctionTable1Byte}] or [{Signatures.MultiFunctionTable2Byte}] but was [{mftSignature}]");
-            }
-        }
     }
     
     internal Xyz ToXyz(double[] deviceValues, XyzConfiguration xyzConfig, Intent intent)
@@ -98,10 +87,9 @@ public class Profile
         const bool isDeviceToPcs = true;
         var luts = Tags.GetLuts(GetLutsSignature(intent, isDeviceToPcs));
         
-        var pcsValues = ApplyTransform(deviceValues, luts);
-        
         // NOTE: adjustment of PCS happens in more cases than these; expand when a wider variety of profiles are supported
-        var iccLab = luts.Is16Bit ? Convert.IccLab2ToIccLab4(pcsValues) : pcsValues;
+        var pcsValues = ApplyTransform(deviceValues, luts);
+        var iccLab = luts.LutType == LutType.Lut16 ? Convert.IccLab2ToIccLab4(pcsValues) : pcsValues;
         switch (intent)
         {
             case Intent.Perceptual when Header.ProfileVersion.Major == 2:
@@ -145,21 +133,28 @@ public class Profile
             {
                 var iccXyz = Convert.XyzToIccXyz(xyz);
                 var adjustedIccXyz = Convert.IccXyzToAdjustedPerceptual(iccXyz, RefBlack, RefWhite, isDeviceToPcs);
-                pcsValues = Convert.AdjustedIccXyzToLab2(adjustedIccXyz);
+                var adjustedIccLab = Convert.AdjustedIccXyzToLab4(adjustedIccXyz);
+                pcsValues = Convert.IccLab4ToIccLab2(adjustedIccLab);
                 break;
             }
             case Intent.AbsoluteColorimetric:
             {
                 var iccXyz = Convert.XyzToIccXyz(xyz);
                 var adjustedIccXyz = Convert.IccXyzToAdjustedAbsolute(iccXyz, RefWhite, mediaWhite, isDeviceToPcs);
-                pcsValues = Convert.AdjustedIccXyzToLab2(adjustedIccXyz);
+                var adjustedIccLab = Convert.AdjustedIccXyzToLab4(adjustedIccXyz);
+                if (Header.ProfileVersion.Major == 2)
+                {
+                    adjustedIccLab = Convert.IccLab4ToIccLab2(adjustedIccLab);
+                }
+
+                pcsValues = adjustedIccLab;
                 break;
             }
             default:
             {
                 var lab = Lab.FromXyz(xyz, XyzD50);
                 var iccLab = Convert.LabToIccLab(lab);
-                pcsValues = luts.Is16Bit ? Convert.IccLab4ToIccLab2(iccLab) : iccLab;
+                pcsValues = luts.LutType == LutType.Lut16 ? Convert.IccLab4ToIccLab2(iccLab) : iccLab;
                 break;
             }
         }
@@ -217,18 +212,18 @@ public class Profile
     }
 
     // not useful until v4 profiles are supported (nothing to compare it to until then)
-    // private static readonly int[] indexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-    // public byte[] CalculateProfileId()
-    // {
-    //     var bytes = File.ReadAllBytes(FileInfo.FullName);
-    //     foreach (var index in indexesToZeroForHash)
-    //     {
-    //         bytes[index] = 0;
-    //     }
-    //     
-    //     var md5 = MD5.Create();
-    //     return md5.ComputeHash(bytes);
-    // }
+    private static readonly int[] indexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+    public byte[] CalculateProfileId()
+    {
+        var bytes = File.ReadAllBytes(FileInfo.FullName);
+        foreach (var index in indexesToZeroForHash)
+        {
+            bytes[index] = 0;
+        }
+        
+        var md5 = MD5.Create();
+        return md5.ComputeHash(bytes);
+    }
 
     public override string ToString() => $"{FileInfo} · {Header} · {Tags.Count} tags";
 }

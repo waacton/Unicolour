@@ -110,4 +110,7 @@ internal static class DataTypes
     {
         return new [] { tuple.x, tuple.y, tuple.z };
     }
+    
+    internal static double[] From8BitPrecision(byte[] values) => values.Select(x => x / 255.0).ToArray();
+    internal static double[] From16BitPrecision(ushort[] values) => values.Select(x => x / 65535.0).ToArray();
 }

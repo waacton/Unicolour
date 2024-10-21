@@ -176,7 +176,7 @@ public class IccProfileTests
         (int channels, int entries) output,
         (int points, string text) clut)
     {
-        Assert.That(luts.Is16Bit, Is.EqualTo(is16Bit));
+        Assert.That(luts.LutType, Is.EqualTo(is16Bit));
         
         Assert.That(luts.InputCurves.Count, Is.EqualTo(input.channels));
         foreach (var curve in luts.InputCurves)

@@ -72,12 +72,12 @@ public static class Convert
         var adjustedIccXyz = Enumerable.Range(0, 3).Select(GetAdjusted).ToArray();
         return adjustedIccXyz;
     }
-
-    internal static double[] AdjustedIccXyzToLab2(double[] adjustedIccXyz)
+    
+    internal static double[] AdjustedIccXyzToLab4(double[] adjustedIccXyz)
     {
         var adjustedXyz = IccXyzToXyz(adjustedIccXyz);
         var adjustedLab = Lab.FromXyz(adjustedXyz, Profile.XyzD50);
         var adjustedIccLab4 = LabToIccLab(adjustedLab);
-        return IccLab4ToIccLab2(adjustedIccLab4);
+        return adjustedIccLab4;
     }
 }

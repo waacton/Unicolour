@@ -21,12 +21,14 @@ public class IccConversionTests
     private static List<TestCaseData> Fogra39ToPcsTestData;
     private static List<TestCaseData> Fogra55ToPcsTestData;
     private static List<TestCaseData> Swop2006ToPcsTestData;
+    private static List<TestCaseData> Swop2013ToPcsTestData;
     private static List<TestCaseData> JapanColor2011ToPcsTestData;
     
     // LAB (using ICC D50 white point) --> device channels
     private static List<TestCaseData> Fogra39ToDeviceTestData;
     private static List<TestCaseData> Fogra55ToDeviceTestData;
     private static List<TestCaseData> Swop2006ToDeviceTestData;
+    private static List<TestCaseData> Swop2013ToDeviceTestData;
     private static List<TestCaseData> JapanColor2011ToDeviceTestData;
 
     private static List<TestCaseData> DeviceToUnicolourD65TestData;
@@ -37,7 +39,9 @@ public class IccConversionTests
         (Fogra39ToPcsTestData, Fogra39ToDeviceTestData) = ParseTestData(IccFile.Fogra39);
         (Fogra55ToPcsTestData, Fogra55ToDeviceTestData) = ParseTestData(IccFile.Fogra55);
         (Swop2006ToPcsTestData, Swop2006ToDeviceTestData) = ParseTestData(IccFile.Swop2006);
+        (Swop2013ToPcsTestData, Swop2013ToDeviceTestData) = ParseTestData(IccFile.Swop2013);
         (JapanColor2011ToPcsTestData, JapanColor2011ToDeviceTestData) = ParseTestData(IccFile.JapanColor2011);
+        
         DeviceToUnicolourD65TestData = GenerateDeviceToUnicolourTestData();
         UnicolourD65ToDeviceTestData = GenerateUnicolourToDeviceTestData();
     }
@@ -45,6 +49,7 @@ public class IccConversionTests
     [TestCaseSource(nameof(Fogra39ToPcsTestData))]
     [TestCaseSource(nameof(Fogra55ToPcsTestData))]
     [TestCaseSource(nameof(Swop2006ToPcsTestData))]
+    [TestCaseSource(nameof(Swop2013ToPcsTestData))]
     [TestCaseSource(nameof(JapanColor2011ToPcsTestData))]
     public void DeviceToLabStandardD50(IccTestColour testColour)
     {
@@ -57,6 +62,7 @@ public class IccConversionTests
     [TestCaseSource(nameof(Fogra39ToDeviceTestData))]
     [TestCaseSource(nameof(Fogra55ToDeviceTestData))]
     [TestCaseSource(nameof(Swop2006ToDeviceTestData))]
+    [TestCaseSource(nameof(Swop2013ToDeviceTestData))]
     [TestCaseSource(nameof(JapanColor2011ToDeviceTestData))]
     public void DeviceFromLabStandardD50(IccTestColour testColour)
     {

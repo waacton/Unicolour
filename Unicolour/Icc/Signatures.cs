@@ -6,9 +6,13 @@ internal static class Signatures
     
     internal const string Cmyk = "CMYK";
     internal const string Clr7 = "7CLR";
+    internal const string Rgb = "RGB ";
+    
     internal const string Lab = "Lab ";
+    internal const string Xyz = "XYZ ";
     
     internal const string Output = "prtr";
+    internal const string ColourSpace = "spac";
     
     internal const string AToB0 = "A2B0";
     internal const string AToB1 = "A2B1";
@@ -19,8 +23,11 @@ internal static class Signatures
 
     internal const string MultiFunctionTable1Byte = "mft1";
     internal const string MultiFunctionTable2Byte = "mft2";
-    // internal const string MultiFunctionAToB = "mAB ";
-    // internal const string MultiFunctionBToA = "mBA ";
+    internal const string MultiFunctionAToB = "mAB ";
+    internal const string MultiFunctionBToA = "mBA ";
+
+    internal const string Curve = "curv";
+    internal const string ParametricCurve = "para";
 
     internal const string MediaWhitePoint = "wtpt";
 

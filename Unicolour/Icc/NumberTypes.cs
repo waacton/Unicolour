@@ -13,6 +13,11 @@ internal static class NumberTypes
      * also note: .NET Standard 2.1 has `BinaryPrimitives.ReadUInt32BigEndian()` 🥺
      */
     
+    internal static byte ReadUInt8(this Stream stream)
+    {
+        return (byte)stream.ReadByte();
+    }
+    
     internal static ushort ReadUInt16(this Stream stream)
     {
         var bytes = stream.ReadBytes(2);
@@ -35,9 +40,12 @@ internal static class NumberTypes
         return (ulong)integer;
     }
     
-    internal static byte ReadUInt8(this Stream stream)
+    internal static double ReadU8Fixed8(this Stream stream)
     {
-        return (byte)stream.ReadByte();
+        var bytes = stream.ReadBytes(2);
+        var integer = bytes[0];
+        var fraction = bytes[1] / 256.0;
+        return integer + fraction;
     }
     
     internal static double ReadS15Fixed16(this Stream stream)
@@ -68,4 +76,7 @@ internal static class NumberTypes
 
         return numbers.ToArray();
     }
+    
+    internal static double[] From8BitPrecision(byte[] values) => values.Select(x => x / 255.0).ToArray();
+    internal static double[] From16BitPrecision(ushort[] values) => values.Select(x => x / 65535.0).ToArray();
 }

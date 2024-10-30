@@ -4,6 +4,7 @@ public record Channels(params double[] Values)
 {
     public double[] Values { get; } = Values;
     public string ColourSpace { get; private set; } = "unknown";
+    public string? Error { get; private set; } 
 
     private ColourHeritage Heritage = ColourHeritage.None;
     private bool UseAsNaN => Heritage == ColourHeritage.NaN || Values.Any(double.IsNaN);
@@ -19,12 +20,24 @@ public record Channels(params double[] Values)
     {
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
-        // TODO: try/catch in case ICC profile data is corrupted?
-        var channels = profile.FromXyz(xyz, xyzConfig, intent);
+        
+        double[] channels;
+        string? error = null;
+        try
+        {
+            channels = profile.FromXyz(xyz, xyzConfig, intent);
+        }
+        catch (Exception e)
+        {
+            channels = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
+            error = e.Message;
+        }
+
         return new Channels(channels)
         {
             ColourSpace = profile.Header.DataColourSpace,
-            Heritage = ColourHeritage.From(xyz)
+            Heritage = ColourHeritage.From(xyz),
+            Error = error
         };
     }
 
@@ -33,8 +46,18 @@ public record Channels(params double[] Values)
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
         channels.ColourSpace = profile.Header.DataColourSpace;
-        // TODO: try/catch in case ICC profile data is corrupted?
-        var xyz = profile.ToXyz(channels.Values, xyzConfig, intent);
+
+        Xyz xyz;
+        try
+        {
+            xyz = profile.ToXyz(channels.Values, xyzConfig, intent);
+        }
+        catch (Exception e)
+        {
+            xyz = new Xyz(double.NaN, double.NaN, double.NaN);
+            channels.Error = e.Message;
+        }
+
         return xyz;
     }
     

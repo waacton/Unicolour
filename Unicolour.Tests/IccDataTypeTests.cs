@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
-using Wacton.Unicolour.Icc;
 using static Wacton.Unicolour.Icc.DataTypes;
 
 namespace Wacton.Unicolour.Tests;

@@ -233,6 +233,60 @@
       <None Update="Data\ICC\sRGB2014.icc">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference.icc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB.icc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

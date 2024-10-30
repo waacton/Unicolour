@@ -91,6 +91,18 @@ public class IccNumberTypeTests
         var actual = stream.ReadS15Fixed16();
         Assert.That(actual, Is.EqualTo(expected));
     }
+    
+    [TestCase(new byte[] { 0x00, 0x00 }, 0, TestName = "0")]
+    [TestCase(new byte[] { 0x01, 0x00 }, 1, TestName = "1")]
+    [TestCase(new byte[] { 0xFF, 0xFF }, 255 + 255.0 / 256.0, TestName = "255.99609375 (integer 1s, fraction 1s)")]
+    [TestCase(new byte[] { 0xFF, 0x00 }, 255, TestName = "255 (integer 1s, fraction 0s)")]
+    [TestCase(new byte[] { 0x00, 0xFF }, 255.0 / 256.0, TestName = "0.99609375 (integer 0s, fraction 1s)")]
+    public void U8Fixed8(byte[] bytes, double expected)
+    {
+        using var stream = Stream(bytes);
+        var actual = stream.ReadU8Fixed8();
+        Assert.That(actual, Is.EqualTo(expected));
+    }
 
     private static MemoryStream Stream(byte[] bytes) => new(bytes);
 }

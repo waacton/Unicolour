@@ -199,20 +199,20 @@ var contrast = red.Contrast(blue);
 var difference = red.Difference(blue, DeltaE.Cie76);
 ```
 
-| Delta&nbsp;E                                                             | Enum                       |
-|--------------------------------------------------------------------------|----------------------------|
-| ΔE<sub>76</sub>&nbsp;(CIE76)                                             | `DeltaE.Cie76`             |
-| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
-| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
-| ΔE<sub>00</sub>&nbsp;(CIEDE2000)                                         | `DeltaE.Ciede2000`         |
-| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
-| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
-| ΔE<sub>ITP</sub>                                                         | `DeltaE.Itp`               |
-| ΔE<sub>z</sub>                                                           | `DeltaE.Z`                 |
-| ΔE<sub>HyAB</sub>                                                        | `DeltaE.Hyab`              |
-| ΔE<sub>OK</sub>                                                          | `DeltaE.Ok`                |
-| ΔE<sub>CAM02</sub>                                                       | `DeltaE.Cam02`             |
-| ΔE<sub>CAM16</sub>                                                       | `DeltaE.Cam16`             |
+| Delta&nbsp;E                                                      | Enum                       |
+|-------------------------------------------------------------------|----------------------------|
+| ΔE<sub>76</sub>&nbsp;(CIE76)                                      | `DeltaE.Cie76`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
+| ΔE<sub>00</sub>&nbsp;(CIEDE2000)                                  | `DeltaE.Ciede2000`         |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
+| ΔE<sub>ITP</sub>                                                  | `DeltaE.Itp`               |
+| ΔE<sub>z</sub>                                                    | `DeltaE.Z`                 |
+| ΔE<sub>HyAB</sub>                                                 | `DeltaE.Hyab`              |
+| ΔE<sub>OK</sub>                                                   | `DeltaE.Ok`                |
+| ΔE<sub>CAM02</sub>                                                | `DeltaE.Cam02`             |
+| ΔE<sub>CAM16</sub>                                                | `DeltaE.Cam16`             |
 
 ### Map color into display gamut
 Colors that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut color.
@@ -581,7 +581,7 @@ See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 Example code to create 3D visualizations of color spaces using 🎮 [Unity](https://unity.com/)
 can be seen in the [Example.Unity](https://github.com/waacton/Unicolour/tree/main/Example.Unity) project.
 
-Try it out online in [Unity Play](https://play.unity.com/mg/other/webgl-builds-399177)!
+Try it out online in [Unity Play](https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo)!
 
 | ![3D visualization of color spaces in Unity, created with Unicolour](unity-spaces.gif) |
 |----------------------------------------------------------------------------------------------|

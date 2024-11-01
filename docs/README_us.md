@@ -300,14 +300,14 @@ Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
 
 Only ICC profiles that meet the following criteria are supported:
 
-| Restriction   | Criteria                                | Tag signature                                           |
-|---------------|-----------------------------------------|---------------------------------------------------------|
-| Device class  | Output                                  | `prtr`                                                  |
-| PCS           | CIELAB                                  | `Lab `                                                  |
-| Transform     | A2B and B2A for chosen rendering intent | e.g. `A2B1` and `B2A1` for relative colorimetric intent |
-| Lookup tables | LUT-8 or LUT-16                         | `mft1` or `mft2`                                        |
+| Restriction   | Criteria             | Tag signature                                                                       |
+|---------------|----------------------|-------------------------------------------------------------------------------------|
+| Device class  | Output or ColorSpace | `prtr`  or `spac`                                                                   |
+| PCS           | CIELAB or CIEXYZ     | `Lab ` or `XYZ `                                                                    |
+| Transform     | A2B and B2A          | `A2B0` and `B2A0` (`A2B1` `B2A1` and `A2B2` `B2A2` are used accordingly if present) |
 
-A wider variety of ICC profiles will be supported in future releases.
+A wider variety of ICC profiles will be supported in future releases. 
+If a problem is encountered using an ICC profile that meets the above criteria, please [raise an issue](https://github.com/waacton/Unicolour/issues).
 
 ### Handle invalid values
 It is possible for invalid or unreasonable values to be used in calculations,
@@ -330,8 +330,8 @@ var color = new Unicolour(defaultConfig, ColourSpace.Rgb255, 192, 255, 238);
 
 ### Zero dependencies, quality controlled 
 Each line of artisan code is exquisitely handcrafted in small-batch programming sessions.
-There is no reliance on deprecated, obsolete, or unmaintained packages.
-Every line of code is tested, and any defect is Unicolour's responsibility.
+No dependencies are used, so there is no risk of reliance on deprecated, obsolete, or unmaintained packages.
+Every line of code is tested, and any defect is [Unicolour's responsibility](https://i.giphy.com/pDsCoECKh1Pa.webp).
 
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the color.

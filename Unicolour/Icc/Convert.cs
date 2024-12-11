@@ -40,14 +40,14 @@ internal static class Convert
             {
                 var iccXyz = XyzToIccXyz(xyz, isLabPcs: true).ToArray();
                 var adjustedIccXyz = IccXyzToAdjustedPerceptual(iccXyz, refBlack, refWhite, isDeviceToPcs);
-                iccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
+                iccLab = AdjustedIccXyzToIccLab(adjustedIccXyz);
                 break;
             }
             case Intent.AbsoluteColorimetric:
             {
                 var iccXyz = XyzToIccXyz(xyz, isLabPcs: true).ToArray();
                 var adjustedIccXyz = IccXyzToAdjustedAbsolute(iccXyz, refWhite, mediaWhite, isDeviceToPcs);
-                iccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
+                iccLab = AdjustedIccXyzToIccLab(adjustedIccXyz);
                 break;
             }
             default:
@@ -148,7 +148,7 @@ internal static class Convert
         return adjustedIccXyz;
     }
     
-    private static double[] AdjustedIccXyzToLab4(double[] adjustedIccXyz)
+    private static double[] AdjustedIccXyzToIccLab(double[] adjustedIccXyz)
     {
         var adjustedXyz = IccXyzToXyz(adjustedIccXyz);
         var adjustedLab = XyzToLab(adjustedXyz);

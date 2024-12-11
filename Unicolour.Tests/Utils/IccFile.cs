@@ -11,7 +11,8 @@ public record IccFile(string Id, string Name, int DeviceChannels)
     internal static IccFile Fogra55 = new(nameof(Fogra55), "Ref-ECG-CMYKOGV_FOGRA55_TAC300", 7);        // v2 7CLR -> LAB, prtr, lut16
     internal static IccFile Swop2006 = new(nameof(Swop2006), "SWOP2006_Coated5v2", 4);                  // v2 CMYK -> LAB, prtr, lut16
     internal static IccFile Swop2013 = new(nameof(Swop2013), "SWOP2013C3_CRPC5", 4);                    // v4 CMYK -> LAB, prtr, lutAToB: B-CLUT-A
-    internal static IccFile JapanColor2011 = new(nameof(JapanColor2011), "JapanColor2011Coated", 4);    // v2 CMYK -> LAB, prtr, lut8
+    internal static IccFile JapanColor2011 = new(nameof(JapanColor2011), "JapanColor2011Coated", 4);    // v2 CMYK -> LAB, prtr, lut8 (A2B)
+    internal static IccFile JapanColor2003 = new(nameof(JapanColor2003), "JapanColor2003WebCoated", 4); // v2 CMYK -> LAB, prtr, lut8 (B2A)
     internal static IccFile Cgats21 = new(nameof(Cgats21), "CGATS21_CRPC7", 4);                         // v4 CMYK -> LAB, prtr, lutAToB: B-CLUT-A
     internal static IccFile Prmg = new(nameof(Prmg), "PRMG_v2.0.1_MR", 4);                              // v4 CMYK -> LAB, prtr, lutAToB: B-CLUT-A
     internal static IccFile RommRgb = new(nameof(RommRgb), "ISO22028-2_ROMM-RGB", 3);                   // v4 RGB -> XYZ,  spac, lutAToB: B-Matrix-M        [only intent 0]

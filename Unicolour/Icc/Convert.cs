@@ -32,30 +32,33 @@ internal static class Convert
     internal static double[] XyzToIccLab(double[] xyz, Intent intent, LutType lutType, double[] refBlack, double[] refWhite, double[] mediaWhite, int version)
     {
         const bool isDeviceToPcs = false;
-        
+
+        double[] iccLab;
         switch (intent)
         {
             case Intent.Perceptual when version == 2:
             {
-                var iccXyz = XyzToIccXyz(xyz, isFromLab: true).ToArray();
+                var iccXyz = XyzToIccXyz(xyz, isLabPcs: true).ToArray();
                 var adjustedIccXyz = IccXyzToAdjustedPerceptual(iccXyz, refBlack, refWhite, isDeviceToPcs);
-                var adjustedIccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
-                return IccLab4ToIccLab2(adjustedIccLab);
+                iccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
+                break;
             }
             case Intent.AbsoluteColorimetric:
             {
-                var iccXyz = XyzToIccXyz(xyz, isFromLab: true).ToArray();
+                var iccXyz = XyzToIccXyz(xyz, isLabPcs: true).ToArray();
                 var adjustedIccXyz = IccXyzToAdjustedAbsolute(iccXyz, refWhite, mediaWhite, isDeviceToPcs);
-                var adjustedIccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
-                return version == 2 ? IccLab4ToIccLab2(adjustedIccLab) : adjustedIccLab;
+                iccLab = AdjustedIccXyzToLab4(adjustedIccXyz);
+                break;
             }
             default:
             {
                 var lab = XyzToLab(xyz);
-                var iccLab = LabToIccLab(lab);
-                return lutType == LutType.Lut16 ? IccLab4ToIccLab2(iccLab) : iccLab;
+                iccLab = LabToIccLab(lab);
+                break;
             }
         }
+        
+        return lutType == LutType.Lut16 ? IccLab4ToIccLab2(iccLab) : iccLab;
     }
     
     internal static double[] IccXyzToXyz(double[] iccXyz, Intent intent, double[] refWhite, double[] mediaWhite)
@@ -83,14 +86,14 @@ internal static class Convert
         {
             case Intent.AbsoluteColorimetric:
             {
-                var iccXyz = XyzToIccXyz(xyz, isFromLab: false);
+                var iccXyz = XyzToIccXyz(xyz, isLabPcs: false);
                 var adjustedIccXyz = IccXyzToAdjustedAbsolute(iccXyz, refWhite, mediaWhite, isDeviceToPcs);
                 var clippedAdjustedIccXyz = adjustedIccXyz.Select(value => Math.Max(0, value)).ToArray(); // assumes DemoIccMAX #ifndef SAMPLEICC_NOCLIPLABTOXYZ
                 return clippedAdjustedIccXyz;
             }
             default:
             {
-                return XyzToIccXyz(xyz, isFromLab: false);
+                return XyzToIccXyz(xyz, isLabPcs: false);
             }
         }
     }
@@ -118,11 +121,11 @@ internal static class Convert
     {
         var lab = IccLabToLab(iccLab);
         var xyz = LabToXyz(lab);
-        return XyzToIccXyz(xyz, isFromLab: true);
+        return XyzToIccXyz(xyz, isLabPcs: true);
     }
 
     // XYZ values are clipped in DemoIccMAX XYZ -> LAB conversion (IccUtil.cpp : icLabToXYZ > icICubeth)
-    private static double[] XyzToIccXyz(double[] xyz, bool isFromLab) => xyz.Select(value => XyzToIccXyz(isFromLab ? Math.Max(value, 0) : value)).ToArray();
+    private static double[] XyzToIccXyz(double[] xyz, bool isLabPcs) => xyz.Select(value => XyzToIccXyz(isLabPcs ? Math.Max(value, 0) : value)).ToArray();
     private static double XyzToIccXyz(double value) => value * 32768.0 / 65535.0;
     private static double[] IccXyzToXyz(double[] iccXyz) => iccXyz.Select(x => x * 65535.0 / 32768.0).ToArray();
     

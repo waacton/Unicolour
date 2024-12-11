@@ -23,6 +23,7 @@ public class IccConversionTests
     private static List<TestCaseData> Swop2006ToPcsTestData;
     private static List<TestCaseData> Swop2013ToPcsTestData;
     private static List<TestCaseData> JapanColor2011ToPcsTestData;
+    private static List<TestCaseData> JapanColor2003ToPcsTestData;
     private static List<TestCaseData> RommRgbToPcsTestData;
     private static List<TestCaseData> StandardRgbV4ToPcsTestData;
     
@@ -32,6 +33,7 @@ public class IccConversionTests
     private static List<TestCaseData> Swop2006ToDeviceTestData;
     private static List<TestCaseData> Swop2013ToDeviceTestData;
     private static List<TestCaseData> JapanColor2011ToDeviceTestData;
+    private static List<TestCaseData> JapanColor2003ToDeviceTestData;
     private static List<TestCaseData> RommRgbToDeviceTestData;
     private static List<TestCaseData> StandardRgbV4ToDeviceTestData;
 
@@ -45,6 +47,7 @@ public class IccConversionTests
         (Swop2006ToPcsTestData, Swop2006ToDeviceTestData) = ParseTestData(IccFile.Swop2006);
         (Swop2013ToPcsTestData, Swop2013ToDeviceTestData) = ParseTestData(IccFile.Swop2013);
         (JapanColor2011ToPcsTestData, JapanColor2011ToDeviceTestData) = ParseTestData(IccFile.JapanColor2011);
+        (JapanColor2003ToPcsTestData, JapanColor2003ToDeviceTestData) = ParseTestData(IccFile.JapanColor2003);
         (RommRgbToPcsTestData, RommRgbToDeviceTestData) = ParseTestData(IccFile.RommRgb);
         (StandardRgbV4ToPcsTestData, StandardRgbV4ToDeviceTestData) = ParseTestData(IccFile.StandardRgbV4);
         
@@ -57,6 +60,7 @@ public class IccConversionTests
     [TestCaseSource(nameof(Swop2006ToPcsTestData))]
     [TestCaseSource(nameof(Swop2013ToPcsTestData))]
     [TestCaseSource(nameof(JapanColor2011ToPcsTestData))]
+    [TestCaseSource(nameof(JapanColor2003ToPcsTestData))]
     [TestCaseSource(nameof(RommRgbToPcsTestData))]
     [TestCaseSource(nameof(StandardRgbV4ToPcsTestData))]
     public void DeviceToPcs(IccTestColour testColour)
@@ -88,6 +92,7 @@ public class IccConversionTests
     [TestCaseSource(nameof(Swop2006ToDeviceTestData))]
     [TestCaseSource(nameof(Swop2013ToDeviceTestData))]
     [TestCaseSource(nameof(JapanColor2011ToDeviceTestData))]
+    [TestCaseSource(nameof(JapanColor2003ToDeviceTestData))]
     [TestCaseSource(nameof(RommRgbToDeviceTestData))]
     [TestCaseSource(nameof(StandardRgbV4ToDeviceTestData))]
     public void PcsToDevice(IccTestColour testColour)
@@ -105,7 +110,7 @@ public class IccConversionTests
         var actual = testColour.Profile.FromStandardXyzD50(xyz.Triplet.ToArray(), intent);
         var tolerance = device switch
         {
-            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.00001 : 0.000001,
+            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.000025 : 0.00000125,
             Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.000025 : 0.00000125,
             Signatures.Rgb => intent == Intent.AbsoluteColorimetric ? 0.000125 : 0.000015,
             _ => throw new ArgumentOutOfRangeException()

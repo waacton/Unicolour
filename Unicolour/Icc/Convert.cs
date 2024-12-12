@@ -129,6 +129,7 @@ internal static class Convert
     private static double XyzToIccXyz(double value) => value * 32768.0 / 65535.0;
     private static double[] IccXyzToXyz(double[] iccXyz) => iccXyz.Select(x => x * 65535.0 / 32768.0).ToArray();
     
+    // technically could pass in non-ICC XYZ and avoid scaling ref black by 32768.0 / 65535.0, but the ICC XYZ also handled clipping
     private static double[] IccXyzToAdjustedPerceptual(double[] iccXyz, double[] refBlack, double[] refWhite, bool isDeviceToPcs)
     {
         double GetScale(int i) => isDeviceToPcs ? 1 - refBlack[i] / refWhite[i] : 1 / (1 - refBlack[i] / refWhite[i]);

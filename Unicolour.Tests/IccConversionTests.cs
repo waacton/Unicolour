@@ -17,17 +17,23 @@ namespace Wacton.Unicolour.Tests;
  */
 public class IccConversionTests
 {
-    // device channels --> LAB (using ICC D50 white point)
+    // device channels --> PCS (LAB or XYZ, using ICC D50 white point)
     private static List<TestCaseData> Fogra39ToPcsTestData;
     private static List<TestCaseData> Fogra55ToPcsTestData;
     private static List<TestCaseData> Swop2006ToPcsTestData;
+    private static List<TestCaseData> Swop2013ToPcsTestData;
     private static List<TestCaseData> JapanColor2011ToPcsTestData;
+    private static List<TestCaseData> RommRgbToPcsTestData;
+    private static List<TestCaseData> StandardRgbV4ToPcsTestData;
     
-    // LAB (using ICC D50 white point) --> device channels
+    // PCS (LAB or XYZ, using ICC D50 white point) --> device channels
     private static List<TestCaseData> Fogra39ToDeviceTestData;
     private static List<TestCaseData> Fogra55ToDeviceTestData;
     private static List<TestCaseData> Swop2006ToDeviceTestData;
+    private static List<TestCaseData> Swop2013ToDeviceTestData;
     private static List<TestCaseData> JapanColor2011ToDeviceTestData;
+    private static List<TestCaseData> RommRgbToDeviceTestData;
+    private static List<TestCaseData> StandardRgbV4ToDeviceTestData;
 
     private static List<TestCaseData> DeviceToUnicolourD65TestData;
     private static List<TestCaseData> UnicolourD65ToDeviceTestData;
@@ -37,7 +43,11 @@ public class IccConversionTests
         (Fogra39ToPcsTestData, Fogra39ToDeviceTestData) = ParseTestData(IccFile.Fogra39);
         (Fogra55ToPcsTestData, Fogra55ToDeviceTestData) = ParseTestData(IccFile.Fogra55);
         (Swop2006ToPcsTestData, Swop2006ToDeviceTestData) = ParseTestData(IccFile.Swop2006);
+        (Swop2013ToPcsTestData, Swop2013ToDeviceTestData) = ParseTestData(IccFile.Swop2013);
         (JapanColor2011ToPcsTestData, JapanColor2011ToDeviceTestData) = ParseTestData(IccFile.JapanColor2011);
+        (RommRgbToPcsTestData, RommRgbToDeviceTestData) = ParseTestData(IccFile.RommRgb);
+        (StandardRgbV4ToPcsTestData, StandardRgbV4ToDeviceTestData) = ParseTestData(IccFile.StandardRgbV4);
+        
         DeviceToUnicolourD65TestData = GenerateDeviceToUnicolourTestData();
         UnicolourD65ToDeviceTestData = GenerateUnicolourToDeviceTestData();
     }
@@ -45,31 +55,67 @@ public class IccConversionTests
     [TestCaseSource(nameof(Fogra39ToPcsTestData))]
     [TestCaseSource(nameof(Fogra55ToPcsTestData))]
     [TestCaseSource(nameof(Swop2006ToPcsTestData))]
+    [TestCaseSource(nameof(Swop2013ToPcsTestData))]
     [TestCaseSource(nameof(JapanColor2011ToPcsTestData))]
-    public void DeviceToLabStandardD50(IccTestColour testColour)
+    [TestCaseSource(nameof(RommRgbToPcsTestData))]
+    [TestCaseSource(nameof(StandardRgbV4ToPcsTestData))]
+    public void DeviceToPcs(IccTestColour testColour)
     {
         var expected = testColour.Output;
-        var xyz = testColour.Profile.ToXyzStandardD50(testColour.Input, testColour.Intent);
-        var actual = Lab.FromXyz(xyz, Profile.XyzD50).Triplet;
-        TestUtils.AssertTriplet(actual, new ColourTriplet(expected[0], expected[1], expected[2]), 0.0005);
+        var pcs = testColour.Profile.Header.Pcs; 
+        var deviceValues = testColour.Input;
+        var intent = testColour.Intent;
+        
+        var actual = testColour.Profile.ToXyzStandardD50(deviceValues, intent);
+        if (pcs == Signatures.Lab)
+        {
+            var xyz = new Xyz(actual[0], actual[1], actual[2]);
+            actual = Lab.FromXyz(xyz, Profile.XyzD50).Triplet.ToArray();
+        }
+        
+        var tolerance = pcs switch
+        {
+            Signatures.Lab => 0.00075,
+            Signatures.Xyz => 0.0000075,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        
+        Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
     }
     
     [TestCaseSource(nameof(Fogra39ToDeviceTestData))]
     [TestCaseSource(nameof(Fogra55ToDeviceTestData))]
     [TestCaseSource(nameof(Swop2006ToDeviceTestData))]
+    [TestCaseSource(nameof(Swop2013ToDeviceTestData))]
     [TestCaseSource(nameof(JapanColor2011ToDeviceTestData))]
-    public void DeviceFromLabStandardD50(IccTestColour testColour)
+    [TestCaseSource(nameof(RommRgbToDeviceTestData))]
+    [TestCaseSource(nameof(StandardRgbV4ToDeviceTestData))]
+    public void PcsToDevice(IccTestColour testColour)
     {
         var expected = testColour.Output;
-        var lab = new Lab(testColour.Input[0], testColour.Input[1], testColour.Input[2]);
-        var xyz = Lab.ToXyz(lab, Profile.XyzD50);
-        var actual = testColour.Profile.FromStandardXyzD50(xyz, testColour.Intent);
-        var tolerance = testColour.Intent == Intent.AbsoluteColorimetric ? 0.000025 : 0.000005;
+        var pcs = testColour.Profile.Header.Pcs;
+        var device = testColour.Profile.Header.DataColourSpace;
+        var intent = testColour.Intent;
+        
+        var (first, second, third) = (testColour.Input[0], testColour.Input[1], testColour.Input[2]);
+        var xyz = pcs == Signatures.Lab
+            ? Lab.ToXyz(new Lab(first, second, third), Profile.XyzD50)
+            : new Xyz(first, second, third);
+        
+        var actual = testColour.Profile.FromStandardXyzD50(xyz.Triplet.ToArray(), intent);
+        var tolerance = device switch
+        {
+            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.00001 : 0.000001,
+            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.000025 : 0.00000125,
+            Signatures.Rgb => intent == Intent.AbsoluteColorimetric ? 0.000125 : 0.000015,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+        
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceToXyzUnicolourD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceToUnicolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
@@ -83,25 +129,24 @@ public class IccConversionTests
         
         // the XYZ values should be the same as calling the core ICC profile function
         var expectedXyzD50 = profile.ToXyzStandardD50(deviceValues, intent);
-        TestUtils.AssertTriplet<Xyz>(unicolourD50, expectedXyzD50.Triplet, 1e-15);
+        Assert.That(unicolourD50.Xyz.Triplet.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void DeviceFromXyzUnicolourD65(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void UnicolourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
-        var (x, y, z) = (xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // XYZ values are used to create D50 unicolour
         var iccD50Config = GetConfig(Profile.XyzD50, iccFile, intent);
-        var unicolourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, x, y, z);
+        var unicolourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // unicolour converted to the ICC D65 white point
         var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent);
         var unicolourD65 = unicolourD50.ConvertToConfiguration(iccD65Config);
         
         // the device channel values should be the same as calling the core ICC profile function
-        var expectedDevice = profile.FromStandardXyzD50(new Xyz(x, y, z), intent);
+        var expectedDevice = profile.FromStandardXyzD50(xyzValues, intent);
         Assert.That(unicolourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
     }
     

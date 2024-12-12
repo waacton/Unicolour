@@ -2,42 +2,57 @@
 
 public class Tags : List<Tag>
 {
-    internal Lazy<Luts> AToB0 { get; }
-    internal Lazy<Luts> AToB1 { get; }
-    internal Lazy<Luts> AToB2 { get; }
-    internal Lazy<Luts> BToA0 { get; }
-    internal Lazy<Luts> BToA1 { get; }
-    internal Lazy<Luts> BToA2 { get; }
+    internal Lazy<Luts?> AToB0 { get; }
+    internal Lazy<Luts?> AToB1 { get; }
+    internal Lazy<Luts?> AToB2 { get; }
+    internal Lazy<Luts?> BToA0 { get; }
+    internal Lazy<Luts?> BToA1 { get; }
+    internal Lazy<Luts?> BToA2 { get; }
     internal Lazy<(double x, double y, double z)> MediaWhite { get; }
 
     private Tags()
     {
-        AToB0 = new Lazy<Luts>(() => Read(Signatures.AToB0, Luts.FromStream));
-        AToB1 = new Lazy<Luts>(() => Read(Signatures.AToB1, Luts.FromStream));
-        AToB2 = new Lazy<Luts>(() => Read(Signatures.AToB2, Luts.FromStream));
-        BToA0 = new Lazy<Luts>(() => Read(Signatures.BToA0, Luts.FromStream));
-        BToA1 = new Lazy<Luts>(() => Read(Signatures.BToA1, Luts.FromStream));
-        BToA2 = new Lazy<Luts>(() => Read(Signatures.BToA2, Luts.FromStream));
+        AToB0 = new Lazy<Luts?>(() => Read(Signatures.AToB0, Luts.AToBFromStream));
+        AToB2 = new Lazy<Luts?>(() => Read(Signatures.AToB2, Luts.AToBFromStream));
+        AToB1 = new Lazy<Luts?>(() => Read(Signatures.AToB1, Luts.AToBFromStream));
+        BToA0 = new Lazy<Luts?>(() => Read(Signatures.BToA0, Luts.BToAFromStream));
+        BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
+        BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
         MediaWhite = new Lazy<(double x, double y, double z)>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
     }
-
-    internal Luts GetLuts(string signature)
+    
+    internal Luts GetLuts(Intent intent, bool isDeviceToPcs)
     {
-        return signature switch
-        {
-            Signatures.AToB0 => AToB0.Value,
-            Signatures.AToB1 => AToB1.Value,
-            Signatures.AToB2 => AToB2.Value,
-            Signatures.BToA0 => BToA0.Value,
-            Signatures.BToA1 => BToA1.Value,
-            Signatures.BToA2 => BToA2.Value,
-            _ => throw new ArgumentOutOfRangeException(nameof(signature), signature, null)
-        };
+        /*
+         * LUT tag precedence
+         * 1) use BToD* and DToB* if present, except where not needed [v5+ / iccMax also has BToD3 and DToB3 for absolute]
+         * 2) use BToA* and AToB* if present, when tag in 1) is not used
+         * 3) use BToA0 and AToB0 if present, when tags in 1), 2) are not used
+         * 4) use TRCs when tags in 1), 2), 3) are not used
+         */
+        return isDeviceToPcs
+            ? intent switch
+            {
+                Intent.Perceptual => AToB0.Value!,
+                Intent.RelativeColorimetric => AToB1.Value ?? AToB0.Value!,
+                Intent.Saturation => AToB2.Value ?? AToB0.Value!,
+                Intent.AbsoluteColorimetric => AToB1.Value ?? AToB0.Value!,
+                _ => throw new ArgumentOutOfRangeException(nameof(intent), intent, null)
+            }
+            : intent switch
+            {
+                Intent.Perceptual => BToA0.Value!,
+                Intent.RelativeColorimetric => BToA1.Value ?? BToA0.Value!,
+                Intent.Saturation => BToA2.Value ?? BToA0.Value!,
+                Intent.AbsoluteColorimetric => BToA1.Value ?? BToA0.Value!,
+                _ => throw new ArgumentOutOfRangeException(nameof(intent), intent, null)
+            };
     }
 
-    private T Read<T>(string signature, Func<Stream, T> read)
+    private T? Read<T>(string signature, Func<Stream, T> read)
     {
-        var tag = this.Single(x => x.Signature == signature);
+        var tag = this.SingleOrDefault(x => x.Signature == signature);
+        if (tag == null) return default;
         using var stream = new MemoryStream(tag.Data);
         var result = read(stream);
         return result;

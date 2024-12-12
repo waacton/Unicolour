@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/174,384/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/188,115/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -305,20 +305,20 @@ var contrast = red.Contrast(blue);
 var difference = red.Difference(blue, DeltaE.Cie76);
 ```
 
-| Delta&nbsp;E                                                             | Enum                       |
-|--------------------------------------------------------------------------|----------------------------|
-| ΔE<sub>76</sub>&nbsp;(CIE76)                                             | `DeltaE.Cie76`             |
-| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
-| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;-&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
-| ΔE<sub>00</sub>&nbsp;(CIEDE2000)                                         | `DeltaE.Ciede2000`         |
-| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
-| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;-&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
-| ΔE<sub>ITP</sub>                                                         | `DeltaE.Itp`               |
-| ΔE<sub>z</sub>                                                           | `DeltaE.Z`                 |
-| ΔE<sub>HyAB</sub>                                                        | `DeltaE.Hyab`              |
-| ΔE<sub>OK</sub>                                                          | `DeltaE.Ok`                |
-| ΔE<sub>CAM02</sub>                                                       | `DeltaE.Cam02`             |
-| ΔE<sub>CAM16</sub>                                                       | `DeltaE.Cam16`             |
+| Delta&nbsp;E                                                      | Enum                       |
+|-------------------------------------------------------------------|----------------------------|
+| ΔE<sub>76</sub>&nbsp;(CIE76)                                      | `DeltaE.Cie76`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
+| ΔE<sub>94</sub>&nbsp;(CIE94)&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
+| ΔE<sub>00</sub>&nbsp;(CIEDE2000)                                  | `DeltaE.Ciede2000`         |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
+| ΔE<sub>CMC</sub>&nbsp;(CMC&nbsp;l:c)&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
+| ΔE<sub>ITP</sub>                                                  | `DeltaE.Itp`               |
+| ΔE<sub>z</sub>                                                    | `DeltaE.Z`                 |
+| ΔE<sub>HyAB</sub>                                                 | `DeltaE.Hyab`              |
+| ΔE<sub>OK</sub>                                                   | `DeltaE.Ok`                |
+| ΔE<sub>CAM02</sub>                                                | `DeltaE.Cam02`             |
+| ΔE<sub>CAM16</sub>                                                | `DeltaE.Cam16`             |
 
 ### Map colour into display gamut
 Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut colour.
@@ -406,14 +406,14 @@ Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
 
 Only ICC profiles that meet the following criteria are supported:
 
-| Restriction   | Criteria                                | Tag signature                                           |
-|---------------|-----------------------------------------|---------------------------------------------------------|
-| Device class  | Output                                  | `prtr`                                                  |
-| PCS           | CIELAB                                  | `Lab `                                                  |
-| Transform     | A2B and B2A for chosen rendering intent | e.g. `A2B1` and `B2A1` for relative colorimetric intent |
-| Lookup tables | LUT-8 or LUT-16                         | `mft1` or `mft2`                                        |
+| Restriction   | Criteria             | Tag signature                                                                       |
+|---------------|----------------------|-------------------------------------------------------------------------------------|
+| Device class  | Output or ColorSpace | `prtr`  or `spac`                                                                   |
+| PCS           | CIELAB or CIEXYZ     | `Lab ` or `XYZ `                                                                    |
+| Transform     | A2B and B2A          | `A2B0` and `B2A0` (`A2B1` `B2A1` and `A2B2` `B2A2` are used accordingly if present) |
 
-A wider variety of ICC profiles will be supported in future releases.
+A wider variety of ICC profiles will be supported in future releases. 
+If a problem is encountered using an ICC profile that meets the above criteria, please [raise an issue](https://github.com/waacton/Unicolour/issues).
 
 ### Handle invalid values
 It is possible for invalid or unreasonable values to be used in calculations,
@@ -436,8 +436,8 @@ var colour = new Unicolour(defaultConfig, ColourSpace.Rgb255, 192, 255, 238);
 
 ### Zero dependencies, quality controlled 
 Each line of artisan code is exquisitely handcrafted in small-batch programming sessions.
-There is no reliance on deprecated, obsolete, or unmaintained packages.
-Every line of code is tested, and any defect is Unicolour's responsibility.
+No dependencies are used, so there is no risk of reliance on deprecated, obsolete, or unmaintained packages.
+Every line of code is tested, and any defect is [Unicolour's responsibility](https://i.giphy.com/pDsCoECKh1Pa.webp).
 
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the colour.
@@ -737,7 +737,7 @@ See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 Example code to create 3D visualisations of colour spaces using 🎮 [Unity](https://unity.com/)
 can be seen in the [Example.Unity](../Example.Unity) project.
 
-Try it out online in [Unity Play](https://play.unity.com/mg/other/webgl-builds-399177)!
+Try it out online in [Unity Play](https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo)!
 
 | ![3D visualisation of colour spaces in Unity, created with Unicolour](docs/unity-spaces.gif) |
 |----------------------------------------------------------------------------------------------|

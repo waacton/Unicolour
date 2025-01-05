@@ -144,7 +144,7 @@ public class KnownIccTests
     {
         // CSS ICC profiles default to relative colorimetric
         return new Configuration(
-            xyzConfiguration: Profile.XyzD50,
+            xyzConfiguration: Transform.XyzD50,
             iccConfiguration: new IccConfiguration(iccFile.GetProfile(), Intent.RelativeColorimetric)
         );
     }

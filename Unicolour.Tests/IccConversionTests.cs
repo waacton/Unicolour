@@ -17,48 +17,37 @@ namespace Wacton.Unicolour.Tests;
  */
 public class IccConversionTests
 {
-    // device channels --> PCS (LAB or XYZ, using ICC D50 white point)
-    private static List<TestCaseData> Fogra39ToPcsTestData;
-    private static List<TestCaseData> Fogra55ToPcsTestData;
-    private static List<TestCaseData> Swop2006ToPcsTestData;
-    private static List<TestCaseData> Swop2013ToPcsTestData;
-    private static List<TestCaseData> JapanColor2011ToPcsTestData;
-    private static List<TestCaseData> RommRgbToPcsTestData;
-    private static List<TestCaseData> StandardRgbV4ToPcsTestData;
-    
-    // PCS (LAB or XYZ, using ICC D50 white point) --> device channels
-    private static List<TestCaseData> Fogra39ToDeviceTestData;
-    private static List<TestCaseData> Fogra55ToDeviceTestData;
-    private static List<TestCaseData> Swop2006ToDeviceTestData;
-    private static List<TestCaseData> Swop2013ToDeviceTestData;
-    private static List<TestCaseData> JapanColor2011ToDeviceTestData;
-    private static List<TestCaseData> RommRgbToDeviceTestData;
-    private static List<TestCaseData> StandardRgbV4ToDeviceTestData;
+    // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
+    private static readonly List<TestCaseData> ToPcsTestData = [];
+    private static readonly List<TestCaseData> ToDeviceTestData = [];
+    // ReSharper restore CollectionNeverQueried.Local
 
     private static List<TestCaseData> DeviceToUnicolourD65TestData;
     private static List<TestCaseData> UnicolourD65ToDeviceTestData;
-    
+
     static IccConversionTests()
     {
-        (Fogra39ToPcsTestData, Fogra39ToDeviceTestData) = ParseTestData(IccFile.Fogra39);
-        (Fogra55ToPcsTestData, Fogra55ToDeviceTestData) = ParseTestData(IccFile.Fogra55);
-        (Swop2006ToPcsTestData, Swop2006ToDeviceTestData) = ParseTestData(IccFile.Swop2006);
-        (Swop2013ToPcsTestData, Swop2013ToDeviceTestData) = ParseTestData(IccFile.Swop2013);
-        (JapanColor2011ToPcsTestData, JapanColor2011ToDeviceTestData) = ParseTestData(IccFile.JapanColor2011);
-        (RommRgbToPcsTestData, RommRgbToDeviceTestData) = ParseTestData(IccFile.RommRgb);
-        (StandardRgbV4ToPcsTestData, StandardRgbV4ToDeviceTestData) = ParseTestData(IccFile.StandardRgbV4);
-        
+        AddTestData(IccFile.Fogra39);
+        AddTestData(IccFile.Fogra55);
+        AddTestData(IccFile.Swop2006);
+        AddTestData(IccFile.Swop2013);
+        AddTestData(IccFile.JapanColor2011);
+        AddTestData(IccFile.JapanColor2003);
+        AddTestData(IccFile.RommRgb);
+        AddTestData(IccFile.StandardRgbV4);
+        AddTestData(IccFile.StandardRgbV2);
+        AddTestData(IccFile.StandardRgbGreyV4);
+        AddTestData(IccFile.D65Xyz);
+        AddTestData(IccFile.CxMonitorWeird);
+        AddTestData(IccFile.CxCmykProof);
+        AddTestData(IccFile.CxScannerGrey); // CxScannerGrey is one-way, to PCS only
+        AddTestData(IccFile.HackCxCmykKtrc);
+
         DeviceToUnicolourD65TestData = GenerateDeviceToUnicolourTestData();
         UnicolourD65ToDeviceTestData = GenerateUnicolourToDeviceTestData();
     }
     
-    [TestCaseSource(nameof(Fogra39ToPcsTestData))]
-    [TestCaseSource(nameof(Fogra55ToPcsTestData))]
-    [TestCaseSource(nameof(Swop2006ToPcsTestData))]
-    [TestCaseSource(nameof(Swop2013ToPcsTestData))]
-    [TestCaseSource(nameof(JapanColor2011ToPcsTestData))]
-    [TestCaseSource(nameof(RommRgbToPcsTestData))]
-    [TestCaseSource(nameof(StandardRgbV4ToPcsTestData))]
+    [TestCaseSource(nameof(ToPcsTestData))]
     public void DeviceToPcs(IccTestColour testColour)
     {
         var expected = testColour.Output;
@@ -66,30 +55,25 @@ public class IccConversionTests
         var deviceValues = testColour.Input;
         var intent = testColour.Intent;
         
-        var actual = testColour.Profile.ToXyzStandardD50(deviceValues, intent);
+        var actual = testColour.Profile.Transform.ToXyz(deviceValues, intent);
         if (pcs == Signatures.Lab)
         {
             var xyz = new Xyz(actual[0], actual[1], actual[2]);
-            actual = Lab.FromXyz(xyz, Profile.XyzD50).Triplet.ToArray();
+            actual = Lab.FromXyz(xyz, Transform.XyzD50).Triplet.ToArray();
         }
         
         var tolerance = pcs switch
         {
-            Signatures.Lab => 0.00075,
-            Signatures.Xyz => 0.0000075,
+            Signatures.Lab => 0.0001,
+            Signatures.Xyz => 0.00000075,
             _ => throw new ArgumentOutOfRangeException()
         };
         
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
     }
     
-    [TestCaseSource(nameof(Fogra39ToDeviceTestData))]
-    [TestCaseSource(nameof(Fogra55ToDeviceTestData))]
-    [TestCaseSource(nameof(Swop2006ToDeviceTestData))]
-    [TestCaseSource(nameof(Swop2013ToDeviceTestData))]
-    [TestCaseSource(nameof(JapanColor2011ToDeviceTestData))]
-    [TestCaseSource(nameof(RommRgbToDeviceTestData))]
-    [TestCaseSource(nameof(StandardRgbV4ToDeviceTestData))]
+    [TestCaseSource(nameof(ToDeviceTestData))]
+
     public void PcsToDevice(IccTestColour testColour)
     {
         var expected = testColour.Output;
@@ -99,19 +83,41 @@ public class IccConversionTests
         
         var (first, second, third) = (testColour.Input[0], testColour.Input[1], testColour.Input[2]);
         var xyz = pcs == Signatures.Lab
-            ? Lab.ToXyz(new Lab(first, second, third), Profile.XyzD50)
+            ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50)
             : new Xyz(first, second, third);
         
-        var actual = testColour.Profile.FromStandardXyzD50(xyz.Triplet.ToArray(), intent);
+        var actual = testColour.Profile.Transform.FromXyz(xyz.Triplet.ToArray(), intent);
         var tolerance = device switch
         {
-            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.00001 : 0.000001,
-            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.000025 : 0.00000125,
-            Signatures.Rgb => intent == Intent.AbsoluteColorimetric ? 0.000125 : 0.000015,
+            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.000002 : 0.00000125,
+            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.0000025 : 0.00000125,
+            Signatures.Rgb => 0.000015,
+            Signatures.Grey => 0.000005,
             _ => throw new ArgumentOutOfRangeException()
         };
         
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
+    }
+    
+    [Test] // slightly unusual case; it's possible for a profile to be supported but only have A2B transform
+    public void NoReverseTransform()
+    {
+        var profile = IccFile.CxScannerGrey.GetProfile();
+        Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
+        Assert.DoesNotThrow(() => { profile.Transform.ToXyz([], Intent.RelativeColorimetric); });
+        Assert.Throws<ArgumentException>(() => { profile.Transform.FromXyz([], Intent.RelativeColorimetric); });
+
+        var rgb = new Rgb(0.25, 0.5, 1.0);
+        var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
+        
+        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "no reverse transform");
+        var config = new Configuration(iccConfiguration: iccConfig);
+        var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
+        Assert.That(iccConfig.Error, Is.Null);
+        Assert.That(unicolour.Icc.Values, Is.EqualTo(expected));
+        Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
+        Assert.That(unicolour.Icc.Error!.Contains("transform is not defined"));
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
@@ -124,11 +130,11 @@ public class IccConversionTests
         var unicolourD65 = new Unicolour(iccD65Config, new Channels(deviceValues));
         
         // unicolour converted to the ICC D50 white point
-        var iccD50Config = GetConfig(Profile.XyzD50, iccFile, intent);
+        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
         var unicolourD50 = unicolourD65.ConvertToConfiguration(iccD50Config);
         
         // the XYZ values should be the same as calling the core ICC profile function
-        var expectedXyzD50 = profile.ToXyzStandardD50(deviceValues, intent);
+        var expectedXyzD50 = profile.Transform.ToXyz(deviceValues, intent);
         Assert.That(unicolourD50.Xyz.Triplet.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
@@ -138,7 +144,7 @@ public class IccConversionTests
         var profile = iccFile.GetProfile();
         
         // XYZ values are used to create D50 unicolour
-        var iccD50Config = GetConfig(Profile.XyzD50, iccFile, intent);
+        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
         var unicolourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // unicolour converted to the ICC D65 white point
@@ -146,21 +152,21 @@ public class IccConversionTests
         var unicolourD65 = unicolourD50.ConvertToConfiguration(iccD65Config);
         
         // the device channel values should be the same as calling the core ICC profile function
-        var expectedDevice = profile.FromStandardXyzD50(xyzValues, intent);
+        var expectedDevice = profile.Transform.FromXyz(xyzValues, intent);
         Assert.That(unicolourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
     }
-    
-    private static (List<TestCaseData> toPcs, List<TestCaseData> toDevice) ParseTestData(IccFile iccFile)
+
+    private static void AddTestData(IccFile iccFile)
     {
         const string DataSource = "ICC";
         var profile = iccFile.GetProfile();
-        var toPcsTestCaseData = new List<TestCaseData>();
-        var toDeviceTestCaseData = new List<TestCaseData>();
+        var toPcsTestData = new List<TestCaseData>();
+        var toDeviceTestData = new List<TestCaseData>();
 
         foreach (var intent in intents)
         {
-            toPcsTestCaseData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent));
-            toDeviceTestCaseData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent));
+            toPcsTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent));
+            toDeviceTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent));
         }
         
         List<TestCaseData> ParseTestCaseData(IccTransform transform, Intent intent)
@@ -175,12 +181,18 @@ public class IccConversionTests
             var intentValue = (int)intent;
             var csvFileName = $"{iccFile.Name}_{transformName}_{DataSource}-{intentValue}.csv";
             var csvPath = Path.Combine(IccFile.DataFolderName, csvFileName);
+            if (!File.Exists(csvPath))
+            {
+                return [];
+            }
+            
             var testColours = ParseCsv(profile, transform, csvPath, DataSource, intent).ToList();
             var testCases = testColours.Select(x => new TestCaseData(x).SetName($"{iccFile}, {x}"));
             return testCases.ToList();
         }
 
-        return (toPcsTestCaseData, toDeviceTestCaseData);
+        ToPcsTestData.AddRange(toPcsTestData);
+        ToDeviceTestData.AddRange(toDeviceTestData);
     }
 
     private static List<IccTestColour> ParseCsv(Profile profile, IccTransform iccTransform, string csvFile, string source, Intent intent)
@@ -208,9 +220,10 @@ public class IccConversionTests
         {
             foreach (var intent in intents)
             {
-                for (var channel = 0; channel < iccFile.DeviceChannels; channel++)
+                var deviceChannels = IccFile.GetDeviceChannels(iccFile);
+                for (var channel = 0; channel < deviceChannels; channel++)
                 {
-                    var channelValues = new double[iccFile.DeviceChannels];
+                    var channelValues = new double[deviceChannels];
                     channelValues[channel] = 1.0;
                     var testCaseName = $"{iccFile}, {intent}, [{string.Join(",", channelValues)}]";
                     testCases.Add(new TestCaseData(iccFile, intent, channelValues).SetName(testCaseName));

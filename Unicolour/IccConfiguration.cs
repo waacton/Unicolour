@@ -38,7 +38,7 @@ public class IccConfiguration
         // which seems to make sense here since Unicolour is effectively the PCS between the two
         Profile = profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
-        Error = GetProfileSupportError(Profile, Intent);
+        Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
@@ -46,7 +46,7 @@ public class IccConfiguration
     {
         Profile = profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
-        Error = GetProfileSupportError(Profile, Intent);
+        Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
@@ -54,15 +54,15 @@ public class IccConfiguration
     {
         Profile = profile;
         Intent = Profile == null ? Intent.Unspecified : Profile.Header.Intent;
-        Error = Profile == null ? null : GetProfileSupportError(Profile, Intent);
+        Error = Profile == null ? null : GetProfileSupportError(Profile);
         Name = name;
     }
 
-    private static string? GetProfileSupportError(Profile profile, Intent intent)
+    private static string? GetProfileSupportError(Profile profile)
     {
         try
         {
-            profile.ErrorIfUnsupported(intent);
+            profile.ErrorIfUnsupported();
         }
         catch (Exception e)
         {

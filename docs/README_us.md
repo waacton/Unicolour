@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/188,115/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/216,552/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with color:
@@ -298,13 +298,30 @@ var navyCmyk = new Unicolour(config, new Channels(1.0, 1.0, 0.0, 0.5));
 Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
 ```
 
-Only ICC profiles that meet the following criteria are supported:
+The following tables summarise which ICC profiles are compatible with Unicolour:
 
-| Restriction   | Criteria             | Tag signature                                                                       |
-|---------------|----------------------|-------------------------------------------------------------------------------------|
-| Device class  | Output or ColorSpace | `prtr`  or `spac`                                                                   |
-| PCS           | CIELAB or CIEXYZ     | `Lab ` or `XYZ `                                                                    |
-| Transform     | A2B and B2A          | `A2B0` and `B2A0` (`A2B1` `B2A1` and `A2B2` `B2A2` are used accordingly if present) |
+|   | Profile version   |
+|---|-------------------|
+| ✅ | 2                 |
+| ✅ | 4                 |
+| ❌ | 5 / iccMAX        |
+
+|   | Profile/device class |
+|---|----------------------|
+| ✅ | Input `scnr`         |
+| ✅ | Display `mntr`       |
+| ✅ | Output `prtr`        |
+| ✅ | ColorSpace `spac`    |
+| ❌ | DeviceLink `link`    |
+| ❌ | Abstract `abst`      |
+| ❌ | NamedColor `nmcl`    |
+
+|   | Transform                                                           |                                                                                        
+|---|---------------------------------------------------------------------|
+| ✅ | AToB / BToA `A2B0` `A2B1` `A2B2` `B2A0` `B2A1` `B2A2`               |                                            
+| ✅ | TRC matrix `rTRC` `gTRC` `bTRC` `rXYZ` `gXYZ` `bXYZ`                |                                             
+| ✅ | TRC gray `kTRC`                                                     |                                                                                  
+| ❌ | DToB / BToD `D2B0` `D2B1` `D2B2` `D2B3` `B2D0` `B2D1` `B2D2` `B2D3` |                              
 
 A wider variety of ICC profiles will be supported in future releases. 
 If a problem is encountered using an ICC profile that meets the above criteria, please [raise an issue](https://github.com/waacton/Unicolour/issues).
@@ -471,7 +488,7 @@ When a [conversion to or from XYZ space](#convert-between-color-spaces) involves
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,
-in turn enabling conversions between different RGB models, XYZ white points, CAM viewing conditions, etc.
+in turn enabling conversions between different RGB models, XYZ white points, CAM viewing conditions, ICC profiles, etc.
 
 ```c#
 /* pure sRGB green */
@@ -634,6 +651,6 @@ var mapped = Colourmaps.Viridis.Map(0.5);
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2024 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.
 
 Also available in [British](README.md) 🇬🇧.

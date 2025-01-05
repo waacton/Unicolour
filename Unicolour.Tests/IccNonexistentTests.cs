@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -19,34 +18,44 @@ public class IccNonexistentTests
     [Test]
     public void BCurvesOnly()
     {
-        const int channels = 15;
-        var lutsAB = CreateLutsBCurvesOnly(isAToB: true, channels);        
-        var lutsBA = CreateLutsBCurvesOnly(isAToB: false, channels);
-        Assert.That(lutsAB.ToString(), Is.EqualTo($"B [x{channels}]"));
-        Assert.That(lutsBA.ToString(), Is.EqualTo($"B [x{channels}]"));
+        const string path = "b_curves_only.icc";
+        WriteProfileWithBCurvesOnly(path);
+        var profile = new Profile(path);
 
-        var inputs = Enumerable.Range(0, channels).Select(_ => 0.5).ToArray();
-        var outputs = lutsAB.Apply(inputs);
-        var roundtrip = lutsBA.Apply(outputs);
-        Assert.That(roundtrip, Is.EqualTo(inputs).Within(0.00005));
+        Assert.That(profile.Tags.AToB0.Value!.ToString(), Is.EqualTo("B [x3]"));
+        Assert.That(profile.Tags.BToA0.Value!.ToString(), Is.EqualTo("B [x3]"));
+
+        double[] deviceValues = [0.25, 0.5, 0.75];
+        var xyz = profile.Transform.ToXyz(deviceValues, Intent.Perceptual);
+        var roundtrip = profile.Transform.FromXyz(xyz, Intent.Perceptual);
+        Assert.That(roundtrip, Is.EqualTo(deviceValues));
     }
-
-    private static Luts CreateLutsBCurvesOnly(bool isAToB, int channels)
+    
+    private static void WriteProfileWithBCurvesOnly(string modifiedPath)
     {
-        var bCurvesToPcs = Enumerable.Range(1, channels).Select(value => GenerateTableCurve(power: 1 + value / (double)channels, isAToB)).ToList();
-        return new Luts(ACurves: null, Clut: null, MCurves: null, Matrices: null, bCurvesToPcs, isAToB ? LutType.LutAB : LutType.LutBA, isAToB);
-    }
+        var profile = IccFile.RommRgb.GetProfile();
+        var a2b0 = profile.Tags.Single(x => x.Signature == Signatures.AToB0);
+        var b2a0 = profile.Tags.Single(x => x.Signature == Signatures.BToA0);
+     
+        // set the offset of every LUT element except B curves to 0, indicating that they are not present
+        // (see Luts.ReadTablesAB for details)
+        
+        var bytes = File.ReadAllBytes(profile.FileInfo.FullName);
+        byte[] bytesToZero =
+        [
+            16, 17, 18, 19, // matrix offset
+            20, 21, 22, 23, // M curves offset
+            24, 25, 26, 27, // CLUT offset
+            28, 29, 30, 31  // A curves offset
+        ];
 
-    private static Curve GenerateTableCurve(double power, bool isAToB)
-    {
-        var table = new double[100];
-        for (var i = 0; i < table.Length; i++)
+        foreach (var i in bytesToZero)
         {
-            table[i] = isAToB ? Math.Pow(i, power) : Math.Pow(i,  1 / power);
+            bytes[a2b0.Offset + i] = 0;
+            bytes[b2a0.Offset + i] = 0;
         }
-
-        table = table.Select(x => x / table.Max()).ToArray();
-        return new TableCurve(table);
+        
+        File.WriteAllBytes(modifiedPath, bytes);
     }
     
     /* not found a profile that uses an 8-bit CLUT in LutAToB or LutBToA */
@@ -67,8 +76,8 @@ public class IccNonexistentTests
         File.WriteAllBytes(modifiedName, bytes);
 
         var modifiedProfile = new Profile(modifiedName);
-        Assert.DoesNotThrow(() => modifiedProfile.ToXyzStandardD50([0.2, 0.4, 0.6, 0.8], Intent.Perceptual));
-        Assert.DoesNotThrow(() => modifiedProfile.FromStandardXyzD50([0.25, 0.5, 0.75], Intent.Perceptual));
+        Assert.DoesNotThrow(() => modifiedProfile.Transform.ToXyz([0.2, 0.4, 0.6, 0.8], Intent.Perceptual));
+        Assert.DoesNotThrow(() => modifiedProfile.Transform.FromXyz([0.25, 0.5, 0.75], Intent.Perceptual));
         File.Delete(modifiedName);
     }
     

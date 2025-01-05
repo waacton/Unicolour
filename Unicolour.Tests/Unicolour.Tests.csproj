@@ -30,262 +30,466 @@
 
     <ItemGroup>
       <None Update="Data\Cubehelix-custom">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\Cubehelix-default">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\HSLuv-snapshot-rev4.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\NamedColours.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\CGATS21_CRPC7_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\Coated_Fogra39L_VIGC_300_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_CMYK_ProofTest_PCS_RGB_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Hue+45_abst.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_Monitor_weird_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_scnr_RGB-_Gray.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_scnr_RGB-_Gray_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_scnr_RGB-_Gray_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_scnr_RGB-_Gray_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\CX_scnr_RGB-_Gray_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\D65_XYZ_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only).icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB2014.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <None Update="Data\ICC\Hack_(CX_CMYK_ktrc_only)_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB.icc">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToDevice_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-0.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-1.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-2.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="Data\ICC\ISO22028-2_ROMM-RGB_ToPcs_ICC-3.csv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2003WebCoated_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\JapanColor2011Coated_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\PRMG_v2.0.1_MR_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\Ref-ECG-CMYKOGV_FOGRA55_TAC300_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sGrey-v4_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB2014_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\sRGB_v4_ICC_preference_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2006_Coated5v2_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5.icc">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToDevice_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-0.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-1.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-2.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\ICC\SWOP2013C3_CRPC5_ToPcs_ICC-3.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
 

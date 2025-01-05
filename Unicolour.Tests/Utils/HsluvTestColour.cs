@@ -9,6 +9,7 @@ internal static class HsluvTestColour
 {
     // ReSharper disable CollectionNeverQueried.Global - used in test case sources by name
     internal static readonly List<TestColour> All = [];
+    // ReSharper restore CollectionNeverQueried.Global
 
     static HsluvTestColour()
     {
@@ -17,7 +18,7 @@ internal static class HsluvTestColour
         
         foreach (var (hex, jsonData) in snapshotJson)
         {
-            if (jsonData == null) throw new InvalidOperationException();
+            if (jsonData == null) throw new Exception();
             All.Add(new TestColour
             {
                 Hex = hex,

@@ -18,7 +18,7 @@ Tests to add / update for new colour spaces:
 To obtain code coverage metrics (as GitLab CI is setup to do):
 
 0. Install `reportgenerator` if not already installed <br/>`
-dotnet tool install -g dotnet-reportgenerator-globaltool'`
+dotnet tool install -g dotnet-reportgenerator-globaltool`
 1. Run tests and output artifacts <br/>
 `dotnet test --test-adapter-path:. --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose" --collect:"XPlat Code Coverage" --results-directory:".\artifacts"`
 2. Generate report from artifacts <br/>

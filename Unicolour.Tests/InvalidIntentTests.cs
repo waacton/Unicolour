@@ -13,9 +13,9 @@ public class InvalidIntentTests
     public void InvalidParameter()
     {
         var profile = IccFile.Fogra39.GetProfile();
-        Assert.Throws<ArgumentOutOfRangeException>(() => profile.ToXyzStandardD50([0.5, 0.5, 0.5, 0.5], BadIntent));
-        Assert.Throws<ArgumentOutOfRangeException>(() => profile.FromStandardXyzD50([0.5, 0.5, 0.5], BadIntent));
-        Assert.Throws<ArgumentOutOfRangeException>(() => profile.ToXyzStandardD50([0.5, 0.5, 0.5, 0.5], Intent.Unspecified));
-        Assert.Throws<ArgumentOutOfRangeException>(() => profile.FromStandardXyzD50([0.5, 0.5, 0.5], Intent.Unspecified));
+        Assert.Throws<ArgumentOutOfRangeException>(() => profile.Transform.ToXyz([0.5, 0.5, 0.5, 0.5], BadIntent));
+        Assert.Throws<ArgumentOutOfRangeException>(() => profile.Transform.FromXyz([0.5, 0.5, 0.5], BadIntent));
+        Assert.Throws<ArgumentOutOfRangeException>(() => profile.Transform.ToXyz([0.5, 0.5, 0.5, 0.5], Intent.Unspecified));
+        Assert.Throws<ArgumentOutOfRangeException>(() => profile.Transform.FromXyz([0.5, 0.5, 0.5], Intent.Unspecified));
     }
 }

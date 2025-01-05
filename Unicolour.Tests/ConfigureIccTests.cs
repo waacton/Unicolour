@@ -15,8 +15,9 @@ public class ConfigureIccTests
         var sourceFile = IccFile.Lookup[sourceFileName];
         var sourceIccConfig = new IccConfiguration(sourceFile.Path, Intent.Unspecified, "source");
         var sourceConfig = new Configuration(iccConfiguration: sourceIccConfig);
-        var sourceCmyk = new double[sourceFile.DeviceChannels];
-        for (var i = 0; i < sourceFile.DeviceChannels; i++)
+        var sourceDeviceChannels = IccFile.GetDeviceChannels(sourceFile);
+        var sourceCmyk = new double[sourceDeviceChannels];
+        for (var i = 0; i < sourceDeviceChannels; i++)
         {
             sourceCmyk[i] = TestUtils.RandomDouble();
         }

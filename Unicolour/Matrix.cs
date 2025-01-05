@@ -45,7 +45,7 @@ internal class Matrix
     {
         if (Rows != 3 || Cols != 3)
         {
-            throw new InvalidOperationException("Only inverse of 3x3 matrix is supported");
+            throw new NotSupportedException("Only inverse of 3x3 matrix is supported");
         }
         
         var a = this[0, 0];
@@ -99,7 +99,7 @@ internal class Matrix
     {
         if (Rows != 3 || Cols != 1)
         {
-            throw new InvalidOperationException("Can only create triplet from 3x1 matrix");
+            throw new NotSupportedException("Can only create triplet from 3x1 matrix");
         }
         
         return new ColourTriplet(Data[0, 0], Data[1, 0], Data[2, 0]);

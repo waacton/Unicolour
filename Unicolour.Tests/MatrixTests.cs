@@ -88,9 +88,9 @@ public class MatrixTests
         var threeByOne = new Matrix(new[,] { { 1.0 }, { 2.0 }, { 3.0 } });
         var oneByThree = new Matrix(new[,] { { 1.0, 2.0, 3.0 } });
         
-        Assert.Throws<InvalidOperationException>(() => twoByTwo.Inverse());
-        Assert.Throws<InvalidOperationException>(() => threeByOne.Inverse());
-        Assert.Throws<InvalidOperationException>(() => oneByThree.Inverse());
+        Assert.Throws<NotSupportedException>(() => twoByTwo.Inverse());
+        Assert.Throws<NotSupportedException>(() => threeByOne.Inverse());
+        Assert.Throws<NotSupportedException>(() => oneByThree.Inverse());
     }
 
     [Test]
@@ -202,7 +202,7 @@ public class MatrixTests
             { 2.0 }
         });
         
-        Assert.Throws<InvalidOperationException>(() => notEnoughRows.ToTriplet());
+        Assert.Throws<NotSupportedException>(() => notEnoughRows.ToTriplet());
     }
     
     [Test]
@@ -213,7 +213,7 @@ public class MatrixTests
             { 1.0, 2.0 }
         });
         
-        Assert.Throws<InvalidOperationException>(() => tooManyColumns.ToTriplet());
+        Assert.Throws<NotSupportedException>(() => tooManyColumns.ToTriplet());
     }
 
     private static void AssertMatrixMultiply(double[,] dataA, double[,] dataB, double[,] expected)

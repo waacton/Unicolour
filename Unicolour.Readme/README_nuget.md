@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/188,115/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/216,552/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -130,45 +130,45 @@ Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 var (l, c, h) = colour.Oklch.Triplet;
 ```
 
-| Colour&nbsp;space                       | Enum                    | Property       |
-|-----------------------------------------|-------------------------|----------------|
-| RGB&nbsp;(0–255)                        | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
-| RGB                                     | `ColourSpace.Rgb`       | `.Rgb`         |
-| Linear&nbsp;RGB                         | `ColourSpace.RgbLinear` | `.RgbLinear`   |
-| HSB&nbsp;/&nbsp;HSV                     | `ColourSpace.Hsb`       | `.Hsb`         |
-| HSL                                     | `ColourSpace.Hsl`       | `.Hsl`         |
-| HWB                                     | `ColourSpace.Hwb`       | `.Hwb`         |
-| HSI                                     | `ColourSpace.Hsi`       | `.Hsi`         |
-| CIEXYZ                                  | `ColourSpace.Xyz`       | `.Xyz`         |
-| CIExyY                                  | `ColourSpace.Xyy`       | `.Xyy`         |
-| [WXY](https://unicolour.wacton.xyz/wxy-colour-space) | `ColourSpace.Wxy`       | `.Wxy`         |
-| CIELAB                                  | `ColourSpace.Lab`       | `.Lab`         |
-| CIELChab                     | `ColourSpace.Lchab`     | `.Lchab`       |
-| CIELUV                                  | `ColourSpace.Luv`       | `.Luv`         |
-| CIELChuv                     | `ColourSpace.Lchuv`     | `.Lchuv`       |
-| HSLuv                                   | `ColourSpace.Hsluv`     | `.Hsluv`       |
-| HPLuv                                   | `ColourSpace.Hpluv`     | `.Hpluv`       |
-| YPbPr                                   | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
-| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_  | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
-| YCgCo                                   | `ColourSpace.Ycgco`     | `.Ycgco`       |
-| YUV&nbsp;_(PAL)_                        | `ColourSpace.Yuv`       | `.Yuv`         |
-| YIQ&nbsp;_(NTSC)_                       | `ColourSpace.Yiq`       | `.Yiq`         |
-| YDbDr&nbsp;_(SECAM)_                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
-| TSL                                     | `ColourSpace.Tsl`       | `.Tsl`         |
-| XYB                                     | `ColourSpace.Xyb`       | `.Xyb`         |
-| IPT                                     | `ColourSpace.Ipt`       | `.Ipt`         |
-| ICTCP             | `ColourSpace.Ictcp`     | `.Ictcp`       |
-| Jzazbz | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
-| JzCzhz | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
-| Oklab                                   | `ColourSpace.Oklab`     | `.Oklab`       |
-| Oklch                                   | `ColourSpace.Oklch`     | `.Oklch`       |
-| Okhsv                                   | `ColourSpace.Okhsv`     | `.Okhsv`       |
-| Okhsl                                   | `ColourSpace.Okhsl`     | `.Okhsl`       |
-| Okhwb                                   | `ColourSpace.Okhwb`     | `.Okhwb`       |
-| CIECAM02                                | `ColourSpace.Cam02`     | `.Cam02`       |
-| CAM16                                   | `ColourSpace.Cam16`     | `.Cam16`       |
-| HCT                                     | `ColourSpace.Hct`       | `.Hct`         |
-| CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion)              | -                       | `.Icc`             |
+| Colour&nbsp;space                                                                   | Enum                    | Property       |
+|-------------------------------------------------------------------------------------|-------------------------|----------------|
+| RGB&nbsp;(0–255)                                                                    | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
+| RGB                                                                                 | `ColourSpace.Rgb`       | `.Rgb`         |
+| Linear&nbsp;RGB                                                                     | `ColourSpace.RgbLinear` | `.RgbLinear`   |
+| HSB&nbsp;/&nbsp;HSV                                                                 | `ColourSpace.Hsb`       | `.Hsb`         |
+| HSL                                                                                 | `ColourSpace.Hsl`       | `.Hsl`         |
+| HWB                                                                                 | `ColourSpace.Hwb`       | `.Hwb`         |
+| HSI                                                                                 | `ColourSpace.Hsi`       | `.Hsi`         |
+| CIEXYZ                                                                              | `ColourSpace.Xyz`       | `.Xyz`         |
+| CIExyY                                                                              | `ColourSpace.Xyy`       | `.Xyy`         |
+| [WXY](https://unicolour.wacton.xyz/wxy-colour-space)                                | `ColourSpace.Wxy`       | `.Wxy`         |
+| CIELAB                                                                              | `ColourSpace.Lab`       | `.Lab`         |
+| CIELChab                                                                            | `ColourSpace.Lchab`     | `.Lchab`       |
+| CIELUV                                                                              | `ColourSpace.Luv`       | `.Luv`         |
+| CIELChuv                                                                            | `ColourSpace.Lchuv`     | `.Lchuv`       |
+| HSLuv                                                                               | `ColourSpace.Hsluv`     | `.Hsluv`       |
+| HPLuv                                                                               | `ColourSpace.Hpluv`     | `.Hpluv`       |
+| YPbPr                                                                               | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
+| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_                                              | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
+| YCgCo                                                                               | `ColourSpace.Ycgco`     | `.Ycgco`       |
+| YUV&nbsp;_(PAL)_                                                                    | `ColourSpace.Yuv`       | `.Yuv`         |
+| YIQ&nbsp;_(NTSC)_                                                                   | `ColourSpace.Yiq`       | `.Yiq`         |
+| YDbDr&nbsp;_(SECAM)_                                                                | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
+| TSL                                                                                 | `ColourSpace.Tsl`       | `.Tsl`         |
+| XYB                                                                                 | `ColourSpace.Xyb`       | `.Xyb`         |
+| IPT                                                                                 | `ColourSpace.Ipt`       | `.Ipt`         |
+| ICTCP                                                                               | `ColourSpace.Ictcp`     | `.Ictcp`       |
+| Jzazbz                                                                              | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
+| JzCzhz                                                                              | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
+| Oklab                                                                               | `ColourSpace.Oklab`     | `.Oklab`       |
+| Oklch                                                                               | `ColourSpace.Oklch`     | `.Oklch`       |
+| Okhsv                                                                               | `ColourSpace.Okhsv`     | `.Okhsv`       |
+| Okhsl                                                                               | `ColourSpace.Okhsl`     | `.Okhsl`       |
+| Okhwb                                                                               | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| CIECAM02                                                                            | `ColourSpace.Cam02`     | `.Cam02`       |
+| CAM16                                                                               | `ColourSpace.Cam16`     | `.Cam16`       |
+| HCT                                                                                 | `ColourSpace.Hct`       | `.Hct`         |
+| CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion) | -                       | `.Icc`         |
 
 ### Mix colours
 Two colours can be mixed by [interpolating between them in any colour space](https://github.com/waacton/Unicolour#gradients),
@@ -196,20 +196,20 @@ var contrast = red.Contrast(blue);
 var difference = red.Difference(blue, DeltaE.Cie76);
 ```
 
-| Delta&nbsp;E                                                 | Enum                       |
-|--------------------------------------------------------------|----------------------------|
-| ΔE76&nbsp;(CIE76)                                            | `DeltaE.Cie76`             |
+| Delta&nbsp;E                                           | Enum                       |
+|--------------------------------------------------------|----------------------------|
+| ΔE76&nbsp;(CIE76)                                      | `DeltaE.Cie76`             |
 | ΔE94&nbsp;(CIE94)&nbsp;graphic&nbsp;arts               | `DeltaE.Cie94`             |
-| ΔE94&nbsp;(CIE94)&nbsp;textiles                       | `DeltaE.Cie94Textiles`     |
-| ΔE00&nbsp;(CIEDE2000)                                        | `DeltaE.Ciede2000`         |
-| ΔECMC&nbsp;(CMC&nbsp;l:c)&nbsp;2:1&nbsp;acceptability | `DeltaE.CmcAcceptability`  |
+| ΔE94&nbsp;(CIE94)&nbsp;textiles                        | `DeltaE.Cie94Textiles`     |
+| ΔE00&nbsp;(CIEDE2000)                                  | `DeltaE.Ciede2000`         |
+| ΔECMC&nbsp;(CMC&nbsp;l:c)&nbsp;2:1&nbsp;acceptability  | `DeltaE.CmcAcceptability`  |
 | ΔECMC&nbsp;(CMC&nbsp;l:c)&nbsp;1:1&nbsp;perceptibility | `DeltaE.CmcPerceptibility` |
-| ΔEITP                                                        | `DeltaE.Itp`               |
-| ΔEz                                                          | `DeltaE.Z`                 |
-| ΔEHyAB                                                       | `DeltaE.Hyab`              |
-| ΔEOK                                                         | `DeltaE.Ok`                |
-| ΔECAM02                                                      | `DeltaE.Cam02`             |
-| ΔECAM16                                                      | `DeltaE.Cam16`             |
+| ΔEITP                                                  | `DeltaE.Itp`               |
+| ΔEz                                                    | `DeltaE.Z`                 |
+| ΔEHyAB                                                 | `DeltaE.Hyab`              |
+| ΔEOK                                                   | `DeltaE.Ok`                |
+| ΔECAM02                                                | `DeltaE.Cam02`             |
+| ΔECAM16                                                | `DeltaE.Cam16`             |
 
 ### Map colour into display gamut
 Colours that cannot be displayed with the [configured RGB model](https://github.com/waacton/Unicolour#rgbconfiguration) can be mapped to the closest in-gamut colour.
@@ -295,13 +295,30 @@ var navyCmyk = new Unicolour(config, new Channels(1.0, 1.0, 0.0, 0.5));
 Console.WriteLine(navyCmyk.Rgb.Byte255); // 46 37 87
 ```
 
-Only ICC profiles that meet the following criteria are supported:
+The following tables summarise which ICC profiles are compatible with Unicolour:
 
-| Restriction   | Criteria             | Tag signature                                                                       |
-|---------------|----------------------|-------------------------------------------------------------------------------------|
-| Device class  | Output or ColorSpace | `prtr`  or `spac`                                                                   |
-| PCS           | CIELAB or CIEXYZ     | `Lab ` or `XYZ `                                                                    |
-| Transform     | A2B and B2A          | `A2B0` and `B2A0` (`A2B1` `B2A1` and `A2B2` `B2A2` are used accordingly if present) |
+|   | Profile version   |
+|---|-------------------|
+| ✅ | 2                 |
+| ✅ | 4                 |
+| ❌ | 5 / iccMAX        |
+
+|   | Profile/device class |
+|---|----------------------|
+| ✅ | Input `scnr`         |
+| ✅ | Display `mntr`       |
+| ✅ | Output `prtr`        |
+| ✅ | ColorSpace `spac`    |
+| ❌ | DeviceLink `link`    |
+| ❌ | Abstract `abst`      |
+| ❌ | NamedColor `nmcl`    |
+
+|   | Transform                                                           |                                                                                        
+|---|---------------------------------------------------------------------|
+| ✅ | AToB / BToA `A2B0` `A2B1` `A2B2` `B2A0` `B2A1` `B2A2`               |                                            
+| ✅ | TRC matrix `rTRC` `gTRC` `bTRC` `rXYZ` `gXYZ` `bXYZ`                |                                             
+| ✅ | TRC grey `kTRC`                                                     |                                                                                  
+| ❌ | DToB / BToD `D2B0` `D2B1` `D2B2` `D2B3` `B2D0` `B2D1` `B2D2` `B2D3` |         
 
 A wider variety of ICC profiles will be supported in future releases.
 If a problem is encountered using an ICC profile that meets the above criteria, please [raise an issue](https://github.com/waacton/Unicolour/issues).
@@ -388,9 +405,9 @@ Defines the RGB model, often used to specify a wider gamut than standard RGB (sR
 | SECAM&nbsp;625&nbsp;(Rec.&nbsp;1700) | `.Secam625`      |
 
 - Parameters
-    - Red, green, and blue chromaticity coordinates
-    - Reference white point
-    - Companding functions to and from linear values
+  - Red, green, and blue chromaticity coordinates
+  - Reference white point
+  - Companding functions to and from linear values
 
 ### `XyzConfiguration`
 Defines the XYZ white point (which is also [inherited by colour spaces that do not need a specific configuration](https://github.com/waacton/Unicolour#white-points)),
@@ -402,8 +419,8 @@ as well as the observer to use for temperature calculations.
 | D50&nbsp;(2°&nbsp;observer)                        | `.D50`    |
 
 - Parameters
-    - Reference white point or illuminant
-    - Observer
+  - Reference white point or illuminant
+  - Observer
 
 ### `YbrConfiguration`
 Defines the constants, scaling, and offsets required to convert to YPbPr and YCbCr.
@@ -416,8 +433,8 @@ Defines the constants, scaling, and offsets required to convert to YPbPr and YCb
 | JPEG                                 | `.Jpeg`    |
 
 - Parameters
-    - Luma constants for component video separation
-    - Mapping ranges for digital encoding
+  - Luma constants for component video separation
+  - Mapping ranges for digital encoding
 
 ### `CamConfiguration`
 Defines the viewing conditions for CAM02 and CAM16, which take into account the surrounding environment to determine how a colour is perceived.
@@ -430,9 +447,9 @@ Defines the viewing conditions for CAM02 and CAM16, which take into account the 
 The predefined sRGB configuration refers to an ambient illumination of 64 lux under a grey world assumption.
 
 - Parameters
-    - Reference white point
-    - Adapting luminance
-    - Background luminance
+  - Reference white point
+  - Adapting luminance
+  - Background luminance
 
 ### `IccConfiguration`
 Defines the ICC profile and rendering intent, typically used for accurate CMYK conversion.
@@ -445,8 +462,8 @@ Unicolour does not embed or distribute ICC profiles.
 Some commonly used profiles can be found in the [ICC profile registry](https://www.color.org/registry/index.xalter).
 
 - Parameters
-    - ICC profile (`.icc` file)
-    - Rendering intent
+  - ICC profile (`.icc` file)
+  - Rendering intent
 
 ### `IctcpScalar` & `JzazbzScalar`
 There is ambiguity and no clear consensus about how XYZ values should be scaled before calculating ICTCP and Jzazbz.
@@ -457,16 +474,16 @@ All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](https://github.com/waacton/Unicolour#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
 
-| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                |
-|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
-| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv                                                                                                                   |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                | 
-| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · HCT                                                                                                                                     | 
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv                                                                                                                    |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 | 
+| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · HCT                                                                                                                                      | 
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,
-in turn enabling conversions between different RGB models, XYZ white points, CAM viewing conditions, etc.
+in turn enabling conversions between different RGB models, XYZ white points, CAM viewing conditions, ICC profiles, etc.
 
 ```cs
 /* pure sRGB green */
@@ -499,68 +516,68 @@ Example code to create gradient images using 📷 [SixLabors.ImageSharp](https:/
 can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/blob/main/Example.Gradients/Program.cs) project.
 
 | ![Gradients generated through different colour spaces, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spaces.png) |
-|-----------------------------------------------------------------------------------------------------------------|
-| _Gradients generated through each colour space_                                                                 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Gradients generated through each colour space_                                                                                                                   |
 
 | ![Visualisation of temperature from 1,000 K to 13,000 K, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-temperature.png) |
-|-----------------------------------------------------------------------------------------------------------------|
-| _Visualisation of temperature from 1,000 K to 13,000 K_                                                         |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Visualisation of temperature from 1,000 K to 13,000 K_                                                                                                                  |
 
 | ![Colour spectrum rendered with different colour vision deficiencies, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-vision-deficiency.png) |
-|------------------------------------------------------------------------------------------------------------------------------------|
-| _Colour spectrum rendered with different colour vision deficiencies_                                                               |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Colour spectrum rendered with different colour vision deficiencies_                                                                                                                        |
 
 | ![Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-alpha-interpolation.png) |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha_                                                                 |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha_                                                                                                                          |
 
 | ![Perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-maps.png) |
-|------------------------------------------------------------------------------------------------------------|
-| _Perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_   
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                                         |   
 
 ### Heatmaps
 Example code to create heatmaps of luminance using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) with images from 🚀 [NASA](https://www.nasa.gov/)
 can be seen in the [Example.Heatmaps](https://github.com/waacton/Unicolour/blob/main/Example.Heatmaps/Program.cs) project.
 
-| ![Heatmap of the sun using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/heatmaps-sun.png)                                              |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _Heatmap of the ☀️ [sun](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001435/) using perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_ |
+| ![Heatmap of the sun using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/heatmaps-sun.png)                           |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Heatmap of the ☀️ [sun](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001435/) using perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_   |
 
-| ![Heatmap of the moon using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/heatmaps-moon.png)                                             |
-|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _Heatmap of the 🌕 [moon](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001982/) using perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_ |
+| ![Heatmap of the moon using perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/heatmaps-moon.png)                          |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Heatmap of the 🌕 [moon](https://science.nasa.gov/image-detail/amf-gsfc_20171208_archive_e001982/) using perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_   |
 
 ### Diagrams
 Example code to create diagrams of colour data using 📈 [ScottPlot](https://github.com/scottplot/scottplot)
 can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/blob/main/Example.Diagrams/Program.cs) project.
 
 | ![CIE xy chromaticity diagram with sRGB gamut, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/diagram-xy-chromaticity-rgb.png) |
-|--------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with sRGB gamut_                                                                |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with sRGB gamut_                                                                                                                         |
 
 | ![CIE xy chromaticity diagram with Planckian or blackbody locus, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/diagram-xy-chromaticity-blackbody.png) |
-|--------------------------------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                                                                               |
 
 | ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/diagram-spectral-locus.png) |
-|---------------------------------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                           |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                                                                                    |
 
 | ![CIE 1960 colour space, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/diagram-uv-chromaticity.png) |
-|------------------------------------------------------------------------------------|
-| _CIE 1960 colour space_                                                            |
+|---------------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE 1960 colour space_                                                                                                                     |
 
 | ![CIE 1960 colour space with Planckian or blackbody locus, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/diagram-uv-chromaticity-blackbody.png) |
-|--------------------------------------------------------------------------------------------------------------------------------|
-| _CIE 1960 colour space with Planckian or blackbody locus_                                                                      |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE 1960 colour space with Planckian or blackbody locus_                                                                                                                               |
 
 ### Console
 Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console)
 can be seen in the [Example.Console](https://github.com/waacton/Unicolour/blob/main/Example.Console/Program.cs) project.
 
 | ![Console application displaying colour information from a hex value, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/console-info.png) |
-|------------------------------------------------------------------------------------------------------------------------|
-| _Console application displaying colour information from a hex value_                                                          |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Console application displaying colour information from a hex value_                                                                                                          |
 
 ### Web
 Example code to create a client-side colour picker web application using 🕸️ [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
@@ -569,8 +586,8 @@ can be seen in the [Example.Web](https://github.com/waacton/Unicolour/blob/main/
 See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 
 | ![Web application for picking colours in any colour space, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/web-picker.png) |
-|---------------------------------------------------------------------------------------------------------|
-| _Web application for picking colours in any colour space_                                               |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Web application for picking colours in any colour space_                                                                                                        |
 
 
 ### Unity
@@ -580,12 +597,12 @@ can be seen in the [Example.Unity](https://github.com/waacton/Unicolour/blob/mai
 Try it out online in [Unity Play](https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo)!
 
 | ![3D visualisation of colour spaces in Unity, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/unity-spaces.gif) |
-|----------------------------------------------------------------------------------------------|
-| _3D visualisation of colour spaces in Unity_                                                 |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _3D visualisation of colour spaces in Unity_                                                                                                          |
 
 | ![3D movement through colour spaces in Unity, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/unity-movement.gif) |
-|------------------------------------------------------------------------------------------------|
-| _3D movement through colour spaces in Unity_     
+|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _3D movement through colour spaces in Unity_                                                                                                            |
 
 ## 🔮 Datasets
 Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
@@ -630,4 +647,4 @@ var mapped = Colourmaps.Viridis.Map(0.5);
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2024 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.

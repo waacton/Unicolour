@@ -12,6 +12,7 @@ public class WavelengthDegreeTests
     // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
     private static readonly List<double> Wavelengths = [];
     private static readonly List<double> Degrees = [];
+    // ReSharper restore CollectionNeverQueried.Local
     
     static WavelengthDegreeTests()
     {

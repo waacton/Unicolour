@@ -10,14 +10,14 @@ namespace Wacton.Unicolour.Tests;
 public class IccUnsupportedTests
 {
     [Test]
-    public void FileNullFromCmyk()
+    public void FileNullFromChannels()
     {
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
 
         var iccConfig = new IccConfiguration(null, "not provided");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -40,17 +40,17 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void FileNotFoundFromCmyk()
+    public void FileNotFoundFromChannels()
     {
         const string path = "🚫";
         Assert.Throws<FileNotFoundException>(() => { _ = new Profile(path); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not found");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.StartsWith("could not find file", StringComparison.CurrentCultureIgnoreCase));
@@ -78,18 +78,18 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void FileNotEnoughBytesFromCmyk()
+    public void FileNotEnoughBytesFromChannels()
     {
         const string path = "not_enough_bytes.icc";
         File.WriteAllBytes(path, CreateBytes(64));
         Assert.Throws<ArgumentException>(() => { _ = new Profile(path); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not enough bytes");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("does not contain enough bytes", StringComparison.CurrentCultureIgnoreCase));
@@ -120,18 +120,18 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void FileNotParseableFromCmyk()
+    public void FileNotParseableFromChannels()
     {
         const string path = "not_parseable.icc";
         File.WriteAllBytes(path, CreateBytes(512));
         Assert.Throws<ArgumentException>(() => { _ = new Profile(path); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not parseable");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("could not be parsed", StringComparison.CurrentCultureIgnoreCase));
@@ -162,22 +162,17 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void ProfileNotSupportedHeaderFromCmyk()
+    public void ProfileNotSupportedHeaderFromChannels()
     {
-        var path = IccFile.StandardRgbV2.Path;
-        Profile profile = null!;
-        Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        var profile = IccFile.CxHue45Abstract.GetProfile();
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
         
-        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported header");
+        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
@@ -188,18 +183,13 @@ public class IccUnsupportedTests
     [Test]
     public void ProfileNotSupportedHeaderFromRgb()
     {
-        var path = IccFile.StandardRgbV2.Path;
-        Profile profile = null!;
-        Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        var profile = IccFile.CxHue45Abstract.GetProfile();
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
         var rgb = new Rgb(0.25, 0.5, 1.0);
         var expected = Channels.UncalibratedFromRgb(rgb);
         
-        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported header");
+        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
         var config = new Configuration(iccConfiguration: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -209,44 +199,48 @@ public class IccUnsupportedTests
         Assert.That(unicolour.Icc.Error, Is.Null);
     }
     
-    [TestCase(Signatures.AToB0, Intent.Perceptual)]
-    [TestCase(Signatures.BToA0, Intent.Perceptual)]
-    [TestCase(Signatures.MediaWhitePoint, Intent.AbsoluteColorimetric)]
-    public void ProfileNotSupportedIntentFromCmyk(string signatureToRemove, Intent intent)
+    [Test]
+    public void ProfileNotSupportedTransformDToBFromChannels()
     {
-        var profile = new Profile(IccFile.Fogra39.Path);
-        profile.Tags.RemoveAll(x => x.Signature == signatureToRemove);
-        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
-
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        const string path = "bad_profile_transform.icc";
+        WriteProfileWithDToBTags(path);
+        Profile profile = null!;
+        Assert.DoesNotThrow(() => { profile = new Profile(path); });
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
-        var iccConfig = new IccConfiguration(profile, intent, "not supported intent");
+        Assert.Throws<NotSupportedException>(() => { profile.Transform.ToXyz([], Intent.Unspecified); });
+        
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
+        
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
-        Assert.That(iccConfig.Intent, Is.EqualTo(intent));
+        Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
         Assert.That(unicolour.Icc.Error, Is.Null);
     }
     
-    [TestCase(Signatures.AToB0, Intent.Perceptual)]
-    [TestCase(Signatures.BToA0, Intent.Perceptual)]
-    [TestCase(Signatures.MediaWhitePoint, Intent.AbsoluteColorimetric)]
-    public void ProfileNotSupportedIntentFromRgb(string signatureToRemove, Intent intent)
+    [Test]
+    public void ProfileNotSupportedTransformDToBFromRgb()
     {
-        var profile = new Profile(IccFile.Fogra39.Path);
-        profile.Tags.RemoveAll(x => x.Signature == signatureToRemove);
-        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
+        const string path = "bad_profile_transform.icc";
+        WriteProfileWithDToBTags(path);
+        Profile profile = null!;
+        Assert.DoesNotThrow(() => { profile = new Profile(path); });
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
+        
+        Assert.Throws<NotSupportedException>(() => { profile.Transform.FromXyz([], Intent.Unspecified); });
         
         var rgb = new Rgb(0.25, 0.5, 1.0);
         var expected = Channels.UncalibratedFromRgb(rgb);
         
-        var iccConfig = new IccConfiguration(profile, intent, "not supported intent");
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
         var config = new Configuration(iccConfiguration: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
-        Assert.That(iccConfig.Intent, Is.EqualTo(intent));
+        Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(unicolour.Icc, Is.EqualTo(expected));
         Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -254,23 +248,68 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void ProfileBadSignatureFromCmyk()
+    public void ProfileNotSupportedTransformNoneFromChannels()
+    {
+        const string path = "bad_profile_transform.icc";
+        WriteProfileWithNoTransformTags(path);
+        Profile profile = null!;
+        Assert.DoesNotThrow(() => { profile = new Profile(path); });
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
+        
+        Assert.Throws<NotSupportedException>(() => { profile.Transform.ToXyz([], Intent.Unspecified); });
+        
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
+        
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
+        var config = new Configuration(iccConfiguration: iccConfig);
+        var unicolour = new Unicolour(config, channels);
+        TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
+        Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
+        Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
+        Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
+        Assert.That(unicolour.Icc.Error, Is.Null);
+    }
+    
+    [Test]
+    public void ProfileNotSupportedTransformNoneFromRgb()
+    {
+        const string path = "bad_profile_transform.icc";
+        WriteProfileWithNoTransformTags(path);
+        Profile profile = null!;
+        Assert.DoesNotThrow(() => { profile = new Profile(path); });
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
+        
+        Assert.Throws<NotSupportedException>(() => { profile.Transform.FromXyz([], Intent.Unspecified); });
+        
+        var rgb = new Rgb(0.25, 0.5, 1.0);
+        var expected = Channels.UncalibratedFromRgb(rgb);
+        
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
+        var config = new Configuration(iccConfiguration: iccConfig);
+        var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
+        Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
+        Assert.That(unicolour.Icc, Is.EqualTo(expected));
+        Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
+        Assert.That(unicolour.Icc.Error, Is.Null);
+    }
+    
+    [Test]
+    public void ProfileBadSignatureFromChannels()
     {
         const string path = "bad_profile_signature.icc";
         CorruptProfileSignature(IccFile.Fogra39, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
-        var expected = Channels.UncalibratedToRgb(cmyk);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
+        var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad profile signature");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("signature is incorrect", StringComparison.CurrentCultureIgnoreCase));
@@ -286,10 +325,7 @@ public class IccUnsupportedTests
         CorruptProfileSignature(IccFile.Fogra39, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
 
         var rgb = new Rgb(0.25, 0.5, 1.0);
         var expected = Channels.UncalibratedFromRgb(rgb);
@@ -306,23 +342,20 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void LutBadSignatureFromCmyk()
+    public void LutBadSignatureFromChannels()
     {
         const string path = "bad_lut_signature.icc";
         CorruptLutSignature(IccFile.Swop2013, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
         var expected = new Rgb(double.NaN, double.NaN, double.NaN);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad lut signature");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -338,10 +371,7 @@ public class IccUnsupportedTests
         CorruptLutSignature(IccFile.Swop2013, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
 
         var rgb = new Rgb(0.25, 0.5, 1.0);
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
@@ -358,23 +388,20 @@ public class IccUnsupportedTests
     }
     
     [Test]
-    public void CurveBadSignatureFromCmyk()
+    public void CurveBadSignatureFromChannels()
     {
         const string path = "bad_curve_signature.icc";
         CorruptCurveSignature(IccFile.Swop2013, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
-        var cmyk = new Channels(0.8, 0.6, 0.4, 0.2);
+        var channels = new Channels(0.8, 0.6, 0.4, 0.2);
         var expected = new Rgb(double.NaN, double.NaN, double.NaN);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad curve signature");
         var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, cmyk);
+        var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -390,10 +417,7 @@ public class IccUnsupportedTests
         CorruptCurveSignature(IccFile.Swop2013, path);
         Profile profile = null!;
         Assert.DoesNotThrow(() => { profile = new Profile(path); });
-        foreach (var intent in intents)
-        {
-            Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(intent); });
-        }
+        Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
 
         var rgb = new Rgb(0.25, 0.5, 1.0);
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
@@ -492,19 +516,41 @@ public class IccUnsupportedTests
         File.WriteAllBytes(corruptedPath, bytes);
     }
     
-    private static void CorruptSignature(byte[] bytes, uint index)
+    private static void WriteProfileWithDToBTags(string modifiedPath)
     {
-        bytes[index + 0] = 115;
-        bytes[index + 1] = 109;
-        bytes[index + 2] = 101;
-        bytes[index + 3] = 103;
+        // with ROMM RGB profile: tag table index 1 = A2B0, tag table index 2 = B2A0
+        var profile = IccFile.RommRgb.GetProfile();
+        const uint a2b0TagTableIndex = 128 + 4 + 1 * 12;
+        const uint b2a0TagTableIndex = 128 + 4 + 2 * 12;
+        
+        // ROMM RGB only has A2B0 and B2A0, this replaces both with D2B0 and B2D0 in the tag table
+        var bytes = File.ReadAllBytes(profile.FileInfo.FullName);
+        ModifySignature(bytes, a2b0TagTableIndex, [68, 50, 66, 48]); // "D2B0"
+        ModifySignature(bytes, b2a0TagTableIndex, [66, 50, 68, 48]); // "B2D0"
+        File.WriteAllBytes(modifiedPath, bytes);
     }
     
-    private static readonly Intent[] intents =
-    [
-        Intent.Perceptual,
-        Intent.RelativeColorimetric,
-        Intent.Saturation,
-        Intent.AbsoluteColorimetric
-    ];
+    private static void WriteProfileWithNoTransformTags(string modifiedPath)
+    {
+        // with ROMM RGB profile: tag table index 1 = A2B0, tag table index 2 = B2A0
+        var profile = IccFile.RommRgb.GetProfile();
+        const uint a2b0TagTableIndex = 128 + 4 + 1 * 12;
+        const uint b2a0TagTableIndex = 128 + 4 + 2 * 12;
+        
+        // ROMM RGB only has A2B0 and B2A0; this replaces both with "NONE" in the tag table
+        // effectively creating a profile with no transform tags
+        var bytes = File.ReadAllBytes(profile.FileInfo.FullName);
+        ModifySignature(bytes, a2b0TagTableIndex, [78, 79, 78, 69]); // "NONE"
+        ModifySignature(bytes, b2a0TagTableIndex, [78, 79, 78, 69]); // "NONE"
+        File.WriteAllBytes(modifiedPath, bytes);
+    }
+    
+    private static void CorruptSignature(byte[] bytes, uint index) => ModifySignature(bytes, index, [115, 109, 101, 103]);
+    private static void ModifySignature(byte[] bytes, uint index, byte[] modifiedBytes)
+    {
+        bytes[index + 0] = modifiedBytes[0];
+        bytes[index + 1] = modifiedBytes[1];
+        bytes[index + 2] = modifiedBytes[2];
+        bytes[index + 3] = modifiedBytes[3];
+    }
 }

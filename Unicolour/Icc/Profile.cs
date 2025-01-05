@@ -4,15 +4,11 @@ namespace Wacton.Unicolour.Icc;
 
 public class Profile
 {
-    private static readonly double[] RefWhite = { 0.9642, 1.0000, 0.8249 };
-    private static readonly double[] RefBlack = { 0.00336, 0.0034731, 0.00287 };
-    internal static readonly XyzConfiguration XyzD50 = new(WhitePoint.FromXyz(new Xyz(RefWhite[0], RefWhite[1], RefWhite[2])), "ICC XYZ D50");
-    
     public FileInfo FileInfo { get; }
     public Header Header { get; }
     public Tags Tags { get; }
-    
-    private double[] mediaWhite => Tags.MediaWhite.Value.ToArray();
+
+    internal Transform Transform { get; }
     
     public Profile(string filePath)
     {
@@ -31,44 +27,27 @@ public class Profile
         {
             throw new ArgumentException($"[{FileInfo}] could not be parsed as ICC data", e);
         }
+
+        Transform = GetTransform();
     }
     
     internal Xyz ToXyz(double[] deviceValues, XyzConfiguration xyzConfig, Intent intent)
     {
-        var xyzD50 = ToXyzStandardD50(deviceValues, intent);
+        // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
+        // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
+        var xyzD50 = Transform.ToXyz(deviceValues, intent);
         var xyzD50Matrix = new Matrix(new[,] { { xyzD50[0] }, { xyzD50[1] }, { xyzD50[2] } });
-        var (x, y, z) = Adaptation.WhitePoint(xyzD50Matrix, XyzD50.WhitePoint, xyzConfig.WhitePoint).ToTriplet().Tuple;
+        var (x, y, z) = Adaptation.WhitePoint(xyzD50Matrix, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint).ToTriplet().Tuple;
         return new Xyz(x, y, z);
     }
     
     internal double[] FromXyz(Xyz xyz, XyzConfiguration xyzConfig, Intent intent)
     {
+        // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
+        // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
         var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var xyzD50 = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, XyzD50.WhitePoint).ToTriplet().ToArray();
-        return FromStandardXyzD50(xyzD50, intent);
-    }
-    
-    // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
-    // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
-    internal double[] ToXyzStandardD50(double[] deviceValues, Intent intent)
-    {
-        var luts = Tags.GetLuts(intent, isDeviceToPcs: true);
-        var pcsValues = luts.Apply(deviceValues);
-        return Header.Pcs == Signatures.Lab 
-            ? Convert.IccLabToXyz(pcsValues, intent, luts.LutType, RefBlack, RefWhite, mediaWhite, Header.ProfileVersion.Major) 
-            : Convert.IccXyzToXyz(pcsValues, intent, RefWhite, mediaWhite);
-    }
-    
-    // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
-    // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
-    internal double[] FromStandardXyzD50(double[] xyzD50, Intent intent)
-    {
-        var luts = Tags.GetLuts(intent, isDeviceToPcs: false);
-        var pcsValues = Header.Pcs == Signatures.Lab 
-            ? Convert.XyzToIccLab(xyzD50, intent, luts.LutType, RefBlack, RefWhite, mediaWhite, Header.ProfileVersion.Major) 
-            : Convert.XyzToIccXyz(xyzD50, intent, RefWhite, mediaWhite);
-
-        return luts.Apply(pcsValues);
+        var xyzD50 = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint).ToTriplet().ToArray();
+        return Transform.FromXyz(xyzD50, intent);
     }
     
     private static readonly int[] indexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
@@ -84,7 +63,7 @@ public class Profile
         return md5.ComputeHash(bytes);
     }
     
-    internal void ErrorIfUnsupported(Intent intent)
+    internal void ErrorIfUnsupported()
     {
         if (Header.ProfileFileSignature != Signatures.Profile)
         {
@@ -92,45 +71,64 @@ public class Profile
         }
         
         ErrorIfUnsupportedHeader();
-        ErrorIfUnsupportedIntent(intent);
+        ErrorIfUnsupportedTransform();
     }
 
     private void ErrorIfUnsupportedHeader()
     {
         var isHeaderSupported = Header is
         {
-            Pcs: Signatures.Lab or Signatures.Xyz,
-            ProfileClass: Signatures.Output or Signatures.ColourSpace
+            ProfileClass: Signatures.Input or Signatures.Display or Signatures.Output or Signatures.ColourSpace
         };
         
         if (isHeaderSupported) return;
-        const string expected = $"PCS {Signatures.Lab} or {Signatures.Xyz}, Profile class {Signatures.Output} or {Signatures.ColourSpace}";
-        var actual = $"PCS {Header.Pcs}, Class {Header.ProfileClass}";
+        const string expected = $"profile class {Signatures.Input} or {Signatures.Display} or {Signatures.Output} or {Signatures.ColourSpace}";
+        var actual = $"profile class {Header.ProfileClass}";
         throw new ArgumentException($"[{FileInfo}] is not supported: expected [{expected}] but was [{actual}]");
     }
-
-    private void ErrorIfUnsupportedIntent(Intent intent)
+    
+    private void ErrorIfUnsupportedTransform()
     {
-        // AToB0 is used as a fallback regardless of intent
-        var requiredSignatures = new List<string> { Signatures.AToB0, Signatures.BToA0 };
-        if (intent == Intent.AbsoluteColorimetric)
+        var isTransformSupported = Transform is TransformAToB or TransformTrcMatrix or TransformTrcGrey;
+        
+        if (isTransformSupported) return;
+        const string expected = $"transform {nameof(TransformAToB)} or {nameof(TransformTrcMatrix)} or {nameof(TransformTrcGrey)}";
+        var actual = $"transform {Transform.GetType().Name}";
+        throw new ArgumentException($"[{FileInfo}] is not supported: expected [{expected}] but was [{actual}]");
+    }
+    
+    /*
+     * transform tag precedence for input, display, output, or colour space profile types
+     * 1) use BToD* and DToB* if present, except where not needed [v5+ / iccMax also has BToD3 and DToB3 for absolute]
+     * 2) use BToA* and AToB* if present, when tag in 1) is not used
+     * 3) use BToA0 and AToB0 if present, when tags in 1), 2) are not used
+     * 4) use TRCs when tags in 1), 2), 3) are not used
+     * ----------
+     * device link and abstract profile types precedence is 1) DToB0 2) AToB0, but these are not currently supported
+     */
+    private Transform GetTransform()
+    {
+        if (Tags.HasAny(Signatures.DToB0, Signatures.DToB1, Signatures.DToB2, Signatures.DToB3))
         {
-            requiredSignatures.Add(Signatures.MediaWhitePoint);
+            return new TransformDToB(Header, Tags);
         }
         
-        var signatures = Tags.Select(x => x.Signature).ToList();
-        var missing = new List<string>();
-        foreach (var requiredSignature in requiredSignatures)
+        if (Tags.Has(Signatures.AToB0)) // AToB0 is used as a fallback regardless of intent when AToB1 or AToB2 is missing
         {
-            var isMissing = !signatures.Contains(requiredSignature);
-            if (isMissing)
-            {
-                missing.Add(requiredSignature);
-            }
+            return new TransformAToB(Header, Tags);
         }
 
-        if (!missing.Any()) return;
-        throw new ArgumentException($"[{FileInfo}] with intent [{intent}] is not supported: missing required tags [{string.Join(" · ", missing)}]");
+        if (Tags.HasAll(Signatures.RedTrc, Signatures.GreenTrc, Signatures.BlueTrc, Signatures.RedMatrixColumn, Signatures.GreenMatrixColumn, Signatures.BlueMatrixColumn))
+        {
+            return new TransformTrcMatrix(Header, Tags);
+        }
+
+        if (Tags.Has(Signatures.GreyTrc))
+        {
+            return new TransformTrcGrey(Header, Tags);
+        }
+
+        return new TransformNone(Header, Tags);
     }
 
     public override string ToString() => $"{FileInfo} · {Header} · {Tags.Count} tags";

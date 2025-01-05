@@ -10,6 +10,8 @@ public class DifferenceTests
     
     // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
     private static readonly List<(Unicolour reference, Unicolour sample)> ReferenceSamplePairs = [];
+    // ReSharper restore CollectionNeverQueried.Local
+    
     static DifferenceTests()
     {
         for (var i = 0; i < 100; i++)

@@ -8,8 +8,18 @@ public class Tags : List<Tag>
     internal Lazy<Luts?> BToA0 { get; }
     internal Lazy<Luts?> BToA1 { get; }
     internal Lazy<Luts?> BToA2 { get; }
-    internal Lazy<(double x, double y, double z)> MediaWhite { get; }
 
+    internal Lazy<(double x, double y, double z)> RedMatrixColumn { get; }
+    internal Lazy<(double x, double y, double z)> GreenMatrixColumn { get; }
+    internal Lazy<(double x, double y, double z)> BlueMatrixColumn { get; }
+    internal Lazy<Curve?> RedTrc { get; }
+    internal Lazy<Curve?> GreenTrc { get; }
+    internal Lazy<Curve?> BlueTrc { get; }
+    
+    internal Lazy<Curve?> GreyTrc { get; }
+    
+    internal Lazy<(double x, double y, double z)> MediaWhite { get; }
+    
     private Tags()
     {
         AToB0 = new Lazy<Luts?>(() => Read(Signatures.AToB0, Luts.AToBFromStream));
@@ -18,36 +28,22 @@ public class Tags : List<Tag>
         BToA0 = new Lazy<Luts?>(() => Read(Signatures.BToA0, Luts.BToAFromStream));
         BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
         BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
+        
+        RedMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType));
+        GreenMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
+        BlueMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));
+        RedTrc = new Lazy<Curve?>(() => Read(Signatures.RedTrc, Curve.FromStream));
+        GreenTrc = new Lazy<Curve?>(() => Read(Signatures.GreenTrc, Curve.FromStream));
+        BlueTrc = new Lazy<Curve?>(() => Read(Signatures.BlueTrc, Curve.FromStream));
+        
+        GreyTrc = new Lazy<Curve?>(() => Read(Signatures.GreyTrc, Curve.FromStream));
+        
         MediaWhite = new Lazy<(double x, double y, double z)>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
     }
-    
-    internal Luts GetLuts(Intent intent, bool isDeviceToPcs)
-    {
-        /*
-         * LUT tag precedence
-         * 1) use BToD* and DToB* if present, except where not needed [v5+ / iccMax also has BToD3 and DToB3 for absolute]
-         * 2) use BToA* and AToB* if present, when tag in 1) is not used
-         * 3) use BToA0 and AToB0 if present, when tags in 1), 2) are not used
-         * 4) use TRCs when tags in 1), 2), 3) are not used
-         */
-        return isDeviceToPcs
-            ? intent switch
-            {
-                Intent.Perceptual => AToB0.Value!,
-                Intent.RelativeColorimetric => AToB1.Value ?? AToB0.Value!,
-                Intent.Saturation => AToB2.Value ?? AToB0.Value!,
-                Intent.AbsoluteColorimetric => AToB1.Value ?? AToB0.Value!,
-                _ => throw new ArgumentOutOfRangeException(nameof(intent), intent, null)
-            }
-            : intent switch
-            {
-                Intent.Perceptual => BToA0.Value!,
-                Intent.RelativeColorimetric => BToA1.Value ?? BToA0.Value!,
-                Intent.Saturation => BToA2.Value ?? BToA0.Value!,
-                Intent.AbsoluteColorimetric => BToA1.Value ?? BToA0.Value!,
-                _ => throw new ArgumentOutOfRangeException(nameof(intent), intent, null)
-            };
-    }
+
+    internal bool Has(string signature) => this.Any(x => x.Signature == signature);
+    internal bool HasAll(params string[] signatures) => signatures.All(Has);
+    internal bool HasAny(params string[] signatures) => signatures.Any(Has);
 
     private T? Read<T>(string signature, Func<Stream, T> read)
     {

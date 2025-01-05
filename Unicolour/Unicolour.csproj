@@ -15,9 +15,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageVersion>4.7.0</PackageVersion>
+        <PackageVersion>4.8.0</PackageVersion>
         <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb CAM02 CAM16 HCT ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing comparison colour-comparison color-comparison contrast luminance deltaE chromaticity display-p3 rec-2020 rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM gamut-mapping temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia deuteranopia tritanopia achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour</PackageTags>
-        <PackageReleaseNotes>Add ICC profile support (v4, ColorSpace device, XYZ PCS)</PackageReleaseNotes>
+        <PackageReleaseNotes>Add ICC profile support (TRC transforms, Input device, Display device)</PackageReleaseNotes>
         <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
@@ -45,17 +45,17 @@
             <_Parameter1>$(AssemblyName).Datasets</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Compile Update="Unicolour.Constructors.cs">
-        <DependentUpon>Unicolour.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Unicolour.Lookups.cs">
-        <DependentUpon>Unicolour.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Unicolour.Unseen.cs">
-        <DependentUpon>Unicolour.cs</DependentUpon>
-      </Compile>
+        <Compile Update="Unicolour.Constructors.cs">
+            <DependentUpon>Unicolour.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Unicolour.Lookups.cs">
+            <DependentUpon>Unicolour.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Unicolour.Unseen.cs">
+            <DependentUpon>Unicolour.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
 </Project>

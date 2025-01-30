@@ -20,7 +20,7 @@ internal static class Utils
         var data = new List<Unicolour>();
         for (var nm = 360; nm < 700; nm++)
         {
-            data.Add(new Unicolour(new Spd { { nm, 1.0 } }));
+            data.Add(new Unicolour(new Spd(start: nm, interval: 1, 1.0)));
         }
 
         return data;

@@ -195,7 +195,7 @@ public class EqualityTests
             AssertEqual(unicolour1.Xyz.HctToXyzSearchResult, unicolour2.Xyz.HctToXyzSearchResult);
         }
 
-        AssertConfigurationEqual(unicolour1.Config, unicolour2.Config);
+        AssertConfigurationEqual(unicolour1.Configuration, unicolour2.Configuration);
         AssertEqual(unicolour1, unicolour2);
     }
     

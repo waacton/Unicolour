@@ -10,20 +10,20 @@ public class NotNumberTests
 {
     private static readonly List<TestCaseData> TestData =
     [
-        new TestCaseData(Configuration.Default, double.NaN, 0, 0),
-        new TestCaseData(Configuration.Default, 0, double.NaN, 0),
-        new TestCaseData(Configuration.Default, 0, 0, double.NaN),
-        new TestCaseData(Configuration.Default, double.NaN, double.NaN, 0),
-        new TestCaseData(Configuration.Default, double.NaN, 0, double.NaN),
-        new TestCaseData(Configuration.Default, 0, double.NaN, double.NaN),
-        new TestCaseData(Configuration.Default, double.NaN, double.NaN, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, 0, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
+        new(Configuration.Default, double.NaN, 0, 0),
+        new(Configuration.Default, 0, double.NaN, 0),
+        new(Configuration.Default, 0, 0, double.NaN),
+        new(Configuration.Default, double.NaN, double.NaN, 0),
+        new(Configuration.Default, double.NaN, 0, double.NaN),
+        new(Configuration.Default, 0, double.NaN, double.NaN),
+        new(Configuration.Default, double.NaN, double.NaN, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, 0, 0),
+        new(TestUtils.DefaultFogra39Config, 0, double.NaN, 0),
+        new(TestUtils.DefaultFogra39Config, 0, 0, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, 0),
+        new(TestUtils.DefaultFogra39Config, double.NaN, 0, double.NaN),
+        new(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
     ];
 
     

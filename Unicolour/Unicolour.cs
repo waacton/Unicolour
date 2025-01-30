@@ -44,7 +44,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<string> source;
     
     public Alpha Alpha { get; }
-    public Configuration Config { get; }
+    public Configuration Configuration { get; }
     internal readonly ColourSpace InitialColourSpace;
     internal readonly ColourRepresentation InitialRepresentation;
 
@@ -89,7 +89,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public bool IsInDisplayGamut => Rgb.IsInGamut;
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
-    public bool IsImaginary => Config.Xyz.Spectral.IsImaginary(Chromaticity);
+    public bool IsImaginary => Configuration.Xyz.Spectral.IsImaginary(Chromaticity);
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Temperature Temperature => temperature.Value;
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
@@ -106,7 +106,7 @@ public partial class Unicolour : IEquatable<Unicolour>
             third /= 255.0;
         }
         
-        Config = config;
+        Configuration = config;
         Alpha = new Alpha(alpha);
         InitialColourSpace = colourSpace;
         InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
@@ -150,11 +150,11 @@ public partial class Unicolour : IEquatable<Unicolour>
         // the following are overriden by the derived constructors
         // that enable Unicolour to be constructed from entities other than colour spaces
         icc = new Lazy<Channels>(() =>
-            Config.Icc.HasSupportedProfile
-                ? Channels.FromXyz(Xyz, Config.Icc, Config.Xyz)
+            Configuration.Icc.HasSupportedProfile
+                ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
                 : Channels.UncalibratedFromRgb(Rgb));
         
-        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
+        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
         source = new Lazy<string>(() => $"{InitialColourSpace} {InitialRepresentation}");
     }
 
@@ -179,11 +179,10 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     public Unicolour MapToGamut() => GamutMapping.ToRgbGamut(this);
     
-    public Unicolour ConvertToConfiguration(Configuration newConfig)
+    public Unicolour ConvertToConfiguration(Configuration config)
     {
-        var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
-        var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
-        return new Unicolour(newConfig, ColourSpace.Xyz, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
+        var adapted = Adaptation.WhitePoint(Xyz.Triplet, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint).Tuple;
+        return new Unicolour(config, ColourSpace.Xyz, adapted, Alpha.A);
     }
     
     public override string ToString()

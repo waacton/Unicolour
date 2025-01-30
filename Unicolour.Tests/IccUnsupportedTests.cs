@@ -16,7 +16,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
 
         var iccConfig = new IccConfiguration(null, "not provided");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
@@ -31,7 +31,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
 
         var iccConfig = new IccConfiguration(null, "not provided");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(unicolour.Icc, Is.EqualTo(expected));
@@ -49,7 +49,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not found");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
@@ -68,7 +68,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not found");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.StartsWith("could not find file", StringComparison.CurrentCultureIgnoreCase));
@@ -88,7 +88,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not enough bytes");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
@@ -109,7 +109,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not enough bytes");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("does not contain enough bytes", StringComparison.CurrentCultureIgnoreCase));
@@ -130,7 +130,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not parseable");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
@@ -151,7 +151,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not parseable");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("could not be parsed", StringComparison.CurrentCultureIgnoreCase));
@@ -171,7 +171,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -190,7 +190,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
@@ -214,7 +214,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -238,7 +238,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
@@ -262,7 +262,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -286,7 +286,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
@@ -308,7 +308,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedToRgb(channels);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad profile signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -331,7 +331,7 @@ public class IccUnsupportedTests
         var expected = Channels.UncalibratedFromRgb(rgb);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad profile signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("signature is incorrect", StringComparison.CurrentCultureIgnoreCase));
@@ -354,7 +354,7 @@ public class IccUnsupportedTests
         var expected = new Rgb(double.NaN, double.NaN, double.NaN);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad lut signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -377,7 +377,7 @@ public class IccUnsupportedTests
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad lut signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -400,7 +400,7 @@ public class IccUnsupportedTests
         var expected = new Rgb(double.NaN, double.NaN, double.NaN);
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad curve signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, channels);
         TestUtils.AssertTriplet<Rgb>(unicolour, expected.Triplet, 0);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
@@ -423,7 +423,7 @@ public class IccUnsupportedTests
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad curve signature");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -446,7 +446,7 @@ public class IccUnsupportedTests
         var iccFile = IccFile.Lookup[iccFileName];
         var profile = iccFile.GetProfile();
         var iccConfig = new IccConfiguration(profile);
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var actualUnicolour = new Unicolour(config, new Channels(input));
         var expectedUnicolour = new Unicolour(config, new Channels(effectiveInput));
         
@@ -467,7 +467,7 @@ public class IccUnsupportedTests
     public void WrongDimensionsUncalibrated(double[] input, double[] effectiveInput)
     {
         var iccConfig = new IccConfiguration(null);
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var actualUnicolour = new Unicolour(config, new Channels(input));
         var expectedUnicolour = new Unicolour(config, new Channels(effectiveInput));
         

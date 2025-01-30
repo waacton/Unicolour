@@ -162,7 +162,7 @@ internal class Spectral
             return cached;
         }
         
-        var xyz = Xyz.FromSpd(new Spd { { wavelength, 1.0 } }, observer);
+        var xyz = Xyz.FromSpd(Spd.Monochromatic(wavelength), observer);
         var xyy = Xyy.FromXyz(xyz, whiteChromaticity);
         var chromaticity = xyy.Chromaticity;
         wavelengthToChromaticityCache.Add(wavelength, chromaticity);

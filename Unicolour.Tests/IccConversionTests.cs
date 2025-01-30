@@ -73,7 +73,6 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(ToDeviceTestData))]
-
     public void PcsToDevice(IccTestColour testColour)
     {
         var expected = testColour.Output;
@@ -111,7 +110,7 @@ public class IccConversionTests
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "no reverse transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
+        var config = new Configuration(iccConfig: iccConfig);
         var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -258,7 +257,7 @@ public class IccConversionTests
     private static Configuration GetConfig(XyzConfiguration xyzConfig, IccFile iccFile, Intent intent)
     {
         var iccConfig = new IccConfiguration(iccFile.GetProfile(), intent);
-        return new Configuration(xyzConfiguration: xyzConfig, iccConfiguration: iccConfig);
+        return new Configuration(xyzConfig: xyzConfig, iccConfig: iccConfig);
     }
     
     private static readonly Intent[] intents =

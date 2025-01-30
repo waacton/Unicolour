@@ -73,10 +73,10 @@ public class KnownOklabTests
      */
     private static readonly List<TestCaseData> TestData =
     [
-        new TestCaseData(new ColourTriplet(0.950, 1.000, 1.089), new ColourTriplet(1.000, 0.000, 0.000)),
-        new TestCaseData(new ColourTriplet(1.000, 0.000, 0.000), new ColourTriplet(0.450, 1.236, -0.019)),
-        new TestCaseData(new ColourTriplet(0.000, 1.000, 0.000), new ColourTriplet(0.922, -0.671, 0.263)),
-        new TestCaseData(new ColourTriplet(0.000, 0.000, 1.000), new ColourTriplet(0.153, -1.415, -0.449))
+        new(new ColourTriplet(0.950, 1.000, 1.089), new ColourTriplet(1.000, 0.000, 0.000)),
+        new(new ColourTriplet(1.000, 0.000, 0.000), new ColourTriplet(0.450, 1.236, -0.019)),
+        new(new ColourTriplet(0.000, 1.000, 0.000), new ColourTriplet(0.922, -0.671, 0.263)),
+        new(new ColourTriplet(0.000, 0.000, 1.000), new ColourTriplet(0.153, -1.415, -0.449))
     ];
     
     [TestCaseSource(nameof(TestData))]

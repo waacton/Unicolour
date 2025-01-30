@@ -67,16 +67,16 @@ public class MixConfigurationTests
 
     private static void AssertConfig(Unicolour unicolour1, Unicolour unicolour2, bool expectSameId)
     {
-        Assert.That(unicolour1.Config.Id, expectSameId ? Is.EqualTo(unicolour2.Config.Id) : Is.Not.EqualTo(unicolour2.Config.Id));
+        Assert.That(unicolour1.Configuration.Id, expectSameId ? Is.EqualTo(unicolour2.Configuration.Id) : Is.Not.EqualTo(unicolour2.Configuration.Id));
         
         var mix1 = unicolour1.Mix(unicolour2, ColourSpace.Rgb, premultiplyAlpha: false);
         var mix2 = unicolour2.Mix(unicolour1, ColourSpace.Rgb, premultiplyAlpha: false);
         var mix3 = unicolour1.Mix(unicolour2, ColourSpace.Hsb, premultiplyAlpha: false);
         var mix4 = unicolour2.Mix(unicolour1, ColourSpace.Hsb, premultiplyAlpha: false);
         
-        Assert.That(mix1.Config, Is.EqualTo(unicolour1.Config));
-        Assert.That(mix2.Config, Is.EqualTo(unicolour2.Config));
-        Assert.That(mix3.Config, Is.EqualTo(unicolour1.Config));
-        Assert.That(mix4.Config, Is.EqualTo(unicolour2.Config));
+        Assert.That(mix1.Configuration, Is.EqualTo(unicolour1.Configuration));
+        Assert.That(mix2.Configuration, Is.EqualTo(unicolour2.Configuration));
+        Assert.That(mix3.Configuration, Is.EqualTo(unicolour1.Configuration));
+        Assert.That(mix4.Configuration, Is.EqualTo(unicolour2.Configuration));
     }
 }

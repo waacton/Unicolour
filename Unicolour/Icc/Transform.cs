@@ -10,7 +10,7 @@ internal abstract class Transform
     protected readonly Tags tags;
     private int ProfileVersion => header.ProfileVersion.Major;
     protected bool IsLabPcs => header.Pcs == Signatures.Lab;
-    private double[] MediaWhite => tags.MediaWhite.Value.ToArray();
+    private double[] MediaWhite => tags.MediaWhite.Value!.ToArray();
     
     // seems largely useless, value must be D50 when rounded to 4 decimals, i.e the same as RefWhite
     // but reference implementation uses this value specifically for absolute intent PCS adjustment

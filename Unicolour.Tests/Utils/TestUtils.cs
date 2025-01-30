@@ -16,54 +16,54 @@ internal static class TestUtils
     internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
     internal static readonly List<TestCaseData> AllColourSpacesTestCases =
     [
-        new TestCaseData(ColourSpace.Rgb),
-        new TestCaseData(ColourSpace.RgbLinear),
-        new TestCaseData(ColourSpace.Hsb),
-        new TestCaseData(ColourSpace.Hsl),
-        new TestCaseData(ColourSpace.Hwb),
-        new TestCaseData(ColourSpace.Hsi),
-        new TestCaseData(ColourSpace.Xyz),
-        new TestCaseData(ColourSpace.Xyy),
-        new TestCaseData(ColourSpace.Lab),
-        new TestCaseData(ColourSpace.Lchab),
-        new TestCaseData(ColourSpace.Luv),
-        new TestCaseData(ColourSpace.Lchuv),
-        new TestCaseData(ColourSpace.Hsluv),
-        new TestCaseData(ColourSpace.Hpluv),
-        new TestCaseData(ColourSpace.Ypbpr),
-        new TestCaseData(ColourSpace.Ycbcr),
-        new TestCaseData(ColourSpace.Ycgco),
-        new TestCaseData(ColourSpace.Yuv),
-        new TestCaseData(ColourSpace.Yiq),
-        new TestCaseData(ColourSpace.Ydbdr),
-        new TestCaseData(ColourSpace.Tsl),
-        new TestCaseData(ColourSpace.Xyb),
-        new TestCaseData(ColourSpace.Ipt),
-        new TestCaseData(ColourSpace.Ictcp),
-        new TestCaseData(ColourSpace.Jzazbz),
-        new TestCaseData(ColourSpace.Jzczhz),
-        new TestCaseData(ColourSpace.Oklab),
-        new TestCaseData(ColourSpace.Oklch),
-        new TestCaseData(ColourSpace.Okhsl),
-        new TestCaseData(ColourSpace.Okhsv),
-        new TestCaseData(ColourSpace.Okhwb),
-        new TestCaseData(ColourSpace.Cam02),
-        new TestCaseData(ColourSpace.Cam16),
-        new TestCaseData(ColourSpace.Hct)
+        new(ColourSpace.Rgb),
+        new(ColourSpace.RgbLinear),
+        new(ColourSpace.Hsb),
+        new(ColourSpace.Hsl),
+        new(ColourSpace.Hwb),
+        new(ColourSpace.Hsi),
+        new(ColourSpace.Xyz),
+        new(ColourSpace.Xyy),
+        new(ColourSpace.Lab),
+        new(ColourSpace.Lchab),
+        new(ColourSpace.Luv),
+        new(ColourSpace.Lchuv),
+        new(ColourSpace.Hsluv),
+        new(ColourSpace.Hpluv),
+        new(ColourSpace.Ypbpr),
+        new(ColourSpace.Ycbcr),
+        new(ColourSpace.Ycgco),
+        new(ColourSpace.Yuv),
+        new(ColourSpace.Yiq),
+        new(ColourSpace.Ydbdr),
+        new(ColourSpace.Tsl),
+        new(ColourSpace.Xyb),
+        new(ColourSpace.Ipt),
+        new(ColourSpace.Ictcp),
+        new(ColourSpace.Jzazbz),
+        new(ColourSpace.Jzczhz),
+        new(ColourSpace.Oklab),
+        new(ColourSpace.Oklch),
+        new(ColourSpace.Okhsl),
+        new(ColourSpace.Okhsv),
+        new(ColourSpace.Okhwb),
+        new(ColourSpace.Cam02),
+        new(ColourSpace.Cam16),
+        new(ColourSpace.Hct)
     ];
     
     internal static readonly List<TestCaseData> AllIlluminantsTestCases =
     [
-        new TestCaseData(Illuminant.A),
-        new TestCaseData(Illuminant.C),
-        new TestCaseData(Illuminant.D50),
-        new TestCaseData(Illuminant.D55),
-        new TestCaseData(Illuminant.D65),
-        new TestCaseData(Illuminant.D75),
-        new TestCaseData(Illuminant.E),
-        new TestCaseData(Illuminant.F2),
-        new TestCaseData(Illuminant.F7),
-        new TestCaseData(Illuminant.F11)
+        new(Illuminant.A),
+        new(Illuminant.C),
+        new(Illuminant.D50),
+        new(Illuminant.D55),
+        new(Illuminant.D65),
+        new(Illuminant.D75),
+        new(Illuminant.E),
+        new(Illuminant.F2),
+        new(Illuminant.F7),
+        new(Illuminant.F11)
     ];
 
     internal static readonly Dictionary<string, Illuminant> Illuminants = new()
@@ -119,7 +119,7 @@ internal static class TestUtils
     ];
 
     private static readonly IccConfiguration IccFogra39 = new(IccFile.Fogra39.GetProfile(), Intent.RelativeColorimetric, "Fogra39 relative");
-    internal static readonly Configuration DefaultFogra39Config = new(iccConfiguration: IccFogra39);
+    internal static readonly Configuration DefaultFogra39Config = new(iccConfig: IccFogra39);
     
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
@@ -186,7 +186,7 @@ internal static class TestUtils
             AccessProperty(() => unicolour.Cam02);
             AccessProperty(() => unicolour.Cam16);
             AccessProperty(() => unicolour.Chromaticity);
-            AccessProperty(() => unicolour.Config);
+            AccessProperty(() => unicolour.Configuration);
             AccessProperty(() => unicolour.Description);
             AccessProperty(() => unicolour.DominantWavelength);
             AccessProperty(() => unicolour.ExcitationPurity);

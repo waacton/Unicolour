@@ -52,8 +52,8 @@ internal static class Interpolation
     
     private static (Unicolour start, Unicolour end, Configuration config) AdjustConfiguration(Unicolour start, Unicolour end)
     {
-        var config = start.Config;
-        return end.Config == config ? (start, end, config) : (start, end.ConvertToConfiguration(config), config);
+        var config = start.Configuration;
+        return end.Configuration == config ? (start, end, config) : (start, end.ConvertToConfiguration(config), config);
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(

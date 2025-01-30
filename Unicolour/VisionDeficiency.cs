@@ -27,7 +27,7 @@ internal static class VisionDeficiency
 
     private static Unicolour SimulateCvd(Unicolour unicolour, Matrix cvdMatrix)
     {
-        var config = unicolour.Config;
+        var config = unicolour.Configuration;
         
         // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
         var rgbLinearMatrix = Matrix.FromTriplet(unicolour.RgbLinear.Triplet);
@@ -40,7 +40,7 @@ internal static class VisionDeficiency
     internal static Unicolour SimulateTritanopia(Unicolour unicolour) => SimulateCvd(unicolour, Tritanomaly);
     internal static Unicolour SimulateAchromatopsia(Unicolour unicolour)
     {
-        var config = unicolour.Config;
+        var config = unicolour.Configuration;
 
         // luminance is based on Linear RGB, so needs to be companded back into chosen RGB space
         var rgbLuminance = config.Rgb.CompandFromLinear(unicolour.RelativeLuminance);

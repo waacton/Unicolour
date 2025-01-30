@@ -1,5 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Wacton.Unicolour;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Example.Gradients;
@@ -14,6 +15,7 @@ Temperature();
 VisionDeficiency();
 AlphaInterpolation();
 ColourMaps();
+Pigments();
 return;
 
 void ColourSpaces()
@@ -220,6 +222,59 @@ void ColourMaps()
     return;
 
     double Distance(int columnIndex) => columnIndex / (double) (width - 1);
+}
+
+void Pigments()
+{
+    const int width = 791;
+    const int rowHeight = 240;
+    const int blocks = 7;
+    const int columnsPerBlock = width / blocks;
+
+    DrawGradientBlocks(ArtistPaint.QuinacridoneMagenta, ArtistPaint.TitaniumWhite, "magenta-white");
+    DrawGradientBlocks(ArtistPaint.PhthaloBlueRedShade, ArtistPaint.TitaniumWhite, "blue-white");
+    DrawGradientBlocks(ArtistPaint.CobaltBlue, ArtistPaint.HansaYellowOpaque, "blue-yellow");
+    return;
+    
+    void DrawGradientBlocks(Pigment startPigment, Pigment endPigment, string name)
+    {
+        double minRgb = 0;
+        double maxRgb = 0;
+        List<Unicolour> colours = [];
+        for (var i = 0; i < blocks; i++)
+        {
+            var endAmount = i / (double)(blocks - 1);
+
+            var pigments = new[] { startPigment, endPigment };
+            var weights = new[] { 1 - endAmount, endAmount };
+
+            var colour = new Unicolour(pigments, weights);
+            var rgb = colour.Rgb;
+            var rgbComponents = new[] { rgb.R, rgb.G, rgb.B };
+            minRgb = Math.Min(minRgb, rgbComponents.Min());
+            maxRgb = Math.Max(maxRgb, rgbComponents.Max());
+            colours.Add(colour);
+        }
+        
+        var rows = new List<Image<Rgba32>>
+        {
+            Utils.Draw((string.Empty, Css.Transparent), width, rowHeight, GetColour())
+        };
+
+        var image = Utils.DrawRows(rows, width, rowHeight);
+        image.Mutate(x => x.Rotate(RotateMode.Rotate90));
+        image.Save(Path.Combine(outputDirectory, $"pigments-{name}.png"));
+        return;
+
+        Utils.GetColour GetColour()
+        {
+            return column =>
+            {
+                var blockIndex = column / columnsPerBlock;
+                return colours[blockIndex];
+            };
+        }
+    }
 }
 
 internal enum Cvd

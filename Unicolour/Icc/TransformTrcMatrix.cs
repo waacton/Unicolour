@@ -37,9 +37,9 @@ internal class TransformTrcMatrix : Transform
     
     private Matrix GetMatrix()
     {
-        var redMatrix = tags.RedMatrixColumn.Value;
-        var greenMatrix = tags.GreenMatrixColumn.Value;
-        var blueMatrix = tags.BlueMatrixColumn.Value;
+        var redMatrix = tags.RedMatrixColumn.Value!;
+        var greenMatrix = tags.GreenMatrixColumn.Value!;
+        var blueMatrix = tags.BlueMatrixColumn.Value!;
         
         return new Matrix(new[,]
         {

@@ -53,13 +53,13 @@ public class KnownOkhslTests
     
     private static readonly List<TestCaseData> OklabData =
     [
-        new TestCaseData(new ColourTriplet(0.5, -0.5, 0.0), new ColourTriplet(0.5 * 360, 3.377334888701067, 0.42114056260896976)),
-        new TestCaseData(new ColourTriplet(0.5, +0.5, 0.0), new ColourTriplet(0.0 * 360, 0.5241848002880121, 0.42114056260896976)),
-        new TestCaseData(new ColourTriplet(0.5, 0.0, -0.5), new ColourTriplet(0.75 * 360, 1.0959445594370765, 0.42114056260896976)),
-        new TestCaseData(new ColourTriplet(0.5, 0.0, +0.5), new ColourTriplet(0.25 * 360, -0.19759454578641367, 0.42114056260896976)),
-        new TestCaseData(new ColourTriplet(0.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.0)), // Toe(0.0)
-        new TestCaseData(new ColourTriplet(0.5, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.42114056260896976)), // Toe(0.5)
-        new TestCaseData(new ColourTriplet(1.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 1.0))
+        new(new ColourTriplet(0.5, -0.5, 0.0), new ColourTriplet(0.5 * 360, 3.377334888701067, 0.42114056260896976)),
+        new(new ColourTriplet(0.5, +0.5, 0.0), new ColourTriplet(0.0 * 360, 0.5241848002880121, 0.42114056260896976)),
+        new(new ColourTriplet(0.5, 0.0, -0.5), new ColourTriplet(0.75 * 360, 1.0959445594370765, 0.42114056260896976)),
+        new(new ColourTriplet(0.5, 0.0, +0.5), new ColourTriplet(0.25 * 360, -0.19759454578641367, 0.42114056260896976)),
+        new(new ColourTriplet(0.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.0)), // Toe(0.0)
+        new(new ColourTriplet(0.5, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.42114056260896976)), // Toe(0.5)
+        new(new ColourTriplet(1.0, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 1.0))
     ];
 
     [TestCaseSource(nameof(OklabData))]

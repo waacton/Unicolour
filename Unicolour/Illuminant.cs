@@ -13,7 +13,7 @@ public class Illuminant
     public static readonly Illuminant F7 = new(Spd.F7, $"Illuminant {nameof(F7)}");
     public static readonly Illuminant F11 = new(Spd.F11, $"Illuminant {nameof(F11)}");
     
-    // as far as I'm aware, these are the latest ASTM standards
+    // as far as I'm aware, this is ASTM standard practice https://doi.org/10.1520/E0308-18 (Tables 5, 10 nm)
     // and the 2 degree observers are an exact match with calculations on the calculator at http://www.brucelindbloom.com/
     private static readonly Dictionary<(Illuminant, Observer), WhitePoint> WhitePoints = new()
     {
@@ -42,10 +42,10 @@ public class Illuminant
     
     public string Name { get; }
 
-    private readonly Spd spd = new();
+    internal Spd? Spd { get; }
     public Illuminant(Spd spd, string name = Utils.Unnamed)
     {
-        this.spd = spd;
+        Spd = spd;
         Name = name;
     }
     
@@ -70,7 +70,7 @@ public class Illuminant
         }
         
         // if either illuminant or observer is not predefined, white point needs to be calculated
-        var xyz = Xyz.FromSpd(spd, observer);
+        var xyz = Xyz.FromSpd(Spd!, observer);
         return WhitePoint.FromXyz(xyz);
     }
     

@@ -14,7 +14,7 @@ public class ConfigureIccTests
     {
         var sourceFile = IccFile.Lookup[sourceFileName];
         var sourceIccConfig = new IccConfiguration(sourceFile.Path, Intent.Unspecified, "source");
-        var sourceConfig = new Configuration(iccConfiguration: sourceIccConfig);
+        var sourceConfig = new Configuration(iccConfig: sourceIccConfig);
         var sourceDeviceChannels = IccFile.GetDeviceChannels(sourceFile);
         var sourceCmyk = new double[sourceDeviceChannels];
         for (var i = 0; i < sourceDeviceChannels; i++)
@@ -28,7 +28,7 @@ public class ConfigureIccTests
         
         var destinationFile = IccFile.Lookup[destinationFileName];
         var destinationIccConfig = new IccConfiguration(destinationFile.Path, Intent.Unspecified, "destination");
-        var destinationConfig = new Configuration(iccConfiguration: destinationIccConfig);
+        var destinationConfig = new Configuration(iccConfig: destinationIccConfig);
         var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Triplet.Tuple);
         var destinationCmyk = destinationUnicolour.Icc;
 

@@ -36,10 +36,7 @@ public record Hct : ColourRepresentation
     
     internal static Hct FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, HctWhitePoint);
-        var d65Xyz = new Xyz(d65Matrix.ToTriplet(), ColourHeritage.From(xyz));
-        
+        var d65Xyz = new Xyz(Adaptation.WhitePoint(xyz.Triplet, xyzConfig.WhitePoint, HctWhitePoint), ColourHeritage.From(xyz));
         var cam16 = Cam16Component(d65Xyz);
         var lab = LabComponent(d65Xyz);
 
@@ -54,9 +51,7 @@ public record Hct : ColourRepresentation
         var targetY = Lab.ToXyz(new Lab(hct.T, 0, 0), XyzConfiguration.D65).Y;
         var result = FindBestJ(targetY, hct);
         var d65Xyz = result.Converged ? result.Data.Xyz : new Xyz(double.NaN, double.NaN, double.NaN);
-        var d65Matrix =  Matrix.FromTriplet(d65Xyz.Triplet);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, HctWhitePoint, xyzConfig.WhitePoint);
-        var xyz = new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(hct))
+        var xyz = new Xyz(Adaptation.WhitePoint(d65Xyz.Triplet, HctWhitePoint, xyzConfig.WhitePoint), ColourHeritage.From(hct))
         {
             HctToXyzSearchResult = result
         };

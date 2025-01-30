@@ -8,11 +8,13 @@ public class XyzConfiguration
     public WhitePoint WhitePoint { get; }
     public Chromaticity WhiteChromaticity => WhitePoint.ToChromaticity();
     public Observer Observer { get; }
+    internal Illuminant? Illuminant { get; }
     internal Spectral Spectral { get; }
     internal Planckian Planckian { get; }
     public string Name { get; }
 
     // even if white point has been hardcoded, still need observer to calculate CCT
+    // should be safe to assume 2 degree observer
     public XyzConfiguration(WhitePoint whitePoint, string name = Utils.Unnamed) : 
         this(whitePoint, Observer.Degree2, name)
     {
@@ -21,6 +23,7 @@ public class XyzConfiguration
     public XyzConfiguration(Illuminant illuminant, Observer observer, string name = Utils.Unnamed) : 
         this(illuminant.GetWhitePoint(observer), observer, name)
     {
+        Illuminant = illuminant;
     }
     
     public XyzConfiguration(WhitePoint whitePoint, Observer observer, string name = Utils.Unnamed)

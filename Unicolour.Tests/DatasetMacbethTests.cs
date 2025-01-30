@@ -9,7 +9,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetMacbethTests
 {
-    private static readonly Configuration ConfigIlluminantC = new(xyzConfiguration: new XyzConfiguration(Illuminant.C, Observer.Degree2));
+    private static readonly Configuration ConfigIlluminantC = new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2));
     
     // https://poynton.ca/notes/color/GretagMacbeth-ColorChecker.html
     private static readonly List<TestCaseData> XyyTestData =

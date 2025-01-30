@@ -123,11 +123,11 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
     
     public static readonly List<TestCaseData> PremultipliedAlphaTestData =
     [
-        new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.00, new AlphaTriplet(new(0.500, 1.000, 90, 2), 0.250)),
-        new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.25, new AlphaTriplet(new(0.750, 0.750, 135, 2), 0.375)),
-        new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.50, new AlphaTriplet(new(0.875, 0.625, 180, 2), 0.500)),
-        new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.75, new AlphaTriplet(new(0.950, 0.550, 225, 2), 0.625)),
-        new TestCaseData(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 1.00, new AlphaTriplet(new(1.000, 0.500, 270, 2), 0.750))
+        new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.00, new AlphaTriplet(new(0.500, 1.000, 90, 2), 0.250)),
+        new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.25, new AlphaTriplet(new(0.750, 0.750, 135, 2), 0.375)),
+        new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.50, new AlphaTriplet(new(0.875, 0.625, 180, 2), 0.500)),
+        new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.75, new AlphaTriplet(new(0.950, 0.550, 225, 2), 0.625)),
+        new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 1.00, new AlphaTriplet(new(1.000, 0.500, 270, 2), 0.750))
     ];
     
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]

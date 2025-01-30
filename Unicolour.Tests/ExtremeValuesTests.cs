@@ -61,15 +61,33 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double power2, 
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double power3)
     {
-        var spd = new Spd
-        {
-            { int.MinValue, power1 },
-            { 0, power2 },
-            { int.MaxValue, power3 }
-        };
-        
+        // -2147483647 nm = power1, 0 nm = power2, 2147483647 nm = power 3
+        var spd = new Spd(start: -int.MaxValue, interval: int.MaxValue, power1, power2, power3);
         TestUtils.AssertNoPropertyError(new Unicolour(spd));
         TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, spd));
+    }
+    
+    [Test, Combinatorial]
+    public void CreateFromPigmentSingleConstant(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double coefficient, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double weight)
+    {
+        double[] coefficients = [coefficient, coefficient, coefficient];
+        var pigment = new Pigment(int.MinValue, int.MaxValue, coefficients);
+        TestUtils.AssertNoPropertyError(new Unicolour([pigment], [weight]));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, [pigment], [weight]));
+    }
+    
+    [Test, Combinatorial]
+    public void CreateFromPigmentTwoConstant(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double coefficient, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double weight, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double correction)
+    {
+        double[] coefficients = [coefficient, coefficient, coefficient];
+        var pigment = new Pigment(int.MinValue, int.MaxValue, coefficients, coefficients, correction, correction);
+        TestUtils.AssertNoPropertyError(new Unicolour([pigment], [weight]));
+        TestUtils.AssertNoPropertyError(new Unicolour(TestUtils.DefaultFogra39Config, [pigment], [weight]));
     }
     
     [Test, Combinatorial]

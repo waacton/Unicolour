@@ -33,7 +33,7 @@ public class KnownTemperatureTests
     [Test] // matches the behaviour of python-based "coloraide" (https://facelessuser.github.io/coloraide/temperature/#duv)
     public void DisplayP3()
     {
-        var unicolour = new Unicolour(new Configuration(rgbConfiguration: RgbConfiguration.DisplayP3), 1200);
+        var unicolour = new Unicolour(new Configuration(rgbConfig: RgbConfiguration.DisplayP3), 1200);
         TestUtils.AssertTriplet<Rgb>(unicolour, new(1.6804, 0.62798, 0.05495), 0.005);
     }
     
@@ -79,7 +79,7 @@ public class KnownTemperatureTests
         var daylightCct = cct * 1.4388 / 1.4380;
         
         var illuminant = TestUtils.Illuminants[illuminantName];
-        var config = new Configuration(xyzConfiguration: new XyzConfiguration(illuminant, Observer.Degree2));
+        var config = new Configuration(xyzConfig: new XyzConfiguration(illuminant, Observer.Degree2));
         var fromDaylightCct = new Unicolour(config, daylightCct, Locus.Daylight);
         var fromChromaticity = new Unicolour(config, ColourSpace.Xyy, x, y, 1);
         var fromColour = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);

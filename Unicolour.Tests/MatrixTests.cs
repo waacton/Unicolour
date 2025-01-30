@@ -174,6 +174,39 @@ public class MatrixTests
         AssertMatrixSelect(DataA, x => Math.Pow(x, 2), squared);
         AssertMatrixSelect(DataA, x => 9.9, specified);
     }
+    
+    [Test]
+    public void Transpose()
+    {
+        var threeByOne = new[,]
+        {
+            { 1.0 },
+            { -2.0 },
+            { 3.0 }
+        };
+        
+        var threeByOneTranspose = new[,]
+        {
+            { 1.0, -2.0, 3.0 }
+        };
+
+        var threeByThree = new[,]
+        {
+            { 1.0, 2.0, 3.0 },
+            { -4.0, -5.0, -6.0 },
+            { 7.0, 8.0, 9.0 }
+        };
+        
+        var threeByThreeTranspose = new[,]
+        {
+            { 1.0, -4.0, 7.0 },
+            { 2.0, -5.0, 8.0 },
+            { 3.0, -6.0, 9.0 }
+        };
+        
+        AssertMatrixTranspose(threeByOne, threeByOneTranspose);
+        AssertMatrixTranspose(threeByThree, threeByThreeTranspose);
+    }
 
     [Test]
     public void ToTripletCompatibleDimensions()
@@ -231,11 +264,11 @@ public class MatrixTests
     
     private static void AssertMatrixInverse(double[,] data, double[,] expected)
     {
-        var matrixA = new Matrix(data);
-        var inverseMatrix = matrixA.Inverse();
+        var matrix = new Matrix(data);
+        var inverseMatrix = matrix.Inverse();
         
-        var mathNetMatrixA = Matrix<double>.Build.DenseOfArray(data);
-        var mathNetInverseMatrix = mathNetMatrixA.Inverse();
+        var mathNetMatrix = Matrix<double>.Build.DenseOfArray(data);
+        var mathNetInverseMatrix = mathNetMatrix.Inverse();
         
         AssertMatrixEquals(inverseMatrix, mathNetInverseMatrix, expected);
     }
@@ -252,6 +285,17 @@ public class MatrixTests
         var matrix = new Matrix(data).Select(operation);
         var mathNetMatrix = Matrix<double>.Build.DenseOfArray(data).Map(operation);
         AssertMatrixEquals(matrix, mathNetMatrix, expected);
+    }
+    
+    private static void AssertMatrixTranspose(double[,] data, double[,] expected)
+    {
+        var matrix = new Matrix(data);
+        var transposeMatrix = matrix.Transpose();
+        
+        var mathNetMatrix = Matrix<double>.Build.DenseOfArray(data);
+        var mathNetInverseMatrix = mathNetMatrix.Transpose();
+        
+        AssertMatrixEquals(transposeMatrix, mathNetInverseMatrix, expected);
     }
 
     private static void AssertMatrixEquals(Matrix actual, Matrix<double> actualMathNet, double[,] expected)

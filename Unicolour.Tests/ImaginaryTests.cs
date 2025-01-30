@@ -23,10 +23,10 @@ public class ImaginaryTests
     
     private static readonly Dictionary<(Illuminant illuminant, Observer observer), Configuration> Configurations = new()
     {
-        { (Illuminant.D65, Observer.Degree2), new(xyzConfiguration: new(Illuminant.D65, Observer.Degree2)) },
-        { (Illuminant.D65, Observer.Degree10), new(xyzConfiguration: new(Illuminant.D65, Observer.Degree10)) },
-        { (Illuminant.E, Observer.Degree2), new(xyzConfiguration: new(Illuminant.E, Observer.Degree2)) },
-        { (Illuminant.E, Observer.Degree10), new(xyzConfiguration: new(Illuminant.E, Observer.Degree10)) }
+        { (Illuminant.D65, Observer.Degree2), new(xyzConfig: new(Illuminant.D65, Observer.Degree2)) },
+        { (Illuminant.D65, Observer.Degree10), new(xyzConfig: new(Illuminant.D65, Observer.Degree10)) },
+        { (Illuminant.E, Observer.Degree2), new(xyzConfig: new(Illuminant.E, Observer.Degree2)) },
+        { (Illuminant.E, Observer.Degree10), new(xyzConfig: new(Illuminant.E, Observer.Degree10)) }
     };
     
     [Test]
@@ -39,7 +39,7 @@ public class ImaginaryTests
         var observer = TestUtils.Observers[observerName];
         var config = Configurations[(illuminant, observer)];
         
-        var unicolour = new Unicolour(config, new Spd { { wavelength, 1.0 } });
+        var unicolour = new Unicolour(config, Spd.Monochromatic(wavelength));
         Assert.That(unicolour.IsImaginary, Is.False);
     }
     
@@ -72,7 +72,7 @@ public class ImaginaryTests
             _ => throw new ArgumentOutOfRangeException(nameof(edge), edge, null)
         };
         
-        var monochromatic = new Unicolour(new Spd { { wavelength, 1.0 } });
+        var monochromatic = new Unicolour(Spd.Monochromatic(wavelength));
         var chromaticity = monochromatic.Chromaticity;
         var offsetChromaticity = new Chromaticity(chromaticity.X + xOffset, chromaticity.Y + yOffset);
         var unicolour = new Unicolour(offsetChromaticity);

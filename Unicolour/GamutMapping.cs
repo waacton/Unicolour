@@ -14,7 +14,7 @@ internal static class GamutMapping
      */
     internal static Unicolour ToRgbGamut(Unicolour unicolour)
     {
-        var config = unicolour.Config;
+        var config = unicolour.Configuration;
         var rgb = unicolour.Rgb;
         var alpha = unicolour.Alpha.A;
         if (unicolour.IsInDisplayGamut) return new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple, alpha);

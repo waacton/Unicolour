@@ -5,7 +5,12 @@ namespace Wacton.Unicolour;
 internal class Matrix
 {
     internal double[,] Data { get; }
-    internal double this[int row, int col] => Data[row, col];
+    internal double this[int row, int col]
+    {
+        get => Data[row, col];
+        // set => Data[row, col] = value;
+    }
+    
     private int Rows => Data.GetLength(0);
     private int Cols => Data.GetLength(1);
     
@@ -89,6 +94,20 @@ internal class Matrix
             for (var col = 0; col < Cols; col++)
             {
                 result[row, col] = operation(this[row, col]);
+            }
+        }
+
+        return new Matrix(result);
+    }
+    
+    internal Matrix Transpose()  
+    {  
+        var result = new double[Cols, Rows];
+        for (var row = 0; row < Rows; row++)
+        {
+            for (var col = 0; col < Cols; col++)
+            {
+                result[col, row] = this[row, col];
             }
         }
 

@@ -147,7 +147,7 @@ public class SpectralLocusTests
          * - the dominant wavelength is the monochromatic wavelength
          * - excitation purity cannot be calculated; the intersect is both pure monochromatic light AND the white point where there is no colour
          */
-        var minWavelengthXyz = Xyz.FromSpd(new Spd { { Spectral.MinWavelength, 1.0 } }, Observer.Degree2);
+        var minWavelengthXyz = Xyz.FromSpd(Spd.Monochromatic(Spectral.MinWavelength), Observer.Degree2);
         var minWavelengthWhite = WhitePoint.FromXyz(minWavelengthXyz).ToChromaticity();
         var spectral = new Spectral(Observer.Degree2, minWavelengthWhite);
         var sample = new Chromaticity(0.8, 0.2);
@@ -183,7 +183,7 @@ public class SpectralLocusTests
     [TestCase(MidWavelength, -MidWavelength, -MidWavelength)]
     public void WhitePointOnLocus(int wavelength, double expectedMinNegative, double expectedMaxNegative)
     {
-        var xyz = Xyz.FromSpd(new Spd { { wavelength, 1.0 } }, Observer.Degree2);
+        var xyz = Xyz.FromSpd(Spd.Monochromatic(wavelength), Observer.Degree2);
         var white = WhitePoint.FromXyz(xyz).ToChromaticity();
         var spectral = new Spectral(Observer.Degree2, white);
         Assert.That(spectral.MinNegativeWavelength, Is.EqualTo(expectedMinNegative).Within(0.000000000001));

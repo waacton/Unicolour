@@ -61,7 +61,7 @@ public class ChromaticityTests
         var illuminant = TestUtils.Illuminants[illuminantName];
         var daylightChromaticity = Daylight.GetChromaticity(cct * 1.4388 / 1.4380); // adjust for change in c2 constant
 
-        var config = new Configuration(xyzConfiguration: new XyzConfiguration(illuminant, Observer.Degree2));
+        var config = new Configuration(xyzConfig: new XyzConfiguration(illuminant, Observer.Degree2));
         var white = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
         var whiteChromaticity = white.Chromaticity;
         

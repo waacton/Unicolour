@@ -15,19 +15,19 @@ public class Configuration
     public static readonly Configuration Default = new();
 
     public Configuration(
-        RgbConfiguration? rgbConfiguration = null, 
-        XyzConfiguration? xyzConfiguration = null, 
-        YbrConfiguration? ybrConfiguration = null,
-        CamConfiguration? camConfiguration = null,
-        IccConfiguration? iccConfiguration = null,
+        RgbConfiguration? rgbConfig = null, 
+        XyzConfiguration? xyzConfig = null, 
+        YbrConfiguration? ybrConfig = null,
+        CamConfiguration? camConfig = null,
+        IccConfiguration? iccConfig = null,
         double ictcpScalar = 100, 
         double jzazbzScalar = 100)
     {
-        Rgb = rgbConfiguration ?? RgbConfiguration.StandardRgb;
-        Xyz = xyzConfiguration ?? XyzConfiguration.D65;
-        Ybr = ybrConfiguration ?? YbrConfiguration.Rec601;
-        Cam = camConfiguration ?? CamConfiguration.StandardRgb;
-        Icc = iccConfiguration ?? IccConfiguration.None;
+        Rgb = rgbConfig ?? RgbConfiguration.StandardRgb;
+        Xyz = xyzConfig ?? XyzConfiguration.D65;
+        Ybr = ybrConfig ?? YbrConfiguration.Rec601;
+        Cam = camConfig ?? CamConfiguration.StandardRgb;
+        Icc = iccConfig ?? IccConfiguration.None;
         IctcpScalar = ictcpScalar;
         JzazbzScalar = jzazbzScalar;
     }

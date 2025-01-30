@@ -36,8 +36,8 @@ public class Profile
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
         var xyzD50 = Transform.ToXyz(deviceValues, intent);
-        var xyzD50Matrix = new Matrix(new[,] { { xyzD50[0] }, { xyzD50[1] }, { xyzD50[2] } });
-        var (x, y, z) = Adaptation.WhitePoint(xyzD50Matrix, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint).ToTriplet().Tuple;
+        var xyzD50Triplet = new ColourTriplet(xyzD50[0], xyzD50[1], xyzD50[2]);
+        var (x, y, z) = Adaptation.WhitePoint(xyzD50Triplet, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint).Tuple;
         return new Xyz(x, y, z);
     }
     
@@ -45,8 +45,7 @@ public class Profile
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var xyzD50 = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint).ToTriplet().ToArray();
+        var xyzD50 = Adaptation.WhitePoint(xyz.Triplet, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint).ToArray();
         return Transform.FromXyz(xyzD50, intent);
     }
     

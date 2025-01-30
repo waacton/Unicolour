@@ -223,13 +223,22 @@ public class DifferenceTests
     }
     
     [Test, Combinatorial]
-    public static void RandomSymmetric(
+    public void RandomSymmetric(
         [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
         [ValueSource(nameof(ReferenceSamplePairs))] (Unicolour reference, Unicolour sample) pair)
     {
         var reference = pair.reference;
         var sample = pair.sample;
         Assert.That(reference.Difference(sample, deltaE), Is.EqualTo(sample.Difference(reference, deltaE)));
+    }
+
+    [Test]
+    public void DifferentConfigs()
+    {
+        var redD65 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D65), ColourSpace.Rgb, 1, 0, 0);
+        var redD50 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D50), ColourSpace.Rgb, 1, 0, 0);
+        var difference = redD65.Difference(redD50, DeltaE.Ciede2000);
+        Assert.That(difference, Is.Zero);
     }
     
     [TestCase(DeltaE.Cie76, ColourSpace.Lab)]

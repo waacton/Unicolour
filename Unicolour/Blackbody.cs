@@ -6,17 +6,15 @@ internal static class Blackbody
     internal static Chromaticity GetChromaticity(double cct, Observer observer)
     {
         var wavelengths = Cmf.RequiredWavelengths;
-        var xData = wavelengths.Select(wavelength => observer.ColourMatchX(wavelength) * SpectralPower(wavelength, cct));
-        var yData = wavelengths.Select(wavelength => observer.ColourMatchY(wavelength) * SpectralPower(wavelength, cct));
-        var zData = wavelengths.Select(wavelength => observer.ColourMatchZ(wavelength) * SpectralPower(wavelength, cct));
-        
-        var xt = xData.Sum();
-        var yt = yData.Sum();
-        var zt = zData.Sum();
+        var xt = Xyz.GetAbsolute(Power, observer.ColourMatchX, wavelengths, delta: 1);
+        var yt = Xyz.GetAbsolute(Power, observer.ColourMatchY, wavelengths, delta: 1);
+        var zt = Xyz.GetAbsolute(Power, observer.ColourMatchZ, wavelengths, delta: 1);
         var sum = xt + yt + zt;
         var chromaticityX = xt / sum;
         var chromaticityY = yt / sum;
         return new Chromaticity(chromaticityX, chromaticityY);
+
+        double Power(int wavelength) => SpectralPower(wavelength, cct);
     }
 
     private static double SpectralPower(int wavelengthNanometres, double kelvins)

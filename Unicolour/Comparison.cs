@@ -8,6 +8,11 @@ internal static class Comparison
     // minimal recommended contrast ratio is 4.5, or 3 for larger font-sizes
     internal static double Contrast(Unicolour colour1, Unicolour colour2)
     {
+        if (colour2.Configuration != colour1.Configuration)
+        {
+            colour2 = colour2.ConvertToConfiguration(colour1.Configuration);
+        }
+        
         var luminance1 = colour1.RelativeLuminance;
         var luminance2 = colour2.RelativeLuminance;
         var l1 = Math.Max(luminance1, luminance2); // lighter of the colours
@@ -17,6 +22,11 @@ internal static class Comparison
     
     internal static double Difference(Unicolour reference, Unicolour sample, DeltaE deltaE)
     {
+        if (sample.Configuration != reference.Configuration)
+        {
+            sample = sample.ConvertToConfiguration(reference.Configuration);
+        }
+        
         return deltaE switch
         {
             DeltaE.Cie76 => DeltaE76(reference, sample),

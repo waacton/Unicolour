@@ -9,114 +9,114 @@ public class SmokeTests
 {
     private static readonly List<TestCaseData> ColourSpaceTestCases =
     [
-        new TestCaseData(ColourSpace.Rgb255, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Rgb255, 255, 255, 255, 1),
-        new TestCaseData(ColourSpace.Rgb255, 127, 128, 129, 0.5),
-        new TestCaseData(ColourSpace.Rgb, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Rgb, 1, 1, 1, 1),
-        new TestCaseData(ColourSpace.Rgb, 0.4, 0.5, 0.6, 0.5),
-        new TestCaseData(ColourSpace.RgbLinear, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.RgbLinear, 1, 1, 1, 1),
-        new TestCaseData(ColourSpace.RgbLinear, 0.4, 0.5, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Hsb, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hsb, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Hsb, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Hsl, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hsl, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Hsl, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Hwb, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hwb, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Hwb, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Hsi, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hsi, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Hsi, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Xyz, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Xyz, 1, 1, 1, 1),
-        new TestCaseData(ColourSpace.Xyz, 0.4, 0.5, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Xyy, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Xyy, 1, 1, 1, 1),
-        new TestCaseData(ColourSpace.Xyy, 0.4, 0.5, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Wxy, 360, 0, 0, 0),
-        new TestCaseData(ColourSpace.Wxy, 700, 1, 1, 1),
-        new TestCaseData(ColourSpace.Wxy, -530, 0.5, 0.5, 0.5),
-        new TestCaseData(ColourSpace.Lab, 0, -128, -128, 0),
-        new TestCaseData(ColourSpace.Lab, 100, 128, 128, 1),
-        new TestCaseData(ColourSpace.Lab, 50, -1, 1, 0.5),
-        new TestCaseData(ColourSpace.Lchab, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Lchab, 100, 230, 360, 1),
-        new TestCaseData(ColourSpace.Lchab, 50, 115, 180, 0.5),
-        new TestCaseData(ColourSpace.Luv, 0, -100, -100, 0),
-        new TestCaseData(ColourSpace.Luv, 100, 100, 100, 1),
-        new TestCaseData(ColourSpace.Luv, 50, -1, 1, 0.5),
-        new TestCaseData(ColourSpace.Lchuv, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Lchuv, 100, 230, 360, 1),
-        new TestCaseData(ColourSpace.Lchuv, 50, 115, 180, 0.5),
-        new TestCaseData(ColourSpace.Hsluv, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hsluv, 360, 100, 100, 1),
-        new TestCaseData(ColourSpace.Hsluv, 180, 50, 50, 0.5),
-        new TestCaseData(ColourSpace.Hpluv, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hpluv, 360, 100, 100, 1),
-        new TestCaseData(ColourSpace.Hpluv, 180, 50, 50, 0.5),
-        new TestCaseData(ColourSpace.Ypbpr, 0, -0.5, -0.5, 0),
-        new TestCaseData(ColourSpace.Ypbpr, 1, 0.5, 0.5, 1),
-        new TestCaseData(ColourSpace.Ypbpr, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Ycbcr, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Ycbcr, 255, 255, 255, 1),
-        new TestCaseData(ColourSpace.Ycbcr, 127, 128, 129, 0.5),
-        new TestCaseData(ColourSpace.Ycgco, 0, -0.5, -0.5, 0),
-        new TestCaseData(ColourSpace.Ycgco, 1, 0.5, 0.5, 1),
-        new TestCaseData(ColourSpace.Ycgco, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Yuv, 0, -0.436, -0.614, 0),
-        new TestCaseData(ColourSpace.Yuv, 1, 0.436, 0.614, 1),
-        new TestCaseData(ColourSpace.Yuv, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Yiq, 0, -0.595, -0.522, 0),
-        new TestCaseData(ColourSpace.Yiq, 1, 0.595, 0.522, 1),
-        new TestCaseData(ColourSpace.Yiq, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Ydbdr, 0, -1.333, -1.333, 0),
-        new TestCaseData(ColourSpace.Ydbdr, 1, 1.333, 1.333, 1),
-        new TestCaseData(ColourSpace.Ydbdr, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Tsl, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Tsl, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Tsl, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Xyb, -0.03, 0, -0.4, 0),
-        new TestCaseData(ColourSpace.Xyb, 0.03, 1, 0.4, 1),
-        new TestCaseData(ColourSpace.Xyb, 0, 0.5, 0, 0.5),
-        new TestCaseData(ColourSpace.Ipt, 0, -0.75, -0.75, 0),
-        new TestCaseData(ColourSpace.Ipt, 1, 0.75, 0.75, 1),
-        new TestCaseData(ColourSpace.Ipt, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Ictcp, 0, -0.5, -0.5, 0),
-        new TestCaseData(ColourSpace.Ictcp, 1, 0.5, 0.5, 1),
-        new TestCaseData(ColourSpace.Ictcp, 0.5, -0.01, 0.01, 0.5),
-        new TestCaseData(ColourSpace.Jzazbz, 0, -0.10, -0.16, 0),
-        new TestCaseData(ColourSpace.Jzazbz, 0.17, 0.11, 0.12, 1),
-        new TestCaseData(ColourSpace.Jzazbz, 0.085, -0.0001, 0.0001, 0.5),
-        new TestCaseData(ColourSpace.Jzczhz, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Jzczhz, 0.17, 0.16, 360, 1),
-        new TestCaseData(ColourSpace.Jzczhz, 0.085, 0.08, 180, 0.5),
-        new TestCaseData(ColourSpace.Oklab, 0, -0.5, -0.5, 0),
-        new TestCaseData(ColourSpace.Oklab, 1, 0.5, 0.5, 1),
-        new TestCaseData(ColourSpace.Oklab, 0.5, -0.001, 0.001, 0.5),
-        new TestCaseData(ColourSpace.Oklch, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Oklch, 1, 0.5, 360, 1),
-        new TestCaseData(ColourSpace.Oklch, 0.5, 0.25, 180, 0.5),
-        new TestCaseData(ColourSpace.Okhsv, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Okhsv, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Okhsv, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Okhsl, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Okhsl, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Okhsl, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Okhwb, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Okhwb, 360, 1, 1, 1),
-        new TestCaseData(ColourSpace.Okhwb, 180, 0.4, 0.6, 0.5),
-        new TestCaseData(ColourSpace.Cam02, 0, -50, -50, 0),
-        new TestCaseData(ColourSpace.Cam02, 100, 50, 50, 1),
-        new TestCaseData(ColourSpace.Cam02, 50, -1, 1, 0.5),
-        new TestCaseData(ColourSpace.Cam16, 0, -50, -50, 0),
-        new TestCaseData(ColourSpace.Cam16, 100, 50, 50, 1),
-        new TestCaseData(ColourSpace.Cam16, 50, -1, 1, 0.5),
-        new TestCaseData(ColourSpace.Hct, 0, 0, 0, 0),
-        new TestCaseData(ColourSpace.Hct, 360, 120, 100, 1),
-        new TestCaseData(ColourSpace.Hct, 180, 60, 50, 0.5)
+        new(ColourSpace.Rgb255, 0, 0, 0, 0),
+        new(ColourSpace.Rgb255, 255, 255, 255, 1),
+        new(ColourSpace.Rgb255, 127, 128, 129, 0.5),
+        new(ColourSpace.Rgb, 0, 0, 0, 0),
+        new(ColourSpace.Rgb, 1, 1, 1, 1),
+        new(ColourSpace.Rgb, 0.4, 0.5, 0.6, 0.5),
+        new(ColourSpace.RgbLinear, 0, 0, 0, 0),
+        new(ColourSpace.RgbLinear, 1, 1, 1, 1),
+        new(ColourSpace.RgbLinear, 0.4, 0.5, 0.6, 0.5),
+        new(ColourSpace.Hsb, 0, 0, 0, 0),
+        new(ColourSpace.Hsb, 360, 1, 1, 1),
+        new(ColourSpace.Hsb, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Hsl, 0, 0, 0, 0),
+        new(ColourSpace.Hsl, 360, 1, 1, 1),
+        new(ColourSpace.Hsl, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Hwb, 0, 0, 0, 0),
+        new(ColourSpace.Hwb, 360, 1, 1, 1),
+        new(ColourSpace.Hwb, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Hsi, 0, 0, 0, 0),
+        new(ColourSpace.Hsi, 360, 1, 1, 1),
+        new(ColourSpace.Hsi, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Xyz, 0, 0, 0, 0),
+        new(ColourSpace.Xyz, 1, 1, 1, 1),
+        new(ColourSpace.Xyz, 0.4, 0.5, 0.6, 0.5),
+        new(ColourSpace.Xyy, 0, 0, 0, 0),
+        new(ColourSpace.Xyy, 1, 1, 1, 1),
+        new(ColourSpace.Xyy, 0.4, 0.5, 0.6, 0.5),
+        new(ColourSpace.Wxy, 360, 0, 0, 0),
+        new(ColourSpace.Wxy, 700, 1, 1, 1),
+        new(ColourSpace.Wxy, -530, 0.5, 0.5, 0.5),
+        new(ColourSpace.Lab, 0, -128, -128, 0),
+        new(ColourSpace.Lab, 100, 128, 128, 1),
+        new(ColourSpace.Lab, 50, -1, 1, 0.5),
+        new(ColourSpace.Lchab, 0, 0, 0, 0),
+        new(ColourSpace.Lchab, 100, 230, 360, 1),
+        new(ColourSpace.Lchab, 50, 115, 180, 0.5),
+        new(ColourSpace.Luv, 0, -100, -100, 0),
+        new(ColourSpace.Luv, 100, 100, 100, 1),
+        new(ColourSpace.Luv, 50, -1, 1, 0.5),
+        new(ColourSpace.Lchuv, 0, 0, 0, 0),
+        new(ColourSpace.Lchuv, 100, 230, 360, 1),
+        new(ColourSpace.Lchuv, 50, 115, 180, 0.5),
+        new(ColourSpace.Hsluv, 0, 0, 0, 0),
+        new(ColourSpace.Hsluv, 360, 100, 100, 1),
+        new(ColourSpace.Hsluv, 180, 50, 50, 0.5),
+        new(ColourSpace.Hpluv, 0, 0, 0, 0),
+        new(ColourSpace.Hpluv, 360, 100, 100, 1),
+        new(ColourSpace.Hpluv, 180, 50, 50, 0.5),
+        new(ColourSpace.Ypbpr, 0, -0.5, -0.5, 0),
+        new(ColourSpace.Ypbpr, 1, 0.5, 0.5, 1),
+        new(ColourSpace.Ypbpr, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Ycbcr, 0, 0, 0, 0),
+        new(ColourSpace.Ycbcr, 255, 255, 255, 1),
+        new(ColourSpace.Ycbcr, 127, 128, 129, 0.5),
+        new(ColourSpace.Ycgco, 0, -0.5, -0.5, 0),
+        new(ColourSpace.Ycgco, 1, 0.5, 0.5, 1),
+        new(ColourSpace.Ycgco, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Yuv, 0, -0.436, -0.614, 0),
+        new(ColourSpace.Yuv, 1, 0.436, 0.614, 1),
+        new(ColourSpace.Yuv, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Yiq, 0, -0.595, -0.522, 0),
+        new(ColourSpace.Yiq, 1, 0.595, 0.522, 1),
+        new(ColourSpace.Yiq, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Ydbdr, 0, -1.333, -1.333, 0),
+        new(ColourSpace.Ydbdr, 1, 1.333, 1.333, 1),
+        new(ColourSpace.Ydbdr, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Tsl, 0, 0, 0, 0),
+        new(ColourSpace.Tsl, 360, 1, 1, 1),
+        new(ColourSpace.Tsl, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Xyb, -0.03, 0, -0.4, 0),
+        new(ColourSpace.Xyb, 0.03, 1, 0.4, 1),
+        new(ColourSpace.Xyb, 0, 0.5, 0, 0.5),
+        new(ColourSpace.Ipt, 0, -0.75, -0.75, 0),
+        new(ColourSpace.Ipt, 1, 0.75, 0.75, 1),
+        new(ColourSpace.Ipt, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Ictcp, 0, -0.5, -0.5, 0),
+        new(ColourSpace.Ictcp, 1, 0.5, 0.5, 1),
+        new(ColourSpace.Ictcp, 0.5, -0.01, 0.01, 0.5),
+        new(ColourSpace.Jzazbz, 0, -0.10, -0.16, 0),
+        new(ColourSpace.Jzazbz, 0.17, 0.11, 0.12, 1),
+        new(ColourSpace.Jzazbz, 0.085, -0.0001, 0.0001, 0.5),
+        new(ColourSpace.Jzczhz, 0, 0, 0, 0),
+        new(ColourSpace.Jzczhz, 0.17, 0.16, 360, 1),
+        new(ColourSpace.Jzczhz, 0.085, 0.08, 180, 0.5),
+        new(ColourSpace.Oklab, 0, -0.5, -0.5, 0),
+        new(ColourSpace.Oklab, 1, 0.5, 0.5, 1),
+        new(ColourSpace.Oklab, 0.5, -0.001, 0.001, 0.5),
+        new(ColourSpace.Oklch, 0, 0, 0, 0),
+        new(ColourSpace.Oklch, 1, 0.5, 360, 1),
+        new(ColourSpace.Oklch, 0.5, 0.25, 180, 0.5),
+        new(ColourSpace.Okhsv, 0, 0, 0, 0),
+        new(ColourSpace.Okhsv, 360, 1, 1, 1),
+        new(ColourSpace.Okhsv, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Okhsl, 0, 0, 0, 0),
+        new(ColourSpace.Okhsl, 360, 1, 1, 1),
+        new(ColourSpace.Okhsl, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Okhwb, 0, 0, 0, 0),
+        new(ColourSpace.Okhwb, 360, 1, 1, 1),
+        new(ColourSpace.Okhwb, 180, 0.4, 0.6, 0.5),
+        new(ColourSpace.Cam02, 0, -50, -50, 0),
+        new(ColourSpace.Cam02, 100, 50, 50, 1),
+        new(ColourSpace.Cam02, 50, -1, 1, 0.5),
+        new(ColourSpace.Cam16, 0, -50, -50, 0),
+        new(ColourSpace.Cam16, 100, 50, 50, 1),
+        new(ColourSpace.Cam16, 50, -1, 1, 0.5),
+        new(ColourSpace.Hct, 0, 0, 0, 0),
+        new(ColourSpace.Hct, 360, 120, 100, 1),
+        new(ColourSpace.Hct, 180, 60, 50, 0.5)
     ];
     
     [TestCaseSource(nameof(ColourSpaceTestCases))]
@@ -283,11 +283,12 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, cct, locus, luminance));
     }
 
-    private static readonly Spd monochromaticSpd = new() { { 580, 1.0 } };
-    private static readonly Spd twoNmSpd = new() { { 578, 0.25 }, { 580, 1.0 }, { 582, 0.75 } };
-    private static readonly Spd fiveNmSpd = new() { { 575, 0.25 }, { 580, 1.0 }, { 585, 0.75 } };
-    private static readonly Spd noPowerSpd = new();
-    private static readonly List<Spd> SpdValues = [Spd.D65, monochromaticSpd, twoNmSpd, fiveNmSpd, noPowerSpd];
+    private static readonly Spd monochromaticSpd = new(start: 580, interval: 1, [1.0]);
+    private static readonly Spd twoNmSpd = new(start: 578, interval: 2, [0.25, 1.0, 0.75]);
+    private static readonly Spd fiveNmSpd = new(start: 575, interval: 5, [0.25, 1.0, 0.75]);
+    private static readonly Spd noPowerOneNmSpd = new(start: 580, interval: 1, []);
+    private static readonly Spd noPowerZeroNmSpd = new(start: 580, interval: 0, []);
+    private static readonly Spd[] SpdValues = [Spd.D65, monochromaticSpd, twoNmSpd, fiveNmSpd, noPowerOneNmSpd, noPowerZeroNmSpd];
 
     [Test]
     public void SpectralPowerDistribution(
@@ -298,6 +299,51 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, spd));
     }
     
+    private static readonly Pigment[][] PigmentSingleConstantValues = [
+        [new(360, 10, [0.1, 0.2, 0.3], "A1"), new(360, 10, [0.4, 0.5, 0.6], "B1"), new(360, 10, [0.7, 0.8, 0.9], "C1")],
+        [new(570, 5, [0.5, 0.5, 0.5], "A2"), new(570, 5, [0.5, 0.5, 0.5], "B2"), new(570, 5, [0.5, 0.5, 0.5], "C2")],
+        [new(780, 1, [0.9, 0.9, 0.9], "A3"), new(780, 1, [0.5, 0.5, 0.5], "B3"), new(780, 1, [0.1, 0.1, 0.1], "C3")]
+    ];
+    
+    private static readonly Pigment[][] PigmentTwoConstantValues = [
+        [new(360, 10, [0.1, 0.2, 0.3], [0.1, 0.1, 0.1], 0.04, 0.6, "A1"), new(360, 10, [0.4, 0.5, 0.6], [0.5, 0.5, 0.5], 0.04, 0.6, "B1"), new(360, 10, [0.7, 0.8, 0.9], [0.9, 0.9, 0.9], 0.04, 0.6, "C1")],
+        [new(570, 5, [0.5, 0.5, 0.5], [1.0, 1.0, 1.0], null, null, "A2"), new(570, 5, [0.5, 0.5, 0.5], [0.5, 0.5, 0.5], null, null, "B2"), new(570, 5, [0.5, 0.5, 0.5], [0.1, 0.5, 1.0], null, null, "C2")],
+        [new(780, 1, [0.9, 0.9, 0.9], [0.7, 0.8, 0.9], 0.6, 0.04, "A3"), new(780, 1, [0.5, 0.5, 0.5], [0.4, 0.5, 0.6], 0.6, 0.04, "B3"), new(780, 1, [0.1, 0.1, 0.1], [0.1, 0.2, 0.3], 0.6, 0.04, "C3")]
+    ];
+    
+    private static readonly double[][] WeightValues = [
+        [1 / 3.0, 1 / 3.0, 1 / 3.0],
+        [0.5, 0.5, 0.5],
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [0, 0.25, 0.75],
+        [0.75, 0, 0.25],
+        [0.25, 0.75, 0],
+        [0.1, 0.3, 0.6],
+        [0.6, 0.3, 0.1]
+    ];
+
+    [Test, Combinatorial]
+    public void PigmentSingleConstant(
+        [ValueSource(nameof(PigmentSingleConstantValues))] Pigment[] pigments,
+        [ValueSource(nameof(WeightValues))] double[] weights)
+    {
+        var expected = new Unicolour(pigments, weights);
+        AssertNoError(expected, new Unicolour(pigments, weights));
+        AssertNoError(expected, new Unicolour(Configuration.Default, pigments, weights));
+    }
+    
+    [Test, Combinatorial]
+    public void PigmentTwoConstant(
+        [ValueSource(nameof(PigmentTwoConstantValues))] Pigment[] pigments,
+        [ValueSource(nameof(WeightValues))] double[] weights)
+    {
+        var expected = new Unicolour(pigments, weights);
+        AssertNoError(expected, new Unicolour(pigments, weights));
+        AssertNoError(expected, new Unicolour(Configuration.Default, pigments, weights));
+    }
+    
     private static readonly List<double[]> IccValues = [[0.0, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.0], [0.5, 0.5, 0.5, 0.5]];
     
     [Test]
@@ -305,7 +351,7 @@ public class SmokeTests
         [ValueSource(nameof(IccValues))] double[] iccValues)
     {
         var profile = IccFile.Fogra39.GetProfile();
-        var config = new Configuration(iccConfiguration: new IccConfiguration(profile));
+        var config = new Configuration(iccConfig: new IccConfiguration(profile));
         var expected = new Unicolour(config, new Channels(iccValues));
         AssertNoError(expected, new Unicolour(config, new Channels(iccValues)));
     }
@@ -316,7 +362,7 @@ public class SmokeTests
         [Values(0, 1, 0.5)] double alpha)
     {
         var profile = IccFile.Fogra39.GetProfile();
-        var config = new Configuration(iccConfiguration: new IccConfiguration(profile));
+        var config = new Configuration(iccConfig: new IccConfiguration(profile));
         var expected = new Unicolour(config, new Channels(iccValues), alpha);
         AssertNoError(expected, new Unicolour(config, new Channels(iccValues), alpha));
     }

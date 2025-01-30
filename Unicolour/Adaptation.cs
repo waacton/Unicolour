@@ -9,6 +9,18 @@ internal static class Adaptation
         { +0.0389, -0.0685, +1.0296 }
     });
 
+    internal static ColourTriplet WhitePoint(ColourTriplet xyzTriplet, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
+    {
+        if (sourceWhitePoint == destinationWhitePoint)
+        {
+            return xyzTriplet;
+        }
+        
+        var xyzMatrix = Matrix.FromTriplet(xyzTriplet);
+        var adaptedMatrix = WhitePoint(xyzMatrix, sourceWhitePoint, destinationWhitePoint);
+        return adaptedMatrix.ToTriplet();
+    }
+
     internal static Matrix WhitePoint(Matrix matrix, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
         if (sourceWhitePoint == destinationWhitePoint)

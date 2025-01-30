@@ -182,13 +182,8 @@ void FeatureTemperature()
 
 void FeatureSpd()
 {
-    var spd = new Spd
-    {
-        { 575, 0.5 }, 
-        { 580, 1.0 }, 
-        { 585, 0.5 }
-    };
-        
+    // [575 nm] -> 0.5 · [580 nm] -> 1.0 · [585 nm] -> 0.5
+    var spd = new Spd(start: 575, interval: 5, [0.5, 1.0, 0.5]);
     var intenseYellow = new Unicolour(spd);
 }
 
@@ -216,7 +211,7 @@ void FeatureCvd()
 void FeatureIcc()
 {
     var fogra39 = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
-    var config = new Configuration(iccConfiguration: fogra39);
+    var config = new Configuration(iccConfig: fogra39);
     
     var navyRgb = new Unicolour(config, ColourSpace.Rgb255, 0, 0, 128);
     Console.WriteLine(navyRgb.Icc); // 1.0000 0.8977 0.0001 0.2867 CMYK

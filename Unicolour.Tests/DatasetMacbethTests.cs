@@ -41,11 +41,11 @@ public class DatasetMacbethTests
     ];
     
     [TestCaseSource(nameof(XyyTestData))]
-    public void Xyy(Unicolour unicolour, double expectedX, double expectedY, double expectedLuminance)
+    public void Xyy(Unicolour colour, double expectedX, double expectedY, double expectedLuminance)
     {
-        var unicolourIlluminantC = unicolour.ConvertToConfiguration(ConfigIlluminantC);
+        var colourIlluminantC = colour.ConvertToConfiguration(ConfigIlluminantC);
         var expectedXyy = new Xyy(expectedX, expectedY, expectedLuminance / 100.0);
-        TestUtils.AssertTriplet<Xyy>(unicolourIlluminantC, expectedXyy.Triplet, 0.02);
+        TestUtils.AssertTriplet<Xyy>(colourIlluminantC, expectedXyy.Triplet, 0.02);
     }
     
     [Test]

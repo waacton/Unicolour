@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/216,919/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/217,398/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -11,7 +11,8 @@ Unicolour is the most comprehensive .NET library for working with colour:
 - Colour mixing / colour interpolation
 - Colour difference / colour distance
 - Colour gamut mapping
-- Colour chromaticity & colour temperature
+- Colour chromaticity
+- Colour temperature
 - Wavelength attributes
 - ICC profiles for CMYK conversion
 
@@ -319,7 +320,7 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔE<sub>CAM02</sub>                                                | `DeltaE.Cam02`             |
 | ΔE<sub>CAM16</sub>                                                | `DeltaE.Cam16`             |
 
-### Map colour into display gamut
+### Map colour into RGB gamut
 Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut colour.
 The gamut mapping algorithm conforms to CSS specifications.
 ```c#

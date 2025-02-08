@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -124,6 +125,53 @@ public class PigmentTests
         double[] concentrations = [1.0];
         const double expectedR = 0.267949192431123; // when K/S = 1
         AssertReflectance(pigments, concentrations, [expectedR, expectedR, double.NaN, expectedR, expectedR], expectedXyzNaN: true);
+    }
+    
+    [Test]
+    public void AbsorptionHasMoreElements()
+    {
+        // first test case data is single pigment of k[0] and s[0] 
+        var absorption = k[0].Concat([0.5]).ToArray();
+        var scattering = s[0];
+        var expected = TwoConstantData[0].Arguments[3] as double[];
+        
+        // the additional absorption element is ignored
+        Pigment pigment = new(400, 10, absorption, scattering);
+        AssertReflectance([pigment], [1.0], expected, expectedXyzNaN: false);
+    }
+    
+    [Test]
+    public void ScatteringHasMoreElements()
+    {
+        // first test case data is single pigment of k[0] and s[0] 
+        var absorption = k[0];
+        var scattering = s[0].Concat([0.5]).ToArray();
+        var expected = TwoConstantData[0].Arguments[3] as double[];
+        
+        // the additional scattering element is ignored
+        Pigment pigment = new(400, 10, absorption, scattering);
+        AssertReflectance([pigment], [1.0], expected, expectedXyzNaN: false);
+    }
+    
+    [Test]
+    public void ReflectanceEmpty()
+    {
+        Pigment pigment = new(400, 10, r: []);
+        AssertReflectance([pigment], [1.0], expected: [], expectedXyzNaN: true);
+    }
+    
+    [Test]
+    public void AbsorptionEmpty()
+    {
+        Pigment pigment = new(400, 10, k: [], s[0]);
+        AssertReflectance([pigment], [1.0], expected: [], expectedXyzNaN: true);
+    }
+    
+    [Test]
+    public void ScatteringEmpty()
+    {
+        Pigment pigment = new(400, 10, k[0], s: []);
+        AssertReflectance([pigment], [1.0], expected: [], expectedXyzNaN: true);
     }
     
     [Test]

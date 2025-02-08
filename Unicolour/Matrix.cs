@@ -8,15 +8,17 @@ internal class Matrix
     internal double this[int row, int col]
     {
         get => Data[row, col];
-        // set => Data[row, col] = value;
+        set => Data[row, col] = value;
     }
     
-    private int Rows => Data.GetLength(0);
-    private int Cols => Data.GetLength(1);
+    internal int Rows { get; }
+    internal int Cols { get; }
     
     internal Matrix(double[,] data)
     {
         Data = data;
+        Rows = Data.GetLength(0);
+        Cols = Data.GetLength(1);
     }
 
     internal Matrix Multiply(Matrix other)

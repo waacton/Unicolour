@@ -11,8 +11,8 @@ public class InvalidDeltaETests
     [Test]
     public void InvalidConstructor()
     {
-        var unicolour1 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
-        var unicolour2 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
-        Assert.Throws<ArgumentOutOfRangeException>(() => unicolour1.Difference(unicolour2, BadDeltaE));
+        var colour1 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+        var colour2 = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+        Assert.Throws<ArgumentOutOfRangeException>(() => colour1.Difference(colour2, BadDeltaE));
     }
 }

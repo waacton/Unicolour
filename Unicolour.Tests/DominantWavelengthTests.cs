@@ -87,9 +87,9 @@ public class DominantWavelengthTests
     [TestCaseSource(nameof(RgbTestData))]
     public void RgbGamut(Configuration configuration, double r, double g, double b, double expectedWavelength)
     {
-        var unicolour = new Unicolour(configuration, ColourSpace.Rgb, r, g, b);
-        var hasLuminance = unicolour.Xyy.Luminance > 0;
-        Assert.That(unicolour.DominantWavelength, Is.EqualTo(hasLuminance ? expectedWavelength : double.NaN).Within(0.25));
+        var colour = new Unicolour(configuration, ColourSpace.Rgb, r, g, b);
+        var hasLuminance = colour.Xyy.Luminance > 0;
+        Assert.That(colour.DominantWavelength, Is.EqualTo(hasLuminance ? expectedWavelength : double.NaN).Within(0.25));
     }
     
     private static readonly Dictionary<(Illuminant illuminant, Observer observer), Configuration> Configurations = new()
@@ -110,8 +110,8 @@ public class DominantWavelengthTests
         var observer = TestUtils.Observers[observerName];
         var config = Configurations[(illuminant, observer)];
         
-        var unicolour = new Unicolour(config, Spd.Monochromatic(wavelength));
-        Assert.That(unicolour.DominantWavelength, Is.EqualTo(wavelength).Within(0.000000005));
+        var colour = new Unicolour(config, Spd.Monochromatic(wavelength));
+        Assert.That(colour.DominantWavelength, Is.EqualTo(wavelength).Within(0.000000005));
     }
     
     /*
@@ -159,8 +159,8 @@ public class DominantWavelengthTests
     [TestCaseSource(nameof(ImaginaryTestData))]
     public void Imaginary(Configuration config, double x, double y, double expectedWavelength)
     {
-        var unicolour = new Unicolour(config, new Chromaticity(x, y));
-        Assert.That(unicolour.DominantWavelength, Is.EqualTo(expectedWavelength).Within(0.25));
+        var colour = new Unicolour(config, new Chromaticity(x, y));
+        Assert.That(colour.DominantWavelength, Is.EqualTo(expectedWavelength).Within(0.25));
     }
     
     [Test]
@@ -168,9 +168,9 @@ public class DominantWavelengthTests
     {
         // white point (0.333, 0.333), sample right & down (0.34, 0.32), near = line of purples, far = green boundary
         // sample between: white point -> near (line of purples) = negative wavelength
-        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.34, 0.32));
-        Assert.That(unicolour.DominantWavelength, Is.Negative);
-        Assert.That(unicolour.IsImaginary, Is.False);
+        var colour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.34, 0.32));
+        Assert.That(colour.DominantWavelength, Is.Negative);
+        Assert.That(colour.IsImaginary, Is.False);
     }
     
     [Test]
@@ -178,9 +178,9 @@ public class DominantWavelengthTests
     {
         // white point (0.333, 0.333), sample left & up (0.34, 0.32), near = line of purples, far = green boundary
         // sample between: white point -> far (green boundary) = positive wavelength
-        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.32, 0.34));
-        Assert.That(unicolour.DominantWavelength, Is.Positive);
-        Assert.That(unicolour.IsImaginary, Is.False);
+        var colour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.32, 0.34));
+        Assert.That(colour.DominantWavelength, Is.Positive);
+        Assert.That(colour.IsImaginary, Is.False);
     }
     
     [Test]
@@ -188,9 +188,9 @@ public class DominantWavelengthTests
     {
         // white point (0.333, 0.333), sample right & down (0.5, 0.1), near = line of purples, far = green boundary
         // sample outside boundary: -> near (line of purples) = negative wavelength
-        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.5, 0.1));
-        Assert.That(unicolour.DominantWavelength, Is.Negative);
-        Assert.That(unicolour.IsImaginary, Is.True);
+        var colour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.5, 0.1));
+        Assert.That(colour.DominantWavelength, Is.Negative);
+        Assert.That(colour.IsImaginary, Is.True);
     }
     
     [Test]
@@ -198,8 +198,8 @@ public class DominantWavelengthTests
     {
         // white point (0.333, 0.333), sample left & up (0.0, 0.9), near = green boundary, far = line of purples
         // sample outside boundary: -> near (green boundary) = positive wavelength
-        var unicolour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.0, 0.9));
-        Assert.That(unicolour.DominantWavelength, Is.Positive);
-        Assert.That(unicolour.IsImaginary, Is.True);
+        var colour = new Unicolour(RgbStandardXyzE, new Chromaticity(0.0, 0.9));
+        Assert.That(colour.DominantWavelength, Is.Positive);
+        Assert.That(colour.IsImaginary, Is.True);
     }
 }

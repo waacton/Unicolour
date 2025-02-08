@@ -317,10 +317,10 @@ public class DatasetCssTests
     ];
 
     [TestCaseSource(nameof(Rgb255TestData))]
-    public void Rgb255(string name, Unicolour unicolour)
+    public void Rgb255(string name, Unicolour colour)
     {
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(unicolour, expected, 0);
+        TestUtils.AssertTriplet<Rgb255>(colour, expected, 0);
     }
 
     [Test]
@@ -344,10 +344,10 @@ public class DatasetCssTests
     ];
     
     [TestCaseSource(nameof(DuplicateTestData))]
-    public void Duplicates(Unicolour unicolour1, Unicolour unicolour2)
+    public void Duplicates(Unicolour colour1, Unicolour colour2)
     {
-        Assert.That(ReferenceEquals(unicolour1, unicolour2), Is.False);
-        Assert.That(unicolour1.Hex, Is.EqualTo(unicolour2.Hex));
+        Assert.That(ReferenceEquals(colour1, colour2), Is.False);
+        Assert.That(colour1.Hex, Is.EqualTo(colour2.Hex));
     }
     
     [Test]
@@ -370,11 +370,11 @@ public class DatasetCssTests
     [Test]
     public void Name([ValueSource(nameof(Names))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
         
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(unicolour!, expected, 0);
+        TestUtils.AssertTriplet<Rgb255>(colour!, expected, 0);
     }
 
     private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
@@ -387,8 +387,8 @@ public class DatasetCssTests
     [Test]
     public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
     }
     
     // names taken from https://en.wikipedia.org/wiki/X11_color_names but are not defined in the CSS specification
@@ -427,7 +427,7 @@ public class DatasetCssTests
     [TestCase(null)]
     public void NameNotFound(string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Null);
     }
 }

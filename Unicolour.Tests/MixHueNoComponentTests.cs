@@ -52,9 +52,9 @@ public class MixHueNoComponentTests : MixHueAgnosticTests
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]
     public void PremultiplyAlpha(AlphaTriplet start, AlphaTriplet end, double amount, AlphaTriplet expected)
     {
-        var unicolour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
-        var unicolour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
-        var mixed = unicolour1.Mix(unicolour2, ColourSpace, amount, premultiplyAlpha: true);
+        var colour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
+        var colour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
+        var mixed = colour1.Mix(colour2, ColourSpace, amount, premultiplyAlpha: true);
         AssertMix(mixed, expected.Tuple);
     }
 }

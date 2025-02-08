@@ -43,34 +43,34 @@ public class DatasetHungBernsTests
     ];
 
     [TestCaseSource(nameof(ReferenceHues))]
-    public void ReferenceXyy(Unicolour unicolour, Xyy xyy, Luv luv)
+    public void ReferenceXyy(Unicolour colour, Xyy xyy, Luv luv)
     {
-        TestUtils.AssertTriplet<Xyy>(unicolour, xyy.Triplet, 0.00005);
+        TestUtils.AssertTriplet<Xyy>(colour, xyy.Triplet, 0.00005);
     }
     
     [TestCaseSource(nameof(ReferenceHues))]
-    public void ReferenceLuv(Unicolour unicolour, Xyy xyy, Luv luv)
+    public void ReferenceLuv(Unicolour colour, Xyy xyy, Luv luv)
     {
         // for some reason, cyan Luv.V from the data table doesn't quite match Unicolour calculations
         // though no reason to distrust Unicolour since the conversions have been heavily tested
-        var tolerance = unicolour.Equals(CyanRef) ? 0.4 : 0.15;
-        TestUtils.AssertTriplet<Luv>(unicolour, luv.Triplet, tolerance);
+        var tolerance = colour.Equals(CyanRef) ? 0.4 : 0.15;
+        TestUtils.AssertTriplet<Luv>(colour, luv.Triplet, tolerance);
     }
     
     [TestCaseSource(nameof(GroupedByHue))]
-    public void GroupedHue(List<Unicolour> unicolours)
+    public void GroupedHue(List<Unicolour> colours)
     {
         // questionable, but would expect hue group to be no more than 30 degrees different (360 / 12 groups)
-        var hues = unicolours.Select(x => x.Lchab.H).ToList();
+        var hues = colours.Select(x => x.Lchab.H).ToList();
         Assert.That(hues.Max() - hues.Min(), Is.LessThan(30));
     }
     
     [TestCaseSource(nameof(GroupedByHue))]
-    public void OrderedChroma(List<Unicolour> unicolours)
+    public void OrderedChroma(List<Unicolour> colours)
     {
         // assumes the hue list is returned in the order they were defined, not ideal
-        var chromas = unicolours.Select(x => x.Lchab.C).ToList();
-        Assert.That(unicolours.Count, Is.EqualTo(4));
+        var chromas = colours.Select(x => x.Lchab.C).ToList();
+        Assert.That(colours.Count, Is.EqualTo(4));
         Assert.That(chromas[0], Is.LessThan(chromas[1]));
         Assert.That(chromas[1], Is.LessThan(chromas[2]));
         Assert.That(chromas[2], Is.LessThan(chromas[3]));

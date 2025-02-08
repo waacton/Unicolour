@@ -9,7 +9,7 @@ public class XyzConfiguration
     public Chromaticity WhiteChromaticity => WhitePoint.ToChromaticity();
     public Observer Observer { get; }
     internal Illuminant? Illuminant { get; }
-    internal Spectral Spectral { get; }
+    internal SpectralBoundary SpectralBoundary { get; }
     internal Planckian Planckian { get; }
     public string Name { get; }
 
@@ -30,7 +30,7 @@ public class XyzConfiguration
     {
         WhitePoint = whitePoint;
         Observer = observer;
-        Spectral = new Spectral(observer, WhiteChromaticity);
+        SpectralBoundary = new SpectralBoundary(observer, WhiteChromaticity);
         Planckian = new Planckian(observer);
         Name = name;
     }

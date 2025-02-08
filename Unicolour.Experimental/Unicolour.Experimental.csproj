@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <AssemblyName>Wacton.Unicolour.Experimental</AssemblyName>
+        <RootNamespace>Wacton.Unicolour.Experimental</RootNamespace>
+        <LangVersion>10</LangVersion>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Wacton.Unicolour.Experimental</PackageId>
+        <Authors>William Acton</Authors>
+        <Description>Experimental additions to 🌈 Wacton.Unicolour</Description>
+        <Copyright>William Acton</Copyright>
+        <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
+        <PackageTags>unicolour colour color pigments pigment-mixing kubelka-munk reflectance reflectance-curves spectral.js paints paint-mixing</PackageTags>
+        <PackageReleaseNotes>Add reflectance generation and Spectral.js implementation</PackageReleaseNotes>
+        <PackageIcon>Resources\Unicolour.Experimental.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="Resources\Unicolour.Experimental.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+    </ItemGroup>
+
+    <!-- enables test module to access internal classes and methods -->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Wacton.Unicolour.Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+</Project>

@@ -34,9 +34,9 @@ public record Wxy : ColourRepresentation
         
         var intersects = xyy.UseAsNaN || xyy.UseAsGreyscale
             ? null
-            : xyzConfig.Spectral.FindBoundaryIntersects(chromaticity);
+            : xyzConfig.SpectralBoundary.FindIntersects(chromaticity);
 
-        var w = intersects?.DominantWavelength ?? Spectral.MinWavelength;
+        var w = intersects?.DominantWavelength ?? SpectralBoundary.MinWavelength;
         var x = intersects?.ExcitationPurity ?? 0;
         var y = luminance;
         return new Wxy(w, x, y, ColourHeritage.From(xyy));
@@ -57,7 +57,7 @@ public record Wxy : ColourRepresentation
         }
         else
         {
-            chromaticity = xyzConfig.Spectral.GetChromaticity(wavelength, purity);
+            chromaticity = xyzConfig.SpectralBoundary.GetChromaticity(wavelength, purity);
         }
 
         return new Xyy(chromaticity.X, chromaticity.Y, luminance, ColourHeritage.From(wxy));
@@ -70,14 +70,14 @@ public record Wxy : ColourRepresentation
         double degree;
         if (wavelength >= 0)
         {
-            var (min, max) = (Spectral.MinWavelength, Spectral.MaxWavelength);
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
             var clamped = wavelength.Clamp(min, max);
             var normalised = (clamped - min) / (max - min);
             degree = normalised * 180;
         }
         else
         {
-            var (min, max) = (xyzConfig.Spectral.MinNegativeWavelength, xyzConfig.Spectral.MaxNegativeWavelength);
+            var (min, max) = (xyzConfig.SpectralBoundary.MinNegativeWavelength, xyzConfig.SpectralBoundary.MaxNegativeWavelength);
             var clamped = wavelength.Clamp(min, max);
             var normalised = 1 - (clamped - min) / (max - min);
             degree = 180 + normalised * 180;
@@ -93,13 +93,13 @@ public record Wxy : ColourRepresentation
         double wavelength;
         if (degree <= 180)
         {
-            var (min, max) = (Spectral.MinWavelength, Spectral.MaxWavelength);
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
             var normalised = degree / 180.0;
             wavelength = normalised * (max - min) + min;
         }
         else
         {
-            var (min, max) = (xyzConfig.Spectral.MinNegativeWavelength, xyzConfig.Spectral.MaxNegativeWavelength);
+            var (min, max) = (xyzConfig.SpectralBoundary.MinNegativeWavelength, xyzConfig.SpectralBoundary.MaxNegativeWavelength);
             var normalised = 1 - (degree - 180) / 180.0;
             wavelength = normalised * (max - min) + min;
         }

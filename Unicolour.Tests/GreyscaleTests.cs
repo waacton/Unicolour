@@ -434,11 +434,11 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 99.99999999999, false)]
     public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(new(ColourSpace.Hct, h, c, t), expected);
 
-    private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
+    private static void AssertUnicolour(Unicolour colour, bool shouldBeGreyscale)
     {
-        var data = new ColourHeritageData(unicolour);
-        var initialRepresentation = unicolour.InitialRepresentation;
-        var initialColourSpace = unicolour.InitialColourSpace;
+        var data = new ColourHeritageData(colour);
+        var initialRepresentation = colour.InitialRepresentation;
+        var initialColourSpace = colour.InitialColourSpace;
         AssertInitialRepresentation(initialRepresentation, shouldBeGreyscale);
 
         if (!initialRepresentation.IsGreyscale)

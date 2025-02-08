@@ -124,8 +124,8 @@ internal static class Utils
         }
         else
         {
-            var unicolour = new Unicolour(chromaticity);
-            color = unicolour.IsImaginary ? null : GetScaledColour(unicolour.Rgb);
+            var colour = new Unicolour(chromaticity);
+            color = colour.IsImaginary ? null : GetScaledColour(colour.Rgb);
             ChromaticityCache.Add(chromaticity, color);
         }
 

@@ -386,10 +386,10 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, new Channels(iccValues), alpha));
     }
 
-    private static void AssertNoError(Unicolour expected, Unicolour unicolour)
+    private static void AssertNoError(Unicolour expected, Unicolour colour)
     {
-        TestUtils.AssertNoPropertyError(unicolour);
-        Assert.That(unicolour, Is.EqualTo(expected));
+        TestUtils.AssertNoPropertyError(colour);
+        Assert.That(colour, Is.EqualTo(expected));
     }
 }
 

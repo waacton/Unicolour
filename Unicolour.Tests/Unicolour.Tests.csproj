@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Unicolour.Datasets\Unicolour.Datasets.csproj" />
+      <ProjectReference Include="..\Unicolour.Experimental\Unicolour.Experimental.csproj" />
       <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
     </ItemGroup>
 

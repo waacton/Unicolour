@@ -41,8 +41,8 @@ public class ConfigureJzazbzTests
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31212jzazbz-colourspace)  
     public void XyzD65ToJzazbz1()
     {
-        var unicolour = new Unicolour(Config1, ColourSpace.Xyz, TestXyz.Tuple);
-        TestUtils.AssertTriplet<Jzazbz>(unicolour, new(0.00535048, 0.00924302, 0.00526007), 0.00001);
+        var colour = new Unicolour(Config1, ColourSpace.Xyz, TestXyz.Tuple);
+        TestUtils.AssertTriplet<Jzazbz>(colour, new(0.00535048, 0.00924302, 0.00526007), 0.00001);
 
         var white = new Unicolour(Config1, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config1, ColourSpace.Xyz, 0, 0, 0);
@@ -53,8 +53,8 @@ public class ConfigureJzazbzTests
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
     public void XyzD65ToJzazbz203()
     {
-        var unicolour = new Unicolour(Config203, ColourSpace.Xyz, TestXyz.Tuple);
-        TestUtils.AssertTriplet<Jzazbz>(unicolour, new(0.10287841, 0.08613415, 0.05873694), 0.0001);
+        var colour = new Unicolour(Config203, ColourSpace.Xyz, TestXyz.Tuple);
+        TestUtils.AssertTriplet<Jzazbz>(colour, new(0.10287841, 0.08613415, 0.05873694), 0.0001);
         
         var white = new Unicolour(Config203, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config203, ColourSpace.Xyz, 0, 0, 0);

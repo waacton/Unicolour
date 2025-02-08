@@ -73,7 +73,7 @@ public class KnownWxyTests
     [Test]
     public void UltravioletPositive()
     {
-        var violet = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, SpectralBoundary.MinWavelength, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, 300, 0.5, 0.5);
         TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
@@ -81,7 +81,7 @@ public class KnownWxyTests
     [Test]
     public void UltravioletNegative()
     {
-        var violet = new Unicolour(ColourSpace.Wxy, Spectral.MinWavelength, 0.5, 0.5);
+        var violet = new Unicolour(ColourSpace.Wxy, SpectralBoundary.MinWavelength, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, -600, 0.5, 0.5);
         TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
     }
@@ -89,7 +89,7 @@ public class KnownWxyTests
     [Test]
     public void UltravioletPositiveComplementary()
     {
-        var complementary = XyzConfiguration.D65.Spectral.MinNegativeWavelength;
+        var complementary = XyzConfiguration.D65.SpectralBoundary.MinNegativeWavelength;
         var violet = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, 300, 0.5, 0.5);
         TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
@@ -98,7 +98,7 @@ public class KnownWxyTests
     [Test]
     public void UltravioletNegativeComplementary()
     {
-        var complementary = XyzConfiguration.D65.Spectral.MinNegativeWavelength;
+        var complementary = XyzConfiguration.D65.SpectralBoundary.MinNegativeWavelength;
         var violet = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var ultraviolet = new Unicolour(ColourSpace.Wxy, -600, 0.5, 0.5);
         TestUtils.AssertTriplet(ultraviolet.Xyy.Triplet, violet.Xyy.Triplet, Tolerance);
@@ -107,7 +107,7 @@ public class KnownWxyTests
     [Test]
     public void InfraredPositive()
     {
-        var red = new Unicolour(ColourSpace.Wxy, Spectral.MaxWavelength, 0.5, 0.5);
+        var red = new Unicolour(ColourSpace.Wxy, SpectralBoundary.MaxWavelength, 0.5, 0.5);
         var infrared = new Unicolour(ColourSpace.Wxy, 750, 0.5, 0.5);
         TestUtils.AssertTriplet(infrared.Xyy.Triplet, red.Xyy.Triplet, Tolerance);
     }
@@ -115,7 +115,7 @@ public class KnownWxyTests
     [Test]
     public void InfraredNegative()
     {
-        var red = new Unicolour(ColourSpace.Wxy, Spectral.MaxWavelength, 0.5, 0.5);
+        var red = new Unicolour(ColourSpace.Wxy, SpectralBoundary.MaxWavelength, 0.5, 0.5);
         var infrared = new Unicolour(ColourSpace.Wxy, -450, 0.5, 0.5);
         TestUtils.AssertTriplet(infrared.Xyy.Triplet, red.Xyy.Triplet, Tolerance);
     }
@@ -123,7 +123,7 @@ public class KnownWxyTests
     [Test]
     public void InfraredPositiveComplementary()
     {
-        var complementary = XyzConfiguration.D65.Spectral.MaxNegativeWavelength;
+        var complementary = XyzConfiguration.D65.SpectralBoundary.MaxNegativeWavelength;
         var red = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var infrared = new Unicolour(ColourSpace.Wxy, 750, 0.5, 0.5);
         TestUtils.AssertTriplet(infrared.Xyy.Triplet, red.Xyy.Triplet, Tolerance);
@@ -132,7 +132,7 @@ public class KnownWxyTests
     [Test]
     public void InfraredNegativeComplementary()
     {
-        var complementary = XyzConfiguration.D65.Spectral.MaxNegativeWavelength;
+        var complementary = XyzConfiguration.D65.SpectralBoundary.MaxNegativeWavelength;
         var red = new Unicolour(ColourSpace.Wxy, complementary, 0.5, 0.5);
         var infrared = new Unicolour(ColourSpace.Wxy, -450, 0.5, 0.5);
         TestUtils.AssertTriplet(infrared.Xyy.Triplet, red.Xyy.Triplet, Tolerance);

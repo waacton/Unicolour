@@ -1916,10 +1916,10 @@ public class DatasetXkcdTests
     ];
 
     [TestCaseSource(nameof(HexTestData))]
-    public void Hex(string name, Unicolour unicolour)
+    public void Hex(string name, Unicolour colour)
     {
         var expected = HexLookup[name].ToUpper();
-        Assert.That(unicolour.Hex, Is.EqualTo(expected));
+        Assert.That(colour.Hex, Is.EqualTo(expected));
     }
 
     [Test] // not 954!
@@ -1934,11 +1934,11 @@ public class DatasetXkcdTests
     [Test]
     public void Name([ValueSource(nameof(Names))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
         
         var expected = HexLookup[name].ToUpper();
-        Assert.That(unicolour!.Hex, Is.EqualTo(expected));
+        Assert.That(colour!.Hex, Is.EqualTo(expected));
     }
 
     private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
@@ -1951,8 +1951,8 @@ public class DatasetXkcdTests
     [Test]
     public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
     }
 
     [TestCase("bubblegumpink")] // could be either "bubblegum pink" or "bubble gum pink"
@@ -1960,8 +1960,8 @@ public class DatasetXkcdTests
     [TestCase("yellow\tgreen")] // could be either "yellow green", "yellowgreen", or "yellow/green"
     public void NameWithMultipleMatches(string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
     }
     
     // names that look like they should exist based on other names
@@ -1992,7 +1992,7 @@ public class DatasetXkcdTests
     [TestCase(null)]
     public void NameNotFound(string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Null);
     }
 }

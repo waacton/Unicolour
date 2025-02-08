@@ -385,13 +385,13 @@ public class DescriptionTests
         var hues = new List<double> { h, h + 360, h - 360 };
         foreach (var hue in hues)
         {
-            var unicolour = new Unicolour(ColourSpace.Hsl, hue, s, l);
-            Assert.That(unicolour.Description.Split(" ").Length, Is.LessThanOrEqualTo(3));
-            Assert.That(unicolour.Description, Contains.Substring(included.ToString()));
+            var colour = new Unicolour(ColourSpace.Hsl, hue, s, l);
+            Assert.That(colour.Description.Split(" ").Length, Is.LessThanOrEqualTo(3));
+            Assert.That(colour.Description, Contains.Substring(included.ToString()));
             
             foreach (var excludedItem in excluded)
             {
-                Assert.That(unicolour.Description, !Contains.Substring(excludedItem.ToString()));
+                Assert.That(colour.Description, !Contains.Substring(excludedItem.ToString()));
             }
         }
     }

@@ -280,71 +280,117 @@ public class DatasetColourmapTests
         var lookup = Lookups[colourmap];
         var maxIndex = lookup.Length - 1;
         var distance = index / (double)maxIndex;
-        var unicolour = colourmap.Map(distance);
-        Assert.That(unicolour, Is.EqualTo(lookup[index]));
-        TestUtils.AssertTriplet<Rgb>(unicolour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0);
+        var colour = colourmap.Map(distance);
+        Assert.That(colour, Is.EqualTo(lookup[index]));
+        TestUtils.AssertTriplet<Rgb>(colour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0);
     }
     
     [TestCaseSource(nameof(InterpolatedTestData))]
     public void MapToInterpolated(Colourmap colourmap, double index, double expectedR, double expectedG, double expectedB)
     {
         var maxIndex = Lookups[colourmap].Length - 1;
-        var unicolour = colourmap.Map(index / maxIndex);
-        TestUtils.AssertTriplet<Rgb>(unicolour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0000000000001);
+        var colour = colourmap.Map(index / maxIndex);
+        TestUtils.AssertTriplet<Rgb>(colour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0000000000001);
     }
     
     [Test]
     public void MapBelowMin([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
         var expected = colourmap.Map(0);
-        var unicolour = colourmap.Map(-0.000000000000001);
-        Assert.That(unicolour, Is.EqualTo(expected));
+        var colour = colourmap.Map(-0.000000000000001);
+        Assert.That(colour, Is.EqualTo(expected));
     }
     
     [Test]
     public void MapAboveMax([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
         var expected = colourmap.Map(1);
-        var unicolour = colourmap.Map(1.000000000000001);
-        Assert.That(unicolour, Is.EqualTo(expected));
+        var colour = colourmap.Map(1.000000000000001);
+        Assert.That(colour, Is.EqualTo(expected));
     }
     
     [Test]
     public void MapToClippedLower([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
-        var unicolour = colourmap.MapWithClipping(-0.000000000000001);
-        Assert.That(unicolour, Is.EqualTo(Colourmap.Black));
+        var colour = colourmap.MapWithClipping(-0.000000000000001);
+        Assert.That(colour, Is.EqualTo(Colourmap.Black));
     }
     
     [Test]
     public void MapToClippedLowerCustom([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
         var clipColour = new Unicolour(ColourSpace.Rgb, 2, 0, 0);
-        var unicolour = colourmap.MapWithClipping(-0.000000000000001, lowerClipColour: clipColour);
-        Assert.That(unicolour, Is.EqualTo(clipColour));
+        var colour = colourmap.MapWithClipping(-0.000000000000001, lowerClipColour: clipColour);
+        Assert.That(colour, Is.EqualTo(clipColour));
     }
     
     [Test]
     public void MapToClippedUpper([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
-        var unicolour = colourmap.MapWithClipping(1.000000000000001);
-        Assert.That(unicolour, Is.EqualTo(Colourmap.White));
+        var colour = colourmap.MapWithClipping(1.000000000000001);
+        Assert.That(colour, Is.EqualTo(Colourmap.White));
     }
     
     [Test]
     public void MapToClippedUpperCustom([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
         var clipColour = new Unicolour(ColourSpace.Rgb, 0, 0, 2);
-        var unicolour = colourmap.MapWithClipping(1.000000000000001, upperClipColour: clipColour);
-        Assert.That(unicolour, Is.EqualTo(clipColour));
+        var colour = colourmap.MapWithClipping(1.000000000000001, upperClipColour: clipColour);
+        Assert.That(colour, Is.EqualTo(clipColour));
     }
     
     [Test]
     public void MapToClippedInRange([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
     {
         var clipColour = new Unicolour(ColourSpace.Rgb, 0, 2, 0);
-        var unicolour = colourmap.MapWithClipping(0.5, lowerClipColour: clipColour, upperClipColour: clipColour);
-        Assert.That(unicolour, Is.Not.EqualTo(clipColour));
+        var colour = colourmap.MapWithClipping(0.5, lowerClipColour: clipColour, upperClipColour: clipColour);
+        Assert.That(colour, Is.Not.EqualTo(clipColour));
+    }
+    
+    [Test]
+    public void PaletteMultiple([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
+    {
+        const int count = 9;
+        var palette = colourmap.Palette(count).ToArray();
+        Assert.That(palette.Length, Is.EqualTo(count));
+
+        double[] distances = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1];
+        for (var i = 0; i < count; i++)
+        {
+            var mapped = colourmap.Map(distances[i]);
+            Assert.That(palette[i], Is.EqualTo(mapped));
+        }
+    }
+
+    [Test]
+    public void PaletteTwo([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
+    {
+        var palette = colourmap.Palette(2).ToArray();
+        Assert.That(palette.Length, Is.EqualTo(2));
+        Assert.That(palette[0], Is.EqualTo(colourmap.Map(0)));
+        Assert.That(palette[1], Is.EqualTo(colourmap.Map(1)));
+    }
+    
+    [Test]
+    public void PaletteOne([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
+    {
+        var palette = colourmap.Palette(1).ToArray();
+        Assert.That(palette.Length, Is.EqualTo(1));
+        Assert.That(palette[0], Is.EqualTo(colourmap.Map(0.5)));
+    }
+    
+    [Test]
+    public void PaletteZero([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
+    {
+        var palette = colourmap.Palette(0).ToArray();
+        Assert.That(palette, Is.Empty);
+    }
+    
+    [Test]
+    public void PaletteNegative([ValueSource(nameof(allColourmaps))] Colourmap colourmap)
+    {
+        var palette = colourmap.Palette(-1).ToArray();
+        Assert.That(palette, Is.Empty);
     }
     
     [TestCaseSource(nameof(LookupCountTestData))]
@@ -366,5 +412,5 @@ public class DatasetColourmapTests
         var fraction = lookupIndex / 999.0;
         var actual = Cubehelix.Map(fraction, -6.6, 0.6, 1.75, 0.75);
         TestUtils.AssertTriplet<Rgb>(actual, expected, 0.0005);
-    }
+    } 
 }

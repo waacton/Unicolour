@@ -10,9 +10,9 @@ internal class ColourHeritageData
     private readonly Dictionary<ColourSpace, bool> hued;
     private readonly Dictionary<ColourSpace, bool> nan;
     
-    internal ColourHeritageData(Unicolour unicolour)
+    internal ColourHeritageData(Unicolour colour)
     {
-        var all = TestUtils.AllColourSpaces.ToDictionary(x => x, unicolour.GetRepresentation);
+        var all = TestUtils.AllColourSpaces.ToDictionary(x => x, colour.GetRepresentation);
         heritages = all.ToDictionary(x => x.Key, x => x.Value.Heritage);
         greyscale = all.ToDictionary(x => x.Key, x => x.Value.UseAsGreyscale);
         hued = all.ToDictionary(x => x.Key, x => x.Value.UseAsHued);

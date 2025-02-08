@@ -1,28 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>Wacton.Unicolour</AssemblyName>
         <RootNamespace>Wacton.Unicolour</RootNamespace>
-        <PackageId>$(AssemblyName)</PackageId>
+        <LangVersion>10</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>5.0.0</Version>
         <Authors>William Acton</Authors>
         <Description>🌈 Colour / Color conversion, interpolation, and comparison for .NET</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <LangVersion>10</LangVersion>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageVersion>4.8.0</PackageVersion>
         <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb CAM02 CAM16 HCT ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing color-palette colour-palette comparison colour-comparison color-comparison contrast luminance delta-e deltaE chromaticity display-p3 rec-2020 rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM gamut-map gamut-mapping temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia deuteranopia tritanopia achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour pigments pigment-mixing kubelka-munk paints paint-mixing</PackageTags>
-        <PackageReleaseNotes>Add ICC profile support (TRC transforms, Input device, Display device)</PackageReleaseNotes>
-        <ApplicationIcon>Resources\Unicolour.ico</ApplicationIcon>
+        <PackageReleaseNotes>Add pigments and Kubelka-Munk colour mixing</PackageReleaseNotes>
+        <PackageIcon>Resources\Unicolour.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageReadmeFile>README_Unicolour_nuget.md</PackageReadmeFile>
+        <PackageOutputPath>..\nuget</PackageOutputPath>
     </PropertyGroup>
-
-
+    
     <ItemGroup>
         <None Update="Resources\Unicolour.png">
             <Pack>True</Pack>
@@ -30,6 +29,11 @@
         </None>
 
         <None Include="..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+
+        <None Include="..\Unicolour.Readme\README_Unicolour_nuget.md">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>

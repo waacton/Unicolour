@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/217,393/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/217,398/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -14,9 +14,10 @@ Unicolour is the most comprehensive .NET library for working with colour:
 - Colour chromaticity
 - Colour temperature
 - Wavelength attributes
+- Pigments for natural paint mixing
 - ICC profiles for CMYK conversion
 
-Written in C# with zero dependencies and supports full cross-platform compatibility.
+Written in C# with zero dependencies and fully cross-platform compatible.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
@@ -30,10 +31,11 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 5. 💡 [Configuration](https://github.com/waacton/Unicolour#-configuration)
 6. ✨ [Examples](https://github.com/waacton/Unicolour#-examples)
 7. 🔮 [Datasets](https://github.com/waacton/Unicolour#-datasets)
+8. 🥽 [Experimental](https://github.com/waacton/Unicolour#-experimental)
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](https://github.com/waacton/Unicolour#convert-between-colour-spaces).
-It can be used to [mix and compare colours](https://github.com/waacton/Unicolour#mix-colours), as well as [other useful tools](https://github.com/waacton/Unicolour#-features) for working with colour.
+It can be used to [mix and compare colours](https://github.com/waacton/Unicolour#mix-colours), and offers [many useful features](https://github.com/waacton/Unicolour#-features) for working with colour.
 
 > **Supported colour spaces**
 >
@@ -95,9 +97,13 @@ Console.WriteLine(purple.Rgb); // 0.50 0.00 0.50
 Console.WriteLine(purple.Hex); // #800080
 
 /* HSL: [0, 1, 0.5] ⟶ [240, 1, 0.5] = [300, 1, 0.5] */
-var magenta = red.Mix(blue, ColourSpace.Hsl); 
+var magenta = red.Mix(blue, ColourSpace.Hsl);
 Console.WriteLine(magenta.Rgb); // 1.00 0.00 1.00
 Console.WriteLine(magenta.Hex); // #FF00FF
+
+// #FF0000, #FF0080, #FF00FF, #8000FF, #0000FF
+var palette = red.Palette(blue, ColourSpace.Hsl, 5);
+Console.WriteLine(palette.Select(colour => colour.Hex));
 ```
 
 The [difference or distance](https://github.com/waacton/Unicolour#compare-colours) between colours can be calculated using any delta E metric.
@@ -111,11 +117,11 @@ Console.WriteLine(difference); // 100.0000
 Other useful colour information is available, such as chromaticity coordinates,
 [temperature](https://github.com/waacton/Unicolour#convert-between-colour-and-temperature), and [dominant wavelength](https://github.com/waacton/Unicolour#get-wavelength-attributes).
 ```cs
-var equalTristimulus = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-Console.WriteLine(equalTristimulus.Chromaticity.Xy); // (0.3333, 0.3333)
-Console.WriteLine(equalTristimulus.Chromaticity.Uv); // (0.2105, 0.3158)
-Console.WriteLine(equalTristimulus.Temperature); // 5455.5 K (Δuv -0.00442)
-Console.WriteLine(equalTristimulus.DominantWavelength); // 596.1
+var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
+Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
+Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
+Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 ```
 
 Reference white points (e.g. D65) and the RGB model (e.g. sRGB) [can be configured](https://github.com/waacton/Unicolour#-configuration).
@@ -173,12 +179,15 @@ var (l, c, h) = colour.Oklch.Triplet;
 ### Mix colours
 Two colours can be mixed by [interpolating between them in any colour space](https://github.com/waacton/Unicolour#gradients),
 taking into account cyclic hue, interpolation distance, and alpha premultiplication.
+Palettes provide a range of evenly distributed mixes of two colours.
 ```cs
 var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
 var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
-var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
-var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing); 
+var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing);
+var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
+var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 ```
+
 | Hue&nbsp;span                  | Enum                 |
 |--------------------------------|----------------------|
 | Shorter&nbsp;👈&nbsp;_default_ | `HueSpan.Shorter`    |
@@ -212,15 +221,35 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔECAM16                                                | `DeltaE.Cam16`             |
 
 ### Map colour into RGB gamut
-Colours that cannot be displayed with the [configured RGB model](https://github.com/waacton/Unicolour#rgbconfiguration) can be mapped to the closest in-gamut colour.
+Colours that cannot be displayed with the [configured RGB model](https://github.com/waacton/Unicolour#rgbconfiguration) can be mapped to the closest in-gamut RGB colour.
 The gamut mapping algorithm conforms to CSS specifications.
 ```cs
 var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
-var inGamut = outOfGamut.MapToGamut();
+var inGamut = outOfGamut.MapToRgbGamut();
 ```
 
+| Gamut mapping method                                                                                    | Enum                            |
+|---------------------------------------------------------------------------------------------------------|---------------------------------|
+| RGB&nbsp;clipping                                                                                       | `GamutMap.RgbClipping`          |
+| Oklch&nbsp;chroma&nbsp;reduction&nbsp;(CSS&nbsp;specification)&nbsp;👈&nbsp;_default_                   | `GamutMap.OklchChromaReduction` |
+| [WXY&nbsp;purity&nbsp;reduction](https://unicolour.wacton.xyz/wxy-colour-space#%EF%B8%8F-gamut-mapping) | `GamutMap.WxyPurityReduction `  |
+
+### Simulate colour vision deficiency
+Colour vision deficiency (CVD) or colour blindness can be simulated, conveying how a particular colour might be perceived.
+```c#
+var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
+var noRed = colour.Simulate(Cvd.Protanopia);
+```
+
+| Colour&nbsp;vision&nbsp;deficiency                  | Enum                |
+|-----------------------------------------------------|---------------------|
+| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `Cvd.Protanopia`    |
+| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `Cvd.Deuteranopia`  |
+| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `Cvd.Tritanopia`    |
+| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `Cvd.Achromatopsia` |
+
 ### Convert between colour and temperature
-Correlated colour temperature (CCT) and delta UV (∆uv) can be obtained from a colour, and can be used to create a colour.
+Correlated colour temperature (CCT) and delta UV (∆uv) of a colour can be ascertained, and can be used to create a colour.
 CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
 ```cs
 var chromaticity = new Chromaticity(0.3457, 0.3585);
@@ -230,20 +259,6 @@ var (cct, duv) = d50.Temperature;
 var temperature = new Temperature(6504, 0.0032);
 var d65 = new Unicolour(temperature);
 var (x, y) = d65.Chromaticity;
-```
-
-### Create colour from spectral power distribution
-A spectral power distribution (SPD) can be used to create a colour.
-Wavelengths should be provided in either 1 nm or 5 nm intervals, and omitted wavelengths are assumed to have zero spectral power.
-```cs
-var spd = new Spd
-{
-    { 575, 0.5 }, 
-    { 580, 1.0 }, 
-    { 585, 0.5 }
-};
-        
-var intenseYellow = new Unicolour(spd);
 ```
 
 ### Get wavelength attributes
@@ -265,19 +280,25 @@ var impossibleBlue = new Unicolour(chromaticity);
 var isImaginary = impossibleBlue.IsImaginary;
 ```
 
-### Simulate colour vision deficiency
-A new `Unicolour` can be generated that simulates how a colour appears to someone with a particular colour vision deficiency (CVD) or colour blindness.
-```cs
-var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-var noRed = colour.SimulateProtanopia();
+### Create colour from spectral power distribution
+A colour can be created from a spectral power distribution (SPD).
+Wavelengths should be provided in either 1 nm or 5 nm intervals, and omitted wavelengths are assumed to have zero spectral power.
+```c#
+/* [575 nm] ⟶ 0.5 · [580 nm] ⟶ 1.0 · [585 nm] ⟶ 0.5 */
+var spd = new Spd(start: 575, interval: 5, coefficients: [0.5, 1.0, 0.5]);
+var intenseYellow = new Unicolour(spd);
 ```
 
-| Colour&nbsp;vision&nbsp;deficiency                  | Method                    |
-|-----------------------------------------------------|---------------------------|
-| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `SimulateProtanopia()`    |
-| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `SimulateDeuteranopia()`  |
-| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `SimulateTritanopia()`    |
-| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `SimulateAchromatopsia()` |
+### Model pigment and paint colours
+Pigments can be combined using the Kubelka-Munk theory. The result is a colour that reflects natural paint mixing.
+Pigment measurements are required, either coefficients for absorption _k_ and scattering _s_ (two-constant) or a reflectance curve _r_ (single-constant).
+Saunderson correction can be applied when using _k_ and _s_ and assumes measurements were taken in SPEX mode.
+```c#
+/* populate k and s with measurement data */
+var phthaloBlue = new Pigment(startWavelength: 380, wavelengthInterval: 10, k: [], s: []);
+var hansaYellow = new Pigment(startWavelength: 380, wavelengthInterval: 10, k: [], s: []);
+var green = new Unicolour(pigments: [phthaloBlue, hansaYellow], weights: [0.5, 0.5]);
+```
 
 ### Use ICC profiles for CMYK conversion
 Device-dependent colour prints of 4 (e.g. FOGRA39 CMYK) or more (e.g. FOGRA55 CMYKOGV) are supported through ICC profiles.
@@ -286,7 +307,7 @@ If no ICC profile is provided, or if the profile is incompatible, naive conversi
 using Wacton.Unicolour.Icc;
 
 var fogra39 = new IccConfiguration("./Fogra39.icc", Intent.RelativeColorimetric);
-var config = new Configuration(iccConfiguration: fogra39);
+var config = new Configuration(iccConfig: fogra39);
 
 var navyRgb = new Unicolour(config, ColourSpace.Rgb255, 0, 0, 128);
 Console.WriteLine(navyRgb.Icc); // 1.0000 0.8977 0.0001 0.2867 CMYK
@@ -313,12 +334,12 @@ The following tables summarise which ICC profiles are compatible with Unicolour:
 | ❌ | Abstract `abst`      |
 | ❌ | NamedColor `nmcl`    |
 
-|   | Transform                                                           |                                                                                        
+|   | Transform                                                           |
 |---|---------------------------------------------------------------------|
-| ✅ | AToB / BToA `A2B0` `A2B1` `A2B2` `B2A0` `B2A1` `B2A2`               |                                            
-| ✅ | TRC matrix `rTRC` `gTRC` `bTRC` `rXYZ` `gXYZ` `bXYZ`                |                                             
-| ✅ | TRC grey `kTRC`                                                     |                                                                                  
-| ❌ | DToB / BToD `D2B0` `D2B1` `D2B2` `D2B3` `B2D0` `B2D1` `B2D2` `B2D3` |         
+| ✅ | AToB / BToA `A2B0` `A2B1` `A2B2` `B2A0` `B2A1` `B2A2`               |
+| ✅ | TRC matrix `rTRC` `gTRC` `bTRC` `rXYZ` `gXYZ` `bXYZ`                |
+| ✅ | TRC grey `kTRC`                                                     |
+| ❌ | DToB / BToD `D2B0` `D2B1` `D2B2` `D2B3` `B2D0` `B2D1` `B2D2` `B2D3` |
 
 A wider variety of ICC profiles will be supported in future releases.
 If a problem is encountered using an ICC profile that meets the above criteria, please [raise an issue](https://github.com/waacton/Unicolour/issues).
@@ -348,7 +369,7 @@ No dependencies are used, so there is no risk of reliance on deprecated, obsolet
 Every line of code is tested, and any defect is [Unicolour's responsibility](https://i.giphy.com/pDsCoECKh1Pa.webp).
 
 ## 💡 Configuration
-The `Configuration` parameter can be used to customise how colour is processed.
+The `Configuration` parameter can be used to define the context of the colour.
 
 Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
 ```cs
@@ -478,8 +499,8 @@ When a [conversion to or from XYZ space](https://github.com/waacton/Unicolour#co
 |-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
 | `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv                                                                                                                    |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 | 
-| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · HCT                                                                                                                                      | 
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 |
+| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · HCT                                                                                                                                      |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,
@@ -488,12 +509,12 @@ in turn enabling conversions between different RGB models, XYZ white points, CAM
 ```cs
 /* pure sRGB green */
 var srgbConfig = new Configuration(RgbConfiguration.StandardRgb);
-var srgbColour = new Unicolour(srgbConfig, ColourSpace.Rgb, 0, 1, 0);                         
+var srgbColour = new Unicolour(srgbConfig, ColourSpace.Rgb, 0, 1, 0);
 Console.WriteLine(srgbColour.Rgb); // 0.00 1.00 0.00
 
 /* ⟶ Display P3 */
 var displayP3Config = new Configuration(RgbConfiguration.DisplayP3);
-var displayP3Colour = srgbColour.ConvertToConfiguration(displayP3Config); 
+var displayP3Colour = srgbColour.ConvertToConfiguration(displayP3Config);
 Console.WriteLine(displayP3Colour.Rgb); // 0.46 0.99 0.30
 
 /* ⟶ Rec. 2020 */
@@ -515,9 +536,13 @@ This repository contains projects showing how Unicolour can be used to create:
 Example code to create gradient images using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp)
 can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/blob/main/Example.Gradients/Program.cs) project.
 
-| ![Gradients generated through different colour spaces, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spaces.png) |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _Gradients generated through each colour space_                                                                                                                   |
+| ![Smooth gradient of deep pink to aquamarine gradient, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-simple-mixing.png) | ![Palette of deep pink to aquamarine gradient, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-simple-palette.png)  |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Gradient of deep pink to aquamarine through Oklch colour space using `Mix()`_                                                                                           | _Gradient of deep pink to aquamarine through Oklch colour space using `Palette()`_                                                                                 |
+
+| ![Gradient of purple to orange through many colour spaces, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spaces-purple-orange.png) | ![Gradient of black to green through many colour spaces, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spaces-black-green.png) |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Gradient of purple to orange generated in every colour space_                                                                                                                      | _Gradient of black to green generated in every colour space_                                                                                                                    |
 
 | ![Visualisation of temperature from 1,000 K to 13,000 K, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-temperature.png) |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -531,9 +556,17 @@ can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/blob
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | _Demonstration of interpolating from red to transparent to blue, with and without premultiplied alpha_                                                                                                                          |
 
-| ![Perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-maps.png) |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _Perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                                         |   
+| ![Perceptually uniform colourmaps from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-maps.png) | ![Perceptually uniform colour palettes from Unicolour.Datasets, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-maps-palette.png) |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Perceptually uniform colourmaps from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                                         | _Perceptually uniform colour palettes from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                                                 |
+
+| ![Mixes of two-constant pigments to titanium white, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-pigments-mix.png) | ![Palettes of two-constant pigments to titanium white, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-pigments-palette.png) |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Mixes of two-constant pigments to titanium white from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                         | _Palettes of two-constant pigments to titanium white from [Unicolour.Datasets](https://github.com/waacton/Unicolour#-datasets)_                                             |
+
+| ![Mixes of single-constant pigments emulating Spectral.js, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spectraljs-mix.png) | ![Palettes of single-constant pigments emulating Spectral.js, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/gradient-spectraljs-palette.png) |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Mixes of single-constant pigments emulating Spectral.js from [Unicolour.Experimental](https://github.com/waacton/Unicolour#-experimental)_                                   | _Palettes of single-constant pigments emulating Spectral.js from [Unicolour.Experimental](https://github.com/waacton/Unicolour#-experimental)_                                       |
 
 ### Heatmaps
 Example code to create heatmaps of luminance using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) with images from 🚀 [NASA](https://www.nasa.gov/)
@@ -581,7 +614,7 @@ can be seen in the [Example.Console](https://github.com/waacton/Unicolour/blob/m
 
 ### Web
 Example code to create a client-side colour picker web application using 🕸️ [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
-can be seen in the [Example.Web](https://github.com/waacton/Unicolour/blob/main/Example.Web) project.
+can be seen in the [Example.Web](https://github.com/waacton/Unicolour/tree/main/Example.Web) project.
 
 See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 
@@ -592,7 +625,7 @@ See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 
 ### Unity
 Example code to create 3D visualisations of colour spaces using 🎮 [Unity](https://unity.com/)
-can be seen in the [Example.Unity](https://github.com/waacton/Unicolour/blob/main/Example.Unity) project.
+can be seen in the [Example.Unity](https://github.com/waacton/Unicolour/tree/main/Example.Unity) project.
 
 Try it out online in [Unity Play](https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo)!
 
@@ -605,7 +638,7 @@ Try it out online in [Unity Play](https://play.unity.com/en/games/6826f61f-3806-
 | _3D movement through colour spaces in Unity_                                                                                                            |
 
 ## 🔮 Datasets
-Some colour datasets have been compiled for convenience and are available as a [NuGet package](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/).
+Some colour datasets have been compiled for convenience in the [Unicolour.Datasets](https://github.com/waacton/Unicolour/tree/main/Unicolour.Datasets) project.
 
 Commonly used sets of colours:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colours
@@ -626,6 +659,9 @@ Colour data used in academic literature:
 - [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
 - [Ebner-Fairchild](https://doi.org/10.1117/12.298269) constant perceived-hue data
 
+Known pigments:
+- [Artist Paint Spectral Database](https://www.rit.edu/science/studio-scientific-imaging-and-archiving-cultural-heritage#publications) two-constant pigment data
+
 Example usage:
 
 1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour.Datasets/)
@@ -643,6 +679,43 @@ using Wacton.Unicolour.Datasets;
 var pink = Css.DeepPink;
 var green = Xkcd.NastyGreen;
 var mapped = Colourmaps.Viridis.Map(0.5);
+var palette = Colourmaps.Turbo.Palette(10);
+```
+
+## 🥽 Experimental
+There are additional useful features that are considered too ambiguous, indeterminate, or opinionated to be included as part of the core [Unicolour library](https://github.com/waacton/Unicolour#-features).
+These have been assembled in the [Unicolour.Experimental](https://github.com/waacton/Unicolour/tree/main/Unicolour.Experimental) project.
+
+1. Install the package from [NuGet](https://www.nuget.org/packages/Wacton.Unicolour.Experimental/)
+```
+dotnet add package Wacton.Unicolour.Experimental
+```
+
+2. Import the package
+```cs
+using Wacton.Unicolour.Experimental;
+```
+
+### Generate pigments
+A reflectance curve can be generated for any colour, approximating a single-constant pigment.
+This enables Kubelka-Munk pigment mixing without taking reflectance measurements.
+Note that, similar to metamerism, there are infinitely many reflectance curves that can generate a single colour; this will find just one.
+```cs
+var redPigment = PigmentGenerator.From(new Unicolour("#FF0000"));
+var bluePigment = PigmentGenerator.From(new Unicolour("#0000FF"));
+var magenta = new Unicolour([redPigment, bluePigment], [0.5, 0.5]);
+```
+
+### Emulate Spectral.js
+[Spectral.js](https://onedayofcrypto.art/) uses artificial reflectance curves to perform single-constant pigment mixing.
+However, input concentrations are adjusted according to luminance and a custom weighting curve that the author found to give aesthetically pleasing results.
+This behaviour has been replicated here except 1) reflectance curves are more accurately generated at a performance cost
+and 2) it has been extended to be able to mix more than two colours.
+```cs
+var blue = new Unicolour("#0000FF");
+var yellow = new Unicolour("#FFFF00");
+var green = SpectralJs.Mix([blue, yellow], [0.5, 0.5]);
+var palette = SpectralJs.Palette(blue, yellow, 9);
 ```
 
 ---

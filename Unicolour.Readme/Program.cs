@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Wacton.Unicolour;
 using Wacton.Unicolour.Datasets;
+using Wacton.Unicolour.Experimental;
 using Wacton.Unicolour.Icc;
 
 const string repoReadme = "README.md";
@@ -39,19 +40,30 @@ void ProcessDocsReadme(string readmePath)
     textForDocs = Regex.Replace(textForDocs, @"<details>(.|\n)*?<\/details>", string.Empty);
 
     var ukText = textForDocs;
-    var usText = textForDocs;
-
     ukText += Environment.NewLine;
     ukText += $"Also available in [American]({readmeAmericanFilename}) \ud83c\uddfa\ud83c\uddf8.";
     File.WriteAllText(Path.Combine(sourceRoot, Path.GetFileName(readmePath)), ukText);
+    
+    // substitute parts of the readme text that shouldn't change
+    var guidSubstitutes = new (string original, string guid)[]
+    {
+        ("https://unicolour.wacton.xyz/wxy-colour-space", Guid.NewGuid().ToString()),
+        ("https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo", Guid.NewGuid().ToString()),
+        ("Unicolour", Guid.NewGuid().ToString()),
+        ("unicolour", Guid.NewGuid().ToString()),
+        ("ColourSpace", Guid.NewGuid().ToString())
+    };
 
-    // could use regex but why bother? also want to be careful not to change spelling of "unicolour", "ColourSpace", etc.
-    usText = usText
+    var guidText = guidSubstitutes.Aggregate(textForDocs, (current, substitute) => current.Replace(substitute.original, substitute.guid));
+
+    // could use regex but why bother?
+    var usText = guidText
         .Replace("Colour ", "Color ")
         .Replace("Colours ", "Colors ")
         .Replace("Colour&", "Color&")
         .Replace("colour&", "color&")
         .Replace(" colour", " color")
+        .Replace("colour.", "color.")
         .Replace("-colour", "-color")
         .Replace("colourful", "colorful")
         .Replace(" grey ", " gray ")
@@ -62,6 +74,8 @@ void ProcessDocsReadme(string readmePath)
         .Replace("isation ", "ization ")
         .Replace("isations ", "izations ")
         .Replace("metre", "meter");
+    
+    usText = guidSubstitutes.Aggregate(usText, (current, substitute) => current.Replace(substitute.guid, substitute.original));
     usText += Environment.NewLine;
     usText += $"Also available in [British]({readmeFilename}) \ud83c\uddec\ud83c\udde7.";
     File.WriteAllText(Path.Combine(sourceRoot, Path.GetFileName(readmeAmericanPath)), usText);
@@ -128,17 +142,21 @@ void Quickstart()
     var magenta = red.Mix(blue, ColourSpace.Hsl); 
     Console.WriteLine(magenta.Rgb); // 1.00 0.00 1.00
     Console.WriteLine(magenta.Hex); // #FF00FF
+    
+    // #FF0000, #FF0080, #FF00FF, #8000FF, #0000FF
+    var palette = red.Palette(blue, ColourSpace.Hsl, 5);
+    Console.WriteLine(palette.Select(colour => colour.Hex));
 
     var white = new Unicolour(ColourSpace.Oklab, 1.0, 0.0, 0.0);
     var black = new Unicolour(ColourSpace.Oklab, 0.0, 0.0, 0.0);
     var difference = white.Difference(black, DeltaE.Ciede2000);
     Console.WriteLine(difference); // 100.0000
 
-    var equalTristimulus = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-    Console.WriteLine(equalTristimulus.Chromaticity.Xy); // (0.3333, 0.3333)
-    Console.WriteLine(equalTristimulus.Chromaticity.Uv); // (0.2105, 0.3158)
-    Console.WriteLine(equalTristimulus.Temperature); // 5455.5 K (Δuv -0.00442)
-    Console.WriteLine(equalTristimulus.DominantWavelength); // 596.1
+    var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
+    Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
+    Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
+    Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+    Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 }
 
 void FeatureConvert()
@@ -153,6 +171,7 @@ void FeatureMix()
     var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
     var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
     var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
+    var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 }
 
 void FeatureCompare()
@@ -169,6 +188,12 @@ void FeatureGamutMap()
     var inGamut = outOfGamut.MapToRgbGamut();
 }
 
+void FeatureCvd()
+{
+    var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
+    var noRed = colour.Simulate(Cvd.Protanopia);
+}
+
 void FeatureTemperature()
 {
     var chromaticity = new Chromaticity(0.3457, 0.3585);
@@ -178,13 +203,6 @@ void FeatureTemperature()
     var temperature = new Temperature(6504, 0.0032);
     var d65 = new Unicolour(temperature);
     var (x, y) = d65.Chromaticity;
-}
-
-void FeatureSpd()
-{
-    // [575 nm] -> 0.5 · [580 nm] -> 1.0 · [585 nm] -> 0.5
-    var spd = new Spd(start: 575, interval: 5, [0.5, 1.0, 0.5]);
-    var intenseYellow = new Unicolour(spd);
 }
 
 void FeatureWavelength()
@@ -202,10 +220,19 @@ void FeatureImaginary()
     var isImaginary = impossibleBlue.IsImaginary;
 }
 
-void FeatureCvd()
+void FeatureSpd()
 {
-    var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-    var noRed = colour.Simulate(Cvd.Protanopia);
+    /* [575 nm] -> 0.5 · [580 nm] -> 1.0 · [585 nm] -> 0.5 */
+    var spd = new Spd(start: 575, interval: 5, coefficients: [0.5, 1.0, 0.5]);
+    var intenseYellow = new Unicolour(spd);
+}
+
+void FeaturePigment()
+{
+    /* populate k and s with measurement data */
+    var phthaloBlue = new Pigment(startWavelength: 380, wavelengthInterval: 10, k: [], s: []);
+    var hansaYellow = new Pigment(startWavelength: 380, wavelengthInterval: 10, k: [], s: []);
+    var green = new Unicolour(pigments: [phthaloBlue, hansaYellow], weights: [0.5, 0.5]);
 }
 
 void FeatureIcc()
@@ -279,4 +306,20 @@ void Datasets()
     var pink = Css.DeepPink;
     var green = Xkcd.NastyGreen;
     var mapped = Colourmaps.Viridis.Map(0.5);
+    var palette = Colourmaps.Turbo.Palette(10);
+}
+
+void ExperimentalPigmentGenerator()
+{
+    var redPigment = PigmentGenerator.From(new Unicolour("#FF0000"));
+    var bluePigment = PigmentGenerator.From(new Unicolour("#0000FF"));
+    var magenta = new Unicolour([redPigment, bluePigment], [0.5, 0.5]);
+}
+
+void ExperimentalSpectralJs()
+{
+    var blue = new Unicolour("#0000FF");
+    var yellow = new Unicolour("#FFFF00");
+    var green = SpectralJs.Mix([blue, yellow], [0.5, 0.5]);
+    var palette = SpectralJs.Palette(blue, yellow, 9);
 }

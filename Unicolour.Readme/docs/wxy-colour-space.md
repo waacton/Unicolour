@@ -165,7 +165,7 @@ const double decrement = 0.05; // reduce for greater accuracy
 
 var (w, x, y) = (530, 0.5, 0.7);
 var colour = new Unicolour(ColourSpace.Wxy, w, x, y);
-while (!colour.IsInDisplayGamut)
+while (!colour.IsInRgbGamut)
 {
     x -= decrement;
     colour = new Unicolour(ColourSpace.Wxy, w, x, y);

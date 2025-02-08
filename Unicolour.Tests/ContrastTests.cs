@@ -87,18 +87,18 @@ public class ContrastTests
         Assert.That(delta1, Is.EqualTo(delta2));
     }
 
-    private static void AssertRelativeLuminance(Unicolour unicolour)
+    private static void AssertRelativeLuminance(Unicolour colour)
     {
         // WCAG relative luminance is defined according to sRGB https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
         // which should match XYZ.Y under D65
         // so need to ensure colour is using the correct configuration for the formula to work 
-        if (unicolour.Configuration != Configuration.Default)
+        if (colour.Configuration != Configuration.Default)
         {
-            unicolour = unicolour.ConvertToConfiguration(Configuration.Default);
+            colour = colour.ConvertToConfiguration(Configuration.Default);
         }
 
-        var (r, g, b) = unicolour.RgbLinear.Triplet;
+        var (r, g, b) = colour.RgbLinear.Triplet;
         var expected = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
+        Assert.That(colour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
     }
 }

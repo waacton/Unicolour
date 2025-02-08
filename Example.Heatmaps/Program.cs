@@ -28,8 +28,8 @@ void Generate(string filename)
     var pixels = new Rgba32[originalImage.Width * originalImage.Height];
     originalImage.CopyPixelDataTo(pixels);
 
-    var unicolours = pixels.Select(pixel => new Unicolour(ColourSpace.Rgb255, pixel.R, pixel.G, pixel.B, pixel.A));
-    var luminances = unicolours.Select(colour => colour.RelativeLuminance).ToArray();
+    var colours = pixels.Select(pixel => new Unicolour(ColourSpace.Rgb255, pixel.R, pixel.G, pixel.B, pixel.A));
+    var luminances = colours.Select(colour => colour.RelativeLuminance).ToArray();
     var maxLuminance = luminances.Max();
     var minLuminance = luminances.Min();
     var normalisedLuminances = luminances.Select(luminance => Normalise(luminance, minLuminance, maxLuminance)).ToArray();
@@ -86,11 +86,11 @@ void AddLabel(Image image, string text, Unicolour colour)
     image.Mutate(context => context.DrawText(textOptions, text, AsColor(colour)));
 }
 
-Rgba32 AsRgba32(Unicolour unicolour)
+Rgba32 AsRgba32(Unicolour colour)
 {
-    var (r255, g255, b255) = unicolour.Rgb.Byte255.Triplet;
-    var a255 = unicolour.Alpha.A255;
+    var (r255, g255, b255) = colour.Rgb.Byte255.Triplet;
+    var a255 = colour.Alpha.A255;
     return new((byte)r255, (byte)g255, (byte)b255, (byte)a255);
 }
 
-Color AsColor(Unicolour unicolour) => new(AsRgba32(unicolour));
+Color AsColor(Unicolour colour) => new(AsRgba32(colour));

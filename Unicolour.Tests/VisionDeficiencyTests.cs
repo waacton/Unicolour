@@ -21,8 +21,8 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
     public void Protanopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
-        var unicolour = StandardRgb.Lookup[colourName];
-        var simulatedColour = unicolour.SimulateProtanopia();
+        var colour = StandardRgb.Lookup[colourName];
+        var simulatedColour = colour.Simulate(Cvd.Protanopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -37,8 +37,8 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
     public void Deuteranopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
-        var unicolour = StandardRgb.Lookup[colourName];
-        var simulatedColour = unicolour.SimulateDeuteranopia();
+        var colour = StandardRgb.Lookup[colourName];
+        var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -53,8 +53,8 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
     public void Tritanopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
-        var unicolour = StandardRgb.Lookup[colourName];
-        var simulatedColour = unicolour.SimulateTritanopia();
+        var colour = StandardRgb.Lookup[colourName];
+        var simulatedColour = colour.Simulate(Cvd.Tritanopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
@@ -69,8 +69,8 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
     public void Achromatopsia(string colourName, double expectedR, double expectedG, double expectedB)
     {
-        var unicolour = StandardRgb.Lookup[colourName];
-        var simulatedColour = unicolour.SimulateAchromatopsia();
+        var colour = StandardRgb.Lookup[colourName];
+        var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -78,32 +78,32 @@ public class VisionDeficiencyTests
     [Test]
     public void ProtanopiaNotNumber()
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = unicolour.SimulateProtanopia();
+        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var simulatedColour = colour.Simulate(Cvd.Protanopia);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     
     [Test]
     public void DeuteranopiaNotNumber()
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = unicolour.SimulateDeuteranopia();
+        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     
     [Test]
     public void TritanopiaNotNumber()
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = unicolour.SimulateTritanopia();
+        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var simulatedColour = colour.Simulate(Cvd.Tritanopia);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     
     [Test]
     public void AchromatopsiaNotNumber()
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = unicolour.SimulateAchromatopsia();
+        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
+        var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
 }

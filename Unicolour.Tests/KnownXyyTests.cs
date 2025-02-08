@@ -36,8 +36,8 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.E), 0.333333, 0.333333, 0.000000)]
     public void Black(string illuminantName, double x, double y, double luminance)
     {
-        var unicolour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0, 0, 0);
-        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var colour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0, 0, 0);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.312727, 0.329023, 0.000001)]
@@ -45,8 +45,8 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.E), 0.333333, 0.333333, 0.000001)]
     public void NearBlack(string illuminantName, double x, double y, double luminance)
     {
-        var unicolour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0.00001, 0.00001, 0.00001);
-        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var colour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0.00001, 0.00001, 0.00001);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.312727, 0.329023, 0.214041)]
@@ -54,8 +54,8 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.E), 0.333333, 0.333333, 0.214041)]
     public void Grey(string illuminantName, double x, double y, double luminance)
     {
-        var unicolour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0.5, 0.5, 0.5);
-        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var colour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 0.5, 0.5, 0.5);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
 
     [TestCase(nameof(Illuminant.D65), 0.312727, 0.329023, 1.000000)]
@@ -63,8 +63,8 @@ public class KnownXyyTests
     [TestCase(nameof(Illuminant.E), 0.333333, 0.333333, 1.000000)]
     public void White(string illuminantName, double x, double y, double luminance)
     {
-        var unicolour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 1, 1, 1);
-        TestUtils.AssertTriplet(unicolour.Xyy.Triplet, new(x, y, luminance), Tolerance);
+        var colour = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Rgb, 1, 1, 1);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(x, y, luminance), Tolerance);
     }
     
     [TestCase(-0.00000000001)]
@@ -72,8 +72,8 @@ public class KnownXyyTests
     [TestCase(0.00000000001)]
     public void ChromaticityY(double chromaticityY)
     {
-        var unicolour = new Unicolour(ColourSpace.Xyy, 0.5, chromaticityY, 1);
-        var xyz = unicolour.Xyz;
+        var colour = new Unicolour(ColourSpace.Xyy, 0.5, chromaticityY, 1);
+        var xyz = colour.Xyz;
         
         var useZero = chromaticityY <= 0;
         Assert.That(xyz.X, useZero ? Is.EqualTo(0) : Is.GreaterThan(0));

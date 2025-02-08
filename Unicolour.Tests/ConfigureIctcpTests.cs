@@ -41,8 +41,8 @@ public class ConfigureIctcpTests
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
     public void Rec2020RgbToIctcp1()
     {
-        var unicolour = new Unicolour(Config1, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
-        TestUtils.AssertTriplet(unicolour.Ictcp.Triplet, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
+        var colour = new Unicolour(Config1, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
+        TestUtils.AssertTriplet(colour.Ictcp.Triplet, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
         
         var white = new Unicolour(Config1, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config1, ColourSpace.Xyz, 0, 0, 0);
@@ -53,8 +53,8 @@ public class ConfigureIctcpTests
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
     public void Rec2020RgbToIctcp203()
     {
-        var unicolour = new Unicolour(Config203, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
-        TestUtils.AssertTriplet(unicolour.Ictcp.Triplet, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
+        var colour = new Unicolour(Config203, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
+        TestUtils.AssertTriplet(colour.Ictcp.Triplet, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
         
         var white = new Unicolour(Config203, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config203, ColourSpace.Xyz, 0, 0, 0);

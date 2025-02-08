@@ -22,7 +22,16 @@
         <None Update="docs\favicon.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\gradient-spaces.png">
+        <None Update="docs\gradient-simple-mixing.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-simple-palette.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-spaces-purple-orange.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-spaces-black-green.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\gradient-temperature.png">
@@ -35,6 +44,21 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\gradient-maps.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-maps-palette.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-pigments-mix.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-pigments-palette.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-spectraljs-mix.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-spectraljs-palette.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\diagram-xy-chromaticity-rgb.png">

@@ -100,13 +100,13 @@ public class KnownCmykTests
         Assert.That(actual[1], Is.EqualTo(expected[1]).Within(tolerance));
         Assert.That(actual[2], Is.EqualTo(expected[2]).Within(tolerance));
 
-        var unicolour = Cmy.ToUnicolour(actual);
-        TestUtils.AssertTriplet<Rgb>(unicolour, original.Rgb.Triplet, tolerance);
+        var colour = Cmy.ToUnicolour(actual);
+        TestUtils.AssertTriplet<Rgb>(colour, original.Rgb.Triplet, tolerance);
     }
     
-    private static void AssertCmyk(Unicolour unicolour, double[] expected, double tolerance = Tolerance)
+    private static void AssertCmyk(Unicolour colour, double[] expected, double tolerance = Tolerance)
     {
-        var actual = Channels.UncalibratedFromRgb(unicolour.Rgb).Values;
+        var actual = Channels.UncalibratedFromRgb(colour.Rgb).Values;
         Assert.That(actual[0], Is.EqualTo(expected[0]).Within(tolerance));
         Assert.That(actual[1], Is.EqualTo(expected[1]).Within(tolerance));
         Assert.That(actual[2], Is.EqualTo(expected[2]).Within(tolerance));

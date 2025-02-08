@@ -1,6 +1,6 @@
 namespace Wacton.Unicolour;
 
-internal class Spectral
+internal class SpectralBoundary
 {
     private readonly Observer observer;
     private readonly Chromaticity whiteChromaticity;
@@ -14,7 +14,7 @@ internal class Spectral
     internal double MinNegativeWavelength => minNegativeWavelength.Value;
     internal double MaxNegativeWavelength => maxNegativeWavelength.Value;
     
-    internal Spectral(Observer observer, Chromaticity whiteChromaticity)
+    internal SpectralBoundary(Observer observer, Chromaticity whiteChromaticity)
     {
         this.observer = observer;
         this.whiteChromaticity = whiteChromaticity;
@@ -24,20 +24,20 @@ internal class Spectral
         minNegativeWavelength = new Lazy<double>(() =>
         {
             // possible to be null if user sets white point as monochromatic light (i.e. on the boundary itself)
-            var intersects = FindBoundaryIntersects(lineOfPurples.Value.EndChromaticity);
+            var intersects = FindIntersects(lineOfPurples.Value.EndChromaticity);
             return intersects == null ? double.NaN : -intersects.Far.Wavelength;
         });
         
         maxNegativeWavelength = new Lazy<double>(() =>
         {
             // possible to be null if user sets white point as monochromatic light (i.e. on the boundary itself)
-            var intersects = FindBoundaryIntersects(lineOfPurples.Value.StartChromaticity);
+            var intersects = FindIntersects(lineOfPurples.Value.StartChromaticity);
             return intersects == null ? double.NaN : -intersects.Far.Wavelength;
         });
     }
 
-    internal Intersects? FindBoundaryIntersects(Chromaticity sample) => FindBoundaryIntersects(sample, whiteChromaticity);
-    private Intersects? FindBoundaryIntersects(Chromaticity sample, Chromaticity white)
+    internal Intersects? FindIntersects(Chromaticity sample) => FindIntersects(sample, whiteChromaticity);
+    private Intersects? FindIntersects(Chromaticity sample, Chromaticity white)
     {
         if (sample == white) return null;
         var whiteToSampleLine = Line.FromPoints(white.Xy, sample.Xy);
@@ -105,7 +105,7 @@ internal class Spectral
         );
     }
     
-    internal bool IsImaginary(Chromaticity chromaticity)
+    internal bool IsOutside(Chromaticity chromaticity)
     {
         /*
          * although FindBoundaryIntersects takes a "white" chromaticity as an argument
@@ -115,7 +115,7 @@ internal class Spectral
          */
         const double sampleOffset = 0.00001;
         var offsetSample = new Chromaticity(chromaticity.X, chromaticity.Y + sampleOffset);
-        var intersects = FindBoundaryIntersects(offsetSample, chromaticity);
+        var intersects = FindIntersects(offsetSample, chromaticity);
 
         // no intersects; point is definitely outside the locus
         if (intersects == null) return true;

@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
         <PackageIcon>Resources\Unicolour.Datasets.png</PackageIcon>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset colormap colormaps colourmap colourmaps</PackageTags>
+        <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset colormap colormaps colourmap colourmaps color-palette colour-palette pigments paints</PackageTags>
         <PackageReleaseNotes>Add Nord dataset</PackageReleaseNotes>
     </PropertyGroup>
 

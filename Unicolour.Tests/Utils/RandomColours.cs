@@ -119,6 +119,7 @@ internal static class RandomColours
     {
         return new Unicolour(configuration ?? Configuration.Default, colourSpace, GetRandomTriplet(colourSpace).Tuple, Alpha());
     }
+    
     private static ColourTriplet GetRandomTriplet(ColourSpace colourSpace)
     {
         return colourSpace switch

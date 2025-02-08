@@ -140,10 +140,10 @@ internal static class TestUtils
         AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
-    internal static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
         var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
-        var colourRepresentation = unicolour.GetRepresentation(colourSpace);
+        var colourRepresentation = colour.GetRepresentation(colourSpace);
         AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
     }
 
@@ -175,62 +175,62 @@ internal static class TestUtils
         Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance), "Alpha");
     }
     
-    internal static void AssertNoPropertyError(Unicolour unicolour)
+    internal static void AssertNoPropertyError(Unicolour colour)
     {
         Assert.DoesNotThrow(AccessProperties);
         return;
 
         void AccessProperties()
         {
-            AccessProperty(() => unicolour.Alpha);
-            AccessProperty(() => unicolour.Cam02);
-            AccessProperty(() => unicolour.Cam16);
-            AccessProperty(() => unicolour.Chromaticity);
-            AccessProperty(() => unicolour.Configuration);
-            AccessProperty(() => unicolour.Description);
-            AccessProperty(() => unicolour.DominantWavelength);
-            AccessProperty(() => unicolour.ExcitationPurity);
-            AccessProperty(() => unicolour.Hct);
-            AccessProperty(() => unicolour.Hex);
-            AccessProperty(() => unicolour.Hpluv);
-            AccessProperty(() => unicolour.Hsb);
-            AccessProperty(() => unicolour.Hsi);
-            AccessProperty(() => unicolour.Hsl);
-            AccessProperty(() => unicolour.Hsluv);
-            AccessProperty(() => unicolour.Hwb);
-            AccessProperty(() => unicolour.Icc);
-            AccessProperty(() => unicolour.Ictcp);
-            AccessProperty(() => unicolour.Ipt);
-            AccessProperty(() => unicolour.IsImaginary);
-            AccessProperty(() => unicolour.IsInDisplayGamut);
-            AccessProperty(() => unicolour.Jzazbz);
-            AccessProperty(() => unicolour.Jzczhz);
-            AccessProperty(() => unicolour.Lab);
-            AccessProperty(() => unicolour.Lchab);
-            AccessProperty(() => unicolour.Lchuv);
-            AccessProperty(() => unicolour.Luv);
-            AccessProperty(() => unicolour.Oklab);
-            AccessProperty(() => unicolour.Oklch);
-            AccessProperty(() => unicolour.Okhsl);
-            AccessProperty(() => unicolour.Okhsv);
-            AccessProperty(() => unicolour.Okhwb);
-            AccessProperty(() => unicolour.RelativeLuminance);
-            AccessProperty(() => unicolour.Rgb);
-            AccessProperty(() => unicolour.Rgb.Byte255);
-            AccessProperty(() => unicolour.RgbLinear);
-            AccessProperty(() => unicolour.Temperature);
-            AccessProperty(() => unicolour.Tsl);
-            AccessProperty(() => unicolour.Wxy);
-            AccessProperty(() => unicolour.Xyb);
-            AccessProperty(() => unicolour.Xyy);
-            AccessProperty(() => unicolour.Xyz);
-            AccessProperty(() => unicolour.Ypbpr);
-            AccessProperty(() => unicolour.Ycbcr);
-            AccessProperty(() => unicolour.Ycgco);
-            AccessProperty(() => unicolour.Yuv);
-            AccessProperty(() => unicolour.Yiq);
-            AccessProperty(() => unicolour.Ydbdr);
-            AccessProperty(unicolour.ToString);
+            AccessProperty(() => colour.Alpha);
+            AccessProperty(() => colour.Cam02);
+            AccessProperty(() => colour.Cam16);
+            AccessProperty(() => colour.Chromaticity);
+            AccessProperty(() => colour.Configuration);
+            AccessProperty(() => colour.Description);
+            AccessProperty(() => colour.DominantWavelength);
+            AccessProperty(() => colour.ExcitationPurity);
+            AccessProperty(() => colour.Hct);
+            AccessProperty(() => colour.Hex);
+            AccessProperty(() => colour.Hpluv);
+            AccessProperty(() => colour.Hsb);
+            AccessProperty(() => colour.Hsi);
+            AccessProperty(() => colour.Hsl);
+            AccessProperty(() => colour.Hsluv);
+            AccessProperty(() => colour.Hwb);
+            AccessProperty(() => colour.Icc);
+            AccessProperty(() => colour.Ictcp);
+            AccessProperty(() => colour.Ipt);
+            AccessProperty(() => colour.IsImaginary);
+            AccessProperty(() => colour.IsInRgbGamut);
+            AccessProperty(() => colour.Jzazbz);
+            AccessProperty(() => colour.Jzczhz);
+            AccessProperty(() => colour.Lab);
+            AccessProperty(() => colour.Lchab);
+            AccessProperty(() => colour.Lchuv);
+            AccessProperty(() => colour.Luv);
+            AccessProperty(() => colour.Oklab);
+            AccessProperty(() => colour.Oklch);
+            AccessProperty(() => colour.Okhsl);
+            AccessProperty(() => colour.Okhsv);
+            AccessProperty(() => colour.Okhwb);
+            AccessProperty(() => colour.RelativeLuminance);
+            AccessProperty(() => colour.Rgb);
+            AccessProperty(() => colour.Rgb.Byte255);
+            AccessProperty(() => colour.RgbLinear);
+            AccessProperty(() => colour.Temperature);
+            AccessProperty(() => colour.Tsl);
+            AccessProperty(() => colour.Wxy);
+            AccessProperty(() => colour.Xyb);
+            AccessProperty(() => colour.Xyy);
+            AccessProperty(() => colour.Xyz);
+            AccessProperty(() => colour.Ypbpr);
+            AccessProperty(() => colour.Ycbcr);
+            AccessProperty(() => colour.Ycgco);
+            AccessProperty(() => colour.Yuv);
+            AccessProperty(() => colour.Yiq);
+            AccessProperty(() => colour.Ydbdr);
+            AccessProperty(colour.ToString);
         }
         
         void AccessProperty(Func<object> getProperty)

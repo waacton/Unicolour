@@ -8,7 +8,7 @@
 
 internal static class Cmy
 {
-    internal static double[] FromUnicolour(Unicolour unicolour) => FromRgb(unicolour.Rgb);
+    internal static double[] FromUnicolour(Unicolour colour) => FromRgb(colour.Rgb);
     internal static double[] FromRgb(Rgb rgb)
     {
         var (r, g, b) = rgb.ConstrainedTriplet.Tuple;

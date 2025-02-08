@@ -314,7 +314,7 @@
     {
         currentColour = new Unicolour(currentSpace, slider1.Value, slider2.Value, slider3.Value);
         conversionError = Utils.HasConversionError(currentColour);
-        outOfGamut = !currentColour.IsInDisplayGamut;
+        outOfGamut = !currentColour.IsInRgbGamut;
         
         inGamutCss = Utils.ToCss(currentColour, 100);
         outGamutCss = Utils.ToCss(currentColour, outOfGamut ? 50 : 100);

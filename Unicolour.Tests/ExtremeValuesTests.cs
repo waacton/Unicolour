@@ -115,12 +115,12 @@ public class ExtremeValuesTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace,
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double amount)
     {
-        var unicolour1 = RandomColours.UnicolourFrom(colourSpace);
-        var unicolour2 = RandomColours.UnicolourFrom(colourSpace);
-        TestUtils.AssertNoPropertyError(unicolour1.Mix(unicolour2, colourSpace, amount));
+        var colour1 = RandomColours.UnicolourFrom(colourSpace);
+        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        TestUtils.AssertNoPropertyError(colour1.Mix(colour2, colourSpace, amount));
         
-        unicolour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
-        unicolour2 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
-        TestUtils.AssertNoPropertyError(unicolour1.Mix(unicolour2, colourSpace, amount));
+        colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        colour2 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        TestUtils.AssertNoPropertyError(colour1.Mix(colour2, colourSpace, amount));
     }
 }

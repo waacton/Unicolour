@@ -1,5 +1,10 @@
 ﻿namespace Wacton.Unicolour;
 
+/*
+ * this is not any kind of "official" naming
+ * just an attempt to provide a vaguely useful description
+ * based on measurement instead of opinion
+ */
 internal record ColourDescription(string description)
 {
     private readonly string description = description;

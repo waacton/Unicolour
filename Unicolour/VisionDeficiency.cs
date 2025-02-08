@@ -24,26 +24,26 @@ internal static class VisionDeficiency
         { -0.078411, +0.930809, +0.147602 },
         { +0.004733, +0.691367, +0.303900 }
     });
-
-    private static Unicolour SimulateCvd(Unicolour unicolour, Matrix cvdMatrix)
-    {
-        var config = unicolour.Configuration;
-        
-        // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
-        var rgbLinearMatrix = Matrix.FromTriplet(unicolour.RgbLinear.Triplet);
-        var simulatedRgbLinearMatrix = cvdMatrix.Multiply(rgbLinearMatrix);
-        return new Unicolour(config, ColourSpace.RgbLinear, simulatedRgbLinearMatrix.ToTriplet().Tuple);
-    }
     
-    internal static Unicolour SimulateProtanopia(Unicolour unicolour) => SimulateCvd(unicolour, Protanomaly);
-    internal static Unicolour SimulateDeuteranopia(Unicolour unicolour) => SimulateCvd(unicolour, Deuteranomaly);
-    internal static Unicolour SimulateTritanopia(Unicolour unicolour) => SimulateCvd(unicolour, Tritanomaly);
-    internal static Unicolour SimulateAchromatopsia(Unicolour unicolour)
+    internal static Unicolour Simulate(Cvd cvd, Unicolour colour)
     {
-        var config = unicolour.Configuration;
+        var simulatedRgbLinear = cvd switch
+        {
+            Cvd.Protanopia => ApplySimulationMatrix(colour, Protanomaly),
+            Cvd.Deuteranopia => ApplySimulationMatrix(colour, Deuteranomaly),
+            Cvd.Tritanopia => ApplySimulationMatrix(colour, Tritanomaly),
+            Cvd.Achromatopsia => new(colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
+            _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
+        };
 
-        // luminance is based on Linear RGB, so needs to be companded back into chosen RGB space
-        var rgbLuminance = config.Rgb.CompandFromLinear(unicolour.RelativeLuminance);
-        return new Unicolour(config, ColourSpace.Rgb, rgbLuminance, rgbLuminance, rgbLuminance);
+        return new Unicolour(colour.Configuration, ColourSpace.RgbLinear, simulatedRgbLinear.Tuple, colour.Alpha.A);
+    }
+
+    private static ColourTriplet ApplySimulationMatrix(Unicolour colour, Matrix cvdMatrix)
+    {
+        // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
+        var rgbLinearMatrix = Matrix.FromTriplet(colour.RgbLinear.Triplet);
+        var simulatedRgbLinearMatrix = cvdMatrix.Multiply(rgbLinearMatrix);
+        return simulatedRgbLinearMatrix.ToTriplet();
     }
 }

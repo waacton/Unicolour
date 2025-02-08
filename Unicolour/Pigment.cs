@@ -6,11 +6,12 @@ public class Pigment
     private int StartWavelength { get; }
     private int WavelengthInterval { get; }
     private int[] Wavelengths { get; }
-    private SpectralCoefficients? R { get; } // reflectance
-    private SpectralCoefficients? K { get; } // absorption
-    private SpectralCoefficients? S { get; } // scattering
-    private double? K1 { get; }
-    private double? K2 { get; }
+    
+    public SpectralCoefficients? R { get; } // reflectance
+    public SpectralCoefficients? K { get; } // absorption
+    public SpectralCoefficients? S { get; } // scattering
+    public double? K1 { get; }
+    public double? K2 { get; }
     public string Name { get; }
     
     public Pigment(int startWavelength, int wavelengthInterval, double[] r, string name = Utils.Unnamed)
@@ -30,7 +31,7 @@ public class Pigment
         WavelengthInterval = wavelengthInterval;
         K = new SpectralCoefficients(startWavelength, wavelengthInterval, k);
         S = new SpectralCoefficients(startWavelength, wavelengthInterval, s);
-        Wavelengths = K.Wavelengths;
+        Wavelengths = K.Wavelengths.Length <= S.Wavelengths.Length ? K.Wavelengths : S.Wavelengths;
         K1 = k1;
         K2 = k2;
         Name = name;

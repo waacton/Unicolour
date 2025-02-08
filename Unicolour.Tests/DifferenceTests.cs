@@ -255,8 +255,8 @@ public class DifferenceTests
     [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)
     {
-        var unicolour = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
-        var delta = unicolour.Difference(unicolour, deltaE);
+        var colour = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);
+        var delta = colour.Difference(colour, deltaE);
         Assert.That(delta, Is.NaN);
     }
 }

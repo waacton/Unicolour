@@ -111,48 +111,48 @@ public class IccConversionTests
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "no reverse transform");
         var config = new Configuration(iccConfig: iccConfig);
-        var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
-        Assert.That(unicolour.Icc.Values, Is.EqualTo(expected));
-        Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
-        Assert.That(unicolour.Icc.Error!.Contains("transform is not defined"));
+        Assert.That(colour.Icc.Values, Is.EqualTo(expected));
+        Assert.That(colour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
+        Assert.That(colour.Icc.Error!.Contains("transform is not defined"));
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceToUnicolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceTocolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
         // device channels values are used to create D65 unicolour
         var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent);
-        var unicolourD65 = new Unicolour(iccD65Config, new Channels(deviceValues));
+        var colourD65 = new Unicolour(iccD65Config, new Channels(deviceValues));
         
         // unicolour converted to the ICC D50 white point
         var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
-        var unicolourD50 = unicolourD65.ConvertToConfiguration(iccD50Config);
+        var colourD50 = colourD65.ConvertToConfiguration(iccD50Config);
         
         // the XYZ values should be the same as calling the core ICC profile function
         var expectedXyzD50 = profile.Transform.ToXyz(deviceValues, intent);
-        Assert.That(unicolourD50.Xyz.Triplet.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
+        Assert.That(colourD50.Xyz.Triplet.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void UnicolourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void colourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
         
         // XYZ values are used to create D50 unicolour
         var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
-        var unicolourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
+        var colourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // unicolour converted to the ICC D65 white point
         var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent);
-        var unicolourD65 = unicolourD50.ConvertToConfiguration(iccD65Config);
+        var colourD65 = colourD50.ConvertToConfiguration(iccD65Config);
         
         // the device channel values should be the same as calling the core ICC profile function
         var expectedDevice = profile.Transform.FromXyz(xyzValues, intent);
-        Assert.That(unicolourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
+        Assert.That(colourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
     }
 
     private static void AddTestData(IccFile iccFile)

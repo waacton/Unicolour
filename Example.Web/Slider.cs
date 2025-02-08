@@ -16,7 +16,7 @@ internal class Slider
     internal List<Unicolour> Stops { get; set; } = [];
 
     internal string CssGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, 100)));
-    internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInDisplayGamut ? 100 : 50)));
+    internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInRgbGamut ? 100 : 50)));
     
     internal Slider(int index, double value)
     {

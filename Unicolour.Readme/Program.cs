@@ -166,7 +166,7 @@ void FeatureCompare()
 void FeatureGamutMap()
 {
     var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
-    var inGamut = outOfGamut.MapToGamut();
+    var inGamut = outOfGamut.MapToRgbGamut();
 }
 
 void FeatureTemperature()
@@ -205,7 +205,7 @@ void FeatureImaginary()
 void FeatureCvd()
 {
     var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-    var noRed = colour.SimulateProtanopia();
+    var noRed = colour.Simulate(Cvd.Protanopia);
 }
 
 void FeatureIcc()

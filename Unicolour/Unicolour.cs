@@ -85,11 +85,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Hct Hct => hct.Value;
     public Channels Icc => icc.Value;
 
-    public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public bool IsInDisplayGamut => Rgb.IsInGamut;
+    public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
+    public bool IsInRgbGamut => Rgb.IsInGamut;
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
-    public bool IsImaginary => Configuration.Xyz.Spectral.IsImaginary(Chromaticity);
+    public bool IsImaginary => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity);
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Temperature Temperature => temperature.Value;
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
@@ -166,18 +166,20 @@ public partial class Unicolour : IEquatable<Unicolour>
         return Interpolation.Mix(this, other, colourSpace, amount, hueSpan, premultiplyAlpha);
     }
     
+    public IEnumerable<Unicolour> Palette(Unicolour other, ColourSpace colourSpace, int count, HueSpan hueSpan = HueSpan.Shorter, bool premultiplyAlpha = true)
+    {
+        return Interpolation.Palette(this, other, colourSpace, count, hueSpan, premultiplyAlpha);
+    }
+    
     // TODO: explore if this is worthwhile
     // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
     // {
     //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
     // }
-    
-    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);
-    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this);
-    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(this);
-    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(this);
 
-    public Unicolour MapToGamut() => GamutMapping.ToRgbGamut(this);
+    public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
+
+    public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {

@@ -61,7 +61,7 @@ public record Hpluv : ColourRepresentation
     
     internal static Lchuv ToLchuv(Hpluv hpluv)
     {
-        var (_, s, l) = hpluv.Triplet;
+        var (_, s, l) = hpluv;
         var h = hpluv.ConstrainedH;
         
         double lStar, c;

@@ -36,7 +36,7 @@ public record Okhsl : ColourRepresentation
     
     internal static Okhsl FromOklab(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
     {
-        var (l, a, b) = oklab.Triplet;
+        var (l, a, b) = oklab;
         var (_, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
         var aPrime = a / c;
         var bPrime = b / c;
@@ -80,7 +80,7 @@ public record Okhsl : ColourRepresentation
 
     internal static Oklab ToOklab(Okhsl okhsl, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
     {
-        var (h, s, lightness) = okhsl.Triplet;
+        var (h, s, lightness) = okhsl;
         double l, a, b;
         if (lightness >= 1.0)
         {

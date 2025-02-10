@@ -5,7 +5,7 @@ internal record Matrices(Matrix Multiply, Matrix Offset)
     internal Matrix Multiply { get; } = Multiply;
     internal Matrix Offset { get; } = Offset;
 
-    internal static Matrix ZeroOffset = new(new[,] { { 0.0 }, { 0.0 }, { 0.0 } });
+    internal static readonly Matrix ZeroOffset = new(new[,] { { 0.0 }, { 0.0 }, { 0.0 } });
     
     internal double[] Apply(double[] inputs)
     {

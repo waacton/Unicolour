@@ -11,7 +11,7 @@ public class LazyBackingFieldsTests
     // RGB255 is the only colour space that's not handled with its own backing field
     // (is a kind of sub-space behind RGB)
     private static readonly List<ColourSpace> ColourSpacesWithBackingFields =
-        TestUtils.AllColourSpaces.Except(new [] { ColourSpace.Rgb255 }).ToList();
+        TestUtils.AllColourSpaces.Except([ColourSpace.Rgb255]).ToList();
     
     [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
     public void InitialUnicolour(ColourSpace colourSpace)
@@ -134,9 +134,9 @@ public class LazyBackingFieldsTests
     {
         var colour = RandomColours.UnicolourFrom(colourSpace);
         var other = RandomColours.UnicolourFrom(colourSpace);
-        var initialColourSpace = colour.InitialColourSpace;
-        _ = Interpolation.Mix(colour, other, initialColourSpace, 0.5, HueSpan.Shorter, true);
-        AssertBackingFieldsNotEvaluated(colour, ColourSpacesWithBackingFields.Except(new []{ colourSpace }).ToList());
+        var sourceColourSpace = colour.SourceColourSpace;
+        _ = Interpolation.Mix(colour, other, sourceColourSpace, 0.5, HueSpan.Shorter, true);
+        AssertBackingFieldsNotEvaluated(colour, ColourSpacesWithBackingFields.Except([colourSpace]).ToList());
         AssertBackingFieldEvaluated(colour, colourSpace);
     }
     

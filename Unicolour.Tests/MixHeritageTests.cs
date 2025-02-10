@@ -159,10 +159,10 @@ public class MixHeritageTests
     
     private static void AssertInitialHeritage(Unicolour colour, ColourHeritage colourHeritage, bool isHued, bool isGreyscale, bool isNotNumber)
     {
-        var initialRepresentation = colour.InitialRepresentation;
-        Assert.That(initialRepresentation.Heritage, Is.EqualTo(colourHeritage));
-        Assert.That(initialRepresentation.UseAsHued, Is.EqualTo(isHued));
-        Assert.That(initialRepresentation.UseAsGreyscale, Is.EqualTo(isGreyscale));
-        Assert.That(initialRepresentation.UseAsNaN, Is.EqualTo(isNotNumber));
+        var sourceRepresentation = colour.SourceRepresentation;
+        Assert.That(sourceRepresentation.Heritage, Is.EqualTo(colourHeritage));
+        Assert.That(sourceRepresentation.UseAsHued, Is.EqualTo(isHued));
+        Assert.That(sourceRepresentation.UseAsGreyscale, Is.EqualTo(isGreyscale));
+        Assert.That(sourceRepresentation.UseAsNaN, Is.EqualTo(isNotNumber));
     }
 }

@@ -50,6 +50,15 @@ public abstract record ColourRepresentation
     protected abstract string FirstString { get; }
     protected abstract string SecondString { get; }
     protected abstract string ThirdString { get; }
+    
+    public double[] ToArray() => new[] { First, Second, Third };
+    
+    public void Deconstruct(out double first, out double second, out double third)
+    {
+        first = First;
+        second = Second;
+        third = Third;
+    }
 
     public override string ToString()
     {

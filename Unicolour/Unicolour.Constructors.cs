@@ -149,7 +149,7 @@ public partial class Unicolour
 
         var illuminantSpd = xyzConfigWithSpd.Illuminant!.Spd!;
         var observer = xyzConfigWithSpd.Observer;
-        var (x, y, z) = Xyz.FromSpd(illuminantSpd, observer, reflectance).Triplet;
+        var (x, y, z) = Xyz.FromSpd(illuminantSpd, observer, reflectance);
         if (xyzConfigWithSpd != xyzConfig)
         {
             (x, y, z) = Adaptation.WhitePoint(new ColourTriplet(x, y, z), xyzConfigWithSpd.WhitePoint, xyzConfig.WhitePoint).Tuple;

@@ -85,7 +85,7 @@ internal static class Utils
 
     private static Rgba32 AsRgba32(Unicolour colour)
     {
-        var (r, g, b) = colour.Rgb.Byte255.ConstrainedTriplet;
+        var (r, g, b) = colour.MapToRgbGamut(GamutMap.RgbClipping).Rgb;
         var alpha = colour.Alpha.A255;
         var a = colour.IsInRgbGamut || !RenderOutOfGamutAsTransparent ? alpha : 0;
         return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);

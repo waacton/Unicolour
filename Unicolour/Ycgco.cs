@@ -30,7 +30,7 @@ public record Ycgco : ColourRepresentation
     
     internal static Ycgco FromRgb(Rgb rgb)
     {
-        var (r, g, b) = rgb.Triplet;
+        var (r, g, b) = rgb;
         var y = 0.25 * r + 0.5 * g + 0.25 * b;
         var cg = -0.25 * r + 0.5 * g - 0.25 * b;
         var co = 0.5 * r - 0.5 * b;
@@ -39,7 +39,7 @@ public record Ycgco : ColourRepresentation
     
     internal static Rgb ToRgb(Ycgco ycgco)
     {
-        var (y, cg, co) = ycgco.Triplet;
+        var (y, cg, co) = ycgco;
         var r = y + co - cg;
         var g = y + cg;
         var b = y - co - cg;

@@ -72,7 +72,7 @@ public record Jzazbz : ColourRepresentation
     
     internal static Xyz ToXyz(Jzazbz jzazbz, double jzazbzScalar, XyzConfiguration xyzConfig)
     {
-        var (jz, az, bz) = jzazbz.Triplet;
+        var (jz, az, bz) = jzazbz;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
         var izazbzMatrix = Matrix.FromTriplet(iz, az, bz);
         var lmsPrimeMatrix = M2.Inverse().Multiply(izazbzMatrix);

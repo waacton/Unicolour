@@ -88,7 +88,7 @@ void AddLabel(Image image, string text, Unicolour colour)
 
 Rgba32 AsRgba32(Unicolour colour)
 {
-    var (r255, g255, b255) = colour.Rgb.Byte255.Triplet;
+    var (r255, g255, b255) = colour.Rgb.Byte255;
     var a255 = colour.Alpha.A255;
     return new((byte)r255, (byte)g255, (byte)b255, (byte)a255);
 }

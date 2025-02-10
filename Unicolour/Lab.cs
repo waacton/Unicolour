@@ -30,7 +30,7 @@ public record Lab : ColourRepresentation
 
     internal static Lab FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
-        var (x, y, z) = xyz.Triplet;
+        var (x, y, z) = xyz;
         var referenceWhite = xyzConfig.WhitePoint;
         var xRatio = x * 100 / referenceWhite.X;
         var yRatio = y * 100 / referenceWhite.Y;
@@ -45,7 +45,7 @@ public record Lab : ColourRepresentation
 
     internal static Xyz ToXyz(Lab lab, XyzConfiguration xyzConfig)
     {
-        var (l, a, b) = lab.Triplet;
+        var (l, a, b) = lab;
         var referenceWhite = xyzConfig.WhitePoint;
         double F(double t) => t > delta ? Math.Pow(t, 3.0) : 3 * Math.Pow(delta, 2) * (t - 4.0 / 29.0);
         var x = referenceWhite.X / 100.0 * F((l + 16) / 116.0 + a / 500.0);

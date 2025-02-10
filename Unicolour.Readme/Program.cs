@@ -162,7 +162,7 @@ void Quickstart()
 void FeatureConvert()
 {
     Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
-    var (l, c, h) = colour.Oklch.Triplet;
+    var (l, c, h) = colour.Oklch;
 }
 
 void FeatureMix()

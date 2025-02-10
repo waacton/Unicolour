@@ -38,7 +38,7 @@ public record Yuv : ColourRepresentation
     
     internal static Yuv FromRgb(Rgb rgb)
     {
-        var (r, g, b) = rgb.Triplet;
+        var (r, g, b) = rgb;
         var y = Wr * r + Wg * g + Wb * b;
         var u = UMax * ((b - y) / (1 - Wb));
         var v = VMax * ((r - y) / (1 - Wr));
@@ -47,7 +47,7 @@ public record Yuv : ColourRepresentation
     
     internal static Rgb ToRgb(Yuv yuv)
     {
-        var (y, u, v) = yuv.Triplet;
+        var (y, u, v) = yuv;
         var r = v * ((1 - Wr) / VMax) + y;
         var b = u * ((1 - Wb) / UMax) + y;
         var g = (y - Wr * r - Wb * b) / Wg;

@@ -126,8 +126,8 @@ public class SpectralJsTests
     {
         var expected = new Unicolour(expectedHex);
 
-        var expectedRgb = expected.RgbLinear.Triplet.ToArray();
-        var actualRgb = colour.RgbLinear.Triplet.ToArray();
+        var expectedRgb = expected.RgbLinear.ToArray();
+        var actualRgb = colour.RgbLinear.ToArray();
         var rgbDifferences = expectedRgb.Zip(actualRgb, (a, b) => Math.Abs(a - b)).ToArray();
         Assert.That(rgbDifferences.Max(), Is.LessThan(0.125));
         Assert.That(rgbDifferences.Sum(), Is.LessThan(0.175));

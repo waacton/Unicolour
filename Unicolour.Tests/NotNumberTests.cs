@@ -160,7 +160,7 @@ public class NotNumberTests
     private static void AssertUnicolour(Unicolour colour)
     {
         var data = new ColourHeritageData(colour);
-        var initial = colour.InitialRepresentation;
+        var initial = colour.SourceRepresentation;
         
         Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
         Assert.That(initial.IsNaN, Is.True);
@@ -179,7 +179,7 @@ public class NotNumberTests
         Assert.That(colour.Temperature.Duv, Is.NaN);
         Assert.That(colour.Icc.ToString().StartsWith("NaN"));
 
-        var spaces = TestUtils.AllColourSpaces.Except(new [] { colour.InitialColourSpace }).ToList();
+        var spaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToList();
         Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));
         Assert.That(data.UseAsNaN(spaces), Has.All.True);
         Assert.That(data.UseAsGreyscale(spaces), Has.All.False);

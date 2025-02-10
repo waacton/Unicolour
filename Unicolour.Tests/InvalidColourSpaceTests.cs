@@ -26,7 +26,7 @@ public class InvalidColourSpaceTests
     [Test]
     public void InvalidUnicolourProperty()
     {
-        const string fieldName = "InitialColourSpace";
+        const string fieldName = "SourceColourSpace";
         SetPrivateField(fieldName, BadColourSpace);
         
         const string methodName = "EvaluateXyz";

@@ -97,7 +97,7 @@ public class ContrastTests
             colour = colour.ConvertToConfiguration(Configuration.Default);
         }
 
-        var (r, g, b) = colour.RgbLinear.Triplet;
+        var (r, g, b) = colour.RgbLinear;
         var expected = 0.2126 * r + 0.7152 * g + 0.0722 * b;
         Assert.That(colour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
     }

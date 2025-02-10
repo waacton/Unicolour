@@ -34,7 +34,7 @@ public record Ydbdr : ColourRepresentation
     
     internal static Ydbdr FromYuv(Yuv yuv)
     {
-        var (y, u, v) = yuv.Triplet;
+        var (y, u, v) = yuv;
         var db = DbMax * u;
         var dr = -DrMax * v;
         return new Ydbdr(y, db, dr, ColourHeritage.From(yuv));
@@ -42,7 +42,7 @@ public record Ydbdr : ColourRepresentation
     
     internal static Yuv ToYuv(Ydbdr ydbdr)
     {
-        var (y, db, dr) = ydbdr.Triplet;
+        var (y, db, dr) = ydbdr;
         var u = db / DbMax;
         var v = dr / -DrMax;
         return new Yuv(y, u, v, ColourHeritage.From(ydbdr));

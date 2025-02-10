@@ -26,7 +26,7 @@ public record Luv : ColourRepresentation
     
     internal static Luv FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
-        var (x, y, z) = xyz.Triplet;
+        var (x, y, z) = xyz;
         var (xRef, yRef, zRef) = xyzConfig.WhitePoint;
 
         double U(double xu, double yu, double zu) => 4 * xu / (xu + 15 * yu + 3 * zu);
@@ -47,7 +47,7 @@ public record Luv : ColourRepresentation
     
     internal static Xyz ToXyz(Luv luv, XyzConfiguration xyzConfig)
     {
-        var (l, u, v) = luv.Triplet;
+        var (l, u, v) = luv;
         double U(double x, double y, double z) => 4 * x / (x + 15 * y + 3 * z);
         double V(double x, double y, double z) => 9 * y / (x + 15 * y + 3 * z);
 

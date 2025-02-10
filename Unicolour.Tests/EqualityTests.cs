@@ -131,7 +131,7 @@ public class EqualityTests
         var heritages = new List<ColourHeritage> { ColourHeritage.None, ColourHeritage.NaN, ColourHeritage.Greyscale };
         foreach (var heritage in heritages)
         {
-            foreach (var otherHeritage in heritages.Except(new[] { heritage }))
+            foreach (var otherHeritage in heritages.Except([heritage]))
             {
                 AssertNotEqual(heritage, otherHeritage);
             }

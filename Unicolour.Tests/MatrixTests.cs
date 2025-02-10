@@ -218,6 +218,7 @@ public class MatrixTests
             { triplet.Second },
             { triplet.Third }
         });
+        
         var matrixFromTriplet = Matrix.FromTriplet(triplet);
         var matrixFromValues = Matrix.FromTriplet(triplet.First, triplet.Second, triplet.Third);
 

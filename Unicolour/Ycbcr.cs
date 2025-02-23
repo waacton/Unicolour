@@ -33,7 +33,7 @@ public record Ycbcr : ColourRepresentation
         var rangeY = ybrConfig.RangeY;
         var rangeC = ybrConfig.RangeC;
         
-        var (y, pb, pr) = ypbpr.Triplet;
+        var (y, pb, pr) = ypbpr;
         var yDigital = rangeY.min + (rangeY.max - rangeY.min) * y;
         var cb = 128 + (rangeC.max - rangeC.min) * pb;
         var cr = 128 + (rangeC.max - rangeC.min) * pr;
@@ -45,7 +45,7 @@ public record Ycbcr : ColourRepresentation
         var rangeY = ybrConfig.RangeY;
         var rangeC = ybrConfig.RangeC;
         
-        var (yDigital, cb, cr) = ycbcr.Triplet;
+        var (yDigital, cb, cr) = ycbcr;
         var y = (yDigital - rangeY.min) / (rangeY.max - rangeY.min);
         var pb = (cb - 128) / (rangeC.max - rangeC.min);
         var pr = (cr - 128) / (rangeC.max - rangeC.min);

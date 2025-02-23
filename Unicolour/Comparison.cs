@@ -48,18 +48,18 @@ internal static class Comparison
     // https://en.wikipedia.org/wiki/Color_difference#CIE76
     private static double DeltaE76(Unicolour reference, Unicolour sample)
     {
-        var (l1, a1, b1) = reference.Lab.Triplet;
-        var (l2, a2, b2) = sample.Lab.Triplet;
+        var (l1, a1, b1) = reference.Lab;
+        var (l2, a2, b2) = sample.Lab;
         return Math.Sqrt(SquaredDiff(l1, l2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
     }
     
     // https://en.wikipedia.org/wiki/Color_difference#CIE94
     private static double DeltaE94(Unicolour reference, Unicolour sample, bool isForTextiles = false)
     {
-        var (l1, a1, b1) = reference.Lab.Triplet;
-        var (l2, a2, b2) = sample.Lab.Triplet;
-        var (_, c1, _) = reference.Lchab.Triplet;
-        var (_, c2, _) = sample.Lchab.Triplet;
+        var (l1, a1, b1) = reference.Lab;
+        var (l2, a2, b2) = sample.Lab;
+        var (_, c1, _) = reference.Lchab;
+        var (_, c2, _) = sample.Lchab;
 
         var lDelta = l1 - l2;
         var aDelta = a1 - a2;
@@ -91,10 +91,10 @@ internal static class Comparison
     // https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
     private static double DeltaE00(Unicolour reference, Unicolour sample)
     {
-        var (l1, a1, b1) = reference.Lab.Triplet;
-        var (l2, a2, b2) = sample.Lab.Triplet;
-        var (_, c1, _) = reference.Lchab.Triplet;
-        var (_, c2, _) = sample.Lchab.Triplet;
+        var (l1, a1, b1) = reference.Lab;
+        var (l2, a2, b2) = sample.Lab;
+        var (_, c1, _) = reference.Lchab;
+        var (_, c2, _) = sample.Lchab;
 
         double Power2(double value) => Math.Pow(value, 2);
         double Power7(double value) => Math.Pow(value, 7);
@@ -163,10 +163,10 @@ internal static class Comparison
     // https://en.wikipedia.org/wiki/Color_difference#CMC_l:c_(1984)
     private static double DeltaECmc(Unicolour reference, Unicolour sample, double l, double c)
     {
-        var (l1, a1, b1) = reference.Lab.Triplet;
-        var (l2, a2, b2) = sample.Lab.Triplet;
+        var (l1, a1, b1) = reference.Lab;
+        var (l2, a2, b2) = sample.Lab;
         var (_, c1, h1) = reference.Lchab.ConstrainedTriplet;
-        var (_, c2, _) = sample.Lchab.Triplet;
+        var (_, c2, _) = sample.Lchab;
         
         var lDelta = l1 - l2;
         var aDelta = a1 - a2;
@@ -206,8 +206,8 @@ internal static class Comparison
     // https://doi.org/10.1364/OE.25.015131
     private static double DeltaEz(Unicolour reference, Unicolour sample)
     {
-        var (jz1, cz1, hz1) = reference.Jzczhz.Triplet;
-        var (jz2, cz2, hz2) = sample.Jzczhz.Triplet;
+        var (jz1, cz1, hz1) = reference.Jzczhz;
+        var (jz2, cz2, hz2) = sample.Jzczhz;
         
         var deltaHz = hz1 - hz2;
         deltaHz = 2 * Math.Sqrt(reference.Jzczhz.C * sample.Jzczhz.C) * Math.Sin(ToRadians(deltaHz / 2.0));
@@ -218,16 +218,16 @@ internal static class Comparison
     // https://en.wikipedia.org/wiki/Color_difference#Other_geometric_constructions
     private static double DeltaEHyab(Unicolour reference, Unicolour sample)
     {
-        var (l1, a1, b1) = reference.Lab.Triplet;
-        var (l2, a2, b2) = sample.Lab.Triplet;
+        var (l1, a1, b1) = reference.Lab;
+        var (l2, a2, b2) = sample.Lab;
         return Math.Sqrt(SquaredDiff(a1, a2) + SquaredDiff(b1, b2)) + Math.Abs(l2 - l1);
     }
     
     // https://www.w3.org/TR/css-color-4/#color-difference-OK
     private static double DeltaEOk(Unicolour reference, Unicolour sample)
     {
-        var (l1, a1, b1) = reference.Oklab.Triplet;
-        var (l2, a2, b2) = sample.Oklab.Triplet;
+        var (l1, a1, b1) = reference.Oklab;
+        var (l2, a2, b2) = sample.Oklab;
         return Math.Sqrt(SquaredDiff(l1, l2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
     }
     
@@ -235,16 +235,16 @@ internal static class Comparison
     // currently only support UCS, not LCD or SCD - no need to handle ΔJ / kl since kl = 1
     private static double DeltaECam02(Unicolour reference, Unicolour sample)
     {
-        var (j1, a1, b1) = reference.Cam02.Triplet;
-        var (j2, a2, b2) = sample.Cam02.Triplet;
+        var (j1, a1, b1) = reference.Cam02;
+        var (j2, a2, b2) = sample.Cam02;
         return Math.Sqrt(SquaredDiff(j1, j2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
     }
     
     // https://doi.org/10.1002/col.22131
     private static double DeltaECam16(Unicolour reference, Unicolour sample)
     {
-        var (j1, a1, b1) = reference.Cam16.Triplet;
-        var (j2, a2, b2) = sample.Cam16.Triplet;
+        var (j1, a1, b1) = reference.Cam16;
+        var (j2, a2, b2) = sample.Cam16;
         var deltaE = Math.Sqrt(SquaredDiff(j1, j2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
         return 1.41 * Math.Pow(deltaE, 0.63);
     }

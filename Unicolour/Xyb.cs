@@ -70,7 +70,7 @@ public record Xyb : ColourRepresentation
     
     internal static RgbLinear ToRgbLinear(Xyb xyb)
     {
-        var (x, y, b) = xyb.Triplet;
+        var (x, y, b) = xyb;
         b += y;
         var xybMatrix = Matrix.FromTriplet(new(x, y, b));
         var lmsGammaMatrix = LmsToXybMatrix.Inverse().Multiply(xybMatrix);

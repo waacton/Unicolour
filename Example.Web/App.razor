@@ -303,7 +303,7 @@
     private void SetColourSpace(ChangeEventArgs args)
     {
         Enum.TryParse(ParseColourSpaceName(args), out currentSpace);
-        var (first, second, third) = currentColour.GetRepresentation(currentSpace).Triplet.Tuple;
+        var (first, second, third) = currentColour.GetRepresentation(currentSpace);
         slider1.Value = first;
         slider2.Value = second;
         slider3.Value = third;

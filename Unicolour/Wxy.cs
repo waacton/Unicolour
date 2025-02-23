@@ -44,7 +44,7 @@ public record Wxy : ColourRepresentation
     
     internal static Xyy ToXyy(Wxy wxy, XyzConfiguration xyzConfig)
     {
-        var (wavelength, purity, luminance) = wxy.Triplet;
+        var (wavelength, purity, luminance) = wxy;
         
         Chromaticity chromaticity;
         if (wxy.UseAsNaN)

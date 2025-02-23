@@ -61,7 +61,7 @@ public record Hsluv : ColourRepresentation
     
     internal static Lchuv ToLchuv(Hsluv hsluv)
     {
-        var (_, s, l) = hsluv.Triplet;
+        var (_, s, l) = hsluv;
         var h = hsluv.ConstrainedH;
 
         double lStar, c;

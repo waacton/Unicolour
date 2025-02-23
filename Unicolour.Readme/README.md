@@ -133,7 +133,7 @@ Unicolour calculates all transformations required to convert from one colour spa
 so there is no need to manually chain multiple functions and removes the risk of rounding errors.
 ```c#
 Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
-var (l, c, h) = colour.Oklch.Triplet;
+var (l, c, h) = colour.Oklch;
 ```
 
 | Colour&nbsp;space                                                                       | Enum                    | Property       |

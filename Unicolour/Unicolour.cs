@@ -45,8 +45,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public Alpha Alpha { get; }
     public Configuration Configuration { get; }
-    internal readonly ColourSpace InitialColourSpace;
-    internal readonly ColourRepresentation InitialRepresentation;
+    internal readonly ColourSpace SourceColourSpace;
+    internal readonly ColourRepresentation SourceRepresentation;
 
     public Rgb Rgb => rgb.Value;
     public RgbLinear RgbLinear => rgbLinear.Value;
@@ -108,8 +108,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         Configuration = config;
         Alpha = new Alpha(alpha);
-        InitialColourSpace = colourSpace;
-        InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
+        SourceColourSpace = colourSpace;
+        SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
 
         rgb = new Lazy<Rgb>(EvaluateRgb);
         rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
@@ -155,7 +155,7 @@ public partial class Unicolour : IEquatable<Unicolour>
                 : Channels.UncalibratedFromRgb(Rgb));
         
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
-        source = new Lazy<string>(() => $"{InitialColourSpace} {InitialRepresentation}");
+        source = new Lazy<string>(() => $"{SourceColourSpace} {SourceRepresentation}");
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -214,14 +214,14 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     private bool ColourSpaceEquals(Unicolour other)
     {
-        return InitialRepresentation.Equals(other.InitialRepresentation);
+        return SourceRepresentation.Equals(other.SourceRepresentation);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            return (InitialRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
+            return (SourceRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
         }
     }
 }

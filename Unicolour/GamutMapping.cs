@@ -108,7 +108,7 @@ internal static class GamutMapping
         var config = colour.Configuration;
         var alpha = colour.Alpha.A;
 
-        var (w, x, y) = colour.Wxy.Triplet;
+        var (w, x, y) = colour.Wxy;
         x = x.Clamp(0.0, 1.0); // no point starting with purity outwith 0 - 100%
         y = y.Clamp(0.0, 1.0); // luminance also needs to be bound for a sensible result 
         var current = new Unicolour(config, ColourSpace.Wxy, w, x, y, alpha);

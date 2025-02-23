@@ -31,7 +31,7 @@ public record Xyy : ColourRepresentation
     
     internal static Xyy FromXyz(Xyz xyz, Chromaticity whiteChromaticity)
     {
-        var (x, y, z) = xyz.Triplet;
+        var (x, y, z) = xyz;
         var normalisation = x + y + z;
         var isBlack = normalisation == 0.0;
 

@@ -183,8 +183,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
-        var adapted = Adaptation.WhitePoint(Xyz.Triplet, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint).Tuple;
-        return new Unicolour(config, ColourSpace.Xyz, adapted, Alpha.A);
+        var adapted = Adaptation.WhitePoint(Xyz, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint, Configuration.Xyz.AdaptationMatrix);
+        return new Unicolour(config, ColourSpace.Xyz, adapted.Tuple, Alpha.A);
     }
     
     public override string ToString()

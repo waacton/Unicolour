@@ -29,7 +29,7 @@ public class ConfigureIccTests
         var destinationFile = IccFile.Lookup[destinationFileName];
         var destinationIccConfig = new IccConfiguration(destinationFile.Path, Intent.Unspecified, "destination");
         var destinationConfig = new Configuration(iccConfig: destinationIccConfig);
-        var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Triplet.Tuple);
+        var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Tuple);
         var destinationCmyk = destinationUnicolour.Icc;
 
         var convertedUnicolour = sourceUnicolour.ConvertToConfiguration(destinationConfig);

@@ -70,8 +70,8 @@ public class PremultipliedAlphaTests
         // (because not clear what the result colour's configuration should be)
         // so workaround: create new unicolours with same configurations with the LAB values
 
-        yellow = new Unicolour(ColourSpace.Lab, yellow.Lab.Triplet.Tuple, yellow.Alpha.A);
-        pink = new Unicolour(ColourSpace.Lab, pink.Lab.Triplet.Tuple, pink.Alpha.A);
+        yellow = new Unicolour(ColourSpace.Lab, yellow.Lab.Tuple, yellow.Alpha.A);
+        pink = new Unicolour(ColourSpace.Lab, pink.Lab.Tuple, pink.Alpha.A);
         var notPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lab, premultiplyAlpha: false);
         var notPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lab, premultiplyAlpha: false);
         var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lab);
@@ -97,8 +97,8 @@ public class PremultipliedAlphaTests
         // (because not clear what the result colour's configuration should be)
         // so workaround: create new unicolours with same configurations with the LCHAB values
 
-        yellow = new Unicolour(ColourSpace.Lchab, yellow.Lchab.Triplet.Tuple, yellow.Alpha.A);
-        pink = new Unicolour(ColourSpace.Lchab, pink.Lchab.Triplet.Tuple, pink.Alpha.A);
+        yellow = new Unicolour(ColourSpace.Lchab, yellow.Lchab.Tuple, yellow.Alpha.A);
+        pink = new Unicolour(ColourSpace.Lchab, pink.Lchab.Tuple, pink.Alpha.A);
         var notPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lchab, premultiplyAlpha: false);
         var notPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lchab, premultiplyAlpha: false);
         var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lchab);

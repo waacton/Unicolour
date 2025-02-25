@@ -1,14 +1,12 @@
-﻿using System;
-using System.Linq;
-using static Wacton.Unicolour.Experimental.MatrixUtils;
+﻿using static Wacton.Unicolour.Experimental.MatrixUtils;
 
 namespace Wacton.Unicolour.Experimental;
 
 public static class PigmentGenerator
 {
-    private static readonly Illuminant illuminant = Illuminant.D65;
-    private static readonly Observer observer = Observer.Degree2;
-    private static readonly WhitePoint d65WhitePoint = illuminant.GetWhitePoint(observer);
+    private static readonly Illuminant Illuminant = Illuminant.D65;
+    private static readonly Observer Observer = Observer.Degree2;
+    private static readonly WhitePoint D65WhitePoint = Illuminant.GetWhitePoint(Observer);
     
     internal const int Start = 380;
     internal const int Interval = 10;
@@ -19,8 +17,8 @@ public static class PigmentGenerator
     
     public static Pigment From(Unicolour colour)
     {
-        var rgb = colour.Rgb.Triplet;
-        var xyz = colour.Xyz.Triplet;
+        var rgb = colour.Rgb;
+        var xyz = colour.Xyz;
         var xyzConfig = colour.Configuration.Xyz;
         
         // handle black and white as special conditions
@@ -45,12 +43,12 @@ public static class PigmentGenerator
      * to attempt to better support wide-gamut (http://scottburns.us/rec-2020-rgb-to-spectrum-conversion-for-reflectances/)
      * but was inaccurate in roundtrip tests; perhaps one to revisit in future
      */
-    private static double[] GenerateReflectance(ColourTriplet xyz, XyzConfiguration xyzConfig)
+    private static double[] GenerateReflectance(Xyz xyz, XyzConfiguration xyzConfig)
     {
         // custom illuminant from users might not have SPD, or SPD might not have the required wavelengths
         // so for simplicity and consistency, calculations are performed in default D65/2° (also assumed by matrix A)
-        var d65Xyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, d65WhitePoint);
-        var d65XyzMatrix = Matrix.FromTriplet(d65Xyz);
+        var d65Xyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
+        var d65XyzMatrix = Matrix.From(d65Xyz);
         
         var z = new double[Wavelengths];
         var lambda = new double[3];
@@ -116,10 +114,10 @@ public static class PigmentGenerator
         for (var i = 0; i < Wavelengths; i++)
         {
             var wavelength = Start + i * Interval;
-            a[i, 0] = observer.ColourMatchX(wavelength);
-            a[i, 1] = observer.ColourMatchY(wavelength);
-            a[i, 2] = observer.ColourMatchZ(wavelength);
-            w[i] = illuminant.Spd![wavelength];
+            a[i, 0] = Observer.ColourMatchX(wavelength);
+            a[i, 1] = Observer.ColourMatchY(wavelength);
+            a[i, 2] = Observer.ColourMatchZ(wavelength);
+            w[i] = Illuminant.Spd![wavelength];
         }
         
         // normalise w by second CMF column (Y - luminance)

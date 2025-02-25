@@ -42,7 +42,7 @@ internal static class VisionDeficiency
     private static ColourTriplet ApplySimulationMatrix(Unicolour colour, Matrix cvdMatrix)
     {
         // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
-        var rgbLinearMatrix = Matrix.FromTriplet(colour.RgbLinear.Triplet);
+        var rgbLinearMatrix = Matrix.From(colour.RgbLinear);
         var simulatedRgbLinearMatrix = cvdMatrix.Multiply(rgbLinearMatrix);
         return simulatedRgbLinearMatrix.ToTriplet();
     }

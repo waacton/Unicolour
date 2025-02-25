@@ -51,7 +51,7 @@ public class EqualityTests
     public void EqualObjects(ColourSpace colourSpace)
     {
         var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
-        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Triplet.Tuple, colour1.Alpha.A);
+        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Tuple, colour1.Alpha.A);
         AssertUnicoloursEqual(colour1, colour2);
     }
     

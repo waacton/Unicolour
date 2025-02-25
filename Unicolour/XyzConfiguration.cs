@@ -11,6 +11,7 @@ public class XyzConfiguration
     internal Illuminant? Illuminant { get; }
     internal SpectralBoundary SpectralBoundary { get; }
     internal Planckian Planckian { get; }
+    internal Matrix AdaptationMatrix = Adaptation.Bradford;
     public string Name { get; }
 
     // even if white point has been hardcoded, still need observer to calculate CCT

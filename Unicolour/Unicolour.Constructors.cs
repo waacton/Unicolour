@@ -149,13 +149,13 @@ public partial class Unicolour
 
         var illuminantSpd = xyzConfigWithSpd.Illuminant!.Spd!;
         var observer = xyzConfigWithSpd.Observer;
-        var (x, y, z) = Xyz.FromSpd(illuminantSpd, observer, reflectance);
+        var xyz = Xyz.FromSpd(illuminantSpd, observer, reflectance);
         if (xyzConfigWithSpd != xyzConfig)
         {
-            (x, y, z) = Adaptation.WhitePoint(new ColourTriplet(x, y, z), xyzConfigWithSpd.WhitePoint, xyzConfig.WhitePoint).Tuple;
+            xyz = Adaptation.WhitePoint(xyz, xyzConfigWithSpd.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         }
         
-        return (x, y, z, 1.0);
+        return (xyz.X, xyz.Y, xyz.Z, 1.0);
     }
     
     /* construction from ICC channels */
@@ -176,6 +176,6 @@ public partial class Unicolour
         ColourRepresentation connectingSpaceRepresentation = iccConfig.HasSupportedProfile
             ? Channels.ToXyz(channels, iccConfig, xyzConfig)
             : Channels.UncalibratedToRgb(channels);
-        return connectingSpaceRepresentation.Triplet.Tuple;
+        return connectingSpaceRepresentation.Tuple;
     }
 }

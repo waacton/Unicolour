@@ -59,7 +59,7 @@ public record Xyb : ColourRepresentation
     
     internal static Xyb FromRgbLinear(RgbLinear rgb)
     {
-        var rgbMatrix = Matrix.FromTriplet(rgb.Triplet);
+        var rgbMatrix = Matrix.From(rgb);
         var lmsMixMatrix = RgbToLmsMatrix.Multiply(rgbMatrix).Select(value => value + Bias);
         var lmsGammaMatrix = lmsMixMatrix.Select(mix => CubeRoot(mix) - CubeRootBias);
         var xybMatrix = LmsToXybMatrix.Multiply(lmsGammaMatrix);
@@ -72,7 +72,7 @@ public record Xyb : ColourRepresentation
     {
         var (x, y, b) = xyb;
         b += y;
-        var xybMatrix = Matrix.FromTriplet(new(x, y, b));
+        var xybMatrix = Matrix.From(x, y, b);
         var lmsGammaMatrix = LmsToXybMatrix.Inverse().Multiply(xybMatrix);
         var lmsMixMatrix = lmsGammaMatrix.Select(gamma => Math.Pow(gamma + CubeRootBias, 3));
         var rgbMatrix = RgbToLmsMatrix.Inverse().Multiply(lmsMixMatrix.Select(mix => mix - Bias));

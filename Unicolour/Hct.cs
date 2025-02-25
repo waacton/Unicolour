@@ -36,7 +36,7 @@ public record Hct : ColourRepresentation
     
     internal static Hct FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
-        var d65Xyz = new Xyz(Adaptation.WhitePoint(xyz.Triplet, xyzConfig.WhitePoint, HctWhitePoint), ColourHeritage.From(xyz));
+        var d65Xyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, HctWhitePoint, xyzConfig.AdaptationMatrix);
         var cam16 = Cam16Component(d65Xyz);
         var lab = LabComponent(d65Xyz);
 
@@ -51,12 +51,8 @@ public record Hct : ColourRepresentation
         var targetY = Lab.ToXyz(new Lab(hct.T, 0, 0), XyzConfiguration.D65).Y;
         var result = FindBestJ(targetY, hct);
         var d65Xyz = result.Converged ? result.Data.Xyz : new Xyz(double.NaN, double.NaN, double.NaN);
-        var xyz = new Xyz(Adaptation.WhitePoint(d65Xyz.Triplet, HctWhitePoint, xyzConfig.WhitePoint), ColourHeritage.From(hct))
-        {
-            HctToXyzSearchResult = result
-        };
-        
-        return xyz;
+        var (x, y, z) = Adaptation.WhitePoint(d65Xyz, HctWhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
+        return new Xyz(x, y, z, ColourHeritage.From(hct)) {  HctToXyzSearchResult = result };
     }
 
     // i'm sure some smart people have some fancy-pants algorithms to do this efficiently

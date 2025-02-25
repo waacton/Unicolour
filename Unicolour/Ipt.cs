@@ -25,7 +25,7 @@ public record Ipt : ColourRepresentation
      * Reverse: https://repository.rit.edu/theses/2858/
      */
     
-    private static readonly WhitePoint IptWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+    private static readonly WhitePoint D65WhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
 
     private static readonly Matrix M1 = new(new[,]
     {
@@ -43,8 +43,8 @@ public record Ipt : ColourRepresentation
     
     internal static Ipt FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
     {
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, IptWhitePoint);
+        var xyzMatrix = Matrix.From(xyz);
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
         var lmsMatrix = M1.Multiply(d65Matrix);
         var lmsPrimeMatrix = lmsMatrix.Select(x => x >= 0 ? Math.Pow(x, 0.43) : -Math.Pow(-x, 0.43));
         var iptMatrix = M2.Multiply(lmsPrimeMatrix);
@@ -53,11 +53,11 @@ public record Ipt : ColourRepresentation
 
     internal static Xyz ToXyz(Ipt ictcp, XyzConfiguration xyzConfig)
     {
-        var iptMatrix = Matrix.FromTriplet(ictcp.Triplet);
+        var iptMatrix = Matrix.From(ictcp);
         var lmsPrimeMatrix = M2.Inverse().Multiply(iptMatrix);
         var lmsMatrix = lmsPrimeMatrix.Select(x => x >= 0 ? Math.Pow(x, 1 / 0.43) : -Math.Pow(-x, 1 / 0.43));
         var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, IptWhitePoint, xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(ictcp));
     }
 }

@@ -60,7 +60,7 @@ public record Oklab : ColourRepresentation
      * will consider reworking M1 calculation if there's ever any complaints to my reverse engineering
      */
     
-    private static readonly WhitePoint OklabWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+    private static readonly WhitePoint D65WhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     
     private static Matrix GetM1(Matrix rgbToXyzMatrix) => RgbToOklab.Multiply(rgbToXyzMatrix.Inverse());
     private static readonly Matrix RgbToOklab = new(new[,]
@@ -79,8 +79,8 @@ public record Oklab : ColourRepresentation
     
     internal static Oklab FromXyz(Xyz xyz, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
     {
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, OklabWhitePoint);
+        var xyzMatrix = Matrix.From(xyz);
+        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
         var m1 = GetM1(rgbConfig.RgbToXyzMatrix);
         var lmsMatrix = m1.Multiply(d65Matrix);
         var lmsNonLinearMatrix = lmsMatrix.Select(CubeRoot);
@@ -90,12 +90,12 @@ public record Oklab : ColourRepresentation
     
     internal static Xyz ToXyz(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
     {
-        var labMatrix = Matrix.FromTriplet(oklab.Triplet);
+        var labMatrix = Matrix.From(oklab);
         var lmsNonLinearMatrix = M2.Inverse().Multiply(labMatrix);
         var lmsMatrix = lmsNonLinearMatrix.Select(x => Math.Pow(x, 3));
         var m1 = GetM1(rgbConfig.RgbToXyzMatrix);
         var d65Matrix = m1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, OklabWhitePoint, xyzConfig.WhitePoint);
+        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(oklab));
     }
 }

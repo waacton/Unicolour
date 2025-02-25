@@ -71,7 +71,7 @@ public record Channels(params double[] Values)
 
     internal static Channels UncalibratedFromRgb(Rgb rgb)
     {
-        var (r, g, b) = rgb.ConstrainedTriplet.Tuple;
+        var (r, g, b) = rgb.ConstrainedTuple;
         var black = 1 - new[] { r, g, b }.Max();
         var c = black >= 1.0 ? 0 : (1 - r - black) / (1 - black);
         var m = black >= 1.0 ? 0 : (1 - g - black) / (1 - black);

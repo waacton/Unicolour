@@ -208,7 +208,7 @@ public class ConfigureRgbTests
         };
         
         var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
-        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint);
+        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint, d50XyzConfig.AdaptationMatrix);
         var xyzToRgbMatrix = rgbToXyzMatrix.Inverse();
         Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 

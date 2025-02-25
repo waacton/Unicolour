@@ -6,7 +6,7 @@ public static class EbnerFairchild
     private static readonly Xyz WhiteXyz = new(0.9501, 1.0000, 1.0881);
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint.FromXyz(WhiteXyz));
     private static readonly Configuration Config = new(RgbConfiguration.StandardRgb, XyzConfig);
-    public static readonly Unicolour White = new(Config, ColourSpace.Xyz, WhiteXyz.Triplet.Tuple);
+    public static readonly Unicolour White = new(Config, ColourSpace.Xyz, WhiteXyz.Tuple);
     
     public static readonly Unicolour Hue0Ref = new(Config, ColourSpace.Xyz, 0.4092, 0.2812, 0.3060);
     public static readonly List<Unicolour> AllHue0 = new()

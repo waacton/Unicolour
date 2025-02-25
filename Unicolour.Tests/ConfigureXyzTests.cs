@@ -85,7 +85,7 @@ public class ConfigureXyzTests
         };
         
         var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
-        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint);
+        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint, d50XyzConfig.AdaptationMatrix);
         Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
         var colour = new Unicolour(config, ColourSpace.Rgb, 0.5, 0.25, 0.75);

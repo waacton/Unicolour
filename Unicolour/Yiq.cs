@@ -54,7 +54,7 @@ public record Yiq : ColourRepresentation
         // effectively the following approximations from https://www.itu.int/rec/R-REC-BT.1700 (SMPTE 170M-2004):
         // i = -0.2746...G - 0.3213...B + 0.5959...R;
         // q = -0.5227...G + 0.3112...B + 0.2115...R;
-        var yuvMatrix = Matrix.FromTriplet(yuv.Triplet);
+        var yuvMatrix = Matrix.From(yuv);
         var yiqMatrix = Rotation.Multiply(yuvMatrix);
         return new Yiq(yiqMatrix.ToTriplet(), ColourHeritage.From(yuv));
     }
@@ -63,7 +63,7 @@ public record Yiq : ColourRepresentation
     {
         // no need to invert rotation matrix
         // (the inverse of a rotation is its transpose, and the transpose of a symmetric matrix is itself)
-        var yiqMatrix = Matrix.FromTriplet(yiq.Triplet);
+        var yiqMatrix = Matrix.From(yiq);
         var yuvMatrix = Rotation.Multiply(yiqMatrix);
         return new Yuv(yuvMatrix.ToTriplet(), ColourHeritage.From(yiq));
     }

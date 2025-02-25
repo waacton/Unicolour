@@ -5,9 +5,9 @@ internal static class Daylight
     internal static Spd GetSpd(double cct)
     {
         // s0, s1, s2 have the same wavelength set
-        var start = s0.Start;
-        var interval = s0.Interval;
-        var wavelengths = s0.Wavelengths;
+        var start = S0.Start;
+        var interval = S0.Interval;
+        var wavelengths = S0.Wavelengths;
         var coefficients = wavelengths.Select(wavelength => SpectralPower(wavelength, cct)).ToArray();
         return new Spd(start, interval, coefficients);
     }
@@ -27,10 +27,10 @@ internal static class Daylight
         var (xd, yd) = GetChromaticity(cct);
         var m1 = (-1.3515 - 1.7703 * xd + 5.9114 * yd) / (0.0241 + 0.2562 * xd - 0.7341 * yd);
         var m2 = (0.0300 - 31.4424 * xd + 30.0717 * yd) / (0.0241 + 0.2562 * xd - 0.7341 * yd);
-        return s0[wavelength] + m1 * s1[wavelength] + m2 * s2[wavelength];
+        return S0[wavelength] + m1 * S1[wavelength] + m2 * S2[wavelength];
     }
 
-    private static readonly SpectralCoefficients s0 = new(start: 300, interval: 5,
+    private static readonly SpectralCoefficients S0 = new(start: 300, interval: 5,
         0.04, 3.02, 6, 17.8, 29.6, 42.45, 55.3, 56.3, 57.3, 59.55, 61.8, 61.65, 61.5, 65.15, 68.8, 66.1, 63.4, 64.6,
         65.8, 80.3, 94.8, 99.8, 104.8, 105.35, 105.9, 101.35, 96.8, 105.35, 113.9, 119.75, 125.6, 125.55, 125.5, 123.4,
         121.3, 121.3, 121.3, 117.4, 113.5, 113.3, 113.1, 111.95, 110.8, 108.65, 106.5, 107.65, 108.8, 107.05, 105.3,
@@ -40,7 +40,7 @@ internal static class Daylight
         58.9, 60.4, 61.9
     );
 
-    private static readonly SpectralCoefficients s1 = new(start: 300, interval: 5,
+    private static readonly SpectralCoefficients S1 = new(start: 300, interval: 5,
         0.02, 2.26, 4.5, 13.45, 22.4, 32.2, 42, 41.3, 40.6, 41.1, 41.6, 39.8, 38, 40.2, 42.4, 40.45, 38.5, 36.75, 35,
         39.2, 43.4, 44.85, 46.3, 45.1, 43.9, 40.5, 37.1, 36.9, 36.7, 36.3, 35.9, 34.25, 32.6, 30.25, 27.9, 26.1, 24.3,
         22.2, 20.1, 18.15, 16.2, 14.7, 13.2, 10.9, 8.6, 7.35, 6.1, 5.15, 4.2, 3.05, 1.9, 0.95, 0, -0.8, -1.6, -2.55,
@@ -50,7 +50,7 @@ internal static class Daylight
         -9.8
     );
 
-    private static readonly SpectralCoefficients s2 = new(start: 300, interval: 5,
+    private static readonly SpectralCoefficients S2 = new(start: 300, interval: 5,
         0, 1, 2, 3, 4, 6.25, 8.5, 8.15, 7.8, 7.25, 6.7, 6, 5.3, 5.7, 6.1, 4.55, 3, 2.1, 1.2, 0.05, -1.1, -0.8, -0.5,
         -0.6, -0.7, -0.95, -1.2, -1.9, -2.6, -2.75, -2.9, -2.85, -2.8, -2.7, -2.6, -2.6, -2.6, -2.2, -1.8, -1.65, -1.5,
         -1.4, -1.3, -1.25, -1.2, -1.1, -1, -0.75, -0.5, -0.4, -0.3, -0.15, 0, 0.1, 0.2, 0.35, 0.5, 1.3, 2.1, 2.65, 3.2,

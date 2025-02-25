@@ -7,7 +7,7 @@ public static class HungBerns
     private static readonly Xyz WhiteXyz = Xyy.ToXyz(WhiteXyy);
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint.FromXyz(WhiteXyz));
     private static readonly Configuration Config = new(RgbConfiguration.StandardRgb, XyzConfig);
-    public static readonly Unicolour White = new(Config, ColourSpace.Xyy, WhiteXyy.Triplet.Tuple);
+    public static readonly Unicolour White = new(Config, ColourSpace.Xyy, WhiteXyy.Tuple);
     
     public static readonly Unicolour Red25 = new(Config, ColourSpace.Xyz, 0.3603, 0.309, 0.2448);
     public static readonly Unicolour Red50 = new(Config, ColourSpace.Xyz, 0.4195, 0.309, 0.1528);

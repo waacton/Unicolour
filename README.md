@@ -37,6 +37,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) 鈥
 A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](#convert-between-colour-spaces).
 It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
 
+> [!NOTE]
 > **Supported colour spaces**
 >
 > RGB 路 Linear&nbsp;RGB 路 HSB&nbsp;/&nbsp;HSV 路 HSL 路 HWB 路 HSI 路 

@@ -121,7 +121,7 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
         AssertMix(mixed2, (First.At(0.5), Second.At(0.5), expectedBackward, 0.5));
     }
     
-    public static readonly List<TestCaseData> PremultipliedAlphaTestData =
+    public static readonly TestCaseData[] PremultipliedAlphaTestData =
     [
         new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.00, new AlphaTriplet(new(0.500, 1.000, 90, 2), 0.250)),
         new(new AlphaTriplet(new(0.5, 1.0, 90, 2), 0.25), new AlphaTriplet(new(1.0, 0.5, 270, 2), 0.75), 0.25, new AlphaTriplet(new(0.750, 0.750, 135, 2), 0.375)),

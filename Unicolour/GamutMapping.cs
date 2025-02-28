@@ -6,7 +6,7 @@ internal static class GamutMapping
     {
         if (colour.IsInRgbGamut)
         {
-            return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.Triplet.Tuple, colour.Alpha.A);
+            return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.Tuple, colour.Alpha.A);
         }
 
         // could do some early checks for unusual values (NaN, infinity, etc)
@@ -23,7 +23,7 @@ internal static class GamutMapping
 
     private static Unicolour RgbClipping(Unicolour colour)
     {
-        return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.ConstrainedTriplet.Tuple, colour.Alpha.A);
+        return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.ConstrainedTuple, colour.Alpha.A);
     }
     
     /*
@@ -95,7 +95,7 @@ internal static class GamutMapping
         }
 
         // in case while loop never executes (e.g. Oklch.C == 0)
-        current ??= new Unicolour(config, ColourSpace.Oklch, oklch.Triplet.Tuple, alpha);
+        current ??= new Unicolour(config, ColourSpace.Oklch, oklch.Tuple, alpha);
         
         // it's possible for the "current" colour to still be out of RGB gamut, either because:
         // a) the original OKLCH was not processed (chroma too low) and was already out of RGB gamut

@@ -32,7 +32,7 @@ public class IccUnsupportedTests
 
         var iccConfig = new IccConfiguration(null, "not provided");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(colour.Icc, Is.EqualTo(expected));
         Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -69,7 +69,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not found");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.StartsWith("could not find file", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -110,7 +110,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not enough bytes");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("does not contain enough bytes", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -152,7 +152,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not parseable");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error!.Contains("could not be parsed", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -191,7 +191,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -239,7 +239,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -287,7 +287,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not supported transform");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("not supported", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -332,7 +332,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad profile signature");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error!.Contains("signature is incorrect", StringComparison.CurrentCultureIgnoreCase));
         Assert.That(colour.Icc, Is.EqualTo(expected));
@@ -378,7 +378,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad lut signature");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(colour.Icc.Values, Is.EqualTo(expected));
@@ -424,7 +424,7 @@ public class IccUnsupportedTests
         
         var iccConfig = new IccConfiguration(path, Intent.Unspecified, "bad curve signature");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(colour.Icc.Values, Is.EqualTo(expected));

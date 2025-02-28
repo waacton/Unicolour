@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
 public class GamutMapRgbClippingTests
 {
-    private static readonly List<TestCaseData> TestData =
+    private static readonly TestCaseData[] TestData =
     [
         new(new ColourTriplet(-0.00001, 0.0, 0.0), new ColourTriplet(0.0, 0.0, 0.0)),
         new(new ColourTriplet(0.0, -0.00001, 0.0), new ColourTriplet(0.0, 0.0, 0.0)),

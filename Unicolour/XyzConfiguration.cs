@@ -11,27 +11,35 @@ public class XyzConfiguration
     internal Illuminant? Illuminant { get; }
     internal SpectralBoundary SpectralBoundary { get; }
     internal Planckian Planckian { get; }
+    internal Matrix AdaptationMatrix { get; }
     public string Name { get; }
 
     // even if white point has been hardcoded, still need observer to calculate CCT
     // should be safe to assume 2 degree observer
     public XyzConfiguration(WhitePoint whitePoint, string name = Utils.Unnamed) : 
-        this(whitePoint, Observer.Degree2, name)
+        this(whitePoint, Observer.Degree2, Adaptation.Bradford, name)
     {
     }
     
     public XyzConfiguration(Illuminant illuminant, Observer observer, string name = Utils.Unnamed) : 
-        this(illuminant.GetWhitePoint(observer), observer, name)
+        this(illuminant, observer, Adaptation.Bradford, name)
     {
         Illuminant = illuminant;
     }
     
-    public XyzConfiguration(WhitePoint whitePoint, Observer observer, string name = Utils.Unnamed)
+    public XyzConfiguration(Illuminant illuminant, Observer observer, double[,] adaptation, string name = Utils.Unnamed) : 
+        this(illuminant.GetWhitePoint(observer), observer, adaptation, name)
+    {
+        Illuminant = illuminant;
+    }
+    
+    public XyzConfiguration(WhitePoint whitePoint, Observer observer, double[,] adaptation, string name = Utils.Unnamed)
     {
         WhitePoint = whitePoint;
         Observer = observer;
         SpectralBoundary = new SpectralBoundary(observer, WhiteChromaticity);
         Planckian = new Planckian(observer);
+        AdaptationMatrix = new Matrix(adaptation);
         Name = name;
     }
     

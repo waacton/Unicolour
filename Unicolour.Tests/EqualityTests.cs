@@ -9,57 +9,58 @@ namespace Wacton.Unicolour.Tests;
 
 public class EqualityTests
 {
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void SameReference(ColourSpace colourSpace)
+    [Test]
+    public void SameReference([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
         var colour2 = colour1;
         AssertUnicoloursEqual(colour1, colour2);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void SameReferenceNotNumber(ColourSpace colourSpace)
+    [Test]
+    public void SameReferenceNotNumber([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, double.NaN, double.NaN, double.NaN);
         var colour2 = colour1;
         AssertUnicoloursEqual(colour1, colour2);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void DifferentType(ColourSpace colourSpace)
+    [Test]
+    public void DifferentType([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour = RandomColours.UnicolourFrom(colourSpace);
         var notUnicolour = new object();
         AssertNotEqual(colour, notUnicolour);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void NullUnicolour(ColourSpace colourSpace)
+    [Test]
+    public void NullUnicolour([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour = RandomColours.UnicolourFrom(colourSpace);
         Assert.That(colour.Equals(null), Is.False);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void NullObject(ColourSpace colourSpace)
+    [Test]
+    public void NullObject([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour = RandomColours.UnicolourFrom(colourSpace);
         Assert.That(colour.Equals(null as object), Is.False);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void EqualObjects(ColourSpace colourSpace)
+    [Test]
+    public void EqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
-        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Triplet.Tuple, colour1.Alpha.A);
+        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Tuple, colour1.Alpha.A);
         AssertUnicoloursEqual(colour1, colour2);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllColourSpacesTestCases))]
-    public void NotEqualObjects(ColourSpace colourSpace)
+    [Test]
+    public void NotEqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
-        var differentTuple = GetDifferent(colour1.GetRepresentation(colourSpace).Triplet).Tuple;
+        var difference = colourSpace == ColourSpace.Rgb255 ? 1 : 0.1;
+        var differentTuple = GetDifferent(colour1.GetRepresentation(colourSpace).Triplet, difference).Tuple;
         var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, colour1.Alpha.A + 0.1);
         AssertUnicoloursNotEqual(colour1, colour2, unicolour => unicolour.GetRepresentation(colourSpace).Triplet);
     }

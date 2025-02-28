@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
@@ -7,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class IlluminantTests
 {
-    public static readonly List<TestCaseData> PredefinedWhitePointTestData =
+    public static readonly TestCaseData[] PredefinedWhitePointTestData =
     [
         new TestCaseData(Spd.A, Illuminant.A, Observer.Degree2).SetName("A/2°"),
         new TestCaseData(Spd.C, Illuminant.C, Observer.Degree2).SetName("C/2°"),
@@ -57,7 +56,7 @@ public class IlluminantTests
     }
 
     private static readonly Observer NotObserved = new(new Cmf(Cmf.RequiredWavelengths.ToDictionary(wavelength => wavelength, _ => (0.0, 0.0, 0.0))));
-    public static readonly List<TestCaseData> CustomWhitePointTestData =
+    public static readonly TestCaseData[] CustomWhitePointTestData =
     [
         new TestCaseData(Observer.Degree2).SetName("2°"),
         new TestCaseData(Observer.Degree10).SetName("10°"),

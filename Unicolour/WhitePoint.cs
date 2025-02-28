@@ -8,7 +8,7 @@ public record WhitePoint(double X, double Y, double Z)
 
     public static WhitePoint FromXyz(Xyz xyz) => new(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
     
-    internal Matrix AsXyzMatrix() => Matrix.FromTriplet(X, Y, Z).Select(x => x / 100.0);
+    internal Matrix AsXyzMatrix() => Matrix.From(X, Y, Z).Select(x => x / 100.0);
 
     public Chromaticity ToChromaticity()
     {

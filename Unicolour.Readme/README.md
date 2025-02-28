@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/217,398/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/217,476/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -479,13 +479,17 @@ Every line of code is tested, and any defect is [Unicolour's responsibility](htt
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the colour.
 
-Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
+Example configuration with predefined 
+- Rec. 2020 RGB
+- Illuminant D50 (2° observer) XYZ
 ```c#
 Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
 Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
 ```
 
-Example configuration with manually defined wide-gamut RGB & illuminant C (10° observer) XYZ:
+Example configuration with manually defined 
+- Wide-gamut RGB
+- Illuminant C (10° observer) XYZ, using Von Kries method for white point adaptation
 ```c#
 var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),
@@ -496,7 +500,7 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Math.Pow(value, 2.19921875)
 );
 
-var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);
@@ -592,7 +596,8 @@ mindmap
 
 ### `XyzConfiguration`
 Defines the XYZ white point (which is also [inherited by colour spaces that do not need a specific configuration](#white-points)),
-as well as the observer to use for temperature calculations.
+the observer to use when colour matching functions (CMFs) are required,
+and the chromatic adaptation matrix to use for any white point adaptation (the Bradford method will be used if unspecified).
 
 | Predefined                                         | Property  |
 |----------------------------------------------------|-----------|
@@ -602,6 +607,7 @@ as well as the observer to use for temperature calculations.
 - Parameters
   - Reference white point or illuminant
   - Observer
+  - Chromatic adaptation matrix
 
 ### `YbrConfiguration`
 Defines the constants, scaling, and offsets required to convert to YPbPr and YCbCr.
@@ -653,7 +659,8 @@ These scalars can be changed to match the behaviour of other implementations if 
 ### White points
 All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
-When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
+The default chromatic adaptation uses the Bradford method but [this can be customised](#xyzconfiguration).
 
 | White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
 |-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

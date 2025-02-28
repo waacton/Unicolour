@@ -11,14 +11,14 @@ internal static class Cmy
     internal static double[] FromUnicolour(Unicolour colour) => FromRgb(colour.Rgb);
     internal static double[] FromRgb(Rgb rgb)
     {
-        var (r, g, b) = rgb.ConstrainedTriplet.Tuple;
+        var (r, g, b) = rgb.ConstrainedTuple;
         var c = 1 - r;
         var m = 1 - g;
         var y = 1 - b;
         return new[] { c, m, y };
     }
 
-    internal static Unicolour ToUnicolour(double[] cmy) => new(ColourSpace.Rgb, ToRgb(cmy).Triplet.Tuple);
+    internal static Unicolour ToUnicolour(double[] cmy) => new(ColourSpace.Rgb, ToRgb(cmy).Tuple);
     internal static Rgb ToRgb(double[] cmy)
     {
         var (c, m, y) = (cmy[0], cmy[1], cmy[2]);

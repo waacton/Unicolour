@@ -39,14 +39,14 @@ public record Rgb : ColourRepresentation
     
     internal static Rgb FromRgbLinear(RgbLinear rgbLinear, RgbConfiguration rgbConfig)
     {
-        var rgbLinearMatrix = Matrix.FromTriplet(rgbLinear.Triplet);
+        var rgbLinearMatrix = Matrix.From(rgbLinear);
         var rgbMatrix = rgbLinearMatrix.Select(rgbConfig.CompandFromLinear);
         return new Rgb(rgbMatrix.ToTriplet(), ColourHeritage.From(rgbLinear));
     }
     
     internal static RgbLinear ToRgbLinear(Rgb rgb, RgbConfiguration rgbConfig)
     {
-        var rgbMatrix = Matrix.FromTriplet(rgb.Triplet);
+        var rgbMatrix = Matrix.From(rgb);
         var rgbLinearMatrix = rgbMatrix.Select(rgbConfig.InverseCompandToLinear);
         return new RgbLinear(rgbLinearMatrix.ToTriplet(), ColourHeritage.From(rgb));
     }

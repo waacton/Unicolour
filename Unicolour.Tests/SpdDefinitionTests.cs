@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -6,7 +5,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class SpdDefinitionTests
 {
-    public static readonly List<TestCaseData> PredefinedTestData =
+    public static readonly TestCaseData[] PredefinedTestData =
     [
         new TestCaseData(Spd.A).SetName(nameof(Spd.A)),
         new TestCaseData(Spd.C).SetName(nameof(Spd.C)),
@@ -58,7 +57,7 @@ public class SpdDefinitionTests
         Assert.That(spd.IsValid, Is.False);
     }
     
-    public static readonly List<TestCaseData> DaylightTestData =
+    public static readonly TestCaseData[] DaylightTestData =
     [
         new TestCaseData(5000, Spd.D50).SetName("5000 K"),
         new TestCaseData(5500, Spd.D55).SetName("5500 K"),

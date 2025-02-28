@@ -38,7 +38,7 @@ public class DatasetColourmapTests
         // Cubehelix is based on a function, not a lookup table
     };
     
-    private static readonly List<TestCaseData> LookupCountTestData =
+    private static readonly TestCaseData[] LookupCountTestData =
     [
         new TestCaseData(Viridis.Lookup, 256).SetName(nameof(Viridis)),
         new TestCaseData(Plasma.Lookup, 256).SetName(nameof(Plasma)),
@@ -56,7 +56,7 @@ public class DatasetColourmapTests
         new TestCaseData(Turbo.Lookup, 256).SetName(nameof(Turbo))
     ];
     
-    private static readonly List<TestCaseData> IndexTestData =
+    private static readonly TestCaseData[] IndexTestData =
     [
         new TestCaseData(Colourmaps.Cividis, 0, 0, 0.138068, 0.311105).SetName($"{nameof(Cividis)}[0]"),
         new TestCaseData(Colourmaps.Cividis, 1, 0, 0.141013, 0.317579).SetName($"{nameof(Cividis)}[1]"),
@@ -156,7 +156,7 @@ public class DatasetColourmapTests
         new TestCaseData(Colourmaps.Vlag, 255, 0.66080672, 0.21526712, 0.23069468).SetName($"{nameof(Vlag)}[255]")
     ];
     
-    private static readonly List<TestCaseData> InterpolatedTestData =
+    private static readonly TestCaseData[] InterpolatedTestData =
     [
         new TestCaseData(Colourmaps.Cividis, -0.5, 0, 0.138068, 0.311105).SetName($"{nameof(Cividis)}[-0.5]"),
         new TestCaseData(Colourmaps.Cividis, 0.25, 0, 0.13880425, 0.3127235).SetName($"{nameof(Cividis)}[0.25]"),

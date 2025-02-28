@@ -19,8 +19,8 @@ public class ConfigureIctcpTests
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://professional.dolby.com/siteassets/pdfs/ictcp_dolbywhitepaper_v071.pdf, figure 6)
     public void Rec2020RgbToIctcp100()
     {
-        var red = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.RedRef.Xyz.Triplet.Tuple);
-        var blue = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Triplet.Tuple);
+        var red = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.RedRef.Xyz.Tuple);
+        var blue = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
         var white = new Unicolour(Config100, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config100, ColourSpace.Xyz, 0, 0, 0);
         TestUtils.AssertTriplet<Ictcp>(red, new(0.396807697, -0.135943598, 0.234295237), 0.000000001);
@@ -28,8 +28,8 @@ public class ConfigureIctcpTests
         TestUtils.AssertTriplet<Ictcp>(white, new(0.50808, 0, 0), 0.0005); // InverseEOTF(100) ~= 0.50808
         TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
         
-        var redNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.RedRef.Xyz.Triplet.Tuple);
-        var blueNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Triplet.Tuple);
+        var redNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.RedRef.Xyz.Tuple);
+        var blueNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
         var whiteNoConfig = new Unicolour(ColourSpace.Xyz, XyzWhite.Tuple);
         var blackNoConfig = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
         TestUtils.AssertTriplet<Ictcp>(redNoConfig, new(0.396807697, -0.135943598, 0.234295237), 0.000000001);

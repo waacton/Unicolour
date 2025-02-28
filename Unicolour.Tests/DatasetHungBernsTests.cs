@@ -9,7 +9,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetHungBernsTests
 {
-    private static readonly List<TestCaseData> ReferenceHues =
+    private static readonly TestCaseData[] ReferenceHues =
     [
         new TestCaseData(RedRef, new Xyy(0.6195, 0.3516, 0.3090), new Luv(62.4, 173.3, 55.3)).SetName("Red"),
         new TestCaseData(RedYellowRef, new Xyy(0.4961, 0.4464, 0.6138), new Luv(82.6, 73.7, 90.7)).SetName("Red-yellow"),
@@ -26,7 +26,7 @@ public class DatasetHungBernsTests
         new TestCaseData(White, new Xyy(0.3101, 0.3163, 1.0000), new Luv(100.0, 0.0, 0.0)).SetName("White")
     ];
     
-    private static readonly List<TestCaseData> GroupedByHue =
+    private static readonly TestCaseData[] GroupedByHue =
     [
         new TestCaseData(AllRed).SetName("Red"),
         new TestCaseData(AllRedYellow).SetName("Red-yellow"),

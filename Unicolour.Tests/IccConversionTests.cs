@@ -111,7 +111,7 @@ public class IccConversionTests
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "no reverse transform");
         var config = new Configuration(iccConfig: iccConfig);
-        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(colour.Icc.Values, Is.EqualTo(expected));
@@ -162,7 +162,7 @@ public class IccConversionTests
         var toPcsTestData = new List<TestCaseData>();
         var toDeviceTestData = new List<TestCaseData>();
 
-        foreach (var intent in intents)
+        foreach (var intent in Intents)
         {
             toPcsTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent));
             toDeviceTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent));
@@ -217,7 +217,7 @@ public class IccConversionTests
         var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
         foreach (var iccFile in iccFiles)
         {
-            foreach (var intent in intents)
+            foreach (var intent in Intents)
             {
                 var deviceChannels = IccFile.GetDeviceChannels(iccFile);
                 for (var channel = 0; channel < deviceChannels; channel++)
@@ -239,7 +239,7 @@ public class IccConversionTests
         var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
         foreach (var iccFile in iccFiles)
         {
-            foreach (var intent in intents)
+            foreach (var intent in Intents)
             {
                 for (var channel = 0; channel < 3; channel++)
                 {
@@ -260,7 +260,7 @@ public class IccConversionTests
         return new Configuration(xyzConfig: xyzConfig, iccConfig: iccConfig);
     }
     
-    private static readonly Intent[] intents =
+    private static readonly Intent[] Intents =
     [
         Intent.Perceptual,
         Intent.RelativeColorimetric,

@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/217,398/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/217,476/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -37,6 +37,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) 鈥
 A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](#convert-between-colour-spaces).
 It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
 
+> [!NOTE]
 > **Supported colour spaces**
 >
 > RGB 路 Linear&nbsp;RGB 路 HSB&nbsp;/&nbsp;HSV 路 HSL 路 HWB 路 HSI 路 

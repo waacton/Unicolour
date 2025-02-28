@@ -85,7 +85,7 @@ public class ConfigureXyzTests
         };
         
         var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
-        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint);
+        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint, d50XyzConfig.AdaptationMatrix);
         Assert.That(rgbToXyzMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
         var colour = new Unicolour(config, ColourSpace.Rgb, 0.5, 0.25, 0.75);
@@ -259,8 +259,8 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet<Xyz>(convertedToA, zeroes, XyzTolerance);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void RgbWhitePointRoundTrip(Illuminant rgbIlluminant)
+    [Test]
+    public void RgbWhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant rgbIlluminant)
     {
         RgbConfiguration RgbConfig(WhitePoint whitePoint, RgbConfiguration baseConfig)
         {
@@ -278,8 +278,8 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void Cam02WhitePointRoundTrip(Illuminant camIlluminant)
+    [Test]
+    public void Cam02WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
         {
@@ -296,8 +296,8 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void Cam16WhitePointRoundTrip(Illuminant camIlluminant)
+    [Test]
+    public void Cam16WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
         {

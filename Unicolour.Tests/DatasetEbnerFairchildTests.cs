@@ -8,7 +8,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetEbnerFairchildTests
 {
-    private static readonly List<TestCaseData> ReferenceHues =
+    private static readonly TestCaseData[] ReferenceHues =
     [
         new TestCaseData(Hue0Ref, 0).SetName("0"),
         new TestCaseData(Hue24Ref, 24).SetName("24"),
@@ -27,7 +27,7 @@ public class DatasetEbnerFairchildTests
         new TestCaseData(Hue336Ref, 336).SetName("336")
     ];
     
-    private static readonly List<TestCaseData> GroupedByHue =
+    private static readonly TestCaseData[] GroupedByHue =
     [
         new TestCaseData(AllHue0, 0, 21).SetName("0"),
         new TestCaseData(AllHue24, 24, 21).SetName("24"),

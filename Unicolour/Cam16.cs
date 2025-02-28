@@ -73,7 +73,7 @@ public record Cam16 : ColourRepresentation
         var nc = camConfig.Nc;
             
         // step 0
-        var xyzWhitePointMatrix = Matrix.FromTriplet(xw, yw, zw);
+        var xyzWhitePointMatrix = Matrix.From(xw, yw, zw);
         var (rw, gw, bw) = M16.Multiply(xyzWhitePointMatrix).ToTriplet();
 
         var d = (f * (1 - 1 / 3.6 * Math.Exp((-la - 42) / 92.0))).Clamp(0, 1);
@@ -104,8 +104,8 @@ public record Cam16 : ColourRepresentation
         var view = ViewingConditions(camConfig);
 
         // step 1
-        var xyzMatrix = Matrix.FromTriplet(xyz.X, xyz.Y, xyz.Z);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, camConfig.WhitePoint).Select(x => x * 100);
+        var xyzMatrix = Matrix.From(xyz.X, xyz.Y, xyz.Z);
+        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, camConfig.WhitePoint, xyzConfig.AdaptationMatrix).Select(x => x * 100);
         var rgb = M16.Multiply(xyzMatrix).ToTriplet();
 
         // step 2
@@ -121,7 +121,7 @@ public record Cam16 : ColourRepresentation
         }
 
         // step 4
-        var aMatrix = Matrix.FromTriplet(ra, ga, ba);
+        var aMatrix = Matrix.From(ra, ga, ba);
         var components = ForwardStep4.Multiply(aMatrix);
         var (p2, a, b, u) = (components[0, 0], components[1, 0], components[2, 0], components[3, 0]);
         var h = ToDegrees(Math.Atan2(b, a)).Modulo(360);
@@ -172,7 +172,7 @@ public record Cam16 : ColourRepresentation
         var b = gamma * Math.Sin(ToRadians(h));
         
         // step 4
-        var components = Matrix.FromTriplet(p2, a, b);
+        var components = Matrix.From(p2, a, b);
         var (ra, ga, ba) = ReverseStep4.Multiply(components).ToTriplet();
         
         // step 5
@@ -184,11 +184,11 @@ public record Cam16 : ColourRepresentation
         }
         
         // step 6
-        var rgbMatrix = Matrix.FromTriplet(rc / view.Dr, gc / view.Dg, bc / view.Db);
+        var rgbMatrix = Matrix.From(rc / view.Dr, gc / view.Dg, bc / view.Db);
         
         // step 7
         var xyzMatrix = M16.Inverse().Multiply(rgbMatrix);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint).Select(x => x / 100.0);
+        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix).Select(x => x / 100.0);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(cam));
     }
 }

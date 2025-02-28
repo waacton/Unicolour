@@ -6,8 +6,8 @@ namespace Wacton.Unicolour.Tests;
 
 public class ConfigureCamTests
 {
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void XyzWhitePointRoundTripViaCam02(Illuminant xyzIlluminant)
+    [Test]
+    public void XyzWhitePointRoundTripViaCam02([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);
@@ -19,8 +19,8 @@ public class ConfigureCamTests
         TestUtils.AssertTriplet(cam.Triplet, expectedCam.Triplet, 0.00000000001);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void XyzWhitePointRoundTripViaCam16(Illuminant xyzIlluminant)
+    [Test]
+    public void XyzWhitePointRoundTripViaCam16([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);

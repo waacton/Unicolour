@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
@@ -12,7 +11,7 @@ public class DatasetMacbethTests
     private static readonly Configuration ConfigIlluminantC = new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2));
     
     // https://poynton.ca/notes/color/GretagMacbeth-ColorChecker.html
-    private static readonly List<TestCaseData> XyyTestData =
+    private static readonly TestCaseData[] XyyTestData =
     [
         new TestCaseData(DarkSkin, 0.400, 0.350, 10.1).SetName("Dark skin"),
         new TestCaseData(LightSkin, 0.377, 0.345, 35.8).SetName("Light skin"),

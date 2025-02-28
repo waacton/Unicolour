@@ -104,9 +104,9 @@ public record Hsluv : ColourRepresentation
     {
         const double kappa = 903.2962962;
         const double epsilon = 0.0088564516;
-        var matrixR = Matrix.FromTriplet(3.240969941904521, -1.537383177570093, -0.498610760293);
-        var matrixG = Matrix.FromTriplet(-0.96924363628087, 1.87596750150772, 0.041555057407175);
-        var matrixB = Matrix.FromTriplet(0.055630079696993, -0.20397695888897, 1.056971514242878);
+        var matrixR = Matrix.From(3.240969941904521, -1.537383177570093, -0.498610760293);
+        var matrixG = Matrix.From(-0.96924363628087, 1.87596750150772, 0.041555057407175);
+        var matrixB = Matrix.From(0.055630079696993, -0.20397695888897, 1.056971514242878);
         
         var sub1 = Math.Pow(l + 16, 3) / 1560896;
         var sub2 = sub1 > epsilon ? sub1 : l / kappa;

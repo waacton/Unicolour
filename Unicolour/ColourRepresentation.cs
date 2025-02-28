@@ -7,12 +7,14 @@ public abstract record ColourRepresentation
     protected readonly double Third;
     protected abstract int? HueIndex { get; }
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
+    public (double, double, double) Tuple => (First, Second, Third);
     internal ColourHeritage Heritage { get; }
 
     protected virtual double ConstrainedFirst => First;
     protected virtual double ConstrainedSecond => Second;
     protected virtual double ConstrainedThird => Third;
     public ColourTriplet ConstrainedTriplet => new(ConstrainedFirst, ConstrainedSecond, ConstrainedThird, HueIndex);
+    public (double, double, double) ConstrainedTuple => (ConstrainedFirst, ConstrainedSecond, ConstrainedThird);
     
     internal bool IsNaN => double.IsNaN(First) || double.IsNaN(Second) || double.IsNaN(Third);
     internal bool UseAsNaN => Heritage == ColourHeritage.NaN || IsNaN;

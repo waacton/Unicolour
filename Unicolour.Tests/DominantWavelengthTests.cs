@@ -18,7 +18,7 @@ public class DominantWavelengthTests
      * expected colour values for these tests based on calculations from
      * http://www.brucelindbloom.com/index.html?ColorCalculator.html
      */
-    private static readonly List<TestCaseData> RgbTestData =
+    private static readonly TestCaseData[] RgbTestData =
     [
         new TestCaseData(RgbStandardXyzD65, 1, 0, 0, 611.4).SetName("sRGB, D65, Red"),
         new TestCaseData(RgbStandardXyzD65, 0, 1, 0, 549.1).SetName("sRGB, D65, Green"),
@@ -118,7 +118,7 @@ public class DominantWavelengthTests
      * expected colour values for these tests based on calculations from
      * http://www.brucelindbloom.com/index.html?ColorCalculator.html
      */
-    private static readonly List<TestCaseData> ImaginaryTestData =
+    private static readonly TestCaseData[] ImaginaryTestData =
     [
         new TestCaseData(RgbStandardXyzD65, 0, 0, 477.2).SetName("sRGB, D65, (0,0)"),
         new TestCaseData(RgbStandardXyzD65, 0, 1, 520.4).SetName("sRGB, D65, (0,1)"),

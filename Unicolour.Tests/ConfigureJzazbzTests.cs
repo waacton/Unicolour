@@ -19,8 +19,8 @@ public class ConfigureJzazbzTests
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://www.researchgate.net/figure/The-Hung-Berns-data-plotted-in-six-different-color-spaces-a-CIELAB-b-CIELUV-c_fig2_317811721)
     public void XyzD65ToJzazbz100()
     {
-        var red = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.RedRef.Xyz.Triplet.Tuple);
-        var blue = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Triplet.Tuple);
+        var red = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.RedRef.Xyz.Tuple);
+        var blue = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
         var white = new Unicolour(Config100, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config100, ColourSpace.Xyz, 0, 0, 0);
         TestUtils.AssertTriplet<Jzazbz>(red, new(0.113977241, 0.092841591, 0.102192454), 0.000000001);
@@ -28,8 +28,8 @@ public class ConfigureJzazbzTests
         TestUtils.AssertTriplet<Jzazbz>(white, new(0.16717, 0, 0), 0.0005);
         TestUtils.AssertTriplet<Jzazbz>(black, new(0, 0, 0), 0.0005);
         
-        var redNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.RedRef.Xyz.Triplet.Tuple);
-        var blueNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Triplet.Tuple);
+        var redNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.RedRef.Xyz.Tuple);
+        var blueNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
         var whiteNoConfig = new Unicolour(ColourSpace.Xyz, XyzWhite.Tuple);
         var blackNoConfig = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
         TestUtils.AssertTriplet<Jzazbz>(redNoConfig, new(0.113977241, 0.092841591, 0.102192454), 0.000000001);

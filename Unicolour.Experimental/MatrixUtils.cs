@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Wacton.Unicolour.Experimental;
+﻿namespace Wacton.Unicolour.Experimental;
 
 /*
  * extensions to make the lagrangian maths of reflectance generator more readable

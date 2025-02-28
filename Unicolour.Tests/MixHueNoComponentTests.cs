@@ -40,7 +40,7 @@ public class MixHueNoComponentTests : MixHueAgnosticTests
     {
     }
 
-    public static readonly List<TestCaseData> PremultipliedAlphaTestData =
+    public static readonly TestCaseData[] PremultipliedAlphaTestData =
     [
         new(new AlphaTriplet(new(0.5, 1.0, 0.5), 0.25), new AlphaTriplet(new(1.0, 0.5, 1.0), 0.75), 0.00, new AlphaTriplet(new(0.500, 1.000, 0.500), 0.250)),
         new(new AlphaTriplet(new(0.5, 1.0, 0.5), 0.25), new AlphaTriplet(new(1.0, 0.5, 1.0), 0.75), 0.25, new AlphaTriplet(new(0.750, 0.750, 0.750), 0.375)),

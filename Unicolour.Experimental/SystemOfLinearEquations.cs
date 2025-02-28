@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Wacton.Unicolour.Experimental;
+﻿namespace Wacton.Unicolour.Experimental;
 
 // NOTE: obviously slower than MathNet, sacrificing speed for understanding and readability
 // even less concerned when it's part of the experimental package

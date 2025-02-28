@@ -962,7 +962,7 @@ public class DatasetXkcdTests
         { "yellowy green", "#bff128" }
     };
     
-    private static readonly List<TestCaseData> HexTestData =
+    private static readonly TestCaseData[] HexTestData =
     [
         new("acid green", AcidGreen),
         new("adobe", Adobe),

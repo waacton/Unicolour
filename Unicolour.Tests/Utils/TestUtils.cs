@@ -14,56 +14,14 @@ internal static class TestUtils
     internal static int RandomInt(int max) => Random.Next(max);
     
     internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
-    internal static readonly List<TestCaseData> AllColourSpacesTestCases =
-    [
-        new(ColourSpace.Rgb),
-        new(ColourSpace.RgbLinear),
-        new(ColourSpace.Hsb),
-        new(ColourSpace.Hsl),
-        new(ColourSpace.Hwb),
-        new(ColourSpace.Hsi),
-        new(ColourSpace.Xyz),
-        new(ColourSpace.Xyy),
-        new(ColourSpace.Lab),
-        new(ColourSpace.Lchab),
-        new(ColourSpace.Luv),
-        new(ColourSpace.Lchuv),
-        new(ColourSpace.Hsluv),
-        new(ColourSpace.Hpluv),
-        new(ColourSpace.Ypbpr),
-        new(ColourSpace.Ycbcr),
-        new(ColourSpace.Ycgco),
-        new(ColourSpace.Yuv),
-        new(ColourSpace.Yiq),
-        new(ColourSpace.Ydbdr),
-        new(ColourSpace.Tsl),
-        new(ColourSpace.Xyb),
-        new(ColourSpace.Ipt),
-        new(ColourSpace.Ictcp),
-        new(ColourSpace.Jzazbz),
-        new(ColourSpace.Jzczhz),
-        new(ColourSpace.Oklab),
-        new(ColourSpace.Oklch),
-        new(ColourSpace.Okhsl),
-        new(ColourSpace.Okhsv),
-        new(ColourSpace.Okhwb),
-        new(ColourSpace.Cam02),
-        new(ColourSpace.Cam16),
-        new(ColourSpace.Hct)
-    ];
     
-    internal static readonly List<TestCaseData> AllIlluminantsTestCases =
+    internal static readonly List<Illuminant> AllIlluminants =
     [
-        new(Illuminant.A),
-        new(Illuminant.C),
-        new(Illuminant.D50),
-        new(Illuminant.D55),
-        new(Illuminant.D65),
-        new(Illuminant.D75),
-        new(Illuminant.E),
-        new(Illuminant.F2),
-        new(Illuminant.F7),
-        new(Illuminant.F11)
+        Illuminant.A,
+        Illuminant.C,
+        Illuminant.D50, Illuminant.D55, Illuminant.D65, Illuminant.D75,
+        Illuminant.E,
+        Illuminant.F2, Illuminant.F7, Illuminant.F11
     ];
 
     internal static readonly Dictionary<string, Illuminant> Illuminants = new()

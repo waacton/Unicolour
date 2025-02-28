@@ -31,16 +31,16 @@ public record RgbLinear : ColourRepresentation
     
     internal static RgbLinear FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
+        var xyzMatrix = Matrix.From(xyz);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         var rgbLinearMatrix = rgbToXyzMatrix.Inverse().Multiply(xyzMatrix);
         return new RgbLinear(rgbLinearMatrix.ToTriplet(), ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(RgbLinear rgbLinear, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
-        var rgbLinearMatrix = Matrix.FromTriplet(rgbLinear.Triplet);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
+        var rgbLinearMatrix = Matrix.From(rgbLinear);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         var xyzMatrix = rgbToXyzMatrix.Multiply(rgbLinearMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(rgbLinear));
     }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class PigmentTests
 {
-    private static readonly double[][] r =
+    private static readonly double[][] R =
     [
         [1.00, 0.50, 1.00, 0.50, 1.00],
         [1.00, 1.00, 0.25, 0.50, 0.50],
@@ -15,11 +14,11 @@ public class PigmentTests
     ];
     
     // calculated independently
-    private static readonly List<TestCaseData> SingleConstantData =
+    private static readonly TestCaseData[] SingleConstantData =
     [
-        new(1.0, 0.0, 0.0, r[0]),
-        new(0.0, 1.0, 0.0, r[1]),
-        new(0.0, 0.0, 1.0, r[2]),
+        new(1.0, 0.0, 0.0, R[0]),
+        new(0.0, 1.0, 0.0, R[1]),
+        new(0.0, 0.0, 1.0, R[2]),
         new(0.5, 0.5, 0.0, new[] { 1.000000000000000, 0.609611796797792, 0.361914205481341, 0.500000000000000, 0.609611796797792 }),
         new(0.5, 0.0, 0.5, new[] { 1.000000000000000, 0.609611796797792, 0.815648795795914, 0.328214801816778, 0.361914205481341 }),
         new(0.0, 0.5, 0.5, new[] { 1.000000000000000, 1.000000000000000, 0.355756678111981, 0.328214801816778, 0.328214801816778 }),
@@ -31,9 +30,9 @@ public class PigmentTests
     [TestCaseSource(nameof(SingleConstantData))]
     public void SingleConstantKubelkaMunk(double c1, double c2, double c3, double[] expected)
     {
-        Pigment pigment1 = new(400, 10, r[0]);
-        Pigment pigment2 = new(400, 10, r[1]);
-        Pigment pigment3 = new(400, 10, r[2]);
+        Pigment pigment1 = new(400, 10, R[0]);
+        Pigment pigment2 = new(400, 10, R[1]);
+        Pigment pigment3 = new(400, 10, R[2]);
         Pigment[] pigments = [pigment1, pigment2, pigment3];
         double[] concentrations = [c1, c2, c3];
         AssertReflectance(pigments, concentrations, expected, expectedXyzNaN: false);
@@ -49,14 +48,14 @@ public class PigmentTests
         AssertReflectance(pigments, concentrations, [0.2, 0.4, double.NaN, 0.8, 1.0], expectedXyzNaN: true);
     }
     
-    private static readonly double[][] k =
+    private static readonly double[][] K =
     [
         [1.00, 0.50, 1.00, 0.50, 1.00],
         [1.00, 1.00, 0.25, 0.50, 0.50],
         [1.00, 1.00, 0.75, 0.25, 0.25]
     ];
     
-    private static readonly double[][] s =
+    private static readonly double[][] S =
     [
         [0.20, 0.40, 0.60, 0.80, 1.00],
         [1.00, 0.80, 0.60, 0.40, 0.20],
@@ -64,7 +63,7 @@ public class PigmentTests
     ];
     
     // calculated independently
-    private static readonly List<TestCaseData> TwoConstantData =
+    private static readonly TestCaseData[] TwoConstantData =
     [
         new(1.0, 0.0, 0.0, new[] { 0.083920216900384, 0.234435562925363, 0.194600504301446, 0.344131154255050, 0.267949192431123 }),
         new(0.0, 1.0, 0.0, new[] { 0.267949192431123, 0.234435562925363, 0.413200451767309, 0.234435562925363, 0.145898033750315 }),
@@ -81,7 +80,7 @@ public class PigmentTests
     private const double k2 = 0.66;
     
     // calculated independently
-    private static readonly List<TestCaseData> TwoConstantCorrectedData =
+    private static readonly TestCaseData[] TwoConstantCorrectedData =
     [
         new(1.0, 0.0, 0.0, new[] { 0.029209103554298, 0.091186832391423, 0.073409156685747, 0.146393232455631, 0.107022969538771 }),
         new(0.0, 1.0, 0.0, new[] { 0.107022969538771, 0.091186832391423, 0.186792715165618, 0.091186832391423, 0.053079526586978 }),
@@ -97,9 +96,9 @@ public class PigmentTests
     [TestCaseSource(nameof(TwoConstantData))]
     public void TwoConstantKubelkaMunk(double c1, double c2, double c3, double[] expected)
     {
-        Pigment pigment1 = new(400, 10, k[0], s[0]);
-        Pigment pigment2 = new(400, 10, k[1], s[1]);
-        Pigment pigment3 = new(400, 10, k[2], s[2]);
+        Pigment pigment1 = new(400, 10, K[0], S[0]);
+        Pigment pigment2 = new(400, 10, K[1], S[1]);
+        Pigment pigment3 = new(400, 10, K[2], S[2]);
         Pigment[] pigments = [pigment1, pigment2, pigment3];
         double[] concentrations = [c1, c2, c3];
         AssertReflectance(pigments, concentrations, expected, expectedXyzNaN: false);
@@ -108,9 +107,9 @@ public class PigmentTests
     [TestCaseSource(nameof(TwoConstantCorrectedData))]
     public void TwoConstantKubelkaMunkCorrected(double c1, double c2, double c3, double[] expected)
     {
-        Pigment pigment1 = new(400, 10, k[0], s[0], k1, k2);
-        Pigment pigment2 = new(400, 10, k[1], s[1], k1, k2);
-        Pigment pigment3 = new(400, 10, k[2], s[2], k1, k2);
+        Pigment pigment1 = new(400, 10, K[0], S[0], k1, k2);
+        Pigment pigment2 = new(400, 10, K[1], S[1], k1, k2);
+        Pigment pigment3 = new(400, 10, K[2], S[2], k1, k2);
         Pigment[] pigments = [pigment1, pigment2, pigment3];
         double[] concentrations = [c1, c2, c3];
         AssertReflectance(pigments, concentrations, expected, expectedXyzNaN: false);
@@ -131,8 +130,8 @@ public class PigmentTests
     public void AbsorptionHasMoreElements()
     {
         // first test case data is single pigment of k[0] and s[0] 
-        var absorption = k[0].Concat([0.5]).ToArray();
-        var scattering = s[0];
+        var absorption = K[0].Concat([0.5]).ToArray();
+        var scattering = S[0];
         var expected = TwoConstantData[0].Arguments[3] as double[];
         
         // the additional absorption element is ignored
@@ -144,8 +143,8 @@ public class PigmentTests
     public void ScatteringHasMoreElements()
     {
         // first test case data is single pigment of k[0] and s[0] 
-        var absorption = k[0];
-        var scattering = s[0].Concat([0.5]).ToArray();
+        var absorption = K[0];
+        var scattering = S[0].Concat([0.5]).ToArray();
         var expected = TwoConstantData[0].Arguments[3] as double[];
         
         // the additional scattering element is ignored
@@ -163,14 +162,14 @@ public class PigmentTests
     [Test]
     public void AbsorptionEmpty()
     {
-        Pigment pigment = new(400, 10, k: [], s[0]);
+        Pigment pigment = new(400, 10, k: [], S[0]);
         AssertReflectance([pigment], [1.0], expected: [], expectedXyzNaN: true);
     }
     
     [Test]
     public void ScatteringEmpty()
     {
-        Pigment pigment = new(400, 10, k[0], s: []);
+        Pigment pigment = new(400, 10, K[0], s: []);
         AssertReflectance([pigment], [1.0], expected: [], expectedXyzNaN: true);
     }
     
@@ -228,8 +227,8 @@ public class PigmentTests
         AssertReflectance(pigments, concentrations, expected: null, expectedXyzNaN: true);
     }
 
-    private static readonly Configuration configWithIlluminantSpd = new(xyzConfig: XyzConfiguration.D50); // contains D50 SPD (as well as precalculated D65 white point)
-    private static readonly Configuration configWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(96.422, 100.000, 82.521))); // D50 white point only
+    private static readonly Configuration ConfigWithIlluminantSpd = new(xyzConfig: XyzConfiguration.D50); // contains D50 SPD (as well as precalculated D65 white point)
+    private static readonly Configuration ConfigWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(96.422, 100.000, 82.521))); // D50 white point only
     
     private static void AssertReflectance(Pigment[] pigments, double[] concentrations, double[]? expected, bool expectedXyzNaN)
     {
@@ -247,8 +246,8 @@ public class PigmentTests
             }
         }
         
-        var colourFromIlluminantSpd = new Unicolour(configWithIlluminantSpd, pigments, concentrations); // will calculate XYZ using D50 SPD directly
-        var colourFromWhitePoint = new Unicolour(configWithoutIlluminantSpd, pigments, concentrations); // will calculate XYZ using default D65 SPD, and then adapt white point
+        var colourFromIlluminantSpd = new Unicolour(ConfigWithIlluminantSpd, pigments, concentrations); // will calculate XYZ using D50 SPD directly
+        var colourFromWhitePoint = new Unicolour(ConfigWithoutIlluminantSpd, pigments, concentrations); // will calculate XYZ using default D65 SPD, and then adapt white point
         Assert.That(colourFromIlluminantSpd.Xyz.X, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromIlluminantSpd.Xyz.Y, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromIlluminantSpd.Xyz.Z, expectedXyzNaN ? Is.NaN : Is.Not.NaN);

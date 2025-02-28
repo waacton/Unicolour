@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
@@ -51,7 +50,7 @@ public class KnownOkhsvTests
         TestUtils.AssertTriplet<Okhsv>(grey, new(0.24965434119047608 * 360, 1.0347523926099617e-7, 0.5337598416065157), Tolerance);
     }
     
-    private static readonly List<TestCaseData> OklabData =
+    private static readonly TestCaseData[] OklabData =
     [
         new(new ColourTriplet(0.5, -0.5, 0.0), new ColourTriplet(0.5 * 360, -1.4104445419929168, 0.631481023598059)),
         new(new ColourTriplet(0.5, +0.5, 0.0), new ColourTriplet(0.0 * 360, 1.7822882983359132, 1.049263654851725)),

@@ -163,7 +163,7 @@ public class DatasetCssTests
         { "transparent", new(0, 0, 0) }
     };
     
-    private static readonly List<TestCaseData> Rgb255TestData =
+    private static readonly TestCaseData[] Rgb255TestData =
     [
         new("aliceblue", AliceBlue),
         new("antiquewhite", AntiqueWhite),
@@ -330,7 +330,7 @@ public class DatasetCssTests
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
     
-    private static readonly List<TestCaseData> DuplicateTestData =
+    private static readonly TestCaseData[] DuplicateTestData =
     [
         new TestCaseData(Cyan, Aqua).SetName("cyan = aqua"),
         new TestCaseData(Magenta, Fuchsia).SetName("magenta = fuchsia"),
@@ -355,7 +355,7 @@ public class DatasetCssTests
     {
         var hexValues = Css.All.Select(x => x.Hex).ToList();
         var duplicateCount = hexValues.Count - hexValues.Distinct().Count();
-        Assert.That(duplicateCount, Is.EqualTo(DuplicateTestData.Count));
+        Assert.That(duplicateCount, Is.EqualTo(DuplicateTestData.Length));
     }
 
     [Test]

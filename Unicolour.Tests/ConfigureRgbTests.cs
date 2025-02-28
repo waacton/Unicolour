@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
@@ -23,7 +22,7 @@ public class ConfigureRgbTests
     
     // no reliable reference data for Rec. 601 (625-line or 525-line), xvYCC, PAL/PAL-M/SECAM with Rec. 470 gamma (2.8), NTSC-525 with Rec. 2020 gamma
     // but they are at least covered by roundtrip tests
-    private static readonly List<TestCaseData> StandardRgbLookup =
+    private static readonly TestCaseData[] StandardRgbLookup =
     [
         new TestCaseData((1.0, 0.0, 0.0), RgbConfiguration.DisplayP3, (0.917488, 0.200287, 0.138561)).SetName("sRGB (Red) ↔ Display-P3"),
         new TestCaseData((0.0, 1.0, 0.0), RgbConfiguration.DisplayP3, (0.458402, 0.985265, 0.298295)).SetName("sRGB (Green) ↔ Display-P3"),
@@ -208,7 +207,7 @@ public class ConfigureRgbTests
         };
         
         var rgbToXyzMatrix = RgbConfiguration.StandardRgb.RgbToXyzMatrix;
-        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint);
+        rgbToXyzMatrix = Adaptation.WhitePoint(rgbToXyzMatrix, standardRgbConfig.WhitePoint, d50XyzConfig.WhitePoint, d50XyzConfig.AdaptationMatrix);
         var xyzToRgbMatrix = rgbToXyzMatrix.Inverse();
         Assert.That(xyzToRgbMatrix.Data, Is.EqualTo(expectedMatrix).Within(0.0000001));
 
@@ -267,8 +266,8 @@ public class ConfigureRgbTests
         TestUtils.AssertTriplet<Rgb>(colourLab, expectedRgb, Tolerance);
     }
     
-    [TestCaseSource(typeof(TestUtils), nameof(TestUtils.AllIlluminantsTestCases))]
-    public void XyzWhitePointRoundTrip(Illuminant xyzIlluminant)
+    [Test]
+    public void XyzWhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(RgbConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974);

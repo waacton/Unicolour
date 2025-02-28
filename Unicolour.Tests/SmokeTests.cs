@@ -7,7 +7,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class SmokeTests
 {
-    private static readonly List<TestCaseData> ColourSpaceTestCases =
+    private static readonly TestCaseData[] ColourSpaceTestCases =
     [
         new(ColourSpace.Rgb255, 0, 0, 0, 0),
         new(ColourSpace.Rgb255, 255, 255, 255, 1),
@@ -283,12 +283,12 @@ public class SmokeTests
         AssertNoError(expected, new Unicolour(Configuration.Default, cct, locus, luminance));
     }
 
-    private static readonly Spd monochromaticSpd = new(start: 580, interval: 1, [1.0]);
-    private static readonly Spd twoNmSpd = new(start: 578, interval: 2, [0.25, 1.0, 0.75]);
-    private static readonly Spd fiveNmSpd = new(start: 575, interval: 5, [0.25, 1.0, 0.75]);
-    private static readonly Spd noPowerOneNmSpd = new(start: 580, interval: 1, []);
-    private static readonly Spd noPowerZeroNmSpd = new(start: 580, interval: 0, []);
-    private static readonly Spd[] SpdValues = [Spd.D65, monochromaticSpd, twoNmSpd, fiveNmSpd, noPowerOneNmSpd, noPowerZeroNmSpd];
+    private static readonly Spd MonochromaticSpd = new(start: 580, interval: 1, [1.0]);
+    private static readonly Spd TwoNmSpd = new(start: 578, interval: 2, [0.25, 1.0, 0.75]);
+    private static readonly Spd FiveNmSpd = new(start: 575, interval: 5, [0.25, 1.0, 0.75]);
+    private static readonly Spd NoPowerOneNmSpd = new(start: 580, interval: 1, []);
+    private static readonly Spd NoPowerZeroNmSpd = new(start: 580, interval: 0, []);
+    private static readonly Spd[] SpdValues = [Spd.D65, MonochromaticSpd, TwoNmSpd, FiveNmSpd, NoPowerOneNmSpd, NoPowerZeroNmSpd];
 
     [Test]
     public void SpectralPowerDistribution(

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
@@ -8,7 +7,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class NotNumberTests
 {
-    private static readonly List<TestCaseData> TestData =
+    private static readonly TestCaseData[] TestData =
     [
         new(Configuration.Default, double.NaN, 0, 0),
         new(Configuration.Default, 0, double.NaN, 0),

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using static Wacton.Unicolour.Icc.DataTypes;
@@ -29,7 +28,7 @@ public class IccDataTypeTests
         Assert.That(actual, Is.EqualTo(new Version(expectedMajor, expectedMinor, expectedBugFix)));
     }
     
-    private static List<TestCaseData> DateTimeTestCases =
+    private static TestCaseData[] DateTimeTestCases =
     [
         new TestCaseData(new byte[] { 7, 208, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5 }, new DateTime(2000, 01, 02, 03, 04, 05, DateTimeKind.Utc)).SetName("Normal date"),
         new TestCaseData(new byte[] { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0 }, new DateTime(1, 1, 1, 0, 0, 0, DateTimeKind.Utc)).SetName("Min date"),

@@ -39,8 +39,34 @@ public class XyzConfiguration
         Observer = observer;
         SpectralBoundary = new SpectralBoundary(observer, WhiteChromaticity);
         Planckian = new Planckian(observer);
-        AdaptationMatrix = new Matrix(adaptation);
+        AdaptationMatrix = GetAdaptationMatrix(adaptation);
         Name = name;
+    }
+
+    private static Matrix GetAdaptationMatrix(double[,] adaptation)
+    {
+        const int rows = 3;
+        const int cols = 3;
+        
+        var maxRow = adaptation.GetLength(0);
+        var maxCol = adaptation.GetLength(1);
+        if (maxRow == rows && maxCol == cols)
+        {
+            return new Matrix(adaptation);
+        }
+
+        var data = new double[rows, cols];
+        for (var row = 0; row < rows; row++)
+        {
+            var hasRow = maxRow >= row + 1;
+            for (var col = 0; col < cols; col++)
+            {
+                var hasCol = maxCol >= col + 1;
+                data[row, col] = hasRow && hasCol ? adaptation[row, col] : double.NaN;
+            }
+        }
+        
+        return new Matrix(data);
     }
     
     public override string ToString() => $"{Name} · white point {WhitePoint}";

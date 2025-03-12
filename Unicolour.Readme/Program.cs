@@ -36,8 +36,9 @@ void ProcessDocsReadme(string readmePath)
         .Replace("docs/", string.Empty) // docs directory is flat
         .Replace("../", "https://github.com/waacton/Unicolour/tree/main/");
     
-    // until GitHub Pages supports Mermaid 😑 - just remove it
+    // GitHub Pages currently doesn't support alerts or Mermaid 😑 - just remove them
     textForDocs = Regex.Replace(textForDocs, @"<details>(.|\n)*?<\/details>", string.Empty);
+    textForDocs = textForDocs.Replace("> [!NOTE]", string.Empty);
 
     var ukText = textForDocs;
     ukText += Environment.NewLine;

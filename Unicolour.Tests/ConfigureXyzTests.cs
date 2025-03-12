@@ -313,4 +313,112 @@ public class ConfigureXyzTests
         var xyz = Cam16.ToXyz(cam, camConfig, XyzConfiguration.D65);
         TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
+    
+    [Test]
+    public void ChromaticAdaptationNoData() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new double[,] {},
+        expectedAdaptation: new[,]
+        {
+            { double.NaN, double.NaN, double.NaN },
+            { double.NaN, double.NaN, double.NaN },
+            { double.NaN, double.NaN, double.NaN }
+        }
+    );
+
+    [Test]
+    public void ChromaticAdaptationMissingRow() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 }
+        },
+        expectedAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 },
+            { double.NaN, double.NaN, double.NaN }
+        }
+    );
+    
+    [Test]
+    public void ChromaticAdaptationMissingColumn() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new[,]
+        {
+            { 1.0, 0.0 },
+            { 0.0, 2.0 },
+            { 0.0, 0.0 }
+        },
+        expectedAdaptation: new[,]
+        {
+            { 1.0, 0.0, double.NaN },
+            { 0.0, 2.0, double.NaN },
+            { 0.0, 0.0, double.NaN }
+        }
+    );
+    
+    [Test]
+    public void ChromaticAdaptationExtraRow() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 },
+            { 0.0, 0.0, 3.0 },
+            { 9.0, 9.0, 9.0 }
+        },
+        expectedAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 },
+            { 0.0, 0.0, 3.0 }
+        }
+    );
+    
+    [Test]
+    public void ChromaticAdaptationExtraColumn() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0, 9.0 },
+            { 0.0, 2.0, 0.0, 9.0 },
+            { 0.0, 0.0, 3.0, 9.0 }
+        },
+        expectedAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 },
+            { 0.0, 0.0, 3.0 }
+        }
+    );
+    
+    [Test]
+    public void ChromaticAdaptationExtraRowAndColumn() => AssertInvalidChromaticAdaptation(
+        invalidAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0, 9.0 },
+            { 0.0, 2.0, 0.0, 9.0 },
+            { 0.0, 0.0, 3.0, 9.0 },
+            { 9.0, 9.0, 9.0, 9.0 }
+        },
+        expectedAdaptation: new[,]
+        {
+            { 1.0, 0.0, 0.0 },
+            { 0.0, 2.0, 0.0 },
+            { 0.0, 0.0, 3.0 }
+        }
+    );
+
+    private static void AssertInvalidChromaticAdaptation(double[,] invalidAdaptation, double[,] expectedAdaptation)
+    {
+        var observer = Observer.Degree2;
+        var sourceIlluminant = Illuminant.D65;
+        var targetIlluminant = Illuminant.D50;
+        var xyzConfig = new XyzConfiguration(sourceIlluminant, observer, invalidAdaptation);
+        Assert.That(xyzConfig.AdaptationMatrix.Data, Is.EqualTo(expectedAdaptation));
+
+        var xyz = new Xyz(0.5, 0.5, 0.5);
+        var sourceWhite = sourceIlluminant.GetWhitePoint(observer);
+        var targetWhite = targetIlluminant.GetWhitePoint(observer);
+        var adaptedXyz = Adaptation.WhitePoint(xyz, sourceWhite, targetWhite, xyzConfig.AdaptationMatrix);
+        var expectedXyz = Adaptation.WhitePoint(xyz, sourceWhite, targetWhite, new Matrix(expectedAdaptation));
+        TestUtils.AssertTriplet(adaptedXyz.Triplet, expectedXyz.Triplet, 0);
+    }
 }

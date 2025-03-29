@@ -8,9 +8,8 @@ public class Configuration
     public XyzConfiguration Xyz { get; }
     public YbrConfiguration Ybr { get; }
     public CamConfiguration Cam { get; }
+    public DynamicRange DynamicRange { get; }
     public IccConfiguration Icc { get; }
-    public double IctcpScalar { get; }
-    public double JzazbzScalar { get; }
     
     public static readonly Configuration Default = new();
 
@@ -19,17 +18,15 @@ public class Configuration
         XyzConfiguration? xyzConfig = null, 
         YbrConfiguration? ybrConfig = null,
         CamConfiguration? camConfig = null,
-        IccConfiguration? iccConfig = null,
-        double ictcpScalar = 100, 
-        double jzazbzScalar = 100)
+        DynamicRange? dynamicRange = null,
+        IccConfiguration? iccConfig = null)
     {
         Rgb = rgbConfig ?? RgbConfiguration.StandardRgb;
         Xyz = xyzConfig ?? XyzConfiguration.D65;
         Ybr = ybrConfig ?? YbrConfiguration.Rec601;
         Cam = camConfig ?? CamConfiguration.StandardRgb;
+        DynamicRange = dynamicRange ?? DynamicRange.High; // TODO: regenerate web & unity assets for new default value (203 instead of 100)
         Icc = iccConfig ?? IccConfiguration.None;
-        IctcpScalar = ictcpScalar;
-        JzazbzScalar = jzazbzScalar;
     }
     
     public override string ToString() => $"RGB:[{Rgb.Name}] · XYZ:[{Xyz.Name}] · YBR:[{Ybr.Name}] · CAM:[{Cam.Name}] · ICC:[{Icc.Name}] · Id:[{Id}]";

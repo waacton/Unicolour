@@ -12,9 +12,9 @@ public class ConfigureIctcpTests
     // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31224ictcp-colour-encoding
     private static readonly ColourTriplet TestLinearRgb = new(0.45620519, 0.03081071, 0.04091952);
     
-    private static readonly Configuration Config100 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 100);
-    private static readonly Configuration Config1 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 1);
-    private static readonly Configuration Config203 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, ictcpScalar: 203);
+    private static readonly Configuration Config100 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, dynamicRange: DynamicRange.Standard);
+    private static readonly Configuration Config203 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, dynamicRange: DynamicRange.High);
+    private static readonly Configuration Config1 = new(RgbConfiguration.Rec2020, XyzConfiguration.D65, dynamicRange: new(1, 100, 0.1)); // only white luminance matters for Ictcp
 
     [Test] // matches the behaviour of papers on Hung & Berns dataset (https://professional.dolby.com/siteassets/pdfs/ictcp_dolbywhitepaper_v071.pdf, figure 6)
     public void Rec2020RgbToIctcp100()
@@ -27,15 +27,6 @@ public class ConfigureIctcpTests
         TestUtils.AssertTriplet<Ictcp>(blue, new(0.323484554, 0.235351529, -0.130337248), 0.000000001);
         TestUtils.AssertTriplet<Ictcp>(white, new(0.50808, 0, 0), 0.0005); // InverseEOTF(100) ~= 0.50808
         TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
-        
-        var redNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.RedRef.Xyz.Tuple);
-        var blueNoConfig = new Unicolour(ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
-        var whiteNoConfig = new Unicolour(ColourSpace.Xyz, XyzWhite.Tuple);
-        var blackNoConfig = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Ictcp>(redNoConfig, new(0.396807697, -0.135943598, 0.234295237), 0.000000001);
-        TestUtils.AssertTriplet<Ictcp>(blueNoConfig, new(0.323484554, 0.235351529, -0.130337248), 0.000000001);
-        TestUtils.AssertTriplet<Ictcp>(whiteNoConfig, new(0.50808, 0, 0), 0.0005); // InverseEOTF(100) ~= 0.50808
-        TestUtils.AssertTriplet<Ictcp>(blackNoConfig, new(0, 0, 0), 0.0005);
     }
     
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
@@ -58,6 +49,15 @@ public class ConfigureIctcpTests
         
         var white = new Unicolour(Config203, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config203, ColourSpace.Xyz, 0, 0, 0);
+        TestUtils.AssertTriplet<Ictcp>(white, new(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
+        TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
+    }
+    
+    [Test] // default config is HDR (203 white luminance), should be same as above
+    public void Rec2020RgbToIctcpNoConfig()
+    {
+        var white = new Unicolour(ColourSpace.Xyz, XyzWhite.Tuple);
+        var black = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
         TestUtils.AssertTriplet<Ictcp>(white, new(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
         TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
     }

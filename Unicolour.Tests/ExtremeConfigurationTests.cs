@@ -71,17 +71,17 @@ public class ExtremeConfigurationTests
     
     [Test, Combinatorial]
     public void Ictcp(
-        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double scalar)
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
-        var config = new Configuration(ictcpScalar: scalar);
+        var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
         TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.38, 0.12, 0.19));
     }
     
     [Test, Combinatorial]
     public void Jzazbz(
-        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double scalar)
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
-        var config = new Configuration(jzazbzScalar: scalar);
+        var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
         TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.106, 0.107, 0.005));
     }
     

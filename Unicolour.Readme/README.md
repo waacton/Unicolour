@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/217,482/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/218,879/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -510,13 +510,15 @@ A `Configuration` is composed of sub-configurations.
 Each sub-configuration is optional and will fall back to a [sensible default](#sensible-defaults-highly-configurable) if not provided.
 
 ### `RgbConfiguration`
-Defines the RGB model, often used to specify a wider gamut than standard RGB (sRGB).
+Defines the RGB colour space parameters, often used to specify a wider gamut than standard RGB (sRGB).
 
 | Predefined                           | Property         |
 |--------------------------------------|------------------|
 | sRGB&nbsp;👈&nbsp;_default_          | `.StandardRgb`   |
 | Display&nbsp;P3                      | `.DisplayP3`     |
 | Rec.&nbsp;2020                       | `.Rec2020`       |
+| Rec.&nbsp;2100&nbsp;PQ               | `.Rec2100Pq`     |
+| Rec.&nbsp;2100&nbsp;HLG              | `.Rec2100Hlg`    |
 | A98                                  | `.A98`           |
 | ProPhoto                             | `.ProPhoto`      |
 | ACES&nbsp;2065-1                     | `.Aces20651`     |
@@ -550,10 +552,12 @@ mindmap
         ("xvYCC")
     ("R 0.680 0.320<br>G 0.265 0.690<br>B 0.150 0.060")
       ("D65")
-            ("Display P3")
+        ("Display P3")
     ("R 0.708 0.292<br>G 0.170 0.797<br>B 0.131 0.046")
       ("D65")
         ("Rec. 2020")
+        ("Rec. 2100 PQ")
+        ("Rec. 2100 HLG")
     ("R 0.64 0.33<br>G 0.21 0.71<br>B 0.15 0.06")
       ("D65")
         ("A98 RGB")
@@ -638,6 +642,24 @@ The predefined sRGB configuration refers to an ambient illumination of 64 lux un
   - Adapting luminance
   - Background luminance
 
+### `DynamicRange`
+Defines luminance values used when evaluating
+perceptual quantizer (PQ) transfer functions (used by IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>, and Rec. 2100 PQ RGB)
+and hybrid log-gamma (HLG) transfer functions (used by Rec. 2100 HLG RGB).
+
+| Predefined                 | Property    |
+|----------------------------|-------------|
+| SDR                        | `.Standard` |
+| HDR&nbsp;👈&nbsp;_default_ | `.High`     |
+
+The predefined HDR configuration has a white luminance of 203 cd/m² at 75% HLG, and a minimum luminance of 0 cd/m² (no black lift).
+
+- Parameters
+  - White luminance
+  - Maximum luminance
+  - Minimum luminance
+  - HLG % white level
+
 ### `IccConfiguration`
 Defines the ICC profile and rendering intent, typically used for accurate CMYK conversion.
 
@@ -651,10 +673,6 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
 - Parameters
   - ICC profile (`.icc` file)
   - Rendering intent
-
-### `IctcpScalar` & `JzazbzScalar`
-There is ambiguity and no clear consensus about how XYZ values should be scaled before calculating IC<sub>T</sub>C<sub>P</sub> and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>.
-These scalars can be changed to match the behaviour of other implementations if needed.
 
 ### White points
 All colour spaces are impacted by the reference white point.

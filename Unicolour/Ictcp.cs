@@ -43,24 +43,22 @@ public record Ictcp : ColourRepresentation
         { 17933, -17390, -543 }
     }).Scale(1 / 4096.0);
     
-    internal static Ictcp FromXyz(Xyz xyz, double ictcpScalar, XyzConfiguration xyzConfig)
+    internal static Ictcp FromXyz(Xyz xyz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
     {
         var xyzMatrix = Matrix.From(xyz);
         var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
-        var d65ScaledMatrix = d65Matrix.Scale(ictcpScalar);
-        var lmsMatrix = M1.Multiply(d65ScaledMatrix);
-        var lmsPrimeMatrix = lmsMatrix.Select(Pq.Smpte.InverseEotf);
+        var lmsMatrix = M1.Multiply(d65Matrix);
+        var lmsPrimeMatrix = lmsMatrix.Select(value => Pq.Smpte.InverseEotf(value, dynamicRange.WhiteLuminance));
         var ictcpMatrix = M2.Multiply(lmsPrimeMatrix);
         return new Ictcp(ictcpMatrix.ToTriplet(), ColourHeritage.From(xyz));
     }
 
-    internal static Xyz ToXyz(Ictcp ictcp, double ictcpScalar, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Ictcp ictcp, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
     {
         var ictcpMatrix = Matrix.From(ictcp);
         var lmsPrimeMatrix = M2.Inverse().Multiply(ictcpMatrix);
-        var lmsMatrix = lmsPrimeMatrix.Select(Pq.Smpte.Eotf);
-        var d65ScaledMatrix = lmsMatrix.Scale(1 / ictcpScalar);
-        var d65Matrix = M1.Inverse().Multiply(d65ScaledMatrix);
+        var lmsMatrix = lmsPrimeMatrix.Select(value => Pq.Smpte.Eotf(value, dynamicRange.WhiteLuminance));
+        var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(ictcp));
     }

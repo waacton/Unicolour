@@ -125,7 +125,7 @@ public partial class Unicolour
             ColourSpace.Yiq => Yuv.ToRgb(Yuv),
             ColourSpace.Ydbdr => Yuv.ToRgb(Yuv),
             ColourSpace.Tsl => Tsl.ToRgb(Tsl, Configuration.Ybr),
-            _ => Rgb.FromRgbLinear(RgbLinear, Configuration.Rgb)
+            _ => Rgb.FromRgbLinear(RgbLinear, Configuration.Rgb, Configuration.DynamicRange)
         };
     }
     
@@ -134,18 +134,18 @@ public partial class Unicolour
         return SourceColourSpace switch
         {
             ColourSpace.RgbLinear => (RgbLinear)SourceRepresentation,
-            ColourSpace.Rgb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Hsb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Hsl => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Hwb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Hsi => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Ypbpr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Ycbcr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Ycgco => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Yuv => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Yiq => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Ydbdr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
-            ColourSpace.Tsl => Rgb.ToRgbLinear(Rgb, Configuration.Rgb),
+            ColourSpace.Rgb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Hsb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Hsl => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Hwb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Hsi => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Ypbpr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Ycbcr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Ycgco => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Yuv => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Yiq => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Ydbdr => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
+            ColourSpace.Tsl => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
             ColourSpace.Xyb => Xyb.ToRgbLinear(Xyb),
             _ => RgbLinear.FromXyz(Xyz, Configuration.Rgb, Configuration.Xyz)
         };
@@ -217,9 +217,9 @@ public partial class Unicolour
             ColourSpace.Tsl => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Xyb => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Ipt => Ipt.ToXyz(Ipt, Configuration.Xyz),
-            ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Configuration.IctcpScalar, Configuration.Xyz),
-            ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Configuration.JzazbzScalar, Configuration.Xyz),
-            ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Configuration.JzazbzScalar, Configuration.Xyz),
+            ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Configuration.Xyz, Configuration.DynamicRange),
+            ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Configuration.Xyz, Configuration.DynamicRange),
+            ColourSpace.Jzczhz => Jzazbz.ToXyz(Jzazbz, Configuration.Xyz, Configuration.DynamicRange),
             ColourSpace.Oklab => Oklab.ToXyz(Oklab, Configuration.Xyz, Configuration.Rgb),
             ColourSpace.Oklch => Oklab.ToXyz(Oklab, Configuration.Xyz, Configuration.Rgb),
             ColourSpace.Okhsv => Oklab.ToXyz(Oklab, Configuration.Xyz, Configuration.Rgb),
@@ -400,7 +400,7 @@ public partial class Unicolour
         return SourceColourSpace switch
         {
             ColourSpace.Ictcp => (Ictcp)SourceRepresentation,
-            _ => Ictcp.FromXyz(Xyz, Configuration.IctcpScalar, Configuration.Xyz)
+            _ => Ictcp.FromXyz(Xyz, Configuration.Xyz, Configuration.DynamicRange)
         };
     }
 
@@ -410,7 +410,7 @@ public partial class Unicolour
         {
             ColourSpace.Jzazbz => (Jzazbz)SourceRepresentation,
             ColourSpace.Jzczhz => Jzczhz.ToJzazbz(Jzczhz),
-            _ => Jzazbz.FromXyz(Xyz, Configuration.JzazbzScalar, Configuration.Xyz)
+            _ => Jzazbz.FromXyz(Xyz, Configuration.Xyz, Configuration.DynamicRange)
         };
     }
 

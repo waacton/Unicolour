@@ -51,18 +51,17 @@ public record Jzazbz : ColourRepresentation
         { +0.199076, +1.096799, -1.295875 }
     });
     
-    internal static Jzazbz FromXyz(Xyz xyz, double jzazbzScalar, XyzConfiguration xyzConfig)
+    internal static Jzazbz FromXyz(Xyz xyz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
     {
         var xyzMatrix = Matrix.From(xyz);
         var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
-        var d65ScaledMatrix = d65Matrix.Scale(jzazbzScalar).Select(x => Math.Max(x, 0));
-        var (x65, y65, z65) = d65ScaledMatrix.ToTriplet();
+        var (x65, y65, z65) = d65Matrix.ToTriplet();
         
         var x65Prime = b * x65 - (b - 1) * z65;
         var y65Prime = g * y65 - (g - 1) * x65;
         var xyz65PrimeMatrix = Matrix.From(x65Prime, y65Prime, z65);
         var lmsMatrix = M1.Multiply(xyz65PrimeMatrix);
-        var lmsPrimeMatrix = lmsMatrix.Select(Pq.Jzazbz.InverseEotf);
+        var lmsPrimeMatrix = lmsMatrix.Select(value => Pq.Jzazbz.InverseEotf(value, dynamicRange.WhiteLuminance));
         var izazbzMatrix = M2.Multiply(lmsPrimeMatrix);
 
         var (iz, az, bz) = izazbzMatrix.ToTriplet();
@@ -70,21 +69,20 @@ public record Jzazbz : ColourRepresentation
         return new Jzazbz(jz, az, bz, ColourHeritage.From(xyz));
     }
     
-    internal static Xyz ToXyz(Jzazbz jzazbz, double jzazbzScalar, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Jzazbz jzazbz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
     {
         var (jz, az, bz) = jzazbz;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
         var izazbzMatrix = Matrix.From(iz, az, bz);
         var lmsPrimeMatrix = M2.Inverse().Multiply(izazbzMatrix);
-        var lmsMatrix = lmsPrimeMatrix.Select(Pq.Jzazbz.Eotf);
+        var lmsMatrix = lmsPrimeMatrix.Select(value => Pq.Jzazbz.Eotf(value, dynamicRange.WhiteLuminance));
         var xyz65PrimeMatrix = M1.Inverse().Multiply(lmsMatrix);
         var (x65Prime, y65Prime, z65Prime) = xyz65PrimeMatrix.ToTriplet();
 
         var x65 = (x65Prime + (b - 1) * z65Prime) / b;
         var y65 = (y65Prime + (g - 1) * x65) / g;
         var z65 = z65Prime;
-        var d65ScaledMatrix = Matrix.From(x65, y65, z65);
-        var d65Matrix = d65ScaledMatrix.Scale(1 / jzazbzScalar);
+        var d65Matrix = Matrix.From(x65, y65, z65);
         var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
         return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(jzazbz));
     }

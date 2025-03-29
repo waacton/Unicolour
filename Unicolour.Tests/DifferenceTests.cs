@@ -8,6 +8,9 @@ public class DifferenceTests
 {
     private const double Tolerance = 0.00005;
     
+    // test data for Ictcp and Jzazbz calculated with white luminance of 100 cd/m², which is used in predefined SDR config
+    private static readonly Configuration SdrConfig = new(dynamicRange: DynamicRange.Standard);
+    
     // ReSharper disable CollectionNeverQueried.Local - used in test case sources by name
     private static readonly List<(Unicolour reference, Unicolour sample)> ReferenceSamplePairs = [];
     // ReSharper restore CollectionNeverQueried.Local
@@ -124,7 +127,7 @@ public class DifferenceTests
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
-    // assumes Ictcp scalar of 100
+    // assumes white luminance of 100
     [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 365.816926)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 239.982435)]
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 234.838743)]
@@ -135,13 +138,13 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 322.659678)]
     public void Itp(string referenceName, string sampleName, double expectedDelta)
     {
-        var reference = StandardRgb.Lookup[referenceName];
-        var sample = StandardRgb.Lookup[sampleName];
+        var reference = StandardRgb.Lookup[referenceName].ConvertToConfiguration(SdrConfig);
+        var sample = StandardRgb.Lookup[sampleName].ConvertToConfiguration(SdrConfig);
         var delta = reference.Difference(sample, DeltaE.Itp);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
-    // assumes Jzczhz scalar of 100
+    // assumes white luminance of 100
     [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 0.167174)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.195524)]
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 0.271571)]
@@ -152,8 +155,8 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.281457)]
     public void Z(string referenceName, string sampleName, double expectedDelta)
     {
-        var reference = StandardRgb.Lookup[referenceName];
-        var sample = StandardRgb.Lookup[sampleName];
+        var reference = StandardRgb.Lookup[referenceName].ConvertToConfiguration(SdrConfig);
+        var sample = StandardRgb.Lookup[sampleName].ConvertToConfiguration(SdrConfig);
         var delta = reference.Difference(sample, DeltaE.Z);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }

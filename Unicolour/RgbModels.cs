@@ -12,24 +12,24 @@ public static class RgbModels
         
         public static double FromLinear(double linear)
         {
-            return Companding.ReflectWhenNegative(linear, value =>
+            return ReflectWhenNegative(linear, value =>
             {
                 return value switch
                 {
                     <= 0.0031308 => 12.92 * value,
-                    _ => 1.055 * Companding.Gamma(value, 2.4) - 0.055
+                    _ => 1.055 * Gamma(value, 2.4) - 0.055
                 };
             });
         }
         
         public static double ToLinear(double nonlinear)
         {
-            return Companding.ReflectWhenNegative(nonlinear, value =>
+            return ReflectWhenNegative(nonlinear, value =>
             {
                 return value switch
                 {
                     <= 0.04045 => value / 12.92,
-                    _ => Companding.InverseGamma((value + 0.055) / 1.055, 2.4)
+                    _ => InverseGamma((value + 0.055) / 1.055, 2.4)
                 };
             });
         }
@@ -101,7 +101,7 @@ public static class RgbModels
         
         public static double FromLinear(double linear)
         {
-            return Companding.ReflectWhenNegative(linear, e =>
+            return ReflectWhenNegative(linear, e =>
             {
                 return e switch
                 {
@@ -113,7 +113,7 @@ public static class RgbModels
 
         public static double ToLinear(double nonlinear)
         {
-            return Companding.ReflectWhenNegative(nonlinear, ePrime =>
+            return ReflectWhenNegative(nonlinear, ePrime =>
             {
                 return ePrime switch
                 {
@@ -124,6 +124,48 @@ public static class RgbModels
         }
 
         public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 2020");
+    }
+    
+    // HDR · https://www.itu.int/rec/R-REC-BT.2100/ · https://en.wikipedia.org/wiki/Rec._2100#System_colorimetry
+    public static class Rec2100Pq
+    {
+        public static readonly Chromaticity R = Rec2020.R;
+        public static readonly Chromaticity G = Rec2020.G;
+        public static readonly Chromaticity B = Rec2020.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        
+        public static double FromLinear(double linear, DynamicRange dynamicRange)
+        {
+            return ReflectWhenNegative(linear, f => Pq.Smpte.InverseEotf(f, dynamicRange.WhiteLuminance));
+        }
+
+        public static double ToLinear(double nonlinear, DynamicRange dynamicRange)
+        {
+            return ReflectWhenNegative(nonlinear, ePrime => Pq.Smpte.Eotf(ePrime, dynamicRange.WhiteLuminance));
+        }
+
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 2100 PQ");
+    }
+    
+    // HDR · https://www.itu.int/rec/R-REC-BT.2100/ · https://en.wikipedia.org/wiki/Rec._2100#System_colorimetry
+    public static class Rec2100Hlg
+    {
+        public static readonly Chromaticity R = Rec2020.R;
+        public static readonly Chromaticity G = Rec2020.G;
+        public static readonly Chromaticity B = Rec2020.B;
+        public static readonly WhitePoint WhitePoint = D65;
+        
+        public static double FromLinear(double linear, DynamicRange dynamicRange)
+        {
+            return ReflectWhenNegative(linear, e => Hlg.Oetf(e, dynamicRange));
+        }
+
+        public static double ToLinear(double nonlinear, DynamicRange dynamicRange)
+        {
+            return ReflectWhenNegative(nonlinear, ePrime => Hlg.InverseOetf(ePrime, dynamicRange));
+        }
+
+        public static RgbConfiguration RgbConfiguration => new(R, G, B, WhitePoint, FromLinear, ToLinear, "Rec. 2100 HLG");
     }
     
     // https://en.wikipedia.org/wiki/Adobe_RGB_color_space#Specifications
@@ -150,24 +192,24 @@ public static class RgbModels
 
         public static double FromLinear(double linear)
         {
-            return Companding.ReflectWhenNegative(linear, value =>
+            return ReflectWhenNegative(linear, value =>
             {
                 return value switch
                 {
                     < Et => 16 * value,
-                    _ => Companding.Gamma(value, 1.8)
+                    _ => Gamma(value, 1.8)
                 };
             });
         }
 
         public static double ToLinear(double nonlinear)
         {
-            return Companding.ReflectWhenNegative(nonlinear, value =>
+            return ReflectWhenNegative(nonlinear, value =>
             {
                 return value switch
                 {
                     < Et * 16 => value / 16.0,
-                    _ => Companding.InverseGamma(value, 1.8)
+                    _ => InverseGamma(value, 1.8)
                 };
             });
         }
@@ -447,18 +489,6 @@ public static class RgbModels
     private static readonly WhitePoint C = Illuminant.C.GetWhitePoint(Observer.Degree2);
     private static readonly WhitePoint Aces = new Chromaticity(0.32168, 0.33767).ToWhitePoint();
     
-    private static double SimpleGamma(double linear, double gamma)
-    {
-        return Companding.ReflectWhenNegative(linear, value => Companding.Gamma(value, gamma));
-    }
-    
-    private static double SimpleInverseGamma(double nonlinear, double gamma)
-    {
-        return Companding.ReflectWhenNegative(nonlinear, value => Companding.InverseGamma(value, gamma));
-    }
-    
-    private static double Log2(double x) => Math.Log(x, 2);
-    
     private static class Rec470SystemNotM
     {
         internal static readonly Chromaticity R = new(0.64, 0.33);
@@ -507,4 +537,39 @@ public static class RgbModels
         internal static readonly Chromaticity G = new(0.165, 0.830);
         internal static readonly Chromaticity B = new(0.128, 0.044);
     }
+    
+    private static double SimpleGamma(double linear, double gamma)
+    {
+        return ReflectWhenNegative(linear, value => Gamma(value, gamma));
+    }
+    
+    private static double SimpleInverseGamma(double nonlinear, double gamma)
+    {
+        return ReflectWhenNegative(nonlinear, value => InverseGamma(value, gamma));
+    }
+
+    private static double Gamma(double value, double gamma) => Math.Pow(value, 1 / gamma);
+    private static double InverseGamma(double value, double gamma) => Math.Pow(value, gamma);
+
+    private static double ReflectWhenNegative(double value, Func<double, double> function)
+    {
+        if (double.IsNaN(value)) return double.NaN;
+        return Sign(value) * function(Math.Abs(value));
+    }
+
+    // instead of Math.Sign() where Math.Sign(0) returns 0
+    // this Sign() handles 0 as positive and -0 as negative
+    // so if X -> 0 and -X -> -0, the roundtrip 0 -> X and -0 -> -X can be maintained (e.g. HLG)
+    private static readonly long ZeroBits = BitConverter.DoubleToInt64Bits(0);
+    private static int Sign(double value)
+    {
+        return value switch
+        {
+            > 0 => 1,
+            < 0 => -1,
+            _ => BitConverter.DoubleToInt64Bits(value) == ZeroBits ? 1 : -1
+        };
+    }
+    
+    private static double Log2(double x) => Math.Log(x, 2);
 }

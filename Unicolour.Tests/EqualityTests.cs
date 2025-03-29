@@ -83,48 +83,45 @@ public class EqualityTests
     [Test]
     public void DifferentConfigurationObjects()
     {
-        var rgbConfig1 = new RgbConfiguration(
-            RgbModels.StandardRgb.R,
-            new Chromaticity(0.25, 0.75),
-            new Chromaticity(0.5, 0.5),
-            new WhitePoint(0.9, 1.0, 1.1),
-            RgbModels.StandardRgb.FromLinear,
-            RgbModels.StandardRgb.ToLinear,
-            "RGB 1");
-        var xyzConfig1 = new XyzConfiguration(new WhitePoint(0.95, 1.0, 1.05), "XYZ 1");
-        var ybrConfig1 = new YbrConfiguration(0.299, 0.114, (16, 235), (16, 240), "YBR 1");
-        var camConfig1 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dark, "CAM 1");
-        var iccConfig1 = new IccConfiguration(IccFile.Fogra39.Path, Intent.Perceptual, "ICC 1");
-        var config1 = new Configuration(rgbConfig1, xyzConfig1, ybrConfig1, camConfig1, iccConfig1);
-        
-        var rgbConfig2 = new RgbConfiguration(
-            RgbModels.StandardRgb.R,
-            new Chromaticity(0.75, 0.25),
-            new Chromaticity(0.5, 0.5), 
-            new WhitePoint(0.9, 1.0, 1.1),
-            RgbModels.StandardRgb.FromLinear,
-            RgbModels.StandardRgb.ToLinear,
-            "RGB 2");
-        var xyzConfig2 = new XyzConfiguration(new WhitePoint(0.95001, 1.0001, 1.05001), "XYZ 2");
-        var ybrConfig2 = new YbrConfiguration(0.300, 0.15, (0, 255), (0, 255), "YBR 2");
-        var camConfig2 = new CamConfiguration(new WhitePoint(0.9, 1.0, 1.1), 4, 20, Surround.Dim, "CAM 2");
-        var iccConfig2 = new IccConfiguration(IccFile.Swop2006.Path, Intent.Saturation, "ICC 2");
-        var config2 = new Configuration(rgbConfig2, xyzConfig2, ybrConfig2, camConfig2, iccConfig2);
+        var iccConfigWithProfile = new IccConfiguration(IccFile.Fogra39.Path, Intent.Perceptual);
+        var iccConfigWithoutProfile = new IccConfiguration(null);
+        IccConfiguration[] iccConfigs = [iccConfigWithProfile, iccConfigWithoutProfile];
 
-        AssertEqual(config1.Rgb.ChromaticityR, config2.Rgb.ChromaticityR);
-        AssertNotEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
-        AssertEqual(config1.Rgb.ChromaticityB, config2.Rgb.ChromaticityB);
-        AssertEqual(config1.Rgb.WhitePoint, config2.Rgb.WhitePoint);
-        AssertEqual(config1.Rgb.CompandFromLinear, config2.Rgb.CompandFromLinear);
-        AssertEqual(config1.Rgb.InverseCompandToLinear, config2.Rgb.InverseCompandToLinear);
-        AssertNotEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
-        AssertNotEqual(config1, config2);
-        AssertNotEqual(config1.Rgb, config2.Rgb);
-        AssertNotEqual(config1.Xyz, config2.Xyz);
-        AssertNotEqual(config1.Ybr, config2.Ybr);
-        AssertNotEqual(config1.Cam, config2.Cam);
-        AssertNotEqual(config1.Icc, config2.Icc);
+        foreach (var iccConfig in iccConfigs)
+        {
+            var rgbConfig1 = GetNew(Configuration.Default.Rgb, "RGB 1");
+            var xyzConfig1 = GetNew(Configuration.Default.Xyz, "XYZ 1");
+            var ybrConfig1 = GetNew(Configuration.Default.Ybr, "YBR 1");
+            var camConfig1 = GetNew(Configuration.Default.Cam, "CAM 1");
+            var dynamicRange1 = GetNew(Configuration.Default.DynamicRange, "DR 1");
+            var iccConfig1 = GetNew(iccConfig, "ICC 1");
+            var config1 = new Configuration(rgbConfig1, xyzConfig1, ybrConfig1, camConfig1, dynamicRange1, iccConfig1);
+        
+            var rgbConfig2 = GetNew(Configuration.Default.Rgb, "RGB 2");
+            var xyzConfig2 = GetNew(Configuration.Default.Xyz, "XYZ 2");
+            var ybrConfig2 = GetNew(Configuration.Default.Ybr, "YBR 2");
+            var camConfig2 = GetNew(Configuration.Default.Cam, "CAM 2");
+            var dynamicRange2 = GetNew(Configuration.Default.DynamicRange, "DR 2");
+            var iccConfig2 = GetNew(iccConfig, "ICC 2");
+            var config2 = new Configuration(rgbConfig2, xyzConfig2, ybrConfig2, camConfig2, dynamicRange2, iccConfig2);
+        
+            // configs have same values but are different references
+            AssertNotEqual(config1, config2);
+            AssertNotEqual(config1.Rgb, config2.Rgb);
+            AssertNotEqual(config1.Xyz, config2.Xyz);
+            AssertNotEqual(config1.Ybr, config2.Ybr);
+            AssertNotEqual(config1.Cam, config2.Cam);
+            AssertNotEqual(config1.DynamicRange, config2.DynamicRange);
+            AssertNotEqual(config1.Icc, config2.Icc);
+        }
     }
+
+    private static RgbConfiguration GetNew(RgbConfiguration config, string name) => new(config.ChromaticityR, config.ChromaticityG, config.ChromaticityB, config.WhitePoint, config.FromLinear, config.ToLinear, name);
+    private static XyzConfiguration GetNew(XyzConfiguration config, string name) => new(config.Illuminant!, config.Observer, name);
+    private static YbrConfiguration GetNew(YbrConfiguration config, string name) => new(config.Kr, config.Kb, config.RangeY, config.RangeC, name);
+    private static CamConfiguration GetNew(CamConfiguration config, string name) => new(config.WhitePoint, config.AdaptingLuminance, config.BackgroundLuminance, config.Surround, name);
+    private static DynamicRange GetNew(DynamicRange config, string name) => new(config.WhiteLuminance, config.MaxLuminance, config.MinLuminance, config.HlgWhiteLevel, name);
+    private static IccConfiguration GetNew(IccConfiguration config, string name) => config.Profile == null ? new(config.Profile, name) : new(config.Profile, config.Intent, name);
     
     [Test]
     public void DifferentColourHeritageObjects()
@@ -208,8 +205,8 @@ public class EqualityTests
         AssertEqual(config1.Rgb.ChromaticityG, config2.Rgb.ChromaticityG);
         AssertEqual(config1.Rgb.ChromaticityB, config2.Rgb.ChromaticityB);
         AssertEqual(config1.Rgb.WhitePoint, config2.Rgb.WhitePoint);
-        AssertEqual(config1.Rgb.CompandFromLinear, config2.Rgb.CompandFromLinear);
-        AssertEqual(config1.Rgb.InverseCompandToLinear, config2.Rgb.InverseCompandToLinear);
+        AssertEqual(config1.Rgb.FromLinear, config2.Rgb.FromLinear);
+        AssertEqual(config1.Rgb.ToLinear, config2.Rgb.ToLinear);
         AssertEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
         AssertEqual(config1.Xyz.Observer, config2.Xyz.Observer);
         AssertEqual(config1.Xyz.SpectralBoundary, config2.Xyz.SpectralBoundary);
@@ -223,11 +220,12 @@ public class EqualityTests
         AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
         AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);
         AssertEqual(config1.Cam.Surround, config2.Cam.Surround);
+        AssertEqual(config1.DynamicRange.WhiteLuminance, config2.DynamicRange.WhiteLuminance);
+        AssertEqual(config1.DynamicRange.MaxLuminance, config2.DynamicRange.MaxLuminance);
+        AssertEqual(config1.DynamicRange.MinLuminance, config2.DynamicRange.MinLuminance);
         AssertEqual(config1.Icc.Profile, config2.Icc.Profile);
         AssertEqual(config1.Icc.Intent, config2.Icc.Intent);
         AssertEqual(config1.Icc.Error, config2.Icc.Error);
-        AssertEqual(config1.IctcpScalar, config2.IctcpScalar);
-        AssertEqual(config1.JzazbzScalar, config2.JzazbzScalar);
     }
 
     private static void AssertUnicoloursNotEqual(Unicolour colour1, Unicolour colour2, Func<Unicolour, ColourTriplet> getTriplet)

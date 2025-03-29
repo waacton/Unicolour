@@ -63,7 +63,7 @@ public record Xyb : ColourRepresentation
         var lmsMixMatrix = RgbToLmsMatrix.Multiply(rgbMatrix).Select(value => value + Bias);
         var lmsGammaMatrix = lmsMixMatrix.Select(mix => CubeRoot(mix) - CubeRootBias);
         var xybMatrix = LmsToXybMatrix.Multiply(lmsGammaMatrix);
-        var (x, y, b) = xybMatrix.ToTriplet().Tuple;
+        var (x, y, b) = xybMatrix.ToTriplet();
         b -= y;
         return new Xyb(x, y, b, ColourHeritage.From(rgb));
     }
@@ -76,6 +76,7 @@ public record Xyb : ColourRepresentation
         var lmsGammaMatrix = LmsToXybMatrix.Inverse().Multiply(xybMatrix);
         var lmsMixMatrix = lmsGammaMatrix.Select(gamma => Math.Pow(gamma + CubeRootBias, 3));
         var rgbMatrix = RgbToLmsMatrix.Inverse().Multiply(lmsMixMatrix.Select(mix => mix - Bias));
-        return new RgbLinear(rgbMatrix.ToTriplet(), ColourHeritage.From(xyb));
+        var (red, green, blue) = rgbMatrix.ToTriplet();
+        return new RgbLinear(red, green, blue, ColourHeritage.From(xyb));
     }
 }

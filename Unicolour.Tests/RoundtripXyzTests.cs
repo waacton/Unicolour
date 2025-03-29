@@ -10,8 +10,7 @@ public class RoundtripXyzTests
     private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     private static readonly CamConfiguration CamConfig = CamConfiguration.StandardRgb;
-    private const double IctcpScalar = 100;
-    private const double JzazbzScalar = 100;
+    private static readonly DynamicRange DynamicRange = DynamicRange.Standard;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
     public void ViaRgbLinear(ColourTriplet triplet)
@@ -62,8 +61,8 @@ public class RoundtripXyzTests
     public void ViaIctcp(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
-        var ictcp = Ictcp.FromXyz(original, IctcpScalar, XyzConfig);
-        var roundtrip = Ictcp.ToXyz(ictcp, IctcpScalar, XyzConfig);
+        var ictcp = Ictcp.FromXyz(original, XyzConfig, DynamicRange);
+        var roundtrip = Ictcp.ToXyz(ictcp, XyzConfig, DynamicRange);
         TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
     }
     
@@ -71,8 +70,8 @@ public class RoundtripXyzTests
     public void ViaJzazbz(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
-        var jzazbz = Jzazbz.FromXyz(original, JzazbzScalar, XyzConfig);
-        var roundtrip = Jzazbz.ToXyz(jzazbz, JzazbzScalar, XyzConfig);
+        var jzazbz = Jzazbz.FromXyz(original, XyzConfig, DynamicRange);
+        var roundtrip = Jzazbz.ToXyz(jzazbz, XyzConfig, DynamicRange);
         TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Triplet, Tolerance);
     }
     

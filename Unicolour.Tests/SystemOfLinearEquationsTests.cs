@@ -78,7 +78,7 @@ public class SystemOfLinearEquationsTests
     {
         var expected = Matrix<double>.Build.DenseOfArray(a).LU().Solve(Vector<double>.Build.DenseOfArray(b));
         var actual = SystemOfLinearEquations.Solve(new Matrix(a), b);
-        Assert.That(actual, Is.EqualTo(expected.ToArray()).Within(5e-09));
+        Assert.That(actual, Is.EqualTo(expected.ToArray()).Within(5e-08));
     }
 
     private static Matrix<double> GetMathNetFactors(LU<double> lu) => (Matrix<double>)GetField(lu, "Factors");

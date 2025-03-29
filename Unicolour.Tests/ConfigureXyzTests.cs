@@ -105,8 +105,8 @@ public class ConfigureXyzTests
             AdobeChromaticityG,
             AdobeChromaticityB,
             Illuminant.D65.GetWhitePoint(Observer.Degree2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
+            value => Math.Pow(value, 1 / Gamma),
+            value => Math.Pow(value, Gamma));
         var d65XyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
         var config = new Configuration(adobeRgbConfig, d65XyzConfig);
         
@@ -127,8 +127,8 @@ public class ConfigureXyzTests
             AdobeChromaticityG,
             AdobeChromaticityB,
             Illuminant.D65.GetWhitePoint(Observer.Degree2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
+            value => Math.Pow(value, 1 / Gamma),
+            value => Math.Pow(value, Gamma));
         var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
         var config = new Configuration(adobeRgbConfig, d50XyzConfig);
         
@@ -149,8 +149,8 @@ public class ConfigureXyzTests
             WideGamutChromaticityG,
             WideGamutChromaticityB,
             Illuminant.D50.GetWhitePoint(Observer.Degree2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
+            value => Math.Pow(value, 1 / Gamma),
+            value => Math.Pow(value, Gamma));
         var d65XyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
         var config = new Configuration(wideGamutRgbConfig, d65XyzConfig);
         
@@ -171,8 +171,8 @@ public class ConfigureXyzTests
             WideGamutChromaticityG,
             WideGamutChromaticityB,
             Illuminant.D50.GetWhitePoint(Observer.Degree2),
-            value => Companding.Gamma(value, Gamma),
-            value => Companding.InverseGamma(value, Gamma));
+            value => Math.Pow(value, 1 / Gamma),
+            value => Math.Pow(value, Gamma));
         var d50XyzConfig = new XyzConfiguration(Illuminant.D50, Observer.Degree2);
         var config = new Configuration(wideGamutRgbConfig, d50XyzConfig);
         
@@ -265,7 +265,7 @@ public class ConfigureXyzTests
         RgbConfiguration RgbConfig(WhitePoint whitePoint, RgbConfiguration baseConfig)
         {
             return new(baseConfig.ChromaticityR, baseConfig.ChromaticityG, baseConfig.ChromaticityB,
-                whitePoint, baseConfig.CompandFromLinear, baseConfig.InverseCompandToLinear);
+                whitePoint, baseConfig.FromLinear, baseConfig.ToLinear);
         }
         
         var initialRgbConfig = RgbConfig(XyzConfiguration.D65.WhitePoint, RgbConfiguration.StandardRgb);

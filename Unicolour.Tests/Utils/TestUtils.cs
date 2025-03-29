@@ -48,6 +48,8 @@ internal static class TestUtils
     [
         RgbConfiguration.DisplayP3,
         RgbConfiguration.Rec2020,
+        RgbConfiguration.Rec2100Pq,
+        RgbConfiguration.Rec2100Hlg,
         RgbConfiguration.A98,
         RgbConfiguration.ProPhoto,
         RgbConfiguration.XvYcc,

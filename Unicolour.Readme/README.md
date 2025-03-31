@@ -644,8 +644,8 @@ The predefined sRGB configuration refers to an ambient illumination of 64 lux un
 
 ### `DynamicRange`
 Defines luminance values used when evaluating
-perceptual quantizer (PQ) transfer functions (used by IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>, and Rec. 2100 PQ RGB)
-and hybrid log-gamma (HLG) transfer functions (used by Rec. 2100 HLG RGB).
+perceptual quantizer (PQ) transfer functions (for IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>, and Rec. 2100 PQ RGB)
+and hybrid log-gamma (HLG) transfer functions (for Rec. 2100 HLG RGB).
 
 | Predefined                 | Property    |
 |----------------------------|-------------|

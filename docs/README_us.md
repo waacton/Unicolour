@@ -491,8 +491,9 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - Rendering intent
 
 ### `IctcpScalar` & `JzazbzScalar`
-There is ambiguity and no clear consensus about how XYZ values should be scaled before calculating IC<sub>T</sub>C<sub>P</sub> and J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>.
-These scalars can be changed to match the behaviour of other implementations if needed.
+Defines the white luminance used when evaluating perceptual quantizer (PQ) transfer functions for HDR color spaces
+(used by IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, and J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>).
+Set to 100 cd/m² by default, representing SDR. 
 
 ### White points
 All color spaces are impacted by the reference white point.

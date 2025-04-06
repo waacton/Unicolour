@@ -41,6 +41,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Hct> hct;
     private readonly Lazy<Channels> icc;
     private readonly Lazy<Temperature> temperature;
+    private readonly Lazy<bool> isInPointerGamut;
     private readonly Lazy<string> source;
     
     public Alpha Alpha { get; }
@@ -87,6 +88,7 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public bool IsInRgbGamut => Rgb.IsInGamut;
+    public bool IsInPointerGamut => isInPointerGamut.Value;
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public bool IsImaginary => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity);
@@ -155,6 +157,7 @@ public partial class Unicolour : IEquatable<Unicolour>
                 : Channels.UncalibratedFromRgb(Rgb));
         
         temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
+        isInPointerGamut = new Lazy<bool>(() => PointerGamut.IsInGamut(this));
         source = new Lazy<string>(() => $"{SourceColourSpace} {SourceRepresentation}");
     }
 

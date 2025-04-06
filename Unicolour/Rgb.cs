@@ -16,8 +16,8 @@ public record Rgb : ColourRepresentation
 
     // for almost all cases, doing this check in linear RGB will return the same result
     // but handling it here feels most natural as it is the intended "display" space
-    // and isn't concerned about questionable custom inverse-companding-to-linear functions (e.g. where where RGB <= 1.0 but RGB-Linear > 1.0)
-    internal bool IsInGamut => !UseAsNaN && R is >= 0 and <= 1.0 && G is >= 0 and <= 1.0 && B is >= 0 and <= 1.0;
+    // and isn't concerned about questionable custom to-linear functions (e.g. where RGB <= 1.0 but RGB-Linear > 1.0)
+    internal bool IsInGamut => !UseAsNaN && Triplet == ConstrainedTriplet;
     public Rgb255 Byte255 => new(To255(R), To255(G), To255(B), ColourHeritage.From(this));
 
     public Rgb(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}

@@ -26,8 +26,8 @@ public class ContrastTests
     [Test]
     public void DifferentConfigs()
     {
-        var redD65 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D65), ColourSpace.Rgb, 1, 0, 0);
-        var redD50 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D50), ColourSpace.Rgb, 1, 0, 0);
+        var redD65 = new Unicolour(TestUtils.D65Config, ColourSpace.Rgb, 1, 0, 0);
+        var redD50 = new Unicolour(TestUtils.D50Config, ColourSpace.Rgb, 1, 0, 0);
         AssertKnownContrast(redD65, redD50, 1);
     }
     

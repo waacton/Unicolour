@@ -124,7 +124,7 @@ public class LazyBackingFieldsTests
     public void AfterConfigurationConversion([ValueSource(nameof(ColourSpacesWithBackingFields))] ColourSpace colourSpace)
     {
         var colour = RandomColours.UnicolourFrom(colourSpace);
-        _ = colour.ConvertToConfiguration(Configuration.Default);
+        _ = colour.ConvertToConfiguration(TestUtils.D50Config);
         AssertBackingFieldEvaluated(colour, ColourSpace.Xyz);
     }
     

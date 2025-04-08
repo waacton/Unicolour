@@ -183,11 +183,22 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
 
     public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
+    public Unicolour MapToPointerGamut() => GamutMapping.ToPointerGamut(this);
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
-        var adapted = Adaptation.WhitePoint(Xyz, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint, Configuration.Xyz.AdaptationMatrix);
-        return new Unicolour(config, ColourSpace.Xyz, adapted.Tuple, Alpha.A);
+        if (config == Configuration) return Clone();
+        var heritage = ColourHeritage.From(SourceRepresentation);
+        var (x, y, z) = Adaptation.WhitePoint(Xyz, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint, Configuration.Xyz.AdaptationMatrix);
+        return new Unicolour(config, heritage, ColourSpace.Xyz, x, y, z, Alpha.A);
+    }
+    
+    internal Unicolour Clone()
+    {
+        var (first, second, third) = SourceRepresentation.Triplet;
+        var heritage = SourceRepresentation.Heritage;
+        var alpha = Alpha.A;
+        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha);
     }
     
     public override string ToString()

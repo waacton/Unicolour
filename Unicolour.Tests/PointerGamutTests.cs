@@ -122,20 +122,36 @@ public class PointerGamutTests
     [TestCase(nameof(StandardRgb.Blue), 0.31602, 0.18804, 0.73389, 84.319)]
     [TestCase(nameof(StandardRgb.Black), 0.14771, 0.14771, 0.14771, 0)]
     [TestCase(nameof(StandardRgb.White), 0.88757, 0.88757, 0.88757, 0)]
-    public void StandardRgbOutOfGamut(string name, double expectedR, double expectedG, double expectedB, double expectedC)
+    public void MapOutsideGamut(string name, double expectedR, double expectedG, double expectedB, double expectedC)
     {
         var colour = StandardRgb.Lookup[name];
         Assert.That(colour.IsInPointerGamut, Is.False);
 
-        // TODO: extract into a gamut mapping feature
-        var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config.Value).Lchab;
-        var clampedL = l.Clamp(15, 90);
-        var maxC = colour.Rgb.IsGreyscale ? 0.0 : PointerGamut.GetMaxC(l, h);
-        var colourOnGamutBoundary = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, clampedL, maxC, h);
-        var colourOnGamutBoundaryD65 = colourOnGamutBoundary.ConvertToConfiguration(Configuration.Default);
+        var mapped = colour.MapToPointerGamut();
+        TestUtils.AssertTriplet<Rgb>(mapped, new(expectedR, expectedG, expectedB), 0.00005);
+        Assert.That(mapped.Lchab.C, Is.EqualTo(expectedC).Within(0.005));
+    }
+
+    [TestCase(0.5, 0.5, 0.5)]
+    [TestCase(1.0, 0.5, 0.0)]
+    public void MapInsideGamut(double r, double g, double b)
+    {
+        var colour = new Unicolour(ColourSpace.Rgb, r, g, b);
+        Assert.That(colour.IsInPointerGamut, Is.True);
         
-        TestUtils.AssertTriplet<Rgb>(colourOnGamutBoundaryD65, new(expectedR, expectedG, expectedB), 0.00005);
-        Assert.That(colourOnGamutBoundaryD65.Lchab.C, Is.EqualTo(expectedC).Within(0.005));
+        var mapped = colour.MapToPointerGamut();
+        Assert.That(Equals(mapped, colour), Is.True);
+        Assert.That(ReferenceEquals(mapped, colour), Is.False);
+    }
+    
+    [Test, Combinatorial]
+    public void ExtremeValues([ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double value)
+    {
+        // if extreme values are being used for the colour space in which mapping takes place
+        // mapping should still return an in-gamut colour, with the exception of NaNs
+        var original = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, value, value, value);
+        var gamutMapped = original.MapToPointerGamut();
+        Assert.That(gamutMapped.IsInPointerGamut, gamutMapped.Lchab.UseAsNaN ? Is.False : Is.True);
     }
     
     private static void AssertMaxC(double l, double h, double expectedC)

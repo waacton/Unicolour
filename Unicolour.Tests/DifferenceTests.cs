@@ -238,8 +238,8 @@ public class DifferenceTests
     [Test]
     public void DifferentConfigs()
     {
-        var redD65 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D65), ColourSpace.Rgb, 1, 0, 0);
-        var redD50 = new Unicolour(new Configuration(xyzConfig: XyzConfiguration.D50), ColourSpace.Rgb, 1, 0, 0);
+        var redD65 = new Unicolour(TestUtils.D65Config, ColourSpace.Rgb, 1, 0, 0);
+        var redD50 = new Unicolour(TestUtils.D50Config, ColourSpace.Rgb, 1, 0, 0);
         var difference = redD65.Difference(redD50, DeltaE.Ciede2000);
         Assert.That(difference, Is.Zero);
     }

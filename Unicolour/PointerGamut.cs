@@ -45,8 +45,8 @@ internal static class PointerGamut
     });
 
     // could use these to more succinctly define the chroma values as a 2D array, but for now I like the explicitness of the Vertices dictionary
-    private const double MinL = 15;
-    private const double MaxL = 90;
+    internal const double MinL = 15;
+    internal const double MaxL = 90;
     private const int DeltaL = 5;
     private const int DeltaH = 10;
     

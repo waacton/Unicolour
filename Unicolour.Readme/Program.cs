@@ -185,8 +185,12 @@ void FeatureCompare()
 
 void FeatureGamutMap()
 {
-    var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
-    var inGamut = outOfGamut.MapToRgbGamut();
+    var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
+    var isInRgb = veryRed.IsInRgbGamut;
+    var normalRed = veryRed.MapToRgbGamut();
+    
+    var isInPointer = veryRed.IsInPointerGamut;
+    var surfaceRed = veryRed.MapToPointerGamut();
 }
 
 void FeatureCvd()

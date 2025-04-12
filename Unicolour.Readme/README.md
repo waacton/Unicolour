@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/218,979/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,637/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -34,7 +34,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 8. 🥽 [Experimental](#-experimental)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](#convert-between-colour-spaces).
+A `Unicolour` encapsulates a single colour and its representation across [35+ colour spaces](#convert-between-colour-spaces).
 It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
 
 > [!NOTE]
@@ -46,7 +46,7 @@ It can be used to [mix and compare colours](#mix-colours), and offers [many usef
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
 > TSL · XYB · 
 > IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
-> Oklab · Oklch · Okhsv · Okhsl · Okhwb · 
+> Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
@@ -172,6 +172,8 @@ var (l, c, h) = colour.Oklch;
 | Okhsv                                                                                   | `ColourSpace.Okhsv`     | `.Okhsv`       |
 | Okhsl                                                                                   | `ColourSpace.Okhsl`     | `.Okhsl`       |
 | Okhwb                                                                                   | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| Okl<sub>r</sub>ab                                                                       | `ColourSpace.Oklrab`    | `.Oklrab`      |
+| Okl<sub>r</sub>ch                                                                       | `ColourSpace.Oklrch`    | `.Oklrch`      |
 | CIECAM02                                                                                | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                     | `ColourSpace.Hct`       | `.Hct`         |
@@ -228,6 +230,8 @@ flowchart LR
   OKHSV(Okhsv)
   OKHSL(Okhsl)
   OKHWB(Okhwb)
+  OKLRAB(Oklrab)
+  OKLRCH(Oklrch)
   CAM02(CAM02)
   CAM02UCS(CAM02-UCS)
   CAM16(CAM16)
@@ -272,6 +276,8 @@ flowchart LR
   OKLAB --> OKHSV
   OKLAB --> OKHSL
   OKHSV --> OKHWB
+  OKLAB --> OKLRAB
+  OKLRAB --> OKLRCH
   XYZ --> CAM02
   CAM02 -.-> CAM02UCS
   XYZ --> CAM16
@@ -649,8 +655,8 @@ The predefined sRGB configuration refers to an ambient illumination of 64 lux un
 
 ### `DynamicRange`
 Defines luminance values used when evaluating
-perceptual quantizer (PQ) transfer functions (for IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>, and Rec. 2100 PQ RGB)
-and hybrid log-gamma (HLG) transfer functions (for Rec. 2100 HLG RGB).
+perceptual quantizer (PQ) transfer functions (IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Rec. 2100 PQ RGB)
+and hybrid log-gamma (HLG) transfer functions (Rec. 2100 HLG RGB).
 
 | Predefined                 | Property    |
 |----------------------------|-------------|
@@ -685,12 +691,12 @@ Unicolour applies different reference white points to different sets of colour s
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
 The default chromatic adaptation is the Bradford method but [this can be customised](#xyzconfiguration).
 
-| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
-| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                              |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 |
-| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT                              |
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                            |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB            |
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                                         |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                            |
+| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch · HCT |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

@@ -41,6 +41,8 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> OkhsvTriplets = [];
     public static readonly List<ColourTriplet> OkhslTriplets = [];
     public static readonly List<ColourTriplet> OkhwbTriplets = [];
+    public static readonly List<ColourTriplet> OklrabTriplets = [];
+    public static readonly List<ColourTriplet> OklrchTriplets = [];
     public static readonly List<ColourTriplet> Cam02Triplets = [];
     public static readonly List<ColourTriplet> Cam16Triplets = [];
     public static readonly List<ColourTriplet> HctTriplets = [];
@@ -107,6 +109,8 @@ internal static class RandomColours
             OkhsvTriplets.Add(Okhsv());
             OkhslTriplets.Add(Okhsl());
             OkhwbTriplets.Add(Okhwb());
+            OklrabTriplets.Add(Oklrab());
+            OklrchTriplets.Add(Oklrch());
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
             HctTriplets.Add(Hct());
@@ -157,6 +161,8 @@ internal static class RandomColours
             ColourSpace.Okhsv => Okhsv(),
             ColourSpace.Okhsl => Okhsl(),
             ColourSpace.Okhwb => Okhwb(),
+            ColourSpace.Oklrab => Oklrab(),
+            ColourSpace.Oklrch => Oklrch(),
             ColourSpace.Cam02 => Cam02(),
             ColourSpace.Cam16 => Cam16(),
             ColourSpace.Hct => Hct(),
@@ -194,13 +200,15 @@ internal static class RandomColours
     private static ColourTriplet Xyb() => new(Rng(-0.03, 0.03), Rng(), Rng(-0.4, 0.4)); 
     private static ColourTriplet Ipt() => new(Rng(), Rng(-0.75, 0.75), Rng(-0.75, 0.75)); 
     private static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
-    private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values since ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
-    private static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values
+    private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values (SDR) - ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
+    private static ColourTriplet Jzczhz() => new(Rng(0, 0.17), Rng(0, 0.16), Rng(0, 360)); // from own test values (SDR)
     private static ColourTriplet Oklab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
     private static ColourTriplet Oklch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
     private static ColourTriplet Okhsv() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Okhsl() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Okhwb() => new(Rng(0, 360), Rng(), Rng());
+    private static ColourTriplet Oklrab() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5));
+    private static ColourTriplet Oklrch() => new(Rng(), Rng(0, 0.5), Rng(0, 360));
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 

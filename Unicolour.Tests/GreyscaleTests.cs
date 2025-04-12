@@ -409,6 +409,30 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.49999999999, false)]
     public void Okhwb(double h, double w, double b, bool expected) => AssertUnicolour(new(ColourSpace.Okhwb, h, w, b), expected);
     
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.00000000001, -0.00000000001, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, true)]
+    [TestCase(1.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.99999999999, 0.1, -0.1, false)]
+    public void Oklrab(double l, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Oklrab, l, a, b), expected);
+
+    [TestCase(0.5, 0.0, 180.0, true)]
+    [TestCase(0.5, -0.00000000001, 180.0, true)]
+    [TestCase(0.5, 0.00000000001, 180.0, false)]
+    [TestCase(0.0, 0.25, 180.0, true)]
+    [TestCase(-0.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.00000000001, 0.25, 180.0, false)]
+    [TestCase(1.0, 0.25, 180.0, true)]
+    [TestCase(1.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.99999999999, 0.25, 180.0, false)]
+    public void Oklrch(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Oklrch, l, c, h), expected);
+    
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]

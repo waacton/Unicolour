@@ -126,6 +126,12 @@ public class NotNumberTests
     public void Okhwb(Configuration config, double h, double w, double b) => AssertUnicolour(new(config, ColourSpace.Okhwb, h, w, b));
     
     [TestCaseSource(nameof(TestData))]
+    public void Oklrab(Configuration config, double l, double a, double b) => AssertUnicolour(new(config, ColourSpace.Oklrab, l, a, b));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Oklrch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklrch, l, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
     public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02, j, a, b));
     
     [TestCaseSource(nameof(TestData))]

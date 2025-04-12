@@ -14,7 +14,7 @@ public class MixHeritageTests
         ColourSpace.Lchab, ColourSpace.Lchuv, ColourSpace.Hsluv, ColourSpace.Hpluv,
         ColourSpace.Tsl,
         ColourSpace.Jzczhz,
-        ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb,
+        ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrch,
         ColourSpace.Hct
     ];
 

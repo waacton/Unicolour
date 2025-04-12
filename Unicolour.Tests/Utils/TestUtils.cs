@@ -266,6 +266,8 @@ internal static class TestUtils
         { typeof(Okhsv), ColourSpace.Okhsv },
         { typeof(Okhsl), ColourSpace.Okhsl },
         { typeof(Okhwb), ColourSpace.Okhwb },
+        { typeof(Oklrab), ColourSpace.Oklrab },
+        { typeof(Oklrch), ColourSpace.Oklrch },
         { typeof(Cam02), ColourSpace.Cam02 },
         { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Hct), ColourSpace.Hct }

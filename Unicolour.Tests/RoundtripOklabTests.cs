@@ -61,4 +61,13 @@ public class RoundtripOklabTests
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
         }
     }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklabTriplets))]
+    public void ViaOklrab(ColourTriplet triplet)
+    {
+        var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
+        var oklrab = Oklrab.FromOklab(original);
+        var roundtrip = Oklrab.ToOklab(oklrab);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
 }

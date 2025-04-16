@@ -16,12 +16,11 @@ public record Rgb : ColourRepresentation
 
     // for almost all cases, doing this check in linear RGB will return the same result
     // but handling it here feels most natural as it is the intended "display" space
-    // and isn't concerned about questionable custom inverse-companding-to-linear functions (e.g. where where RGB <= 1.0 but RGB-Linear > 1.0)
-    internal bool IsInGamut => !UseAsNaN && R is >= 0 and <= 1.0 && G is >= 0 and <= 1.0 && B is >= 0 and <= 1.0;
+    // and isn't concerned about questionable custom to-linear functions (e.g. where RGB <= 1.0 but RGB-Linear > 1.0)
+    internal bool IsInGamut => !UseAsNaN && Triplet == ConstrainedTriplet;
     public Rgb255 Byte255 => new(To255(R), To255(G), To255(B), ColourHeritage.From(this));
 
     public Rgb(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
-    internal Rgb(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Rgb(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
     
     private static double To255(double value) => Math.Round(value * 255);
@@ -37,17 +36,23 @@ public record Rgb : ColourRepresentation
      * Reverse: https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
      */
     
-    internal static Rgb FromRgbLinear(RgbLinear rgbLinear, RgbConfiguration rgbConfig)
+    internal static Rgb FromRgbLinear(RgbLinear rgbLinear, RgbConfiguration rgbConfig, DynamicRange dynamicRange)
     {
-        var rgbLinearMatrix = Matrix.FromTriplet(rgbLinear.Triplet);
-        var rgbMatrix = rgbLinearMatrix.Select(rgbConfig.CompandFromLinear);
-        return new Rgb(rgbMatrix.ToTriplet(), ColourHeritage.From(rgbLinear));
+        var r = FromLinear(rgbLinear.R);
+        var g = FromLinear(rgbLinear.G);
+        var b = FromLinear(rgbLinear.B);
+        return new Rgb(r, g, b, ColourHeritage.From(rgbLinear));
+
+        double FromLinear(double linear) => rgbConfig.FromLinear(linear, dynamicRange);
     }
     
-    internal static RgbLinear ToRgbLinear(Rgb rgb, RgbConfiguration rgbConfig)
+    internal static RgbLinear ToRgbLinear(Rgb rgb, RgbConfiguration rgbConfig, DynamicRange dynamicRange)
     {
-        var rgbMatrix = Matrix.FromTriplet(rgb.Triplet);
-        var rgbLinearMatrix = rgbMatrix.Select(rgbConfig.InverseCompandToLinear);
-        return new RgbLinear(rgbLinearMatrix.ToTriplet(), ColourHeritage.From(rgb));
+        var r = ToLinear(rgb.R);
+        var g = ToLinear(rgb.G);
+        var b = ToLinear(rgb.B);
+        return new RgbLinear(r, g, b, ColourHeritage.From(rgb));
+        
+        double ToLinear(double gammaEncoded) => rgbConfig.ToLinear(gammaEncoded, dynamicRange);
     }
 }

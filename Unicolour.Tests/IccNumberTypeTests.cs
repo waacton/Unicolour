@@ -6,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class IccNumberTypeTests
 {
-    private static readonly byte[] testBytes = [85, 110, 105, 99, 111, 108, 111, 117, 114, 33];
+    private static readonly byte[] TestBytes = [85, 110, 105, 99, 111, 108, 111, 117, 114, 33];
 
     [TestCase(0, new byte[] { })]
     [TestCase(1, new byte[] { 85 })]
@@ -15,7 +15,7 @@ public class IccNumberTypeTests
     [TestCase(11, null)]
     public void ReadBytes(int count, byte[]? expected)
     {
-        using var stream = Stream(testBytes);
+        using var stream = Stream(TestBytes);
 
         if (expected == null)
         {

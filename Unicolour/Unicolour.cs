@@ -36,17 +36,20 @@ public partial class Unicolour : IEquatable<Unicolour>
     private readonly Lazy<Okhsv> okhsv;
     private readonly Lazy<Okhsl> okhsl;
     private readonly Lazy<Okhwb> okhwb;
+    private readonly Lazy<Oklrab> oklrab;
+    private readonly Lazy<Oklrch> oklrch;
     private readonly Lazy<Cam02> cam02;
     private readonly Lazy<Cam16> cam16;
     private readonly Lazy<Hct> hct;
     private readonly Lazy<Channels> icc;
     private readonly Lazy<Temperature> temperature;
+    private readonly Lazy<bool> isInPointerGamut;
     private readonly Lazy<string> source;
     
     public Alpha Alpha { get; }
-    public Configuration Config { get; }
-    internal readonly ColourSpace InitialColourSpace;
-    internal readonly ColourRepresentation InitialRepresentation;
+    public Configuration Configuration { get; }
+    internal readonly ColourSpace SourceColourSpace;
+    internal readonly ColourRepresentation SourceRepresentation;
 
     public Rgb Rgb => rgb.Value;
     public RgbLinear RgbLinear => rgbLinear.Value;
@@ -80,16 +83,19 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Okhsv Okhsv => okhsv.Value;
     public Okhsl Okhsl => okhsl.Value;
     public Okhwb Okhwb => okhwb.Value;
+    public Oklrab Oklrab => oklrab.Value;
+    public Oklrch Oklrch => oklrch.Value;
     public Cam02 Cam02 => cam02.Value;
     public Cam16 Cam16 => cam16.Value;
     public Hct Hct => hct.Value;
     public Channels Icc => icc.Value;
 
-    public string Hex => isUnseen ? UnseenName : !IsInDisplayGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public bool IsInDisplayGamut => Rgb.IsInGamut;
+    public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
+    public bool IsInRgbGamut => Rgb.IsInGamut;
+    public bool IsInPointerGamut => isInPointerGamut.Value;
     public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
-    public bool IsImaginary => Config.Xyz.Spectral.IsImaginary(Chromaticity);
+    public bool IsImaginary => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity);
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Temperature Temperature => temperature.Value;
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
@@ -106,10 +112,10 @@ public partial class Unicolour : IEquatable<Unicolour>
             third /= 255.0;
         }
         
-        Config = config;
+        Configuration = config;
         Alpha = new Alpha(alpha);
-        InitialColourSpace = colourSpace;
-        InitialRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
+        SourceColourSpace = colourSpace;
+        SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
 
         rgb = new Lazy<Rgb>(EvaluateRgb);
         rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
@@ -143,6 +149,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         okhsv = new Lazy<Okhsv>(EvaluateOkhsv);
         okhsl = new Lazy<Okhsl>(EvaluateOkhsl);
         okhwb = new Lazy<Okhwb>(EvaluateOkhwb);
+        oklrab = new Lazy<Oklrab>(EvaluateOklrab);
+        oklrch = new Lazy<Oklrch>(EvaluateOklrch);
         cam02 = new Lazy<Cam02>(EvaluateCam02);
         cam16 = new Lazy<Cam16>(EvaluateCam16);
         hct = new Lazy<Hct>(EvaluateHct);
@@ -150,12 +158,13 @@ public partial class Unicolour : IEquatable<Unicolour>
         // the following are overriden by the derived constructors
         // that enable Unicolour to be constructed from entities other than colour spaces
         icc = new Lazy<Channels>(() =>
-            Config.Icc.HasSupportedProfile
-                ? Channels.FromXyz(Xyz, Config.Icc, Config.Xyz)
+            Configuration.Icc.HasSupportedProfile
+                ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
                 : Channels.UncalibratedFromRgb(Rgb));
         
-        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Config.Xyz.Planckian));
-        source = new Lazy<string>(() => $"{InitialColourSpace} {InitialRepresentation}");
+        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
+        isInPointerGamut = new Lazy<bool>(() => PointerGamut.IsInGamut(this));
+        source = new Lazy<string>(() => $"{SourceColourSpace} {SourceRepresentation}");
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -166,24 +175,36 @@ public partial class Unicolour : IEquatable<Unicolour>
         return Interpolation.Mix(this, other, colourSpace, amount, hueSpan, premultiplyAlpha);
     }
     
+    public IEnumerable<Unicolour> Palette(Unicolour other, ColourSpace colourSpace, int count, HueSpan hueSpan = HueSpan.Shorter, bool premultiplyAlpha = true)
+    {
+        return Interpolation.Palette(this, other, colourSpace, count, hueSpan, premultiplyAlpha);
+    }
+    
     // TODO: explore if this is worthwhile
     // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
     // {
     //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
     // }
-    
-    public Unicolour SimulateProtanopia() => VisionDeficiency.SimulateProtanopia(this);
-    public Unicolour SimulateDeuteranopia() => VisionDeficiency.SimulateDeuteranopia(this);
-    public Unicolour SimulateTritanopia() => VisionDeficiency.SimulateTritanopia(this);
-    public Unicolour SimulateAchromatopsia() => VisionDeficiency.SimulateAchromatopsia(this);
 
-    public Unicolour MapToGamut() => GamutMapping.ToRgbGamut(this);
+    public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
+
+    public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
+    public Unicolour MapToPointerGamut() => GamutMapping.ToPointerGamut(this);
     
-    public Unicolour ConvertToConfiguration(Configuration newConfig)
+    public Unicolour ConvertToConfiguration(Configuration config)
     {
-        var xyzMatrix = Matrix.FromTriplet(Xyz.Triplet);
-        var adaptedMatrix = Adaptation.WhitePoint(xyzMatrix, Config.Xyz.WhitePoint, newConfig.Xyz.WhitePoint);
-        return new Unicolour(newConfig, ColourSpace.Xyz, adaptedMatrix.ToTriplet().Tuple, Alpha.A);
+        if (config == Configuration) return Clone();
+        var heritage = ColourHeritage.From(SourceRepresentation);
+        var (x, y, z) = Adaptation.WhitePoint(Xyz, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint, Configuration.Xyz.AdaptationMatrix);
+        return new Unicolour(config, heritage, ColourSpace.Xyz, x, y, z, Alpha.A);
+    }
+    
+    internal Unicolour Clone()
+    {
+        var (first, second, third) = SourceRepresentation.Triplet;
+        var heritage = SourceRepresentation.Heritage;
+        var alpha = Alpha.A;
+        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha);
     }
     
     public override string ToString()
@@ -213,14 +234,14 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     private bool ColourSpaceEquals(Unicolour other)
     {
-        return InitialRepresentation.Equals(other.InitialRepresentation);
+        return SourceRepresentation.Equals(other.SourceRepresentation);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            return (InitialRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
+            return (SourceRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
         }
     }
 }

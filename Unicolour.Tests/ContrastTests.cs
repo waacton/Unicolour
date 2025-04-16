@@ -14,7 +14,6 @@ public class ContrastTests
         var colour1 = StandardRgb.Lookup[colour1Name];
         var colour2 = StandardRgb.Lookup[colour2Name];
         AssertKnownContrast(colour1, colour2, expected);
-
     }
 
     [Test]
@@ -22,6 +21,14 @@ public class ContrastTests
     {
         var random = RandomColours.UnicolourFrom(ColourSpace.Rgb);
         AssertKnownContrast(random, random, 1);
+    }
+    
+    [Test]
+    public void DifferentConfigs()
+    {
+        var redD65 = new Unicolour(TestUtils.D65Config, ColourSpace.Rgb, 1, 0, 0);
+        var redD50 = new Unicolour(TestUtils.D50Config, ColourSpace.Rgb, 1, 0, 0);
+        AssertKnownContrast(redD65, redD50, 1);
     }
     
     [Test]
@@ -54,7 +61,7 @@ public class ContrastTests
     }
     
     [Test]
-    public void DifferentConfigInGamutLuminance()
+    public void InGamutLuminance()
     {
         var standardRgb = new Unicolour(new Configuration(RgbConfiguration.StandardRgb), ColourSpace.Rgb, 1, 1, 0);
         var displayP3 = standardRgb.ConvertToConfiguration(new Configuration(RgbConfiguration.DisplayP3));
@@ -62,7 +69,7 @@ public class ContrastTests
     }
     
     [Test]
-    public void DifferentConfigOutOfGamutLuminance()
+    public void OutOfGamutLuminance()
     {
         var displayP3 = new Unicolour(new Configuration(RgbConfiguration.DisplayP3), ColourSpace.Rgb, 1, 1, 0);
         var standardRgb = displayP3.ConvertToConfiguration(new Configuration(RgbConfiguration.StandardRgb));
@@ -80,11 +87,18 @@ public class ContrastTests
         Assert.That(delta1, Is.EqualTo(delta2));
     }
 
-    private static void AssertRelativeLuminance(Unicolour unicolour)
+    private static void AssertRelativeLuminance(Unicolour colour)
     {
         // WCAG relative luminance is defined according to sRGB https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
-        var (r, g, b) = unicolour.RgbLinear.Triplet;
+        // which should match XYZ.Y under D65
+        // so need to ensure colour is using the correct configuration for the formula to work 
+        if (colour.Configuration != Configuration.Default)
+        {
+            colour = colour.ConvertToConfiguration(Configuration.Default);
+        }
+
+        var (r, g, b) = colour.RgbLinear;
         var expected = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-        Assert.That(unicolour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
+        Assert.That(colour.RelativeLuminance, Is.EqualTo(expected).Within(0.0005));
     }
 }

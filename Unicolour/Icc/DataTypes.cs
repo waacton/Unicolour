@@ -99,15 +99,30 @@ internal static class DataTypes
         return (x, y, z);
     }
     
-    internal static (double x, double y, double z) ReadXyzType(this Stream stream)
+    internal static XyzType ReadXyzType(this Stream stream)
     {
         stream.ReadSignature();
         stream.ReadBytes(4); // reserved
-        return stream.ReadXyzNumber();
+        var (x, y, z) = stream.ReadXyzNumber();
+        return new XyzType(x, y, z);
     }
     
     internal static double[] ToArray(this (double x, double y, double z) tuple)
     {
         return new [] { tuple.x, tuple.y, tuple.z };
     }
+}
+
+// the ICC specification distinguishes between "XyzNumber" and "XyzType"
+// but the main benefit for this implementation is that it's a reference type
+// and easily handled as null if the tag is not present
+// (as opposed to default values of 0, which can be misconstrued as existing and set to zero)
+internal record XyzType(double x, double y, double z)
+{
+    internal double x { get; } = x;
+    internal double y { get; } = y;
+    internal double z { get; } = z;
+    
+    internal double[] ToArray() => new [] { x, y, z };
+    internal (double x, double y, double z) ToTuple() => (x, y, z);
 }

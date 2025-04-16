@@ -163,164 +163,164 @@ public class DatasetCssTests
         { "transparent", new(0, 0, 0) }
     };
     
-    private static readonly List<TestCaseData> Rgb255TestData =
+    private static readonly TestCaseData[] Rgb255TestData =
     [
-        new TestCaseData("aliceblue", AliceBlue),
-        new TestCaseData("antiquewhite", AntiqueWhite),
-        new TestCaseData("aqua", Aqua),
-        new TestCaseData("aquamarine", Aquamarine),
-        new TestCaseData("azure", Azure),
-        new TestCaseData("beige", Beige),
-        new TestCaseData("bisque", Bisque),
-        new TestCaseData("black", Black),
-        new TestCaseData("blanchedalmond", BlanchedAlmond),
-        new TestCaseData("blue", Blue),
-        new TestCaseData("blueviolet", BlueViolet),
-        new TestCaseData("brown", Brown),
-        new TestCaseData("burlywood", Burlywood),
-        new TestCaseData("cadetblue", CadetBlue),
-        new TestCaseData("chartreuse", Chartreuse),
-        new TestCaseData("chocolate", Chocolate),
-        new TestCaseData("coral", Coral),
-        new TestCaseData("cornflowerblue", CornflowerBlue),
-        new TestCaseData("cornsilk", Cornsilk),
-        new TestCaseData("crimson", Crimson),
-        new TestCaseData("cyan", Cyan),
-        new TestCaseData("darkblue", DarkBlue),
-        new TestCaseData("darkcyan", DarkCyan),
-        new TestCaseData("darkgoldenrod", DarkGoldenrod),
-        new TestCaseData("darkgray", DarkGray),
-        new TestCaseData("darkgreen", DarkGreen),
-        new TestCaseData("darkgrey", DarkGrey),
-        new TestCaseData("darkkhaki", DarkKhaki),
-        new TestCaseData("darkmagenta", DarkMagenta),
-        new TestCaseData("darkolivegreen", DarkOliveGreen),
-        new TestCaseData("darkorange", DarkOrange),
-        new TestCaseData("darkorchid", DarkOrchid),
-        new TestCaseData("darkred", DarkRed),
-        new TestCaseData("darksalmon", DarkSalmon),
-        new TestCaseData("darkseagreen", DarkSeaGreen),
-        new TestCaseData("darkslateblue", DarkSlateBlue),
-        new TestCaseData("darkslategray", DarkSlateGray),
-        new TestCaseData("darkslategrey", DarkSlateGrey),
-        new TestCaseData("darkturquoise", DarkTurquoise),
-        new TestCaseData("darkviolet", DarkViolet),
-        new TestCaseData("deeppink", DeepPink),
-        new TestCaseData("deepskyblue", DeepSkyBlue),
-        new TestCaseData("dimgray", DimGray),
-        new TestCaseData("dimgrey", DimGrey),
-        new TestCaseData("dodgerblue", DodgerBlue),
-        new TestCaseData("firebrick", FireBrick),
-        new TestCaseData("floralwhite", FloralWhite),
-        new TestCaseData("forestgreen", ForestGreen),
-        new TestCaseData("fuchsia", Fuchsia),
-        new TestCaseData("gainsboro", Gainsboro),
-        new TestCaseData("ghostwhite", GhostWhite),
-        new TestCaseData("gold", Gold),
-        new TestCaseData("goldenrod", Goldenrod),
-        new TestCaseData("gray", Gray),
-        new TestCaseData("green", Green),
-        new TestCaseData("greenyellow", GreenYellow),
-        new TestCaseData("grey", Grey),
-        new TestCaseData("honeydew", Honeydew),
-        new TestCaseData("hotpink", HotPink),
-        new TestCaseData("indianred", IndianRed),
-        new TestCaseData("indigo", Indigo),
-        new TestCaseData("ivory", Ivory),
-        new TestCaseData("khaki", Khaki),
-        new TestCaseData("lavender", Lavender),
-        new TestCaseData("lavenderblush", LavenderBlush),
-        new TestCaseData("lawngreen", LawnGreen),
-        new TestCaseData("lemonchiffon", LemonChiffon),
-        new TestCaseData("lightblue", LightBlue),
-        new TestCaseData("lightcoral", LightCoral),
-        new TestCaseData("lightcyan", LightCyan),
-        new TestCaseData("lightgoldenrodyellow", LightGoldenrodYellow),
-        new TestCaseData("lightgray", LightGray),
-        new TestCaseData("lightgreen", LightGreen),
-        new TestCaseData("lightgrey", LightGrey),
-        new TestCaseData("lightpink", LightPink),
-        new TestCaseData("lightsalmon", LightSalmon),
-        new TestCaseData("lightseagreen", LightSeaGreen),
-        new TestCaseData("lightskyblue", LightSkyBlue),
-        new TestCaseData("lightslategray", LightSlateGray),
-        new TestCaseData("lightslategrey", LightSlateGrey),
-        new TestCaseData("lightsteelblue", LightSteelBlue),
-        new TestCaseData("lightyellow", LightYellow),
-        new TestCaseData("lime", Lime),
-        new TestCaseData("limegreen", LimeGreen),
-        new TestCaseData("linen", Linen),
-        new TestCaseData("magenta", Magenta),
-        new TestCaseData("maroon", Maroon),
-        new TestCaseData("mediumaquamarine", MediumAquamarine),
-        new TestCaseData("mediumblue", MediumBlue),
-        new TestCaseData("mediumorchid", MediumOrchid),
-        new TestCaseData("mediumpurple", MediumPurple),
-        new TestCaseData("mediumseagreen", MediumSeaGreen),
-        new TestCaseData("mediumslateblue", MediumSlateBlue),
-        new TestCaseData("mediumspringgreen", MediumSpringGreen),
-        new TestCaseData("mediumturquoise", MediumTurquoise),
-        new TestCaseData("mediumvioletred", MediumVioletRed),
-        new TestCaseData("midnightblue", MidnightBlue),
-        new TestCaseData("mintcream", MintCream),
-        new TestCaseData("mistyrose", MistyRose),
-        new TestCaseData("moccasin", Moccasin),
-        new TestCaseData("navajowhite", NavajoWhite),
-        new TestCaseData("navy", Navy),
-        new TestCaseData("oldlace", OldLace),
-        new TestCaseData("olive", Olive),
-        new TestCaseData("olivedrab", OliveDrab),
-        new TestCaseData("orange", Orange),
-        new TestCaseData("orangered", OrangeRed),
-        new TestCaseData("orchid", Orchid),
-        new TestCaseData("palegoldenrod", PaleGoldenrod),
-        new TestCaseData("palegreen", PaleGreen),
-        new TestCaseData("paleturquoise", PaleTurquoise),
-        new TestCaseData("palevioletred", PaleVioletRed),
-        new TestCaseData("papayawhip", PapayaWhip),
-        new TestCaseData("peachpuff", PeachPuff),
-        new TestCaseData("peru", Peru),
-        new TestCaseData("pink", Pink),
-        new TestCaseData("plum", Plum),
-        new TestCaseData("powderblue", PowderBlue),
-        new TestCaseData("purple", Purple),
-        new TestCaseData("rebeccapurple", RebeccaPurple),
-        new TestCaseData("red", Red),
-        new TestCaseData("rosybrown", RosyBrown),
-        new TestCaseData("royalblue", RoyalBlue),
-        new TestCaseData("saddlebrown", SaddleBrown),
-        new TestCaseData("salmon", Salmon),
-        new TestCaseData("sandybrown", SandyBrown),
-        new TestCaseData("seagreen", SeaGreen),
-        new TestCaseData("seashell", Seashell),
-        new TestCaseData("sienna", Sienna),
-        new TestCaseData("silver", Silver),
-        new TestCaseData("skyblue", SkyBlue),
-        new TestCaseData("slateblue", SlateBlue),
-        new TestCaseData("slategray", SlateGray),
-        new TestCaseData("slategrey", SlateGrey),
-        new TestCaseData("snow", Snow),
-        new TestCaseData("springgreen", SpringGreen),
-        new TestCaseData("steelblue", SteelBlue),
-        new TestCaseData("tan", Tan),
-        new TestCaseData("teal", Teal),
-        new TestCaseData("thistle", Thistle),
-        new TestCaseData("tomato", Tomato),
-        new TestCaseData("turquoise", Turquoise),
-        new TestCaseData("violet", Violet),
-        new TestCaseData("wheat", Wheat),
-        new TestCaseData("white", White),
-        new TestCaseData("whitesmoke", WhiteSmoke),
-        new TestCaseData("yellow", Yellow),
-        new TestCaseData("yellowgreen", YellowGreen),
-        new TestCaseData("transparent", Css.Transparent)
+        new("aliceblue", AliceBlue),
+        new("antiquewhite", AntiqueWhite),
+        new("aqua", Aqua),
+        new("aquamarine", Aquamarine),
+        new("azure", Azure),
+        new("beige", Beige),
+        new("bisque", Bisque),
+        new("black", Black),
+        new("blanchedalmond", BlanchedAlmond),
+        new("blue", Blue),
+        new("blueviolet", BlueViolet),
+        new("brown", Brown),
+        new("burlywood", Burlywood),
+        new("cadetblue", CadetBlue),
+        new("chartreuse", Chartreuse),
+        new("chocolate", Chocolate),
+        new("coral", Coral),
+        new("cornflowerblue", CornflowerBlue),
+        new("cornsilk", Cornsilk),
+        new("crimson", Crimson),
+        new("cyan", Cyan),
+        new("darkblue", DarkBlue),
+        new("darkcyan", DarkCyan),
+        new("darkgoldenrod", DarkGoldenrod),
+        new("darkgray", DarkGray),
+        new("darkgreen", DarkGreen),
+        new("darkgrey", DarkGrey),
+        new("darkkhaki", DarkKhaki),
+        new("darkmagenta", DarkMagenta),
+        new("darkolivegreen", DarkOliveGreen),
+        new("darkorange", DarkOrange),
+        new("darkorchid", DarkOrchid),
+        new("darkred", DarkRed),
+        new("darksalmon", DarkSalmon),
+        new("darkseagreen", DarkSeaGreen),
+        new("darkslateblue", DarkSlateBlue),
+        new("darkslategray", DarkSlateGray),
+        new("darkslategrey", DarkSlateGrey),
+        new("darkturquoise", DarkTurquoise),
+        new("darkviolet", DarkViolet),
+        new("deeppink", DeepPink),
+        new("deepskyblue", DeepSkyBlue),
+        new("dimgray", DimGray),
+        new("dimgrey", DimGrey),
+        new("dodgerblue", DodgerBlue),
+        new("firebrick", FireBrick),
+        new("floralwhite", FloralWhite),
+        new("forestgreen", ForestGreen),
+        new("fuchsia", Fuchsia),
+        new("gainsboro", Gainsboro),
+        new("ghostwhite", GhostWhite),
+        new("gold", Gold),
+        new("goldenrod", Goldenrod),
+        new("gray", Gray),
+        new("green", Green),
+        new("greenyellow", GreenYellow),
+        new("grey", Grey),
+        new("honeydew", Honeydew),
+        new("hotpink", HotPink),
+        new("indianred", IndianRed),
+        new("indigo", Indigo),
+        new("ivory", Ivory),
+        new("khaki", Khaki),
+        new("lavender", Lavender),
+        new("lavenderblush", LavenderBlush),
+        new("lawngreen", LawnGreen),
+        new("lemonchiffon", LemonChiffon),
+        new("lightblue", LightBlue),
+        new("lightcoral", LightCoral),
+        new("lightcyan", LightCyan),
+        new("lightgoldenrodyellow", LightGoldenrodYellow),
+        new("lightgray", LightGray),
+        new("lightgreen", LightGreen),
+        new("lightgrey", LightGrey),
+        new("lightpink", LightPink),
+        new("lightsalmon", LightSalmon),
+        new("lightseagreen", LightSeaGreen),
+        new("lightskyblue", LightSkyBlue),
+        new("lightslategray", LightSlateGray),
+        new("lightslategrey", LightSlateGrey),
+        new("lightsteelblue", LightSteelBlue),
+        new("lightyellow", LightYellow),
+        new("lime", Lime),
+        new("limegreen", LimeGreen),
+        new("linen", Linen),
+        new("magenta", Magenta),
+        new("maroon", Maroon),
+        new("mediumaquamarine", MediumAquamarine),
+        new("mediumblue", MediumBlue),
+        new("mediumorchid", MediumOrchid),
+        new("mediumpurple", MediumPurple),
+        new("mediumseagreen", MediumSeaGreen),
+        new("mediumslateblue", MediumSlateBlue),
+        new("mediumspringgreen", MediumSpringGreen),
+        new("mediumturquoise", MediumTurquoise),
+        new("mediumvioletred", MediumVioletRed),
+        new("midnightblue", MidnightBlue),
+        new("mintcream", MintCream),
+        new("mistyrose", MistyRose),
+        new("moccasin", Moccasin),
+        new("navajowhite", NavajoWhite),
+        new("navy", Navy),
+        new("oldlace", OldLace),
+        new("olive", Olive),
+        new("olivedrab", OliveDrab),
+        new("orange", Orange),
+        new("orangered", OrangeRed),
+        new("orchid", Orchid),
+        new("palegoldenrod", PaleGoldenrod),
+        new("palegreen", PaleGreen),
+        new("paleturquoise", PaleTurquoise),
+        new("palevioletred", PaleVioletRed),
+        new("papayawhip", PapayaWhip),
+        new("peachpuff", PeachPuff),
+        new("peru", Peru),
+        new("pink", Pink),
+        new("plum", Plum),
+        new("powderblue", PowderBlue),
+        new("purple", Purple),
+        new("rebeccapurple", RebeccaPurple),
+        new("red", Red),
+        new("rosybrown", RosyBrown),
+        new("royalblue", RoyalBlue),
+        new("saddlebrown", SaddleBrown),
+        new("salmon", Salmon),
+        new("sandybrown", SandyBrown),
+        new("seagreen", SeaGreen),
+        new("seashell", Seashell),
+        new("sienna", Sienna),
+        new("silver", Silver),
+        new("skyblue", SkyBlue),
+        new("slateblue", SlateBlue),
+        new("slategray", SlateGray),
+        new("slategrey", SlateGrey),
+        new("snow", Snow),
+        new("springgreen", SpringGreen),
+        new("steelblue", SteelBlue),
+        new("tan", Tan),
+        new("teal", Teal),
+        new("thistle", Thistle),
+        new("tomato", Tomato),
+        new("turquoise", Turquoise),
+        new("violet", Violet),
+        new("wheat", Wheat),
+        new("white", White),
+        new("whitesmoke", WhiteSmoke),
+        new("yellow", Yellow),
+        new("yellowgreen", YellowGreen),
+        new("transparent", Css.Transparent)
     ];
 
     [TestCaseSource(nameof(Rgb255TestData))]
-    public void Rgb255(string name, Unicolour unicolour)
+    public void Rgb255(string name, Unicolour colour)
     {
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(unicolour, expected, 0);
+        TestUtils.AssertTriplet<Rgb255>(colour, expected, 0);
     }
 
     [Test]
@@ -330,7 +330,7 @@ public class DatasetCssTests
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
     
-    private static readonly List<TestCaseData> DuplicateTestData =
+    private static readonly TestCaseData[] DuplicateTestData =
     [
         new TestCaseData(Cyan, Aqua).SetName("cyan = aqua"),
         new TestCaseData(Magenta, Fuchsia).SetName("magenta = fuchsia"),
@@ -344,10 +344,10 @@ public class DatasetCssTests
     ];
     
     [TestCaseSource(nameof(DuplicateTestData))]
-    public void Duplicates(Unicolour unicolour1, Unicolour unicolour2)
+    public void Duplicates(Unicolour colour1, Unicolour colour2)
     {
-        Assert.That(ReferenceEquals(unicolour1, unicolour2), Is.False);
-        Assert.That(unicolour1.Hex, Is.EqualTo(unicolour2.Hex));
+        Assert.That(ReferenceEquals(colour1, colour2), Is.False);
+        Assert.That(colour1.Hex, Is.EqualTo(colour2.Hex));
     }
     
     [Test]
@@ -355,7 +355,7 @@ public class DatasetCssTests
     {
         var hexValues = Css.All.Select(x => x.Hex).ToList();
         var duplicateCount = hexValues.Count - hexValues.Distinct().Count();
-        Assert.That(duplicateCount, Is.EqualTo(DuplicateTestData.Count));
+        Assert.That(duplicateCount, Is.EqualTo(DuplicateTestData.Length));
     }
 
     [Test]
@@ -370,11 +370,11 @@ public class DatasetCssTests
     [Test]
     public void Name([ValueSource(nameof(Names))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
         
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(unicolour!, expected, 0);
+        TestUtils.AssertTriplet<Rgb255>(colour!, expected, 0);
     }
 
     private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
@@ -387,8 +387,8 @@ public class DatasetCssTests
     [Test]
     public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Not.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Not.Null);
     }
     
     // names taken from https://en.wikipedia.org/wiki/X11_color_names but are not defined in the CSS specification
@@ -427,7 +427,7 @@ public class DatasetCssTests
     [TestCase(null)]
     public void NameNotFound(string name)
     {
-        var unicolour = FromName(name);
-        Assert.That(unicolour, Is.Null);
+        var colour = FromName(name);
+        Assert.That(colour, Is.Null);
     }
 }

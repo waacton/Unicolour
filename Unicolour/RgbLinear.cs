@@ -15,7 +15,6 @@ public record RgbLinear : ColourRepresentation
     internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
 
     public RgbLinear(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
-    internal RgbLinear(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal RgbLinear(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
     
     protected override string FirstString => $"{R:F2}";
@@ -31,17 +30,17 @@ public record RgbLinear : ColourRepresentation
     
     internal static RgbLinear FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
-        var rgbLinearMatrix = rgbToXyzMatrix.Inverse().Multiply(xyzMatrix);
-        return new RgbLinear(rgbLinearMatrix.ToTriplet(), ColourHeritage.From(xyz));
+        var xyzMatrix = Matrix.From(xyz);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
+        var (r, g, b) = rgbToXyzMatrix.Inverse().Multiply(xyzMatrix).ToTriplet();
+        return new RgbLinear(r, g, b, ColourHeritage.From(xyz));
     }
     
     internal static Xyz ToXyz(RgbLinear rgbLinear, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
     {
-        var rgbLinearMatrix = Matrix.FromTriplet(rgbLinear.Triplet);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint);
-        var xyzMatrix = rgbToXyzMatrix.Multiply(rgbLinearMatrix);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(rgbLinear));
+        var rgbLinearMatrix = Matrix.From(rgbLinear);
+        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
+        var (x, y, z) = rgbToXyzMatrix.Multiply(rgbLinearMatrix).ToTriplet();
+        return new Xyz(x, y, z, ColourHeritage.From(rgbLinear));
     }
 }

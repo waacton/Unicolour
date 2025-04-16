@@ -9,7 +9,7 @@ public class RoundtripOklabTests
     private const double Tolerance = 0.000005;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
-
+    
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklabTriplets))]
     public void ViaXyz(ColourTriplet triplet)
     {
@@ -52,7 +52,7 @@ public class RoundtripOklabTests
         {
             var xyz = Oklab.ToXyz(original, XyzConfig, RgbConfig);
             var rgbLinear = RgbLinear.FromXyz(xyz, RgbConfig, XyzConfig);
-            var rgb = Rgb.FromRgbLinear(rgbLinear, RgbConfig);
+            var rgb = Rgb.FromRgbLinear(rgbLinear, RgbConfig, DynamicRange.High);
             Assert.That(roundtrip.L, Is.EqualTo(original.L).Within(Tolerance));
             Assert.That(rgb.IsInGamut, Is.False);
         }
@@ -60,5 +60,14 @@ public class RoundtripOklabTests
         {
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
         }
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklabTriplets))]
+    public void ViaOklrab(ColourTriplet triplet)
+    {
+        var original = new Oklab(triplet.First, triplet.Second, triplet.Third);
+        var oklrab = Oklrab.FromOklab(original);
+        var roundtrip = Oklrab.ToOklab(oklrab);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
 }

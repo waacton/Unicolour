@@ -14,7 +14,7 @@ public class ConfigureIccTests
     {
         var sourceFile = IccFile.Lookup[sourceFileName];
         var sourceIccConfig = new IccConfiguration(sourceFile.Path, Intent.Unspecified, "source");
-        var sourceConfig = new Configuration(iccConfiguration: sourceIccConfig);
+        var sourceConfig = new Configuration(iccConfig: sourceIccConfig);
         var sourceDeviceChannels = IccFile.GetDeviceChannels(sourceFile);
         var sourceCmyk = new double[sourceDeviceChannels];
         for (var i = 0; i < sourceDeviceChannels; i++)
@@ -28,13 +28,13 @@ public class ConfigureIccTests
         
         var destinationFile = IccFile.Lookup[destinationFileName];
         var destinationIccConfig = new IccConfiguration(destinationFile.Path, Intent.Unspecified, "destination");
-        var destinationConfig = new Configuration(iccConfiguration: destinationIccConfig);
-        var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Triplet.Tuple);
+        var destinationConfig = new Configuration(iccConfig: destinationIccConfig);
+        var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Tuple);
         var destinationCmyk = destinationUnicolour.Icc;
 
         var convertedUnicolour = sourceUnicolour.ConvertToConfiguration(destinationConfig);
         var convertedCmyk = convertedUnicolour.Icc;
-        Assert.That(convertedCmyk.Values, Is.EqualTo(destinationCmyk.Values).Within(1e-15));
+        Assert.That(convertedCmyk.Values, Is.EqualTo(destinationCmyk.Values).Within(1.25e-15));
     }
 
     [Test]

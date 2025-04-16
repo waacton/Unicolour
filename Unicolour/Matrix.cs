@@ -5,13 +5,20 @@ namespace Wacton.Unicolour;
 internal class Matrix
 {
     internal double[,] Data { get; }
-    internal double this[int row, int col] => Data[row, col];
-    private int Rows => Data.GetLength(0);
-    private int Cols => Data.GetLength(1);
+    internal double this[int row, int col]
+    {
+        get => Data[row, col];
+        set => Data[row, col] = value;
+    }
+    
+    internal int Rows { get; }
+    internal int Cols { get; }
     
     internal Matrix(double[,] data)
     {
         Data = data;
+        Rows = Data.GetLength(0);
+        Cols = Data.GetLength(1);
     }
 
     internal Matrix Multiply(Matrix other)
@@ -95,6 +102,20 @@ internal class Matrix
         return new Matrix(result);
     }
     
+    internal Matrix Transpose()  
+    {  
+        var result = new double[Cols, Rows];
+        for (var row = 0; row < Rows; row++)
+        {
+            for (var col = 0; col < Cols; col++)
+            {
+                result[col, row] = this[row, col];
+            }
+        }
+
+        return new Matrix(result);
+    }
+    
     internal ColourTriplet ToTriplet()
     {
         if (Rows != 3 || Cols != 1)
@@ -105,8 +126,9 @@ internal class Matrix
         return new ColourTriplet(Data[0, 0], Data[1, 0], Data[2, 0]);
     }
 
-    internal static Matrix FromTriplet(ColourTriplet triplet) => FromTriplet(triplet.First, triplet.Second, triplet.Third);
-    internal static Matrix FromTriplet(double first, double second, double third)
+    internal static Matrix From(ColourRepresentation representation) => From(representation.Tuple);
+    internal static Matrix From((double first, double second, double third) tuple) => From(tuple.first, tuple.second, tuple.third);
+    internal static Matrix From(double first, double second, double third)
     {
         return new Matrix(new[,]
         {

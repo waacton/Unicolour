@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
@@ -8,22 +7,22 @@ namespace Wacton.Unicolour.Tests;
 
 public class NotNumberTests
 {
-    private static readonly List<TestCaseData> TestData =
+    private static readonly TestCaseData[] TestData =
     [
-        new TestCaseData(Configuration.Default, double.NaN, 0, 0),
-        new TestCaseData(Configuration.Default, 0, double.NaN, 0),
-        new TestCaseData(Configuration.Default, 0, 0, double.NaN),
-        new TestCaseData(Configuration.Default, double.NaN, double.NaN, 0),
-        new TestCaseData(Configuration.Default, double.NaN, 0, double.NaN),
-        new TestCaseData(Configuration.Default, 0, double.NaN, double.NaN),
-        new TestCaseData(Configuration.Default, double.NaN, double.NaN, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, 0, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, 0),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, 0, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
-        new TestCaseData(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
+        new(Configuration.Default, double.NaN, 0, 0),
+        new(Configuration.Default, 0, double.NaN, 0),
+        new(Configuration.Default, 0, 0, double.NaN),
+        new(Configuration.Default, double.NaN, double.NaN, 0),
+        new(Configuration.Default, double.NaN, 0, double.NaN),
+        new(Configuration.Default, 0, double.NaN, double.NaN),
+        new(Configuration.Default, double.NaN, double.NaN, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, 0, 0),
+        new(TestUtils.DefaultFogra39Config, 0, double.NaN, 0),
+        new(TestUtils.DefaultFogra39Config, 0, 0, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, 0),
+        new(TestUtils.DefaultFogra39Config, double.NaN, 0, double.NaN),
+        new(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
+        new(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
     ];
 
     
@@ -127,6 +126,12 @@ public class NotNumberTests
     public void Okhwb(Configuration config, double h, double w, double b) => AssertUnicolour(new(config, ColourSpace.Okhwb, h, w, b));
     
     [TestCaseSource(nameof(TestData))]
+    public void Oklrab(Configuration config, double l, double a, double b) => AssertUnicolour(new(config, ColourSpace.Oklrab, l, a, b));
+
+    [TestCaseSource(nameof(TestData))]
+    public void Oklrch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklrch, l, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
     public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02, j, a, b));
     
     [TestCaseSource(nameof(TestData))]
@@ -143,24 +148,24 @@ public class NotNumberTests
     [TestCaseSource(nameof(TestData))]
     public void IsNumberButUseAsNotNumber(Configuration config, double l, double u, double v)
     {
-        var unicolour = new Unicolour(ColourSpace.Luv, l, u, v);
-        Assert.That(unicolour.Luv.IsNaN, Is.True);
-        Assert.That(unicolour.Xyz.IsNaN, Is.False);
-        Assert.That(unicolour.Rgb.IsNaN, Is.False);
-        Assert.That(unicolour.Hsb.IsNaN, Is.False);
-        Assert.That(unicolour.Hsl.IsNaN, Is.False);
+        var colour = new Unicolour(ColourSpace.Luv, l, u, v);
+        Assert.That(colour.Luv.IsNaN, Is.True);
+        Assert.That(colour.Xyz.IsNaN, Is.False);
+        Assert.That(colour.Rgb.IsNaN, Is.False);
+        Assert.That(colour.Hsb.IsNaN, Is.False);
+        Assert.That(colour.Hsl.IsNaN, Is.False);
         
-        Assert.That(unicolour.Luv.UseAsNaN, Is.True);
-        Assert.That(unicolour.Xyz.UseAsNaN, Is.True);
-        Assert.That(unicolour.Rgb.UseAsNaN, Is.True);
-        Assert.That(unicolour.Hsb.UseAsNaN, Is.True);
-        Assert.That(unicolour.Hsl.UseAsNaN, Is.True);
+        Assert.That(colour.Luv.UseAsNaN, Is.True);
+        Assert.That(colour.Xyz.UseAsNaN, Is.True);
+        Assert.That(colour.Rgb.UseAsNaN, Is.True);
+        Assert.That(colour.Hsb.UseAsNaN, Is.True);
+        Assert.That(colour.Hsl.UseAsNaN, Is.True);
     }
 
-    private static void AssertUnicolour(Unicolour unicolour)
+    private static void AssertUnicolour(Unicolour colour)
     {
-        var data = new ColourHeritageData(unicolour);
-        var initial = unicolour.InitialRepresentation;
+        var data = new ColourHeritageData(colour);
+        var initial = colour.SourceRepresentation;
         
         Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
         Assert.That(initial.IsNaN, Is.True);
@@ -168,18 +173,18 @@ public class NotNumberTests
         Assert.That(initial.UseAsGreyscale, Is.False);
         Assert.That(initial.UseAsHued, Is.False);
         Assert.That(initial.ToString().StartsWith("NaN"));
-        Assert.That(unicolour.Hex, Is.EqualTo("-"));
-        Assert.That(unicolour.Rgb.Byte255.ConstrainedHex, Is.EqualTo("-"));
-        Assert.That(unicolour.Chromaticity.Xy, Is.EqualTo((double.NaN, double.NaN)));
-        Assert.That(unicolour.Chromaticity.Uv, Is.EqualTo((double.NaN, double.NaN)));
-        Assert.That(unicolour.IsInDisplayGamut, Is.False);
-        Assert.That(unicolour.RelativeLuminance, Is.NaN);
-        Assert.That(unicolour.Description, Is.EqualTo("-"));
-        Assert.That(unicolour.Temperature.Cct, Is.NaN);
-        Assert.That(unicolour.Temperature.Duv, Is.NaN);
-        Assert.That(unicolour.Icc.ToString().StartsWith("NaN"));
+        Assert.That(colour.Hex, Is.EqualTo("-"));
+        Assert.That(colour.Rgb.Byte255.ConstrainedHex, Is.EqualTo("-"));
+        Assert.That(colour.Chromaticity.Xy, Is.EqualTo((double.NaN, double.NaN)));
+        Assert.That(colour.Chromaticity.Uv, Is.EqualTo((double.NaN, double.NaN)));
+        Assert.That(colour.IsInRgbGamut, Is.False);
+        Assert.That(colour.RelativeLuminance, Is.NaN);
+        Assert.That(colour.Description, Is.EqualTo("-"));
+        Assert.That(colour.Temperature.Cct, Is.NaN);
+        Assert.That(colour.Temperature.Duv, Is.NaN);
+        Assert.That(colour.Icc.ToString().StartsWith("NaN"));
 
-        var spaces = TestUtils.AllColourSpaces.Except(new [] { unicolour.InitialColourSpace }).ToList();
+        var spaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToList();
         Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));
         Assert.That(data.UseAsNaN(spaces), Has.All.True);
         Assert.That(data.UseAsGreyscale(spaces), Has.All.False);

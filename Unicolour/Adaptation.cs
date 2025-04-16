@@ -1,33 +1,55 @@
 namespace Wacton.Unicolour;
 
-internal static class Adaptation
+public static class Adaptation
 {
-    private static readonly Matrix Bradford = new(new[,]
+    public static readonly double[,] Bradford =
     {
-        { +0.8951, +0.2664, -0.1614 },
-        { -0.7502, +1.7135, +0.0367 },
-        { +0.0389, -0.0685, +1.0296 }
-    });
+        { +0.8951000, +0.2664000, -0.1614000 },
+        { -0.7502000, +1.7135000, +0.0367000 },
+        { +0.0389000, -0.0685000, +1.0296000 }
+    };
+    
+    public static readonly double[,] VonKries =
+    {
+        { +0.4002400, +0.7076000, -0.0808100 },
+        { -0.2263000, +1.1653200, +0.0457000 },
+        { +0.0000000, +0.0000000, +0.9182200 }
+    };
+    
+    public static readonly double[,] XyzScaling =
+    {
+        { 1.0000000, 0.0000000, 0.0000000 },
+        { 0.0000000, 1.0000000, 0.0000000 },
+        { 0.0000000, 0.0000000, 1.0000000 }
+    };
 
-    internal static Matrix WhitePoint(Matrix matrix, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
+    internal static Xyz WhitePoint(Xyz sourceXyz, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint, Matrix adaptationMatrix)
     {
         if (sourceWhitePoint == destinationWhitePoint)
         {
-            return matrix;
+            return sourceXyz;
         }
         
-        var adaptedBradford = AdaptedBradfordMatrix(sourceWhitePoint, destinationWhitePoint);
-        return adaptedBradford.Multiply(matrix);
+        var sourceXyzMatrix = Matrix.From(sourceXyz);
+        var (x, y, z) = WhitePoint(sourceXyzMatrix, sourceWhitePoint, destinationWhitePoint, adaptationMatrix).ToTriplet();
+        return new Xyz(x, y, z);
+    }
+
+    // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
+    internal static Matrix WhitePoint(Matrix sourceXyz, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint, Matrix adaptationMatrix)
+    {
+        return sourceWhitePoint == destinationWhitePoint 
+            ? sourceXyz 
+            : M(sourceWhitePoint, destinationWhitePoint, adaptationMatrix).Multiply(sourceXyz);
     }
     
-    // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
-    private static Matrix AdaptedBradfordMatrix(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
+    internal static Matrix M(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint, Matrix adaptationMatrix)
     {
         var sourceWhite = sourceWhitePoint.AsXyzMatrix();
         var destinationWhite = destinationWhitePoint.AsXyzMatrix();
 
-        var sourceLms = Bradford.Multiply(sourceWhite).ToTriplet();
-        var destinationLms = Bradford.Multiply(destinationWhite).ToTriplet();
+        var sourceLms = adaptationMatrix.Multiply(sourceWhite).ToTriplet();
+        var destinationLms = adaptationMatrix.Multiply(destinationWhite).ToTriplet();
 
         var lmsRatios = new Matrix(new[,]
         {
@@ -36,8 +58,6 @@ internal static class Adaptation
             { 0, 0, destinationLms.Third / sourceLms.Third }
         });
 
-        var inverseBradford = Bradford.Inverse();
-        var adaptedBradfordMatrix = inverseBradford.Multiply(lmsRatios).Multiply(Bradford);
-        return adaptedBradfordMatrix;
+        return adaptationMatrix.Inverse().Multiply(lmsRatios).Multiply(adaptationMatrix);
     }
 }

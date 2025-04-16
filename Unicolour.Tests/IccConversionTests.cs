@@ -59,7 +59,7 @@ public class IccConversionTests
         if (pcs == Signatures.Lab)
         {
             var xyz = new Xyz(actual[0], actual[1], actual[2]);
-            actual = Lab.FromXyz(xyz, Transform.XyzD50).Triplet.ToArray();
+            actual = Lab.FromXyz(xyz, Transform.XyzD50).ToArray();
         }
         
         var tolerance = pcs switch
@@ -73,7 +73,6 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(ToDeviceTestData))]
-
     public void PcsToDevice(IccTestColour testColour)
     {
         var expected = testColour.Output;
@@ -86,7 +85,7 @@ public class IccConversionTests
             ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50)
             : new Xyz(first, second, third);
         
-        var actual = testColour.Profile.Transform.FromXyz(xyz.Triplet.ToArray(), intent);
+        var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
         var tolerance = device switch
         {
             Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.000002 : 0.00000125,
@@ -111,49 +110,49 @@ public class IccConversionTests
         var expected = Enumerable.Range(0, 15).Select(_ => double.NaN).ToArray();
         
         var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "no reverse transform");
-        var config = new Configuration(iccConfiguration: iccConfig);
-        var unicolour = new Unicolour(config, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var config = new Configuration(iccConfig: iccConfig);
+        var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
-        Assert.That(unicolour.Icc.Values, Is.EqualTo(expected));
-        Assert.That(unicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
-        Assert.That(unicolour.Icc.Error!.Contains("transform is not defined"));
+        Assert.That(colour.Icc.Values, Is.EqualTo(expected));
+        Assert.That(colour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
+        Assert.That(colour.Icc.Error!.Contains("transform is not defined"));
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceToUnicolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceTocolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
         // device channels values are used to create D65 unicolour
         var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent);
-        var unicolourD65 = new Unicolour(iccD65Config, new Channels(deviceValues));
+        var colourD65 = new Unicolour(iccD65Config, new Channels(deviceValues));
         
         // unicolour converted to the ICC D50 white point
         var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
-        var unicolourD50 = unicolourD65.ConvertToConfiguration(iccD50Config);
+        var colourD50 = colourD65.ConvertToConfiguration(iccD50Config);
         
         // the XYZ values should be the same as calling the core ICC profile function
         var expectedXyzD50 = profile.Transform.ToXyz(deviceValues, intent);
-        Assert.That(unicolourD50.Xyz.Triplet.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
+        Assert.That(colourD50.Xyz.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void UnicolourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void colourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
         
         // XYZ values are used to create D50 unicolour
         var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent);
-        var unicolourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
+        var colourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // unicolour converted to the ICC D65 white point
         var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent);
-        var unicolourD65 = unicolourD50.ConvertToConfiguration(iccD65Config);
+        var colourD65 = colourD50.ConvertToConfiguration(iccD65Config);
         
         // the device channel values should be the same as calling the core ICC profile function
         var expectedDevice = profile.Transform.FromXyz(xyzValues, intent);
-        Assert.That(unicolourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
+        Assert.That(colourD65.Icc.Values, Is.EqualTo(expectedDevice).Within(1e-15));
     }
 
     private static void AddTestData(IccFile iccFile)
@@ -163,7 +162,7 @@ public class IccConversionTests
         var toPcsTestData = new List<TestCaseData>();
         var toDeviceTestData = new List<TestCaseData>();
 
-        foreach (var intent in intents)
+        foreach (var intent in Intents)
         {
             toPcsTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent));
             toDeviceTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent));
@@ -218,7 +217,7 @@ public class IccConversionTests
         var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
         foreach (var iccFile in iccFiles)
         {
-            foreach (var intent in intents)
+            foreach (var intent in Intents)
             {
                 var deviceChannels = IccFile.GetDeviceChannels(iccFile);
                 for (var channel = 0; channel < deviceChannels; channel++)
@@ -240,7 +239,7 @@ public class IccConversionTests
         var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
         foreach (var iccFile in iccFiles)
         {
-            foreach (var intent in intents)
+            foreach (var intent in Intents)
             {
                 for (var channel = 0; channel < 3; channel++)
                 {
@@ -258,10 +257,10 @@ public class IccConversionTests
     private static Configuration GetConfig(XyzConfiguration xyzConfig, IccFile iccFile, Intent intent)
     {
         var iccConfig = new IccConfiguration(iccFile.GetProfile(), intent);
-        return new Configuration(xyzConfiguration: xyzConfig, iccConfiguration: iccConfig);
+        return new Configuration(xyzConfig: xyzConfig, iccConfig: iccConfig);
     }
     
-    private static readonly Intent[] intents =
+    private static readonly Intent[] Intents =
     [
         Intent.Perceptual,
         Intent.RelativeColorimetric,

@@ -9,16 +9,16 @@ public class Tags : List<Tag>
     internal Lazy<Luts?> BToA1 { get; }
     internal Lazy<Luts?> BToA2 { get; }
 
-    internal Lazy<(double x, double y, double z)> RedMatrixColumn { get; }
-    internal Lazy<(double x, double y, double z)> GreenMatrixColumn { get; }
-    internal Lazy<(double x, double y, double z)> BlueMatrixColumn { get; }
+    internal Lazy<XyzType?> RedMatrixColumn { get; }
+    internal Lazy<XyzType?> GreenMatrixColumn { get; }
+    internal Lazy<XyzType?> BlueMatrixColumn { get; }
     internal Lazy<Curve?> RedTrc { get; }
     internal Lazy<Curve?> GreenTrc { get; }
     internal Lazy<Curve?> BlueTrc { get; }
     
     internal Lazy<Curve?> GreyTrc { get; }
     
-    internal Lazy<(double x, double y, double z)> MediaWhite { get; }
+    internal Lazy<XyzType?> MediaWhite { get; }
     
     private Tags()
     {
@@ -29,16 +29,16 @@ public class Tags : List<Tag>
         BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
         BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
         
-        RedMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType));
-        GreenMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
-        BlueMatrixColumn = new Lazy<(double x, double y, double z)>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));
+        RedMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType ));
+        GreenMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
+        BlueMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));
         RedTrc = new Lazy<Curve?>(() => Read(Signatures.RedTrc, Curve.FromStream));
         GreenTrc = new Lazy<Curve?>(() => Read(Signatures.GreenTrc, Curve.FromStream));
         BlueTrc = new Lazy<Curve?>(() => Read(Signatures.BlueTrc, Curve.FromStream));
         
         GreyTrc = new Lazy<Curve?>(() => Read(Signatures.GreyTrc, Curve.FromStream));
         
-        MediaWhite = new Lazy<(double x, double y, double z)>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
+        MediaWhite = new Lazy<XyzType?>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
     }
 
     internal bool Has(string signature) => this.Any(x => x.Signature == signature);

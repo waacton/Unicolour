@@ -6,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetNordTests
 {
-    private static readonly Unicolour[] nord = Nord.All.ToArray();
+    private static readonly Unicolour[] AllNord = Nord.All.ToArray();
     
     [TestCase(0, "#2e3440")]
     [TestCase(1, "#3b4252")]
@@ -26,7 +26,7 @@ public class DatasetNordTests
     [TestCase(15, "#b48ead")]
     public void ByIndex(int index, string expected)
     {
-        var colour = nord[index];
+        var colour = AllNord[index];
         Assert.That(colour.Hex.ToLower(), Is.EqualTo(expected.ToLower()));
     }
     

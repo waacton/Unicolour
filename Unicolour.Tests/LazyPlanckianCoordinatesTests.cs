@@ -33,10 +33,10 @@ public class LazyPlanckianCoordinatesTests
     {
         // new instance of XyzConfiguration will create a new instance of Planckian, so other tests do not affect this one
         var xyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
-        var config = new Configuration(xyzConfiguration: xyzConfig);
+        var config = new Configuration(xyzConfig: xyzConfig);
         
         var white = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
-        var planckian = white.Config.Xyz.Planckian;
+        var planckian = white.Configuration.Xyz.Planckian;
         Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
@@ -47,7 +47,7 @@ public class LazyPlanckianCoordinatesTests
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
-        Assert.That(black.Config.Xyz.Planckian, Is.EqualTo(planckian));
+        Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
     }
     
     [Test]
@@ -55,10 +55,10 @@ public class LazyPlanckianCoordinatesTests
     {
         // new instance of XyzConfiguration will create a new instance of Planckian, so other tests do not affect this one
         var xyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
-        var config = new Configuration(xyzConfiguration: xyzConfig);
+        var config = new Configuration(xyzConfig: xyzConfig);
         
         var red = new Unicolour(config, ColourSpace.Rgb, 1, 0, 0);
-        var planckian = red.Config.Xyz.Planckian;
+        var planckian = red.Configuration.Xyz.Planckian;
         Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
@@ -69,7 +69,7 @@ public class LazyPlanckianCoordinatesTests
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
-        Assert.That(black.Config.Xyz.Planckian, Is.EqualTo(planckian));
+        Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
     }
     
     [Test]
@@ -77,10 +77,10 @@ public class LazyPlanckianCoordinatesTests
     {
         // new instance of XyzConfiguration will create a new instance of Planckian, so other tests do not affect this one
         var xyzConfig = new XyzConfiguration(Illuminant.D65, Observer.Degree2);
-        var config = new Configuration(xyzConfiguration: xyzConfig);
+        var config = new Configuration(xyzConfig: xyzConfig);
         
         var blue = new Unicolour(config, ColourSpace.Rgb, 0, 0, 1);
-        var planckian = blue.Config.Xyz.Planckian;
+        var planckian = blue.Configuration.Xyz.Planckian;
         Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
@@ -91,7 +91,7 @@ public class LazyPlanckianCoordinatesTests
         Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.True);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
-        Assert.That(black.Config.Xyz.Planckian, Is.EqualTo(planckian));
+        Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
     }
 }
 

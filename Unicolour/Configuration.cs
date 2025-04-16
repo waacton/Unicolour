@@ -8,28 +8,25 @@ public class Configuration
     public XyzConfiguration Xyz { get; }
     public YbrConfiguration Ybr { get; }
     public CamConfiguration Cam { get; }
+    public DynamicRange DynamicRange { get; }
     public IccConfiguration Icc { get; }
-    public double IctcpScalar { get; }
-    public double JzazbzScalar { get; }
     
     public static readonly Configuration Default = new();
 
     public Configuration(
-        RgbConfiguration? rgbConfiguration = null, 
-        XyzConfiguration? xyzConfiguration = null, 
-        YbrConfiguration? ybrConfiguration = null,
-        CamConfiguration? camConfiguration = null,
-        IccConfiguration? iccConfiguration = null,
-        double ictcpScalar = 100, 
-        double jzazbzScalar = 100)
+        RgbConfiguration? rgbConfig = null, 
+        XyzConfiguration? xyzConfig = null, 
+        YbrConfiguration? ybrConfig = null,
+        CamConfiguration? camConfig = null,
+        DynamicRange? dynamicRange = null,
+        IccConfiguration? iccConfig = null)
     {
-        Rgb = rgbConfiguration ?? RgbConfiguration.StandardRgb;
-        Xyz = xyzConfiguration ?? XyzConfiguration.D65;
-        Ybr = ybrConfiguration ?? YbrConfiguration.Rec601;
-        Cam = camConfiguration ?? CamConfiguration.StandardRgb;
-        Icc = iccConfiguration ?? IccConfiguration.None;
-        IctcpScalar = ictcpScalar;
-        JzazbzScalar = jzazbzScalar;
+        Rgb = rgbConfig ?? RgbConfiguration.StandardRgb;
+        Xyz = xyzConfig ?? XyzConfiguration.D65;
+        Ybr = ybrConfig ?? YbrConfiguration.Rec601;
+        Cam = camConfig ?? CamConfiguration.StandardRgb;
+        DynamicRange = dynamicRange ?? DynamicRange.High; // TODO: regenerate web & unity assets for new default value (203 instead of 100) + Oklrab & Oklrch
+        Icc = iccConfig ?? IccConfiguration.None;
     }
     
     public override string ToString() => $"RGB:[{Rgb.Name}] · XYZ:[{Xyz.Name}] · YBR:[{Ybr.Name}] · CAM:[{Cam.Name}] · ICC:[{Icc.Name}] · Id:[{Id}]";

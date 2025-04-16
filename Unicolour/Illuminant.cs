@@ -13,8 +13,20 @@ public class Illuminant
     public static readonly Illuminant F7 = new(Spd.F7, $"Illuminant {nameof(F7)}");
     public static readonly Illuminant F11 = new(Spd.F11, $"Illuminant {nameof(F11)}");
     
-    // as far as I'm aware, these are the latest ASTM standards
-    // and the 2 degree observers are an exact match with calculations on the calculator at http://www.brucelindbloom.com/
+    /*
+     * as far as I'm aware, this is ASTM standard practice https://doi.org/10.1520/E0308-18 (Tables 5, 10 nm)
+     * and the 2 degree observers are an exact match with calculations on the calculator at http://www.brucelindbloom.com/
+     * ----------
+     * ⚠️ NOTE: some other colour libraries have chosen the four-digit chromaticity values to represent white points, i.e. D65 = 0.3127, 0.3290
+     * since no one can agree on white points (see also https://ninedegreesbelow.com/photography/well-behaved-profiles-quest.html#white-point-values)
+     * so if there was a desire to align even more closely with other libraries, instead of ASTM standards
+     * would need to be make these non-static and configurable: { (D65, Observer.Degree2), new Chromaticity(0.3127, 0.3290).ToWhitePoint() }
+     * ----------
+     * more likely: users can just create custom XYZ and RGB configs using desired chromaticity-based white point
+     * might want to consider allowing configuration of D65 illuminant used by other spaces (e.g. Ictcp, Jzazbz, Oklab, Hct)
+     * which cannot currently be overriden (because they must be D65!)
+     * but the impact is minimal, with no agreed correct answer, so unlikely to happen
+     */
     private static readonly Dictionary<(Illuminant, Observer), WhitePoint> WhitePoints = new()
     {
         { (A, Observer.Degree2), new(109.850, 100.000, 35.585) },
@@ -42,10 +54,10 @@ public class Illuminant
     
     public string Name { get; }
 
-    private readonly Spd spd = new();
+    internal Spd? Spd { get; }
     public Illuminant(Spd spd, string name = Utils.Unnamed)
     {
-        this.spd = spd;
+        Spd = spd;
         Name = name;
     }
     
@@ -70,7 +82,7 @@ public class Illuminant
         }
         
         // if either illuminant or observer is not predefined, white point needs to be calculated
-        var xyz = Xyz.FromSpd(spd, observer);
+        var xyz = Xyz.FromSpd(Spd!, observer);
         return WhitePoint.FromXyz(xyz);
     }
     

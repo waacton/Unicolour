@@ -14,56 +14,14 @@ internal static class TestUtils
     internal static int RandomInt(int max) => Random.Next(max);
     
     internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
-    internal static readonly List<TestCaseData> AllColourSpacesTestCases =
-    [
-        new TestCaseData(ColourSpace.Rgb),
-        new TestCaseData(ColourSpace.RgbLinear),
-        new TestCaseData(ColourSpace.Hsb),
-        new TestCaseData(ColourSpace.Hsl),
-        new TestCaseData(ColourSpace.Hwb),
-        new TestCaseData(ColourSpace.Hsi),
-        new TestCaseData(ColourSpace.Xyz),
-        new TestCaseData(ColourSpace.Xyy),
-        new TestCaseData(ColourSpace.Lab),
-        new TestCaseData(ColourSpace.Lchab),
-        new TestCaseData(ColourSpace.Luv),
-        new TestCaseData(ColourSpace.Lchuv),
-        new TestCaseData(ColourSpace.Hsluv),
-        new TestCaseData(ColourSpace.Hpluv),
-        new TestCaseData(ColourSpace.Ypbpr),
-        new TestCaseData(ColourSpace.Ycbcr),
-        new TestCaseData(ColourSpace.Ycgco),
-        new TestCaseData(ColourSpace.Yuv),
-        new TestCaseData(ColourSpace.Yiq),
-        new TestCaseData(ColourSpace.Ydbdr),
-        new TestCaseData(ColourSpace.Tsl),
-        new TestCaseData(ColourSpace.Xyb),
-        new TestCaseData(ColourSpace.Ipt),
-        new TestCaseData(ColourSpace.Ictcp),
-        new TestCaseData(ColourSpace.Jzazbz),
-        new TestCaseData(ColourSpace.Jzczhz),
-        new TestCaseData(ColourSpace.Oklab),
-        new TestCaseData(ColourSpace.Oklch),
-        new TestCaseData(ColourSpace.Okhsl),
-        new TestCaseData(ColourSpace.Okhsv),
-        new TestCaseData(ColourSpace.Okhwb),
-        new TestCaseData(ColourSpace.Cam02),
-        new TestCaseData(ColourSpace.Cam16),
-        new TestCaseData(ColourSpace.Hct)
-    ];
     
-    internal static readonly List<TestCaseData> AllIlluminantsTestCases =
+    internal static readonly List<Illuminant> AllIlluminants =
     [
-        new TestCaseData(Illuminant.A),
-        new TestCaseData(Illuminant.C),
-        new TestCaseData(Illuminant.D50),
-        new TestCaseData(Illuminant.D55),
-        new TestCaseData(Illuminant.D65),
-        new TestCaseData(Illuminant.D75),
-        new TestCaseData(Illuminant.E),
-        new TestCaseData(Illuminant.F2),
-        new TestCaseData(Illuminant.F7),
-        new TestCaseData(Illuminant.F11)
+        Illuminant.A,
+        Illuminant.C,
+        Illuminant.D50, Illuminant.D55, Illuminant.D65, Illuminant.D75,
+        Illuminant.E,
+        Illuminant.F2, Illuminant.F7, Illuminant.F11
     ];
 
     internal static readonly Dictionary<string, Illuminant> Illuminants = new()
@@ -90,6 +48,8 @@ internal static class TestUtils
     [
         RgbConfiguration.DisplayP3,
         RgbConfiguration.Rec2020,
+        RgbConfiguration.Rec2100Pq,
+        RgbConfiguration.Rec2100Hlg,
         RgbConfiguration.A98,
         RgbConfiguration.ProPhoto,
         RgbConfiguration.XvYcc,
@@ -119,7 +79,11 @@ internal static class TestUtils
     ];
 
     private static readonly IccConfiguration IccFogra39 = new(IccFile.Fogra39.GetProfile(), Intent.RelativeColorimetric, "Fogra39 relative");
-    internal static readonly Configuration DefaultFogra39Config = new(iccConfiguration: IccFogra39);
+    internal static readonly Configuration DefaultFogra39Config = new(iccConfig: IccFogra39);
+
+    internal static readonly Configuration D65Config = new(xyzConfig: XyzConfiguration.D65); // same as Configuration.Default
+    internal static readonly Configuration D50Config = new(xyzConfig: XyzConfiguration.D50);
+    internal static readonly Configuration EqualEnergyConfig = new(xyzConfig: new(Illuminant.E, Observer.Degree2));
     
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
@@ -140,10 +104,10 @@ internal static class TestUtils
         AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
-    internal static void AssertTriplet<T>(Unicolour unicolour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
         var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
-        var colourRepresentation = unicolour.GetRepresentation(colourSpace);
+        var colourRepresentation = colour.GetRepresentation(colourSpace);
         AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
     }
 
@@ -175,62 +139,62 @@ internal static class TestUtils
         Assert.That(alpha, Is.EqualTo(expected.alpha).Within(MixTolerance), "Alpha");
     }
     
-    internal static void AssertNoPropertyError(Unicolour unicolour)
+    internal static void AssertNoPropertyError(Unicolour colour)
     {
         Assert.DoesNotThrow(AccessProperties);
         return;
 
         void AccessProperties()
         {
-            AccessProperty(() => unicolour.Alpha);
-            AccessProperty(() => unicolour.Cam02);
-            AccessProperty(() => unicolour.Cam16);
-            AccessProperty(() => unicolour.Chromaticity);
-            AccessProperty(() => unicolour.Config);
-            AccessProperty(() => unicolour.Description);
-            AccessProperty(() => unicolour.DominantWavelength);
-            AccessProperty(() => unicolour.ExcitationPurity);
-            AccessProperty(() => unicolour.Hct);
-            AccessProperty(() => unicolour.Hex);
-            AccessProperty(() => unicolour.Hpluv);
-            AccessProperty(() => unicolour.Hsb);
-            AccessProperty(() => unicolour.Hsi);
-            AccessProperty(() => unicolour.Hsl);
-            AccessProperty(() => unicolour.Hsluv);
-            AccessProperty(() => unicolour.Hwb);
-            AccessProperty(() => unicolour.Icc);
-            AccessProperty(() => unicolour.Ictcp);
-            AccessProperty(() => unicolour.Ipt);
-            AccessProperty(() => unicolour.IsImaginary);
-            AccessProperty(() => unicolour.IsInDisplayGamut);
-            AccessProperty(() => unicolour.Jzazbz);
-            AccessProperty(() => unicolour.Jzczhz);
-            AccessProperty(() => unicolour.Lab);
-            AccessProperty(() => unicolour.Lchab);
-            AccessProperty(() => unicolour.Lchuv);
-            AccessProperty(() => unicolour.Luv);
-            AccessProperty(() => unicolour.Oklab);
-            AccessProperty(() => unicolour.Oklch);
-            AccessProperty(() => unicolour.Okhsl);
-            AccessProperty(() => unicolour.Okhsv);
-            AccessProperty(() => unicolour.Okhwb);
-            AccessProperty(() => unicolour.RelativeLuminance);
-            AccessProperty(() => unicolour.Rgb);
-            AccessProperty(() => unicolour.Rgb.Byte255);
-            AccessProperty(() => unicolour.RgbLinear);
-            AccessProperty(() => unicolour.Temperature);
-            AccessProperty(() => unicolour.Tsl);
-            AccessProperty(() => unicolour.Wxy);
-            AccessProperty(() => unicolour.Xyb);
-            AccessProperty(() => unicolour.Xyy);
-            AccessProperty(() => unicolour.Xyz);
-            AccessProperty(() => unicolour.Ypbpr);
-            AccessProperty(() => unicolour.Ycbcr);
-            AccessProperty(() => unicolour.Ycgco);
-            AccessProperty(() => unicolour.Yuv);
-            AccessProperty(() => unicolour.Yiq);
-            AccessProperty(() => unicolour.Ydbdr);
-            AccessProperty(unicolour.ToString);
+            AccessProperty(() => colour.Alpha);
+            AccessProperty(() => colour.Cam02);
+            AccessProperty(() => colour.Cam16);
+            AccessProperty(() => colour.Chromaticity);
+            AccessProperty(() => colour.Configuration);
+            AccessProperty(() => colour.Description);
+            AccessProperty(() => colour.DominantWavelength);
+            AccessProperty(() => colour.ExcitationPurity);
+            AccessProperty(() => colour.Hct);
+            AccessProperty(() => colour.Hex);
+            AccessProperty(() => colour.Hpluv);
+            AccessProperty(() => colour.Hsb);
+            AccessProperty(() => colour.Hsi);
+            AccessProperty(() => colour.Hsl);
+            AccessProperty(() => colour.Hsluv);
+            AccessProperty(() => colour.Hwb);
+            AccessProperty(() => colour.Icc);
+            AccessProperty(() => colour.Ictcp);
+            AccessProperty(() => colour.Ipt);
+            AccessProperty(() => colour.IsImaginary);
+            AccessProperty(() => colour.IsInRgbGamut);
+            AccessProperty(() => colour.Jzazbz);
+            AccessProperty(() => colour.Jzczhz);
+            AccessProperty(() => colour.Lab);
+            AccessProperty(() => colour.Lchab);
+            AccessProperty(() => colour.Lchuv);
+            AccessProperty(() => colour.Luv);
+            AccessProperty(() => colour.Oklab);
+            AccessProperty(() => colour.Oklch);
+            AccessProperty(() => colour.Okhsl);
+            AccessProperty(() => colour.Okhsv);
+            AccessProperty(() => colour.Okhwb);
+            AccessProperty(() => colour.RelativeLuminance);
+            AccessProperty(() => colour.Rgb);
+            AccessProperty(() => colour.Rgb.Byte255);
+            AccessProperty(() => colour.RgbLinear);
+            AccessProperty(() => colour.Temperature);
+            AccessProperty(() => colour.Tsl);
+            AccessProperty(() => colour.Wxy);
+            AccessProperty(() => colour.Xyb);
+            AccessProperty(() => colour.Xyy);
+            AccessProperty(() => colour.Xyz);
+            AccessProperty(() => colour.Ypbpr);
+            AccessProperty(() => colour.Ycbcr);
+            AccessProperty(() => colour.Ycgco);
+            AccessProperty(() => colour.Yuv);
+            AccessProperty(() => colour.Yiq);
+            AccessProperty(() => colour.Ydbdr);
+            AccessProperty(colour.ToString);
         }
         
         void AccessProperty(Func<object> getProperty)
@@ -302,6 +266,8 @@ internal static class TestUtils
         { typeof(Okhsv), ColourSpace.Okhsv },
         { typeof(Okhsl), ColourSpace.Okhsl },
         { typeof(Okhwb), ColourSpace.Okhwb },
+        { typeof(Oklrab), ColourSpace.Oklrab },
+        { typeof(Oklrch), ColourSpace.Oklrch },
         { typeof(Cam02), ColourSpace.Cam02 },
         { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Hct), ColourSpace.Hct }

@@ -31,7 +31,7 @@ public record Hsi : ColourRepresentation
     internal static Hsi FromRgb(Rgb rgb)
     {
         // avoid constrained values because HSI can easily be out of RGB gamut
-        var (r, g, b) = rgb.Triplet;
+        var (r, g, b) = rgb;
         var components = new[] { r, g, b };
         var xMin = components.Min();
 
@@ -44,7 +44,7 @@ public record Hsi : ColourRepresentation
     internal static Rgb ToRgb(Hsi hsi)
     {
         // avoid constrained values because HSI can easily be out of RGB gamut
-        var (_, s, i) = hsi.Triplet;
+        var (_, s, i) = hsi;
         var h = hsi.ConstrainedH;
         var hPrime = h / 60;
         var z = 1 - Math.Abs(hPrime % 2 - 1);

@@ -36,25 +36,23 @@ public class Profile
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
         var xyzD50 = Transform.ToXyz(deviceValues, intent);
-        var xyzD50Matrix = new Matrix(new[,] { { xyzD50[0] }, { xyzD50[1] }, { xyzD50[2] } });
-        var (x, y, z) = Adaptation.WhitePoint(xyzD50Matrix, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint).ToTriplet().Tuple;
-        return new Xyz(x, y, z);
+        var xyz = new Xyz(xyzD50[0], xyzD50[1], xyzD50[2]);
+        return Adaptation.WhitePoint(xyz, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
     }
     
     internal double[] FromXyz(Xyz xyz, XyzConfiguration xyzConfig, Intent intent)
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
-        var xyzMatrix = Matrix.FromTriplet(xyz.Triplet);
-        var xyzD50 = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint).ToTriplet().ToArray();
+        var xyzD50 = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint, xyzConfig.AdaptationMatrix).ToArray();
         return Transform.FromXyz(xyzD50, intent);
     }
     
-    private static readonly int[] indexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+    private static readonly int[] IndexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
     public byte[] CalculateProfileId()
     {
         var bytes = File.ReadAllBytes(FileInfo.FullName);
-        foreach (var index in indexesToZeroForHash)
+        foreach (var index in IndexesToZeroForHash)
         {
             bytes[index] = 0;
         }

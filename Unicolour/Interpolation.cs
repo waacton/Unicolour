@@ -38,6 +38,21 @@ internal static class Interpolation
         return new Unicolour(config, heritage, colourSpace, first, second, third, alpha);
     }
     
+    internal static IEnumerable<Unicolour> Palette(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, int count, HueSpan hueSpan, bool premultiplyAlpha)
+    {
+        count = Math.Max(count, 0);
+        var (start, end, _) = AdjustConfiguration(startColour, endColour); // saves doing this N times via Mix() if configs are different
+        
+        var palette = new List<Unicolour>();
+        for (var i = 0; i < count; i++)
+        {
+            var distance = count == 1 ? 0.5 : i / (double)(count - 1);
+            palette.Add(Mix(start, end, colourSpace, distance, hueSpan, premultiplyAlpha));
+        }
+
+        return palette;
+    }
+    
     // TODO: explore if this is worthwhile
     // internal static Unicolour MixChannels(Unicolour startColour, Unicolour endColour, double distance, bool premultiplyAlpha)
     // {
@@ -52,8 +67,10 @@ internal static class Interpolation
     
     private static (Unicolour start, Unicolour end, Configuration config) AdjustConfiguration(Unicolour start, Unicolour end)
     {
-        var config = start.Config;
-        return end.Config == config ? (start, end, config) : (start, end.ConvertToConfiguration(config), config);
+        var config = start.Configuration;
+        return end.Configuration == config 
+            ? (start, end, config) 
+            : (start, end.ConvertToConfiguration(config), config);
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(

@@ -34,7 +34,7 @@ public record Ypbpr : ColourRepresentation
         var kb = ybrConfig.Kb;
         var kg = ybrConfig.Kg;
         
-        var (r, g, b) = rgb.Triplet;
+        var (r, g, b) = rgb;
         var y = kr * r + kg * g + kb * b;
         var pb = 0.5 * ((b - y) / (1 - kb));
         var pr = 0.5 * ((r - y) / (1 - kr));
@@ -47,7 +47,7 @@ public record Ypbpr : ColourRepresentation
         var kb = ybrConfig.Kb;
         var kg = ybrConfig.Kg;
         
-        var (y, pb, pr) = ypbpr.Triplet;
+        var (y, pb, pr) = ypbpr;
         var r = pr * ((1 - kr) / 0.5) + y;
         var b = pb * ((1 - kb) / 0.5) + y;
         var g = (y - kr * r - kb * b) / kg;

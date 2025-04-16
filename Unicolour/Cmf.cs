@@ -6,7 +6,7 @@ public class Cmf : Dictionary<int, (double x, double y, double z)>
     internal const int StartWavelength = 360;
     internal const int EndWavelength = 830;
     private const int WavelengthCount = EndWavelength - StartWavelength + 1;
-    public static readonly List<int> RequiredWavelengths = Enumerable.Range(StartWavelength, WavelengthCount).ToList();
+    public static readonly int[] RequiredWavelengths = Enumerable.Range(StartWavelength, WavelengthCount).ToArray();
 
     public bool IsValid => GetIsValid();
     

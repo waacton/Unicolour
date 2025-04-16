@@ -5,7 +5,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownOklchTests
 {
-    private const double Tolerance = 0.0005;
+    private const double Tolerance = 0.00005;
     
     [Test]
     public void Red()

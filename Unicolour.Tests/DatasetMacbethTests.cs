@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Datasets;
@@ -9,10 +8,10 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetMacbethTests
 {
-    private static readonly Configuration ConfigIlluminantC = new(xyzConfiguration: new XyzConfiguration(Illuminant.C, Observer.Degree2));
+    private static readonly Configuration ConfigIlluminantC = new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2));
     
     // https://poynton.ca/notes/color/GretagMacbeth-ColorChecker.html
-    private static readonly List<TestCaseData> XyyTestData =
+    private static readonly TestCaseData[] XyyTestData =
     [
         new TestCaseData(DarkSkin, 0.400, 0.350, 10.1).SetName("Dark skin"),
         new TestCaseData(LightSkin, 0.377, 0.345, 35.8).SetName("Light skin"),
@@ -41,11 +40,11 @@ public class DatasetMacbethTests
     ];
     
     [TestCaseSource(nameof(XyyTestData))]
-    public void Xyy(Unicolour unicolour, double expectedX, double expectedY, double expectedLuminance)
+    public void Xyy(Unicolour colour, double expectedX, double expectedY, double expectedLuminance)
     {
-        var unicolourIlluminantC = unicolour.ConvertToConfiguration(ConfigIlluminantC);
+        var colourIlluminantC = colour.ConvertToConfiguration(ConfigIlluminantC);
         var expectedXyy = new Xyy(expectedX, expectedY, expectedLuminance / 100.0);
-        TestUtils.AssertTriplet<Xyy>(unicolourIlluminantC, expectedXyy.Triplet, 0.02);
+        TestUtils.AssertTriplet<Xyy>(colourIlluminantC, expectedXyy.Triplet, 0.02);
     }
     
     [Test]

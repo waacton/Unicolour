@@ -409,6 +409,30 @@ public class GreyscaleTests
     [TestCase(180.0, 0.5, 0.49999999999, false)]
     public void Okhwb(double h, double w, double b, bool expected) => AssertUnicolour(new(ColourSpace.Okhwb, h, w, b), expected);
     
+    [TestCase(0.5, 0.0, 0.0, true)]
+    [TestCase(0.5, 0.00000000001, 0.0, false)]
+    [TestCase(0.5, -0.00000000001, 0.0, false)]
+    [TestCase(0.5, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.0, -0.00000000001, false)]
+    [TestCase(0.0, 0.00000000001, -0.00000000001, true)]
+    [TestCase(-0.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.00000000001, 0.1, -0.1, false)]
+    [TestCase(1.0, 0.1, -0.1, true)]
+    [TestCase(1.00000000001, 0.1, -0.1, true)]
+    [TestCase(0.99999999999, 0.1, -0.1, false)]
+    public void Oklrab(double l, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Oklrab, l, a, b), expected);
+
+    [TestCase(0.5, 0.0, 180.0, true)]
+    [TestCase(0.5, -0.00000000001, 180.0, true)]
+    [TestCase(0.5, 0.00000000001, 180.0, false)]
+    [TestCase(0.0, 0.25, 180.0, true)]
+    [TestCase(-0.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.00000000001, 0.25, 180.0, false)]
+    [TestCase(1.0, 0.25, 180.0, true)]
+    [TestCase(1.00000000001, 0.25, 180.0, true)]
+    [TestCase(0.99999999999, 0.25, 180.0, false)]
+    public void Oklrch(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Oklrch, l, c, h), expected);
+    
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]
@@ -434,37 +458,37 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 99.99999999999, false)]
     public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(new(ColourSpace.Hct, h, c, t), expected);
 
-    private static void AssertUnicolour(Unicolour unicolour, bool shouldBeGreyscale)
+    private static void AssertUnicolour(Unicolour colour, bool shouldBeGreyscale)
     {
-        var data = new ColourHeritageData(unicolour);
-        var initialRepresentation = unicolour.InitialRepresentation;
-        var initialColourSpace = unicolour.InitialColourSpace;
-        AssertInitialRepresentation(initialRepresentation, shouldBeGreyscale);
+        var data = new ColourHeritageData(colour);
+        var sourceRepresentation = colour.SourceRepresentation;
+        var sourceColourSpace = colour.SourceColourSpace;
+        AssertSourceRepresentation(sourceRepresentation, shouldBeGreyscale);
 
-        if (!initialRepresentation.IsGreyscale)
+        if (!sourceRepresentation.IsGreyscale)
         {
             // if initial representation is non-greyscale
             // some downstream representations should have no greyscale or NaN heritage
             // though it's still possible for them to actually result in greyscale or NaN, especially with outlier values e.g. negatives
-            var spaces = TestUtils.AllColourSpaces.Except(new[] { initialColourSpace }).ToList();
+            var spaces = TestUtils.AllColourSpaces.Except([sourceColourSpace]).ToList();
             Assert.That(data.Heritages(spaces), Has.Some.EqualTo(ColourHeritage.None).Or.EqualTo(ColourHeritage.Hued));
         }
         else
         {
-            var initialSpaceCanProduceNaN = NaNProducingSpaces.Contains(initialColourSpace);
+            var initialSpaceCanProduceNaN = NaNProducingSpaces.Contains(sourceColourSpace);
             if (initialSpaceCanProduceNaN)
             {
-                AssertDownstreamFromInitialMaybeNaN(initialColourSpace, data);
+                AssertDownstreamFromInitialMaybeNaN(sourceColourSpace, data);
             }
             else
             {
-                AssertDownstreamNotNaN(initialColourSpace, data);
+                AssertDownstreamNotNaN(sourceColourSpace, data);
                 AssertDownstreamMaybeNaN(data);
             }
         }
     }
     
-    private static void AssertInitialRepresentation(ColourRepresentation initial, bool shouldBeGreyscale)
+    private static void AssertSourceRepresentation(ColourRepresentation initial, bool shouldBeGreyscale)
     {
         Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
         Assert.That(initial.IsGreyscale, Is.EqualTo(shouldBeGreyscale));
@@ -473,9 +497,9 @@ public class GreyscaleTests
         Assert.That(initial.UseAsNaN, Is.False);
     }
 
-    private static void AssertDownstreamNotNaN(ColourSpace initialColourSpace, ColourHeritageData data)
+    private static void AssertDownstreamNotNaN(ColourSpace sourceColourSpace, ColourHeritageData data)
     {
-        var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
+        var excludedSpaces = NaNProducingSpaces.Concat([sourceColourSpace]);
         var spaces = TestUtils.AllColourSpaces.Except(excludedSpaces).ToList();
         
         // if initial representation is greyscale, downstream non-NaN-producing representations should all be greyscale too
@@ -497,9 +521,9 @@ public class GreyscaleTests
         Assert.That(data.UseAsHued(spaces), Has.All.False);
     }
 
-    private static void AssertDownstreamFromInitialMaybeNaN(ColourSpace initialColourSpace, ColourHeritageData data)
+    private static void AssertDownstreamFromInitialMaybeNaN(ColourSpace sourceColourSpace, ColourHeritageData data)
     {
-        var excludedSpaces = NaNProducingSpaces.Concat(new[] { initialColourSpace });
+        var excludedSpaces = NaNProducingSpaces.Concat([sourceColourSpace]);
         var spaces = TestUtils.AllColourSpaces.Except(excludedSpaces).ToList();
 
         // if initial representation is greyscale and NaN-producing, downstream representations should all be either greyscale or NaN

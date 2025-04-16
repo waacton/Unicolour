@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -40,12 +39,12 @@ public class ColourTripletTests
         Assert.That(array[2], Is.EqualTo(triplet.Third));
     }
     
-    private static readonly List<TestCaseData> GetHueTestData =
+    private static readonly TestCaseData[] GetHueTestData =
     [
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, null), null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 0), 7.7),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 1), null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 2), 9.9)
+        new(new ColourTriplet(7.7, 8.8, 9.9, null), null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 0), 7.7),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 1), null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 2), 9.9)
     ];
     
     [TestCaseSource(nameof(GetHueTestData))]
@@ -62,12 +61,12 @@ public class ColourTripletTests
         Assert.That(hue, Is.EqualTo(expectedHue));
     }
     
-    private static readonly List<TestCaseData> OverrideHueTestData =
+    private static readonly TestCaseData[] OverrideHueTestData =
     [
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, null), 6.6, null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 0), 6.6, new ColourTriplet(6.6, 8.8, 9.9, 0)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 1), 6.6, null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 2), 6.6, new ColourTriplet(7.7, 8.8, 6.6, 2))
+        new(new ColourTriplet(7.7, 8.8, 9.9, null), 6.6, null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 0), 6.6, new ColourTriplet(6.6, 8.8, 9.9, 0)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 1), 6.6, null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 2), 6.6, new ColourTriplet(7.7, 8.8, 6.6, 2))
     ];
     
     [TestCaseSource(nameof(OverrideHueTestData))]
@@ -85,16 +84,16 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(hueOverrideTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly List<TestCaseData> DegreeMapTestData =
+    private static readonly TestCaseData[] DegreeMapTestData =
     [
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, null), new Func<double, double>(x => x - 6.6), new ColourTriplet(7.7, 8.8, 9.9, null)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 0), new Func<double, double>(x => x - 6.6), new ColourTriplet(1.1, 8.8, 9.9, 0)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 1), new Func<double, double>(x => x - 6.6), null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 2), new Func<double, double>(x => x - 6.6), new ColourTriplet(7.7, 8.8, 3.3, 2)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, null), new Func<double, double>(x => x * 10), new ColourTriplet(7.7, 8.8, 9.9, null)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 0), new Func<double, double>(x => x * 10), new ColourTriplet(77.0, 8.8, 9.9, 0)),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 1), new Func<double, double>(x => x * 10), null),
-        new TestCaseData(new ColourTriplet(7.7, 8.8, 9.9, 2), new Func<double, double>(x => x * 10), new ColourTriplet(7.7, 8.8, 99.0, 2))
+        new(new ColourTriplet(7.7, 8.8, 9.9, null), new Func<double, double>(x => x - 6.6), new ColourTriplet(7.7, 8.8, 9.9, null)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 0), new Func<double, double>(x => x - 6.6), new ColourTriplet(1.1, 8.8, 9.9, 0)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 1), new Func<double, double>(x => x - 6.6), null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 2), new Func<double, double>(x => x - 6.6), new ColourTriplet(7.7, 8.8, 3.3, 2)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, null), new Func<double, double>(x => x * 10), new ColourTriplet(7.7, 8.8, 9.9, null)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 0), new Func<double, double>(x => x * 10), new ColourTriplet(77.0, 8.8, 9.9, 0)),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 1), new Func<double, double>(x => x * 10), null),
+        new(new ColourTriplet(7.7, 8.8, 9.9, 2), new Func<double, double>(x => x * 10), new ColourTriplet(7.7, 8.8, 99.0, 2))
     ];
     
     [TestCaseSource(nameof(DegreeMapTestData))]
@@ -111,12 +110,12 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(degreeMapTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly List<TestCaseData> ModuloHueTestData =
+    private static readonly TestCaseData[] ModuloHueTestData =
     [
-        new TestCaseData(new ColourTriplet(-270, 450, 810, null), new ColourTriplet(-270, 450, 810, null)),
-        new TestCaseData(new ColourTriplet(-270, 450, 810, 0), new ColourTriplet(90, 450, 810, 0)),
-        new TestCaseData(new ColourTriplet(-270, 450, 810, 1), null),
-        new TestCaseData(new ColourTriplet(-270, 450, 810, 2), new ColourTriplet(-270, 450, 90, 2))
+        new(new ColourTriplet(-270, 450, 810, null), new ColourTriplet(-270, 450, 810, null)),
+        new(new ColourTriplet(-270, 450, 810, 0), new ColourTriplet(90, 450, 810, 0)),
+        new(new ColourTriplet(-270, 450, 810, 1), null),
+        new(new ColourTriplet(-270, 450, 810, 2), new ColourTriplet(-270, 450, 90, 2))
     ];
     
     [TestCaseSource(nameof(ModuloHueTestData))]
@@ -133,7 +132,7 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly List<TestCaseData> ModuloHue360TestData =
+    private static readonly TestCaseData[] ModuloHue360TestData =
     [
         new TestCaseData(new ColourTriplet(360, 360, 360, null), false, new ColourTriplet(360, 360, 360, null)).SetName("Hue index null, 360 not allowed"),
         new TestCaseData(new ColourTriplet(360, 360, 360, null), true, new ColourTriplet(360, 360, 360, null)).SetName("Hue index null, 360 allowed"),
@@ -159,12 +158,12 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(hueModuloTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly List<TestCaseData> PremultipliedAlphaTestData =
+    private static readonly TestCaseData[] PremultipliedAlphaTestData =
     [
-        new TestCaseData(new ColourTriplet(2, 10, -8.8, null), 0.5, new ColourTriplet(1, 5, -4.4, null)),
-        new TestCaseData(new ColourTriplet(2, 10, -8.8, 0), 0.5, new ColourTriplet(2, 5, -4.4, 0)),
-        new TestCaseData(new ColourTriplet(2, 10, -8.8, 1), 0.5, null),
-        new TestCaseData(new ColourTriplet(2, 10, -8.8, 2), 0.5, new ColourTriplet(1, 5, -8.8, 2))
+        new(new ColourTriplet(2, 10, -8.8, null), 0.5, new ColourTriplet(1, 5, -4.4, null)),
+        new(new ColourTriplet(2, 10, -8.8, 0), 0.5, new ColourTriplet(2, 5, -4.4, 0)),
+        new(new ColourTriplet(2, 10, -8.8, 1), 0.5, null),
+        new(new ColourTriplet(2, 10, -8.8, 2), 0.5, new ColourTriplet(1, 5, -8.8, 2))
     ];
     
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]
@@ -181,20 +180,20 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(premultipliedAlphaTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly List<TestCaseData> UnpremultipliedAlphaTestData =
+    private static readonly TestCaseData[] UnpremultipliedAlphaTestData =
     [
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, null), 0.5, new ColourTriplet(2, 10, -8.8, null)),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 0), 0.5, new ColourTriplet(1, 10, -8.8, 0)),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 1), 0.5, null),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 2), 0.5, new ColourTriplet(2, 10, -4.4, 2))
+        new(new ColourTriplet(1, 5, -4.4, null), 0.5, new ColourTriplet(2, 10, -8.8, null)),
+        new(new ColourTriplet(1, 5, -4.4, 0), 0.5, new ColourTriplet(1, 10, -8.8, 0)),
+        new(new ColourTriplet(1, 5, -4.4, 1), 0.5, null),
+        new(new ColourTriplet(1, 5, -4.4, 2), 0.5, new ColourTriplet(2, 10, -4.4, 2))
     ];
     
-    private static readonly List<TestCaseData> UnpremultipliedZeroAlphaTestData =
+    private static readonly TestCaseData[] UnpremultipliedZeroAlphaTestData =
     [
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, null), 0.0, new ColourTriplet(1, 5, -4.4, null)),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 0), 0.0, new ColourTriplet(1, 5, -4.4, 0)),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 1), 0.0, null),
-        new TestCaseData(new ColourTriplet(1, 5, -4.4, 2), 0.0, new ColourTriplet(1, 5, -4.4, 2))
+        new(new ColourTriplet(1, 5, -4.4, null), 0.0, new ColourTriplet(1, 5, -4.4, null)),
+        new(new ColourTriplet(1, 5, -4.4, 0), 0.0, new ColourTriplet(1, 5, -4.4, 0)),
+        new(new ColourTriplet(1, 5, -4.4, 1), 0.0, null),
+        new(new ColourTriplet(1, 5, -4.4, 2), 0.0, new ColourTriplet(1, 5, -4.4, 2))
     ];
     
     [TestCaseSource(nameof(UnpremultipliedAlphaTestData))]

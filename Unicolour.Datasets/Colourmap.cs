@@ -36,6 +36,20 @@ public abstract class Colourmap
         };
     }
     
+    public IEnumerable<Unicolour> Palette(int count)
+    {
+        count = Math.Max(count, 0);
+        
+        var palette = new List<Unicolour>();
+        for (var i = 0; i < count; i++)
+        {
+            var x = count == 1 ? 0.5 : i / (double)(count - 1);
+            palette.Add(Map(x));
+        }
+
+        return palette;
+    }
+    
     protected static Unicolour InterpolateColourTable(Unicolour[] colourTable, double x)
     {
         var (lowerColour, upperColour, mixAmount) = Lut.Lookup(colourTable, x);

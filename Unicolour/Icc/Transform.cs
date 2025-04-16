@@ -10,7 +10,7 @@ internal abstract class Transform
     protected readonly Tags tags;
     private int ProfileVersion => header.ProfileVersion.Major;
     protected bool IsLabPcs => header.Pcs == Signatures.Lab;
-    private double[] MediaWhite => tags.MediaWhite.Value.ToArray();
+    private double[] MediaWhite => tags.MediaWhite.Value!.ToArray();
     
     // seems largely useless, value must be D50 when rounded to 4 decimals, i.e the same as RefWhite
     // but reference implementation uses this value specifically for absolute intent PCS adjustment
@@ -200,8 +200,8 @@ internal abstract class Transform
     private static double XyzToIccXyz(double value) => value * 32768.0 / 65535.0;
     private static double IccXyzToXyz(double value) => value * 65535.0 / 32768.0;
     
-    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50).Triplet.ToArray();
-    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2]), XyzD50).Triplet.ToArray();
+    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50).ToArray();
+    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2]), XyzD50).ToArray();
 
     private static double[] NegativeClip(double[] xyz) => xyz.Select(NegativeClip).ToArray();
     private static double NegativeClip(double value) => Math.Max(value, 0);

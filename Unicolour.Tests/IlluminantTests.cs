@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
@@ -7,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class IlluminantTests
 {
-    public static readonly List<TestCaseData> PredefinedWhitePointTestData =
+    public static readonly TestCaseData[] PredefinedWhitePointTestData =
     [
         new TestCaseData(Spd.A, Illuminant.A, Observer.Degree2).SetName("A/2°"),
         new TestCaseData(Spd.C, Illuminant.C, Observer.Degree2).SetName("C/2°"),
@@ -45,7 +44,7 @@ public class IlluminantTests
         Assert.That(spdWhitePoint.Y, Is.EqualTo(predefinedWhitePoint.Y).Within(illuminant == Illuminant.E ? 0.05 : 0.0125));
         Assert.That(spdWhitePoint.Z, Is.EqualTo(predefinedWhitePoint.Z).Within(illuminant == Illuminant.E ? 0.05 : 0.0125));
         
-        var config = new Configuration(xyzConfiguration: new XyzConfiguration(illuminant, observer));
+        var config = new Configuration(xyzConfig: new XyzConfiguration(illuminant, observer));
         var fromSpdWhite = new Unicolour(config, ColourSpace.Xyz, spdWhitePoint.AsXyzMatrix().ToTriplet().Tuple);
         var fromRgbWhite = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
         Assert.That(fromSpdWhite.Chromaticity.X, Is.EqualTo(fromRgbWhite.Chromaticity.X).Within(0.00005));
@@ -57,7 +56,7 @@ public class IlluminantTests
     }
 
     private static readonly Observer NotObserved = new(new Cmf(Cmf.RequiredWavelengths.ToDictionary(wavelength => wavelength, _ => (0.0, 0.0, 0.0))));
-    public static readonly List<TestCaseData> CustomWhitePointTestData =
+    public static readonly TestCaseData[] CustomWhitePointTestData =
     [
         new TestCaseData(Observer.Degree2).SetName("2°"),
         new TestCaseData(Observer.Degree10).SetName("10°"),
@@ -75,8 +74,8 @@ public class IlluminantTests
         Assert.That(actualWhitePoint, Is.EqualTo(expectedWhitePoint));
 
         var xyzConfig = new XyzConfiguration(illuminant, observer);
-        var config = new Configuration(xyzConfiguration: xyzConfig);
-        var unicolour = new Unicolour(config, "#FFFFFF");
-        TestUtils.AssertTriplet<Xyz>(unicolour, new(0.5, 0.5, 0.5), 0.00000000001);
+        var config = new Configuration(xyzConfig: xyzConfig);
+        var colour = new Unicolour(config, "#FFFFFF");
+        TestUtils.AssertTriplet<Xyz>(colour, new(0.5, 0.5, 0.5), 0.00000000001);
     }
 }

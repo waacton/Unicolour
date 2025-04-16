@@ -55,9 +55,7 @@ public class CamConfiguration
         _ => throw new ArgumentOutOfRangeException()
     };
 
-    public CamConfiguration(WhitePoint whitePoint, 
-        double adaptingLuminance, double backgroundLuminance,
-        Surround surround, string name = Utils.Unnamed)
+    public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround, string name = Utils.Unnamed)
     {
         WhitePoint = whitePoint;
         AdaptingLuminance = adaptingLuminance;
@@ -66,7 +64,7 @@ public class CamConfiguration
         Name = name;
     }
 
-    public override string ToString() => $"{Name} · {AdaptingLuminance:f0}, {BackgroundLuminance:f0}, {Surround}";
+    public override string ToString() => $"{Name} · adapting {AdaptingLuminance:f0} · background {BackgroundLuminance:f0} · surround {Surround}";
 }
 
 public enum Surround

@@ -58,7 +58,14 @@ public class IccProfileTests
         AssertLuts(tags.BToA0.Value!, lutType: LutType.Lut16, LutElements.BA, 4, 3, [37, 37, 37, 4]);
         AssertLuts(tags.BToA1.Value!, lutType: LutType.Lut16, LutElements.BA, 4, 3, [37, 37, 37, 4]);
         AssertLuts(tags.BToA2.Value!, lutType: LutType.Lut16, LutElements.BA, 4, 3, [37, 37, 37, 4]);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.84541, 0.87683, 0.74628)).Within(0.000005));
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.84541, 0.87683, 0.74628)).Within(0.000005));
     }
     
     [Test]
@@ -112,7 +119,14 @@ public class IccProfileTests
         AssertLuts(tags.BToA0.Value!, lutType: LutType.Lut16, LutElements.BA, 7, 3, [33, 33, 33, 7]);
         AssertLuts(tags.BToA1.Value!, lutType: LutType.Lut16, LutElements.BA, 7, 3, [33, 33, 33, 7]);
         AssertLuts(tags.BToA2.Value!, lutType: LutType.Lut16, LutElements.BA, 7, 3, [17, 17, 17, 7]);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.85278, 0.87619, 0.79289)).Within(0.000005));
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value!.ToString(), Is.EqualTo("Table curve: 256"));
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.85278, 0.87619, 0.79289)).Within(0.000005));
     }
     
     [Test]
@@ -160,7 +174,14 @@ public class IccProfileTests
         AssertLuts(tags.BToA0.Value!, lutType: LutType.Lut16, LutElements.BA, 4, 3, [33, 33, 33, 4]);
         AssertLuts(tags.BToA1.Value!, lutType: LutType.Lut16, LutElements.BA, 4, 3, [33, 33, 33, 4]);
         AssertLuts(tags.BToA2.Value!, lutType: LutType.Lut8, LutElements.BA, 4, 3, [33, 33, 33, 4]);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.82787, 0.85606, 0.72072)).Within(0.000005));
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.82787, 0.85606, 0.72072)).Within(0.000005));
     }
     
     [Test]
@@ -212,7 +233,14 @@ public class IccProfileTests
         AssertLuts(tags.BToA0.Value!, lutType: LutType.LutBA, LutElements.BA, 4, 3, [33, 33, 33, 4]);
         AssertLuts(tags.BToA1.Value!, lutType: LutType.LutBA, LutElements.BA, 4, 3, [33, 33, 33, 4]);
         AssertLuts(tags.BToA2.Value!, lutType: LutType.LutBA, LutElements.BA, 4, 3, [33, 33, 33, 4]);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
     }
     
     [Test]
@@ -252,8 +280,19 @@ public class IccProfileTests
         AssertTag(tags[5], "chad", 820, 44);
 
         AssertLuts(tags.AToB0.Value!, lutType: LutType.LutAB, LutElements.MB, 3, 3, null);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
         AssertLuts(tags.BToA0.Value!, lutType: LutType.LutBA, LutElements.BM, 3, 3, null);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.85809, 0.89000, 0.73421)).Within(0.000005));
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.85809, 0.89000, 0.73421)).Within(0.000005));
     }
     
     [Test]
@@ -297,9 +336,18 @@ public class IccProfileTests
 
         AssertLuts(tags.AToB0.Value!, lutType: LutType.LutAB, LutElements.AMB, 3, 3, [17, 17, 17, 3]);
         AssertLuts(tags.AToB1.Value!, lutType: LutType.LutAB, LutElements.AMB, 3, 3, [2, 2, 2, 3]);
+        Assert.That(tags.AToB2.Value, Is.Null);
         AssertLuts(tags.BToA0.Value!, lutType: LutType.LutBA, LutElements.BMA, 3, 3, [17, 17, 17, 3]);
         AssertLuts(tags.BToA1.Value!, lutType: LutType.LutBA, LutElements.BMA, 3, 3, [2, 2, 2, 3]);
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
     }
     
     [Test]
@@ -348,13 +396,20 @@ public class IccProfileTests
         AssertTag(tags[14], "cprt", 2924, 55);
         AssertTag(tags[15], "chad", 2980, 44);
 
+        Assert.That(tags.AToB0.Value, Is.Null);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.43607, 0.22249, 0.01392)).Within(0.000005));
+        Assert.That(tags.GreenMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.38515, 0.71687, 0.09708)).Within(0.000005));
+        Assert.That(tags.BlueMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.14307, 0.06061, 0.71410)).Within(0.000005));
         Assert.That(tags.RedTrc.Value!.ToString(), Is.EqualTo("Table curve: 1024"));
         Assert.That(tags.GreenTrc.Value!.ToString(), Is.EqualTo("Table curve: 1024"));
         Assert.That(tags.BlueTrc.Value!.ToString(), Is.EqualTo("Table curve: 1024"));
-        Assert.That(tags.RedMatrixColumn.Value, Is.EqualTo((0.43607, 0.22249, 0.01392)).Within(0.000005));
-        Assert.That(tags.GreenMatrixColumn.Value, Is.EqualTo((0.38515, 0.71687, 0.09708)).Within(0.000005));
-        Assert.That(tags.BlueMatrixColumn.Value, Is.EqualTo((0.14307, 0.06061, 0.71410)).Within(0.000005));
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
     }
     
     [Test]
@@ -392,8 +447,20 @@ public class IccProfileTests
         AssertTag(tags[3], "chad", 284, 44);
         AssertTag(tags[4], Signatures.GreyTrc, 328, 32);
 
+        Assert.That(tags.AToB0.Value, Is.Null);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
         Assert.That(tags.GreyTrc.Value!.ToString(), Is.EqualTo("Parametric curve: type 3"));
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
     }
     
     [Test]
@@ -441,13 +508,20 @@ public class IccProfileTests
         AssertTag(tags[14], "cprt", 884, 40);
         AssertTag(tags[15], "chad", 924, 44);
 
+        Assert.That(tags.AToB0.Value, Is.Null);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value!.ToTuple(), Is.EqualTo((1.04791, 0.02960, -0.00925)).Within(0.000005));
+        Assert.That(tags.GreenMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.02293, 0.99046, 0.01506)).Within(0.000005));
+        Assert.That(tags.BlueMatrixColumn.Value!.ToTuple(), Is.EqualTo((-0.05020, -0.01707, 0.75179)).Within(0.000005));
         Assert.That(tags.RedTrc.Value!.ToString(), Is.EqualTo("Table curve: 2"));
         Assert.That(tags.GreenTrc.Value!.ToString(), Is.EqualTo("Table curve: 2"));
         Assert.That(tags.BlueTrc.Value!.ToString(), Is.EqualTo("Table curve: 2"));
-        Assert.That(tags.RedMatrixColumn.Value, Is.EqualTo((1.04791, 0.02960, -0.00925)).Within(0.000005));
-        Assert.That(tags.GreenMatrixColumn.Value, Is.EqualTo((0.02293, 0.99046, 0.01506)).Within(0.000005));
-        Assert.That(tags.BlueMatrixColumn.Value, Is.EqualTo((-0.05020, -0.01707, 0.75179)).Within(0.000005));
-        Assert.That(tags.MediaWhite.Value, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
     }
     
     [Test]
@@ -488,6 +562,17 @@ public class IccProfileTests
         AssertLuts(tags.AToB0.Value!, lutType: LutType.Lut16, LutElements.AB, 3, 3, [2, 2, 2, 3]);
         AssertLuts(tags.AToB1.Value!, lutType: LutType.Lut16, LutElements.AB, 3, 3, [2, 2, 2, 3]);
         AssertLuts(tags.AToB2.Value!, lutType: LutType.Lut16, LutElements.AB, 3, 3, [2, 2, 2, 3]);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96419, 1.00000, 0.82489)).Within(0.000005));
     }
     
     [Test]
@@ -525,6 +610,19 @@ public class IccProfileTests
         AssertTag(tags[4], Signatures.AToB0, 376, 11110);
         
         AssertLuts(tags.AToB0.Value!, lutType: LutType.Lut16, LutElements.AB, 3, 3, [11, 11, 11, 3]);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+        Assert.That(tags.RedMatrixColumn.Value, Is.Null);
+        Assert.That(tags.GreenMatrixColumn.Value, Is.Null);
+        Assert.That(tags.BlueMatrixColumn.Value, Is.Null);
+        Assert.That(tags.RedTrc.Value, Is.Null);
+        Assert.That(tags.GreenTrc.Value, Is.Null);
+        Assert.That(tags.BlueTrc.Value, Is.Null);
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96429, 1.00000, 0.82510)).Within(0.000005));
     }
     
     private static void AssertTag(Tag tag, string signature, int offset, int size)

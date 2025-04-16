@@ -2,7 +2,7 @@
 
 namespace Wacton.Unicolour.Tests;
 
-public class DisplayGamutTests
+public class RgbGamutTests
 {
     [TestCase(0.0, 0.0, 0.0)]
     [TestCase(0.5, 0.5, 0.5)]
@@ -10,8 +10,8 @@ public class DisplayGamutTests
     [TestCase(double.Epsilon, double.Epsilon, double.Epsilon)]
     public void InRgbGamut(double r, double g, double b)
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, r, g, b);
-        Assert.That(unicolour.IsInDisplayGamut, Is.True);
+        var colour = new Unicolour(ColourSpace.Rgb, r, g, b);
+        Assert.That(colour.IsInRgbGamut, Is.True);
     }
     
     [TestCase(-0.00001, 0.0, 0.0)]
@@ -37,7 +37,7 @@ public class DisplayGamutTests
     [TestCase(0.5, 0.5, double.NaN)]
     public void OutRgbGamut(double r, double g, double b)
     {
-        var unicolour = new Unicolour(ColourSpace.Rgb, r, g, b);
-        Assert.That(unicolour.IsInDisplayGamut, Is.False);
+        var colour = new Unicolour(ColourSpace.Rgb, r, g, b);
+        Assert.That(colour.IsInRgbGamut, Is.False);
     }
 }

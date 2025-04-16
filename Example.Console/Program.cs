@@ -2,7 +2,7 @@
 using Wacton.Unicolour;
 using Wacton.Unicolour.Icc;
 
-var config = new Configuration(iccConfiguration: new("./SWOP2006_Coated5v2.icc", Intent.RelativeColorimetric, "SWOP2006"));
+var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent.RelativeColorimetric, "SWOP2006"));
 
 var white = new Unicolour("#000000");
 var black = new Unicolour("#FFFFFF");
@@ -17,10 +17,10 @@ while (true)
     var inputHex = AnsiConsole.Ask<string>("[dim]Colour hex:[/]");
     try
     {
-        var unicolour = new Unicolour(config, inputHex);
-        var useWhiteText = unicolour.Difference(white, DeltaE.Cie76) > unicolour.Difference(black, DeltaE.Cie76);
-        AnsiConsole.MarkupLine(GetBar(unicolour, useWhiteText));
-        AnsiConsole.Write(GetTable(unicolour));
+        var colour = new Unicolour(config, inputHex);
+        var useWhiteText = colour.Difference(white, DeltaE.Cie76) > colour.Difference(black, DeltaE.Cie76);
+        AnsiConsole.MarkupLine(GetBar(colour, useWhiteText));
+        AnsiConsole.Write(GetTable(colour));
     }
     catch (Exception e)
     {
@@ -30,20 +30,20 @@ while (true)
     Console.WriteLine();
 }
 
-string GetBar(Unicolour unicolour, bool useWhiteText)
+string GetBar(Unicolour colour, bool useWhiteText)
 {
     var textHex = useWhiteText ? white.Hex : black.Hex;
-    var leftSpace = (barLength - unicolour.Description.Length) / 2;
-    var rightSpace = barLength - unicolour.Description.Length - leftSpace;
+    var leftSpace = (barLength - colour.Description.Length) / 2;
+    var rightSpace = barLength - colour.Description.Length - leftSpace;
     var leftSpaces = new string(' ', leftSpace);
     var rightSpaces = new string(' ', rightSpace);
-    var text = $"{leftSpaces}{unicolour.Description}{rightSpaces}";
-    return $"[{textHex} on {unicolour.Hex}]{text}[/]";
+    var text = $"{leftSpaces}{colour.Description}{rightSpaces}";
+    return $"[{textHex} on {colour.Hex}]{text}[/]";
 }
 
-static Table GetTable(Unicolour unicolour)
+static Table GetTable(Unicolour colour)
 {
-    var rgb255 = unicolour.Rgb.Byte255;
+    var rgb255 = colour.Rgb.Byte255;
     var table = new Table
     {
         Border = TableBorder.Rounded,
@@ -53,44 +53,44 @@ static Table GetTable(Unicolour unicolour)
     table.AddColumn(new TableColumn("Space").Width(col1Width));
     table.AddColumn(new TableColumn("Value").Width(col2Width));
 
-    table.AddRow("Hex", $"{unicolour.Hex}");
-    table.AddRow("Rgb 255", $"{unicolour.Rgb.Byte255}");
-    table.AddRow("Rgb", $"{unicolour.Rgb}");
-    table.AddRow("Rgb Lin.", $"{unicolour.RgbLinear}");
-    table.AddRow("Hsl", $"{unicolour.Hsl}");
-    table.AddRow("Hsb", $"{unicolour.Hsb}");
-    table.AddRow("Hwb", $"{unicolour.Hwb}");
-    table.AddRow("Hsi", $"{unicolour.Hsi}");
-    table.AddRow("Xyz", $"{unicolour.Xyz}");
-    table.AddRow("Xyy", $"{unicolour.Xyy}");
-    table.AddRow("Wxy", $"{unicolour.Wxy}");
-    table.AddRow("Lab", $"{unicolour.Lab}");
-    table.AddRow("Lchab", $"{unicolour.Lchab}");
-    table.AddRow("Luv", $"{unicolour.Luv}");
-    table.AddRow("Lchuv", $"{unicolour.Lchuv}");
-    table.AddRow("Hsluv", $"{unicolour.Hsluv}");
-    table.AddRow("Hpluv", $"{unicolour.Hpluv}");
-    table.AddRow("Ypbpr", $"{unicolour.Ypbpr}");
-    table.AddRow("Ycbcr", $"{unicolour.Ycbcr}");
-    table.AddRow("Ycgco", $"{unicolour.Ycgco}");
-    table.AddRow("Yuv", $"{unicolour.Yuv}");
-    table.AddRow("Yiq", $"{unicolour.Yiq}");
-    table.AddRow("Ydbdr", $"{unicolour.Ydbdr}");
-    table.AddRow("Tsl", $"{unicolour.Tsl}");
-    table.AddRow("Xyb", $"{unicolour.Xyb}");
-    table.AddRow("Ipt", $"{unicolour.Ipt}");
-    table.AddRow("Ictcp", $"{unicolour.Ictcp}");
-    table.AddRow("Jzazbz", $"{unicolour.Jzazbz}");
-    table.AddRow("Jzczhz", $"{unicolour.Jzczhz}");
-    table.AddRow("Oklab", $"{unicolour.Oklab}");
-    table.AddRow("Oklch", $"{unicolour.Oklch}");
-    table.AddRow("Okhsv", $"{unicolour.Okhsv}");
-    table.AddRow("Okhsl", $"{unicolour.Okhsl}");
-    table.AddRow("Okhwb", $"{unicolour.Okhwb}");
-    table.AddRow("Cam02", $"{unicolour.Cam02}");
-    table.AddRow("Cam16", $"{unicolour.Cam16}");
-    table.AddRow("Hct", $"{unicolour.Hct}");
-    table.AddRow("Icc", $"{unicolour.Icc}");
+    table.AddRow("Hex", $"{colour.Hex}");
+    table.AddRow("Rgb 255", $"{colour.Rgb.Byte255}");
+    table.AddRow("Rgb", $"{colour.Rgb}");
+    table.AddRow("Rgb Lin.", $"{colour.RgbLinear}");
+    table.AddRow("Hsl", $"{colour.Hsl}");
+    table.AddRow("Hsb", $"{colour.Hsb}");
+    table.AddRow("Hwb", $"{colour.Hwb}");
+    table.AddRow("Hsi", $"{colour.Hsi}");
+    table.AddRow("Xyz", $"{colour.Xyz}");
+    table.AddRow("Xyy", $"{colour.Xyy}");
+    table.AddRow("Wxy", $"{colour.Wxy}");
+    table.AddRow("Lab", $"{colour.Lab}");
+    table.AddRow("Lchab", $"{colour.Lchab}");
+    table.AddRow("Luv", $"{colour.Luv}");
+    table.AddRow("Lchuv", $"{colour.Lchuv}");
+    table.AddRow("Hsluv", $"{colour.Hsluv}");
+    table.AddRow("Hpluv", $"{colour.Hpluv}");
+    table.AddRow("Ypbpr", $"{colour.Ypbpr}");
+    table.AddRow("Ycbcr", $"{colour.Ycbcr}");
+    table.AddRow("Ycgco", $"{colour.Ycgco}");
+    table.AddRow("Yuv", $"{colour.Yuv}");
+    table.AddRow("Yiq", $"{colour.Yiq}");
+    table.AddRow("Ydbdr", $"{colour.Ydbdr}");
+    table.AddRow("Tsl", $"{colour.Tsl}");
+    table.AddRow("Xyb", $"{colour.Xyb}");
+    table.AddRow("Ipt", $"{colour.Ipt}");
+    table.AddRow("Ictcp", $"{colour.Ictcp}");
+    table.AddRow("Jzazbz", $"{colour.Jzazbz}");
+    table.AddRow("Jzczhz", $"{colour.Jzczhz}");
+    table.AddRow("Oklab", $"{colour.Oklab}");
+    table.AddRow("Oklch", $"{colour.Oklch}");
+    table.AddRow("Okhsv", $"{colour.Okhsv}");
+    table.AddRow("Okhsl", $"{colour.Okhsl}");
+    table.AddRow("Okhwb", $"{colour.Okhwb}");
+    table.AddRow("Cam02", $"{colour.Cam02}");
+    table.AddRow("Cam16", $"{colour.Cam16}");
+    table.AddRow("Hct", $"{colour.Hct}");
+    table.AddRow("Icc", $"{colour.Icc}");
     return table;
 }
 

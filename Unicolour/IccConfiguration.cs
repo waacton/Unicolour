@@ -72,5 +72,5 @@ public class IccConfiguration
         return null;
     }
     
-    public override string ToString() => Name;
+    public override string ToString() => $"{Name} · profile {(Profile == null ? "-" : Profile.FileInfo.Name)} · intent {Intent}";
 }

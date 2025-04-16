@@ -20,7 +20,7 @@ internal static class Utils
         var data = new List<Unicolour>();
         for (var nm = 360; nm < 700; nm++)
         {
-            data.Add(new Unicolour(new Spd { { nm, 1.0 } }));
+            data.Add(new Unicolour(new Spd(start: nm, interval: 1, 1.0)));
         }
 
         return data;
@@ -124,8 +124,8 @@ internal static class Utils
         }
         else
         {
-            var unicolour = new Unicolour(chromaticity);
-            color = unicolour.IsImaginary ? null : GetScaledColour(unicolour.Rgb);
+            var colour = new Unicolour(chromaticity);
+            color = colour.IsImaginary ? null : GetScaledColour(colour.Rgb);
             ChromaticityCache.Add(chromaticity, color);
         }
 

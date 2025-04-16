@@ -32,7 +32,7 @@ public class DescriptionTests
         excluded.AddRange(ColourDescription.Hues);
         excluded.AddRange(ColourDescription.Saturations);
         excluded.AddRange(ColourDescription.Lightnesses);
-        excluded.AddRange(new[] { ColourDescription.White, ColourDescription.Grey });
+        excluded.AddRange([ColourDescription.White, ColourDescription.Grey]);
         AssertDescription(h, s, l, included, excluded);
     }
 
@@ -44,8 +44,8 @@ public class DescriptionTests
     {
         var included = ColourDescription.Shadow;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Lightnesses.Except(new [] { included }));
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange(ColourDescription.Lightnesses.Except([included]));
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -57,8 +57,8 @@ public class DescriptionTests
     {
         var included = ColourDescription.Dark;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Lightnesses.Except(new [] { included }));
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange(ColourDescription.Lightnesses.Except([included]));
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -70,8 +70,8 @@ public class DescriptionTests
     {
         var included = ColourDescription.Pure;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Lightnesses.Except(new [] { included }));
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange(ColourDescription.Lightnesses.Except([included]));
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -83,8 +83,8 @@ public class DescriptionTests
     {
         var included = ColourDescription.Light;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Lightnesses.Except(new [] { included }));
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange(ColourDescription.Lightnesses.Except([included]));
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -96,8 +96,8 @@ public class DescriptionTests
     {
         var included = ColourDescription.Pale;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Lightnesses.Except(new [] { included }));
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange(ColourDescription.Lightnesses.Except([included]));
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -112,7 +112,7 @@ public class DescriptionTests
         excluded.AddRange(ColourDescription.Hues);
         excluded.AddRange(ColourDescription.Saturations);
         excluded.AddRange(ColourDescription.Lightnesses);
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.Grey });
+        excluded.AddRange([ColourDescription.Black, ColourDescription.Grey]);
         AssertDescription(h, s, l, included, excluded);
     }
     
@@ -139,7 +139,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Grey;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(new[] { ColourDescription.Black, ColourDescription.White });
+        excluded.AddRange([ColourDescription.Black, ColourDescription.White]);
         excluded.AddRange(ColourDescription.Hues);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -152,7 +152,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Faint;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Saturations.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Saturations.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -165,7 +165,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Weak;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Saturations.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Saturations.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -178,7 +178,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Mild;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Saturations.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Saturations.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -191,7 +191,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Strong;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Saturations.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Saturations.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -204,7 +204,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Vibrant;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Saturations.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Saturations.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -232,7 +232,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Red;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -245,7 +245,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Orange;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -258,7 +258,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Yellow;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -271,7 +271,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Chartreuse;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -284,7 +284,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Green;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -297,7 +297,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Mint;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -310,7 +310,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Cyan;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -323,7 +323,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Azure;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -336,7 +336,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Blue;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -349,7 +349,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Violet;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -362,7 +362,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Magenta;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -375,7 +375,7 @@ public class DescriptionTests
     {
         var included = ColourDescription.Rose;
         var excluded = new List<ColourDescription> { ColourDescription.NotApplicable };
-        excluded.AddRange(ColourDescription.Hues.Except(new [] { included }));
+        excluded.AddRange(ColourDescription.Hues.Except([included]));
         excluded.AddRange(ColourDescription.Greyscales);
         AssertDescription(h, s, l, included, excluded);
     }
@@ -385,13 +385,13 @@ public class DescriptionTests
         var hues = new List<double> { h, h + 360, h - 360 };
         foreach (var hue in hues)
         {
-            var unicolour = new Unicolour(ColourSpace.Hsl, hue, s, l);
-            Assert.That(unicolour.Description.Split(" ").Length, Is.LessThanOrEqualTo(3));
-            Assert.That(unicolour.Description, Contains.Substring(included.ToString()));
+            var colour = new Unicolour(ColourSpace.Hsl, hue, s, l);
+            Assert.That(colour.Description.Split(" ").Length, Is.LessThanOrEqualTo(3));
+            Assert.That(colour.Description, Contains.Substring(included.ToString()));
             
             foreach (var excludedItem in excluded)
             {
-                Assert.That(unicolour.Description, !Contains.Substring(excludedItem.ToString()));
+                Assert.That(colour.Description, !Contains.Substring(excludedItem.ToString()));
             }
         }
     }

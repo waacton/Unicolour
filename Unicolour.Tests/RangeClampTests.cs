@@ -382,6 +382,19 @@ public class RangeClampTests
     }
     
     [Test]
+    public void OklrchRange() // only the hue is constrained
+    {
+        Range hRange = new(0.0, 360.0);
+        var beyondMax = new Oklrch(100, 230, hRange.BeyondMax);
+        var beyondMin = new Oklrch(0, 0, hRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.Third, beyondMax.Triplet.Third);
+        AssertConstrained(beyondMin.Triplet.Third, beyondMin.ConstrainedTriplet.Third);
+
+        var representations = new[] { beyondMax, beyondMin };
+        AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.Third);
+    }
+    
+    [Test]
     public void HctRange() // only the hue is constrained
     {
         Range hRange = new(0.0, 360.0);

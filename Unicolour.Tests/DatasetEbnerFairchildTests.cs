@@ -8,7 +8,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class DatasetEbnerFairchildTests
 {
-    private static readonly List<TestCaseData> ReferenceHues =
+    private static readonly TestCaseData[] ReferenceHues =
     [
         new TestCaseData(Hue0Ref, 0).SetName("0"),
         new TestCaseData(Hue24Ref, 24).SetName("24"),
@@ -27,7 +27,7 @@ public class DatasetEbnerFairchildTests
         new TestCaseData(Hue336Ref, 336).SetName("336")
     ];
     
-    private static readonly List<TestCaseData> GroupedByHue =
+    private static readonly TestCaseData[] GroupedByHue =
     [
         new TestCaseData(AllHue0, 0, 21).SetName("0"),
         new TestCaseData(AllHue24, 24, 21).SetName("24"),
@@ -47,20 +47,20 @@ public class DatasetEbnerFairchildTests
     ];
     
     [TestCaseSource(nameof(ReferenceHues))]
-    public void ReferenceHue(Unicolour unicolour, int expectedHue)
+    public void ReferenceHue(Unicolour colour, int expectedHue)
     {
         const double tolerance = 0.05;
-        Assert.That(unicolour.Lchab.H, Is.EqualTo(expectedHue).Within(tolerance).Or.EqualTo(expectedHue + 360).Within(tolerance));
+        Assert.That(colour.Lchab.H, Is.EqualTo(expectedHue).Within(tolerance).Or.EqualTo(expectedHue + 360).Within(tolerance));
     }
 
     [TestCaseSource(nameof(GroupedByHue))]
-    public void GroupedHue(List<Unicolour> unicolours, int expectedHue, int expectedCount)
+    public void GroupedHue(List<Unicolour> colours, int expectedHue, int expectedCount)
     {
-        Assert.That(unicolours.Count, Is.EqualTo(expectedCount));
+        Assert.That(colours.Count, Is.EqualTo(expectedCount));
         
         // questionable, but would be surprised if a Lab's hue for a group was beyond a neighbouring group's hue
         const int tolerance = 24;
-        var hues = unicolours.Select(x => x.Lchab.H);
+        var hues = colours.Select(x => x.Lchab.H);
         Assert.That(hues, Has.All.EqualTo(expectedHue).Within(tolerance).Or.EqualTo(expectedHue + 360).Within(tolerance));
     }
     

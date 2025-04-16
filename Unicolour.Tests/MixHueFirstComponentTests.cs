@@ -55,10 +55,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [Test]
     public void EquidistantViaZero()
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.0), Third.At(0.0), 0.0);
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(340), Second.At(1.0), Third.At(0.5), 0.2);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.0), Third.At(0.0), 0.0);
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(340), Second.At(1.0), Third.At(0.5), 0.2);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, premultiplyAlpha: false);
         
         AssertMix(mixed1, (350, Second.At(0.5), Third.At(0.25), 0.1));
         AssertMix(mixed2, (350, Second.At(0.5), Third.At(0.25), 0.1));
@@ -67,10 +67,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [Test]
     public void CloserToEndColourViaZero()
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(300), Second.At(1.0), Third.At(0.5));
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(60), Second.At(0.0), Third.At(0.0), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.75, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.75, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(300), Second.At(1.0), Third.At(0.5));
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(60), Second.At(0.0), Third.At(0.0), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.75, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.75, premultiplyAlpha: false);
 
         AssertMix(mixed1, (30, Second.At(0.25), Third.At(0.125), 0.625));
         AssertMix(mixed2, (330, Second.At(0.75), Third.At(0.375), 0.875));
@@ -79,10 +79,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [Test]
     public void CloserToStartColourViaZero()
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(300), Second.At(1.0), Third.At(0.5));
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(60), Second.At(0.0), Third.At(0.0), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.25, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.25, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(300), Second.At(1.0), Third.At(0.5));
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(60), Second.At(0.0), Third.At(0.0), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.25, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.25, premultiplyAlpha: false);
         
         AssertMix(mixed1, (330, Second.At(0.75), Third.At(0.375), 0.875));
         AssertMix(mixed2, (30, Second.At(0.25), Third.At(0.125), 0.625));
@@ -94,10 +94,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [TestCase(HueSpan.Decreasing, 0)]
     public void Span0(HueSpan hueSpan, double expected)
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
         
         AssertMix(mixed1, (expected, Second.At(0.5), Third.At(0.5), 0.5));
         AssertMix(mixed2, (expected, Second.At(0.5), Third.At(0.5), 0.5));
@@ -109,10 +109,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [TestCase(HueSpan.Decreasing, 0, 180)]
     public void Span120(HueSpan hueSpan, double expectedForward, double expectedBackward)
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(120), Second.At(0.5), Third.At(0.5), 0.5);
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(240), Second.At(0.5), Third.At(0.5), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(120), Second.At(0.5), Third.At(0.5), 0.5);
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(240), Second.At(0.5), Third.At(0.5), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
         
         AssertMix(mixed1, (expectedForward, Second.At(0.5), Third.At(0.5), 0.5));
         AssertMix(mixed2, (expectedBackward, Second.At(0.5), Third.At(0.5), 0.5));
@@ -124,10 +124,10 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [TestCase(HueSpan.Decreasing, 0, 180)]
     public void Span360(HueSpan hueSpan, double expectedForward, double expectedBackward)
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(360), Second.At(0.5), Third.At(0.5), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(0), Second.At(0.5), Third.At(0.5), 0.5);
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(360), Second.At(0.5), Third.At(0.5), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
         
         AssertMix(mixed1, (expectedForward, Second.At(0.5), Third.At(0.5), 0.5));
         AssertMix(mixed2, (expectedBackward, Second.At(0.5), Third.At(0.5), 0.5));
@@ -139,22 +139,22 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     [TestCase(HueSpan.Decreasing, 315, 135)]
     public void SpanUneven(HueSpan hueSpan, double expectedForward, double expectedBackward)
     {
-        var unicolour1 = new Unicolour(ColourSpace, mapFromDegree(90), Second.At(0.5), Third.At(0.5), 0.5);
-        var unicolour2 = new Unicolour(ColourSpace, mapFromDegree(180), Second.At(0.5), Third.At(0.5), 0.5);
-        var mixed1 = unicolour1.Mix(unicolour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
-        var mixed2 = unicolour2.Mix(unicolour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var colour1 = new Unicolour(ColourSpace, mapFromDegree(90), Second.At(0.5), Third.At(0.5), 0.5);
+        var colour2 = new Unicolour(ColourSpace, mapFromDegree(180), Second.At(0.5), Third.At(0.5), 0.5);
+        var mixed1 = colour1.Mix(colour2, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
+        var mixed2 = colour2.Mix(colour1, ColourSpace, 0.5, hueSpan, premultiplyAlpha: false);
         
         AssertMix(mixed1, (expectedForward, Second.At(0.5), Third.At(0.5), 0.5));
         AssertMix(mixed2, (expectedBackward, Second.At(0.5), Third.At(0.5), 0.5));
     }
     
-    public static readonly List<TestCaseData> PremultipliedAlphaTestData =
+    public static readonly TestCaseData[] PremultipliedAlphaTestData =
     [
-        new TestCaseData(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.00, new AlphaTriplet(new(90, 1.000, 0.500, 0), 0.250)),
-        new TestCaseData(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.25, new AlphaTriplet(new(135, 0.750, 0.750, 0), 0.375)),
-        new TestCaseData(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.50, new AlphaTriplet(new(180, 0.625, 0.875, 0), 0.500)),
-        new TestCaseData(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.75, new AlphaTriplet(new(225, 0.550, 0.950, 0), 0.625)),
-        new TestCaseData(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 1.00, new AlphaTriplet(new(270, 0.500, 1.000, 0), 0.750))
+        new(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.00, new AlphaTriplet(new(90, 1.000, 0.500, 0), 0.250)),
+        new(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.25, new AlphaTriplet(new(135, 0.750, 0.750, 0), 0.375)),
+        new(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.50, new AlphaTriplet(new(180, 0.625, 0.875, 0), 0.500)),
+        new(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 0.75, new AlphaTriplet(new(225, 0.550, 0.950, 0), 0.625)),
+        new(new AlphaTriplet(new(90, 1.0, 0.5, 0), 0.25), new AlphaTriplet(new(270, 0.5, 1.0, 0), 0.75), 1.00, new AlphaTriplet(new(270, 0.500, 1.000, 0), 0.750))
     ];
     
     [TestCaseSource(nameof(PremultipliedAlphaTestData))]
@@ -163,16 +163,16 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
         start = start with { Triplet = start.Triplet.WithDegreeMap(mapFromDegree) };
         end = end with { Triplet = end.Triplet.WithDegreeMap(mapFromDegree) };
         
-        var unicolour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
-        var unicolour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
-        var mixed = unicolour1.Mix(unicolour2, ColourSpace, amount, HueSpan.Increasing, premultiplyAlpha: true);
+        var colour1 = new Unicolour(ColourSpace, start.Triplet.Tuple, start.Alpha);
+        var colour2 = new Unicolour(ColourSpace, end.Triplet.Tuple, end.Alpha);
+        var mixed = colour1.Mix(colour2, ColourSpace, amount, HueSpan.Increasing, premultiplyAlpha: true);
         AssertMix(mixed, expected.Tuple);
     }
     
     // this extra step is needed to handle the unusual WXY "hue"
-    private new void AssertMix(Unicolour unicolour, (double first, double second, double third, double alpha) expected)
+    private new void AssertMix(Unicolour colour, (double first, double second, double third, double alpha) expected)
     {
-        var tripletWithDegree = unicolour.GetRepresentation(ColourSpace).Triplet.WithDegreeMap(mapToDegree).WithHueModulo();
-        TestUtils.AssertMixed(tripletWithDegree, unicolour.Alpha.A, expected);
+        var tripletWithDegree = colour.GetRepresentation(ColourSpace).Triplet.WithDegreeMap(mapToDegree).WithHueModulo();
+        TestUtils.AssertMixed(tripletWithDegree, colour.Alpha.A, expected);
     }
 }

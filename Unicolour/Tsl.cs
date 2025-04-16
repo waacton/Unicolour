@@ -89,7 +89,7 @@ public record Tsl : ColourRepresentation
         var kb = ybrConfig.Kb;
         var kg = ybrConfig.Kg;
                 
-        var (r, g, b) = rgb.Triplet;
+        var (r, g, b) = rgb;
 
         var sum = r + g + b;
         var rChromaticity = r / sum;
@@ -123,7 +123,7 @@ public record Tsl : ColourRepresentation
         var kg = ybrConfig.Kg;
         
         var t = tsl.ConstrainedT / 360.0;
-        var (_, s, l) = tsl.Triplet;
+        var (_, s, l) = tsl;
 
         const double infinityTangent = 16331239353195370; // Math.Tan(Math.PI / 2)
         double tangent;

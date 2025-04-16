@@ -3,6 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Wacton.Unicolour.Datasets;
 
 namespace Wacton.Unicolour.Example.Gradients;
 
@@ -29,7 +30,7 @@ internal static class Utils
         return mix(segmentStartColour, segmentEndColour, segmentDistance);
     }
     
-    internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, GetColour getColour)
+    internal static Image<Rgba32> Draw(int width, int height, GetColour getColour)
     {
         var image = new Image<Rgba32>(width, height);
 
@@ -39,6 +40,12 @@ internal static class Utils
             SetColumnPixels(image, column, height, colour);
         }
         
+        return image;
+    }
+    
+    internal static Image<Rgba32> Draw((string text, Unicolour colour) label, int width, int height, GetColour getColour)
+    {
+        var image = Draw(width, height, getColour);
         SetLabel(image, label.text, label.colour);
         return image;
     }
@@ -75,29 +82,12 @@ internal static class Utils
 
         Point Location(int index) => new(0, rowHeight * index);
     }
-    
-    internal static Image<Rgba32> DrawColumns(List<Image<Rgba32>> columns, int columnWidth, int columnHeight)
+
+    private static Rgba32 AsRgba32(Unicolour colour)
     {
-        var columnIndex = 0;
-        var image = new Image<Rgba32>(columnWidth * columns.Count, columnHeight);
-        image.Mutate(context =>
-        {
-            foreach (var gradient in columns)
-            {
-                context.DrawImage(gradient, Location(columnIndex++), 1f);
-            }
-        });
-
-        return image;
-
-        Point Location(int index) => new(columnWidth * index, 0);
-    }
-
-    private static Rgba32 AsRgba32(Unicolour unicolour)
-    {
-        var (r, g, b) = unicolour.Rgb.Byte255.ConstrainedTriplet;
-        var alpha = unicolour.Alpha.A255;
-        var a = unicolour.IsInDisplayGamut || !RenderOutOfGamutAsTransparent ? alpha : 0;
+        var (r, g, b) = colour.MapToRgbGamut(GamutMap.RgbClipping).Rgb.Byte255;
+        var alpha = colour.Alpha.A255;
+        var a = colour.IsInRgbGamut || !RenderOutOfGamutAsTransparent ? alpha : 0;
         return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
     }
 }

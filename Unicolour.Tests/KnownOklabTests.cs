@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -71,12 +70,12 @@ public class KnownOklabTests
      * --------------------
      * Unicolour assumes B) and that the intention of OKLAB is that RGB -> OKLAB should match the example code
      */
-    private static readonly List<TestCaseData> TestData =
+    private static readonly TestCaseData[] TestData =
     [
-        new TestCaseData(new ColourTriplet(0.950, 1.000, 1.089), new ColourTriplet(1.000, 0.000, 0.000)),
-        new TestCaseData(new ColourTriplet(1.000, 0.000, 0.000), new ColourTriplet(0.450, 1.236, -0.019)),
-        new TestCaseData(new ColourTriplet(0.000, 1.000, 0.000), new ColourTriplet(0.922, -0.671, 0.263)),
-        new TestCaseData(new ColourTriplet(0.000, 0.000, 1.000), new ColourTriplet(0.153, -1.415, -0.449))
+        new(new ColourTriplet(0.950, 1.000, 1.089), new ColourTriplet(1.000, 0.000, 0.000)),
+        new(new ColourTriplet(1.000, 0.000, 0.000), new ColourTriplet(0.450, 1.236, -0.019)),
+        new(new ColourTriplet(0.000, 1.000, 0.000), new ColourTriplet(0.922, -0.671, 0.263)),
+        new(new ColourTriplet(0.000, 0.000, 1.000), new ColourTriplet(0.153, -1.415, -0.449))
     ];
     
     [TestCaseSource(nameof(TestData))]
@@ -102,7 +101,7 @@ public class KnownOklabTests
         // using the D65 RGB, create a unicolour based in D50 XYZ
         var configXyzD50 = new Configuration(RgbConfiguration.StandardRgb, XyzConfiguration.D50);
         
-        var toXyzD50 = new Unicolour(configXyzD50, ColourSpace.Rgb, rgb.Triplet.Tuple);
+        var toXyzD50 = new Unicolour(configXyzD50, ColourSpace.Rgb, rgb.Tuple);
         var oklabFromXyzD50 = toXyzD50.Oklab;
         
         // since Oklab specifically uses a D65 whitepoint

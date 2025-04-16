@@ -117,6 +117,47 @@ public partial class Unicolour
         return (xyz.X, xyz.Y, xyz.Z, 1.0);
     }
     
+    /* construction from pigments */
+    public Unicolour(Pigment[] pigments, double[] weights) :
+        this(Configuration.Default, pigments, weights)
+    {
+    }
+    
+    public Unicolour(Configuration config, Pigment[] pigments, double[] weights) :
+        this(config, ColourSpace.Xyz, PigmentsToXyzTuple(pigments, weights, config.Xyz))
+    {
+        source = new Lazy<string>(() => $"{nameof(Pigment)} [{string.Join(", ", pigments.Select(x => x.ToString()))}] [{string.Join(", ", weights)}]");
+    }
+    
+    private static (double x, double y, double z, double alpha) PigmentsToXyzTuple(Pigment[] pigments, double[] weights, XyzConfiguration xyzConfig)
+    {
+        var reflectance = Pigment.GetReflectance(pigments, weights);
+        if (reflectance == null) return (double.NaN, double.NaN, double.NaN, 1.0);
+
+        /*
+         * reflectance is a material property and should be the same regardless of illuminant used when measuring it
+         * so if the requested XYZ config doesn't contain an illuminant with an SPD (e.g. only has a hardcoded white point)
+         * calculate XYZ using a different configuration, and then adapt to the target white point
+         * ----------
+         * NOTE: although reflectance is independent of illuminant, SPDs are just a sample of continuous data
+         * and different illuminant SPDs result in slightly different linear RGB values
+         * so for most accurate results it is best to use the illuminant used when measuring the pigment
+         */
+        var xyzConfigWithSpd = xyzConfig.Illuminant is { Spd: not null }
+            ? xyzConfig
+            : Configuration.Default.Xyz;
+
+        var illuminantSpd = xyzConfigWithSpd.Illuminant!.Spd!;
+        var observer = xyzConfigWithSpd.Observer;
+        var xyz = Xyz.FromSpd(illuminantSpd, observer, reflectance);
+        if (xyzConfigWithSpd != xyzConfig)
+        {
+            xyz = Adaptation.WhitePoint(xyz, xyzConfigWithSpd.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
+        }
+        
+        return (xyz.X, xyz.Y, xyz.Z, 1.0);
+    }
+    
     /* construction from ICC channels */
     public Unicolour(Channels channels, double alpha = 1.0) : 
         this(Configuration.Default, channels, alpha)
@@ -135,6 +176,6 @@ public partial class Unicolour
         ColourRepresentation connectingSpaceRepresentation = iccConfig.HasSupportedProfile
             ? Channels.ToXyz(channels, iccConfig, xyzConfig)
             : Channels.UncalibratedToRgb(channels);
-        return connectingSpaceRepresentation.Triplet.Tuple;
+        return connectingSpaceRepresentation.Tuple;
     }
 }

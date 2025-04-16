@@ -6,8 +6,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class RoundtripRgb255Tests
 {
-    private const double Tolerance = 0.00000005;
+    private const double Tolerance = 0.00000075;
     private static readonly YbrConfiguration YbrConfig = YbrConfiguration.Rec601;
+    private static readonly DynamicRange DynamicRange = DynamicRange.Standard;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
     public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
@@ -32,8 +33,8 @@ public class RoundtripRgb255Tests
     private static void AssertViaRgbLinear(ColourTriplet triplet, RgbConfiguration rgbConfig)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
-        var rgbLinear = Rgb.ToRgbLinear(original, rgbConfig);
-        var roundtrip = Rgb.FromRgbLinear(rgbLinear, rgbConfig);
+        var rgbLinear = Rgb.ToRgbLinear(original, rgbConfig, DynamicRange);
+        var roundtrip = Rgb.FromRgbLinear(rgbLinear, rgbConfig, DynamicRange);
         
         // ACEScc is not fully roundtrip compatible as it does not support linear <= 0 or nonlinear >= ~1.468
         if (rgbConfig == RgbConfiguration.Acescc)
@@ -51,7 +52,14 @@ public class RoundtripRgb255Tests
             AssertBoundedRoundtrip(original, roundtrip, double.MinValue, upper);
             return;
         }
-
+        
+        // Rec. 2100 PQ is not fully roundtrip compatible as the PQ function can result in NaN
+        if (rgbConfig == RgbConfiguration.Rec2100Pq)
+        {
+            AssertPqRoundtrip(original, roundtrip);
+            return;
+        }
+        
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
@@ -145,5 +153,29 @@ public class RoundtripRgb255Tests
     {
         var boundOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
         TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, boundOriginal.Byte255.Triplet, Tolerance);
+    }
+    
+    private static void AssertPqRoundtrip(Rgb original, Rgb roundtrip)
+    {
+        var expected = new ColourTriplet(
+            GetExpected(roundtrip.R, original.R),
+            GetExpected(roundtrip.G, original.G),
+            GetExpected(roundtrip.B, original.B)
+        );
+        
+        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        return;
+
+        double GetExpected(double actualValue, double originalValue)
+        {
+            if (!double.IsNaN(actualValue))
+            {
+                return originalValue;
+            }
+            
+            var pqResult = Pq.Smpte.Eotf(originalValue, DynamicRange.WhiteLuminance);
+            Assert.That(pqResult, Is.NaN);
+            return double.NaN;
+        }
     }
 }

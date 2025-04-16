@@ -5,6 +5,8 @@ public class RgbConfiguration
     public static readonly RgbConfiguration StandardRgb = RgbModels.StandardRgb.RgbConfiguration;
     public static readonly RgbConfiguration DisplayP3 = RgbModels.DisplayP3.RgbConfiguration;
     public static readonly RgbConfiguration Rec2020 = RgbModels.Rec2020.RgbConfiguration;
+    public static readonly RgbConfiguration Rec2100Pq = RgbModels.Rec2100Pq.RgbConfiguration;
+    public static readonly RgbConfiguration Rec2100Hlg = RgbModels.Rec2100Hlg.RgbConfiguration;
     public static readonly RgbConfiguration A98 = RgbModels.A98.RgbConfiguration;
     public static readonly RgbConfiguration ProPhoto = RgbModels.ProPhoto.RgbConfiguration;
     public static readonly RgbConfiguration Aces20651 = RgbModels.Aces20651.RgbConfiguration;
@@ -29,8 +31,8 @@ public class RgbConfiguration
     public Chromaticity ChromaticityG { get; }
     public Chromaticity ChromaticityB { get; }
     public WhitePoint WhitePoint { get; }
-    public Func<double, double> CompandFromLinear { get; }
-    public Func<double, double> InverseCompandToLinear { get; }
+    public Func<double, DynamicRange, double> FromLinear { get; }
+    public Func<double, DynamicRange, double> ToLinear { get; }
     
     private readonly Lazy<Matrix> rgbToXyzMatrix;
     internal Matrix RgbToXyzMatrix => rgbToXyzMatrix.Value;
@@ -44,14 +46,26 @@ public class RgbConfiguration
         WhitePoint whitePoint,
         Func<double, double> fromLinear, 
         Func<double, double> toLinear,
+        string name = Utils.Unnamed) 
+        : this(chromaticityR, chromaticityG, chromaticityB, whitePoint, (x, _) => fromLinear(x), (x, _) => toLinear(x), name)
+    {
+    }
+    
+    internal RgbConfiguration(
+        Chromaticity chromaticityR, 
+        Chromaticity chromaticityG, 
+        Chromaticity chromaticityB,
+        WhitePoint whitePoint,
+        Func<double, DynamicRange, double> fromLinear, 
+        Func<double, DynamicRange, double> toLinear,
         string name = Utils.Unnamed)
     {
         ChromaticityR = chromaticityR;
         ChromaticityG = chromaticityG;
         ChromaticityB = chromaticityB;
         WhitePoint = whitePoint;
-        CompandFromLinear = fromLinear;
-        InverseCompandToLinear = toLinear;
+        FromLinear = fromLinear;
+        ToLinear = toLinear;
         rgbToXyzMatrix = new Lazy<Matrix>(GetRgbToXyzMatrix);
         Name = name;
     }
@@ -89,5 +103,5 @@ public class RgbConfiguration
         });
     }
 
-    public override string ToString() => Name;
+    public override string ToString() => $"{Name} · R {ChromaticityR} · G {ChromaticityG} · B {ChromaticityB} · white point {WhitePoint}";
 }

@@ -53,12 +53,15 @@ public class HuedTests
     public void Okhwb() => AssertUnicolour(new(ColourSpace.Okhwb, 180, 0, 1), [ColourSpace.Okhsv]);
     
     [Test]
+    public void Oklrch() => AssertUnicolour(new(ColourSpace.Oklrch, 0, 0, 180), []);
+    
+    [Test]
     public void Hct() => AssertUnicolour(new(ColourSpace.Hct, 180, 0, 0), []);
 
-    private static void AssertUnicolour(Unicolour unicolour, List<ColourSpace> adjacentHuedSpaces)
+    private static void AssertUnicolour(Unicolour colour, List<ColourSpace> adjacentHuedSpaces)
     {
-        var data = new ColourHeritageData(unicolour);
-        var initial = unicolour.InitialRepresentation;
+        var data = new ColourHeritageData(colour);
+        var initial = colour.SourceRepresentation;
         Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
         Assert.That(initial.UseAsHued, Is.True);
         Assert.That(initial.UseAsGreyscale, Is.True);
@@ -67,7 +70,7 @@ public class HuedTests
         Assert.That(data.UseAsGreyscale(adjacentHuedSpaces), Has.All.True);
 
         // the first non-hued space to be converted to (e.g. RGB from HSB) will have hued heritage (since from HSB)
-        var otherSpaces = TestUtils.AllColourSpaces.Except(adjacentHuedSpaces.Concat(new[] { unicolour.InitialColourSpace })).ToList();
+        var otherSpaces = TestUtils.AllColourSpaces.Except(adjacentHuedSpaces.Concat([colour.SourceColourSpace])).ToList();
         Assert.That(data.Heritages(otherSpaces), Has.One.EqualTo(ColourHeritage.GreyscaleAndHued));
         Assert.That(data.Heritages(otherSpaces), Has.Exactly(otherSpaces.Count - 1).EqualTo(ColourHeritage.Greyscale));
         Assert.That(data.UseAsHued(otherSpaces), Has.All.False);

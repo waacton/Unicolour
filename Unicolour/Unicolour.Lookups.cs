@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using Wacton.Unicolour.Icc;
+
+namespace Wacton.Unicolour;
 
 public partial class Unicolour
 {

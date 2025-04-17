@@ -4,102 +4,121 @@ namespace Wacton.Unicolour;
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
-    private readonly Lazy<Rgb> rgb;
-    private readonly Lazy<RgbLinear> rgbLinear;
-    private readonly Lazy<Hsb> hsb;
-    private readonly Lazy<Hsl> hsl;
-    private readonly Lazy<Hwb> hwb;
-    private readonly Lazy<Hsi> hsi;
-    private readonly Lazy<Xyz> xyz;
-    private readonly Lazy<Xyy> xyy;
-    private readonly Lazy<Wxy> wxy;
-    private readonly Lazy<Lab> lab;
-    private readonly Lazy<Lchab> lchab;
-    private readonly Lazy<Luv> luv;
-    private readonly Lazy<Lchuv> lchuv;
-    private readonly Lazy<Hsluv> hsluv;
-    private readonly Lazy<Hpluv> hpluv;
-    private readonly Lazy<Ypbpr> ypbpr;
-    private readonly Lazy<Ycbcr> ycbcr;
-    private readonly Lazy<Ycgco> ycgco;
-    private readonly Lazy<Yuv> yuv;
-    private readonly Lazy<Yiq> yiq;
-    private readonly Lazy<Ydbdr> ydbdr;
-    private readonly Lazy<Tsl> tsl;
-    private readonly Lazy<Xyb> xyb;
-    private readonly Lazy<Ipt> ipt;
-    private readonly Lazy<Ictcp> ictcp;
-    private readonly Lazy<Jzazbz> jzazbz;
-    private readonly Lazy<Jzczhz> jzczhz;
-    private readonly Lazy<Oklab> oklab;
-    private readonly Lazy<Oklch> oklch;
-    private readonly Lazy<Okhsv> okhsv;
-    private readonly Lazy<Okhsl> okhsl;
-    private readonly Lazy<Okhwb> okhwb;
-    private readonly Lazy<Oklrab> oklrab;
-    private readonly Lazy<Oklrch> oklrch;
-    private readonly Lazy<Cam02> cam02;
-    private readonly Lazy<Cam16> cam16;
-    private readonly Lazy<Hct> hct;
-    private readonly Lazy<Channels> icc;
-    private readonly Lazy<Temperature> temperature;
-    private readonly Lazy<bool> isInPointerGamut;
-    private readonly Lazy<string> source;
+    private Rgb? rgb;
+    private RgbLinear? rgbLinear;
+    private Hsb? hsb;
+    private Hsl? hsl;
+    private Hwb? hwb;
+    private Hsi? hsi;
+    private Xyz? xyz;
+    private Xyy? xyy;
+    private Wxy? wxy;
+    private Lab? lab;
+    private Lchab? lchab;
+    private Luv? luv;
+    private Lchuv? lchuv;
+    private Hsluv? hsluv;
+    private Hpluv? hpluv;
+    private Ypbpr? ypbpr;
+    private Ycbcr? ycbcr;
+    private Ycgco? ycgco;
+    private Yuv? yuv;
+    private Yiq? yiq;
+    private Ydbdr? ydbdr;
+    private Tsl? tsl;
+    private Xyb? xyb;
+    private Ipt? ipt;
+    private Ictcp? ictcp;
+    private Jzazbz? jzazbz;
+    private Jzczhz? jzczhz;
+    private Oklab? oklab;
+    private Oklch? oklch;
+    private Okhsv? okhsv;
+    private Okhsl? okhsl;
+    private Okhwb? okhwb;
+    private Oklrab? oklrab;
+    private Oklrch? oklrch;
+    private Cam02? cam02;
+    private Cam16? cam16;
+    private Hct? hct;
+    private Channels? icc;
     
-    public Alpha Alpha { get; }
+    private bool? isInPointerGamut;
+    private Temperature? temperature;
+    private bool? isImaginary;
+    private string? description;
+    private string? source;
+    
     public Configuration Configuration { get; }
     internal readonly ColourSpace SourceColourSpace;
     internal readonly ColourRepresentation SourceRepresentation;
 
-    public Rgb Rgb => rgb.Value;
-    public RgbLinear RgbLinear => rgbLinear.Value;
-    public Hsb Hsb => hsb.Value;
-    public Hsl Hsl => hsl.Value;
-    public Hwb Hwb => hwb.Value;
-    public Hsi Hsi => hsi.Value;
-    public Xyz Xyz => xyz.Value;
-    public Xyy Xyy => xyy.Value;
-    public Wxy Wxy => wxy.Value;
-    public Lab Lab => lab.Value;
-    public Lchab Lchab => lchab.Value;
-    public Luv Luv => luv.Value;
-    public Lchuv Lchuv => lchuv.Value;
-    public Hsluv Hsluv => hsluv.Value;
-    public Hpluv Hpluv => hpluv.Value;
-    public Ypbpr Ypbpr => ypbpr.Value;
-    public Ycbcr Ycbcr => ycbcr.Value;
-    public Ycgco Ycgco => ycgco.Value;
-    public Yuv Yuv => yuv.Value;
-    public Yiq Yiq => yiq.Value;
-    public Ydbdr Ydbdr => ydbdr.Value;
-    public Tsl Tsl => tsl.Value;
-    public Xyb Xyb => xyb.Value;
-    public Ipt Ipt => ipt.Value;
-    public Ictcp Ictcp => ictcp.Value;
-    public Jzazbz Jzazbz => jzazbz.Value;
-    public Jzczhz Jzczhz => jzczhz.Value;
-    public Oklab Oklab => oklab.Value;
-    public Oklch Oklch => oklch.Value;
-    public Okhsv Okhsv => okhsv.Value;
-    public Okhsl Okhsl => okhsl.Value;
-    public Okhwb Okhwb => okhwb.Value;
-    public Oklrab Oklrab => oklrab.Value;
-    public Oklrch Oklrch => oklrch.Value;
-    public Cam02 Cam02 => cam02.Value;
-    public Cam16 Cam16 => cam16.Value;
-    public Hct Hct => hct.Value;
-    public Channels Icc => icc.Value;
+    public Rgb Rgb => Get(ref rgb, EvaluateRgb);
+    public RgbLinear RgbLinear => Get(ref rgbLinear, EvaluateRgbLinear);
+    public Hsb Hsb => Get(ref hsb, EvaluateHsb);
+    public Hsl Hsl => Get(ref hsl, EvaluateHsl);
+    public Hwb Hwb => Get(ref hwb, EvaluateHwb);
+    public Hsi Hsi => Get(ref hsi, EvaluateHsi);
+    public Xyz Xyz => Get(ref xyz, EvaluateXyz);
+    public Xyy Xyy => Get(ref xyy, EvaluateXyy);
+    public Wxy Wxy => Get(ref wxy, EvaluateWxy);
+    public Lab Lab => Get(ref lab, EvaluateLab);
+    public Lchab Lchab => Get(ref lchab, EvaluateLchab);
+    public Luv Luv => Get(ref luv, EvaluateLuv);
+    public Lchuv Lchuv => Get(ref lchuv, EvaluateLchuv);
+    public Hsluv Hsluv => Get(ref hsluv, EvaluateHsluv);
+    public Hpluv Hpluv => Get(ref hpluv, EvaluateHpluv);
+    public Ypbpr Ypbpr => Get(ref ypbpr, EvaluateYpbpr);
+    public Ycbcr Ycbcr => Get(ref ycbcr, EvaluateYcbcr);
+    public Ycgco Ycgco => Get(ref ycgco, EvaluateYcgco);
+    public Yuv Yuv => Get(ref yuv, EvaluateYuv);
+    public Yiq Yiq => Get(ref yiq, EvaluateYiq);
+    public Ydbdr Ydbdr => Get(ref ydbdr, EvaluateYdbdr);
+    public Tsl Tsl => Get(ref tsl, EvaluateTsl);
+    public Xyb Xyb => Get(ref xyb, EvaluateXyb);
+    public Ipt Ipt => Get(ref ipt, EvaluateIpt);
+    public Ictcp Ictcp => Get(ref ictcp, EvaluateIctcp);
+    public Jzazbz Jzazbz => Get(ref jzazbz, EvaluateJzazbz);
+    public Jzczhz Jzczhz => Get(ref jzczhz, EvaluateJzczhz);
+    public Oklab Oklab => Get(ref oklab, EvaluateOklab);
+    public Oklch Oklch => Get(ref oklch, EvaluateOklch);
+    public Okhsv Okhsv => Get(ref okhsv, EvaluateOkhsv);
+    public Okhsl Okhsl => Get(ref okhsl, EvaluateOkhsl);
+    public Okhwb Okhwb => Get(ref okhwb, EvaluateOkhwb);
+    public Oklrab Oklrab => Get(ref oklrab, EvaluateOklrab);
+    public Oklrch Oklrch => Get(ref oklrch, EvaluateOklrch);
+    public Cam02 Cam02 => Get(ref cam02, EvaluateCam02);
+    public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
+    public Hct Hct => Get(ref hct, EvaluateHct);
 
+    public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
+            ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
+            : Channels.UncalibratedFromRgb(Rgb));
+    
     public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
     public bool IsInRgbGamut => Rgb.IsInGamut;
-    public bool IsInPointerGamut => isInPointerGamut.Value;
-    public string Description => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
-    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
-    public bool IsImaginary => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity);
+    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
-    public Temperature Temperature => temperature.Value;
+    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
+    public Temperature Temperature => Get(ref temperature, () => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
     public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
+    public bool IsImaginary => Get(ref isImaginary, () => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity));
+    public string Description => Get(ref description, () => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl)));
+    public Alpha Alpha { get; }
+    private string Source => Get(ref source, () => $"{SourceColourSpace} {SourceRepresentation}");
+    
+    private static T Get<T>(ref T? backingField, Func<T> evaluate) where T : class
+    {
+        backingField ??= evaluate();
+        return backingField;
+    }
+    
+    private static bool Get(ref bool? backingField, Func<bool> evaluate)
+    {
+        backingField ??= evaluate();
+        return (bool)backingField;
+    }
 
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
@@ -113,58 +132,9 @@ public partial class Unicolour : IEquatable<Unicolour>
         }
         
         Configuration = config;
-        Alpha = new Alpha(alpha);
         SourceColourSpace = colourSpace;
         SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
-
-        rgb = new Lazy<Rgb>(EvaluateRgb);
-        rgbLinear = new Lazy<RgbLinear>(EvaluateRgbLinear);
-        hsb = new Lazy<Hsb>(EvaluateHsb);
-        hsl = new Lazy<Hsl>(EvaluateHsl);
-        hwb = new Lazy<Hwb>(EvaluateHwb);
-        hsi = new Lazy<Hsi>(EvaluateHsi);
-        xyz = new Lazy<Xyz>(EvaluateXyz);
-        xyy = new Lazy<Xyy>(EvaluateXyy);
-        wxy = new Lazy<Wxy>(EvaluateWxy);
-        lab = new Lazy<Lab>(EvaluateLab);
-        lchab = new Lazy<Lchab>(EvaluateLchab);
-        luv = new Lazy<Luv>(EvaluateLuv);
-        lchuv = new Lazy<Lchuv>(EvaluateLchuv);
-        hsluv = new Lazy<Hsluv>(EvaluateHsluv);
-        hpluv = new Lazy<Hpluv>(EvaluateHpluv);
-        ypbpr = new Lazy<Ypbpr>(EvaluateYpbpr); 
-        ycbcr = new Lazy<Ycbcr>(EvaluateYcbcr); 
-        ycgco = new Lazy<Ycgco>(EvaluateYcgco); 
-        yuv = new Lazy<Yuv>(EvaluateYuv); 
-        yiq = new Lazy<Yiq>(EvaluateYiq); 
-        ydbdr = new Lazy<Ydbdr>(EvaluateYdbdr);
-        tsl = new Lazy<Tsl>(EvaluateTsl);
-        xyb = new Lazy<Xyb>(EvaluateXyb);
-        ipt = new Lazy<Ipt>(EvaluateIpt);
-        ictcp = new Lazy<Ictcp>(EvaluateIctcp);
-        jzazbz = new Lazy<Jzazbz>(EvaluateJzazbz);
-        jzczhz = new Lazy<Jzczhz>(EvaluateJzczhz);
-        oklab = new Lazy<Oklab>(EvaluateOklab);
-        oklch = new Lazy<Oklch>(EvaluateOklch);
-        okhsv = new Lazy<Okhsv>(EvaluateOkhsv);
-        okhsl = new Lazy<Okhsl>(EvaluateOkhsl);
-        okhwb = new Lazy<Okhwb>(EvaluateOkhwb);
-        oklrab = new Lazy<Oklrab>(EvaluateOklrab);
-        oklrch = new Lazy<Oklrch>(EvaluateOklrch);
-        cam02 = new Lazy<Cam02>(EvaluateCam02);
-        cam16 = new Lazy<Cam16>(EvaluateCam16);
-        hct = new Lazy<Hct>(EvaluateHct);
-        
-        // the following are overriden by the derived constructors
-        // that enable Unicolour to be constructed from entities other than colour spaces
-        icc = new Lazy<Channels>(() =>
-            Configuration.Icc.HasSupportedProfile
-                ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
-                : Channels.UncalibratedFromRgb(Rgb));
-        
-        temperature = new Lazy<Temperature>(() => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
-        isInPointerGamut = new Lazy<bool>(() => PointerGamut.IsInGamut(this));
-        source = new Lazy<string>(() => $"{SourceColourSpace} {SourceRepresentation}");
+        Alpha = new Alpha(alpha);
     }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
@@ -209,7 +179,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {source.Value}", $"alpha {Alpha}" };
+        var parts = new List<string> { $"from {Source}", $"alpha {Alpha}" };
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);

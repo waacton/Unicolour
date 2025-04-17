@@ -49,13 +49,13 @@ public partial class Unicolour
     public Unicolour(Configuration config, string hex) : 
         this(config, ColourSpace.Rgb, Parse(hex))
     {
-        source = new Lazy<string>(() => $"{nameof(Hex)} {hex}");
+        source = $"{nameof(Hex)} {hex}";
     }
 
     public Unicolour(Configuration config, string hex, double alphaOverride) :
         this(config, ColourSpace.Rgb, Parse(hex) with { a = alphaOverride })
     {
-        source = new Lazy<string>(() => $"{nameof(Hex)} {hex}");
+        source = $"{nameof(Hex)} {hex}";
     }
     
     /* construction from chromaticity */
@@ -67,7 +67,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Chromaticity chromaticity, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance)
     {
-        source = new Lazy<string>(() => $"{nameof(Chromaticity)} {chromaticity}");
+        source = $"{nameof(Chromaticity)} {chromaticity}";
     }
 
     /* construction from temperature */
@@ -89,8 +89,8 @@ public partial class Unicolour
     public Unicolour(Configuration config, Temperature temperature, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, TemperatureToXyyTuple(temperature, config.Xyz.Observer, luminance))
     {
-        this.temperature = new Lazy<Temperature>(() => temperature);
-        source = new Lazy<string>(() => $"{nameof(Temperature)} {temperature}");
+        this.temperature = temperature;
+        source = $"{nameof(Temperature)} {temperature}";
     }
 
     private static (double x, double y, double upperY, double alpha) TemperatureToXyyTuple(Temperature temperature, Observer observer, double luminance)
@@ -108,7 +108,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Spd spd) : 
         this(config, ColourSpace.Xyz, SpdToXyzTuple(spd, config.Xyz.Observer))
     {
-        source = new Lazy<string>(() => $"{nameof(Spd)} {spd}");
+        source = $"{nameof(Spd)} {spd}";
     }
     
     private static (double x, double y, double z, double alpha) SpdToXyzTuple(Spd spd, Observer observer)
@@ -126,7 +126,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Pigment[] pigments, double[] weights) :
         this(config, ColourSpace.Xyz, PigmentsToXyzTuple(pigments, weights, config.Xyz))
     {
-        source = new Lazy<string>(() => $"{nameof(Pigment)} [{string.Join(", ", pigments.Select(x => x.ToString()))}] [{string.Join(", ", weights)}]");
+        source = $"{nameof(Pigment)} [{string.Join(", ", pigments.Select(x => x.ToString()))}] [{string.Join(", ", weights)}]";
     }
     
     private static (double x, double y, double z, double alpha) PigmentsToXyzTuple(Pigment[] pigments, double[] weights, XyzConfiguration xyzConfig)
@@ -167,8 +167,8 @@ public partial class Unicolour
     public Unicolour(Configuration config, Channels channels, double alpha = 1.0) : 
         this(config, config.Icc.ConnectingSpace, IccToTuple(channels, config.Icc, config.Xyz), alpha)
     {
-        icc = new Lazy<Channels>(() => channels);
-        source = new Lazy<string>(() => $"{nameof(Icc)} {channels}");
+        icc = channels;
+        source = $"{nameof(Icc)} {channels}";
     }
     
     private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, XyzConfiguration xyzConfig)
@@ -176,6 +176,7 @@ public partial class Unicolour
         ColourRepresentation connectingSpaceRepresentation = iccConfig.HasSupportedProfile
             ? Channels.ToXyz(channels, iccConfig, xyzConfig)
             : Channels.UncalibratedToRgb(channels);
+        
         return connectingSpaceRepresentation.Tuple;
     }
 }

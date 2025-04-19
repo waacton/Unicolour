@@ -3,12 +3,13 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,083/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,269/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion
 - Colour mixing / colour interpolation
+- Colour blending
 - Colour difference / colour distance
 - Colour gamut mapping
 - Colour chromaticity
@@ -309,6 +310,34 @@ var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 | Longer                         | `HueSpan.Longer`     |
 | Increasing                     | `HueSpan.Increasing` |
 | Decreasing                     | `HueSpan.Decreasing` |
+
+### Blend colours
+Two colours can be blended as though they are layered elements. Compositing is performed using the source-over operator.
+```c#
+var blue = new Unicolour(ColourSpace.Rgb, 240, 1.0, 1.0, alpha: 0.5);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var purple = blue.Blend(red, BlendMode.Normal);
+var pink = blue.Blend(red, BlendMode.Screen);
+```
+
+| Blend&nbsp;mode   | Enum                     |
+|-------------------|--------------------------|
+| Normal            | `BlendMode.Normal`       |
+| Multiply          | `BlendMode.Multiply`     |
+| Screen            | `BlendMode.Screen`       |
+| Overlay           | `BlendMode.Overlay`      |
+| Darken            | `BlendMode.Darken`       |
+| Lighten           | `BlendMode.Lighten`      |
+| Colour&nbsp;Dodge | `BlendMode.ColourDodge`  |
+| Colour&nbsp;Burn  | `BlendMode.ColourBurn`   |
+| Hard&nbsp;Light   | `BlendMode.HardLight`    |
+| Soft&nbsp;Light   | `BlendMode.SoftLight`    |
+| Difference        | `BlendMode.Difference`   |
+| Exclusion         | `BlendMode.Exclusion`    |
+| Hue               | `BlendMode.Hue`          |
+| Saturation        | `BlendMode.Saturation`   |
+| Colour            | `BlendMode.Colour`       |
+| Luminosity        | `BlendMode.Luminosity`   |
 
 ### Compare colours
 Two methods of comparing colours are available: contrast and difference.

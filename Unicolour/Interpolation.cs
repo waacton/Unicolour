@@ -4,7 +4,7 @@ internal static class Interpolation
 {
     internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, HueSpan hueSpan, bool premultiplyAlpha)
     {
-        var (start, end, config) = AdjustConfiguration(startColour, endColour);
+        var (start, end, config) = AdjustConfig(startColour, endColour);
         
         var startRepresentation = start.GetRepresentation(colourSpace);
         var startAlpha = start.Alpha;
@@ -41,7 +41,7 @@ internal static class Interpolation
     internal static IEnumerable<Unicolour> Palette(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, int count, HueSpan hueSpan, bool premultiplyAlpha)
     {
         count = Math.Max(count, 0);
-        var (start, end, _) = AdjustConfiguration(startColour, endColour); // saves doing this N times via Mix() if configs are different
+        var (start, end, _) = AdjustConfig(startColour, endColour); // saves doing this N times via Mix() if configs are different
         
         var palette = new List<Unicolour>();
         for (var i = 0; i < count; i++)
@@ -65,7 +65,7 @@ internal static class Interpolation
     //     return new Unicolour(config, new Channels(channels), alpha);
     // }
     
-    private static (Unicolour start, Unicolour end, Configuration config) AdjustConfiguration(Unicolour start, Unicolour end)
+    private static (Unicolour start, Unicolour end, Configuration config) AdjustConfig(Unicolour start, Unicolour end)
     {
         var config = start.Configuration;
         return end.Configuration == config 

@@ -149,6 +149,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         return Interpolation.Palette(this, other, colourSpace, count, hueSpan, premultiplyAlpha);
     }
+
+    public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
     
     // TODO: explore if this is worthwhile
     // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)

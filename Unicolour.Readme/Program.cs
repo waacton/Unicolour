@@ -175,6 +175,14 @@ void FeatureMix()
     var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 }
 
+void FeatureBlend()
+{
+    var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 0.5);
+    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+    var purple = blue.Blend(red, BlendMode.Normal);
+    var pink = blue.Blend(red, BlendMode.Screen);
+}
+
 void FeatureCompare()
 {
     var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);

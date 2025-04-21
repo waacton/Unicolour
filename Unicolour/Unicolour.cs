@@ -153,10 +153,10 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
     
     // TODO: explore if this is worthwhile
-    // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
-    // {
-    //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
-    // }
+    public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
+    {
+        return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
+    }
 
     public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
 

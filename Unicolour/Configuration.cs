@@ -25,7 +25,7 @@ public class Configuration
         Xyz = xyzConfig ?? XyzConfiguration.D65;
         Ybr = ybrConfig ?? YbrConfiguration.Rec601;
         Cam = camConfig ?? CamConfiguration.StandardRgb;
-        DynamicRange = dynamicRange ?? DynamicRange.High; // TODO: regenerate web & unity assets for new default value (203 instead of 100) + Oklrab & Oklrch
+        DynamicRange = dynamicRange ?? DynamicRange.High;
         Icc = iccConfig ?? IccConfiguration.None;
     }
     

@@ -151,17 +151,19 @@ public partial class Unicolour : IEquatable<Unicolour>
     }
 
     public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
-    
-    // TODO: explore if this is worthwhile
-    // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
-    // {
-    //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
-    // }
 
     public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
 
     public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
-    public Unicolour MapToPointerGamut() => GamutMapping.ToPointerGamut(this);
+
+    public Unicolour MapToPointerGamut()
+    {
+        // need to preserver the result so downstream usage doesn't perform in-gamut check
+        // since rounding errors during chromatic adaptation to C/2° will frequently result in false
+        var mapped = GamutMapping.ToPointerGamut(this);
+        mapped.isInPointerGamut = !mapped.SourceRepresentation.UseAsNaN; 
+        return mapped;
+    } 
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
@@ -176,7 +178,10 @@ public partial class Unicolour : IEquatable<Unicolour>
         var (first, second, third) = SourceRepresentation.Triplet;
         var heritage = SourceRepresentation.Heritage;
         var alpha = Alpha.A;
-        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha);
+        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha)
+        {
+            isInPointerGamut = isInPointerGamut
+        };
     }
     
     public override string ToString()

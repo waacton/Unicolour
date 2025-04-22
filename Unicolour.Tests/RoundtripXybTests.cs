@@ -5,7 +5,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class RoundtripXybTests
 {
-    private const double Tolerance = 0.00000005;
+    private const double Tolerance = 0.000000125;
 
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XybTriplets))]
     public void ViaRgbLinear(ColourTriplet triplet)

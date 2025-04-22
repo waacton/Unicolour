@@ -4,50 +4,50 @@ namespace Wacton.Unicolour;
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
-    private Rgb rgb;
-    private RgbLinear rgbLinear;
-    private Hsb hsb;
-    private Hsl hsl;
-    private Hwb hwb;
-    private Hsi hsi;
-    private Xyz xyz;
-    private Xyy xyy;
-    private Wxy wxy;
-    private Lab lab;
-    private Lchab lchab;
-    private Luv luv;
-    private Lchuv lchuv;
-    private Hsluv hsluv;
-    private Hpluv hpluv;
-    private Ypbpr ypbpr;
-    private Ycbcr ycbcr;
-    private Ycgco ycgco;
-    private Yuv yuv;
-    private Yiq yiq;
-    private Ydbdr ydbdr;
-    private Tsl tsl;
-    private Xyb xyb;
-    private Ipt ipt;
-    private Ictcp ictcp;
-    private Jzazbz jzazbz;
-    private Jzczhz jzczhz;
-    private Oklab oklab;
-    private Oklch oklch;
-    private Okhsv okhsv;
-    private Okhsl okhsl;
-    private Okhwb okhwb;
-    private Oklrab oklrab;
-    private Oklrch oklrch;
-    private Cam02 cam02;
-    private Cam16 cam16;
-    private Hct hct;
-    private Channels icc;
+    private Rgb? rgb;
+    private RgbLinear? rgbLinear;
+    private Hsb? hsb;
+    private Hsl? hsl;
+    private Hwb? hwb;
+    private Hsi? hsi;
+    private Xyz? xyz;
+    private Xyy? xyy;
+    private Wxy? wxy;
+    private Lab? lab;
+    private Lchab? lchab;
+    private Luv? luv;
+    private Lchuv? lchuv;
+    private Hsluv? hsluv;
+    private Hpluv? hpluv;
+    private Ypbpr? ypbpr;
+    private Ycbcr? ycbcr;
+    private Ycgco? ycgco;
+    private Yuv? yuv;
+    private Yiq? yiq;
+    private Ydbdr? ydbdr;
+    private Tsl? tsl;
+    private Xyb? xyb;
+    private Ipt? ipt;
+    private Ictcp? ictcp;
+    private Jzazbz? jzazbz;
+    private Jzczhz? jzczhz;
+    private Oklab? oklab;
+    private Oklch? oklch;
+    private Okhsv? okhsv;
+    private Okhsl? okhsl;
+    private Okhwb? okhwb;
+    private Oklrab? oklrab;
+    private Oklrch? oklrch;
+    private Cam02? cam02;
+    private Cam16? cam16;
+    private Hct? hct;
+    private Channels? icc;
     
-    private bool isInPointerGamut;
-    private Temperature temperature;
-    private bool isImaginary;
-    private string description;
-    private string source;
+    private bool? isInPointerGamut;
+    private Temperature? temperature;
+    private bool? isImaginary;
+    private string? description;
+    private string? source;
     
     public Configuration Configuration { get; }
     internal readonly ColourSpace SourceColourSpace;
@@ -107,6 +107,18 @@ public partial class Unicolour : IEquatable<Unicolour>
     public string Description => Get(ref description, () => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl)));
     public Alpha Alpha { get; }
     private string Source => Get(ref source, () => $"{SourceColourSpace} {SourceRepresentation}");
+    
+    private static T Get<T>(ref T? backingField, Func<T> evaluate) where T : class
+    {
+        backingField ??= evaluate();
+        return backingField;
+    }
+    
+    private static bool Get(ref bool? backingField, Func<bool> evaluate)
+    {
+        backingField ??= evaluate();
+        return (bool)backingField;
+    }
 
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
@@ -124,12 +136,6 @@ public partial class Unicolour : IEquatable<Unicolour>
         SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
         Alpha = new Alpha(alpha);
     }
-    
-    private static T Get<T>(ref T backingField, Func<T> evaluate)
-    {
-        backingField ??= evaluate();
-        return backingField;
-    }
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
     public double Difference(Unicolour reference, DeltaE deltaE) => Comparison.Difference(this, reference, deltaE);
@@ -143,17 +149,21 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         return Interpolation.Palette(this, other, colourSpace, count, hueSpan, premultiplyAlpha);
     }
-    
-    // TODO: explore if this is worthwhile
-    // public Unicolour MixChannels(Unicolour other, double amount = 0.5, bool premultiplyAlpha = true)
-    // {
-    //     return Interpolation.MixChannels(this, other, amount, premultiplyAlpha);
-    // }
+
+    public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
 
     public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
 
     public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
-    public Unicolour MapToPointerGamut() => GamutMapping.ToPointerGamut(this);
+
+    public Unicolour MapToPointerGamut()
+    {
+        // need to preserver the result so downstream usage doesn't perform in-gamut check
+        // since rounding errors during chromatic adaptation to C/2° will frequently result in false
+        var mapped = GamutMapping.ToPointerGamut(this);
+        mapped.isInPointerGamut = !mapped.SourceRepresentation.UseAsNaN; 
+        return mapped;
+    } 
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
@@ -168,7 +178,10 @@ public partial class Unicolour : IEquatable<Unicolour>
         var (first, second, third) = SourceRepresentation.Triplet;
         var heritage = SourceRepresentation.Heritage;
         var alpha = Alpha.A;
-        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha);
+        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha)
+        {
+            isInPointerGamut = isInPointerGamut
+        };
     }
     
     public override string ToString()

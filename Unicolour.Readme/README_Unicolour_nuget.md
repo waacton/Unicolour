@@ -3,12 +3,13 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/217,476/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,239/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion
 - Colour mixing / colour interpolation
+- Colour blending
 - Colour difference / colour distance
 - Colour gamut mapping
 - Colour chromaticity
@@ -34,7 +35,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 8. 🥽 [Experimental](https://github.com/waacton/Unicolour#-experimental)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single colour and its representation across [30+ colour spaces](https://github.com/waacton/Unicolour#convert-between-colour-spaces).
+A `Unicolour` encapsulates a single colour and its representation across [35+ colour spaces](https://github.com/waacton/Unicolour#convert-between-colour-spaces).
 It can be used to [mix and compare colours](https://github.com/waacton/Unicolour#mix-colours), and offers [many useful features](https://github.com/waacton/Unicolour#-features) for working with colour.
 
 > **Supported colour spaces**
@@ -45,7 +46,7 @@ It can be used to [mix and compare colours](https://github.com/waacton/Unicolour
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
 > TSL · XYB ·
 > IPT · ICTCP · Jzazbz · JzCzhz ·
-> Oklab · Oklch · Okhsv · Okhsl · Okhwb ·
+> Oklab · Oklch · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch ·
 > CIECAM02 · CAM16 ·
 > HCT ·
 > CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion)
@@ -171,6 +172,8 @@ var (l, c, h) = colour.Oklch;
 | Okhsv                                                                               | `ColourSpace.Okhsv`     | `.Okhsv`       |
 | Okhsl                                                                               | `ColourSpace.Okhsl`     | `.Okhsl`       |
 | Okhwb                                                                               | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| Oklrab                                                                              | `ColourSpace.Oklrab`    | `.Oklrab`      |
+| Oklrch                                                                              | `ColourSpace.Oklrch`    | `.Oklrch`      |
 | CIECAM02                                                                            | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                               | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                 | `ColourSpace.Hct`       | `.Hct`         |
@@ -194,6 +197,34 @@ var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 | Longer                         | `HueSpan.Longer`     |
 | Increasing                     | `HueSpan.Increasing` |
 | Decreasing                     | `HueSpan.Decreasing` |
+
+### Blend colours
+Two colours can be blended as though they are layered elements. Compositing is performed using the source-over operator.
+```cs
+var blue = new Unicolour(ColourSpace.Rgb, 240, 1.0, 1.0, alpha: 0.5);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var purple = blue.Blend(red, BlendMode.Normal);
+var pink = blue.Blend(red, BlendMode.Screen);
+```
+
+| Blend&nbsp;mode   | Enum                     |
+|-------------------|--------------------------|
+| Normal            | `BlendMode.Normal`       |
+| Multiply          | `BlendMode.Multiply`     |
+| Screen            | `BlendMode.Screen`       |
+| Overlay           | `BlendMode.Overlay`      |
+| Darken            | `BlendMode.Darken`       |
+| Lighten           | `BlendMode.Lighten`      |
+| Colour&nbsp;Dodge | `BlendMode.ColourDodge`  |
+| Colour&nbsp;Burn  | `BlendMode.ColourBurn`   |
+| Hard&nbsp;Light   | `BlendMode.HardLight`    |
+| Soft&nbsp;Light   | `BlendMode.SoftLight`    |
+| Difference        | `BlendMode.Difference`   |
+| Exclusion         | `BlendMode.Exclusion`    |
+| Hue               | `BlendMode.Hue`          |
+| Saturation        | `BlendMode.Saturation`   |
+| Colour            | `BlendMode.Colour`       |
+| Luminosity        | `BlendMode.Luminosity`   |
 
 ### Compare colours
 Two methods of comparing colours are available: contrast and difference.
@@ -220,19 +251,23 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔECAM02                                                | `DeltaE.Cam02`             |
 | ΔECAM16                                                | `DeltaE.Cam16`             |
 
-### Map colour into RGB gamut
+### Map colour into gamut
 Colours that cannot be displayed with the [configured RGB model](https://github.com/waacton/Unicolour#rgbconfiguration) can be mapped to the closest in-gamut RGB colour.
-The gamut mapping algorithm conforms to CSS specifications.
+Mapping to Pointer's gamut will return the closest real surface colour of the same lightness and hue.
 ```cs
-var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
-var inGamut = outOfGamut.MapToRgbGamut();
+var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
+var isInRgb = veryRed.IsInRgbGamut;
+var normalRed = veryRed.MapToRgbGamut();
+
+var isInPointer = veryRed.IsInPointerGamut;
+var surfaceRed = veryRed.MapToPointerGamut();
 ```
 
-| Gamut mapping method                                                                                    | Enum                            |
-|---------------------------------------------------------------------------------------------------------|---------------------------------|
-| RGB&nbsp;clipping                                                                                       | `GamutMap.RgbClipping`          |
-| Oklch&nbsp;chroma&nbsp;reduction&nbsp;(CSS&nbsp;specification)&nbsp;👈&nbsp;_default_                   | `GamutMap.OklchChromaReduction` |
-| [WXY&nbsp;purity&nbsp;reduction](https://unicolour.wacton.xyz/wxy-colour-space#%EF%B8%8F-gamut-mapping) | `GamutMap.WxyPurityReduction `  |
+| RGB&nbsp;gamut&nbsp;mapping&nbsp;method                                                                  | Enum                            |
+|----------------------------------------------------------------------------------------------------------|---------------------------------|
+| RGB&nbsp;clipping                                                                                        | `GamutMap.RgbClipping`          |
+| Oklch&nbsp;chroma&nbsp;reduction&nbsp;(CSS&nbsp;specification)&nbsp;👈&nbsp;_default_                    | `GamutMap.OklchChromaReduction` |
+| [WXY&nbsp;purity&nbsp;reduction](https://unicolour.wacton.xyz/wxy-colour-space#%EF%B8%8F-gamut-mapping)  | `GamutMap.WxyPurityReduction `  |
 
 ### Simulate colour vision deficiency
 Colour vision deficiency (CVD) or colour blindness can be simulated, conveying how a particular colour might be perceived.
@@ -371,13 +406,17 @@ Every line of code is tested, and any defect is [Unicolour's responsibility](htt
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the colour.
 
-Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
+Example configuration with predefined
+- Rec. 2020 RGB
+- Illuminant D50 (2° observer) XYZ
 ```cs
 Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
 Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
 ```
 
-Example configuration with manually defined wide-gamut RGB & illuminant C (10° observer) XYZ:
+Example configuration with manually defined
+- Wide-gamut RGB
+- Illuminant C (10° observer) XYZ, using Von Kries method for white point adaptation
 ```cs
 var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),
@@ -388,7 +427,7 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Math.Pow(value, 2.19921875)
 );
 
-var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);
@@ -405,6 +444,8 @@ Defines the RGB model, often used to specify a wider gamut than standard RGB (sR
 | sRGB&nbsp;👈&nbsp;_default_          | `.StandardRgb`   |
 | Display&nbsp;P3                      | `.DisplayP3`     |
 | Rec.&nbsp;2020                       | `.Rec2020`       |
+| Rec.&nbsp;2100&nbsp;PQ               | `.Rec2100Pq`     |
+| Rec.&nbsp;2100&nbsp;HLG              | `.Rec2100Hlg`    |
 | A98                                  | `.A98`           |
 | ProPhoto                             | `.ProPhoto`      |
 | ACES&nbsp;2065-1                     | `.Aces20651`     |
@@ -432,7 +473,8 @@ Defines the RGB model, often used to specify a wider gamut than standard RGB (sR
 
 ### `XyzConfiguration`
 Defines the XYZ white point (which is also [inherited by colour spaces that do not need a specific configuration](https://github.com/waacton/Unicolour#white-points)),
-as well as the observer to use for temperature calculations.
+the observer to use when colour matching functions (CMFs) are required,
+and the chromatic adaptation matrix to use for any white point adaptation (the Bradford method will be used if unspecified).
 
 | Predefined                                         | Property  |
 |----------------------------------------------------|-----------|
@@ -442,6 +484,7 @@ as well as the observer to use for temperature calculations.
 - Parameters
   - Reference white point or illuminant
   - Observer
+  - Chromatic adaptation matrix
 
 ### `YbrConfiguration`
 Defines the constants, scaling, and offsets required to convert to YPbPr and YCbCr.
@@ -472,6 +515,24 @@ The predefined sRGB configuration refers to an ambient illumination of 64 lux un
   - Adapting luminance
   - Background luminance
 
+### `DynamicRange`
+Defines luminance values used when evaluating
+perceptual quantizer (PQ) transfer functions (ICTCP · Jzazbz · JzCzhz · Rec. 2100 PQ RGB)
+and hybrid log-gamma (HLG) transfer functions (Rec. 2100 HLG RGB).
+
+| Predefined                 | Property    |
+|----------------------------|-------------|
+| SDR                        | `.Standard` |
+| HDR&nbsp;👈&nbsp;_default_ | `.High`     |
+
+The predefined HDR configuration has a white luminance of 203 cd/m² at 75% HLG, and a minimum luminance of 0 cd/m² (no black lift).
+
+- Parameters
+  - White luminance
+  - Maximum luminance
+  - Minimum luminance
+  - HLG % white level
+
 ### `IccConfiguration`
 Defines the ICC profile and rendering intent, typically used for accurate CMYK conversion.
 
@@ -486,21 +547,18 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - ICC profile (`.icc` file)
   - Rendering intent
 
-### `IctcpScalar` & `JzazbzScalar`
-There is ambiguity and no clear consensus about how XYZ values should be scaled before calculating ICTCP and Jzazbz.
-These scalars can be changed to match the behaviour of other implementations if needed.
-
 ### White points
 All colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
-When a [conversion to or from XYZ space](https://github.com/waacton/Unicolour#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+When a [conversion to or from XYZ space](https://github.com/waacton/Unicolour#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
+The default chromatic adaptation is the Bradford method but [this can be customised](https://github.com/waacton/Unicolour#xyzconfiguration).
 
 | White&nbsp;point&nbsp;configuration | Affected&nbsp;colour&nbsp;spaces                                                                                                                                                                 |
 |-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
 | `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv                                                                                                                    |
 | `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 |
-| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · HCT                                                                                                                                      |
+| None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch · HCT                                                                                                                    |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,
@@ -621,7 +679,6 @@ See the [live demo](https://unicolour.wacton.xyz/colour-picker/)!
 | ![Web application for picking colours in any colour space, created with Unicolour](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/web-picker.png) |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | _Web application for picking colours in any colour space_                                                                                                        |
-
 
 ### Unity
 Example code to create 3D visualisations of colour spaces using 🎮 [Unity](https://unity.com/)

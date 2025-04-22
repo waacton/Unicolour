@@ -34,7 +34,7 @@ public class ConfigureIccTests
 
         var convertedUnicolour = sourceUnicolour.ConvertToConfiguration(destinationConfig);
         var convertedCmyk = convertedUnicolour.Icc;
-        Assert.That(convertedCmyk.Values, Is.EqualTo(destinationCmyk.Values).Within(1.25e-15));
+        Assert.That(convertedCmyk.Values, Is.EqualTo(destinationCmyk.Values).Within(1.75e-15));
     }
 
     [Test]

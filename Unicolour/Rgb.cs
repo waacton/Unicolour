@@ -38,21 +38,17 @@ public record Rgb : ColourRepresentation
     
     internal static Rgb FromRgbLinear(RgbLinear rgbLinear, RgbConfiguration rgbConfig, DynamicRange dynamicRange)
     {
-        var r = FromLinear(rgbLinear.R);
-        var g = FromLinear(rgbLinear.G);
-        var b = FromLinear(rgbLinear.B);
+        var r = rgbConfig.FromLinear(rgbLinear.R, dynamicRange);
+        var g = rgbConfig.FromLinear(rgbLinear.G, dynamicRange);
+        var b = rgbConfig.FromLinear(rgbLinear.B, dynamicRange);
         return new Rgb(r, g, b, ColourHeritage.From(rgbLinear));
-
-        double FromLinear(double linear) => rgbConfig.FromLinear(linear, dynamicRange);
     }
     
     internal static RgbLinear ToRgbLinear(Rgb rgb, RgbConfiguration rgbConfig, DynamicRange dynamicRange)
     {
-        var r = ToLinear(rgb.R);
-        var g = ToLinear(rgb.G);
-        var b = ToLinear(rgb.B);
+        var r = rgbConfig.ToLinear(rgb.R, dynamicRange);
+        var g = rgbConfig.ToLinear(rgb.G, dynamicRange);
+        var b = rgbConfig.ToLinear(rgb.B, dynamicRange);
         return new RgbLinear(r, g, b, ColourHeritage.From(rgb));
-        
-        double ToLinear(double gammaEncoded) => rgbConfig.ToLinear(gammaEncoded, dynamicRange);
     }
 }

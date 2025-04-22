@@ -45,7 +45,8 @@ public class KnownIccTests
         TestUtils.AssertTriplet<Lab>(colour, new(45.060, 45.477, 35.459), Tolerance);
     }
     
-    // TODO: find out why these values don't match - is example wrong?
+    // NOTE: these values don't match
+    // but Unicolour is heavily tested against ICC reference implementation which takes precedence over draft CSS examples
     // [Test] // https://www.w3.org/TR/css-color-5/#ex-fogra39-fallback-mq
     // public void Fogra39Green()
     // {
@@ -60,8 +61,8 @@ public class KnownIccTests
     //     TestUtils.AssertTriplet<Lab>(colour, new(56.596645, -58.995875, 28.072154), Tolerance);
     // }
     
-    // TODO: these values don't match well enough to be good tests - has the profile itself changed since `2020_13.003_FOGRA55beta_CL_Profile.icc`?
-    // TODO: update when CSS Color 5 updates examples to use non-beta Fogra55
+    // NOTE: these values don't match well enough to be good tests (perhaps non-beta version of profile produces different results?)
+    // but Unicolour is heavily tested against ICC reference implementation which takes precedence over draft CSS examples
     // [Test] // https://www.w3.org/TR/css-color-5/#ex-fogra55beta-7color
     // public void Fogra55DarkSkin()
     // {

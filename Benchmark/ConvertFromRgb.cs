@@ -39,6 +39,12 @@ public class ConvertFromRgb
     public ColourSpace TargetColourSpace { get; set; }
     
     [Benchmark]
+    public void Construct()
+    {
+        _ = new Unicolour(initialColourSpace, triplet);
+    }
+    
+    [Benchmark]
     public ColourRepresentation Convert()
     {
         return new Unicolour(initialColourSpace, triplet).GetRepresentation(TargetColourSpace);

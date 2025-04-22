@@ -3,12 +3,13 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,269/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,239/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with color:
 - Color space conversion
 - Color mixing / color interpolation
+- Color blending
 - Color difference / color distance
 - Color gamut mapping
 - Color chromaticity
@@ -34,7 +35,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 8. 🥽 [Experimental](#-experimental)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single color and its representation across [30+ color spaces](#convert-between-color-spaces).
+A `Unicolour` encapsulates a single color and its representation across [35+ color spaces](#convert-between-color-spaces).
 It can be used to [mix and compare colors](#mix-colors), and offers [many useful features](#-features) for working with color.
 
 
@@ -46,7 +47,7 @@ It can be used to [mix and compare colors](#mix-colors), and offers [many useful
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
 > TSL · XYB · 
 > IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
-> Oklab · Oklch · Okhsv · Okhsl · Okhwb · 
+> Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
@@ -134,7 +135,7 @@ Unicolour calculates all transformations required to convert from one color spac
 so there is no need to manually chain multiple functions and removes the risk of rounding errors.
 ```c#
 Unicolour color = new(ColourSpace.Rgb255, 192, 255, 238);
-var (l, c, h) = color.Oklch.Triplet;
+var (l, c, h) = color.Oklch;
 ```
 
 | Color&nbsp;space                                                                       | Enum                    | Property       |
@@ -172,6 +173,8 @@ var (l, c, h) = color.Oklch.Triplet;
 | Okhsv                                                                                   | `ColourSpace.Okhsv`     | `.Okhsv`       |
 | Okhsl                                                                                   | `ColourSpace.Okhsl`     | `.Okhsl`       |
 | Okhwb                                                                                   | `ColourSpace.Okhwb`     | `.Okhwb`       |
+| Okl<sub>r</sub>ab                                                                       | `ColourSpace.Oklrab`    | `.Oklrab`      |
+| Okl<sub>r</sub>ch                                                                       | `ColourSpace.Oklrch`    | `.Oklrch`      |
 | CIECAM02                                                                                | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                     | `ColourSpace.Hct`       | `.Hct`         |
@@ -198,6 +201,34 @@ var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 | Increasing                     | `HueSpan.Increasing` |
 | Decreasing                     | `HueSpan.Decreasing` |
 
+### Blend colors
+Two colors can be blended as though they are layered elements. Compositing is performed using the source-over operator.
+```c#
+var blue = new Unicolour(ColourSpace.Rgb, 240, 1.0, 1.0, alpha: 0.5);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
+var purple = blue.Blend(red, BlendMode.Normal);
+var pink = blue.Blend(red, BlendMode.Screen);
+```
+
+| Blend&nbsp;mode   | Enum                     |
+|-------------------|--------------------------|
+| Normal            | `BlendMode.Normal`       |
+| Multiply          | `BlendMode.Multiply`     |
+| Screen            | `BlendMode.Screen`       |
+| Overlay           | `BlendMode.Overlay`      |
+| Darken            | `BlendMode.Darken`       |
+| Lighten           | `BlendMode.Lighten`      |
+| Color&nbsp;Dodge | `BlendMode.ColourDodge`  |
+| Color&nbsp;Burn  | `BlendMode.ColourBurn`   |
+| Hard&nbsp;Light   | `BlendMode.HardLight`    |
+| Soft&nbsp;Light   | `BlendMode.SoftLight`    |
+| Difference        | `BlendMode.Difference`   |
+| Exclusion         | `BlendMode.Exclusion`    |
+| Hue               | `BlendMode.Hue`          |
+| Saturation        | `BlendMode.Saturation`   |
+| Color            | `BlendMode.Colour`       |
+| Luminosity        | `BlendMode.Luminosity`   |
+
 ### Compare colors
 Two methods of comparing colors are available: contrast and difference.
 Difference is calculated according to a specific delta E (ΔE) metric.
@@ -223,14 +254,19 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔE<sub>CAM02</sub>                                                | `DeltaE.Cam02`             |
 | ΔE<sub>CAM16</sub>                                                | `DeltaE.Cam16`             |
 
-### Map color into RGB gamut
+### Map color into gamut
 Colors that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut RGB color.
+Mapping to Pointer's gamut will return the closest real surface color of the same lightness and hue.
 ```c#
-var outOfGamut = new Unicolour(ColourSpace.Rgb, -0.51, 1.02, -0.31);
-var inGamut = outOfGamut.MapToRgbGamut();
+var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
+var isInRgb = veryRed.IsInRgbGamut;
+var normalRed = veryRed.MapToRgbGamut();
+
+var isInPointer = veryRed.IsInPointerGamut;
+var surfaceRed = veryRed.MapToPointerGamut();
 ```
 
-| Gamut mapping method                                                                                    | Enum                            |
+| RGB&nbsp;gamut&nbsp;mapping&nbsp;method                                                                 | Enum                            |
 |---------------------------------------------------------------------------------------------------------|---------------------------------|
 | RGB&nbsp;clipping                                                                                       | `GamutMap.RgbClipping`          |
 | Oklch&nbsp;chroma&nbsp;reduction&nbsp;(CSS&nbsp;specification)&nbsp;👈&nbsp;_default_                   | `GamutMap.OklchChromaReduction` |
@@ -373,13 +409,17 @@ Every line of code is tested, and any defect is [Unicolour's responsibility](htt
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the color.
 
-Example configuration with predefined Rec. 2020 RGB & illuminant D50 (2° observer) XYZ:
+Example configuration with predefined
+- Rec. 2020 RGB
+- Illuminant D50 (2° observer) XYZ
 ```c#
 Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
 Unicolour color = new(config, ColourSpace.Rgb255, 204, 64, 132);
 ```
 
-Example configuration with manually defined wide-gamut RGB & illuminant C (10° observer) XYZ:
+Example configuration with manually defined
+- Wide-gamut RGB
+- Illuminant C (10° observer) XYZ, using Von Kries method for white point adaptation
 ```c#
 var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),
@@ -390,7 +430,7 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Math.Pow(value, 2.19921875)
 );
 
-var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var color = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);
@@ -400,13 +440,15 @@ A `Configuration` is composed of sub-configurations.
 Each sub-configuration is optional and will fall back to a [sensible default](#sensible-defaults-highly-configurable) if not provided.
 
 ### `RgbConfiguration`
-Defines the RGB model, often used to specify a wider gamut than standard RGB (sRGB).
+Defines the RGB color space parameters, often used to specify a wider gamut than standard RGB (sRGB).
 
 | Predefined                           | Property         |
 |--------------------------------------|------------------|
 | sRGB&nbsp;👈&nbsp;_default_          | `.StandardRgb`   |
 | Display&nbsp;P3                      | `.DisplayP3`     |
 | Rec.&nbsp;2020                       | `.Rec2020`       |
+| Rec.&nbsp;2100&nbsp;PQ               | `.Rec2100Pq`     |
+| Rec.&nbsp;2100&nbsp;HLG              | `.Rec2100Hlg`    |
 | A98                                  | `.A98`           |
 | ProPhoto                             | `.ProPhoto`      |
 | ACES&nbsp;2065-1                     | `.Aces20651`     |
@@ -436,7 +478,8 @@ Defines the RGB model, often used to specify a wider gamut than standard RGB (sR
 
 ### `XyzConfiguration`
 Defines the XYZ white point (which is also [inherited by color spaces that do not need a specific configuration](#white-points)),
-as well as the observer to use for temperature calculations.
+the observer to use when color matching functions (CMFs) are required,
+and the chromatic adaptation matrix to use for any white point adaptation (the Bradford method will be used if unspecified).
 
 | Predefined                                         | Property  |
 |----------------------------------------------------|-----------|
@@ -446,6 +489,7 @@ as well as the observer to use for temperature calculations.
 - Parameters
   - Reference white point or illuminant
   - Observer
+  - Chromatic adaptation matrix
 
 ### `YbrConfiguration`
 Defines the constants, scaling, and offsets required to convert to YPbPr and YCbCr.
@@ -476,6 +520,24 @@ The predefined sRGB configuration refers to an ambient illumination of 64 lux un
   - Adapting luminance
   - Background luminance
 
+### `DynamicRange`
+Defines luminance values used when evaluating
+perceptual quantizer (PQ) transfer functions (IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Rec. 2100 PQ RGB)
+and hybrid log-gamma (HLG) transfer functions (Rec. 2100 HLG RGB).
+
+| Predefined                 | Property    |
+|----------------------------|-------------|
+| SDR                        | `.Standard` |
+| HDR&nbsp;👈&nbsp;_default_ | `.High`     |
+
+The predefined HDR configuration has a white luminance of 203 cd/m² at 75% HLG, and a minimum luminance of 0 cd/m² (no black lift).
+
+- Parameters
+  - White luminance
+  - Maximum luminance
+  - Minimum luminance
+  - HLG % white level
+
 ### `IccConfiguration`
 Defines the ICC profile and rendering intent, typically used for accurate CMYK conversion.
 
@@ -490,22 +552,18 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - ICC profile (`.icc` file)
   - Rendering intent
 
-### `IctcpScalar` & `JzazbzScalar`
-Defines the white luminance used when evaluating perceptual quantizer (PQ) transfer functions for HDR color spaces
-(used by IC<sub>T</sub>C<sub>P</sub>, J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>, and J<sub>z</sub>C<sub>z</sub>h<sub>z</sub>).
-Set to 100 cd/m² by default, representing SDR. 
-
 ### White points
 All color spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of color spaces, as shown in the table below.
-When a [conversion to or from XYZ space](#convert-between-color-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed using the Bradford method.
+When a [conversion to or from XYZ space](#convert-between-color-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
+The default chromatic adaptation is the Bradford method but [this can be customised](#xyzconfiguration).
 
-| White&nbsp;point&nbsp;configuration | Affected&nbsp;color&nbsp;spaces                                                                                                                                                                 |
-|-------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB |
-| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                              |
-| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 |
-| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · HCT                              |
+| White&nbsp;point&nbsp;configuration | Affected&nbsp;color&nbsp;spaces                                                                                                                                                                            |
+|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `RgbConfiguration`                  | RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · TSL · XYB            |
+| `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                                         |
+| `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                            |
+| None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch · HCT |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

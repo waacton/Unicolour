@@ -128,6 +128,7 @@ public class PointerGamutTests
         Assert.That(colour.IsInPointerGamut, Is.False);
 
         var mapped = colour.MapToPointerGamut();
+        Assert.That(mapped.IsInPointerGamut, Is.True);
         TestUtils.AssertTriplet<Rgb>(mapped, new(expectedR, expectedG, expectedB), 0.00005);
         Assert.That(mapped.Lchab.C, Is.EqualTo(expectedC).Within(0.005));
     }

@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,269/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,239/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -519,7 +519,7 @@ Every line of code is tested, and any defect is [Unicolour's responsibility](htt
 ## 💡 Configuration
 The `Configuration` parameter can be used to define the context of the colour.
 
-Example configuration with predefined 
+Example configuration with predefined
 - Rec. 2020 RGB
 - Illuminant D50 (2° observer) XYZ
 ```c#
@@ -527,7 +527,7 @@ Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
 Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
 ```
 
-Example configuration with manually defined 
+Example configuration with manually defined
 - Wide-gamut RGB
 - Illuminant C (10° observer) XYZ, using Von Kries method for white point adaptation
 ```c#

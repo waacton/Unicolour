@@ -409,6 +409,7 @@ The `Configuration` parameter can be used to define the context of the colour.
 Example configuration with predefined
 - Rec. 2020 RGB
 - Illuminant D50 (2° observer) XYZ
+
 ```cs
 Configuration config = new(RgbConfiguration.Rec2020, XyzConfiguration.D50);
 Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
@@ -417,6 +418,7 @@ Unicolour colour = new(config, ColourSpace.Rgb255, 204, 64, 132);
 Example configuration with manually defined
 - Wide-gamut RGB
 - Illuminant C (10° observer) XYZ, using Von Kries method for white point adaptation
+
 ```cs
 var rgbConfig = new RgbConfiguration(
     chromaticityR: new(0.7347, 0.2653),

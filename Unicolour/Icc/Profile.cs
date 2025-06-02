@@ -4,31 +4,46 @@ namespace Wacton.Unicolour.Icc;
 
 public class Profile
 {
-    public FileInfo FileInfo { get; }
+    public string Name { get; }
+    public long Length { get; }
     public Header Header { get; }
     public Tags Tags { get; }
-
     internal Transform Transform { get; }
     
-    public Profile(string filePath)
+    // note that this constructor is creating a stream without `using`, instead the private constructor closes the stream
+    // not best practice, but it makes code reuse much easier, and `closeStream` is only triggered here and not exposed
+    public Profile(string filePath, string? name = null) : this(File.OpenRead(filePath), name ?? Path.GetFileNameWithoutExtension(filePath), closeStream: true) {}
+    public Profile(byte[] bytes, string name = "from bytes") : this(new MemoryStream(bytes), name) {}
+    public Profile(Stream stream, string name = "from stream") : this(stream, name, closeStream: false) {}
+    private Profile(Stream stream, string name, bool closeStream)
     {
-        FileInfo = new FileInfo(filePath);
-        if (FileInfo.Length < 128)
-        {
-            throw new ArgumentException($"[{FileInfo}] does not contain enough bytes to be an ICC profile");
-        }
-
         try
         {
-            Header = Header.FromFile(FileInfo);
-            Tags = Tags.FromFile(FileInfo);
-        }
-        catch (Exception e)
-        {
-            throw new ArgumentException($"[{FileInfo}] could not be parsed as ICC data", e);
-        }
+            Name = name;
+            Length = stream.Length;
+        
+            if (Length < 128)
+            {
+                throw new ArgumentException($"[{Name}] does not contain enough bytes to be an ICC profile");
+            }
 
-        Transform = GetTransform();
+            try
+            {
+                Header = new Header(stream);
+                Tags = new Tags(stream);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException($"[{Name}] could not be parsed as ICC data", e);
+            }
+            
+            Transform = GetTransform();
+        }
+        finally
+        {
+            // not best practice, see comment above constructors - only used when file path provided
+            if (closeStream) stream.Dispose();
+        }
     }
     
     internal Xyz ToXyz(double[] deviceValues, XyzConfiguration xyzConfig, Intent intent)
@@ -48,24 +63,11 @@ public class Profile
         return Transform.FromXyz(xyzD50, intent);
     }
     
-    private static readonly int[] IndexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
-    public byte[] CalculateProfileId()
-    {
-        var bytes = File.ReadAllBytes(FileInfo.FullName);
-        foreach (var index in IndexesToZeroForHash)
-        {
-            bytes[index] = 0;
-        }
-        
-        var md5 = MD5.Create();
-        return md5.ComputeHash(bytes);
-    }
-    
     internal void ErrorIfUnsupported()
     {
         if (Header.ProfileFileSignature != Signatures.Profile)
         {
-            throw new ArgumentException($"[{FileInfo}] signature is incorrect: expected [{Signatures.Profile}] but was [{Header.ProfileFileSignature}]");
+            throw new ArgumentException($"[{Name}] signature is incorrect: expected [{Signatures.Profile}] but was [{Header.ProfileFileSignature}]");
         }
         
         ErrorIfUnsupportedHeader();
@@ -82,7 +84,7 @@ public class Profile
         if (isHeaderSupported) return;
         const string expected = $"profile class {Signatures.Input} or {Signatures.Display} or {Signatures.Output} or {Signatures.ColourSpace}";
         var actual = $"profile class {Header.ProfileClass}";
-        throw new ArgumentException($"[{FileInfo}] is not supported: expected [{expected}] but was [{actual}]");
+        throw new ArgumentException($"[{Name}] is not supported: expected [{expected}] but was [{actual}]");
     }
     
     private void ErrorIfUnsupportedTransform()
@@ -92,7 +94,7 @@ public class Profile
         if (isTransformSupported) return;
         const string expected = $"transform {nameof(TransformAToB)} or {nameof(TransformTrcMatrix)} or {nameof(TransformTrcGrey)}";
         var actual = $"transform {Transform.GetType().Name}";
-        throw new ArgumentException($"[{FileInfo}] is not supported: expected [{expected}] but was [{actual}]");
+        throw new ArgumentException($"[{Name}] is not supported: expected [{expected}] but was [{actual}]");
     }
     
     /*
@@ -128,6 +130,18 @@ public class Profile
 
         return new TransformNone(Header, Tags);
     }
+    
+    private static readonly int[] IndexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+    public static byte[] CalculateId(byte[] bytes)
+    {
+        foreach (var index in IndexesToZeroForHash)
+        {
+            bytes[index] = 0;
+        }
+        
+        var md5 = MD5.Create();
+        return md5.ComputeHash(bytes);
+    }
 
-    public override string ToString() => $"{FileInfo} · {Header} · {Tags.Count} tags";
+    public override string ToString() => $"{Name} · {Header} · {Tags.Count} tags";
 }

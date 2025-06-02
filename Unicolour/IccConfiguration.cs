@@ -16,27 +16,24 @@ public class IccConfiguration
     // except when there is no profile, in which case we fall back to naive uncalibrated CMYK which is calculated directly from RGB
     internal bool HasSupportedProfile => Profile != null && Error == null;
     internal ColourSpace ConnectingSpace => HasSupportedProfile ? ColourSpace.Xyz : ColourSpace.Rgb;
-    
-    public IccConfiguration(string profilePath, Intent intent, string name = Utils.Unnamed)
+
+    public IccConfiguration(string profilePath, Intent intent, string name = Utils.Unnamed) : this(GetProfile(profilePath), intent, name) {}
+    public IccConfiguration(byte[] bytes, Intent intent, string name = Utils.Unnamed) : this(GetProfile(bytes), intent, name) {}
+    public IccConfiguration(Stream stream, Intent intent, string name = Utils.Unnamed) : this(GetProfile(stream), intent, name) {}
+    private IccConfiguration((Profile? profile, string? error) profileResult, Intent intent, string name)
     {
-        Profile? profile;
-        
-        try
-        {
-            profile = new Profile(profilePath);
-        }
-        catch (Exception e)
+        if (profileResult.profile == null)
         {
             Profile = null;
             Intent = intent;
-            Error = e.Message;
+            Error = profileResult.error;
             Name = name;
             return;
         }
-
+        
         // profile header intent related to how a profile combines with another profile
         // which seems to make sense here since Unicolour is effectively the PCS between the two
-        Profile = profile;
+        Profile = profileResult.profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
         Error = GetProfileSupportError(Profile);
         Name = name;
@@ -57,6 +54,26 @@ public class IccConfiguration
         Error = Profile == null ? null : GetProfileSupportError(Profile);
         Name = name;
     }
+    
+    private static (Profile? profile, string? error) GetProfile(string filePath) => GetProfile(filePath, x => new Profile(x));
+    private static (Profile? profile, string? error) GetProfile(byte[] bytes) => GetProfile(bytes, x => new Profile(x));
+    private static (Profile? profile, string? error) GetProfile(Stream stream) => GetProfile(stream, x => new Profile(x));
+    private static (Profile? profile, string? error) GetProfile<T>(T parameter, Func<T, Profile> getProfile)
+    {
+        Profile? profile = null;
+        string? error = null;
+
+        try
+        {
+            profile = getProfile(parameter);
+        }
+        catch (Exception e)
+        {
+            error = e.Message;
+        }
+
+        return (profile, error);
+    }
 
     private static string? GetProfileSupportError(Profile profile)
     {
@@ -72,5 +89,5 @@ public class IccConfiguration
         return null;
     }
     
-    public override string ToString() => $"{Name} · profile {(Profile == null ? "-" : Profile.FileInfo.Name)} · intent {Intent}";
+    public override string ToString() => $"{Name} · profile {(Profile == null ? "-" : Profile.Name)} · intent {Intent}";
 }

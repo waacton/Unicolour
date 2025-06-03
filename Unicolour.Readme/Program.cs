@@ -204,7 +204,7 @@ void FeatureGamutMap()
 void FeatureCvd()
 {
     var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-    var noRed = colour.Simulate(Cvd.Protanopia);
+    var noRed = colour.Simulate(Cvd.Protan);
 }
 
 void FeatureTemperature()

@@ -2,8 +2,8 @@
 
 public enum Cvd
 {
-    Protanopia,
-    Deuteranopia,
-    Tritanopia,
+    Protan,
+    Deutan,
+    Tritan,
     Achromatopsia
 }

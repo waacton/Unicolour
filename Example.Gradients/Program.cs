@@ -133,7 +133,7 @@ void VisionDeficiency()
     Unicolour start = new(ColourSpace.Hsb, 0, 0.666, 1);
     Unicolour end = new(ColourSpace.Hsb, 360, 0.666, 1);
 
-    var cvds = new List<Cvd?> { null, Cvd.Protanopia, Cvd.Deuteranopia, Cvd.Tritanopia, Cvd.Achromatopsia };
+    var cvds = new List<Cvd?> { null, Cvd.Protan, Cvd.Deutan, Cvd.Tritan, Cvd.Achromatopsia };
     var rows = cvds
         .Select(cvd => Utils.Draw((cvd?.ToString() ?? "No deficiency", black), width, rowHeight, GetColour(cvd)))
         .ToList();

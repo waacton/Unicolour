@@ -19,10 +19,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 0, 128, 255)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Protanopia(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Protan(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Protanopia);
+        var simulatedColour = colour.Simulate(Cvd.Protan);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -35,10 +35,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 104, 155, 250)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Deuteranopia(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Deutan(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
+        var simulatedColour = colour.Simulate(Cvd.Deutan);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -51,10 +51,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 255, 75, 151)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Tritanopia(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Tritan(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Tritanopia);
+        var simulatedColour = colour.Simulate(Cvd.Tritan);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
@@ -76,26 +76,26 @@ public class VisionDeficiencyTests
     }
 
     [Test]
-    public void ProtanopiaNotNumber()
+    public void ProtanNotNumber()
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Protanopia);
+        var simulatedColour = colour.Simulate(Cvd.Protan);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     
     [Test]
-    public void DeuteranopiaNotNumber()
+    public void DeutanNotNumber()
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
+        var simulatedColour = colour.Simulate(Cvd.Deutan);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     
     [Test]
-    public void TritanopiaNotNumber()
+    public void TritanNotNumber()
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Tritanopia);
+        var simulatedColour = colour.Simulate(Cvd.Tritan);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
     

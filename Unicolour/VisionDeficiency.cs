@@ -1,62 +1,36 @@
 namespace Wacton.Unicolour;
 
-// https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
-internal static class VisionDeficiency
+public static class VisionDeficiency
 {
-    // TODO: convert to sRGB
-    // Machado et al. (2009) showed results on gamma-encoded sRGB as it did not appear to make a difference (https://github.com/aalto-ui/aim/pull/13#issuecomment-954062715)
-    // but consensus seems to be that linear RGB should be used
     internal static Unicolour Simulate(Cvd cvd, double severity, Unicolour colour)
     {
-        var simulatedRgbLinear = cvd switch
+        // note: standardising simulation in D65 isn't strictly necessary for achromatopsia
+        // as there will always be an illuminant-specific relative luminance
+        // but is conceptually consistent and behaviour is easier to test and validate
+        var config = colour.Configuration;
+        if (config != Configuration.Default)
         {
-            Cvd.Protan => ApplyCvdMatrix(colour, Protanomaly, severity),
-            Cvd.Deutan => ApplyCvdMatrix(colour, Deuteranomaly, severity),
-            Cvd.Tritan => ApplyCvdMatrix(colour, Tritanomaly, severity),
-            Cvd.Achromatopsia => new(colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
-            _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
-        };
-
-        return new Unicolour(colour.Configuration, ColourSpace.RgbLinear, simulatedRgbLinear.Tuple, colour.Alpha.A);
-    }
-
-    private static ColourTriplet ApplyCvdMatrix(Unicolour colour, double[][,] matrices, double severity)
-    {
-        if (severity is <= 0 or double.NaN) return colour.RgbLinear.Triplet;
-        
-        var cvdMatrix = severity switch
-        {
-            >= 1 => matrices.Last(),
-            _ => InterpolateMatrices(matrices, severity)
-        };
-        
-        // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
-        return new Matrix(cvdMatrix).Multiply(Matrix.From(colour.RgbLinear)).ToTriplet();
-    }
-
-    internal static double[,] InterpolateMatrices(double[][,] matrices, double severity)
-    {
-        const int rows = 3;
-        const int cols = 3;
-        
-        var (lower, upper, distance) = Lut.Lookup(matrices, severity);
-
-        if (distance == 0.0) return lower;
-        
-        var interpolated = new double[rows, cols];
-        for (var row = 0; row < rows; row++)
-        {
-            for (var col = 0; col < cols; col++)
-            {
-                var start = lower[row, col];
-                var end = upper[row, col];
-                interpolated[row, col] = Interpolation.Interpolate(start, end, distance);
-            }
+            colour = colour.ConvertToConfiguration(Configuration.Default);
         }
 
-        return interpolated;
-    }
+        var simulated = cvd switch
+        {
+            Cvd.Protan => GetSimulated(colour, Protanomaly, severity),
+            Cvd.Deutan => GetSimulated(colour, Deuteranomaly, severity),
+            Cvd.Tritan => GetSimulated(colour, Tritanomaly, severity),
+            Cvd.Achromatopsia => new(ColourSpace.RgbLinear, colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
+            Cvd.BlueConeMonochromacy => ModifyLms(colour, BlueConeMonochromacy),
+            _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
+        };
+        
+        if (config != Configuration.Default)
+        {
+            simulated = simulated.ConvertToConfiguration(config);
+        }
 
+        return simulated;
+    }
+    
     private static readonly double[,] Identity =
     {
         { 1.000000, 0.000000, 0.000000 },
@@ -64,6 +38,7 @@ internal static class VisionDeficiency
         { 0.000000, 0.000000, 1.000000 }
     };
 
+    // https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
     private static readonly double[][,] Protanomaly =
     {
         Identity,
@@ -258,4 +233,86 @@ internal static class VisionDeficiency
             { 0.004733, 0.691367, 0.303900 }
         }
     };
+    
+    // paper showed results on gamma-encoded sRGB as it did not appear to make a difference (https://github.com/aalto-ui/aim/pull/13#issuecomment-954062715)
+    // but consensus seems to be that linear RGB should be used
+    private static Unicolour GetSimulated(Unicolour colour, double[][,] simulationMatrices, double severity)
+    {
+        if (severity is <= 0 or double.NaN) return colour.Clone();
+        
+        var simulationMatrix = severity switch
+        {
+            >= 1 => simulationMatrices.Last(),
+            _ => InterpolateMatrices(simulationMatrices, severity)
+        };
+        
+        // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
+        var simulatedRgbLinear = new Matrix(simulationMatrix).Multiply(Matrix.From(colour.RgbLinear)).ToTriplet();
+        return new Unicolour(ColourSpace.RgbLinear, simulatedRgbLinear.Tuple);
+    }
+
+    private static double[,] InterpolateMatrices(double[][,] matrices, double severity)
+    {
+        const int rows = 3;
+        const int cols = 3;
+        
+        var (lower, upper, distance) = Lut.Lookup(matrices, severity);
+        if (distance == 0.0) return lower;
+        
+        var interpolated = new double[rows, cols];
+        for (var row = 0; row < rows; row++)
+        {
+            for (var col = 0; col < cols; col++)
+            {
+                var start = lower[row, col];
+                var end = upper[row, col];
+                interpolated[row, col] = Interpolation.Interpolate(start, end, distance);
+            }
+        }
+
+        return interpolated;
+    }
+    
+    // https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
+    public static double[,] Protanopia =
+    {
+        { 0, 1.05118294, -0.05116099 },
+        { 0, 1, 0 },
+        { 0, 0, 1 }
+    };
+    
+    public static double[,] Deuteranopia =
+    {
+        { 1, 0, 0 },
+        { 0.9513092, 0, 0.04866992 },
+        { 0, 0, 1 }
+    };
+    
+    public static double[,] Tritanopia  =
+    {
+        { 1, 0, 0 },
+        { 0, 1, 0 },
+        { -0.86744736, 1.86727089, 0 }
+    };
+    
+    public static double[,] BlueConeMonochromacy =
+    {
+        { 0.01775, 0.10945, 0.87262 },
+        { 0.01775, 0.10945, 0.87262 },
+        { 0.01775, 0.10945, 0.87262 }
+    };
+    
+    public static Unicolour ModifyLms(Unicolour colour, double[,] simulationMatrix)
+    {
+        var lmsMatrix = new Matrix(Adaptation.VonKries);
+        var lms = lmsMatrix.Multiply(Matrix.From(colour.Xyz));
+        var simulatedLms = new Matrix(simulationMatrix).Multiply(lms);
+        
+        var simulatedXyz = lmsMatrix.Inverse().Multiply(simulatedLms).ToTriplet();
+        return new Unicolour(ColourSpace.Xyz, simulatedXyz.Tuple);
+        
+        // TODO: add LMS colour space?
+        // var simulatedLms = new Matrix(simulationMatrix).Multiply(colour.Lms);
+        // return new Unicolour(ColourSpace.Lms, simulatedLms.Tuple);
+    }
 }

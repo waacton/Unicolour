@@ -5,5 +5,6 @@ public enum Cvd
     Protan,
     Deutan,
     Tritan,
-    Achromatopsia
+    Achromatopsia,
+    BlueConeMonochromacy
 }

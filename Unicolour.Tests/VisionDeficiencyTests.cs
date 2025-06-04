@@ -106,4 +106,45 @@ public class VisionDeficiencyTests
         var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
+
+    private static readonly Configuration D50Config = new(RgbConfiguration.ProPhoto, XyzConfiguration.D50);
+    
+    [Test]
+    public void DifferentConfig(
+        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd,
+        [Values(0, 0.25, 0.5, 0.75, 1)] double severity)
+    {
+        var rgbD65 = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
+        var cvdD65 = rgbD65.Simulate(cvd, severity);
+        var cvdD50FromD65 = cvdD65.ConvertToConfiguration(D50Config);
+
+        var rgbD50 = rgbD65.ConvertToConfiguration(D50Config);
+        var cvdD50 = rgbD50.Simulate(cvd, severity);
+        var cvdD65FromD50 = cvdD50.ConvertToConfiguration(Configuration.Default);
+
+        const double tolerance = 5e-15;
+        TestUtils.AssertTriplet(cvdD65.RgbLinear.Triplet, cvdD65FromD50.RgbLinear.Triplet, tolerance);
+        TestUtils.AssertTriplet(cvdD50.RgbLinear.Triplet, cvdD50FromD65.RgbLinear.Triplet, tolerance);
+    }
+
+    [Test]
+    public void NoSeverity(
+        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan)] Cvd cvd,
+        [Values(0, -0.0000000001, double.MinValue, double.NegativeInfinity, double.NaN)] double severity)
+    {
+        var colour = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
+        var simulated = colour.Simulate(cvd, severity);
+        Assert.That(simulated, Is.EqualTo(colour));
+    }
+    
+    [Test]
+    public void MaxSeverity(
+        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan)] Cvd cvd,
+        [Values(1, 1.0000000001, double.MaxValue, double.PositiveInfinity)] double severity)
+    {
+        var colour = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
+        var maxSeverity = colour.Simulate(cvd, severity: 1.0);
+        var simulated = colour.Simulate(cvd, severity);
+        Assert.That(simulated, Is.EqualTo(maxSeverity));
+    }
 }

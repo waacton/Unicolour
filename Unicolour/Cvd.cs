@@ -2,9 +2,12 @@
 
 public enum Cvd
 {
-    Protan,
-    Deutan,
-    Tritan,
+    Protanopia,
+    Protanomaly,
+    Deuteranopia,
+    Deuteranomaly,
+    Tritanopia,
+    Tritanomaly,
     Achromatopsia,
     BlueConeMonochromacy
 }

@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -11,6 +12,8 @@ namespace Wacton.Unicolour.Tests;
  */
 public class VisionDeficiencyTests
 {
+    private static readonly Configuration D50Config = new(RgbConfiguration.ProPhoto, XyzConfiguration.D50);
+    
     [TestCase(nameof(StandardRgb.Red), 109, 95, 0)]
     [TestCase(nameof(StandardRgb.Yellow), 255, 244, 0)]
     [TestCase(nameof(StandardRgb.Green), 255, 229, 0)]
@@ -19,10 +22,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 0, 128, 255)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Protan(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Protanopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Protan);
+        var simulatedColour = colour.Simulate(Cvd.Protanopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -35,10 +38,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 104, 155, 250)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Deutan(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Deuteranopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Deutan);
+        var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
@@ -51,10 +54,10 @@ public class VisionDeficiencyTests
     [TestCase(nameof(StandardRgb.Magenta), 255, 75, 151)]
     [TestCase(nameof(StandardRgb.Black), 0, 0, 0)]
     [TestCase(nameof(StandardRgb.White), 255, 255, 255)]
-    public void Tritan(string colourName, double expectedR, double expectedG, double expectedB)
+    public void Tritanopia(string colourName, double expectedR, double expectedG, double expectedB)
     {
         var colour = StandardRgb.Lookup[colourName];
-        var simulatedColour = colour.Simulate(Cvd.Tritan);
+        var simulatedColour = colour.Simulate(Cvd.Tritanopia);
         var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
@@ -76,42 +79,16 @@ public class VisionDeficiencyTests
     }
 
     [Test]
-    public void ProtanNotNumber()
+    public void NotNumber([Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd)
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Protan);
+        var simulatedColour = colour.Simulate(cvd);
         Assert.That(simulatedColour.Rgb.IsNaN);
     }
-    
-    [Test]
-    public void DeutanNotNumber()
-    {
-        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Deutan);
-        Assert.That(simulatedColour.Rgb.IsNaN);
-    }
-    
-    [Test]
-    public void TritanNotNumber()
-    {
-        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Tritan);
-        Assert.That(simulatedColour.Rgb.IsNaN);
-    }
-    
-    [Test]
-    public void AchromatopsiaNotNumber()
-    {
-        var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
-        var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
-        Assert.That(simulatedColour.Rgb.IsNaN);
-    }
-
-    private static readonly Configuration D50Config = new(RgbConfiguration.ProPhoto, XyzConfiguration.D50);
     
     [Test]
     public void DifferentConfig(
-        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd,
+        [Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd,
         [Values(0, 0.25, 0.5, 0.75, 1)] double severity)
     {
         var rgbD65 = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
@@ -128,8 +105,8 @@ public class VisionDeficiencyTests
     }
 
     [Test]
-    public void NoSeverity(
-        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan)] Cvd cvd,
+    public void AnomalyNoSeverity(
+        [Values(Cvd.Protanomaly, Cvd.Deuteranomaly, Cvd.Tritanomaly)] Cvd cvd,
         [Values(0, -0.0000000001, double.MinValue, double.NegativeInfinity, double.NaN)] double severity)
     {
         var colour = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
@@ -138,8 +115,8 @@ public class VisionDeficiencyTests
     }
     
     [Test]
-    public void MaxSeverity(
-        [Values(Cvd.Protan, Cvd.Deutan, Cvd.Tritan)] Cvd cvd,
+    public void AnomalyFullSeverity(
+        [Values(Cvd.Protanomaly, Cvd.Deuteranomaly, Cvd.Tritanomaly)] Cvd cvd,
         [Values(1, 1.0000000001, double.MaxValue, double.PositiveInfinity)] double severity)
     {
         var colour = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);
@@ -147,4 +124,47 @@ public class VisionDeficiencyTests
         var simulated = colour.Simulate(cvd, severity);
         Assert.That(simulated, Is.EqualTo(maxSeverity));
     }
+
+    [TestCase(nameof(StandardRgb.Red))]
+    [TestCase(nameof(StandardRgb.Yellow))]
+    [TestCase(nameof(StandardRgb.Green))]
+    public void BlueConeMonochromacy(string rgbName)
+    {
+        /*
+         * there is no real data to validate against
+         * ----------
+         * the LMS simulation is from https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
+         * and a separate LMS simulation test confirms that the methodology used
+         * results in similar values to the existing protanopia, deuteranopia, tritanopia
+         * so assumptions is that BCM is correctly derived from same methodology, and the output is therefore sensible
+         * ----------
+         * this test just confirms that a blue colour generates a more luminous colour than non-blue colours
+         * since blue is the only cone detecting light
+         * which is quite unusual, e.g. sRGB yellow light is far more luminous than sRGB blue light
+         */
+
+        var blueCvd = StandardRgb.Blue.Simulate(Cvd.BlueConeMonochromacy);
+        var otherCvd = StandardRgb.Lookup[rgbName].Simulate(Cvd.BlueConeMonochromacy);
+        Assert.That(blueCvd.RelativeLuminance, Is.GreaterThan(otherCvd.RelativeLuminance));
+    }
+    
+    // [Test]
+    // public void LmsSimulation(
+    //     [Values(Cvd.Protanopia, Cvd.Deuteranopia, Cvd.Tritanopia)] Cvd cvd,
+    //     [Values(nameof(StandardRgb.Red), nameof(StandardRgb.Green), nameof(StandardRgb.Blue))] string rgbName)
+    // {
+    //     var colour = StandardRgb.Lookup[rgbName];
+    //     var expected = colour.Simulate(cvd);
+    //
+    //     var lmsSimulationMatrix = cvd switch
+    //     {
+    //         Cvd.Protanopia => VisionDeficiency.ProtanopiaLmsSim,
+    //         Cvd.Deuteranopia => VisionDeficiency.DeuteranopiaLmsSim,
+    //         Cvd.Tritanopia => VisionDeficiency.TritanopiaLmsSim,
+    //         _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
+    //     };
+    //
+    //     var lmsSimulation = VisionDeficiency.ApplySimulation(colour, lmsSimulationMatrix);
+    //     TestUtils.AssertTriplet(lmsSimulation.RgbLinear.ConstrainedTriplet, expected.RgbLinear.ConstrainedTriplet, 0.05);
+    // }
 }

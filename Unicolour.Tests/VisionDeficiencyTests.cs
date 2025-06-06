@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using MathNet.Numerics.Statistics;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -125,46 +127,52 @@ public class VisionDeficiencyTests
         Assert.That(simulated, Is.EqualTo(maxSeverity));
     }
 
+    /*
+     * there is no real data to validate against
+     * ----------
+     * the `BlueConeMonochromacy` test just confirms that a blue colour generates a more luminous colour than non-blue colours
+     * (since the blue cone is the only one detecting light)
+     * which is quite unusual, e.g. sRGB yellow light is far more luminous than sRGB blue light
+     * ----------
+     * the `LmsSimulation` is checking that the methodology used at https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
+     * results in values somewhat similar to the existing protanopia, deuteranopia, tritanopia
+     * and assumption is that blue cone monochromacy is correctly derived from same methodology, and the output is therefore sensible
+     * (some colours produce notable differences but the similarities are clear when viewed across the spectrum)
+     */
+    
     [TestCase(nameof(StandardRgb.Red))]
     [TestCase(nameof(StandardRgb.Yellow))]
     [TestCase(nameof(StandardRgb.Green))]
     public void BlueConeMonochromacy(string rgbName)
     {
-        /*
-         * there is no real data to validate against
-         * ----------
-         * the LMS simulation is from https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
-         * and a separate LMS simulation test confirms that the methodology used
-         * results in similar values to the existing protanopia, deuteranopia, tritanopia
-         * so assumptions is that BCM is correctly derived from same methodology, and the output is therefore sensible
-         * ----------
-         * this test just confirms that a blue colour generates a more luminous colour than non-blue colours
-         * since blue is the only cone detecting light
-         * which is quite unusual, e.g. sRGB yellow light is far more luminous than sRGB blue light
-         */
-
         var blueCvd = StandardRgb.Blue.Simulate(Cvd.BlueConeMonochromacy);
         var otherCvd = StandardRgb.Lookup[rgbName].Simulate(Cvd.BlueConeMonochromacy);
         Assert.That(blueCvd.RelativeLuminance, Is.GreaterThan(otherCvd.RelativeLuminance));
     }
     
-    // [Test]
-    // public void LmsSimulation(
-    //     [Values(Cvd.Protanopia, Cvd.Deuteranopia, Cvd.Tritanopia)] Cvd cvd,
-    //     [Values(nameof(StandardRgb.Red), nameof(StandardRgb.Green), nameof(StandardRgb.Blue))] string rgbName)
-    // {
-    //     var colour = StandardRgb.Lookup[rgbName];
-    //     var expected = colour.Simulate(cvd);
-    //
-    //     var lmsSimulationMatrix = cvd switch
-    //     {
-    //         Cvd.Protanopia => VisionDeficiency.ProtanopiaLmsSim,
-    //         Cvd.Deuteranopia => VisionDeficiency.DeuteranopiaLmsSim,
-    //         Cvd.Tritanopia => VisionDeficiency.TritanopiaLmsSim,
-    //         _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
-    //     };
-    //
-    //     var lmsSimulation = VisionDeficiency.ApplySimulation(colour, lmsSimulationMatrix);
-    //     TestUtils.AssertTriplet(lmsSimulation.RgbLinear.ConstrainedTriplet, expected.RgbLinear.ConstrainedTriplet, 0.05);
-    // }
+    [Test]
+    public void LmsSimulation([Values(Cvd.Protanopia, Cvd.Deuteranopia, Cvd.Tritanopia)] Cvd cvd)
+    {
+        Unicolour[] colours =
+        [
+            StandardRgb.Red, StandardRgb.Green, StandardRgb.Blue,
+            StandardRgb.Cyan, StandardRgb.Magenta, StandardRgb.Yellow,
+            StandardRgb.Black, StandardRgb.White, StandardRgb.Grey
+        ];
+        
+        var lmsSimulationMatrix = cvd switch
+        {
+            Cvd.Protanopia => VisionDeficiency.ProtanopiaLmsSim,
+            Cvd.Deuteranopia => VisionDeficiency.DeuteranopiaLmsSim,
+            Cvd.Tritanopia => VisionDeficiency.TritanopiaLmsSim,
+            _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
+        };
+    
+        var lmsSimulations = colours.Select(x => VisionDeficiency.ApplySimulation(x, lmsSimulationMatrix)).ToArray();
+        var expected = colours.Select(x => x.Simulate(cvd)).ToArray();
+        var differences = lmsSimulations.Zip(expected, (x, y) => x.Difference(y, DeltaE.Ciede2000)).ToArray();
+        
+        Assert.That(differences.Average(), Is.LessThan(10));
+        Assert.That(differences.Median(), Is.LessThan(10));
+    }
 }

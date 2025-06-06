@@ -12,7 +12,7 @@ public static class VisionDeficiency
         {
             colour = colour.ConvertToConfiguration(Configuration.Default);
         }
-
+        
         var simulated = cvd switch
         {
             Cvd.Protanopia => ApplySimulation(colour, ProtanomalyRgbSim, 1.0),
@@ -298,21 +298,21 @@ public static class VisionDeficiency
         { 0.01775, 0.10945, 0.87262 }
     };
     
-    internal static double[,] ProtanopiaLmsSim =
+    internal static readonly double[,] ProtanopiaLmsSim =
     {
         { 0, 1.05118294, -0.05116099 },
         { 0, 1, 0 },
         { 0, 0, 1 }
     };
     
-    internal static double[,] DeuteranopiaLmsSim =
+    internal static readonly double[,] DeuteranopiaLmsSim =
     {
         { 1, 0, 0 },
         { 0.9513092, 0, 0.04866992 },
         { 0, 0, 1 }
     };
     
-    internal static double[,] TritanopiaLmsSim  =
+    internal static readonly double[,] TritanopiaLmsSim  =
     {
         { 1, 0, 0 },
         { 0, 1, 0 },

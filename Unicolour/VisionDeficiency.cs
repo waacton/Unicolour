@@ -21,8 +21,8 @@ public static class VisionDeficiency
             Cvd.Deuteranomaly => ApplySimulation(colour, DeuteranomalyRgbSim, severity),
             Cvd.Tritanopia => ApplySimulation(colour, TritanomalyRgbSim, 1.0),
             Cvd.Tritanomaly => ApplySimulation(colour, TritanomalyRgbSim, severity),
-            Cvd.Achromatopsia => new(ColourSpace.RgbLinear, colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
             Cvd.BlueConeMonochromacy => ApplySimulation(colour, BlueConeMonochromacyLmsSim),
+            Cvd.Achromatopsia => new(ColourSpace.RgbLinear, colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
             _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
         };
         

@@ -8,6 +8,6 @@ public enum Cvd
     Deuteranomaly,
     Tritanopia,
     Tritanomaly,
-    Achromatopsia,
-    BlueConeMonochromacy
+    BlueConeMonochromacy,
+    Achromatopsia
 }

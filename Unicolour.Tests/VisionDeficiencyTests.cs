@@ -81,7 +81,7 @@ public class VisionDeficiencyTests
     }
 
     [Test]
-    public void NotNumber([Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd)
+    public void NotNumber([Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.BlueConeMonochromacy, Cvd.Achromatopsia)] Cvd cvd)
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = colour.Simulate(cvd);
@@ -90,7 +90,7 @@ public class VisionDeficiencyTests
     
     [Test]
     public void DifferentConfig(
-        [Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.Achromatopsia, Cvd.BlueConeMonochromacy)] Cvd cvd,
+        [Values(Cvd.Protanopia, Cvd.Protanomaly, Cvd.Deuteranopia, Cvd.Deuteranomaly, Cvd.Tritanopia, Cvd.Tritanomaly, Cvd.BlueConeMonochromacy, Cvd.Achromatopsia)] Cvd cvd,
         [Values(0, 0.25, 0.5, 0.75, 1)] double severity)
     {
         var rgbD65 = new Unicolour(Configuration.Default, ColourSpace.Rgb, 1.0, 0.5, 0.25);

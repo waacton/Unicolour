@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,248/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/223,325/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -389,12 +389,16 @@ var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
 var noRed = colour.Simulate(Cvd.Protanopia);
 ```
 
-| Colour&nbsp;vision&nbsp;deficiency                  | Enum                |
-|-----------------------------------------------------|---------------------|
-| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `Cvd.Protanopia`    |
-| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `Cvd.Deuteranopia`  |
-| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `Cvd.Tritanopia`    |
-| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `Cvd.Achromatopsia` |
+| Colour&nbsp;vision&nbsp;deficiency                                                    | Enum                       |
+|---------------------------------------------------------------------------------------|----------------------------|
+| Protanopia&nbsp;(missing&nbsp;red&nbsp;cones)                                         | `Cvd.Protanopia`           |
+| Protanomaly&nbsp;(defective&nbsp;red&nbsp;cones)                                      | `Cvd.Protanomaly`          |
+| Deuteranopia&nbsp;(missing&nbsp;green&nbsp;cones)                                     | `Cvd.Deuteranopia`         |
+| Deuteranomaly&nbsp;(defective&nbsp;green&nbsp;cones)                                  | `Cvd.Deuteranomaly`        |
+| Tritanopia&nbsp;(missing&nbsp;blue&nbsp;cones)                                        | `Cvd.Tritanopia`           |
+| Tritanomaly&nbsp;(defective&nbsp;blue&nbsp;cones)                                     | `Cvd.Tritanomaly`          |
+| Blue&nbsp;cone&nbsp;monochromacy&nbsp;(missing&nbsp;red&nbsp;&&nbsp;green&nbsp;cones) | `Cvd.BlueConeMonochromacy` |
+| Achromatopsia&nbsp;(missing&nbsp;all&nbsp;cones)                                      | `Cvd.Achromatopsia`        |
 
 ### Convert between colour and temperature
 Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) of a colour can be ascertained, and can be used to create a colour.

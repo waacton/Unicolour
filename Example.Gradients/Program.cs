@@ -139,7 +139,7 @@ void VisionDeficiency()
         Cvd.Protanomaly, Cvd.Protanopia, 
         Cvd.Deuteranomaly, Cvd.Deuteranopia, 
         Cvd.Tritanomaly, Cvd.Tritanopia,
-        Cvd.Achromatopsia, Cvd.BlueConeMonochromacy
+        Cvd.BlueConeMonochromacy, Cvd.Achromatopsia
     };
     
     var rows = cvds

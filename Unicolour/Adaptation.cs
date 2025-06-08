@@ -1,5 +1,6 @@
 namespace Wacton.Unicolour;
 
+// http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
 public static class Adaptation
 {
     public static readonly double[,] Bradford =
@@ -9,7 +10,7 @@ public static class Adaptation
         { +0.0389000, -0.0685000, +1.0296000 }
     };
     
-    public static readonly double[,] VonKries =
+    public static readonly double[,] VonKries = // aka Hunt-Pointer-Estevez
     {
         { +0.4002400, +0.7076000, -0.0808100 },
         { -0.2263000, +1.1653200, +0.0457000 },
@@ -34,8 +35,7 @@ public static class Adaptation
         var (x, y, z) = WhitePoint(sourceXyzMatrix, sourceWhitePoint, destinationWhitePoint, adaptationMatrix).ToTriplet();
         return new Xyz(x, y, z);
     }
-
-    // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
+    
     internal static Matrix WhitePoint(Matrix sourceXyz, WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint, Matrix adaptationMatrix)
     {
         return sourceWhitePoint == destinationWhitePoint 

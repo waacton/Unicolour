@@ -151,9 +151,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     }
 
     public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
-
-    public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
-
+    
+    public Unicolour Simulate(Cvd cvd, double severity = 1.0) => VisionDeficiency.Simulate(cvd, severity, this);
+    
     public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
 
     public Unicolour MapToPointerGamut()

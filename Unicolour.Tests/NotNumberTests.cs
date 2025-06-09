@@ -99,6 +99,9 @@ public class NotNumberTests
     public void Xyb(Configuration config, double x, double y, double b) => AssertUnicolour(new(config, ColourSpace.Xyb, x, y, b));
     
     [TestCaseSource(nameof(TestData))]
+    public void Lms(Configuration config, double l, double m, double s) => AssertUnicolour(new(config, ColourSpace.Lms, l, m, s));
+    
+    [TestCaseSource(nameof(TestData))]
     public void Ipt(Configuration config, double i, double p, double t) => AssertUnicolour(new(config, ColourSpace.Ipt, i, p, t));
 
     [TestCaseSource(nameof(TestData))]

@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,328/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/225,669/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -46,7 +46,7 @@ It can be used to [mix and compare colours](#mix-colours), and offers [many usef
 > CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv · 
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
 > TSL · XYB · 
-> IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
+> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
@@ -164,6 +164,7 @@ var (l, c, h) = colour.Oklch;
 | YDbDr&nbsp;_(SECAM)_                                                                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
 | TSL                                                                                     | `ColourSpace.Tsl`       | `.Tsl`         |
 | XYB                                                                                     | `ColourSpace.Xyb`       | `.Xyb`         |
+| LMS                                                                                     | `ColourSpace.Lms`       | `.Lms`         |
 | IPT                                                                                     | `ColourSpace.Ipt`       | `.Ipt`         |
 | IC<sub>T</sub>C<sub>P</sub>                                                             | `ColourSpace.Ictcp`     | `.Ictcp`       |
 | J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>                                                 | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
@@ -222,30 +223,31 @@ flowchart LR
   YDBDR("YDbDr (SECAM)")
   TSL(TSL)
   XYB(XYB)
-  IPT(IPT)
-  ICTCP(ICtCp)
-  JZAZBZ(JzAzBz)
-  JZCZHZ(JzCzHz)
-  OKLAB(Oklab)
-  OKLCH(Oklch)
-  OKHSV(Okhsv)
-  OKHSL(Okhsl)
-  OKHWB(Okhwb)
-  OKLRAB(Oklrab)
-  OKLRCH(Oklrch)
+  LMS((LMS))
+  IPT{{IPT}}
+  ICTCP{{ICtCp}}
+  JZAZBZ{{JzAzBz}}
+  JZCZHZ{{JzCzHz}}
+  OKLAB{{Oklab}}
+  OKLCH{{Oklch}}
+  OKHSV{{Okhsv}}
+  OKHSL{{Okhsl}}
+  OKHWB{{Okhwb}}
+  OKLRAB{{Oklrab}}
+  OKLRCH{{Oklrch}}
   CAM02(CAM02)
   CAM02UCS(CAM02-UCS)
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
-  HCT(HCT)
+  HCT{{HCT}}
   ICC("ICC Profile")
   CMYK("CMYK")
-  CMYKOGV("CMYKOGV")
-
+  
   XYZ --> ICC
-  ICC -.-> CMYKOGV
   ICC -.-> CMYK
   RGB -.-> CMYK
+  XYZ --> XYY
+  XYY --> WXY
   XYZ --> RGBLIN
   RGBLIN --> RGB
   RGB --> HSB
@@ -260,14 +262,13 @@ flowchart LR
   YUV --> YDBDR
   RGB --> TSL
   RGBLIN --> XYB
-  XYZ --> XYY
-  XYY --> WXY
   XYZ --> LAB
   LAB --> LCHAB
   XYZ --> LUV
   LUV --> LCHUV
   LCHUV --> HSLUV
   LCHUV --> HPLUV
+  XYZ --> LMS
   XYZ --> IPT
   XYZ --> ICTCP
   XYZ --> JZAZBZ
@@ -287,9 +288,12 @@ flowchart LR
 ```
 
 This diagram summarises how colour space conversions are implemented in Unicolour.
-Arrows indicate forward transformations from one space to another.
-For each forward transformation there is a corresponding reverse transformation.
-XYZ is considered the root colour space.
+- XYZ is considered the root colour space
+- Arrows indicate forward transformations from one space to another
+  - For each forward transformation there is a corresponding reverse transformation
+- Nodes with rounded edges indicate spaces affected by white point configuration
+- Hexagonal nodes indicate spaces restricted to D65/2°
+- Circular nodes indicate spaces unaffected by white point configuration
 </details>
 
 ### Mix colours
@@ -723,7 +727,7 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - Rendering intent
 
 ### White points
-All colour spaces are impacted by the reference white point.
+Most colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
 The default chromatic adaptation is the Bradford method but [this can be customised](#xyzconfiguration).

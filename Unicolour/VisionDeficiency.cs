@@ -21,7 +21,7 @@ public static class VisionDeficiency
             Cvd.Deuteranomaly => ApplySimulation(colour, DeuteranomalyRgbSim, severity),
             Cvd.Tritanopia => ApplySimulation(colour, TritanomalyRgbSim, 1.0),
             Cvd.Tritanomaly => ApplySimulation(colour, TritanomalyRgbSim, severity),
-            Cvd.BlueConeMonochromacy => ApplySimulation(colour, BlueConeMonochromacyLmsSim),
+            Cvd.BlueConeMonochromacy => ApplySimulation(colour, ColourSpace.Lms, BlueConeMonochromacyLmsSim),
             Cvd.Achromatopsia => new(ColourSpace.RgbLinear, colour.RelativeLuminance, colour.RelativeLuminance, colour.RelativeLuminance),
             _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
         };
@@ -47,22 +47,14 @@ public static class VisionDeficiency
         };
         
         // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
-        var simulatedRgbLinear = new Matrix(simulationMatrix).Multiply(Matrix.From(colour.RgbLinear)).ToTriplet();
-        return new Unicolour(ColourSpace.RgbLinear, simulatedRgbLinear.Tuple);
+        return ApplySimulation(colour, ColourSpace.RgbLinear, simulationMatrix);
     }
     
-    internal static Unicolour ApplySimulation(Unicolour colour, double[,] simulationMatrix)
+    internal static Unicolour ApplySimulation(Unicolour colour, ColourSpace colourSpace, double[,] simulationMatrix)
     {
-        var lmsMatrix = new Matrix(Adaptation.VonKries);
-        var lms = lmsMatrix.Multiply(Matrix.From(colour.Xyz));
-        var simulatedLms = new Matrix(simulationMatrix).Multiply(lms);
-        
-        var simulatedXyz = lmsMatrix.Inverse().Multiply(simulatedLms).ToTriplet();
-        return new Unicolour(ColourSpace.Xyz, simulatedXyz.Tuple);
-        
-        // TODO: add LMS colour space?
-        // var simulatedLms = new Matrix(simulationMatrix).Multiply(colour.Lms);
-        // return new Unicolour(ColourSpace.Lms, simulatedLms.Tuple);
+        var colourMatrix = Matrix.From(colour.GetRepresentation(colourSpace));
+        var simulatedLms = new Matrix(simulationMatrix).Multiply(colourMatrix).ToTriplet();
+        return new Unicolour(colourSpace, simulatedLms.Tuple);
     }
 
     private static double[,] InterpolateMatrices(double[][,] matrices, double severity)

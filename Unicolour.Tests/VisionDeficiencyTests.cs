@@ -183,7 +183,7 @@ public class VisionDeficiencyTests
             _ => throw new ArgumentOutOfRangeException(nameof(cvd), cvd, null)
         };
     
-        var lmsSimulations = colours.Select(x => VisionDeficiency.ApplySimulation(x, lmsSimulationMatrix)).ToArray();
+        var lmsSimulations = colours.Select(x => VisionDeficiency.ApplySimulation(x, ColourSpace.Lms, lmsSimulationMatrix)).ToArray();
         var expected = colours.Select(x => x.Simulate(cvd)).ToArray();
         var differences = lmsSimulations.Zip(expected, (x, y) => x.Difference(y, DeltaE.Ciede2000)).ToArray();
         

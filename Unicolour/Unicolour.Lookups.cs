@@ -30,6 +30,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => Ydbdr,
             ColourSpace.Tsl => Tsl,
             ColourSpace.Xyb => Xyb,
+            ColourSpace.Lms => Lms,
             ColourSpace.Ipt => Ipt,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
@@ -77,6 +78,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => new Ydbdr(first, second, third, heritage),
             ColourSpace.Tsl => new Tsl(first, second, third, heritage),
             ColourSpace.Xyb => new Xyb(first, second, third, heritage),
+            ColourSpace.Lms => new Lms(first, second, third, heritage),
             ColourSpace.Ipt => new Ipt(first, second, third, heritage),
             ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
             ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
@@ -220,6 +222,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Tsl => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Xyb => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
+            ColourSpace.Lms => Lms.ToXyz(Lms, Configuration.Xyz),
             ColourSpace.Ipt => Ipt.ToXyz(Ipt, Configuration.Xyz),
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Configuration.Xyz, Configuration.DynamicRange),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Configuration.Xyz, Configuration.DynamicRange),
@@ -389,6 +392,15 @@ public partial class Unicolour
         {
             ColourSpace.Xyb => (Xyb)SourceRepresentation,
             _ => Xyb.FromRgbLinear(RgbLinear)
+        };
+    }
+    
+    private Lms EvaluateLms()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Lms => (Lms)SourceRepresentation,
+            _ => Lms.FromXyz(Xyz, Configuration.Xyz)
         };
     }
     

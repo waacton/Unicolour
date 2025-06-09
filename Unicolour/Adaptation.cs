@@ -3,18 +3,17 @@ namespace Wacton.Unicolour;
 // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
 public static class Adaptation
 {
+    // HPE for LMS conversion is the matrix originallu used in the von Kries transformation for chromatic adaptation
+    // doesn't matter that it's D65-relative; during adaptation both source & destination use D65 as a common relative space
+    public static readonly double[,] VonKries = Lms.HuntPointerEstevez.Data;
+    
+    // Bradford is a "spectrally sharpened" transformation matrix, adjusting L and M cone responses to make them more distinct
+    // designed to produce better adaptation results, not designed for actual LMS conversion
     public static readonly double[,] Bradford =
     {
         { +0.8951000, +0.2664000, -0.1614000 },
         { -0.7502000, +1.7135000, +0.0367000 },
         { +0.0389000, -0.0685000, +1.0296000 }
-    };
-    
-    public static readonly double[,] VonKries = // aka Hunt-Pointer-Estevez
-    {
-        { +0.4002400, +0.7076000, -0.0808100 },
-        { -0.2263000, +1.1653200, +0.0457000 },
-        { +0.0000000, +0.0000000, +0.9182200 }
     };
     
     public static readonly double[,] XyzScaling =

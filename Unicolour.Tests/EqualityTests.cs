@@ -164,8 +164,9 @@ public class EqualityTests
         AssertEqual(colour1.Jzczhz, colour2.Jzczhz);
         AssertEqual(colour1.Lab, colour2.Lab);
         AssertEqual(colour1.Lchab, colour2.Lchab);
-        AssertEqual(colour1.Luv, colour2.Luv);
         AssertEqual(colour1.Lchuv, colour2.Lchuv);
+        AssertEqual(colour1.Lms, colour2.Lms);
+        AssertEqual(colour1.Luv, colour2.Luv);
         AssertEqual(colour1.Oklab, colour2.Oklab);
         AssertEqual(colour1.Oklch, colour2.Oklch);
         AssertEqual(colour1.Okhsl, colour2.Okhsl);

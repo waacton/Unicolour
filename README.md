@@ -46,7 +46,7 @@ It can be used to [mix and compare colours](#mix-colours), and offers [many usef
 > CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv · 
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
 > TSL · XYB · 
-> IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
+> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
@@ -164,6 +164,7 @@ var (l, c, h) = colour.Oklch;
 | YDbDr&nbsp;_(SECAM)_                                                                    | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
 | TSL                                                                                     | `ColourSpace.Tsl`       | `.Tsl`         |
 | XYB                                                                                     | `ColourSpace.Xyb`       | `.Xyb`         |
+| LMS                                                                                     | `ColourSpace.Lms`       | `.Lms`         |
 | IPT                                                                                     | `ColourSpace.Ipt`       | `.Ipt`         |
 | IC<sub>T</sub>C<sub>P</sub>                                                             | `ColourSpace.Ictcp`     | `.Ictcp`       |
 | J<sub>z</sub>a<sub>z</sub>b<sub>z</sub>                                                 | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
@@ -222,30 +223,31 @@ flowchart LR
   YDBDR("YDbDr (SECAM)")
   TSL(TSL)
   XYB(XYB)
-  IPT(IPT)
-  ICTCP(ICtCp)
-  JZAZBZ(JzAzBz)
-  JZCZHZ(JzCzHz)
-  OKLAB(Oklab)
-  OKLCH(Oklch)
-  OKHSV(Okhsv)
-  OKHSL(Okhsl)
-  OKHWB(Okhwb)
-  OKLRAB(Oklrab)
-  OKLRCH(Oklrch)
+  LMS([LMS])
+  IPT{{IPT}}
+  ICTCP{{ICtCp}}
+  JZAZBZ{{JzAzBz}}
+  JZCZHZ{{JzCzHz}}
+  OKLAB{{Oklab}}
+  OKLCH{{Oklch}}
+  OKHSV{{Okhsv}}
+  OKHSL{{Okhsl}}
+  OKHWB{{Okhwb}}
+  OKLRAB{{Oklrab}}
+  OKLRCH{{Oklrch}}
   CAM02(CAM02)
   CAM02UCS(CAM02-UCS)
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
-  HCT(HCT)
-  ICC("ICC Profile")
+  HCT{{HCT}}
+  ICC(["ICC Profile"])
   CMYK("CMYK")
-  CMYKOGV("CMYKOGV")
-
+  
   XYZ --> ICC
-  ICC -.-> CMYKOGV
   ICC -.-> CMYK
   RGB -.-> CMYK
+  XYZ --> XYY
+  XYY --> WXY
   XYZ --> RGBLIN
   RGBLIN --> RGB
   RGB --> HSB
@@ -260,14 +262,13 @@ flowchart LR
   YUV --> YDBDR
   RGB --> TSL
   RGBLIN --> XYB
-  XYZ --> XYY
-  XYY --> WXY
   XYZ --> LAB
   LAB --> LCHAB
   XYZ --> LUV
   LUV --> LCHUV
   LCHUV --> HSLUV
   LCHUV --> HPLUV
+  XYZ --> LMS
   XYZ --> IPT
   XYZ --> ICTCP
   XYZ --> JZAZBZ
@@ -287,9 +288,12 @@ flowchart LR
 ```
 
 This diagram summarises how colour space conversions are implemented in Unicolour.
-Arrows indicate forward transformations from one space to another.
-For each forward transformation there is a corresponding reverse transformation.
-XYZ is considered the root colour space.
+- XYZ is considered the root colour space
+- Arrows indicate forward transformations from one colour space to another
+  - For each forward transformation there is a corresponding reverse transformation
+- Square nodes indicate colour spaces affected by white point configuration
+- Hexagonal nodes indicate colour spaces restricted to D65/2°
+- Rounded nodes indicate colour spaces unaffected by white point configuration
 </details>
 
 ### Mix colours
@@ -384,17 +388,23 @@ var surfaceRed = veryRed.MapToPointerGamut();
 
 ### Simulate colour vision deficiency
 Colour vision deficiency (CVD) or colour blindness can be simulated, conveying how a particular colour might be perceived.
+Anomalous trichromacy, where cones are defective instead of missing, can be adjusted using the severity parameter.
 ```c#
 var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-var noRed = colour.Simulate(Cvd.Protanopia);
+var missingRed = colour.Simulate(Cvd.Protanopia);
+var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
 ```
 
-| Colour&nbsp;vision&nbsp;deficiency                  | Enum                |
-|-----------------------------------------------------|---------------------|
-| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `Cvd.Protanopia`    |
-| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `Cvd.Deuteranopia`  |
-| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `Cvd.Tritanopia`    |
-| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `Cvd.Achromatopsia` |
+| Colour&nbsp;vision&nbsp;deficiency                                                    | Enum                       |
+|---------------------------------------------------------------------------------------|----------------------------|
+| Protanopia&nbsp;(missing&nbsp;red&nbsp;cones)                                         | `Cvd.Protanopia`           |
+| Protanomaly&nbsp;(defective&nbsp;red&nbsp;cones)                                      | `Cvd.Protanomaly`          |
+| Deuteranopia&nbsp;(missing&nbsp;green&nbsp;cones)                                     | `Cvd.Deuteranopia`         |
+| Deuteranomaly&nbsp;(defective&nbsp;green&nbsp;cones)                                  | `Cvd.Deuteranomaly`        |
+| Tritanopia&nbsp;(missing&nbsp;blue&nbsp;cones)                                        | `Cvd.Tritanopia`           |
+| Tritanomaly&nbsp;(defective&nbsp;blue&nbsp;cones)                                     | `Cvd.Tritanomaly`          |
+| Blue&nbsp;cone&nbsp;monochromacy&nbsp;(missing&nbsp;red&nbsp;&&nbsp;green&nbsp;cones) | `Cvd.BlueConeMonochromacy` |
+| Achromatopsia&nbsp;(missing&nbsp;all&nbsp;cones)                                      | `Cvd.Achromatopsia`        |
 
 ### Convert between colour and temperature
 Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) of a colour can be ascertained, and can be used to create a colour.
@@ -717,7 +727,7 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - Rendering intent
 
 ### White points
-All colour spaces are impacted by the reference white point.
+Most colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
 The default chromatic adaptation is the Bradford method but [this can be customised](#xyzconfiguration).

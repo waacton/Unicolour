@@ -26,6 +26,7 @@ public enum ColourSpace
     Ydbdr,
     Tsl,
     Xyb,
+    Lms,
     Ipt,
     Ictcp,
     Jzazbz,

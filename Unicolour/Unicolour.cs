@@ -27,6 +27,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Ydbdr? ydbdr;
     private Tsl? tsl;
     private Xyb? xyb;
+    private Lms? lms;
     private Ipt? ipt;
     private Ictcp? ictcp;
     private Jzazbz? jzazbz;
@@ -76,6 +77,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Ydbdr Ydbdr => Get(ref ydbdr, EvaluateYdbdr);
     public Tsl Tsl => Get(ref tsl, EvaluateTsl);
     public Xyb Xyb => Get(ref xyb, EvaluateXyb);
+    public Lms Lms => Get(ref lms, EvaluateLms);
     public Ipt Ipt => Get(ref ipt, EvaluateIpt);
     public Ictcp Ictcp => Get(ref ictcp, EvaluateIctcp);
     public Jzazbz Jzazbz => Get(ref jzazbz, EvaluateJzazbz);

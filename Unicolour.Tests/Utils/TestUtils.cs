@@ -172,6 +172,7 @@ internal static class TestUtils
             AccessProperty(() => colour.Lab);
             AccessProperty(() => colour.Lchab);
             AccessProperty(() => colour.Lchuv);
+            AccessProperty(() => colour.Lms);
             AccessProperty(() => colour.Luv);
             AccessProperty(() => colour.Oklab);
             AccessProperty(() => colour.Oklch);
@@ -257,6 +258,7 @@ internal static class TestUtils
         { typeof(Ydbdr), ColourSpace.Ydbdr },
         { typeof(Tsl), ColourSpace.Tsl },
         { typeof(Xyb), ColourSpace.Xyb },
+        { typeof(Lms), ColourSpace.Lms },
         { typeof(Ipt), ColourSpace.Ipt },
         { typeof(Ictcp), ColourSpace.Ictcp },
         { typeof(Jzazbz), ColourSpace.Jzazbz },

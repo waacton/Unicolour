@@ -68,9 +68,9 @@ internal class Matrix
         var determinant = a*e*i + b*f*g + c*d*h - c*e*g - a*f*h - b*d*i;
         var adjugate = new[,]
         {
-            {e*i - f*h, h*c - i*b, b*f - c*e},
-            {g*f - d*i, a*i - g*c, d*c - a*f},
-            {d*h - g*e, g*b - a*h, a*e - d*b}
+            { e*i - f*h, h*c - i*b, b*f - c*e },
+            { g*f - d*i, a*i - g*c, d*c - a*f },
+            { d*h - g*e, g*b - a*h, a*e - d*b }
         };
         
         var inverse = new double[3, 3];

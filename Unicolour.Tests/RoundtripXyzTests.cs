@@ -49,6 +49,15 @@ public class RoundtripXyzTests
     }
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
+    public void ViaLms(ColourTriplet triplet)
+    {
+        var original = new Xyz(triplet.First, triplet.Second, triplet.Third);
+        var lms = Lms.FromXyz(original, XyzConfig);
+        var roundtrip = Lms.ToXyz(lms, XyzConfig);
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyzTriplets))]
     public void ViaItp(ColourTriplet triplet)
     {
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third);

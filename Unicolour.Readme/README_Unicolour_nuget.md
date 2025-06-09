@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/223,239/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/225,669/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -45,7 +45,7 @@ It can be used to [mix and compare colours](https://github.com/waacton/Unicolour
 > CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv ·
 > YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
 > TSL · XYB ·
-> IPT · ICTCP · Jzazbz · JzCzhz ·
+> LMS · IPT · ICTCP · Jzazbz · JzCzhz ·
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch ·
 > CIECAM02 · CAM16 ·
 > HCT ·
@@ -163,6 +163,7 @@ var (l, c, h) = colour.Oklch;
 | YDbDr&nbsp;_(SECAM)_                                                                | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
 | TSL                                                                                 | `ColourSpace.Tsl`       | `.Tsl`         |
 | XYB                                                                                 | `ColourSpace.Xyb`       | `.Xyb`         |
+| LMS                                                                                 | `ColourSpace.Lms`       | `.Lms`         | 
 | IPT                                                                                 | `ColourSpace.Ipt`       | `.Ipt`         |
 | ICTCP                                                                               | `ColourSpace.Ictcp`     | `.Ictcp`       |
 | Jzazbz                                                                              | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
@@ -271,17 +272,23 @@ var surfaceRed = veryRed.MapToPointerGamut();
 
 ### Simulate colour vision deficiency
 Colour vision deficiency (CVD) or colour blindness can be simulated, conveying how a particular colour might be perceived.
+Anomalous trichromacy, where cones are defective instead of missing, can be adjusted using the severity parameter.
 ```c#
 var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-var noRed = colour.Simulate(Cvd.Protanopia);
+var missingRed = colour.Simulate(Cvd.Protanopia);
+var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
 ```
 
-| Colour&nbsp;vision&nbsp;deficiency                  | Enum                |
-|-----------------------------------------------------|---------------------|
-| Protanopia&nbsp;(no&nbsp;red&nbsp;perception)       | `Cvd.Protanopia`    |
-| Deuteranopia&nbsp;(no&nbsp;green&nbsp;perception)   | `Cvd.Deuteranopia`  |
-| Tritanopia&nbsp;(no&nbsp;blue&nbsp;perception)      | `Cvd.Tritanopia`    |
-| Achromatopsia&nbsp;(no&nbsp;colour&nbsp;perception) | `Cvd.Achromatopsia` |
+| Colour&nbsp;vision&nbsp;deficiency                                                    | Enum                       |
+|---------------------------------------------------------------------------------------|----------------------------|
+| Protanopia&nbsp;(missing&nbsp;red&nbsp;cones)                                         | `Cvd.Protanopia`           |
+| Protanomaly&nbsp;(defective&nbsp;red&nbsp;cones)                                      | `Cvd.Protanomaly`          |
+| Deuteranopia&nbsp;(missing&nbsp;green&nbsp;cones)                                     | `Cvd.Deuteranopia`         |
+| Deuteranomaly&nbsp;(defective&nbsp;green&nbsp;cones)                                  | `Cvd.Deuteranomaly`        |
+| Tritanopia&nbsp;(missing&nbsp;blue&nbsp;cones)                                        | `Cvd.Tritanopia`           |
+| Tritanomaly&nbsp;(defective&nbsp;blue&nbsp;cones)                                     | `Cvd.Tritanomaly`          |
+| Blue&nbsp;cone&nbsp;monochromacy&nbsp;(missing&nbsp;red&nbsp;&&nbsp;green&nbsp;cones) | `Cvd.BlueConeMonochromacy` |
+| Achromatopsia&nbsp;(missing&nbsp;all&nbsp;cones)                                      | `Cvd.Achromatopsia`        |
 
 ### Convert between colour and temperature
 Correlated colour temperature (CCT) and delta UV (∆uv) of a colour can be ascertained, and can be used to create a colour.
@@ -550,7 +557,7 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
   - Rendering intent
 
 ### White points
-All colour spaces are impacted by the reference white point.
+Most colour spaces are impacted by the reference white point.
 Unicolour applies different reference white points to different sets of colour spaces, as shown in the table below.
 When a [conversion to or from XYZ space](https://github.com/waacton/Unicolour#convert-between-colour-spaces) involves a change in white point, a chromatic adaptation transform (CAT) is performed.
 The default chromatic adaptation is the Bradford method but [this can be customised](https://github.com/waacton/Unicolour#xyzconfiguration).

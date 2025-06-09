@@ -223,7 +223,7 @@ flowchart LR
   YDBDR("YDbDr (SECAM)")
   TSL(TSL)
   XYB(XYB)
-  LMS((LMS))
+  LMS([LMS])
   IPT{{IPT}}
   ICTCP{{ICtCp}}
   JZAZBZ{{JzAzBz}}
@@ -240,7 +240,7 @@ flowchart LR
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
   HCT{{HCT}}
-  ICC("ICC Profile")
+  ICC(["ICC Profile"])
   CMYK("CMYK")
   
   XYZ --> ICC
@@ -289,11 +289,11 @@ flowchart LR
 
 This diagram summarises how colour space conversions are implemented in Unicolour.
 - XYZ is considered the root colour space
-- Arrows indicate forward transformations from one space to another
+- Arrows indicate forward transformations from one colour space to another
   - For each forward transformation there is a corresponding reverse transformation
-- Nodes with rounded edges indicate spaces affected by white point configuration
-- Hexagonal nodes indicate spaces restricted to D65/2°
-- Circular nodes indicate spaces unaffected by white point configuration
+- Square nodes indicate colour spaces affected by white point configuration
+- Hexagonal nodes indicate colour spaces restricted to D65/2°
+- Rounded nodes indicate colour spaces unaffected by white point configuration
 </details>
 
 ### Mix colours

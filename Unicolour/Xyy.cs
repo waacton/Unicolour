@@ -15,8 +15,8 @@ public record Xyy : ColourRepresentation
     // but requires making assumptions about floating-point comparison, which I don't want to do
     internal override bool IsGreyscale => Luminance <= 0.0;
 
-    public Xyy(double x, double y, double upperY) : this(x, y, upperY, ColourHeritage.None) {}
-    internal Xyy(double x, double y, double upperY, ColourHeritage heritage) : base(x, y, upperY, heritage) { }
+    public Xyy(double x, double y, double luminance) : this(x, y, luminance, ColourHeritage.None) {}
+    internal Xyy(double x, double y, double luminance, ColourHeritage heritage) : base(x, y, luminance, heritage) { }
 
     protected override string FirstString => $"{Chromaticity.X:F4}";
     protected override string SecondString => $"{Chromaticity.Y:F4}";

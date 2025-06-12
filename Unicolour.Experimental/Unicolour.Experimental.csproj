@@ -49,5 +49,10 @@
             <_Parameter1>Wacton.Unicolour.Tests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Munsell.Data.cs">
+        <DependentUpon>Munsell.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 
 </Project>

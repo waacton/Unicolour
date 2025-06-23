@@ -7,29 +7,56 @@ namespace Wacton.Unicolour.Tests;
 public class MunsellTests
 {
     [Test]
-    public void ToXyy()
+    public void FromMunsell1()
     {
         // first item of ASTM D1535-14 table 2:
         // 2.5R 9/6 = (0.3665, 0.3183, 76.70)
         var munsell = new Munsell(2.5, 9, 6, "R");
-        var xyy = munsell.ToXyy();
+        Console.WriteLine(munsell);
+
+        var xyy = Munsell.ToXyy(munsell);
         Console.WriteLine(xyy);
-
-        var munsell2 = new Munsell(7.5, 5, 10, "G"); // Y = 19.27, x = 0.2200, and y = 0.4082
-        var xyy2 = munsell2.ToXyy();
-        Console.WriteLine(xyy2);
-        var xyz = Xyy.ToXyz(xyy2);
-
-        var d65 = Adaptation.WhitePoint(xyz, 
-            Illuminant.C.GetWhitePoint(Observer.Degree2),
-            Illuminant.D65.GetWhitePoint(Observer.Degree2), 
-            new Matrix(Adaptation.XyzScaling));
+        
+        var munsellRoundtrip = Munsell.FromXyy(xyy);
+        Console.WriteLine(munsellRoundtrip);
     }
 
     [Test]
-    public void FromXyy()
+    public void FromMunsell2()
     {
-        var xyy = new Xyy(0.2437, 0.3240, 21.98); //  5.6 BG 5.30 / 5.3
+        var munsell = new Munsell(4.2, 8.1, 5.3, "YR"); // 0.38736945,  0.35751656,  0.59362
+        Console.WriteLine(munsell);
+
+        var xyy = Munsell.ToXyy(munsell);
+        Console.WriteLine(xyy);
+
+        var munsellRoundtrip = Munsell.FromXyy(xyy);
+        Console.WriteLine(munsellRoundtrip);
+    }
+    
+    [Test]
+    public void FromXyy1()
+    {
+        var xyy = new Xyy(0.500, 0.454, 0.4602); // 10YR 7.2/13.5
+        Console.WriteLine(xyy);
+
         var munsell = Munsell.FromXyy(xyy);
+        Console.WriteLine(munsell);
+
+        var xyyRoundtrip = Munsell.ToXyy(munsell);
+        Console.WriteLine(xyyRoundtrip);
+    }
+
+    [Test]
+    public void FromXyy2()
+    {
+        var xyy = new Xyy(0.2437, 0.3240, 0.2198); //  5.6 BG 5.30 / 5.3
+        Console.WriteLine(xyy);
+        
+        var munsell = Munsell.FromXyy(xyy);
+        Console.WriteLine(munsell);
+
+        var xyyRoundtrip = Munsell.ToXyy(munsell);
+        Console.WriteLine(xyyRoundtrip);
     }
 }

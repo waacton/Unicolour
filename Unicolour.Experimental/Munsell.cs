@@ -1,6 +1,13 @@
 ﻿namespace Wacton.Unicolour.Experimental;
 
 // TODO: double check luminance equations, not particularly accurate roundtrip
+// TODO: handle grey ("N" hue e.g. N 5/ ... or 0 chroma e.g. 10YR 5/0)
+// TODO: clamp hue between 0 - 10, clamp value to 10, handle extreme chroma values
+// TODO: handle boundary cases
+//       - input xy is beyond all x-values in the dataset (in either direction; need to extrapolate horizontals from 2x closest points in other direction)
+//       - input xy is beyond all y-values in the dataset (in either direction; need to extrapolate verticals from 2x closest points in other direction)
+//       - input xy is beyond all x- and y-values in the dataset (form 2 segments from the 4 points in the same direction (how to choose pairing?) and extrapolate)
+// TODO: construct using string (accounting for both standard and grey variants, allowing decimals)
 public partial record Munsell
 {
     public double HueNumber { get; private set; }
@@ -26,7 +33,6 @@ public partial record Munsell
         HueLetter = null;
     }
 
-    // TODO: handle grey ("N" hue, or 0 chroma)
     public static Xyy ToXyy(Munsell munsell)
     {
         var value = munsell.Value;
@@ -201,7 +207,6 @@ public partial record Munsell
         var lower = GetChromaBoundaries(lowerV);
         var upper = GetChromaBoundaries(upperV);
         
-        // TODO: check that distance is correct
         // TODO: ensure works when null chroma
         var distance = upperV - lowerV == 0 ? 0 : ((double)Value - lowerV) / (upperV - lowerV);
         var x = Interpolation.Interpolate(lower.X, upper.X, distance);
@@ -222,7 +227,6 @@ public partial record Munsell
         var lower = GetHueBoundaries(boundValue, lowerC);
         var upper = GetHueBoundaries(boundValue, upperC);
         
-        // TODO: check that distance is correct
         // TODO: ensure works when null chroma
         var distance = upperC - lowerC == 0 ? 0 : ((double)Chroma - lowerC) / (upperC - lowerC);
         var x = Interpolation.Interpolate(lower.X, upper.X, distance);

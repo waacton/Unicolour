@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour.Experimental;
 
+// TODO: double check luminance equations, not particularly accurate roundtrip
 public partial record Munsell
 {
     public double HueNumber { get; private set; }
@@ -59,25 +60,60 @@ public partial record Munsell
             var lowerHorizontal = Line.FromPoints((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
             var vertical = Line.FromPoints((x, y), (x, y + 1));
 
-            var upperIntersect = upperHorizontal.GetIntersect(vertical);
-            var totalUpperDistance = GetDistance((closestUpLeft.x, closestUpLeft.y), (closestUpRight.x, closestUpRight.y));
-            var distanceToUpperIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), upperIntersect);
-            var upperInterpolationDistance = distanceToUpperIntersect / totalUpperDistance;
-            var upperC = Interpolation.Interpolate(closestUpLeft.c, closestUpRight.c, upperInterpolationDistance);
-            var upperH = Interpolation.Interpolate(ToDegrees(closestUpLeft.h, closestUpLeft.letter), ToDegrees(closestUpRight.h, closestUpRight.letter), upperInterpolationDistance);
+            (double x, double y) upperIntersect;
+            double upperC;
+            double upperH;
+            if (closestUpLeft == closestUpRight)
+            {
+                upperC = closestUpLeft.c;
+                upperH = ToDegrees(closestUpLeft.h, closestUpLeft.letter);
+                upperIntersect = (closestUpLeft.x, closestUpRight.y);
+            }
+            else
+            {
+                upperIntersect = upperHorizontal.GetIntersect(vertical);
+                var totalUpperDistance = GetDistance((closestUpLeft.x, closestUpLeft.y), (closestUpRight.x, closestUpRight.y));
+                var distanceToUpperIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), upperIntersect);
+                var upperInterpolationDistance = distanceToUpperIntersect / totalUpperDistance;
+                upperC = Interpolation.Interpolate(closestUpLeft.c, closestUpRight.c, upperInterpolationDistance);
+                upperH = Interpolation.Interpolate(ToDegrees(closestUpLeft.h, closestUpLeft.letter), ToDegrees(closestUpRight.h, closestUpRight.letter), upperInterpolationDistance);
+            }
             
-            var lowerIntersect = lowerHorizontal.GetIntersect(vertical);
-            var totalLowerDistance = GetDistance((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
-            var distanceToLowerIntersect = GetDistance((closestDownLeft.x, closestDownRight.y), lowerIntersect);
-            var lowerInterpolationDistance = distanceToLowerIntersect / totalLowerDistance;
-            var lowerC = Interpolation.Interpolate(closestDownLeft.c, closestDownRight.c, lowerInterpolationDistance);
-            var lowerH = Interpolation.Interpolate(ToDegrees(closestDownLeft.h, closestDownLeft.letter), ToDegrees(closestDownRight.h, closestDownRight.letter), lowerInterpolationDistance);
+            (double x, double y) lowerIntersect;
+            double lowerC;
+            double lowerH;
+            if (closestDownLeft == closestDownRight)
+            {
+                lowerC = closestDownLeft.c;
+                lowerH = ToDegrees(closestDownLeft.h, closestDownLeft.letter);
+                lowerIntersect = (closestDownLeft.x, closestDownLeft.y);
+            }
+            else
+            {
+                lowerIntersect = lowerHorizontal.GetIntersect(vertical);
+                var totalLowerDistance = GetDistance((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
+                var distanceToLowerIntersect = GetDistance((closestDownLeft.x, closestDownRight.y), lowerIntersect);
+                var lowerInterpolationDistance = distanceToLowerIntersect / totalLowerDistance;
+                lowerC = Interpolation.Interpolate(closestDownLeft.c, closestDownRight.c, lowerInterpolationDistance);
+                lowerH = Interpolation.Interpolate(ToDegrees(closestDownLeft.h, closestDownLeft.letter), ToDegrees(closestDownRight.h, closestDownRight.letter), lowerInterpolationDistance);
+            }
 
-            var totalIntersectDistance = GetDistance(lowerIntersect, upperIntersect);
-            var distanceToTarget = GetDistance(lowerIntersect, (x, y));
-            var interpolationDistance = distanceToTarget / totalIntersectDistance;
-            var c = Interpolation.Interpolate(lowerC, upperC, interpolationDistance);
-            var h = Interpolation.Interpolate(lowerH, upperH, interpolationDistance);
+            double h;
+            double c;
+            if (lowerIntersect == upperIntersect)
+            {
+                c = lowerC;
+                h = lowerH;
+            }
+            else
+            {
+                var totalIntersectDistance = GetDistance(lowerIntersect, upperIntersect);
+                var distanceToTarget = GetDistance(lowerIntersect, (x, y));
+                var interpolationDistance = distanceToTarget / totalIntersectDistance;
+                c = Interpolation.Interpolate(lowerC, upperC, interpolationDistance);
+                h = Interpolation.Interpolate(lowerH, upperH, interpolationDistance);
+            }
+
             return (h, c);
         }
         
@@ -124,12 +160,15 @@ public partial record Munsell
         var h = FromDegrees(Interpolation.Interpolate(lowerH, upperH, vDistance));
         var c = Interpolation.Interpolate(lowerC, upperC, vDistance);
         
-        var (lowerH2, lowerC2) = GetHCFromVerticals(lowerV);
-        var (upperH2, upperC2) = GetHCFromVerticals(upperV);
-
-        var vDistance2 = v - lowerV;
-        var h2 = FromDegrees(Interpolation.Interpolate(lowerH2, upperH2, vDistance));
-        var c2 = Interpolation.Interpolate(lowerC2, upperC2, vDistance);
+        // TODO: consider taking verticals into account as well? maybe result is average of horizontal and vertical calcs?
+        //       also, in boundary case where there are no data points further in an x-direction, could try using verticals instead
+        //       (if there are no suitable horizontals or verticals bounding the point, would need to extrapolate from 2 points in one direction?)
+        // var (lowerH2, lowerC2) = GetHCFromVerticals(lowerV);
+        // var (upperH2, upperC2) = GetHCFromVerticals(upperV);
+        //
+        // var vDistance2 = v - lowerV;
+        // var h2 = FromDegrees(Interpolation.Interpolate(lowerH2, upperH2, vDistance));
+        // var c2 = Interpolation.Interpolate(lowerC2, upperC2, vDistance);
         
         return new Munsell(h.number, v, c, h.letter);
     }
@@ -153,6 +192,11 @@ public partial record Munsell
     {
         var lowerV = Values.Last(x => x <= Value);
         var upperV = Values.First(x => x >= Value);
+
+        if (lowerV == upperV)
+        {
+            return GetChromaBoundaries(lowerV);
+        }
         
         var lower = GetChromaBoundaries(lowerV);
         var upper = GetChromaBoundaries(upperV);
@@ -169,6 +213,11 @@ public partial record Munsell
     {
         var lowerC = Chromas.Last(x => x <= Chroma);
         var upperC = Chromas.First(x => x >= Chroma);
+        
+        if (lowerC == upperC)
+        {
+            return GetHueBoundaries(boundValue, lowerC);
+        }
         
         var lower = GetHueBoundaries(boundValue, lowerC);
         var upper = GetHueBoundaries(boundValue, upperC);
@@ -190,6 +239,12 @@ public partial record Munsell
 
         var lowerH = FromDegrees(lowerDegrees);
         var upperH = FromDegrees(upperDegrees);
+        
+        if (lowerH == upperH)
+        {
+            var exact = Data.Value.Single(x => x.h == lowerH.number && x.letter == lowerH.letter && x.v == boundValue && x.c == boundChroma);
+            return new Chromaticity(exact.x, exact.y);
+        }
         
         // ReSharper disable CompareOfFloatsByEqualityOperator
         var lower = Data.Value.Single(x => x.h == lowerH.number && x.letter == lowerH.letter && x.v == boundValue && x.c == boundChroma);

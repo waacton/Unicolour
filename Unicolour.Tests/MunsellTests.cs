@@ -45,12 +45,28 @@ public class MunsellTests
 
         var xyyRoundtrip = Munsell.ToXyy(munsell);
         Console.WriteLine(xyyRoundtrip);
+        
+        var munsellRoundtrip = Munsell.FromXyy(xyyRoundtrip);
+        Console.WriteLine(munsellRoundtrip);
     }
 
     [Test]
     public void FromXyy2()
     {
         var xyy = new Xyy(0.2437, 0.3240, 0.2198); //  5.6 BG 5.30 / 5.3
+        Console.WriteLine(xyy);
+        
+        var munsell = Munsell.FromXyy(xyy);
+        Console.WriteLine(munsell);
+
+        var xyyRoundtrip = Munsell.ToXyy(munsell);
+        Console.WriteLine(xyyRoundtrip);
+    }
+    
+    [Test]
+    public void FromXyy3()
+    {
+        var xyy = new Xyy(0.365, 0.347, 0.576196); // somewhere between 2.5YR 8/3.5 ; 2.5YR 8/4.0 ; 5.0YR 8/3.5 ; 5.0YR 8/4.0
         Console.WriteLine(xyy);
         
         var munsell = Munsell.FromXyy(xyy);

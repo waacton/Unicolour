@@ -43,29 +43,93 @@ public partial record Munsell
         var upperV = Values.First(item => item >= v);
         
         var (x, y) = xyy.Chromaticity;
-        var potentialLowers = Data.Value.Where(data => data.v == lowerV).OrderBy(item => GetDistance((x, y), (item.x, item.y))).ToList();
-        var potentialUppers = Data.Value.Where(data => data.v == upperV).OrderBy(item => GetDistance((x, y), (item.x, item.y))).ToList();
 
-        var lowerA = potentialLowers[0];
-        var lowerB = potentialLowers[1];
+        (double h, double c) GetHCFromHorizontals(double boundValue)
+        {
+            var closestPoints = Data.Value.Where(data => data.v == boundValue).OrderBy(item => GetDistance((x, y), (item.x, item.y))).Take(50).ToList();
 
-        var lowerTotalLength = GetDistance((lowerA.x, lowerA.y), (lowerB.x, lowerB.y));
-        var lowerDistanceFromA = GetDistance((x, y), (lowerA.x, lowerA.y));
-        var lowerChroma = Interpolation.Interpolate(lowerA.c, lowerB.c, lowerDistanceFromA / lowerTotalLength);
+            var closestUpRight = closestPoints.First(data => data.x >= x && data.y >= y);
+            var closestDownRight = closestPoints.First(data => data.x >= x && data.y <= y);
+            var closestUpLeft = closestPoints.First(data => data.x <= x && data.y >= y);
+            var closestDownLeft = closestPoints.First(data => data.x <= x && data.y <= y);
+            
+            var upperHorizontal = Line.FromPoints((closestUpLeft.x, closestUpLeft.y), (closestUpRight.x, closestUpRight.y));
+            var lowerHorizontal = Line.FromPoints((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
+            var vertical = Line.FromPoints((x, y), (x, y + 1));
+
+            var upperIntersect = upperHorizontal.GetIntersect(vertical);
+            var totalUpperDistance = GetDistance((closestUpLeft.x, closestUpLeft.y), (closestUpRight.x, closestUpRight.y));
+            var distanceToUpperIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), upperIntersect);
+            var upperInterpolationDistance = distanceToUpperIntersect / totalUpperDistance;
+            var upperC = Interpolation.Interpolate(closestUpLeft.c, closestUpRight.c, upperInterpolationDistance);
+            var upperH = Interpolation.Interpolate(closestUpLeft.h, closestUpRight.h, upperInterpolationDistance);
+            
+            var lowerIntersect = lowerHorizontal.GetIntersect(vertical);
+            var totalLowerDistance = GetDistance((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
+            var distanceToLowerIntersect = GetDistance((closestDownLeft.x, closestDownRight.y), lowerIntersect);
+            var lowerInterpolationDistance = distanceToLowerIntersect / totalLowerDistance;
+            var lowerC = Interpolation.Interpolate(closestDownLeft.c, closestDownRight.c, lowerInterpolationDistance);
+            var lowerH = Interpolation.Interpolate(closestDownLeft.h, closestDownRight.h, lowerInterpolationDistance);
+
+            var totalIntersectDistance = GetDistance(lowerIntersect, upperIntersect);
+            var distanceToTarget = GetDistance(lowerIntersect, (x, y));
+            var interpolationDistance = distanceToTarget / totalIntersectDistance;
+            var c = Interpolation.Interpolate(lowerC, upperC, interpolationDistance);
+            var h = Interpolation.Interpolate(lowerH, upperH, interpolationDistance);
+            return (h, c);
+        }
         
-        var upperA = potentialUppers[0];
-        var upperB = potentialUppers[1];
+        (double h, double c) GetHCFromVerticals(double boundValue)
+        {
+            var closestPoints = Data.Value.Where(data => data.v == boundValue).OrderBy(item => GetDistance((x, y), (item.x, item.y))).Take(50).ToList();
 
-        var upperTotalLength = GetDistance((upperA.x, upperA.y), (upperB.x, upperB.y));
-        var upperDistanceFromA = GetDistance((x, y), (upperA.x, upperA.y));
-        var upperChroma = Interpolation.Interpolate(upperA.c, upperB.c, upperDistanceFromA / upperTotalLength);
+            var closestUpRight = closestPoints.First(data => data.x >= x && data.y >= y);
+            var closestDownRight = closestPoints.First(data => data.x >= x && data.y <= y);
+            var closestUpLeft = closestPoints.First(data => data.x <= x && data.y >= y);
+            var closestDownLeft = closestPoints.First(data => data.x <= x && data.y <= y);
+            
+            var leftVertical = Line.FromPoints((closestUpLeft.x, closestUpLeft.y), (closestDownLeft.x, closestDownLeft.y));
+            var rightVertical = Line.FromPoints((closestUpRight.x, closestUpRight.y), (closestDownRight.x, closestDownRight.y));
+            var horizontal = Line.FromPoints((x, y), (x + 1, y));
 
-        var interpolatedChroma = Interpolation.Interpolate(lowerChroma, upperChroma, v - lowerV);
+            var leftIntersect = leftVertical.GetIntersect(horizontal);
+            var totalLeftDistance = GetDistance((closestUpLeft.x, closestUpLeft.y), (closestDownLeft.x, closestDownLeft.y));
+            var distanceToLeftIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), leftIntersect);
+            var leftInterpolationDistance = distanceToLeftIntersect / totalLeftDistance;
+            var leftC = Interpolation.Interpolate(closestUpLeft.c, closestDownLeft.c, leftInterpolationDistance);
+            var leftH = Interpolation.Interpolate(closestUpLeft.h, closestDownLeft.h, leftInterpolationDistance);
+            
+            var rightIntersect = rightVertical.GetIntersect(horizontal);
+            var totalRightDistance = GetDistance((closestUpRight.x, closestUpRight.y), (closestDownRight.x, closestDownRight.y));
+            var distanceToRightIntersect = GetDistance((closestUpRight.x, closestUpRight.y), rightIntersect);
+            var rightInterpolationDistance = distanceToRightIntersect / totalRightDistance;
+            var rightC = Interpolation.Interpolate(closestUpRight.c, closestDownRight.c, rightInterpolationDistance);
+            var rightH = Interpolation.Interpolate(closestUpRight.h, closestDownRight.h, rightInterpolationDistance);
+
+            var totalIntersectDistance = GetDistance(leftIntersect, rightIntersect);
+            var distanceToTarget = GetDistance(leftIntersect, (x, y));
+            var interpolationDistance = distanceToTarget / totalIntersectDistance;
+            var c = Interpolation.Interpolate(leftC, rightC, interpolationDistance);
+            var h = Interpolation.Interpolate(leftH, rightH, interpolationDistance);
+            
+            return (h, c);
+        }
+
+        var (lowerH, lowerC) = GetHCFromHorizontals(lowerV);
+        var (upperH, upperC) = GetHCFromHorizontals(upperV);
+
+        var vDistance = v - lowerV;
+        var interpolatedH = Interpolation.Interpolate(lowerH, upperH, vDistance);
+        var interpolatedC = Interpolation.Interpolate(lowerC, upperC, vDistance);
         
-        // TODO: for hue... convert to 0-360, interpolate, convert back to notation?
-        var hueNumber = lowerA.h;
-        var hueLetter = lowerA.letter;
-        return new Munsell(hueNumber, v, interpolatedChroma, hueLetter);
+        var (lowerH2, lowerC2) = GetHCFromVerticals(lowerV);
+        var (upperH2, upperC2) = GetHCFromVerticals(upperV);
+
+        var vDistance2 = v - lowerV;
+        var interpolatedH2 = Interpolation.Interpolate(lowerH2, upperH2, vDistance);
+        var interpolatedC2 = Interpolation.Interpolate(lowerC2, upperC2, vDistance);
+        
+        return new Munsell(interpolatedH, v, interpolatedC, "X");
     }
 
     private static double GetDistance((double x, double y) point1, (double x, double y) point2)

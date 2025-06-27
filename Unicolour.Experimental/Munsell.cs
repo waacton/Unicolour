@@ -6,6 +6,7 @@ public partial record Munsell
     public double? Value { get; private set; }
     public double? Chroma { get; private set; }
     public string? HueLetter { get; private set; }
+    public double HueDegrees { get; }
 
     public Munsell(double hueNumber, double value, double chroma, string hueLetter)
     {
@@ -13,6 +14,7 @@ public partial record Munsell
         Value = value;
         Chroma = chroma;
         HueLetter = hueLetter;
+        HueDegrees = ToDegrees(hueNumber, hueLetter);
     }
 
     public Munsell(double greyNumber)
@@ -62,14 +64,14 @@ public partial record Munsell
             var distanceToUpperIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), upperIntersect);
             var upperInterpolationDistance = distanceToUpperIntersect / totalUpperDistance;
             var upperC = Interpolation.Interpolate(closestUpLeft.c, closestUpRight.c, upperInterpolationDistance);
-            var upperH = Interpolation.Interpolate(closestUpLeft.h, closestUpRight.h, upperInterpolationDistance);
+            var upperH = Interpolation.Interpolate(ToDegrees(closestUpLeft.h, closestUpLeft.letter), ToDegrees(closestUpRight.h, closestUpRight.letter), upperInterpolationDistance);
             
             var lowerIntersect = lowerHorizontal.GetIntersect(vertical);
             var totalLowerDistance = GetDistance((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
             var distanceToLowerIntersect = GetDistance((closestDownLeft.x, closestDownRight.y), lowerIntersect);
             var lowerInterpolationDistance = distanceToLowerIntersect / totalLowerDistance;
             var lowerC = Interpolation.Interpolate(closestDownLeft.c, closestDownRight.c, lowerInterpolationDistance);
-            var lowerH = Interpolation.Interpolate(closestDownLeft.h, closestDownRight.h, lowerInterpolationDistance);
+            var lowerH = Interpolation.Interpolate(ToDegrees(closestDownLeft.h, closestDownLeft.letter), ToDegrees(closestDownRight.h, closestDownRight.letter), lowerInterpolationDistance);
 
             var totalIntersectDistance = GetDistance(lowerIntersect, upperIntersect);
             var distanceToTarget = GetDistance(lowerIntersect, (x, y));
@@ -97,14 +99,14 @@ public partial record Munsell
             var distanceToLeftIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), leftIntersect);
             var leftInterpolationDistance = distanceToLeftIntersect / totalLeftDistance;
             var leftC = Interpolation.Interpolate(closestUpLeft.c, closestDownLeft.c, leftInterpolationDistance);
-            var leftH = Interpolation.Interpolate(closestUpLeft.h, closestDownLeft.h, leftInterpolationDistance);
+            var leftH = Interpolation.Interpolate(ToDegrees(closestUpLeft.h, closestUpLeft.letter), ToDegrees(closestDownLeft.h, closestDownLeft.letter), leftInterpolationDistance);
             
             var rightIntersect = rightVertical.GetIntersect(horizontal);
             var totalRightDistance = GetDistance((closestUpRight.x, closestUpRight.y), (closestDownRight.x, closestDownRight.y));
             var distanceToRightIntersect = GetDistance((closestUpRight.x, closestUpRight.y), rightIntersect);
             var rightInterpolationDistance = distanceToRightIntersect / totalRightDistance;
             var rightC = Interpolation.Interpolate(closestUpRight.c, closestDownRight.c, rightInterpolationDistance);
-            var rightH = Interpolation.Interpolate(closestUpRight.h, closestDownRight.h, rightInterpolationDistance);
+            var rightH = Interpolation.Interpolate(ToDegrees(closestUpRight.h, closestUpRight.letter), ToDegrees(closestDownRight.h, closestDownRight.letter), rightInterpolationDistance);
 
             var totalIntersectDistance = GetDistance(leftIntersect, rightIntersect);
             var distanceToTarget = GetDistance(leftIntersect, (x, y));
@@ -119,17 +121,17 @@ public partial record Munsell
         var (upperH, upperC) = GetHCFromHorizontals(upperV);
 
         var vDistance = v - lowerV;
-        var interpolatedH = Interpolation.Interpolate(lowerH, upperH, vDistance);
-        var interpolatedC = Interpolation.Interpolate(lowerC, upperC, vDistance);
+        var h = FromDegrees(Interpolation.Interpolate(lowerH, upperH, vDistance));
+        var c = Interpolation.Interpolate(lowerC, upperC, vDistance);
         
         var (lowerH2, lowerC2) = GetHCFromVerticals(lowerV);
         var (upperH2, upperC2) = GetHCFromVerticals(upperV);
 
         var vDistance2 = v - lowerV;
-        var interpolatedH2 = Interpolation.Interpolate(lowerH2, upperH2, vDistance);
-        var interpolatedC2 = Interpolation.Interpolate(lowerC2, upperC2, vDistance);
+        var h2 = FromDegrees(Interpolation.Interpolate(lowerH2, upperH2, vDistance));
+        var c2 = Interpolation.Interpolate(lowerC2, upperC2, vDistance);
         
-        return new Munsell(interpolatedH, v, interpolatedC, "X");
+        return new Munsell(h.number, v, c, h.letter);
     }
 
     private static double GetDistance((double x, double y) point1, (double x, double y) point2)
@@ -181,22 +183,62 @@ public partial record Munsell
 
     private Chromaticity GetHueBoundaries(double boundValue, double boundChroma)
     {
-        var lowerH = HueNumbers.Last(x => x <= HueNumber);
-        var upperH = HueNumbers.First(x => x >= HueNumber);
+        var hueResolution = DegreesPerBand / HueNumbers.Length; // in each band of 36 degrees... 2.5 = 9 degrees, 5 = 18 degrees, 7.5 = 27 degrees, 10 = 36 degrees
+        var scaledHue = HueDegrees / hueResolution; // maps 0 - 360 to 0 - 40 (10 bands with 4 hue points per band)
+        var lowerDegrees = Math.Floor(scaledHue) * hueResolution;
+        var upperDegrees = Math.Ceiling(scaledHue) * hueResolution;
+
+        var lowerH = FromDegrees(lowerDegrees);
+        var upperH = FromDegrees(upperDegrees);
         
-        // TODO: if H <= 2.5, set to 10 of previous band
-        // TODO: backing hue likely to be 0 - 360, so need a conversion to/from
         // ReSharper disable CompareOfFloatsByEqualityOperator
-        var lower = Data.Value.Single(x => x.h == lowerH && x.letter == HueLetter && x.v == boundValue && x.c == boundChroma);
-        var upper = Data.Value.Single(x => x.h == upperH && x.letter == HueLetter && x.v == boundValue && x.c == boundChroma);
+        var lower = Data.Value.Single(x => x.h == lowerH.number && x.letter == lowerH.letter && x.v == boundValue && x.c == boundChroma);
+        var upper = Data.Value.Single(x => x.h == upperH.number && x.letter == upperH.letter && x.v == boundValue && x.c == boundChroma);
         // ReSharper restore CompareOfFloatsByEqualityOperator
         
-        var distance = upperH - lowerH == 0 ? 0 : (HueNumber - lowerH) / (upperH - lowerH);
+        var distance = upperDegrees - lowerDegrees == 0 ? 0 : (HueDegrees - lowerDegrees) / (upperDegrees - lowerDegrees);
         var x = Interpolation.Interpolate(lower.x, upper.x, distance);
         var y = Interpolation.Interpolate(lower.y, upper.y, distance);
         return new Chromaticity(x, y);
     }
 
-    public override string ToString() => $"{HueNumber}{HueLetter} {Value:F1}/{Chroma:F1}";
+    // 360/0 = 10R · 36 = 10YR · 72 = 10Y · 108 = 10GY · 144 = 10G
+    // 180 = 10BG · 216 = 10B · 252 = 10PB · 288 = 10P · 324 = 10RP
+    // (treat 10R == 0YR etc)
+    private static readonly string[] Bands = { "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP", "R" };
+    private const double DegreesPerBand = 36;
+    private static double ToDegrees(double hueNumber, string hueLetter)
+    {
+        var bandIndex = Array.IndexOf(Bands, hueLetter);
+
+        var minDegrees = bandIndex * DegreesPerBand;
+        var maxDegrees = (bandIndex + 1) * DegreesPerBand;
+        var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
+        return Interpolation.Interpolate(minDegrees, maxDegrees, distance);
+    }
+
+    private static (double number, string letter) FromDegrees(double degrees)
+    {
+        var bandLocation = degrees / DegreesPerBand;
+        var bandIndex = (int)Math.Truncate(bandLocation);
+        var hueLetter = Bands[bandIndex];
+        var hueNumber = (bandLocation - bandIndex) * 10;
+
+        if (hueNumber == 0)
+        {
+            bandIndex = bandIndex == 0 ? Bands.Length - 1 : bandIndex - 1;
+            hueLetter = Bands[bandIndex];
+            hueNumber = 10;
+        }
+        
+        return (hueNumber, hueLetter);
+    }
+
+    public override string ToString()
+    {
+        var roundedDegrees = Math.Round(HueDegrees);
+        var roundedHue = FromDegrees(roundedDegrees);
+        return $"{roundedHue.number:F1}{roundedHue.letter} {Value:F1}/{Chroma:F1} ({HueDegrees:F2}°)";
+    } 
 }
 

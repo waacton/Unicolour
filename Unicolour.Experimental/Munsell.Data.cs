@@ -16,14 +16,14 @@ public partial record Munsell
         PB
     }
 
-    private static readonly double[] HueNumbers = { 2.5, 5, 7.5, 10 };
-    private static readonly double[] Values = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    private static readonly int[] Chromas = Enumerable.Range(1, 25).Select(x => x * 2).ToArray();
+    internal static readonly double[] HueNumbers = { 2.5, 5, 7.5, 10 };
+    internal static readonly double[] Values = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    internal static readonly int[] Chromas = Enumerable.Range(1, 25).Select(x => x * 2).ToArray();
     
     // consider other structures, such as
     // - combining hue number and letter into a single index i.e. 2.5R = 0, 5R = 1, 7.5R = 2, 10R = 3, 2.5RY = 4, ... 
     // - 3D LUT [H, V, C] ... there would be missing elements but maybe makes it easier to find boundary limits?
-    private static readonly Lazy<(double h, string letter, double v, int c, double x, double y, double luminance)[]> Data = new(
+    internal static readonly Lazy<(double h, string letter, double v, int c, double x, double y, double luminance)[]> Data = new(
         () => new[]
         {
             (2.5, "GY", 0.2, 2, 0.713, 1.414, 0.237),

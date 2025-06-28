@@ -141,6 +141,12 @@ internal static class Interpolation
         var third = Interpolate(start.Third, end.Third, distance);
         return new(first, second, third, start.HueIndex);
     }
+    
+    internal static double ToTarget(double startValue, double endValue, double targetValue)
+    {
+        var distance = (targetValue - startValue) / (endValue - startValue);
+        return Interpolate(startValue, endValue, distance);
+    }
 
     internal static double Interpolate(double startValue, double endValue, double distance)
     {

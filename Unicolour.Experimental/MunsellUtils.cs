@@ -152,49 +152,18 @@ internal static class MunsellUtils
 
         if (useHorizontals)
         {
-            var closestDownLeft = downLefts[0];
-            var closestDownRight = downRights[0];
+            // TODO: horizontal start and end points might not be first in a direction, might be based on extrapolated in same direction
+            // TODO: bundle up lines and corresponding points into data structures
+            var downLeft = downLefts[0];
+            var downRight = downRights[0];
+            var upLeft = upLefts[0];
+            var upRight = upRights[0];
             
-            (double x, double y) lowerIntersect;
-            double lowerC;
-            double lowerH;
-            if (closestDownLeft == closestDownRight)
-            {
-                lowerC = closestDownLeft.c;
-                lowerH = Munsell.ToDegrees(closestDownLeft.h, closestDownLeft.letter);
-                lowerIntersect = (closestDownLeft.x, closestDownLeft.y);
-            }
-            else
-            {
-                lowerIntersect = lowerHorizontal.GetIntersect(verticalThroughPoint);
-                var totalLowerDistance = GetDistance((closestDownLeft.x, closestDownLeft.y), (closestDownRight.x, closestDownRight.y));
-                var distanceToLowerIntersect = GetDistance((closestDownLeft.x, closestDownRight.y), lowerIntersect);
-                var lowerInterpolationDistance = distanceToLowerIntersect / totalLowerDistance;
-                lowerC = Interpolation.Interpolate(closestDownLeft.c, closestDownRight.c, lowerInterpolationDistance);
-                lowerH = Interpolation.Interpolate(Munsell.ToDegrees(closestDownLeft.h, closestDownLeft.letter), Munsell.ToDegrees(closestDownRight.h, closestDownRight.letter), lowerInterpolationDistance);
-            }
+            var lowerBoundary = new Segment(downLeft, downRight);
+            var (lowerIntersect, lowerC, lowerH) = GetBoundaryIntersect(lowerBoundary, verticalThroughPoint);
             
-            var closestUpLeft = upLefts[0];
-            var closestUpRight = upRights[0];
-            
-            (double x, double y) upperIntersect;
-            double upperC;
-            double upperH;
-            if (closestUpLeft == closestUpRight)
-            {
-                upperC = closestUpLeft.c;
-                upperH = Munsell.ToDegrees(closestUpLeft.h, closestUpLeft.letter);
-                upperIntersect = (closestUpLeft.x, closestUpRight.y);
-            }
-            else
-            {
-                upperIntersect = upperHorizontal.GetIntersect(verticalThroughPoint);
-                var totalUpperDistance = GetDistance((closestUpLeft.x, closestUpLeft.y), (closestUpRight.x, closestUpRight.y));
-                var distanceToUpperIntersect = GetDistance((closestUpLeft.x, closestUpLeft.y), upperIntersect);
-                var upperInterpolationDistance = distanceToUpperIntersect / totalUpperDistance;
-                upperC = Interpolation.Interpolate(closestUpLeft.c, closestUpRight.c, upperInterpolationDistance);
-                upperH = Interpolation.Interpolate(Munsell.ToDegrees(closestUpLeft.h, closestUpLeft.letter), Munsell.ToDegrees(closestUpRight.h, closestUpRight.letter), upperInterpolationDistance);
-            }
+            var upperBoundary = new Segment(upLeft, upRight);
+            var (upperIntersect, upperC, upperH) = GetBoundaryIntersect(upperBoundary, verticalThroughPoint);
 
             double h;
             double c;
@@ -216,8 +185,78 @@ internal static class MunsellUtils
         }
         else
         {
-            throw new NotImplementedException("Implement as above for verticals");
+            // TODO: vertical start and end points might not be first in a direction, might be based on extrapolated in same direction
+            // TODO: bundle up lines and corresponding points into data structures
+            var downLeft = downLefts[0];
+            var downRight = downRights[0];
+            var upLeft = upLefts[0];
+            var upRight = upRights[0];
+            
+            var leftBoundary = new Segment(downLeft, upLeft);
+            var (leftIntersect, leftC, leftH) = GetBoundaryIntersect(leftBoundary, horizontalThroughPoint);
+            
+            var rightBoundary = new Segment(downRight, upRight);
+            var (rightIntersect, rightC, rightH) = GetBoundaryIntersect(rightBoundary, horizontalThroughPoint);
+
+            double h;
+            double c;
+            if (leftIntersect == rightIntersect)
+            {
+                c = leftC;
+                h = leftH;
+            }
+            else
+            {
+                var totalIntersectDistance = GetDistance(leftIntersect, rightIntersect);
+                var distanceToTarget = GetDistance(leftIntersect, targetPoint);
+                var interpolationDistance = distanceToTarget / totalIntersectDistance;
+                c = Interpolation.Interpolate(leftC, rightC, interpolationDistance);
+                h = Interpolation.Interpolate(leftH, rightH, interpolationDistance);
+            }
+
+            return (h, c);
         }
+    }
+
+    private static ((double x, double y) intersect, double c, double h) GetBoundaryIntersect(Segment boundary, Line throughTarget)
+    {
+        (double x, double y) intersect;
+        double c;
+        double h;
+        
+        if (boundary.IsSingularity)
+        {
+            c = boundary.StartDataPoint.c;
+            h = Munsell.ToDegrees(boundary.StartDataPoint.h, boundary.StartDataPoint.letter);
+            intersect = (boundary.StartDataPoint.x, boundary.StartDataPoint.y);
+        }
+        else
+        {
+            intersect = boundary.Line.GetIntersect(throughTarget);
+            var boundaryTotalLength = GetDistance(boundary.Start, boundary.End);
+            var boundaryToIntersectLength = GetDistance(boundary.Start, intersect);
+            var interpolationDistance = boundaryToIntersectLength / boundaryTotalLength;
+
+            var startC = boundary.StartDataPoint.c;
+            var endC = boundary.EndDataPoint.c;
+            c = Interpolation.Interpolate(startC, endC, interpolationDistance);
+
+            var startH = Munsell.ToDegrees(boundary.StartDataPoint.h, boundary.StartDataPoint.letter);
+            var endH = Munsell.ToDegrees(boundary.EndDataPoint.h, boundary.EndDataPoint.letter);
+            h = Interpolation.Interpolate(startH, endH, interpolationDistance);
+        }
+
+        return (intersect, c, h);
+    }
+
+    private record Segment((double h, string letter, double v, int c, double x, double y, double luminance) StartDataPoint, (double h, string letter, double v, int c, double x, double y, double luminance) EndDataPoint)
+    {
+        internal readonly (double h, string letter, double v, int c, double x, double y, double luminance) StartDataPoint = StartDataPoint;
+        internal readonly (double h, string letter, double v, int c, double x, double y, double luminance) EndDataPoint = EndDataPoint;
+        internal readonly (double x, double y) Start = (StartDataPoint.x, StartDataPoint.y);
+        internal readonly (double x, double y) End = (EndDataPoint.x, EndDataPoint.y);
+        internal readonly Line Line = Wacton.Unicolour.Line.FromPoints((StartDataPoint.x, StartDataPoint.y), (EndDataPoint.x, EndDataPoint.y));
+        internal readonly bool IsSingularity = StartDataPoint == EndDataPoint;
     }
     
     private static double GetDistance((double x, double y) point1, (double x, double y) point2)

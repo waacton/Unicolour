@@ -19,6 +19,9 @@ public partial record Munsell
         internal readonly int Chroma = Chroma;
         internal readonly double X = X;
         internal readonly double Y = Y;
+        
+        // only used in testing as it is relative to magnesium oxide
+        // actual luminance calculated directly from V using formula, but should be ~0.975x
         internal readonly double Luminance = Luminance;
 
         internal readonly double HueDegrees = MunsellUtils.ToDegrees(HueNumber, HueLetter);

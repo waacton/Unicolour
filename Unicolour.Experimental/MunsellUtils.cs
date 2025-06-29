@@ -1,15 +1,103 @@
-﻿namespace Wacton.Unicolour.Experimental;
+﻿using static Wacton.Unicolour.Experimental.Munsell;
+
+namespace Wacton.Unicolour.Experimental;
 
 internal static class MunsellUtils
 {
-    internal static (double h, double c) GetHueAndChroma((double x, double y) targetPoint, double valueDataPoint)
+    internal static (double x, double y) GetXy(Munsell munsell)
     {
-        var dataForV = Munsell.Data.Value.Where(data => data.v == valueDataPoint).ToArray(); //.OrderBy(item => GetDistance((x, y), (item.x, item.y))).ToList();
+        // TODO: handle grey (null value (implies null chroma) or 0 chroma)
+        var hueDegrees = munsell.HueDegrees;
+        var value = (double)munsell.Value;
+        var chroma = (double)munsell.Chroma;
+        return GetXy(value, chroma, hueDegrees);
+    }
+    
+    private static (double x, double y) GetXy(double v, double c, double h)
+    {
+        var lowerNodeV = NodeValues.Last(nodeV => nodeV <= v);
+        var upperNodeV = NodeValues.First(nodeV => nodeV >= v);
+
+        if (lowerNodeV == upperNodeV)
+        {
+            return GetXyForValue(lowerNodeV, c, h);
+        }
         
-        var downLefts = dataForV.Where(data => data.x <= targetPoint.x && data.y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, (data.x, data.y))).ToArray();
-        var downRights = dataForV.Where(data => data.x >= targetPoint.x && data.y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, (data.x, data.y))).ToArray();
-        var upLefts = dataForV.Where(data => data.x <= targetPoint.x && data.y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, (data.x, data.y))).ToArray();
-        var upRights = dataForV.Where(data => data.x >= targetPoint.x && data.y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, (data.x, data.y))).ToArray();
+        var lower = GetXyForValue(lowerNodeV, c, h);
+        var upper = GetXyForValue(upperNodeV, c, h);
+        
+        // TODO: ensure works when null chroma
+        var distance = upperNodeV - lowerNodeV == 0 ? 0 : (v - lowerNodeV) / (upperNodeV - lowerNodeV);
+        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
+        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
+        return (x, y);
+    }
+    
+    private static (double x, double y) GetXyForValue(double nodeV, double c, double h)
+    {
+        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+        
+        if (lowerNodeC == upperNodeC)
+        {
+            return GetXyForValueAndChroma(nodeV, lowerNodeC, h);
+        }
+        
+        var lower = GetXyForValueAndChroma(nodeV, lowerNodeC, h);
+        var upper = GetXyForValueAndChroma(nodeV, upperNodeC, h);
+        
+        // TODO: ensure works when null chroma
+        var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
+        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
+        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
+        return (x, y);
+    }
+
+    private static (double x, double y) GetXyForValueAndChroma(double nodeV, double nodeC, double h)
+    {
+        var scaled = h / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
+        var lowerH = Math.Floor(scaled) * DegreesPerHueNumber;
+        var upperH = Math.Ceiling(scaled) * DegreesPerHueNumber;
+
+        var lowerNodeH = FromDegrees(lowerH);
+        var upperNodeH = FromDegrees(upperH);
+        
+        if (lowerNodeH == upperNodeH)
+        {
+            var exact = Nodes.Value.Single(x => x.IsMatch(lowerNodeH.number, lowerNodeH.letter, nodeV, nodeC));
+            return exact.Point;
+        }
+        
+        var lower = Nodes.Value.Single(x => x.IsMatch(lowerNodeH.number, lowerNodeH.letter, nodeV, nodeC));
+        var upper = Nodes.Value.Single(x => x.IsMatch(upperNodeH.number, upperNodeH.letter, nodeV, nodeC));
+        
+        var distance = upperH - lowerH == 0 ? 0 : (h - lowerH) / (upperH - lowerH);
+        var x = Interpolation.Interpolate(lower.X, upper.X, distance);
+        var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
+        return (x, y);
+    }
+
+    internal static (double h, double c) GetHueAndChroma(Chromaticity chromaticity, double v)
+    {
+        var lowerNodeV = NodeValues.Last(item => item <= v);
+        var upperNodeV = NodeValues.First(item => item >= v);
+        
+        var (lowerH, lowerC) = GetHueAndChromaForValue(chromaticity.Xy, lowerNodeV);
+        var (upperH, upperC) = GetHueAndChromaForValue(chromaticity.Xy, upperNodeV);
+
+        var distance = v - lowerNodeV;
+        var h = Interpolation.Interpolate(lowerH, upperH, distance);
+        var c = Interpolation.Interpolate(lowerC, upperC, distance);
+        return (h, c);
+    }
+    
+    internal static (double h, double c) GetHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
+    {
+        var nodes = Nodes.Value.Where(data => data.Value == nodeV).ToArray();
+        var downLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var upRights = nodes.Where(data => data.X >= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
 
         Line? lowerHorizontal;
         Line? upperHorizontal;
@@ -217,7 +305,7 @@ internal static class MunsellUtils
             return (h, c);
         }
     }
-
+    
     private static ((double x, double y) intersect, double c, double h) GetBoundaryIntersect(Segment boundary, Line throughTarget)
     {
         (double x, double y) intersect;
@@ -226,37 +314,45 @@ internal static class MunsellUtils
         
         if (boundary.IsSingularity)
         {
-            c = boundary.StartDataPoint.c;
-            h = Munsell.ToDegrees(boundary.StartDataPoint.h, boundary.StartDataPoint.letter);
-            intersect = (boundary.StartDataPoint.x, boundary.StartDataPoint.y);
+            c = boundary.Start.Chroma;
+            h = boundary.Start.HueDegrees;
+            intersect = (boundary.Start.X, boundary.Start.Y);
         }
         else
         {
             intersect = boundary.Line.GetIntersect(throughTarget);
-            var boundaryTotalLength = GetDistance(boundary.Start, boundary.End);
-            var boundaryToIntersectLength = GetDistance(boundary.Start, intersect);
-            var interpolationDistance = boundaryToIntersectLength / boundaryTotalLength;
-
-            var startC = boundary.StartDataPoint.c;
-            var endC = boundary.EndDataPoint.c;
-            c = Interpolation.Interpolate(startC, endC, interpolationDistance);
-
-            var startH = Munsell.ToDegrees(boundary.StartDataPoint.h, boundary.StartDataPoint.letter);
-            var endH = Munsell.ToDegrees(boundary.EndDataPoint.h, boundary.EndDataPoint.letter);
-            h = Interpolation.Interpolate(startH, endH, interpolationDistance);
+            var boundaryTotalLength = GetDistance(boundary.Start.Point, boundary.End.Point);
+            var boundaryToIntersectLength = GetDistance(boundary.Start.Point, intersect);
+            var distance = boundaryToIntersectLength / boundaryTotalLength;
+            c = Interpolation.Interpolate(boundary.Start.Chroma, boundary.End.Chroma, distance);
+            h = Interpolation.Interpolate(boundary.Start.HueDegrees, boundary.End.HueDegrees, distance);
         }
 
         return (intersect, c, h);
     }
-
-    private record Segment((double h, string letter, double v, int c, double x, double y, double luminance) StartDataPoint, (double h, string letter, double v, int c, double x, double y, double luminance) EndDataPoint)
+    
+    internal static double ToDegrees(double hueNumber, string hueLetter)
     {
-        internal readonly (double h, string letter, double v, int c, double x, double y, double luminance) StartDataPoint = StartDataPoint;
-        internal readonly (double h, string letter, double v, int c, double x, double y, double luminance) EndDataPoint = EndDataPoint;
-        internal readonly (double x, double y) Start = (StartDataPoint.x, StartDataPoint.y);
-        internal readonly (double x, double y) End = (EndDataPoint.x, EndDataPoint.y);
-        internal readonly Line Line = Wacton.Unicolour.Line.FromPoints((StartDataPoint.x, StartDataPoint.y), (EndDataPoint.x, EndDataPoint.y));
-        internal readonly bool IsSingularity = StartDataPoint == EndDataPoint;
+        var bandIndex = Array.IndexOf(NodeHueLetters, hueLetter);
+
+        var minDegrees = bandIndex * DegreesPerHueLetter;
+        var maxDegrees = (bandIndex + 1) * DegreesPerHueLetter;
+        var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
+        return Interpolation.Interpolate(minDegrees, maxDegrees, distance);
+    }
+
+    internal static (double number, string letter) FromDegrees(double degrees)
+    {
+        var bandLocation = degrees / DegreesPerHueLetter;
+        var bandIndex = (int)Math.Truncate(bandLocation);
+        var hueLetter = NodeHueLetters[bandIndex];
+        var hueNumber = (bandLocation - bandIndex) * 10;
+        if (hueNumber != 0) return (hueNumber, hueLetter);
+        
+        bandIndex = bandIndex == 0 ? NodeHueLetters.Length - 1 : bandIndex - 1;
+        hueLetter = NodeHueLetters[bandIndex];
+        hueNumber = 10;
+        return (hueNumber, hueLetter);
     }
     
     private static double GetDistance((double x, double y) point1, (double x, double y) point2)
@@ -264,10 +360,16 @@ internal static class MunsellUtils
         return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
     }
 
-    private static Line GetLine(
-        (double h, string letter, double v, int c, double x, double y, double luminance) point1,
-        (double h, string letter, double v, int c, double x, double y, double luminance) point2)
+    private static Line GetLine(Data point1, Data point2)
     {
-        return Line.FromPoints((point1.x, point1.y), (point2.x, point2.y));
+        return Line.FromPoints((point1.X, point1.Y), (point2.X, point2.Y));
+    }
+    
+    private record Segment(Data Start, Data End)
+    {
+        internal readonly Data Start = Start;
+        internal readonly Data End = End;
+        internal readonly Line Line = Line.FromPoints(Start.Point, End.Point);
+        internal readonly bool IsSingularity = Start == End;
     }
 }

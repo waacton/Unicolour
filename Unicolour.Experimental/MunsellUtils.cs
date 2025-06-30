@@ -98,114 +98,11 @@ internal static class MunsellUtils
         var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var upRights = nodes.Where(data => data.X >= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-
-        Line? lowerHorizontal;
-        Line? upperHorizontal;
-        Line? leftVertical;
-        Line? rightVertical;
         
-        // TODO: this is unpleasant, try to find a way to improve
-        //       considered using closest points as the basis of figuring which line segments to use
-        //       but gets even messier in the cases where extrapolation is needed
-        //       in cases where there is no point in one direction, 5 points are needed to make the 4 line segments instead of 4!
-        //       potentially: extract 8 points: 4x nominal and 4x for extrapolation needs, and determine lines based on what is present?
-        if (downLefts.Any() && downRights.Any() && upLefts.Any() && upRights.Any())
-        {
-            // TODO: when xy is a direct hit on a data point, first point in all directions will be THE SAME
-            
-            lowerHorizontal = GetLine(downLefts[0], downRights[0]);
-            upperHorizontal = GetLine(upLefts[0], upRights[0]);
-            leftVertical = GetLine(downLefts[0], upLefts[0]);
-            rightVertical = GetLine(downRights[0], upRights[0]);
-        }
-        else if (!downLefts.Any() && downRights.Any() && upLefts.Any() && upRights.Any())
-        {
-            var upLeftForExtrapolation = upLefts[1];
-            var downRightForExtrapolation = downRights[1];
-                
-            lowerHorizontal = GetLine(downRightForExtrapolation, downRights[0]);
-            upperHorizontal = GetLine(upLefts[0], upRights[0]);
-            leftVertical = GetLine(upLeftForExtrapolation, upLefts[0]);
-            rightVertical = GetLine(downRights[0], upRights[0]);
-        }
-        else if (downLefts.Any() && !downRights.Any() && upLefts.Any() && upRights.Any())
-        {
-            var downLeftForExtrapolation = downLefts[1];
-            var upRightForExtrapolation = upRights[1];
-                
-            lowerHorizontal = GetLine(downLefts[0], downLeftForExtrapolation);
-            upperHorizontal = GetLine(upLefts[0], upRights[0]);
-            leftVertical = GetLine(downLefts[0], upLefts[0]);
-            rightVertical = GetLine(upRightForExtrapolation, upRights[0]);
-        }
-        else if (downLefts.Any() && downRights.Any() && !upLefts.Any() && upRights.Any())
-        {
-            var downLeftForExtrapolation = downLefts[1];
-            var upRightForExtrapolation = upRights[1];
-            
-            lowerHorizontal = GetLine(downLefts[0], downRights[0]);
-            upperHorizontal = GetLine(upRightForExtrapolation, upRights[0]);
-            leftVertical = GetLine(downLefts[0], downLeftForExtrapolation);
-            rightVertical = GetLine(downRights[0], upRights[0]);
-        }
-        else if (downLefts.Any() && downRights.Any() && upLefts.Any() && !upRights.Any())
-        {
-            var upLeftForExtrapolation = upLefts[1];
-            var downRightForExtrapolation = downRights[1];
-            
-            lowerHorizontal = GetLine(downLefts[0], downRights[0]);
-            upperHorizontal = GetLine(upLefts[0], upLeftForExtrapolation);
-            leftVertical = GetLine(downLefts[0], upLefts[0]);
-            rightVertical = GetLine(downRights[0], downRightForExtrapolation);
-        }
-        else if (!downLefts.Any() && !downRights.Any() && upLefts.Any() && upRights.Any())
-        {
-            var upLeftForExtrapolation = upLefts[1];
-            var upRightForExtrapolation = upRights[1];
-
-            lowerHorizontal = null;
-            upperHorizontal = GetLine(upLefts[0], upRights[0]);
-            leftVertical = GetLine(upLeftForExtrapolation, upLefts[0]);
-            rightVertical = GetLine(upRightForExtrapolation, upRights[0]);
-        }
-        else if (downLefts.Any() && downRights.Any() && !upLefts.Any() && !upRights.Any())
-        {
-            var downLeftForExtrapolation = downLefts[1];
-            var downRightForExtrapolation = downRights[1];
-
-            lowerHorizontal = GetLine(downLefts[0], downRights[0]);
-            upperHorizontal = null;
-            leftVertical = GetLine(downLefts[0], downLeftForExtrapolation);
-            rightVertical = GetLine(downRights[0], downRightForExtrapolation);
-        }
-        else if (!downLefts.Any() && downRights.Any() && !upLefts.Any() && upRights.Any())
-        {
-            var downRightForExtrapolation = downRights[1];
-            var upRightForExtrapolation = upRights[1];
-
-            lowerHorizontal = GetLine(downRightForExtrapolation, downRights[0]);
-            upperHorizontal = GetLine(upRightForExtrapolation, upRights[0]);
-            leftVertical = null;
-            rightVertical = GetLine(downRights[0], upRights[0]);
-        }
-        else if (downLefts.Any() && !downRights.Any() && upLefts.Any() && !upRights.Any())
-        {
-            var downLeftForExtrapolation = downLefts[1];
-            var upLeftForExtrapolation = upLefts[1];
-
-            lowerHorizontal = GetLine(downLefts[0], downLeftForExtrapolation);
-            upperHorizontal = GetLine(upLefts[0], upLeftForExtrapolation);
-            leftVertical = GetLine(downLefts[0], upLefts[0]);
-            rightVertical = null;
-        }
-        else
-        {
-            // I can't see how this scenario can be possible
-            lowerHorizontal = null;
-            upperHorizontal = null;
-            leftVertical = null;
-            rightVertical = null;
-        }
+        var upperHorizontal = GetBoundary(downLefts, downRights);
+        var lowerHorizontal = GetBoundary(upLefts, upRights);
+        var leftVertical = GetBoundary(downLefts, upLefts);
+        var rightVertical = GetBoundary(downRights, upRights);
         
         var horizontalThroughPoint = Line.FromPoints(targetPoint, (targetPoint.x + 1, targetPoint.y));
         var verticalThroughPoint = Line.FromPoints(targetPoint, (targetPoint.x, targetPoint.y + 1));
@@ -219,10 +116,10 @@ internal static class MunsellUtils
             }
             else
             {
-                var lowerHorizontalIntersect = lowerHorizontal.GetIntersect(verticalThroughPoint);
-                var upperHorizontalIntersect = upperHorizontal.GetIntersect(verticalThroughPoint);
-                var leftVerticalIntersect = leftVertical.GetIntersect(horizontalThroughPoint);
-                var rightVerticalIntersect = rightVertical.GetIntersect(horizontalThroughPoint);
+                var lowerHorizontalIntersect = lowerHorizontal.Line.GetIntersect(verticalThroughPoint);
+                var upperHorizontalIntersect = upperHorizontal.Line.GetIntersect(verticalThroughPoint);
+                var leftVerticalIntersect = leftVertical.Line.GetIntersect(horizontalThroughPoint);
+                var rightVerticalIntersect = rightVertical.Line.GetIntersect(horizontalThroughPoint);
                 
                 var distanceToLowerHorizontal = GetDistance(lowerHorizontalIntersect, targetPoint);
                 var distanceToUpperHorizontal = GetDistance(upperHorizontalIntersect, targetPoint);
@@ -238,97 +135,68 @@ internal static class MunsellUtils
             useHorizontals = false;
         }
 
-        if (useHorizontals)
-        {
-            // TODO: horizontal start and end points might not be first in a direction, might be based on extrapolated in same direction
-            // TODO: bundle up lines and corresponding points into data structures
-            var downLeft = downLefts[0];
-            var downRight = downRights[0];
-            var upLeft = upLefts[0];
-            var upRight = upRights[0];
-            
-            var lowerBoundary = new Segment(downLeft, downRight);
-            var (lowerIntersect, lowerC, lowerH) = GetBoundaryIntersect(lowerBoundary, verticalThroughPoint);
-            
-            var upperBoundary = new Segment(upLeft, upRight);
-            var (upperIntersect, upperC, upperH) = GetBoundaryIntersect(upperBoundary, verticalThroughPoint);
-
-            double h;
-            double c;
-            if (lowerIntersect == upperIntersect)
-            {
-                c = lowerC;
-                h = lowerH;
-            }
-            else
-            {
-                var totalIntersectDistance = GetDistance(lowerIntersect, upperIntersect);
-                var distanceToTarget = GetDistance(lowerIntersect, targetPoint);
-                var interpolationDistance = distanceToTarget / totalIntersectDistance;
-                c = Interpolation.Interpolate(lowerC, upperC, interpolationDistance);
-                h = Interpolation.Interpolate(lowerH, upperH, interpolationDistance);
-            }
-
-            return (h, c);
-        }
-        else
-        {
-            // TODO: vertical start and end points might not be first in a direction, might be based on extrapolated in same direction
-            // TODO: bundle up lines and corresponding points into data structures
-            var downLeft = downLefts[0];
-            var downRight = downRights[0];
-            var upLeft = upLefts[0];
-            var upRight = upRights[0];
-            
-            var leftBoundary = new Segment(downLeft, upLeft);
-            var (leftIntersect, leftC, leftH) = GetBoundaryIntersect(leftBoundary, horizontalThroughPoint);
-            
-            var rightBoundary = new Segment(downRight, upRight);
-            var (rightIntersect, rightC, rightH) = GetBoundaryIntersect(rightBoundary, horizontalThroughPoint);
-
-            double h;
-            double c;
-            if (leftIntersect == rightIntersect)
-            {
-                c = leftC;
-                h = leftH;
-            }
-            else
-            {
-                var totalIntersectDistance = GetDistance(leftIntersect, rightIntersect);
-                var distanceToTarget = GetDistance(leftIntersect, targetPoint);
-                var interpolationDistance = distanceToTarget / totalIntersectDistance;
-                c = Interpolation.Interpolate(leftC, rightC, interpolationDistance);
-                h = Interpolation.Interpolate(leftH, rightH, interpolationDistance);
-            }
-
-            return (h, c);
-        }
+        return useHorizontals
+            ? GetHueAndChromaFromBoundaries(lowerHorizontal!, upperHorizontal!, targetPoint, verticalThroughPoint)
+            : GetHueAndChromaFromBoundaries(leftVertical!, rightVertical!, targetPoint, horizontalThroughPoint);
     }
     
-    private static ((double x, double y) intersect, double c, double h) GetBoundaryIntersect(Segment boundary, Line throughTarget)
+    private static Boundary? GetBoundary(Data[] directionA, Data[] directionB)
     {
-        (double x, double y) intersect;
-        double c;
-        double h;
+        var closestA = directionA.FirstOrDefault();
+        var backupA = directionA.Skip(1).FirstOrDefault();
+        var closestB = directionB.FirstOrDefault();
+        var backupB = directionB.Skip(1).FirstOrDefault();
         
-        if (boundary.IsSingularity)
+        if (closestA != null && closestB != null)
         {
-            c = boundary.Start.Chroma;
-            h = boundary.Start.HueDegrees;
-            intersect = (boundary.Start.X, boundary.Start.Y);
-        }
-        else
-        {
-            intersect = boundary.Line.GetIntersect(throughTarget);
-            var boundaryTotalLength = GetDistance(boundary.Start.Point, boundary.End.Point);
-            var boundaryToIntersectLength = GetDistance(boundary.Start.Point, intersect);
-            var distance = boundaryToIntersectLength / boundaryTotalLength;
-            c = Interpolation.Interpolate(boundary.Start.Chroma, boundary.End.Chroma, distance);
-            h = Interpolation.Interpolate(boundary.Start.HueDegrees, boundary.End.HueDegrees, distance);
+            return new Boundary(closestA, closestB, IsExtrapolation: false);
         }
 
-        return (intersect, c, h);
+        if (closestA == null && closestB != null && backupB != null)
+        {
+            return new Boundary(closestB, backupB, IsExtrapolation: true);
+        }
+
+        if (closestB == null && closestA != null && backupA != null)
+        {
+            return new Boundary(closestA, backupA, IsExtrapolation: true);
+        }
+
+        return null;
+    }
+
+    private static (double h, double c) GetHueAndChromaFromBoundaries(Boundary boundaryA, Boundary boundaryB, (double x, double y) point, Line lineThroughPoint)
+    {
+        var (intersectA, startH, startC) = GetBoundaryIntersect(boundaryA, lineThroughPoint);
+        var (intersectB, endH, endC) = GetBoundaryIntersect(boundaryB, lineThroughPoint);
+
+        if (intersectA == intersectB)
+        {
+            return (startH, startC);
+        }
+
+        var distanceBetweenIntersects = GetDistance(intersectA, intersectB);
+        var distanceToPoint = GetDistance(intersectA, point);
+        var interpolationDistance = distanceToPoint / distanceBetweenIntersects;
+        var c = Interpolation.Interpolate(startC, endC, interpolationDistance);
+        var h = Interpolation.Interpolate(startH, endH, interpolationDistance);
+        return (h, c);
+    }
+    
+    private static ((double x, double y) intersect, double h, double c) GetBoundaryIntersect(Boundary boundary, Line throughTarget)
+    {
+        if (boundary.IsSingularity)
+        {
+            return (boundary.Start.Point, boundary.Start.HueDegrees, boundary.Start.Chroma);
+        }
+
+        var intersect = boundary.Line.GetIntersect(throughTarget);
+        var boundaryTotalLength = GetDistance(boundary.Start.Point, boundary.End.Point);
+        var boundaryToIntersectLength = GetDistance(boundary.Start.Point, intersect);
+        var distance = boundaryToIntersectLength / boundaryTotalLength;
+        var h = Interpolation.Interpolate(boundary.Start.HueDegrees, boundary.End.HueDegrees, distance);
+        var c = Interpolation.Interpolate(boundary.Start.Chroma, boundary.End.Chroma, distance);
+        return (intersect, h, c);
     }
     
     internal static double ToDegrees(double hueNumber, string hueLetter)
@@ -359,17 +227,14 @@ internal static class MunsellUtils
     {
         return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
     }
-
-    private static Line GetLine(Data point1, Data point2)
-    {
-        return Line.FromPoints((point1.X, point1.Y), (point2.X, point2.Y));
-    }
     
-    private record Segment(Data Start, Data End)
+    private record Boundary(Data Start, Data End, bool IsExtrapolation)
     {
         internal readonly Data Start = Start;
         internal readonly Data End = End;
         internal readonly Line Line = Line.FromPoints(Start.Point, End.Point);
+        internal readonly bool IsExtrapolation = IsExtrapolation;
         internal readonly bool IsSingularity = Start == End;
+        public override string ToString() => $"{Start.Point} --> {End.Point}{(IsExtrapolation ? " (extrapolation)" : string.Empty)}";
     }
 }

@@ -31,6 +31,8 @@ public partial record Munsell
         {
             return hueNumber == HueNumber && hueLetter == HueLetter && value == Value && chroma == Chroma;
         }
+
+        public override string ToString() => $"{HueNumber}{HueLetter} {Value}/{Chroma} = ({X}, {Y})";
     }
     
     internal static readonly Lazy<Data[]> Nodes = new(() => new Data[]

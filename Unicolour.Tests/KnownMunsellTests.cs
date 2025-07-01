@@ -8,46 +8,43 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static MunsellTestData[] KnownData = Experimental.Munsell.Nodes.Value.Select(MunsellTestData.FromNode).ToArray();
+    private static MunsellTestData[] XyyData = Experimental.Munsell.Nodes.Value.Select(MunsellTestData.FromNode).ToArray();
     
-    [TestCaseSource(nameof(KnownData))]
-    public void KnownMunsell(MunsellTestData data)
+    [TestCaseSource(nameof(XyyData))]
+    public void KnownXyy(MunsellTestData data)
     {
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
         var munsellFromDegrees = new Munsell(MunsellUtils.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
 
         Assert.That(munsellFromDegrees, Is.EqualTo(munsell));
         
-        var actual = Experimental.Munsell.ToXyy(munsell);
+        var actual = Munsell.ToXyy(munsell);
         Assert.That(actual.Chromaticity.X, Is.EqualTo(data.X).Within(1e-16));
         Assert.That(actual.Chromaticity.Y, Is.EqualTo(data.Y).Within(1e-16));
         Assert.That(actual.Luminance, Is.EqualTo(data.LuminanceMagnesiumOxide / 100 * 0.975).Within(0.00025));
     }
-
-    [Test]
-    public void ToD65()
-    {
-        var munsell = new Munsell(10, "RP", 1, 2); // 0.3629, 0.271, 1.21
-        var xyy = Munsell.ToXyy(munsell);
-        var xyz = Xyy.ToXyz(new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, 0.0121)); // ugh, srgb excel file uses raw Y from the data as illuminant C, but it's actually Ymgo...
-        var xyzD65 = Adaptation.WhitePoint(xyz, Illuminant.C.GetWhitePoint(Observer.Degree2), Illuminant.D65.GetWhitePoint(Observer.Degree2), new Matrix(Adaptation.Bradford));
-        var uni = new Unicolour(ColourSpace.Xyz, xyzD65.Tuple);
-        var rgb = uni.Rgb.Byte255;
-    }
     
-    [Test]
-    public void FromMunsell1()
+    /*
+     * expected xyY is taken directly from Table 2 of ASTM https://doi.org/10.1520/D1535-14R18
+     * expected RGB is taken from https://www.andrewwerth.com/color/
+     */ 
+    private static readonly TestCaseData[] RgbData =
+    [
+        new TestCaseData(new Munsell(5, "R", 5, 18), new ColourTriplet(0.5918, 0.3038, 19.27 / 100.0), new ColourTriplet(243, 8, 61)).SetName("Red"),
+        new TestCaseData(new Munsell(5, "YR", 7, 12), new ColourTriplet(0.5007, 0.4081, 41.99 / 100.0), new ColourTriplet(252, 150, 51)).SetName("Yellow-Red"),
+        new TestCaseData(new Munsell(5, "Y", 8, 10), new ColourTriplet(0.4376, 0.4601, 57.62 / 100.0), new ColourTriplet(232, 201, 53)).SetName("Yellow"),
+        new TestCaseData(new Munsell(5, "GY", 9, 12), new ColourTriplet(0.3911, 0.5082, 76.70 / 100.0), new ColourTriplet(207, 245, 41)).SetName("Green-Yellow"),
+    ];
+    
+    [TestCaseSource(nameof(RgbData))]
+    public void Rgb(Munsell munsell, ColourTriplet expectedXyy, ColourTriplet expectedRgb255)
     {
-        // first item of ASTM D1535-14 table 2:
-        // 2.5R 9/6 = (0.3665, 0.3183, 76.70)
-        var munsell = new Munsell(2.5, "R", 9, 6);
-        Console.WriteLine(munsell);
+        var xyy = Munsell.ToXyy(munsell);
+        TestUtils.AssertTriplet(xyy.Triplet, expectedXyy, 0.00005);
 
-        var xyy = Experimental.Munsell.ToXyy(munsell);
-        Console.WriteLine(xyy);
-        
-        var munsellRoundtrip = Experimental.Munsell.FromXyy(xyy);
-        Console.WriteLine(munsellRoundtrip);
+        var xyyRelativeToYmgo = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / 0.975);
+        var colour = ToUnicolour(xyy);
+        TestUtils.AssertTriplet<Rgb255>(colour, expectedRgb255, 3); // equivalent to ~0.0125 tolerance of RGB in 0-1 range
     }
 
     [Test]
@@ -103,5 +100,12 @@ public class KnownMunsellTests
 
         var xyyRoundtrip = Experimental.Munsell.ToXyy(munsell);
         Console.WriteLine(xyyRoundtrip);
+    }
+
+    private static Unicolour ToUnicolour(Xyy xyyC)
+    {
+        var xyz = Xyy.ToXyz(xyyC); // ugh, srgb excel file uses raw Y from the data as illuminant C, but it's actually Ymgo...
+        var xyzD65 = Adaptation.WhitePoint(xyz, Illuminant.C.GetWhitePoint(Observer.Degree2), Illuminant.D65.GetWhitePoint(Observer.Degree2), new Matrix(Adaptation.Bradford));
+        return new Unicolour(ColourSpace.Xyz, xyzD65.Tuple);
     }
 }

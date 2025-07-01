@@ -11,7 +11,7 @@ public partial record Munsell
     internal const double DegreesPerHueLetter = 36;
     internal const double DegreesPerHueNumber = 9;
 
-    internal record Data(double HueNumber, string HueLetter, double Value, int Chroma, double X, double Y, double Luminance)
+    internal record Node(double HueNumber, string HueLetter, double Value, int Chroma, double X, double Y, double LuminanceMagnesiumOxide)
     {
         internal readonly double HueNumber = HueNumber;
         internal readonly string HueLetter = HueLetter;
@@ -19,10 +19,7 @@ public partial record Munsell
         internal readonly int Chroma = Chroma;
         internal readonly double X = X;
         internal readonly double Y = Y;
-        
-        // only used in testing as it is relative to magnesium oxide
-        // actual luminance calculated directly from V using formula, but should be ~0.975x
-        internal readonly double Luminance = Luminance;
+        internal readonly double LuminanceMagnesiumOxide = LuminanceMagnesiumOxide; // actual Y = 0.975 * Ymgo
 
         internal readonly double HueDegrees = MunsellUtils.ToDegrees(HueNumber, HueLetter);
         internal (double x, double y) Point => (X, Y);
@@ -35,7 +32,7 @@ public partial record Munsell
         public override string ToString() => $"{HueNumber}{HueLetter} {Value}/{Chroma} = ({X}, {Y})";
     }
     
-    internal static readonly Lazy<Data[]> Nodes = new(() => new Data[]
+    internal static readonly Lazy<Node[]> Nodes = new(() => new Node[]
     {
         new(2.5, "GY", 0.2, 2, 0.713, 1.414, 0.237),
         new(5, "GY", 0.2, 2, 0.449, 1.145, 0.237),

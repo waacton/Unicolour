@@ -13,13 +13,15 @@ namespace Wacton.Unicolour.Experimental;
 public partial record Munsell
 {
     public double HueDegrees { get; }
-    public double? Value { get; }
-    public double? Chroma { get; }
+    public (double number, string letter) Hue { get; }
+    public double Value { get; }
+    public double Chroma { get; }
 
     public Munsell(double hueNumber, string hueLetter, double value, double chroma) : this(ToDegrees(hueNumber, hueLetter), value, chroma) { }
     public Munsell(double hueDegrees, double value, double chroma)
     {
         HueDegrees = hueDegrees;
+        Hue = FromDegrees(HueDegrees);
         Value = value;
         Chroma = chroma;
     }
@@ -27,16 +29,16 @@ public partial record Munsell
     public Munsell(double greyNumber)
     {
         HueDegrees = 0;
-        Value = null;
-        Chroma = null;
+        // Value = null;
+        // Chroma = null;
     }
 
     public static Xyy ToXyy(Munsell munsell)
     {
         var value = munsell.Value;
-        if (!value.HasValue) throw new NotImplementedException();
+        // if (!value.HasValue) throw new NotImplementedException();
         
-        var v = (double)value;
+        var v = value;
         var luminance = GetLuminance(v);
         var (x, y) = GetXy(munsell);
         return new Xyy(x, y, luminance / 100.0);
@@ -70,7 +72,7 @@ public partial record Munsell
     {
         var roundedDegrees = Math.Round(HueDegrees);
         var roundedHue = FromDegrees(roundedDegrees);
-        return $"{roundedHue.number:F1}{roundedHue.letter} {Value:F1}/{Chroma:F1} ({HueDegrees:F2}°)";
+        return $"{roundedHue.number:F1}{roundedHue.letter} {Value:F1}/{Chroma:F1}";
     } 
 }
 

@@ -8,8 +8,8 @@ internal static class MunsellUtils
     {
         // TODO: handle grey (null value (implies null chroma) or 0 chroma)
         var hueDegrees = munsell.HueDegrees;
-        var value = (double)munsell.Value;
-        var chroma = (double)munsell.Chroma;
+        var value = munsell.Value;
+        var chroma = munsell.Chroma;
         return GetXy(value, chroma, hueDegrees);
     }
     
@@ -140,7 +140,7 @@ internal static class MunsellUtils
             : GetHueAndChromaFromBoundaries(leftVertical!, rightVertical!, targetPoint, horizontalThroughPoint);
     }
     
-    private static Boundary? GetBoundary(Data[] directionA, Data[] directionB)
+    private static Boundary? GetBoundary(Node[] directionA, Node[] directionB)
     {
         var closestA = directionA.FirstOrDefault();
         var backupA = directionA.Skip(1).FirstOrDefault();
@@ -211,7 +211,7 @@ internal static class MunsellUtils
 
     internal static (double number, string letter) FromDegrees(double degrees)
     {
-        var bandLocation = degrees / DegreesPerHueLetter;
+        var bandLocation = degrees.Modulo(360) / DegreesPerHueLetter;
         var bandIndex = (int)Math.Truncate(bandLocation);
         var hueLetter = NodeHueLetters[bandIndex];
         var hueNumber = (bandLocation - bandIndex) * 10;
@@ -228,10 +228,10 @@ internal static class MunsellUtils
         return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
     }
     
-    private record Boundary(Data Start, Data End, bool IsExtrapolation)
+    private record Boundary(Node Start, Node End, bool IsExtrapolation)
     {
-        internal readonly Data Start = Start;
-        internal readonly Data End = End;
+        internal readonly Node Start = Start;
+        internal readonly Node End = End;
         internal readonly Line Line = Line.FromPoints(Start.Point, End.Point);
         internal readonly bool IsExtrapolation = IsExtrapolation;
         internal readonly bool IsSingularity = Start == End;

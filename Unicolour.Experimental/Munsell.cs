@@ -42,31 +42,38 @@ public partial record Munsell
         var value = munsell.Value;
         // if (!value.HasValue) throw new NotImplementedException();
         
-        var v = value;
-        var luminance = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
+        var luminance = GetLuminance(value);
         var (x, y) = GetXy(munsell);
         return new Xyy(x, y, luminance / 100.0);
     }
     
     public static Munsell FromXyy(Xyy xyy)
     {
-        var y = xyy.Luminance * 100;
-        var v = y <= 0.9
+        var v = GetValue(xyy.Luminance * 100);
+        var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
+        return new Munsell(h, v, c);
+    }
+
+    internal static double GetLuminance(double v)
+    {
+        return 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
+    }
+
+    internal static double GetValue(double y)
+    {
+        return y <= 0.9
             ? 0.87445 * Math.Pow(y, 0.9967)
             : 2.49268 * Math.Pow(y, 1 / 3.0) - 1.5614 - 0.985 / (Math.Pow(0.1073 * y - 3.084, 2) + 7.54)
               + 0.0133 / Math.Pow(y, 2.3) + 0.0084 * Math.Sin(4.1 * Math.Pow(y, 1 / 3.0) + 1)
               + 0.0221 / y * Math.Sin(0.39 * (y - 2))
               - 0.0037 / (0.44 * y) * Math.Sin(1.28 * (y - 0.53));
-        
-        var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
-        return new Munsell(h, v, c);
     }
     
     public override string ToString()
     {
         var roundedDegrees = Math.Round(HueDegrees);
         var roundedHue = FromDegrees(roundedDegrees);
-        return $"{roundedHue.number:F1}{roundedHue.letter} {Value:F1}/{Chroma:F1}";
+        return $"{roundedHue.number:G}{roundedHue.letter} {Value:G}/{Chroma:G}";
     } 
 }
 

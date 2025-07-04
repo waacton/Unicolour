@@ -83,36 +83,65 @@ public class KnownMunsellTests
     [Test]
     public void BetweenFourNodes()
     {
-        var xyy = new Xyy(0.4, 0.4, Munsell.GetLuminance(6));
-        var munsell = Munsell.FromXyy(xyy);
-
         /*
          * closest known xy coordinates that form a boundary around (0.4, 0.4) at 6V are:
-         * [up-left] (0.3745, 0.4004) 7.5Y 6/4 ... (0.424, 0.403) 10YR 6/6 [up-right]
+         * [up-left] (0.3745, 0.4004) 7.5Y 6/4 ... (0.4240, 0.4030) 10YR 6/6 [up-right]
          * [down-left] (0.384, 0.3867) 2.5Y 6/4 ... (0.4242, 0.3876) 7.5YR 6/6 [down-right]
          * x = 0.4 vertical intersects upper@(0.4, 0.4017) lower@(0.4, 0.3871)
          * y = 0.4 horizontal intersects left@(0.3748, 0.4) right@(0.424, 0.4)
          * target-xy is closest to upper intersect, so will interpolate using upper and lower "horizontals"
-         * upper length (0.3745, 0.4004) --> (0.424, 0.403) = 0.0496, to intersect (0.3745, 0.4004) --> (0.4, 0.4017) = 0.0255
-         * upper munsell = 0.0255 / 0.0496 = 51.52% from 7.5Y 6/4 --> 10YR 6/6 = 3.64Y 6/5.0
-         * lower length (0.384, 0.3867) --> (0.4242, 0.3876) = 0.0402, to intersect (0.384, 0.3867) --> (0.4, 0.3871) = 0.016
-         * lower munsell = 0.016 / 0.0402 = 39.8% from 2.5Y 6/4 --> 7.5YR 6/6 = 0.51Y 6/4.8
-         * vertical length between intersects (0.4, 0.4017) --> (0.4, 0.3871) = 0.0147, to target-xy (0.4, 0.4017) --> (0.4, 0.4) = 0.0017
-         * target munsell = 0.0017 / 0.0147 = 11.8% from 3.64Y 6/5.0 --> 0.51Y 6/4.8 = 3.33Y 6/5
+         * upper length (0.3745, 0.4004) --> (0.4240, 0.4030) = 0.0496; to intersect (0.3745, 0.4004) --> (0.4, 0.4017) = 0.0255
+         * upper munsell = 0.0255 / 0.0496 = 51.52% from 7.5Y 6/4 --> 10YR 6/6 = 3.64Y 6/5.03
+         * lower length (0.3840, 0.3867) --> (0.4242, 0.3876) = 0.0402; to intersect (0.3840, 0.3867) --> (0.4, 0.3871) = 0.0160
+         * lower munsell = 0.0160 / 0.0402 = 39.80% from 2.5Y 6/4 --> 7.5YR 6/6 = 0.51Y 6/4.80
+         * vertical length between intersects (0.4, 0.4017) --> (0.4, 0.3871) = 0.0147; to target-xy (0.4, 0.4017) --> (0.4, 0.4) = 0.0017
+         * target munsell = 0.0017 / 0.0147 = 11.85% from 3.64Y 6/5.03 --> 0.51Y 6/4.80 = 3.27Y 6/5.00
          */
-
-        var expected = new Munsell(3.33, "Y", 6, 5);
-        Assert.That(munsell.ToString(), Is.EqualTo(expected.ToString()));
+        var xyyV6 = new Xyy(0.4, 0.4, Munsell.GetLuminance(6));
+        var expectedV6 = new Munsell(3.27, "Y", 6, 5.00);
+        Assert.That(Interpolation.Interpolate(3.64, 0.51, 0.1185), Is.EqualTo(expectedV6.Hue.number).Within(0.005));
+        Assert.That(Interpolation.Interpolate(5.03, 4.80, 0.1185), Is.EqualTo(expectedV6.Chroma).Within(0.005));
+        var actualV6 = Munsell.FromXyy(xyyV6);
+        Assert.That(actualV6.ToString(), Is.EqualTo(expectedV6.ToString()));
         
-        // TODO: to the same as above from luminance 5
-        // TODO: then show an interpolated V e.g. 5.25, as the interpolated result of 5 and 6
+        /*
+         * closest known xy coordinates that form a boundary around (0.4, 0.4) at 7V are:
+         * [up-left] (0.3943, 0.4264) 7.5Y 7/6 ... (0.4073, 0.4073) 2.5Y 7/6 [up-right]
+         * [down-left] (0.3718, 0.3885) 5Y 7/4 ... (0.4102, 0.3960) 10YR 7/6 [down-right]
+         * x = 0.4 vertical intersects upper@(0.4, 0.4180) lower@(0.4, 0.3940)
+         * y = 0.4 horizontal intersects left@(0.3786, 0.4) right@(0.4092, 0.4)
+         * target-xy is closest to lower intersect, so will interpolate using upper and lower "horizontals"
+         * upper length (0.3943, 0.4264) --> (0.4073, 0.4073) = 0.0231; to intersect (0.3943, 0.4264) --> (0.4, 0.4180) = 0.0101
+         * upper munsell = 0.0101 / 0.0231 = 43.85% from 7.5Y 7/6 --> 2.5Y 7/6 = 5.31Y 7/6.00
+         * lower length (0.3718, 0.3885) --> (0.4102, 0.3960) = 0.0391; to intersect (0.3718, 0.3885) --> (0.4, 0.3940) = 0.0287
+         * lower munsell = 0.0287 / 0.0391 = 73.44% from 5Y 7/4 --> 10YR 7/6 = 1.33Y 6/5.47
+         * vertical length between intersects (0.4, 0.4180) --> (0.4, 0.3940) = 0.0240; to target-xy (0.4, 0.4180) --> (0.4, 0.4) = 0.0180
+         * target munsell = 0.0180 / 0.0240 = 75.05% from 5.31Y 7/6.00 --> 1.33Y 6/5.47 = 2.32Y 7/5.60
+         */
+        var xyyV7 = new Xyy(0.4, 0.4, Munsell.GetLuminance(7));
+        var expectedV7 = new Munsell(2.32, "Y", 7, 5.60);
+        Assert.That(Interpolation.Interpolate(5.31, 1.33, 0.7505), Is.EqualTo(expectedV7.Hue.number).Within(0.005));
+        Assert.That(Interpolation.Interpolate(6.00, 5.47, 0.7505), Is.EqualTo(expectedV7.Chroma).Within(0.005));
+        var actualV7 = Munsell.FromXyy(xyyV7);
+        Assert.That(actualV7.ToString(), Is.EqualTo(expectedV7.ToString()));
+        
+        /*
+         * when V is between nodes, use result of lower and upper V and interpolate
+         * target V = (6.25 - 6) / (7 - 6) = 25% from 3.27Y 6/5.00 --> 2.32Y 7/5.60 = 3.03Y 6.25/5.15
+         */
+        var xyy = new Xyy(0.4, 0.4, Munsell.GetLuminance(6.25));
+        var expected = new Munsell(3.03, "Y", 6.25, 5.15);
+        Assert.That(Interpolation.Interpolate(3.27, 2.32, 0.25), Is.EqualTo(expected.Hue.number).Within(0.005));
+        Assert.That(Interpolation.Interpolate(5.00, 5.60, 0.25), Is.EqualTo(expected.Chroma).Within(0.005));
+        var actual = Munsell.FromXyy(xyy);
+        Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
     }
     
     // TODO: same as above test, but for 3 nodes, requiring extrapolation
-    //       4 tests, one for each missing direction
+    //       4 tests, one for each missing direction?
     
     // TODO: same as above test, but for 2 nodes, requiring extrapolation
-    //       4 tests, one for each pair of missing directions (e.g. negative infinity X, won't have upper-left or lower-left points)
+    //       4 tests, one for each pair of missing directions? (e.g. negative infinity X, won't have upper-left or lower-left points)
     
     // TODO: test greyscale, once implemented
     

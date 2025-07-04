@@ -58,6 +58,8 @@ public class KnownMunsellTests
         var expectedRgb = data.RgbMgo!.Value;
         var actualRgb = colour.Rgb.ConstrainedTriplet;
         TestUtils.AssertTriplet(actualRgb, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.01); // tolerance of 2.55 in byte255 format
+        
+        // TODO: use actual unicolour Munsell -> RGB, show error < 0.0114
     }
     
     [Test]
@@ -77,71 +79,44 @@ public class KnownMunsellTests
         Assert.That(actualMgo.Luminance, Is.GreaterThan(expected.Luminance));
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
     }
+
+    [Test]
+    public void BetweenFourNodes()
+    {
+        var xyy = new Xyy(0.4, 0.4, Munsell.GetLuminance(6));
+        var munsell = Munsell.FromXyy(xyy);
+
+        /*
+         * closest known xy coordinates that form a boundary around (0.4, 0.4) at 6V are:
+         * [up-left] (0.3745, 0.4004) 7.5Y 6/4 ... (0.424, 0.403) 10YR 6/6 [up-right]
+         * [down-left] (0.384, 0.3867) 2.5Y 6/4 ... (0.4242, 0.3876) 7.5YR 6/6 [down-right]
+         * x = 0.4 vertical intersects upper@(0.4, 0.4017) lower@(0.4, 0.3871)
+         * y = 0.4 horizontal intersects left@(0.3748, 0.4) right@(0.424, 0.4)
+         * target-xy is closest to upper intersect, so will interpolate using upper and lower "horizontals"
+         * upper length (0.3745, 0.4004) --> (0.424, 0.403) = 0.0496, to intersect (0.3745, 0.4004) --> (0.4, 0.4017) = 0.0255
+         * upper munsell = 0.0255 / 0.0496 = 51.52% from 7.5Y 6/4 --> 10YR 6/6 = 3.64Y 6/5.0
+         * lower length (0.384, 0.3867) --> (0.4242, 0.3876) = 0.0402, to intersect (0.384, 0.3867) --> (0.4, 0.3871) = 0.016
+         * lower munsell = 0.016 / 0.0402 = 39.8% from 2.5Y 6/4 --> 7.5YR 6/6 = 0.51Y 6/4.8
+         * vertical length between intersects (0.4, 0.4017) --> (0.4, 0.3871) = 0.0147, to target-xy (0.4, 0.4017) --> (0.4, 0.4) = 0.0017
+         * target munsell = 0.0017 / 0.0147 = 11.8% from 3.64Y 6/5.0 --> 0.51Y 6/4.8 = 3.33Y 6/5
+         */
+
+        var expected = new Munsell(3.33, "Y", 6, 5);
+        Assert.That(munsell.ToString(), Is.EqualTo(expected.ToString()));
+        
+        // TODO: to the same as above from luminance 5
+        // TODO: then show an interpolated V e.g. 5.25, as the interpolated result of 5 and 6
+    }
     
+    // TODO: same as above test, but for 3 nodes, requiring extrapolation
+    //       4 tests, one for each missing direction
     
-    // public void Rgb(Munsell munsell, ColourTriplet expectedXyy, ColourTriplet expectedRgb255)
-    // {
-    //     var xyy = Munsell.ToXyy(munsell);
-    //     
-    //     var xyyRelativeToYmgo = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / 0.975);
-    //     TestUtils.AssertTriplet(xyyRelativeToYmgo.Triplet, expectedXyy, 0.00005);
-    //
-    //     var colour = ToUnicolour(xyyRelativeToYmgo, false);
-    //     TestUtils.AssertTriplet<Rgb255>(colour, expectedRgb255, 3); // equivalent to ~0.0125 tolerance of RGB in 0-1 range
-    // }
-    //
-    // [Test]
-    // public void FromMunsell2()
-    // {
-    //     var munsell = new Munsell(4.2, "YR", 8.1, 5.3); // 0.38736945,  0.35751656,  0.59362
-    //     Console.WriteLine(munsell);
-    //
-    //     var xyy = Experimental.Munsell.ToXyy(munsell);
-    //     Console.WriteLine(xyy);
-    //
-    //     var munsellRoundtrip = Experimental.Munsell.FromXyy(xyy);
-    //     Console.WriteLine(munsellRoundtrip);
-    // }
-    //
-    // [Test]
-    // public void FromXyy1()
-    // {
-    //     var xyy = new Xyy(0.500, 0.454, 0.4602); // 10YR 7.2/13.5
-    //     Console.WriteLine(xyy);
-    //
-    //     var munsell = Experimental.Munsell.FromXyy(xyy);
-    //     Console.WriteLine(munsell);
-    //
-    //     var xyyRoundtrip = Experimental.Munsell.ToXyy(munsell);
-    //     Console.WriteLine(xyyRoundtrip);
-    //     
-    //     var munsellRoundtrip = Experimental.Munsell.FromXyy(xyyRoundtrip);
-    //     Console.WriteLine(munsellRoundtrip);
-    // }
-    //
-    // [Test]
-    // public void FromXyy2()
-    // {
-    //     var xyy = new Xyy(0.2437, 0.3240, 0.2198); //  5.6 BG 5.30 / 5.3
-    //     Console.WriteLine(xyy);
-    //     
-    //     var munsell = Experimental.Munsell.FromXyy(xyy);
-    //     Console.WriteLine(munsell);
-    //
-    //     var xyyRoundtrip = Experimental.Munsell.ToXyy(munsell);
-    //     Console.WriteLine(xyyRoundtrip);
-    // }
-    //
-    // [Test]
-    // public void FromXyy3()
-    // {
-    //     var xyy = new Xyy(0.365, 0.347, 0.576196); // somewhere between 2.5YR 8/3.5 ; 2.5YR 8/4.0 ; 5.0YR 8/3.5 ; 5.0YR 8/4.0
-    //     Console.WriteLine(xyy);
-    //     
-    //     var munsell = Experimental.Munsell.FromXyy(xyy);
-    //     Console.WriteLine(munsell);
-    //
-    //     var xyyRoundtrip = Experimental.Munsell.ToXyy(munsell);
-    //     Console.WriteLine(xyyRoundtrip);
-    // }
+    // TODO: same as above test, but for 2 nodes, requiring extrapolation
+    //       4 tests, one for each pair of missing directions (e.g. negative infinity X, won't have upper-left or lower-left points)
+    
+    // TODO: test greyscale, once implemented
+    
+    // TODO: test extreme values like
+    
+    // TODO: get specific examples from ASTM to test against
 }

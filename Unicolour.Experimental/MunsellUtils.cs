@@ -99,8 +99,8 @@ internal static class MunsellUtils
         var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var upRights = nodes.Where(data => data.X >= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         
-        var upperHorizontal = GetBoundary(downLefts, downRights);
-        var lowerHorizontal = GetBoundary(upLefts, upRights);
+        var lowerHorizontal = GetBoundary(downLefts, downRights);
+        var upperHorizontal = GetBoundary(upLefts, upRights);
         var leftVertical = GetBoundary(downLefts, upLefts);
         var rightVertical = GetBoundary(downRights, upRights);
         

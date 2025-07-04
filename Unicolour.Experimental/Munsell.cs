@@ -44,23 +44,25 @@ public partial record Munsell
         
         var luminance = GetLuminance(value);
         var (x, y) = GetXy(munsell);
-        return new Xyy(x, y, luminance / 100.0);
+        return new Xyy(x, y, luminance);
     }
     
     public static Munsell FromXyy(Xyy xyy)
     {
-        var v = GetValue(xyy.Luminance * 100);
+        var v = GetValue(xyy.Luminance);
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
     }
 
     internal static double GetLuminance(double v)
     {
-        return 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
+        var y = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
+        return y / 100.0;
     }
 
     internal static double GetValue(double y)
     {
+        y *= 100;
         return y <= 0.9
             ? 0.87445 * Math.Pow(y, 0.9967)
             : 2.49268 * Math.Pow(y, 1 / 3.0) - 1.5614 - 0.985 / (Math.Pow(0.1073 * y - 3.084, 2) + 7.54)
@@ -73,7 +75,7 @@ public partial record Munsell
     {
         var roundedDegrees = Math.Round(HueDegrees);
         var roundedHue = FromDegrees(roundedDegrees);
-        return $"{roundedHue.number:G}{roundedHue.letter} {Value:G}/{Chroma:G}";
+        return $"{roundedHue.number:0.##}{roundedHue.letter} {Value:0.##}/{Chroma:0.##}";
     } 
 }
 

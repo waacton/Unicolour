@@ -71,11 +71,6 @@ public partial record Munsell
               - 0.0037 / (0.44 * y) * Math.Sin(1.28 * (y - 0.53));
     }
     
-    public override string ToString()
-    {
-        var roundedDegrees = Math.Round(HueDegrees);
-        var roundedHue = FromDegrees(roundedDegrees);
-        return $"{roundedHue.number:0.##}{roundedHue.letter} {Value:0.##}/{Chroma:0.##}";
-    } 
+    public override string ToString() => $"{Hue.number:0.##}{Hue.letter} {Value:0.##}/{Chroma:0.##}";
 }
 

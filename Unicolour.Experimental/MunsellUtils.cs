@@ -94,13 +94,13 @@ internal static class MunsellUtils
     internal static (double h, double c) GetHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
     {
         var nodes = Nodes.Value.Where(data => data.Value == nodeV).ToArray();
-        var downLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-        var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var upRights = nodes.Where(data => data.X >= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var downLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         
-        var lowerHorizontal = GetBoundary(downLefts, downRights);
         var upperHorizontal = GetBoundary(upLefts, upRights);
+        var lowerHorizontal = GetBoundary(downLefts, downRights);
         var leftVertical = GetBoundary(downLefts, upLefts);
         var rightVertical = GetBoundary(downRights, upRights);
         
@@ -116,18 +116,18 @@ internal static class MunsellUtils
             }
             else
             {
-                var lowerHorizontalIntersect = lowerHorizontal.Line.GetIntersect(verticalThroughPoint);
                 var upperHorizontalIntersect = upperHorizontal.Line.GetIntersect(verticalThroughPoint);
+                var lowerHorizontalIntersect = lowerHorizontal.Line.GetIntersect(verticalThroughPoint);
                 var leftVerticalIntersect = leftVertical.Line.GetIntersect(horizontalThroughPoint);
                 var rightVerticalIntersect = rightVertical.Line.GetIntersect(horizontalThroughPoint);
                 
-                var distanceToLowerHorizontal = GetDistance(lowerHorizontalIntersect, targetPoint);
                 var distanceToUpperHorizontal = GetDistance(upperHorizontalIntersect, targetPoint);
+                var distanceToLowerHorizontal = GetDistance(lowerHorizontalIntersect, targetPoint);
                 var distanceToLeftVertical = GetDistance(leftVerticalIntersect, targetPoint);
                 var distanceToRightVertical = GetDistance(rightVerticalIntersect, targetPoint);
 
-                useHorizontals = (distanceToLowerHorizontal < distanceToLeftVertical && distanceToLowerHorizontal < distanceToRightVertical)
-                                 || (distanceToUpperHorizontal < distanceToLeftVertical && distanceToUpperHorizontal < distanceToRightVertical);
+                useHorizontals = (distanceToUpperHorizontal < distanceToLeftVertical && distanceToUpperHorizontal < distanceToRightVertical)
+                                || (distanceToLowerHorizontal < distanceToLeftVertical && distanceToLowerHorizontal < distanceToRightVertical);
             }
         }
         else
@@ -136,7 +136,7 @@ internal static class MunsellUtils
         }
 
         return useHorizontals
-            ? GetHueAndChromaFromBoundaries(lowerHorizontal!, upperHorizontal!, targetPoint, verticalThroughPoint)
+            ? GetHueAndChromaFromBoundaries(upperHorizontal!, lowerHorizontal!, targetPoint, verticalThroughPoint)
             : GetHueAndChromaFromBoundaries(leftVertical!, rightVertical!, targetPoint, horizontalThroughPoint);
     }
     

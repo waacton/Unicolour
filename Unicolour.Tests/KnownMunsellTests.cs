@@ -85,8 +85,8 @@ public class KnownMunsellTests
     {
         /*
          * closest known xy coordinates that form a boundary around (0.4, 0.4) at 6V are:
-         * [up-left] (0.3745, 0.4004) 7.5Y 6/4 ... (0.4240, 0.4030) 10YR 6/6 [up-right]
-         * [down-left] (0.384, 0.3867) 2.5Y 6/4 ... (0.4242, 0.3876) 7.5YR 6/6 [down-right]
+         * [up-left]   (0.3745, 0.4004) 7.5Y 6/4 ... (0.4240, 0.4030)  10YR 6/6 [up-right]
+         * [down-left] (0.3840, 0.3867) 2.5Y 6/4 ... (0.4242, 0.3876) 7.5YR 6/6 [down-right]
          * x = 0.4 vertical intersects upper@(0.4, 0.4017) lower@(0.4, 0.3871)
          * y = 0.4 horizontal intersects left@(0.3748, 0.4) right@(0.424, 0.4)
          * target-xy is closest to upper intersect, so will interpolate using upper and lower "horizontals"
@@ -106,8 +106,8 @@ public class KnownMunsellTests
         
         /*
          * closest known xy coordinates that form a boundary around (0.4, 0.4) at 7V are:
-         * [up-left] (0.3943, 0.4264) 7.5Y 7/6 ... (0.4073, 0.4073) 2.5Y 7/6 [up-right]
-         * [down-left] (0.3718, 0.3885) 5Y 7/4 ... (0.4102, 0.3960) 10YR 7/6 [down-right]
+         * [up-left]   (0.3943, 0.4264) 7.5Y 7/6 ... (0.4073, 0.4073) 2.5Y 7/6 [up-right]
+         * [down-left] (0.3718, 0.3885)   5Y 7/4 ... (0.4102, 0.3960) 10YR 7/6 [down-right]
          * x = 0.4 vertical intersects upper@(0.4, 0.4180) lower@(0.4, 0.3940)
          * y = 0.4 horizontal intersects left@(0.3786, 0.4) right@(0.4092, 0.4)
          * target-xy is closest to lower intersect, so will interpolate using upper and lower "horizontals"
@@ -148,4 +148,24 @@ public class KnownMunsellTests
     // TODO: test extreme values like
     
     // TODO: get specific examples from ASTM to test against
+    
+    [Test]
+    public void InterpolateBothAxes()
+    {
+        /*
+         * both of these points reside in the lower-right corner of the boundary formed by
+         * [up-left]   (0.4140, 0.4305)   5Y 6/6 ... (0.4240, 0.4030)  10YR 6/6 [up-right]
+         * [down-left] (0.3840, 0.3867) 2.5Y 6/4 ... (0.4242, 0.3876) 7.5YR 6/6 [down-right]
+         * one is closer to the lower boundary intersect, so will interpolate using upper and lower "horizontals"
+         * the other is closer to the right boundary intersect, so will interpolate using left and right "verticals"
+         * but since they are close together we expect the result to be similar
+         */
+        var xyyNearLower = new Xyy(0.4150, 0.3964, Munsell.GetLuminance(6));
+        var xyyNearRight = new Xyy(0.4150, 0.3965, Munsell.GetLuminance(6));
+        var fromHorizontals = Munsell.FromXyy(xyyNearLower);
+        var fromVerticals = Munsell.FromXyy(xyyNearRight);
+        Assert.That(fromHorizontals.HueDegrees, Is.EqualTo(fromVerticals.HueDegrees).Within(0.5)); // 0 - 360
+        Assert.That(fromHorizontals.Value, Is.EqualTo(fromVerticals.Value));
+        Assert.That(fromHorizontals.Chroma, Is.EqualTo(fromVerticals.Chroma).Within(0.075)); // 0 - 10
+    }
 }

@@ -112,7 +112,7 @@ internal static class Interpolation
         return (adjustedStartHue, adjustedEndHue);
     }
 
-    private static (double start, double end) AdjustHues(double start, double end, HueSpan hueSpan)
+    internal static (double start, double end) AdjustHues(double start, double end, HueSpan hueSpan)
     {
         return hueSpan switch
         {

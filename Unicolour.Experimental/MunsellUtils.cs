@@ -65,7 +65,7 @@ internal static class MunsellUtils
         var maxChroma = MaxChroma(nodeV, nodeH);
         var useMaxChroma = c > maxChroma;
         
-        var lowerNodeC = useMaxChroma ? 0 : NodeChromas.Last(nodeC => nodeC <= c);
+        var lowerNodeC = useMaxChroma ? NodeChromas.Last(nodeC => nodeC < maxChroma) : NodeChromas.Last(nodeC => nodeC <= c);
         var upperNodeC = useMaxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
         
         // var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
@@ -79,11 +79,12 @@ internal static class MunsellUtils
 
         if (useMaxChroma)
         {
+            var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
             var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
 
             var distance = (c - lowerNodeC) / (upperNodeC - lowerNodeC);
-            var x = Interpolation.Interpolate(whitePointC.X, upper.X, distance);
-            var y = Interpolation.Interpolate(whitePointC.Y, upper.Y, distance);
+            var x = Interpolation.Interpolate(lower.X, upper.X, distance);
+            var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
             return (x, y);
         }
         else

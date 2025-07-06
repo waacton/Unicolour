@@ -79,6 +79,7 @@ internal static class MunsellUtils
 
     internal static (double h, double c) GetHueAndChroma(Chromaticity chromaticity, double v)
     {
+        // TODO: handle out of range, interpolate from closest two Vs
         var lowerNodeV = NodeValues.Last(item => item <= v);
         var upperNodeV = NodeValues.First(item => item >= v);
         
@@ -90,8 +91,22 @@ internal static class MunsellUtils
         var c = Interpolation.Interpolate(lowerC, upperC, distance);
         return (h, c);
     }
+
+    private static (double h, double c) GetHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
+    {
+        var boundary = GetBoundary(targetPoint, nodeV);
+        if (boundary == null)
+        {
+            // TODO: handle null boundary, which means that target point is not within the dataset and requires extrapolation
+            //       likely: move (x,y) iteratively towards white, which is at the core of the dataset, until (x, y) has a boundary and calculate (h, c)
+            //               move (x, y) one more step towards white, calculate another (h, c), and extrapolate using these two data points
+            throw new NotImplementedException();
+        }
+        
+        return boundary.GetHueAndChroma();
+    }
     
-    internal static (double h, double c) GetHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
+    private static Boundary? GetBoundary((double x, double y) targetPoint, double nodeV)
     {
         var nodes = Nodes.Value.Where(data => data.Value == nodeV).ToArray();
         var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
@@ -99,104 +114,13 @@ internal static class MunsellUtils
         var downLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         
-        var upperHorizontal = GetBoundary(upLefts, upRights);
-        var lowerHorizontal = GetBoundary(downLefts, downRights);
-        var leftVertical = GetBoundary(downLefts, upLefts);
-        var rightVertical = GetBoundary(downRights, upRights);
-        
-        var horizontalThroughPoint = Line.FromPoints(targetPoint, (targetPoint.x + 1, targetPoint.y));
-        var verticalThroughPoint = Line.FromPoints(targetPoint, (targetPoint.x, targetPoint.y + 1));
-        
-        bool useHorizontals;
-        if (lowerHorizontal != null && upperHorizontal != null)
-        {
-            if (leftVertical == null || rightVertical == null)
-            {
-                useHorizontals = true;
-            }
-            else
-            {
-                var upperHorizontalIntersect = upperHorizontal.Line.GetIntersect(verticalThroughPoint);
-                var lowerHorizontalIntersect = lowerHorizontal.Line.GetIntersect(verticalThroughPoint);
-                var leftVerticalIntersect = leftVertical.Line.GetIntersect(horizontalThroughPoint);
-                var rightVerticalIntersect = rightVertical.Line.GetIntersect(horizontalThroughPoint);
-                
-                var distanceToUpperHorizontal = GetDistance(upperHorizontalIntersect, targetPoint);
-                var distanceToLowerHorizontal = GetDistance(lowerHorizontalIntersect, targetPoint);
-                var distanceToLeftVertical = GetDistance(leftVerticalIntersect, targetPoint);
-                var distanceToRightVertical = GetDistance(rightVerticalIntersect, targetPoint);
+        var upLeft = upLefts.FirstOrDefault();
+        var upRight = upRights.FirstOrDefault();
+        var downLeft = downLefts.FirstOrDefault();
+        var downRight = downRights.FirstOrDefault();
 
-                useHorizontals = (distanceToUpperHorizontal < distanceToLeftVertical && distanceToUpperHorizontal < distanceToRightVertical)
-                                || (distanceToLowerHorizontal < distanceToLeftVertical && distanceToLowerHorizontal < distanceToRightVertical);
-            }
-        }
-        else
-        {
-            useHorizontals = false;
-        }
-
-        return useHorizontals
-            ? GetHueAndChromaFromBoundaries(upperHorizontal!, lowerHorizontal!, targetPoint, verticalThroughPoint)
-            : GetHueAndChromaFromBoundaries(leftVertical!, rightVertical!, targetPoint, horizontalThroughPoint);
-    }
-    
-    private static Boundary? GetBoundary(Node[] directionA, Node[] directionB)
-    {
-        var closestA = directionA.FirstOrDefault();
-        var backupA = directionA.Skip(1).FirstOrDefault();
-        var closestB = directionB.FirstOrDefault();
-        var backupB = directionB.Skip(1).FirstOrDefault();
-        
-        if (closestA != null && closestB != null)
-        {
-            return new Boundary(closestA, closestB, IsExtrapolation: false);
-        }
-
-        if (closestA == null && closestB != null && backupB != null)
-        {
-            return new Boundary(closestB, backupB, IsExtrapolation: true);
-        }
-
-        if (closestB == null && closestA != null && backupA != null)
-        {
-            return new Boundary(closestA, backupA, IsExtrapolation: true);
-        }
-
-        return null;
-    }
-
-    private static (double h, double c) GetHueAndChromaFromBoundaries(Boundary boundaryA, Boundary boundaryB, (double x, double y) point, Line lineThroughPoint)
-    {
-        var (intersectA, startH, startC) = GetBoundaryIntersect(boundaryA, lineThroughPoint);
-        var (intersectB, endH, endC) = GetBoundaryIntersect(boundaryB, lineThroughPoint);
-
-        if (intersectA == intersectB)
-        {
-            return (startH, startC);
-        }
-
-        var distanceBetweenIntersects = GetDistance(intersectA, intersectB);
-        var distanceToPoint = GetDistance(intersectA, point);
-        var interpolationDistance = distanceToPoint / distanceBetweenIntersects;
-        var c = Interpolation.Interpolate(startC, endC, interpolationDistance);
-        var h = Interpolation.Interpolate(startH, endH, interpolationDistance);
-        return (h, c);
-    }
-    
-    private static ((double x, double y) intersect, double h, double c) GetBoundaryIntersect(Boundary boundary, Line throughTarget)
-    {
-        if (boundary.IsSingularity)
-        {
-            return (boundary.Start.Point, boundary.Start.HueDegrees, boundary.Start.Chroma);
-        }
-
-        var intersect = boundary.Line.GetIntersect(throughTarget);
-        var boundaryTotalLength = GetDistance(boundary.Start.Point, boundary.End.Point);
-        var boundaryToIntersectLength = GetDistance(boundary.Start.Point, intersect);
-        var distance = boundaryToIntersectLength / boundaryTotalLength;
-        var h = Interpolation.Interpolate(boundary.Start.HueDegrees, boundary.End.HueDegrees, distance);
-        var c = Interpolation.Interpolate(boundary.Start.Chroma, boundary.End.Chroma, distance);
-        return (intersect, h, c);
+        if (upLeft == null || upRight == null || downLeft == null || downRight == null) return null;
+        return new Boundary(targetPoint, upLeft, upRight, downLeft, downRight);
     }
     
     internal static double ToDegrees(double hueNumber, string hueLetter)
@@ -228,7 +152,74 @@ internal static class MunsellUtils
         return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
     }
     
-    private record Boundary(Node Start, Node End, bool IsExtrapolation)
+    private record Boundary((double x, double y) Point, Node UpLeft, Node UpRight, Node DownLeft, Node DownRight) 
+    {
+        internal (double x, double y) Point { get; } = Point;
+        internal Node UpLeft { get; } = UpLeft;
+        internal Node UpRight { get; } = UpRight;
+        internal Node DownLeft { get; } = DownLeft;
+        internal Node DownRight { get; } = DownRight;
+
+        private Segment Upper { get; } = new(UpLeft, UpRight, IsExtrapolation: false);
+        private Segment Lower { get; } = new(DownLeft, DownRight, IsExtrapolation: false);
+        private Segment Left { get; } = new(UpLeft, DownLeft, IsExtrapolation: false);
+        private Segment Right { get; } = new(UpRight, DownRight, IsExtrapolation: false);
+        
+        private readonly Line Horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
+        private readonly Line Vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
+
+        private (double x, double y) UpperIntersect => Upper.Line.GetIntersect(Vertical);
+        private (double x, double y) LowerIntersect => Lower.Line.GetIntersect(Vertical);
+        private (double x, double y) LeftIntersect => Left.Line.GetIntersect(Horizontal);
+        private (double x, double y) RightIntersect => Right.Line.GetIntersect(Horizontal);
+        
+        private double UpperIntersectToPointDistance => GetDistance(UpperIntersect, Point);
+        private double LowerIntersectToPointDistance => GetDistance(LowerIntersect, Point);
+        private double LeftIntersectToPointDistance => GetDistance(LeftIntersect, Point);
+        private double RightIntersectToPointDistance => GetDistance(RightIntersect, Point);
+
+        private bool InterpolateVertically => 
+            (UpperIntersectToPointDistance < LeftIntersectToPointDistance && UpperIntersectToPointDistance < RightIntersectToPointDistance) 
+            || (LowerIntersectToPointDistance < LeftIntersectToPointDistance && LowerIntersectToPointDistance < RightIntersectToPointDistance);
+
+        internal (double h, double c) GetHueAndChroma()
+        {
+            (double h, double c) start;
+            (double h, double c) end;
+            double distance;
+            
+            // TODO: account for segments being singularities
+            //       e.g. up-left and up-right might be the same point! (if target point lies DIRECTLY below with exact same double)
+            //       and the result will be divide-by-zero
+
+            if (InterpolateVertically)
+            {
+                start = GetHueAndChroma(Upper, UpperIntersect); 
+                end = GetHueAndChroma(Lower, LowerIntersect); 
+                distance = GetDistance(UpperIntersect, Point) / GetDistance(UpperIntersect, LowerIntersect);
+            }
+            else
+            {
+                start = GetHueAndChroma(Left, LeftIntersect); 
+                end = GetHueAndChroma(Right, RightIntersect); 
+                distance = GetDistance(LeftIntersect, Point) / GetDistance(LeftIntersect, RightIntersect);
+            }
+            
+            var h = Interpolation.Interpolate(start.h, end.h, distance);
+            var c = Interpolation.Interpolate(start.c, end.c, distance);
+            return (h, c);
+        }
+
+        private static (double h, double c) GetHueAndChroma(Segment segment, (double x, double y) intersect)
+        {
+            var distance = GetDistance(segment.Start.Point, intersect) / GetDistance(segment.Start.Point, segment.End.Point);
+            var h = Interpolation.Interpolate(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
+            var c = Interpolation.Interpolate(segment.Start.Chroma, segment.End.Chroma, distance);
+            return (h, c);
+        }
+    }
+    
+    private record Segment(Node Start, Node End, bool IsExtrapolation)
     {
         internal readonly Node Start = Start;
         internal readonly Node End = End;

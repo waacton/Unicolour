@@ -171,5 +171,6 @@ public class KnownMunsellTests
         var xyy = new Xyy(1.4, 0.4, Munsell.GetLuminance(6));
         var munsell = Munsell.FromXyy(xyy);
         var xyyRoundtrip = Munsell.ToXyy(munsell);
+        var munsellRoundtrip = Munsell.FromXyy(xyyRoundtrip);
     }
 }

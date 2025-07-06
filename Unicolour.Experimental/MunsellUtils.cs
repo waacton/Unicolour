@@ -59,28 +59,44 @@ internal static class MunsellUtils
 
     private static (double x, double y) GetXyForValueAndHue(double nodeV, double c, (double number, string letter) nodeH)
     {
-        // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
-        // var maxChroma = MaxChroma(nodeV, nodeH);
-        // var lowerNodeC = c > maxChroma ? NodeChromas.First() : NodeChromas.Last(nodeC => nodeC <= c);
-        // var upperNodeC = c > maxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
+        var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
         
-        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+        // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
+        var maxChroma = MaxChroma(nodeV, nodeH);
+        var useMaxChroma = c > maxChroma;
+        
+        var lowerNodeC = useMaxChroma ? 0 : NodeChromas.Last(nodeC => nodeC <= c);
+        var upperNodeC = useMaxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
+        
+        // var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+        // var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
         
         if (lowerNodeC == upperNodeC)
         {
             var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
             return exact.Point;
         }
-        
-        var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
-        var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
-        
-        // TODO: ensure works when null chroma
-        var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
-        var x = Interpolation.Interpolate(lower.X, upper.X, distance);
-        var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
-        return (x, y);
+
+        if (useMaxChroma)
+        {
+            var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
+
+            var distance = (c - lowerNodeC) / (upperNodeC - lowerNodeC);
+            var x = Interpolation.Interpolate(whitePointC.X, upper.X, distance);
+            var y = Interpolation.Interpolate(whitePointC.Y, upper.Y, distance);
+            return (x, y);
+        }
+        else
+        {
+            var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+            var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
+            
+            // TODO: ensure works when null chroma
+            var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
+            var x = Interpolation.Interpolate(lower.X, upper.X, distance);
+            var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
+            return (x, y);
+        }
     }
 
     private static double MaxChroma(double nodeV, (double number, string letter) nodeH)
@@ -105,7 +121,7 @@ internal static class MunsellUtils
         var (upperH, upperC) = GetHueAndChromaForValue(chromaticity.Xy, upperNodeV);
 
         var distance = v - lowerNodeV;
-        var h = Interpolation.Interpolate(lowerH, upperH, distance);
+        var h = Boundary.InterpolateHue(lowerH, upperH, distance);
         var c = Interpolation.Interpolate(lowerC, upperC, distance);
         return (h, c);
     }
@@ -141,10 +157,11 @@ internal static class MunsellUtils
 
         var closer = closerBoundary.GetHueAndChroma();
         var farther = fartherBoundary!.GetHueAndChroma();
+        
         var length = GetDistance(fartherBoundary.Point, closerBoundary.Point);
         var extrapolationLength = GetDistance(fartherBoundary.Point, targetPoint);
         var distance = extrapolationLength / length;
-        var h = Interpolation.Interpolate(farther.h, closer.h, distance);
+        var h = Boundary.InterpolateHue(farther.h, closer.h, distance);
         var c = Interpolation.Interpolate(farther.c, closer.c, distance);
         return (h, c);
     }
@@ -247,18 +264,24 @@ internal static class MunsellUtils
                 end = GetHueAndChroma(Right, RightIntersect); 
                 distance = GetDistance(LeftIntersect, Point) / GetDistance(LeftIntersect, RightIntersect);
             }
-            
-            var h = Interpolation.Interpolate(start.h, end.h, distance);
+
+            var h = InterpolateHue(start.h, end.h, distance);
             var c = Interpolation.Interpolate(start.c, end.c, distance);
             return (h, c);
         }
 
-        private static (double h, double c) GetHueAndChroma(Segment segment, (double x, double y) intersect)
+        internal static (double h, double c) GetHueAndChroma(Segment segment, (double x, double y) intersect)
         {
             var distance = GetDistance(segment.Start.Point, intersect) / GetDistance(segment.Start.Point, segment.End.Point);
-            var h = Interpolation.Interpolate(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
+            var h = InterpolateHue(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
             var c = Interpolation.Interpolate(segment.Start.Chroma, segment.End.Chroma, distance);
             return (h, c);
+        }
+
+        internal static double InterpolateHue(double start, double end, double distance)
+        {
+            var adjustedHues = Interpolation.AdjustHues(start, end, HueSpan.Shorter);
+            return Interpolation.Interpolate(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
         }
     }
     

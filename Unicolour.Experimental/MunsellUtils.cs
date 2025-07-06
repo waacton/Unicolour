@@ -15,6 +15,7 @@ internal static class MunsellUtils
     
     private static (double x, double y) GetXy(double v, double c, double h)
     {
+        // TODO: what if V is out of range? extrapolate? (see chroma)
         var lowerNodeV = NodeValues.Last(nodeV => nodeV <= v);
         var upperNodeV = NodeValues.First(nodeV => nodeV >= v);
 
@@ -35,26 +36,6 @@ internal static class MunsellUtils
     
     private static (double x, double y) GetXyForValue(double nodeV, double c, double h)
     {
-        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
-        
-        if (lowerNodeC == upperNodeC)
-        {
-            return GetXyForValueAndChroma(nodeV, lowerNodeC, h);
-        }
-        
-        var lower = GetXyForValueAndChroma(nodeV, lowerNodeC, h);
-        var upper = GetXyForValueAndChroma(nodeV, upperNodeC, h);
-        
-        // TODO: ensure works when null chroma
-        var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
-        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
-        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
-        return (x, y);
-    }
-
-    private static (double x, double y) GetXyForValueAndChroma(double nodeV, double nodeC, double h)
-    {
         var scaled = h / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
         var lowerH = Math.Floor(scaled) * DegreesPerHueNumber;
         var upperH = Math.Ceiling(scaled) * DegreesPerHueNumber;
@@ -64,17 +45,54 @@ internal static class MunsellUtils
         
         if (lowerNodeH == upperNodeH)
         {
-            var exact = Nodes.Value.Single(x => x.IsMatch(lowerNodeH.number, lowerNodeH.letter, nodeV, nodeC));
+            return GetXyForValueAndHue(nodeV, c, lowerNodeH);
+        }
+                
+        var lower = GetXyForValueAndHue(nodeV, c, lowerNodeH);
+        var upper = GetXyForValueAndHue(nodeV, c, upperNodeH);
+        
+        var distance = upperH - lowerH == 0 ? 0 : (h - lowerH) / (upperH - lowerH);
+        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
+        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
+        return (x, y);
+    }
+
+    private static (double x, double y) GetXyForValueAndHue(double nodeV, double c, (double number, string letter) nodeH)
+    {
+        // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
+        // var maxChroma = MaxChroma(nodeV, nodeH);
+        // var lowerNodeC = c > maxChroma ? NodeChromas.First() : NodeChromas.Last(nodeC => nodeC <= c);
+        // var upperNodeC = c > maxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
+        
+        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+        
+        if (lowerNodeC == upperNodeC)
+        {
+            var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
             return exact.Point;
         }
         
-        var lower = Nodes.Value.Single(x => x.IsMatch(lowerNodeH.number, lowerNodeH.letter, nodeV, nodeC));
-        var upper = Nodes.Value.Single(x => x.IsMatch(upperNodeH.number, upperNodeH.letter, nodeV, nodeC));
+        var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+        var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
         
-        var distance = upperH - lowerH == 0 ? 0 : (h - lowerH) / (upperH - lowerH);
+        // TODO: ensure works when null chroma
+        var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
         var x = Interpolation.Interpolate(lower.X, upper.X, distance);
         var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
         return (x, y);
+    }
+
+    private static double MaxChroma(double nodeV, (double number, string letter) nodeH)
+    {
+        for (var i = NodeChromas.Length - 1; i > 0; i--)
+        {
+            var nodeC = NodeChromas[i];
+            var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, nodeC));
+            if (result != null) return nodeC;
+        }
+
+        return 0;
     }
 
     internal static (double h, double c) GetHueAndChroma(Chromaticity chromaticity, double v)
@@ -95,15 +113,40 @@ internal static class MunsellUtils
     private static (double h, double c) GetHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
     {
         var boundary = GetBoundary(targetPoint, nodeV);
-        if (boundary == null)
+        if (boundary != null) return boundary.GetHueAndChroma();
+        
+        // TODO: is something like this worth keeping?
+        //       finds (x, y) between target and white point within dataset, so (h, c) can be obtained
+        //       and use those points and their (h, c) to extrapolate to the point outside the dataset
+        //       makes sense, but would need to allow extrapolation the other way too (Munsell -> XYY) which isn't obvious
+        //       (see `GetXyForValueAndHue()` where needing to find a max chroma for the hue, and similar will be needed for value
+        var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
+        
+        // line between target point and white point
+        var line = Line.FromPoints(targetPoint, whitePointC.Xy);
+
+        var (x, y) = targetPoint;
+        const double step = 0.01;
+        Boundary? closerBoundary = null;
+        while (closerBoundary == null)
         {
-            // TODO: handle null boundary, which means that target point is not within the dataset and requires extrapolation
-            //       likely: move (x,y) iteratively towards white, which is at the core of the dataset, until (x, y) has a boundary and calculate (h, c)
-            //               move (x, y) one more step towards white, calculate another (h, c), and extrapolate using these two data points
-            throw new NotImplementedException();
+            x -= step;
+            y = line.GetY(x);
+            closerBoundary = GetBoundary((x, y), nodeV);
         }
         
-        return boundary.GetHueAndChroma();
+        x -= step;
+        y = line.GetY(x);
+        Boundary? fartherBoundary = GetBoundary((x, y), nodeV);
+
+        var closer = closerBoundary.GetHueAndChroma();
+        var farther = fartherBoundary!.GetHueAndChroma();
+        var length = GetDistance(fartherBoundary.Point, closerBoundary.Point);
+        var extrapolationLength = GetDistance(fartherBoundary.Point, targetPoint);
+        var distance = extrapolationLength / length;
+        var h = Interpolation.Interpolate(farther.h, closer.h, distance);
+        var c = Interpolation.Interpolate(farther.c, closer.c, distance);
+        return (h, c);
     }
     
     private static Boundary? GetBoundary((double x, double y) targetPoint, double nodeV)

@@ -137,15 +137,11 @@ public class KnownMunsellTests
         Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
     }
     
-    // TODO: same as above test, but for 3 nodes, requiring extrapolation
-    //       4 tests, one for each missing direction?
-    
-    // TODO: same as above test, but for 2 nodes, requiring extrapolation
-    //       4 tests, one for each pair of missing directions? (e.g. negative infinity X, won't have upper-left or lower-left points)
+    // TODO: test data point that isn't bounded
     
     // TODO: test greyscale, once implemented
     
-    // TODO: test extreme values like
+    // TODO: test extreme values like NaN, infinity
     
     // TODO: get specific examples from ASTM to test against
     
@@ -167,5 +163,13 @@ public class KnownMunsellTests
         Assert.That(fromHorizontals.HueDegrees, Is.EqualTo(fromVerticals.HueDegrees).Within(0.5)); // 0 - 360
         Assert.That(fromHorizontals.Value, Is.EqualTo(fromVerticals.Value));
         Assert.That(fromHorizontals.Chroma, Is.EqualTo(fromVerticals.Chroma).Within(0.075)); // 0 - 10
+    }
+    
+    [Test]
+    public void NotBounded()
+    {
+        var xyy = new Xyy(1.4, 0.4, Munsell.GetLuminance(6));
+        var munsell = Munsell.FromXyy(xyy);
+        var xyyRoundtrip = Munsell.ToXyy(munsell);
     }
 }

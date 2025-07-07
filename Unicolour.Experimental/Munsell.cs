@@ -2,14 +2,12 @@
 
 namespace Wacton.Unicolour.Experimental;
 
-// TODO: double check luminance equations, not particularly accurate roundtrip
 // TODO: handle grey ("N" hue e.g. N 5/ ... or 0 chroma e.g. 10YR 5/0)
 // TODO: clamp hue between 0 - 10, clamp value to 10, handle extreme chroma values
 // TODO: handle boundary cases
 //       - input xy is beyond all x-values in the dataset (in either direction; need to extrapolate horizontals from 2x closest points in other direction)
 //       - input xy is beyond all y-values in the dataset (in either direction; need to extrapolate verticals from 2x closest points in other direction)
 //       - input xy is beyond all x- and y-values in the dataset (form 2 segments from the 4 points in the same direction (how to choose pairing?) and extrapolate)
-// TODO: construct using string (accounting for both standard and grey variants, allowing decimals)
 public partial record Munsell
 {
     public double HueDegrees { get; }
@@ -49,7 +47,7 @@ public partial record Munsell
     
     public static Munsell FromXyy(Xyy xyy)
     {
-        var v = GetValue(xyy.Luminance);
+        var v = GetValue(xyy.Luminance, iterationDepth: 3);
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
     }
@@ -60,15 +58,38 @@ public partial record Munsell
         return y / 100.0;
     }
 
-    internal static double GetValue(double y)
+    /*
+     * the maximum error of the core Y -> V function is 0.0035 (https://doi.org/10.1002/col.5080170308)
+     * which isn't bad but compounds during roundtrip conversions and causes algorithm of H and C to interpolate away from the actual V by a small amount
+     * however, this error provides a range of potential V from a given Y (e.g. if result V = 5, actual V is between 4.9965 to 5.0035)
+     * which can be interpolated using exact Y calculations for a more accurate result (error of 0.000005, obtained from testing)
+     * and this process can be repeated for this new max error for even greater accuracy
+     * though at a depth of 3 iterations the max error is 5e-15, and further iteration yields no improvement
+     */
+    internal static readonly double[] IterationDepthError = { 0.0035, 0.000005, 0.00000000005, 0.000000000000005 };
+    internal static double GetValue(double y, int iterationDepth)
     {
-        y *= 100;
-        return y <= 0.9
-            ? 0.87445 * Math.Pow(y, 0.9967)
-            : 2.49268 * Math.Pow(y, 1 / 3.0) - 1.5614 - 0.985 / (Math.Pow(0.1073 * y - 3.084, 2) + 7.54)
-              + 0.0133 / Math.Pow(y, 2.3) + 0.0084 * Math.Sin(4.1 * Math.Pow(y, 1 / 3.0) + 1)
-              + 0.0221 / y * Math.Sin(0.39 * (y - 2))
-              - 0.0037 / (0.44 * y) * Math.Sin(1.28 * (y - 0.53));
+        if (iterationDepth == 0)
+        {
+            y *= 100;
+            return y <= 0.9
+                ? 0.87445 * Math.Pow(y, 0.9967)
+                : 2.49268 * Math.Pow(y, 1 / 3.0) - 1.5614 - 0.985 / (Math.Pow(0.1073 * y - 3.084, 2) + 7.54)
+                  + 0.0133 / Math.Pow(y, 2.3) + 0.0084 * Math.Sin(4.1 * Math.Pow(y, 1 / 3.0) + 1)
+                  + 0.0221 / y * Math.Sin(0.39 * (y - 2))
+                  - 0.0037 / (0.44 * y) * Math.Sin(1.28 * (y - 0.53));
+        }
+
+        iterationDepth--;
+        var vEstimate = GetValue(y, iterationDepth);
+        var error = IterationDepthError[iterationDepth];
+        var vLower = vEstimate - error;
+        var vUpper = vEstimate + error;
+        
+        var yLower = GetLuminance(vLower);
+        var yUpper = GetLuminance(vUpper);
+        var distance = (y - yLower) / (yUpper - yLower);
+        return Interpolation.Interpolate(vLower, vUpper, distance);
     }
     
     public override string ToString() => $"{Hue.number:0.##}{Hue.letter} {Value:0.##}/{Chroma:0.##}";

@@ -79,9 +79,54 @@ public class KnownMunsellTests
         Assert.That(actualMgo.Luminance, Is.GreaterThan(expected.Luminance));
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
     }
+    
+    // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
+    private static readonly TestCaseData[] LuminanceTestData =
+    [
+        new(0, 0),
+        new(0.2, 0.2311024478048),
+        new(0.4, 0.4549364801536),
+        new(0.6, 0.6815705093664),
+        new(0.8, 0.9203492913152),
+        new(1, 1.17992539),
+        new(2, 3.04811648),
+        new(3, 6.39117777),
+        new(4, 11.70075136),
+        new(5, 19.27184375),
+        new(6, 29.30115264),
+        new(7, 41.98539373),
+        new(8, 57.61962752),
+        new(9, 76.69558611),
+        new(10, 100),
+        new(0.5, 0.5673028559375) // doesn't appear in the dataset but is reasonable
+    ];
+    
+    [TestCaseSource(nameof(LuminanceTestData))]
+    public void ValueToLuminance(double value, double expectedLuminance)
+    {
+        var y = Munsell.GetLuminance(value);
+        Assert.That(y, Is.EqualTo(expectedLuminance / 100.0).Within(5e-16));
+    }
+
+    [TestCaseSource(nameof(LuminanceTestData))]
+    public void LuminanceToValue(double expectedValue, double luminance)
+    {
+        var y = luminance / 100.0;
+        var values = Enumerable.Range(0, 4).Select(i => Munsell.GetValue(y, iterationDepth: i)).ToList();
+        
+        Assert.That(values[0], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[0]));
+        Assert.That(values[1], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[1]));
+        Assert.That(values[2], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[2]));
+        Assert.That(values[3], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[3]));
+        
+        Assert.That(Munsell.IterationDepthError[0], Is.EqualTo(0.0035));
+        Assert.That(Munsell.IterationDepthError[1], Is.EqualTo(0.000005));
+        Assert.That(Munsell.IterationDepthError[2], Is.EqualTo(0.00000000005));
+        Assert.That(Munsell.IterationDepthError[3], Is.EqualTo(0.000000000000005));
+    }
 
     [Test]
-    public void BetweenFourNodes()
+    public void InsideDataset()
     {
         /*
          * closest known xy coordinates that form a boundary around (0.4, 0.4) at 6V are:
@@ -146,7 +191,7 @@ public class KnownMunsellTests
     // TODO: get specific examples from ASTM to test against
     
     [Test]
-    public void InterpolateBothAxes()
+    public void InsideDatasetBothAxes()
     {
         /*
          * both of these points reside in the lower-right corner of the boundary formed by
@@ -168,7 +213,7 @@ public class KnownMunsellTests
     [Test]
     public void NotBounded()
     {
-        var xyy = new Xyy(1.4, 0.4, Munsell.GetLuminance(6));
+        var xyy = new Xyy(0.4, 0.4, 0.4);
         var munsell = Munsell.FromXyy(xyy);
         var xyyRoundtrip = Munsell.ToXyy(munsell);
         var munsellRoundtrip = Munsell.FromXyy(xyyRoundtrip);

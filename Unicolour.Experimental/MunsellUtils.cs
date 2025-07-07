@@ -63,7 +63,13 @@ internal static class MunsellUtils
         
         // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
         var maxChroma = MaxChroma(nodeV, nodeH);
+        if (maxChroma == 0)
+        {
+            throw new InvalidOperationException($"No max chroma for {nodeH.number}/{nodeH.letter} {nodeV}; this shouldn't be possible");
+        }
+        
         var useMaxChroma = c > maxChroma;
+        // useMaxChroma = false;
         
         var lowerNodeC = useMaxChroma ? NodeChromas.Last(nodeC => nodeC < maxChroma) : NodeChromas.Last(nodeC => nodeC <= c);
         var upperNodeC = useMaxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
@@ -102,13 +108,14 @@ internal static class MunsellUtils
 
     private static double MaxChroma(double nodeV, (double number, string letter) nodeH)
     {
-        for (var i = NodeChromas.Length - 1; i > 0; i--)
+        for (var i = NodeChromas.Length - 1; i >= 0; i--)
         {
             var nodeC = NodeChromas[i];
             var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, nodeC));
             if (result != null) return nodeC;
         }
 
+        // TODO: what does it mean if we've ended up here?!
         return 0;
     }
 
@@ -143,16 +150,16 @@ internal static class MunsellUtils
         var line = Line.FromPoints(targetPoint, whitePointC.Xy);
 
         var (x, y) = targetPoint;
-        const double step = 0.01;
+        var step = x > whitePointC.X ? -0.01 : 0.01;
         Boundary? closerBoundary = null;
         while (closerBoundary == null)
         {
-            x -= step;
+            x += step;
             y = line.GetY(x);
             closerBoundary = GetBoundary((x, y), nodeV);
         }
         
-        x -= step;
+        x += step;
         y = line.GetY(x);
         Boundary? fartherBoundary = GetBoundary((x, y), nodeV);
 

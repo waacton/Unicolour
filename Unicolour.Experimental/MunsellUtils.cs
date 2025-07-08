@@ -59,8 +59,6 @@ internal static class MunsellUtils
 
     private static (double x, double y) GetXyForValueAndHue(double nodeV, double c, (double number, string letter) nodeH)
     {
-        var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-        
         // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
         var maxChroma = MaxChroma(nodeV, nodeH);
         if (maxChroma == 0)
@@ -69,25 +67,25 @@ internal static class MunsellUtils
         }
         
         var useMaxChroma = c > maxChroma;
-        // useMaxChroma = false;
-        
-        var lowerNodeC = useMaxChroma ? NodeChromas.Last(nodeC => nodeC < maxChroma) : NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = useMaxChroma ? maxChroma : NodeChromas.First(nodeC => nodeC >= c);
-        
-        // var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-        // var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
-        
-        if (lowerNodeC == upperNodeC)
-        {
-            var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
-            return exact.Point;
-        }
-
         if (useMaxChroma)
         {
-            var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
-            var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
+            var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
 
+            // var lowerNodeC = NodeChromas.Last(nodeC => nodeC < maxChroma);
+            var lowerNodeC = NodeChromas.First();
+            var upperNodeC = maxChroma;
+            
+            if (lowerNodeC == upperNodeC)
+            {
+                var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+                return exact.Point;
+            }
+            
+            var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+            // (double X, double Y) lower = whitePointC.Xy;
+            // lowerNodeC = 0; // no chroma at whitepoint
+
+            var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
             var distance = (c - lowerNodeC) / (upperNodeC - lowerNodeC);
             var x = Interpolation.Interpolate(lower.X, upper.X, distance);
             var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
@@ -95,6 +93,15 @@ internal static class MunsellUtils
         }
         else
         {
+            var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+            var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+            
+            if (lowerNodeC == upperNodeC)
+            {
+                var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+                return exact.Point;
+            }
+            
             var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
             var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
             
@@ -106,7 +113,7 @@ internal static class MunsellUtils
         }
     }
 
-    private static double MaxChroma(double nodeV, (double number, string letter) nodeH)
+    private static int MaxChroma(double nodeV, (double number, string letter) nodeH)
     {
         for (var i = NodeChromas.Length - 1; i >= 0; i--)
         {
@@ -144,27 +151,21 @@ internal static class MunsellUtils
         //       and use those points and their (h, c) to extrapolate to the point outside the dataset
         //       makes sense, but would need to allow extrapolation the other way too (Munsell -> XYY) which isn't obvious
         //       (see `GetXyForValueAndHue()` where needing to find a max chroma for the hue, and similar will be needed for value
-        var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
         
-        // line between target point and white point
-        var line = Line.FromPoints(targetPoint, whitePointC.Xy);
-
-        var (x, y) = targetPoint;
-        var step = x > whitePointC.X ? -0.01 : 0.01;
+        var currentPoint = targetPoint;
         Boundary? closerBoundary = null;
         while (closerBoundary == null)
         {
-            x += step;
-            y = line.GetY(x);
-            closerBoundary = GetBoundary((x, y), nodeV);
+            currentPoint = MoveTowardsWhite(currentPoint);
+            closerBoundary = GetBoundary(currentPoint, nodeV);
         }
         
-        x += step;
-        y = line.GetY(x);
-        Boundary? fartherBoundary = GetBoundary((x, y), nodeV);
+        // TODO: is it at all possible for this point, one step from first point found within dataset, to somehow be outside the dataset?
+        currentPoint = MoveTowardsWhite(currentPoint);
+        Boundary fartherBoundary = GetBoundary(currentPoint, nodeV)!;
 
         var closer = closerBoundary.GetHueAndChroma();
-        var farther = fartherBoundary!.GetHueAndChroma();
+        var farther = fartherBoundary.GetHueAndChroma();
         
         var length = GetDistance(fartherBoundary.Point, closerBoundary.Point);
         var extrapolationLength = GetDistance(fartherBoundary.Point, targetPoint);
@@ -172,6 +173,20 @@ internal static class MunsellUtils
         var h = Boundary.InterpolateHue(farther.h, closer.h, distance);
         var c = Interpolation.Interpolate(farther.c, closer.c, distance);
         return (h, c);
+    }
+
+    private static (double x, double y) MoveTowardsWhite((double x, double y) start)
+    {
+        const double step = 0.1;
+        var white = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
+        var d = GetDistance(start, white.Xy);
+        var xa = start.x;
+        var xb = white.X;
+        var xc = xa - step * ((xa - xb) / d);
+        
+        var line = Line.FromPoints(start, white.Xy);
+        var y = line.GetY(xc);
+        return (xc, y);
     }
     
     private static Boundary? GetBoundary((double x, double y) targetPoint, double nodeV)

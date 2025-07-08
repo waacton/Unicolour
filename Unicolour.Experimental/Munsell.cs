@@ -14,6 +14,9 @@ public partial record Munsell
     public (double number, string letter) Hue { get; }
     public double Value { get; }
     public double Chroma { get; }
+    
+    // TODO: remove when Munsell becomes a subclass of ColourRepresentation
+    public ColourTriplet Triplet => new(HueDegrees, Value, Chroma, 0);
 
     public Munsell(double hueNumber, string hueLetter, double value, double chroma) : this(ToDegrees(hueNumber, hueLetter), value, chroma) { }
     public Munsell(double hueDegrees, double value, double chroma)

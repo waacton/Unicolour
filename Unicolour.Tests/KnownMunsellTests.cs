@@ -11,6 +11,39 @@ public class KnownMunsellTests
     private static MunsellTestData[] XyyData = Experimental.Munsell.Nodes.Value.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
     
+    // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
+    private static readonly TestCaseData[] LuminanceTestData =
+    [
+        new(0, 0),
+        new(0.2, 0.2311024478048),
+        new(0.4, 0.4549364801536),
+        new(0.6, 0.6815705093664),
+        new(0.8, 0.9203492913152),
+        new(1, 1.17992539),
+        new(2, 3.04811648),
+        new(3, 6.39117777),
+        new(4, 11.70075136),
+        new(5, 19.27184375),
+        new(6, 29.30115264),
+        new(7, 41.98539373),
+        new(8, 57.61962752),
+        new(9, 76.69558611),
+        new(10, 100),
+        new(0.5, 0.5673028559375) // doesn't appear in the dataset but is reasonable
+    ];
+
+    private static TestCaseData[] RandomLuminanceTestData = new TestCaseData[1000];
+
+    static KnownMunsellTests()
+    {
+        for (var i = 0; i < RandomLuminanceTestData.Length; i++)
+        {
+            var v = TestUtils.RandomDouble(0, 10);
+            var y = Munsell.GetLuminance(v);
+            RandomLuminanceTestData[i] = new TestCaseData(v, y);
+        }
+    }
+    
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
     // CIE Y for illuminant C is ~0.975x MgO Y
     private const double MgoScale = 0.975;
@@ -80,27 +113,6 @@ public class KnownMunsellTests
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
     }
     
-    // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
-    private static readonly TestCaseData[] LuminanceTestData =
-    [
-        new(0, 0),
-        new(0.2, 0.2311024478048),
-        new(0.4, 0.4549364801536),
-        new(0.6, 0.6815705093664),
-        new(0.8, 0.9203492913152),
-        new(1, 1.17992539),
-        new(2, 3.04811648),
-        new(3, 6.39117777),
-        new(4, 11.70075136),
-        new(5, 19.27184375),
-        new(6, 29.30115264),
-        new(7, 41.98539373),
-        new(8, 57.61962752),
-        new(9, 76.69558611),
-        new(10, 100),
-        new(0.5, 0.5673028559375) // doesn't appear in the dataset but is reasonable
-    ];
-    
     [TestCaseSource(nameof(LuminanceTestData))]
     public void ValueToLuminance(double value, double expectedLuminance)
     {
@@ -123,6 +135,14 @@ public class KnownMunsellTests
         Assert.That(Munsell.IterationDepthError[1], Is.EqualTo(0.000005));
         Assert.That(Munsell.IterationDepthError[2], Is.EqualTo(0.00000000005));
         Assert.That(Munsell.IterationDepthError[3], Is.EqualTo(0.000000000000005));
+    }
+    
+    // TODO: move to roundtrip tests when available
+    [TestCaseSource(nameof(RandomLuminanceTestData))]
+    public void LuminanceToValueRandom(double expectedValue, double luminance)
+    {
+        var v = Munsell.GetValue(luminance, iterationDepth: 3);
+        Assert.That(v, Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[3]));
     }
 
     [Test]

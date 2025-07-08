@@ -6,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class RoundtripMunsellTests
 {
-    private const double Tolerance = 0.1; // 0.0000000005;
+    private const double Tolerance = 0.1; // 0.0000000005; TODO:
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.MunsellTriplets))]

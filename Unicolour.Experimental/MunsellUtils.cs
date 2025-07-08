@@ -161,6 +161,8 @@ internal static class MunsellUtils
         }
         
         // TODO: is it at all possible for this point, one step from first point found within dataset, to somehow be outside the dataset?
+        // TODO: apparently yes with XYY(0.44085535496654615, 0.39631413842136687, 0.7940058511128927)
+
         currentPoint = MoveTowardsWhite(currentPoint);
         Boundary fartherBoundary = GetBoundary(currentPoint, nodeV)!;
 
@@ -177,13 +179,9 @@ internal static class MunsellUtils
 
     private static (double x, double y) MoveTowardsWhite((double x, double y) start)
     {
-        const double step = 0.1;
+        const double step = 0.01;
         var white = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-        var d = GetDistance(start, white.Xy);
-        var xa = start.x;
-        var xb = white.X;
-        var xc = xa - step * ((xa - xb) / d);
-        
+        var xc = start.x - step * ((start.x - white.X) / GetDistance(start, white.Xy));
         var line = Line.FromPoints(start, white.Xy);
         var y = line.GetY(xc);
         return (xc, y);

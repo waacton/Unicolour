@@ -145,6 +145,7 @@ public class KnownMunsellTests
         Assert.That(v, Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[3]));
     }
 
+    // TODO: rework with correct bounding points
     [Test]
     public void InsideDataset()
     {
@@ -237,5 +238,14 @@ public class KnownMunsellTests
         var munsell = Munsell.FromXyy(xyy);
         var xyyRoundtrip = Munsell.ToXyy(munsell);
         var munsellRoundtrip = Munsell.FromXyy(xyyRoundtrip);
+    }
+
+    [Test]
+    public void Test()
+    {
+        var xyy = new Xyy(0.24, 0.41, Munsell.GetLuminance(5));
+        var munsell = Munsell.FromXyy(xyy);
+        var xyyRoundtrip = Munsell.ToXyy(munsell);
+        Console.WriteLine($"{xyy} --> {munsell} --> {xyyRoundtrip}");
     }
 }

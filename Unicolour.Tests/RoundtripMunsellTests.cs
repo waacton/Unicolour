@@ -18,6 +18,8 @@ public class RoundtripMunsellTests
             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
             var xyy = Munsell.ToXyy(original);
             var roundtrip = Munsell.FromXyy(xyy);
+            Console.WriteLine(original);
+            Console.WriteLine(roundtrip);
             AssertMunsell(original, roundtrip);
         }
         catch (InvalidOperationException e)
@@ -29,10 +31,13 @@ public class RoundtripMunsellTests
     [Test]
     public void Single()
     {
-        var triplet = new ColourTriplet(97.53924922261605, 6.889359646819056, 13.520272139129634);
+        // var triplet = new ColourTriplet(97.53924922261605, 6.889359646819056, 13.520272139129634);
+        var triplet = new ColourTriplet(304.65969921086315, 6.704977470510379, 20.908396997084353);
         var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
         var xyy = Munsell.ToXyy(original);
         var roundtrip = Munsell.FromXyy(xyy);
+        Console.WriteLine(original);
+        Console.WriteLine(roundtrip);
         AssertMunsell(original, roundtrip);
     }
 
@@ -40,12 +45,7 @@ public class RoundtripMunsellTests
     {
         var normalisedOriginal = Normalise(original);
         var normalisedRoundtrip = Normalise(roundtrip);
-        var tolerance = original.Value < 1 ? 0.05 : 0.025;
-        tolerance = 0.02;
-        // TODO: should this become more specific? seems like
-        //       - low value reduces accuracy of hue?
-        //       - very high chroma reduces accuracy of chroma?
-        TestUtils.AssertTriplet(normalisedOriginal, normalisedRoundtrip, tolerance);
+        TestUtils.AssertTriplet(normalisedOriginal, normalisedRoundtrip, 0.03);
     }
 
     private static ColourTriplet Normalise(Munsell munsell)

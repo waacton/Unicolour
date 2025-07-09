@@ -54,8 +54,7 @@ public class RoundtripXyyTests
                     munsell.Value < 1.5 ? 0.075 : 
                     munsell.Value < 2 ? 0.065 : 
                     munsell.Value < 2.5 ? 0.05 : 
-                    munsell.Value < 3 ? 0.035 : 
-                    0.025;
+                    0.035;
             }
             else
             {

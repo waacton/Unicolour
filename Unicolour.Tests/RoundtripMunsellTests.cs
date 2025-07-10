@@ -10,6 +10,8 @@ public class RoundtripMunsellTests
     private const double Tolerance = 0.0000000005;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     
+    private static readonly Configuration ConfigC = new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2));
+    
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.MunsellTriplets))]
     public void ViaXyy(ColourTriplet triplet)
     {
@@ -18,6 +20,7 @@ public class RoundtripMunsellTests
             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
             var xyy = Munsell.ToXyy(original);
             var roundtrip = Munsell.FromXyy(xyy);
+
             Console.WriteLine(original);
             Console.WriteLine(roundtrip);
             AssertMunsell(original, roundtrip);

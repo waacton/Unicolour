@@ -70,6 +70,7 @@ internal static class MunsellUtils
         var useMaxChroma = c > maxChroma;
         if (useMaxChroma)
         {
+            throw new InvalidOperationException($"Beyond max chroma for {nodeH.number}/{nodeH.letter} {nodeV} (max {maxChroma}, actual {c}) - will require higher tolerance in test");
             var whitePointC = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
 
             // var lowerNodeC = NodeChromas.Last(nodeC => nodeC < maxChroma);
@@ -127,6 +128,16 @@ internal static class MunsellUtils
         return 0;
     }
 
+    internal static Boundary[] GetBoundaries(Chromaticity chromaticity, double v)
+    {
+        var lowerNodeV = NodeValues.Last(item => item <= v);
+        var upperNodeV = NodeValues.First(item => item >= v);
+        
+        var lowerBoundary = GetBoundary(chromaticity.Xy, lowerNodeV);
+        var upperBoundary = GetBoundary(chromaticity.Xy, upperNodeV);
+        return new[] { lowerBoundary, upperBoundary };
+    }
+
     internal static (double h, double c) GetHueAndChroma(Chromaticity chromaticity, double v)
     {
         // TODO: handle out of range, interpolate from closest two Vs
@@ -147,7 +158,7 @@ internal static class MunsellUtils
         var boundary = GetBoundary(targetPoint, nodeV);
         if (boundary != null)
         {
-            return boundary.EstimateHueAndChroma();
+            return boundary.HueAndChroma;
         }
         
         // TODO: is something like this worth keeping?
@@ -170,8 +181,8 @@ internal static class MunsellUtils
         currentPoint = MoveTowardsWhite(currentPoint);
         Boundary fartherBoundary = GetBoundary(currentPoint, nodeV)!;
 
-        var closer = closerBoundary.EstimateHueAndChroma();
-        var farther = fartherBoundary.EstimateHueAndChroma();
+        var closer = closerBoundary.HueAndChroma;
+        var farther = fartherBoundary.HueAndChroma;
         
         var length = GetDistance(fartherBoundary.Point, closerBoundary.Point);
         var extrapolationLength = GetDistance(fartherBoundary.Point, targetPoint);
@@ -268,7 +279,7 @@ internal static class MunsellUtils
         return new Boundary(targetPoint, boundingQuad[0], boundingQuad[1], boundingQuad[2], boundingQuad[3]);
     }
 
-    private record Triangle((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3)
+    internal record Triangle((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3)
     {
         internal (double x, double y) Point1 { get; } = Point1;
         internal (double x, double y) Point2 { get; } = Point2;
@@ -276,7 +287,7 @@ internal static class MunsellUtils
         internal readonly double Area = 0.5 * Math.Abs(Point1.x * (Point2.y - Point3.y) + Point2.x * (Point3.y - Point1.y) + Point3.x * (Point1.y - Point2.y));
     }
     
-    private record Quadrilateral((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3, (double x, double y) Point4)
+    internal record Quadrilateral((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3, (double x, double y) Point4)
     {
         internal (double x, double y) Point1 { get; } = Point1;
         internal (double x, double y) Point2 { get; } = Point2;
@@ -310,6 +321,8 @@ internal static class MunsellUtils
             var areaDifference = Area - triangles.Sum(x => x.Area);
             return areaDifference.IsEffectivelyZero();
         }
+
+        public override string ToString() => $"{Point1} --> {Point2} --> {Point3} --> {Point4} ({Area})";
     }
     
     internal static double ToDegrees(double hueNumber, string hueLetter)
@@ -336,14 +349,14 @@ internal static class MunsellUtils
         return (hueNumber, hueLetter);
     }
     
-    private static double GetDistance((double x, double y) point1, (double x, double y) point2)
+    internal static double GetDistance((double x, double y) point1, (double x, double y) point2)
     {
         return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
     }
     
     // TODO: these corners are no longer specific to those directions
     //       should probably take the quadrilateral instead
-    private record Boundary((double x, double y) Point, Node NodeA, Node NodeB, Node NodeC, Node NodeD) 
+    internal record Boundary((double x, double y) Point, Node NodeA, Node NodeB, Node NodeC, Node NodeD) 
     {
         internal (double x, double y) Point { get; } = Point;
         internal Node NodeA { get; } = NodeA;
@@ -351,15 +364,35 @@ internal static class MunsellUtils
         internal Node NodeC { get; } = NodeC;
         internal Node NodeD { get; } = NodeD;
 
+        internal readonly Quadrilateral Quadrilateral = new(NodeA.Point, NodeB.Point, NodeC.Point, NodeD.Point);
+        internal double Area => Quadrilateral.Area;
+
         private Segment SegmentAB { get; } = new(NodeA, NodeB, IsExtrapolation: false);
         private Segment SegmentBC { get; } = new(NodeB, NodeC, IsExtrapolation: false);
         private Segment SegmentCD { get; } = new(NodeC, NodeD, IsExtrapolation: false);
         private Segment SegmentDA { get; } = new(NodeD, NodeA, IsExtrapolation: false);
-        
-        private readonly Line Horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
-        private readonly Line Vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
 
-        internal (double h, double c) EstimateHueAndChroma()
+        internal (double h, double c) HueAndChroma => EstimateHueAndChroma();
+
+        internal double GetMinDistanceToBoundary()
+        {
+            var horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
+            var vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
+            
+            var horizontalIntersectAB = SegmentAB.Line.GetIntersect(horizontal);
+            var verticalIntersectAB = SegmentAB.Line.GetIntersect(vertical);
+            var horizontalIntersectDA = SegmentDA.Line.GetIntersect(horizontal);
+            var verticalIntersectDA = SegmentDA.Line.GetIntersect(vertical);
+
+            var horizontalIntersectABToA = GetDistance(horizontalIntersectAB, Point);
+            var verticalIntersectABToA = GetDistance(verticalIntersectAB, Point);
+            var horizontalIntersectDAToA = GetDistance(horizontalIntersectDA, Point);
+            var verticalIntersectDAToA = GetDistance(verticalIntersectDA, Point);
+            var min = new [] { horizontalIntersectABToA, verticalIntersectABToA, horizontalIntersectDAToA, verticalIntersectDAToA }.Min();
+            return min;
+        }
+
+        private (double h, double c) EstimateHueAndChroma()
         {
             (double h, double c) start;
             (double h, double c) end;
@@ -371,10 +404,14 @@ internal static class MunsellUtils
             
             // closest point is A
             // find a line through target that intersects closest to point A
-            var horizontalIntersectAB = SegmentAB.Line.GetIntersect(Horizontal);
-            var verticalIntersectAB = SegmentAB.Line.GetIntersect(Vertical);
-            var horizontalIntersectDA = SegmentDA.Line.GetIntersect(Horizontal);
-            var verticalIntersectDA = SegmentDA.Line.GetIntersect(Vertical);
+            
+            var horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
+            var vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
+            
+            var horizontalIntersectAB = SegmentAB.Line.GetIntersect(horizontal);
+            var verticalIntersectAB = SegmentAB.Line.GetIntersect(vertical);
+            var horizontalIntersectDA = SegmentDA.Line.GetIntersect(horizontal);
+            var verticalIntersectDA = SegmentDA.Line.GetIntersect(vertical);
 
             var horizontalIntersectABToA = GetDistance(horizontalIntersectAB, Point);
             var verticalIntersectABToA = GetDistance(verticalIntersectAB, Point);
@@ -390,25 +427,25 @@ internal static class MunsellUtils
             {
                 nearSegment = SegmentAB;
                 farSegment = SegmentCD;
-                throughLine = Horizontal;
+                throughLine = horizontal;
             }
             else if (min == verticalIntersectABToA)
             {
                 nearSegment = SegmentAB;
                 farSegment = SegmentCD;
-                throughLine = Vertical;
+                throughLine = vertical;
             }
             else if (min == horizontalIntersectDAToA)
             {
                 nearSegment = SegmentDA;
                 farSegment = SegmentBC;
-                throughLine = Horizontal;
+                throughLine = horizontal;
             }
             else if (min == verticalIntersectDAToA)
             {
                 nearSegment = SegmentDA;
                 farSegment = SegmentBC;
-                throughLine = Vertical;
+                throughLine = vertical;
             }
             else
             {
@@ -438,9 +475,11 @@ internal static class MunsellUtils
             var adjustedHues = Interpolation.AdjustHues(start, end, HueSpan.Shorter);
             return Interpolation.Interpolate(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
         }
+
+        public override string ToString() => Quadrilateral.ToString();
     }
     
-    private record Segment(Node Start, Node End, bool IsExtrapolation)
+    internal record Segment(Node Start, Node End, bool IsExtrapolation)
     {
         internal readonly Node Start = Start;
         internal readonly Node End = End;

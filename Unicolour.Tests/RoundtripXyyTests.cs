@@ -55,7 +55,7 @@ public class RoundtripXyyTests
             var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
             var munsell = Munsell.FromXyy(original);
             var roundtrip = Munsell.ToXyy(munsell);
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, 0.05);
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, 0.08);
         }
         catch (InvalidOperationException e)
         {

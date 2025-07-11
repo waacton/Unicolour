@@ -143,6 +143,11 @@ internal static class MunsellUtils
         // TODO: handle out of range, interpolate from closest two Vs
         var lowerNodeV = NodeValues.Last(item => item <= v);
         var upperNodeV = NodeValues.First(item => item >= v);
+
+        if (lowerNodeV == upperNodeV)
+        {
+            return EstimateHueAndChromaForValue(chromaticity.Xy, lowerNodeV);
+        }
         
         var (lowerH, lowerC) = EstimateHueAndChromaForValue(chromaticity.Xy, lowerNodeV);
         var (upperH, upperC) = EstimateHueAndChromaForValue(chromaticity.Xy, upperNodeV);
@@ -454,10 +459,11 @@ internal static class MunsellUtils
             
             var nearIntersect = nearSegment.Line.GetIntersect(throughLine);
             var farIntersect = farSegment.Line.GetIntersect(throughLine);
-            start = EstimateHueAndChroma(nearSegment, nearIntersect); 
+            start = EstimateHueAndChroma(nearSegment, nearIntersect);
             end = EstimateHueAndChroma(farSegment, farIntersect); 
             distance = GetDistance(nearIntersect, Point) / GetDistance(nearIntersect, farIntersect);
             var h = InterpolateHue(start.h, end.h, distance);
+            var deg = FromDegrees(h);
             var c = Interpolation.Interpolate(start.c, end.c, distance);
             return (h, c);
         }
@@ -466,6 +472,7 @@ internal static class MunsellUtils
         {
             var distance = GetDistance(segment.Start.Point, intersect) / GetDistance(segment.Start.Point, segment.End.Point);
             var h = InterpolateHue(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
+            var deg = FromDegrees(h);
             var c = Interpolation.Interpolate(segment.Start.Chroma, segment.End.Chroma, distance);
             return (h, c);
         }

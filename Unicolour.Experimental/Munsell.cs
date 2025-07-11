@@ -50,7 +50,7 @@ public partial record Munsell
     
     public static Munsell FromXyy(Xyy xyy)
     {
-        var v = GetValue(xyy.Luminance, iterationDepth: 3);
+        var v = GetValue(xyy.Luminance);
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
     }
@@ -70,7 +70,7 @@ public partial record Munsell
      * though at a depth of 3 iterations the max error is 5e-15, and further iteration yields no improvement
      */
     internal static readonly double[] IterationDepthError = { 0.0035, 0.000005, 0.00000000005, 0.000000000000005 };
-    internal static double GetValue(double y, int iterationDepth)
+    internal static double GetValue(double y, int iterationDepth = 3)
     {
         if (iterationDepth == 0)
         {

@@ -2,7 +2,7 @@
 
 public record Ipt : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double I => First;
     public double P => Second;
     public double T => Third;

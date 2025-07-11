@@ -2,7 +2,7 @@ namespace Wacton.Unicolour;
 
 public record Tsl : ColourRepresentation
 {
-    protected override int? HueIndex => 0; 
+    protected internal override int? HueIndex => 0; 
     public double T => First;
     public double S => Second;
     public double L => Third;

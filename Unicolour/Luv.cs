@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Luv : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double L => First;
     public double U => Second;
     public double V => Third;

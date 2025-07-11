@@ -2,7 +2,7 @@
 
 public record Okhwb : ColourRepresentation
 {
-    protected override int? HueIndex => 0;
+    protected internal override int? HueIndex => 0;
     public double H => First;
     public double W => Second;
     public double B => Third;

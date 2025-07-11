@@ -2,7 +2,7 @@
 
 public record Xyy : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public Chromaticity Chromaticity => new(First, Second);
     public double Luminance => Third;
     public Chromaticity ConstrainedChromaticity => new(ConstrainedFirst, ConstrainedSecond);

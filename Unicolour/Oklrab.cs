@@ -2,7 +2,7 @@
 
 public record Oklrab : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double L => First;
     public double A => Second;
     public double B => Third;

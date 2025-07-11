@@ -2,7 +2,7 @@
 
 public record Rgb : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double R => First;
     public double G => Second;
     public double B => Third;

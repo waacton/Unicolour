@@ -239,13 +239,4 @@ public class KnownMunsellTests
         var xyyRoundtrip = Munsell.ToXyy(munsell);
         var munsellRoundtrip = Munsell.FromXyy(xyyRoundtrip);
     }
-
-    [Test]
-    public void Test()
-    {
-        var xyy = new Xyy(0.24, 0.41, Munsell.GetLuminance(5));
-        var munsell = Munsell.FromXyy(xyy);
-        var xyyRoundtrip = Munsell.ToXyy(munsell);
-        Console.WriteLine($"{xyy} --> {munsell} --> {xyyRoundtrip}");
-    }
 }

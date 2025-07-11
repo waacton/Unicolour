@@ -2,7 +2,7 @@
 
 public record Ycgco : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double Cg => Second;
     public double Co => Third;

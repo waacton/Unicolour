@@ -5,7 +5,7 @@ namespace Wacton.Unicolour;
 
 public record Cam16 : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double J => First;
     public double A => Second;
     public double B => Third;

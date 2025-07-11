@@ -55,7 +55,8 @@ public class SpectralCoefficients
             var upperWavelength = Wavelengths.First(x => x > wavelength);
             var lower = Coefficients[GetIndex(lowerWavelength)];
             var upper = Coefficients[GetIndex(upperWavelength)];
-            return Interpolation.ToTarget(lower, upper, wavelength);
+            var distance = (wavelength - lowerWavelength) / (double)(upperWavelength - lowerWavelength);
+            return Interpolation.Interpolate(lower, upper, distance);
         }
     }
     

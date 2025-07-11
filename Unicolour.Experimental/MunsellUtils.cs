@@ -372,10 +372,10 @@ internal static class MunsellUtils
         internal readonly Quadrilateral Quadrilateral = new(NodeA.Point, NodeB.Point, NodeC.Point, NodeD.Point);
         internal double Area => Quadrilateral.Area;
 
-        private Segment SegmentAB { get; } = new(NodeA, NodeB, IsExtrapolation: false);
-        private Segment SegmentBC { get; } = new(NodeB, NodeC, IsExtrapolation: false);
-        private Segment SegmentCD { get; } = new(NodeC, NodeD, IsExtrapolation: false);
-        private Segment SegmentDA { get; } = new(NodeD, NodeA, IsExtrapolation: false);
+        private Segment SegmentAB { get; } = new(NodeA, NodeB);
+        private Segment SegmentBC { get; } = new(NodeB, NodeC);
+        private Segment SegmentCD { get; } = new(NodeC, NodeD);
+        private Segment SegmentDA { get; } = new(NodeD, NodeA);
 
         internal (double h, double c) HueAndChroma => EstimateHueAndChroma();
 
@@ -402,10 +402,6 @@ internal static class MunsellUtils
             (double h, double c) start;
             (double h, double c) end;
             double distance;
-            
-            // TODO: account for segments being singularities
-            //       e.g. up-left and up-right might be the same point! (if target point lies DIRECTLY below with exact same double)
-            //       and the result will be divide-by-zero
             
             // closest point is A
             // find a line through target that intersects closest to point A
@@ -463,7 +459,6 @@ internal static class MunsellUtils
             end = EstimateHueAndChroma(farSegment, farIntersect); 
             distance = GetDistance(nearIntersect, Point) / GetDistance(nearIntersect, farIntersect);
             var h = InterpolateHue(start.h, end.h, distance);
-            var deg = FromDegrees(h);
             var c = Interpolation.Interpolate(start.c, end.c, distance);
             return (h, c);
         }
@@ -472,7 +467,6 @@ internal static class MunsellUtils
         {
             var distance = GetDistance(segment.Start.Point, intersect) / GetDistance(segment.Start.Point, segment.End.Point);
             var h = InterpolateHue(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
-            var deg = FromDegrees(h);
             var c = Interpolation.Interpolate(segment.Start.Chroma, segment.End.Chroma, distance);
             return (h, c);
         }
@@ -486,13 +480,11 @@ internal static class MunsellUtils
         public override string ToString() => Quadrilateral.ToString();
     }
     
-    internal record Segment(Node Start, Node End, bool IsExtrapolation)
+    internal record Segment(Node Start, Node End)
     {
         internal readonly Node Start = Start;
         internal readonly Node End = End;
         internal readonly Line Line = Line.FromPoints(Start.Point, End.Point);
-        internal readonly bool IsExtrapolation = IsExtrapolation;
-        internal readonly bool IsSingularity = Start == End;
-        public override string ToString() => $"{Start.Point} --> {End.Point}{(IsExtrapolation ? " (extrapolation)" : string.Empty)}";
+        public override string ToString() => $"{Start.Point} --> {End.Point}";
     }
 }

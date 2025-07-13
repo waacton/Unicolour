@@ -43,11 +43,16 @@ internal static class Munsell2
         
         // interpolation along the chroma ovoid is the core of this algorithm
         // so 2 nodes of the same chroma between hues are required for this to work
-        // TODO: unsure if using max chroma only and then extrapolating from hue is acceptable
         var maxC = new[] { MaxChroma(nodeV, lowerH), MaxChroma(nodeV, upperH) }.Min();
-        var lowerNodeC = c > maxC ? maxC : NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = c > maxC ? maxC : NodeChromas.First(nodeC => nodeC >= c);
-
+        
+        // TODO: unsure if using max chroma only and then extrapolating from hue is acceptable
+        //       doesn't seem roundtrippable with the more accurate algorithm, but could fall back to my basic interpolation?
+        // var lowerNodeC = c > maxC ? NodeChromas.Last(nodeC => nodeC < maxC) : NodeChromas.Last(nodeC => nodeC <= c);
+        // var upperNodeC = c > maxC ? maxC : NodeChromas.First(nodeC => nodeC >= c);
+        
+        if (c > maxC) throw new NotImplementedException($"No data for both {lowerH} and {upperH} at chroma {c} (max chroma {maxC})");
+        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
         if (lowerNodeC == upperNodeC)
         {
             return GetXyForC(lowerNodeC);

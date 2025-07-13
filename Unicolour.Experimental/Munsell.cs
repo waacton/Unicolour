@@ -144,7 +144,7 @@ public partial record Munsell
             var minDegrees = bandIndex * DegreesPerHueLetter;
             var maxDegrees = (bandIndex + 1) * DegreesPerHueLetter;
             var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
-            return Interpolation.Interpolate(minDegrees, maxDegrees, distance);
+            return Interpolation.Interpolate(minDegrees, maxDegrees, distance).Modulo(360);
         }
 
         internal static (double number, string letter) FromDegrees(double degrees)

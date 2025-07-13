@@ -212,8 +212,6 @@ internal static class MunsellUtils
         var nodes = Nodes.Value.Where(data => data.Value == nodeV).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
         var closest = nodes.First();
         
-        // TODO: what happens when there are no bounding quads?
-        //       fall back to algorithm that moves closer to whitepoint?
         // e.g. the closest node if 5G /8
         // there are 4 possible bounding quadrilaterals:
         // - 5G /8 · 5G /10 · 7.5G /10 · 7.5G /8
@@ -221,8 +219,8 @@ internal static class MunsellUtils
         // - 5G /8 · 5G  /6 · 7.5G  /6 · 7.5G /8
         // - 5G /8 · 5G  /6 · 2.5G  /6 · 2.5G /8
 
-        var upHue = MunsellHue.FromDegrees(closest.HueDegrees + DegreesPerHueNumber);
-        var downHue = MunsellHue.FromDegrees(closest.HueDegrees - DegreesPerHueNumber);
+        var upHue = new MunsellHue((closest.HueDegrees + DegreesPerHueNumber).Modulo(360));
+        var downHue = new MunsellHue((closest.HueDegrees - DegreesPerHueNumber).Modulo(360));
         var upChroma = NodeChromas.First(c => c > closest.Chroma);
         var downChroma = NodeChromas.Last(c => c < closest.Chroma);
 
@@ -232,56 +230,39 @@ internal static class MunsellUtils
             new[]
             {
                 closest,
-                Nodes.Value.Single(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
-                Nodes.Value.Single(data => data.IsMatch(upHue.number, upHue.letter, nodeV, upChroma)),
-                Nodes.Value.Single(data => data.IsMatch(upHue.number, upHue.letter, nodeV, closest.Chroma))
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, upChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.Single(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
-                Nodes.Value.Single(data => data.IsMatch(downHue.number, downHue.letter, nodeV, upChroma)),
-                Nodes.Value.Single(data => data.IsMatch(downHue.number, downHue.letter, nodeV, closest.Chroma))
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, upChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.Single(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
-                Nodes.Value.Single(data => data.IsMatch(upHue.number, upHue.letter, nodeV, downChroma)),
-                Nodes.Value.Single(data => data.IsMatch(upHue.number, upHue.letter, nodeV, closest.Chroma))
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, downChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.Single(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
-                Nodes.Value.Single(data => data.IsMatch(downHue.number, downHue.letter, nodeV, downChroma)),
-                Nodes.Value.Single(data => data.IsMatch(downHue.number, downHue.letter, nodeV, closest.Chroma))
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, downChroma)),
+                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
             }
         };
         
-        var quadrilaterals = quadNodes.Select(n => new Quadrilateral(n[0].Point, n[1].Point, n[2].Point, n[3].Point)).ToArray();
-        var quadrilateralsContainingPoint = quadrilaterals.Where(x => x.Contains(targetPoint)).ToArray();
-        var matchingQuad = quadrilateralsContainingPoint.Single();
-        var index = Array.IndexOf(quadrilaterals, matchingQuad);
-        var boundingQuad = quadNodes[index];
-
-        // var nodes = Nodes.Value.Where(data => data.Value == nodeV).ToArray();
-        var upLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-        var upRights = nodes.Where(data => data.X >= targetPoint.x && data.Y >= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-        var downLefts = nodes.Where(data => data.X <= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-        var downRights = nodes.Where(data => data.X >= targetPoint.x && data.Y <= targetPoint.y).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
-        
-        var upLeft = upLefts.FirstOrDefault();
-        var upRight = upRights.FirstOrDefault();
-        var downLeft = downLefts.FirstOrDefault();
-        var downRight = downRights.FirstOrDefault();
-
-        upLeft = boundingQuad[0];
-        upRight = boundingQuad[1];
-        downRight = boundingQuad[2];
-        downLeft = boundingQuad[3];
-        
-        return new Boundary(targetPoint, boundingQuad[0], boundingQuad[1], boundingQuad[2], boundingQuad[3]);
+        var quadrilaterals = quadNodes.Where(q => q.All(n => n != null)).ToDictionary(n => new Quadrilateral(n[0].Point, n[1].Point, n[2].Point, n[3].Point), n => n);
+        var quadrilateralsContainingPoint = quadrilaterals.Where(x => x.Key.Contains(targetPoint)).ToArray();
+        var matchingQuad = quadrilateralsContainingPoint.Any() ? quadrilateralsContainingPoint.Single().Value : null;
+        return matchingQuad == null 
+            ? null 
+            : new Boundary(targetPoint, matchingQuad[0], matchingQuad[1], matchingQuad[2], matchingQuad[3]);
     }
 
     internal record Triangle((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3)
@@ -394,7 +375,7 @@ internal static class MunsellUtils
             var verticalIntersectABToA = GetDistance(verticalIntersectAB, Point);
             var horizontalIntersectDAToA = GetDistance(horizontalIntersectDA, Point);
             var verticalIntersectDAToA = GetDistance(verticalIntersectDA, Point);
-            var min = new [] { horizontalIntersectABToA, verticalIntersectABToA, horizontalIntersectDAToA, verticalIntersectDAToA }.Min();
+            var min = new [] { horizontalIntersectABToA, verticalIntersectABToA, horizontalIntersectDAToA, verticalIntersectDAToA }.Where(x => !double.IsNaN(x)).Min();
 
             Segment nearSegment = null!;
             Segment farSegment = null!;

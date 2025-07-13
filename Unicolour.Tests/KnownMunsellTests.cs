@@ -101,8 +101,7 @@ public class KnownMunsellTests
         // first entry of Table 2 in ASTM https://doi.org/10.1520/D1535-14R18
         var munsell = new Munsell(2.5, "R", 9, 6);
         var expected = new Xyy(0.3665, 0.3183, 76.70 / 100.0);
-        var actual = Munsell.ToXyy(munsell);
-        var actual2 = Munsell2.ToXyy(munsell);
+        var actual = Munsell2.ToXyy(munsell);
         Assert.That(actual.Luminance, Is.EqualTo(expected.Luminance).Within(0.00005));
         
         // same node from raw data contains different value for Y, because it is relative to MgO white
@@ -117,16 +116,13 @@ public class KnownMunsellTests
     [Test]
     public void DELETETHISTEST()
     {
-        // var munsellChroma6 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 6));
-        // var munsellChroma7 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 7));
-        // var munsellChroma625 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 6.25));
-//‘1.14R4.00/14.18
-        var munsell = new Munsell(8.66, "R", 8, 6.25);
-        var xyyA = Munsell.ToXyy(munsell);
-        var xyyB = Munsell2.ToXyy(munsell);
+        var munsell = new Munsell(8.66, "R", 8, 20);
+        // var xyyA = Munsell.ToXyy(munsell);
+        var xyy = Munsell2.ToXyy(munsell);
+        // var munsellRound = Munsell.FromXyy(xyy);
         Console.WriteLine(munsell);
-        Console.WriteLine(xyyA);
-        Console.WriteLine(xyyB);
+        Console.WriteLine(xyy);
+        // Console.WriteLine(munsellRound);
     }
 
 

@@ -170,16 +170,10 @@ internal class SpectralBoundary
 
     private Intersect GetIntersect(Segment segment, Line whiteToSampleLine, Chromaticity sample)
     {
-        var (x, y) = whiteToSampleLine.GetIntersect(segment.Line);
-        var intersectChromaticity = new Chromaticity(x, y);
-        var distanceToSample = Distance(sample, intersectChromaticity);
-        var distanceToWhite = Distance(whiteChromaticity, intersectChromaticity);
-        return new Intersect(segment, intersectChromaticity, distanceToSample, distanceToWhite);
-    }
-
-    private static double Distance(Chromaticity chromaticity1, Chromaticity chromaticity2)
-    {
-        return Math.Sqrt(Math.Pow(chromaticity2.X - chromaticity1.X, 2) + Math.Pow(chromaticity2.Y - chromaticity1.Y, 2));
+        var intersect = whiteToSampleLine.GetIntersect(segment.Line);
+        var sampleToIntersect = new LineSegment(sample, intersect);
+        var whiteToIntersect = new LineSegment(whiteChromaticity, intersect);
+        return new Intersect(segment, intersect, sampleToIntersect, whiteToIntersect);
     }
     
     private static bool IsBetween(double value, double near, double far)
@@ -204,7 +198,7 @@ internal class SpectralBoundary
         // where the white point itself is on the boundary and the sample is outside the boundary
         // resulting in only 1 intersect, which is the location of white point
         internal double DominantWavelength => Dominant.Segment.IsLineOfPurples ? -Complementary.Wavelength : Dominant.Wavelength;
-        internal double ExcitationPurity => Dominant.DistanceToWhite == 0 ? double.NaN : Distance(Sample, White) / Dominant.DistanceToWhite;
+        internal double ExcitationPurity => Dominant.DistanceToWhite == 0 ? double.NaN : LineSegment.Distance(Sample, White) / Dominant.DistanceToWhite;
 
         public override string ToString() => $"{Near} & {Far}";
     }
@@ -223,15 +217,17 @@ internal class SpectralBoundary
         public override string ToString() => $"{StartWavelength} \u27f6 {EndWavelength}";
     }
     
-    internal record Intersect(Segment Segment, Chromaticity Chromaticity, double DistanceToSample, double DistanceToWhite)
+    internal record Intersect(Segment Segment, Chromaticity Chromaticity, LineSegment SampleToIntersect, LineSegment WhiteToIntersect)
     {
         internal Segment Segment { get; } = Segment;
         internal Chromaticity Chromaticity { get; } = Chromaticity;
-        internal double DistanceToSample { get; } = DistanceToSample;
-        internal double DistanceToWhite { get; } = DistanceToWhite;
+        internal LineSegment SampleToIntersect { get; } = SampleToIntersect;
+        internal LineSegment WhiteToIntersect { get; } = WhiteToIntersect;
         
-        internal double DistanceFromStart => Distance(Chromaticity, Segment.StartChromaticity);
-        internal double DistanceFromEnd => Distance(Chromaticity, Segment.EndChromaticity);
+        internal double DistanceToSample => SampleToIntersect.Length;
+        internal double DistanceToWhite => WhiteToIntersect.Length;
+        internal double DistanceFromStart => LineSegment.Distance(Chromaticity, Segment.StartChromaticity);
+        internal double DistanceFromEnd => LineSegment.Distance(Chromaticity, Segment.EndChromaticity);
         internal double SegmentLengthViaIntersect => DistanceFromStart + DistanceFromEnd;
         internal double SegmentLengthDifference => Math.Abs(SegmentLengthViaIntersect - Segment.Length); // the closer to zero, the closer it lies on the segment
         internal bool IsOnSegment => SegmentLengthDifference.IsEffectivelyZero();

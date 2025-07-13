@@ -1,5 +1,6 @@
 namespace Wacton.Unicolour;
 
+// TODO: probably need to add Length & Polar to line tests
 internal record LineSegment(Chromaticity Start, Chromaticity End)
 {
     internal LineSegment((double x, double y) start, (double x, double y) end) : this(new Chromaticity(start.x, start.y), new Chromaticity(end.x, end.y)) { }
@@ -8,7 +9,9 @@ internal record LineSegment(Chromaticity Start, Chromaticity End)
     internal Chromaticity End { get; } = End;
     internal Line Line { get; } = new(GetSlopeAndIntercept(Start, End));
     internal double Length { get; } = Distance(Start, End);
-    internal (double r, double theta) Polar => (Length, Math.Atan2(End.Y - Start.Y, End.X - Start.X));
+    
+    // polar coordinates of end point relative to start point
+    internal (double radius, double angle) Polar => (Length, Math.Atan2(End.Y - Start.Y, End.X - Start.X));
     
     internal static double Distance(Chromaticity point1, Chromaticity point2)
     {
@@ -31,7 +34,7 @@ internal record LineSegment(Chromaticity Start, Chromaticity End)
         return (slope, intercept);
     }
 
-    public override string ToString() => $"{Start} to {End}";
+    public override string ToString() => $"{Start} \u27f6 {End}";
 }
 
 internal record Line(double Slope, double Intercept)

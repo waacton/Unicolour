@@ -88,9 +88,8 @@ internal static class MunsellFuncs
             var polar2 = new LineSegment(WhitePoint, node2.Point).Polar;
 
             var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
-            var theta = Interpolation.Linear(polar1.theta, polar2.theta, hueDistance);
-
-            var angleDistance = (theta - polar1.theta) / (polar2.theta - polar1.theta);
+            var angle = Interpolation.Linear(polar1.angle, polar2.angle, hueDistance);
+            var angleDistance = (angle - polar1.angle) / (polar2.angle - polar1.angle);
 
             // because lower and upper hues are consecutive, if they are both on segments of radial interpolation
             // can assume they are on the same segment, and radial interpolation should be used
@@ -99,9 +98,9 @@ internal static class MunsellFuncs
             var useRadialInterpolation = isLowerHueOnRadialInterpolationSegment && isUpperHueOnRadialInterpolationSegment;
             if (useRadialInterpolation)
             {
-                var r = Interpolation.Linear(polar1.r, polar2.r, angleDistance);
-                var x = WhitePoint.X + r * Math.Cos(theta);
-                var y = WhitePoint.Y + r * Math.Sin(theta);
+                var r = Interpolation.Linear(polar1.radius, polar2.radius, angleDistance);
+                var x = WhitePoint.X + r * Math.Cos(angle);
+                var y = WhitePoint.Y + r * Math.Sin(angle);
                 return new(x, y);
             }
             else

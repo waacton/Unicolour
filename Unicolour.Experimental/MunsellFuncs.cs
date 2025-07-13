@@ -3,39 +3,46 @@
 
 namespace Wacton.Unicolour.Experimental;
 
-internal static class Munsell2
+internal static class MunsellFuncs
 {
     // TODO: use white point from illuminant after testing
     // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     private static Chromaticity WhitePoint = new(0.31006, 0.31616);
-
+    
     internal static Xyy ToXyy(Munsell munsell)
     {
-        var value = munsell.V;
-        var luminance = GetLuminance(value);
-        var (x, y) = GetXy(munsell.Hue, munsell.V, munsell.C);
-        return new Xyy(x, y, luminance);
-    }
-    
-    private static (double x, double y) GetXy(MunsellHue h, double v, double c)
-    {
-        // TODO: what if V is out of range? extrapolate? (see chroma)
+        var h = munsell.Hue;
+        var v = munsell.V;
+        var c = munsell.C;
+        
+        var luminance = GetLuminance(v);
+
+        Chromaticity chromaticity;
+        
+        // TODO: what if V is out of range?
         var lowerNodeV = NodeValues.Last(nodeV => nodeV <= v);
         var upperNodeV = NodeValues.First(nodeV => nodeV >= v);
         if (lowerNodeV == upperNodeV)
         {
-            return GetXyForValue(lowerNodeV, c, h);
+            chromaticity = GetXyForValue(lowerNodeV, c, h);
         }
-        
-        var lower = GetXyForValue(lowerNodeV, c, h);
-        var upper = GetXyForValue(upperNodeV, c, h);
-        var distance = (v - lowerNodeV) / (upperNodeV - lowerNodeV);
-        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
-        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
-        return (x, y);
+        else
+        {
+            var lower = GetXyForValue(lowerNodeV, c, h);
+            var upper = GetXyForValue(upperNodeV, c, h);
+
+            var lowerLuminance = GetLuminance(lowerNodeV);
+            var upperLuminance = GetLuminance(upperNodeV);
+            var distance = (luminance - lowerLuminance) / (upperLuminance - lowerLuminance);
+            var x = Interpolation.Linear(lower.X, upper.X, distance);
+            var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+            chromaticity = new(x, y);
+        }
+
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance);
     }
     
-    private static (double x, double y) GetXyForValue(double nodeV, double c, MunsellHue h)
+    private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h)
     {
         var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
         MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
@@ -61,11 +68,11 @@ internal static class Munsell2
         var lower = GetXyForC(lowerNodeC);
         var upper = GetXyForC(upperNodeC);
         var distance = (c - lowerNodeC) / (upperNodeC - lowerNodeC);
-        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
-        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
-        return (x, y);
+        var x = Interpolation.Linear(lower.X, upper.X, distance);
+        var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+        return new(x, y);
 
-        (double x, double y) GetXyForC(double nodeC)
+        Chromaticity GetXyForC(double nodeC)
         {
             // consecutive hues, same chroma
             var node1 = Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
@@ -76,21 +83,14 @@ internal static class Munsell2
                 return exact.Point;
             }
 
-            // assuming node1 and node2 are different
-            // TODO: does this need adapting if e.g. 358 and 2 degrees?
-            var r1 = GetDistance(WhitePoint.Xy, node1.Point);
-            var theta1 = Math.Atan2(node1.Y - WhitePoint.Y, node1.X - WhitePoint.X);
-            
-            var r2 = GetDistance(WhitePoint.Xy, node2.Point);
-            var theta2 = Math.Atan2(node2.Y - WhitePoint.Y, node2.X - WhitePoint.X);
+            // TODO: check hue is adapted properly
+            var polar1 = new LineSegment(WhitePoint, node1.Point).Polar;
+            var polar2 = new LineSegment(WhitePoint, node2.Point).Polar;
 
-            // TODO: can use existing interpolation functions?
-            var theta1Contribution = (upperH.Degrees - h.Degrees) / (upperH.Degrees - lowerH.Degrees) * theta1;
-            var theta2Contribution = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees) * theta2;
-            var theta = theta1Contribution + theta2Contribution;
+            var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
+            var theta = Interpolation.Linear(polar1.theta, polar2.theta, hueDistance);
 
-            var point1Weight = (theta2 - theta) / (theta2 - theta1);
-            var point2Weight = (theta - theta1) / (theta2 - theta1);
+            var angleDistance = (theta - polar1.theta) / (polar2.theta - polar1.theta);
 
             // because lower and upper hues are consecutive, if they are both on segments of radial interpolation
             // can assume they are on the same segment, and radial interpolation should be used
@@ -99,16 +99,16 @@ internal static class Munsell2
             var useRadialInterpolation = isLowerHueOnRadialInterpolationSegment && isUpperHueOnRadialInterpolationSegment;
             if (useRadialInterpolation)
             {
-                var r = point1Weight * r1 + point2Weight * r2;
+                var r = Interpolation.Linear(polar1.r, polar2.r, angleDistance);
                 var x = WhitePoint.X + r * Math.Cos(theta);
                 var y = WhitePoint.Y + r * Math.Sin(theta);
-                return (x, y);
+                return new(x, y);
             }
             else
             {
-                var x = point1Weight * node1.X + point2Weight * node2.X;
-                var y = point1Weight * node1.Y + point2Weight * node2.Y;
-                return (x, y);
+                var x = Interpolation.Linear(node1.X, node2.X, angleDistance);
+                var y = Interpolation.Linear(node1.Y, node2.Y, angleDistance);
+                return new(x, y);
             }
         }
     }
@@ -205,11 +205,6 @@ internal static class Munsell2
         // TODO: what does it mean if we've ended up here?!
         return 0;
     }
-    
-    internal static double GetDistance((double x, double y) point1, (double x, double y) point2)
-    {
-        return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
-    }
 
     internal static double GetLuminance(double v)
     {
@@ -248,6 +243,6 @@ internal static class Munsell2
         var yLower = GetLuminance(vLower);
         var yUpper = GetLuminance(vUpper);
         var distance = (y - yLower) / (yUpper - yLower);
-        return Interpolation.Interpolate(vLower, vUpper, distance);
+        return Interpolation.Linear(vLower, vUpper, distance);
     }
 }

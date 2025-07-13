@@ -14,7 +14,7 @@ public class RoundtripMunsellTests
         try
         {
             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
-            var xyy = Munsell.ToXyy(original);
+            var xyy = MunsellFuncs.ToXyy(original);
             var roundtrip = Munsell.FromXyy(xyy);
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [5, 5e-15, 3]);
         }
@@ -41,7 +41,7 @@ public class RoundtripMunsellTests
         try
         {
             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
-            var xyy = Munsell.ToXyy(original);
+            var xyy = MunsellFuncs.ToXyy(original);
             var roundtrip = Munsell.FromXyy(xyy);
 
             var (originalHue, roundtripHue) = Hue.Adapt(original.Hue.Degrees, roundtrip.Hue.Degrees, HueSpan.Shorter);

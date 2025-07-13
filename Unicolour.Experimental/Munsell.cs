@@ -39,23 +39,9 @@ public partial record Munsell
         // Chroma = null;
     }
     
-    /*
-     * following ASTM standard practice https://doi.org/10.1520/D1535-14R18
-     */
-
-    public static Xyy ToXyy(Munsell munsell)
-    {
-        var value = munsell.V;
-        // if (!value.HasValue) throw new NotImplementedException();
-        
-        var luminance = GetLuminance(value);
-        var (x, y) = GetXy(munsell);
-        return new Xyy(x, y, luminance);
-    }
-    
     public static Munsell FromXyy(Xyy xyy)
     {
-        var v = GetValue(xyy.Luminance);
+        var v = MunsellFuncs.GetValue(xyy.Luminance);
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
     }
@@ -64,40 +50,6 @@ public partial record Munsell
     {
         var y = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
         return y / 100.0;
-    }
-
-    /*
-     * the maximum error of the core Y -> V function is 0.0035 (https://doi.org/10.1002/col.5080170308)
-     * which isn't bad but compounds during roundtrip conversions and causes algorithm of H and C to interpolate away from the actual V by a small amount
-     * however, this error provides a range of potential V from a given Y (e.g. if result V = 5, actual V is between 4.9965 to 5.0035)
-     * which can be interpolated using exact Y calculations for a more accurate result (error of 0.000005, obtained from testing)
-     * and this process can be repeated for this new max error for even greater accuracy
-     * though at a depth of 3 iterations the max error is 5e-15, and further iteration yields no improvement
-     */
-    internal static readonly double[] IterationDepthError = { 0.0035, 0.000005, 0.00000000005, 0.000000000000005 };
-    internal static double GetValue(double y, int iterationDepth = 3)
-    {
-        if (iterationDepth == 0)
-        {
-            y *= 100;
-            return y <= 0.9
-                ? 0.87445 * Math.Pow(y, 0.9967)
-                : 2.49268 * Math.Pow(y, 1 / 3.0) - 1.5614 - 0.985 / (Math.Pow(0.1073 * y - 3.084, 2) + 7.54)
-                  + 0.0133 / Math.Pow(y, 2.3) + 0.0084 * Math.Sin(4.1 * Math.Pow(y, 1 / 3.0) + 1)
-                  + 0.0221 / y * Math.Sin(0.39 * (y - 2))
-                  - 0.0037 / (0.44 * y) * Math.Sin(1.28 * (y - 0.53));
-        }
-
-        iterationDepth--;
-        var vEstimate = GetValue(y, iterationDepth);
-        var error = IterationDepthError[iterationDepth];
-        var vLower = vEstimate - error;
-        var vUpper = vEstimate + error;
-        
-        var yLower = GetLuminance(vLower);
-        var yUpper = GetLuminance(vUpper);
-        var distance = (y - yLower) / (yUpper - yLower);
-        return Interpolation.Interpolate(vLower, vUpper, distance);
     }
     
     internal record MunsellHue
@@ -144,7 +96,7 @@ public partial record Munsell
             var minDegrees = bandIndex * DegreesPerHueLetter;
             var maxDegrees = (bandIndex + 1) * DegreesPerHueLetter;
             var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
-            return Interpolation.Interpolate(minDegrees, maxDegrees, distance).Modulo(360);
+            return Interpolation.Linear(minDegrees, maxDegrees, distance).Modulo(360);
         }
 
         internal static (double number, string letter) FromDegrees(double degrees)

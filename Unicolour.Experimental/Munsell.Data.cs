@@ -23,7 +23,7 @@ public partial record Munsell
         internal readonly double LuminanceMagnesiumOxide = LuminanceMagnesiumOxide; // actual Y = 0.975 * Ymgo
 
         internal readonly double HueDegrees = MunsellHue.ToDegrees(HueNumber, HueLetter);
-        internal (double x, double y) Point => (X, Y);
+        internal Chromaticity Point => new(X, Y);
         
         internal bool IsMatch(MunsellHue hue, double value, double chroma)
         {

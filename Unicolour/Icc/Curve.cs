@@ -151,7 +151,7 @@ internal record TableCurve(params double[] Table) : Curve
         // identity does not clamp values, whereas the lookup will
         if (IsIdentity) return value;
         var (lowerValue, upperValue, distance) = Lut.Lookup(Table, value);
-        return Interpolation.Interpolate(lowerValue, upperValue, distance);
+        return Interpolation.Linear(lowerValue, upperValue, distance);
     }
 
     protected override double[] AsTable() => Table;

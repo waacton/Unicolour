@@ -4,7 +4,7 @@ namespace Wacton.Unicolour.Experimental;
 
 internal static class MunsellUtils
 {
-    internal static (double x, double y) GetXy(Munsell munsell)
+    internal static Chromaticity GetXy(Munsell munsell)
     {
         // TODO: handle grey (null value (implies null chroma) or 0 chroma)
         var hueDegrees = munsell.Hue.Degrees;
@@ -13,7 +13,7 @@ internal static class MunsellUtils
         return GetXy(value, chroma, hueDegrees);
     }
     
-    private static (double x, double y) GetXy(double v, double c, double h)
+    private static Chromaticity GetXy(double v, double c, double h)
     {
         // TODO: what if V is out of range? extrapolate? (see chroma)
         var lowerNodeV = NodeValues.Last(nodeV => nodeV <= v);
@@ -29,12 +29,12 @@ internal static class MunsellUtils
         
         // TODO: ensure works when null chroma
         var distance = upperNodeV - lowerNodeV == 0 ? 0 : (v - lowerNodeV) / (upperNodeV - lowerNodeV);
-        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
-        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
-        return (x, y);
+        var x = Interpolation.Linear(lower.X, upper.X, distance);
+        var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+        return new(x, y);
     }
     
-    private static (double x, double y) GetXyForValue(double nodeV, double c, double h)
+    private static Chromaticity GetXyForValue(double nodeV, double c, double h)
     {
         var scaled = h / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
         var lowerH = Math.Floor(scaled) * DegreesPerHueNumber;
@@ -52,12 +52,12 @@ internal static class MunsellUtils
         var upper = GetXyForValueAndHue(nodeV, c, upperNodeH);
         
         var distance = upperH - lowerH == 0 ? 0 : (h - lowerH) / (upperH - lowerH);
-        var x = Interpolation.Interpolate(lower.x, upper.x, distance);
-        var y = Interpolation.Interpolate(lower.y, upper.y, distance);
-        return (x, y);
+        var x = Interpolation.Linear(lower.X, upper.X, distance);
+        var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+        return new(x, y);
     }
 
-    private static (double x, double y) GetXyForValueAndHue(double nodeV, double c, (double number, string letter) nodeH)
+    private static Chromaticity GetXyForValueAndHue(double nodeV, double c, (double number, string letter) nodeH)
     {
         // TODO: attempt to interpolate to chromas (and values) beyond the dataset?
         var maxChroma = MaxChroma(nodeV, nodeH);
@@ -109,9 +109,9 @@ internal static class MunsellUtils
             
             // TODO: ensure works when null chroma
             var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
-            var x = Interpolation.Interpolate(lower.X, upper.X, distance);
-            var y = Interpolation.Interpolate(lower.Y, upper.Y, distance);
-            return (x, y);
+            var x = Interpolation.Linear(lower.X, upper.X, distance);
+            var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+            return new(x, y);
         }
     }
 
@@ -133,8 +133,8 @@ internal static class MunsellUtils
         var lowerNodeV = NodeValues.Last(item => item <= v);
         var upperNodeV = NodeValues.First(item => item >= v);
         
-        var lowerBoundary = GetBoundary(chromaticity.Xy, lowerNodeV);
-        var upperBoundary = GetBoundary(chromaticity.Xy, upperNodeV);
+        var lowerBoundary = GetBoundary(chromaticity, lowerNodeV);
+        var upperBoundary = GetBoundary(chromaticity, upperNodeV);
         return new[] { lowerBoundary, upperBoundary };
     }
 
@@ -146,19 +146,19 @@ internal static class MunsellUtils
 
         if (lowerNodeV == upperNodeV)
         {
-            return EstimateHueAndChromaForValue(chromaticity.Xy, lowerNodeV);
+            return EstimateHueAndChromaForValue(chromaticity, lowerNodeV);
         }
         
-        var (lowerH, lowerC) = EstimateHueAndChromaForValue(chromaticity.Xy, lowerNodeV);
-        var (upperH, upperC) = EstimateHueAndChromaForValue(chromaticity.Xy, upperNodeV);
+        var (lowerH, lowerC) = EstimateHueAndChromaForValue(chromaticity, lowerNodeV);
+        var (upperH, upperC) = EstimateHueAndChromaForValue(chromaticity, upperNodeV);
 
         var distance = v - lowerNodeV;
         var h = Boundary.InterpolateHue(lowerH, upperH, distance);
-        var c = Interpolation.Interpolate(lowerC, upperC, distance);
+        var c = Interpolation.Linear(lowerC, upperC, distance);
         return (h, c);
     }
 
-    private static (double h, double c) EstimateHueAndChromaForValue((double x, double y) targetPoint, double nodeV)
+    private static (double h, double c) EstimateHueAndChromaForValue(Chromaticity targetPoint, double nodeV)
     {
         var boundary = GetBoundary(targetPoint, nodeV);
         if (boundary != null)
@@ -189,27 +189,27 @@ internal static class MunsellUtils
         var closer = closerBoundary.HueAndChroma;
         var farther = fartherBoundary.HueAndChroma;
         
-        var length = GetDistance(fartherBoundary.Point, closerBoundary.Point);
-        var extrapolationLength = GetDistance(fartherBoundary.Point, targetPoint);
+        var length = LineSegment.Distance(fartherBoundary.Point, closerBoundary.Point);
+        var extrapolationLength = LineSegment.Distance(fartherBoundary.Point, targetPoint);
         var distance = extrapolationLength / length;
         var h = Boundary.InterpolateHue(farther.h, closer.h, distance);
-        var c = Interpolation.Interpolate(farther.c, closer.c, distance);
+        var c = Interpolation.Linear(farther.c, closer.c, distance);
         return (h, c);
     }
 
-    private static (double x, double y) MoveTowardsWhite((double x, double y) start)
+    private static Chromaticity MoveTowardsWhite(Chromaticity start)
     {
         const double step = 0.01;
         var white = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-        var xc = start.x - step * ((start.x - white.X) / GetDistance(start, white.Xy));
-        var line = Line.FromPoints(start, white.Xy);
+        var xc = start.X - step * ((start.X - white.X) / LineSegment.Distance(start, white));
+        var line = new LineSegment(start, white).Line;
         var y = line.GetY(xc);
-        return (xc, y);
+        return new(xc, y);
     }
     
-    private static Boundary? GetBoundary((double x, double y) targetPoint, double nodeV)
+    private static Boundary? GetBoundary(Chromaticity targetPoint, double nodeV)
     {
-        var nodes = Nodes.Value.Where(data => data.Value == nodeV).OrderBy(data => GetDistance(targetPoint, data.Point)).ToArray();
+        var nodes = Nodes.Value.Where(data => data.Value == nodeV).OrderBy(data => LineSegment.Distance(targetPoint, data.Point)).ToArray();
         var closest = nodes.First();
         
         // e.g. the closest node if 5G /8
@@ -265,25 +265,25 @@ internal static class MunsellUtils
             : new Boundary(targetPoint, matchingQuad[0], matchingQuad[1], matchingQuad[2], matchingQuad[3]);
     }
 
-    internal record Triangle((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3)
+    internal record Triangle(Chromaticity Point1, Chromaticity Point2, Chromaticity Point3)
     {
-        internal (double x, double y) Point1 { get; } = Point1;
-        internal (double x, double y) Point2 { get; } = Point2;
-        internal (double x, double y) Point3 { get; } = Point3;
-        internal readonly double Area = 0.5 * Math.Abs(Point1.x * (Point2.y - Point3.y) + Point2.x * (Point3.y - Point1.y) + Point3.x * (Point1.y - Point2.y));
+        internal Chromaticity Point1 { get; } = Point1;
+        internal Chromaticity Point2 { get; } = Point2;
+        internal Chromaticity Point3 { get; } = Point3;
+        internal readonly double Area = 0.5 * Math.Abs(Point1.X * (Point2.Y - Point3.Y) + Point2.X * (Point3.Y - Point1.Y) + Point3.X * (Point1.Y - Point2.Y));
     }
     
-    internal record Quadrilateral((double x, double y) Point1, (double x, double y) Point2, (double x, double y) Point3, (double x, double y) Point4)
+    internal record Quadrilateral(Chromaticity Point1, Chromaticity Point2, Chromaticity Point3, Chromaticity Point4)
     {
-        internal (double x, double y) Point1 { get; } = Point1;
-        internal (double x, double y) Point2 { get; } = Point2;
-        internal (double x, double y) Point3 { get; } = Point3;
-        internal (double x, double y) Point4 { get; } = Point4;
+        internal Chromaticity Point1 { get; } = Point1;
+        internal Chromaticity Point2 { get; } = Point2;
+        internal Chromaticity Point3 { get; } = Point3;
+        internal Chromaticity Point4 { get; } = Point4;
         internal readonly Triangle Triangle1 = new(Point1, Point2, Point3);
         internal readonly Triangle Triangle2 = new(Point1, Point3, Point4);
         internal double Area => Triangle1.Area + Triangle2.Area;
         
-        internal Triangle[] GetTriangles((double x, double y) targetPoint)
+        internal Triangle[] GetTriangles(Chromaticity targetPoint)
         {
             return new Triangle[]
             {
@@ -294,7 +294,7 @@ internal static class MunsellUtils
             };
         }
 
-        internal bool Contains((double x, double y) targetPoint)
+        internal bool Contains(Chromaticity targetPoint)
         {
             var triangles = new Triangle[]
             {
@@ -311,16 +311,11 @@ internal static class MunsellUtils
         public override string ToString() => $"{Point1} --> {Point2} --> {Point3} --> {Point4} ({Area})";
     }
     
-    internal static double GetDistance((double x, double y) point1, (double x, double y) point2)
-    {
-        return Math.Sqrt(Math.Pow(point2.x - point1.x, 2) + Math.Pow(point2.y - point1.y, 2));
-    }
-    
     // TODO: these corners are no longer specific to those directions
     //       should probably take the quadrilateral instead
-    internal record Boundary((double x, double y) Point, Node NodeA, Node NodeB, Node NodeC, Node NodeD) 
+    internal record Boundary(Chromaticity Point, Node NodeA, Node NodeB, Node NodeC, Node NodeD) 
     {
-        internal (double x, double y) Point { get; } = Point;
+        internal Chromaticity Point { get; } = Point;
         internal Node NodeA { get; } = NodeA;
         internal Node NodeB { get; } = NodeB;
         internal Node NodeC { get; } = NodeC;
@@ -336,24 +331,6 @@ internal static class MunsellUtils
 
         internal (double h, double c) HueAndChroma => EstimateHueAndChroma();
 
-        internal double GetMinDistanceToBoundary()
-        {
-            var horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
-            var vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
-            
-            var horizontalIntersectAB = SegmentAB.Line.GetIntersect(horizontal);
-            var verticalIntersectAB = SegmentAB.Line.GetIntersect(vertical);
-            var horizontalIntersectDA = SegmentDA.Line.GetIntersect(horizontal);
-            var verticalIntersectDA = SegmentDA.Line.GetIntersect(vertical);
-
-            var horizontalIntersectABToA = GetDistance(horizontalIntersectAB, Point);
-            var verticalIntersectABToA = GetDistance(verticalIntersectAB, Point);
-            var horizontalIntersectDAToA = GetDistance(horizontalIntersectDA, Point);
-            var verticalIntersectDAToA = GetDistance(verticalIntersectDA, Point);
-            var min = new [] { horizontalIntersectABToA, verticalIntersectABToA, horizontalIntersectDAToA, verticalIntersectDAToA }.Min();
-            return min;
-        }
-
         private (double h, double c) EstimateHueAndChroma()
         {
             (double h, double c) start;
@@ -363,18 +340,18 @@ internal static class MunsellUtils
             // closest point is A
             // find a line through target that intersects closest to point A
             
-            var horizontal = Line.FromPoints(Point, (Point.x + 1, Point.y));
-            var vertical = Line.FromPoints(Point, (Point.x, Point.y + 1));
+            var horizontal = new LineSegment(Point, new(Point.X + 1, Point.Y)).Line;
+            var vertical = new LineSegment(Point, new(Point.X, Point.Y + 1)).Line;
             
             var horizontalIntersectAB = SegmentAB.Line.GetIntersect(horizontal);
             var verticalIntersectAB = SegmentAB.Line.GetIntersect(vertical);
             var horizontalIntersectDA = SegmentDA.Line.GetIntersect(horizontal);
             var verticalIntersectDA = SegmentDA.Line.GetIntersect(vertical);
 
-            var horizontalIntersectABToA = GetDistance(horizontalIntersectAB, Point);
-            var verticalIntersectABToA = GetDistance(verticalIntersectAB, Point);
-            var horizontalIntersectDAToA = GetDistance(horizontalIntersectDA, Point);
-            var verticalIntersectDAToA = GetDistance(verticalIntersectDA, Point);
+            var horizontalIntersectABToA = LineSegment.Distance(horizontalIntersectAB, Point);
+            var verticalIntersectABToA = LineSegment.Distance(verticalIntersectAB, Point);
+            var horizontalIntersectDAToA = LineSegment.Distance(horizontalIntersectDA, Point);
+            var verticalIntersectDAToA = LineSegment.Distance(verticalIntersectDA, Point);
             var min = new [] { horizontalIntersectABToA, verticalIntersectABToA, horizontalIntersectDAToA, verticalIntersectDAToA }.Where(x => !double.IsNaN(x)).Min();
 
             Segment nearSegment = null!;
@@ -414,24 +391,24 @@ internal static class MunsellUtils
             var farIntersect = farSegment.Line.GetIntersect(throughLine);
             start = EstimateHueAndChroma(nearSegment, nearIntersect);
             end = EstimateHueAndChroma(farSegment, farIntersect); 
-            distance = GetDistance(nearIntersect, Point) / GetDistance(nearIntersect, farIntersect);
+            distance = LineSegment.Distance(nearIntersect, Point) / LineSegment.Distance(nearIntersect, farIntersect);
             var h = InterpolateHue(start.h, end.h, distance);
-            var c = Interpolation.Interpolate(start.c, end.c, distance);
+            var c = Interpolation.Linear(start.c, end.c, distance);
             return (h, c);
         }
 
-        internal static (double h, double c) EstimateHueAndChroma(Segment segment, (double x, double y) intersect)
+        internal static (double h, double c) EstimateHueAndChroma(Segment segment, Chromaticity intersect)
         {
-            var distance = GetDistance(segment.Start.Point, intersect) / GetDistance(segment.Start.Point, segment.End.Point);
+            var distance = LineSegment.Distance(segment.Start.Point, intersect) / LineSegment.Distance(segment.Start.Point, segment.End.Point);
             var h = InterpolateHue(segment.Start.HueDegrees, segment.End.HueDegrees, distance);
-            var c = Interpolation.Interpolate(segment.Start.Chroma, segment.End.Chroma, distance);
+            var c = Interpolation.Linear(segment.Start.Chroma, segment.End.Chroma, distance);
             return (h, c);
         }
 
         internal static double InterpolateHue(double start, double end, double distance)
         {
             var adjustedHues = Hue.Adapt(start, end, HueSpan.Shorter);
-            return Interpolation.Interpolate(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
+            return Interpolation.Linear(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
         }
 
         public override string ToString() => Quadrilateral.ToString();
@@ -441,7 +418,8 @@ internal static class MunsellUtils
     {
         internal readonly Node Start = Start;
         internal readonly Node End = End;
-        internal readonly Line Line = Line.FromPoints(Start.Point, End.Point);
+        internal readonly LineSegment LineSegment = new(Start.Point, End.Point);
+        internal Line Line => LineSegment.Line;
         public override string ToString() => $"{Start.Point} --> {End.Point}";
     }
 }

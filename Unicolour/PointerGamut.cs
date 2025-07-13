@@ -94,8 +94,8 @@ internal static class PointerGamut
         var c10 = vertices[(nextL, prevH)];
         var c11 = vertices[(nextL, nextH)];
 
-        var c0 = Interpolation.Interpolate(c00, c01, hDistance);
-        var c1 = Interpolation.Interpolate(c10, c11, hDistance);
-        return Interpolation.Interpolate(c0, c1, lDistance);
+        var c0 = Interpolation.Linear(c00, c01, hDistance);
+        var c1 = Interpolation.Linear(c10, c11, hDistance);
+        return Interpolation.Linear(c0, c1, lDistance);
     }
 }

@@ -25,7 +25,7 @@ internal static class Interpolation
             hueSpan, premultiplyAlpha, mapToDegree);
         
         var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithDegreeMap(mapFromDegree);
-        var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
+        var alpha = Linear(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
         
         if (premultiplyAlpha)
         {
@@ -114,13 +114,13 @@ internal static class Interpolation
     
     private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
     {
-        var first = Interpolate(start.First, end.First, distance);
-        var second = Interpolate(start.Second, end.Second, distance);
-        var third = Interpolate(start.Third, end.Third, distance);
+        var first = Linear(start.First, end.First, distance);
+        var second = Linear(start.Second, end.Second, distance);
+        var third = Linear(start.Third, end.Third, distance);
         return new(first, second, third, start.HueIndex);
     }
 
-    internal static double Interpolate(double startValue, double endValue, double distance)
+    internal static double Linear(double startValue, double endValue, double distance)
     {
         var difference = endValue - startValue;
         return startValue + difference * distance;

@@ -12,7 +12,7 @@ internal static class Lut
     
     internal static (int lowerIndex, int upperIndex, double distance) Lookup(double valueCount, double normalisedValue)
     {
-        var exactIndex = Interpolation.Interpolate(0, valueCount - 1, normalisedValue.Clamp(0.0, 1.0));
+        var exactIndex = Interpolation.Linear(0, valueCount - 1, normalisedValue.Clamp(0.0, 1.0));
         var lowerIndex = (int)Math.Floor(exactIndex);
         var upperIndex = (int)Math.Ceiling(exactIndex);
         var distance = exactIndex - lowerIndex;

@@ -40,10 +40,10 @@ internal class SpectralBoundary
     private Intersects? FindIntersects(Chromaticity sample, Chromaticity white)
     {
         if (sample == white) return null;
-        var whiteToSampleLine = Line.FromPoints(white.Xy, sample.Xy);
+        var whiteToSample = new LineSegment(white, sample);
         
         var intersects = boundarySegments.Value
-            .Select(segment => GetIntersect(segment, whiteToSampleLine, sample))
+            .Select(segment => GetIntersect(segment, whiteToSample.Line, sample))
             .Where(intersect => intersect.IsOnSegment && !double.IsInfinity(intersect.DistanceToSample))
             .OrderByDescending(intersect => intersect.Segment.StartWavelength)
             .ToList();
@@ -87,21 +87,21 @@ internal class SpectralBoundary
         var wavelengthDelta = Math.Abs(segment.EndWavelength - segment.StartWavelength);
         var distance = (wavelengthDelta - (segment.EndWavelength - wavelength)) / wavelengthDelta;
         var pureChromaticity = new Chromaticity(
-            Interpolation.Interpolate(segment.StartChromaticity.X, segment.EndChromaticity.X, distance),
-            Interpolation.Interpolate(segment.StartChromaticity.Y, segment.EndChromaticity.Y, distance)
+            Interpolation.Linear(segment.StartChromaticity.X, segment.EndChromaticity.X, distance),
+            Interpolation.Linear(segment.StartChromaticity.Y, segment.EndChromaticity.Y, distance)
         );
         
         var useLineOfPurples = dominantWavelength < 0;
         if (useLineOfPurples)
         {
-            var whiteToSampleLine = Line.FromPoints(pureChromaticity.Xy, whiteChromaticity.Xy);
-            var intersect = GetIntersect(lineOfPurples.Value, whiteToSampleLine, pureChromaticity);
+            var whiteToSample = new LineSegment(pureChromaticity, whiteChromaticity);
+            var intersect = GetIntersect(lineOfPurples.Value, whiteToSample.Line, pureChromaticity);
             pureChromaticity = intersect.Chromaticity;
         }
 
         return new(
-            Interpolation.Interpolate(whiteChromaticity.X, pureChromaticity.X, purity),
-            Interpolation.Interpolate(whiteChromaticity.Y, pureChromaticity.Y, purity)
+            Interpolation.Linear(whiteChromaticity.X, pureChromaticity.X, purity),
+            Interpolation.Linear(whiteChromaticity.Y, pureChromaticity.Y, purity)
         );
     }
     
@@ -150,8 +150,7 @@ internal class SpectralBoundary
     {
         var startChromaticity = GetChromaticity(startWavelength);
         var endChromaticity = GetChromaticity(endWavelength);
-        var line = Line.FromPoints(startChromaticity.Xy, endChromaticity.Xy);
-        return new Segment(startWavelength, endWavelength, startChromaticity, endChromaticity, line);
+        return new Segment(startWavelength, endWavelength, startChromaticity, endChromaticity);
     }
     
     private readonly Dictionary<int, Chromaticity> wavelengthToChromaticityCache = new();
@@ -210,15 +209,16 @@ internal class SpectralBoundary
         public override string ToString() => $"{Near} & {Far}";
     }
 
-    internal record Segment(int StartWavelength, int EndWavelength, Chromaticity StartChromaticity, Chromaticity EndChromaticity, Line Line)
+    internal record Segment(int StartWavelength, int EndWavelength, Chromaticity StartChromaticity, Chromaticity EndChromaticity)
     {
         internal int StartWavelength { get; } = StartWavelength;
         internal int EndWavelength { get; } = EndWavelength;
+        internal LineSegment LineSegment { get; } = new(StartChromaticity, EndChromaticity);
+        internal Line Line => LineSegment.Line;
         internal bool IsLineOfPurples => EndWavelength < StartWavelength;
-        internal Chromaticity StartChromaticity { get; } = StartChromaticity;
-        internal Chromaticity EndChromaticity { get; } = EndChromaticity;
-        internal Line Line { get; } = Line;
-        internal double Length => Distance(StartChromaticity, EndChromaticity);
+        internal Chromaticity StartChromaticity => LineSegment.Start;
+        internal Chromaticity EndChromaticity => LineSegment.End;
+        internal double Length => LineSegment.Length;
 
         public override string ToString() => $"{StartWavelength} \u27f6 {EndWavelength}";
     }
@@ -236,7 +236,7 @@ internal class SpectralBoundary
         internal double SegmentLengthDifference => Math.Abs(SegmentLengthViaIntersect - Segment.Length); // the closer to zero, the closer it lies on the segment
         internal bool IsOnSegment => SegmentLengthDifference.IsEffectivelyZero();
         internal double SegmentInterpolationAmount => DistanceFromStart / SegmentLengthViaIntersect;
-        internal double Wavelength => Interpolation.Interpolate(Segment.StartWavelength, Segment.EndWavelength, SegmentInterpolationAmount);
+        internal double Wavelength => Interpolation.Linear(Segment.StartWavelength, Segment.EndWavelength, SegmentInterpolationAmount);
         
         public override string ToString() => $"{Segment} · {Wavelength:F2} nm · {DistanceToSample:F4} from sample";
     }

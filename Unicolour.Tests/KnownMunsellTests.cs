@@ -39,7 +39,7 @@ public class KnownMunsellTests
         for (var i = 0; i < RandomLuminanceTestData.Length; i++)
         {
             var v = TestUtils.RandomDouble(0, 10);
-            var y = Munsell.GetLuminance(v);
+            var y = MunsellFuncs.GetLuminance(v);
             RandomLuminanceTestData[i] = new TestCaseData(v, y);
         }
     }
@@ -59,7 +59,7 @@ public class KnownMunsellTests
         // scale Ymgo to get the intended expected luminance Y for CIE illuminant C 
         var expectedLuminance = data.LuminanceMgo / 100 * MgoScale;
         
-        var actual = Munsell.ToXyy(munsell);
+        var actual = MunsellFuncs.ToXyy(munsell);
         Assert.That(actual.Chromaticity.X, Is.EqualTo(data.X).Within(1e-16));
         Assert.That(actual.Chromaticity.Y, Is.EqualTo(data.Y).Within(1e-16));
         Assert.That(actual.Luminance, Is.EqualTo(expectedLuminance).Within(0.00025));
@@ -69,7 +69,7 @@ public class KnownMunsellTests
     public void KnownRgb(MunsellTestData data)
     {
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
-        var xyy = Munsell.ToXyy(munsell);
+        var xyy = MunsellFuncs.ToXyy(munsell);
 
         /*
          * to the best of my knowledge, the sRGB data for "real" colours provided by RIT aren't quite right
@@ -101,7 +101,7 @@ public class KnownMunsellTests
         // first entry of Table 2 in ASTM https://doi.org/10.1520/D1535-14R18
         var munsell = new Munsell(2.5, "R", 9, 6);
         var expected = new Xyy(0.3665, 0.3183, 76.70 / 100.0);
-        var actual = Munsell2.ToXyy(munsell);
+        var actual = MunsellFuncs.ToXyy(munsell);
         Assert.That(actual.Luminance, Is.EqualTo(expected.Luminance).Within(0.00005));
         
         // same node from raw data contains different value for Y, because it is relative to MgO white
@@ -113,23 +113,10 @@ public class KnownMunsellTests
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
     }
 
-    [Test]
-    public void DELETETHISTEST()
-    {
-        var munsell = new Munsell(8.66, "R", 8, 20);
-        // var xyyA = Munsell.ToXyy(munsell);
-        var xyy = Munsell2.ToXyy(munsell);
-        // var munsellRound = Munsell.FromXyy(xyy);
-        Console.WriteLine(munsell);
-        Console.WriteLine(xyy);
-        // Console.WriteLine(munsellRound);
-    }
-
-
     [TestCaseSource(nameof(LuminanceTestData))]
     public void ValueToLuminance(double value, double expectedLuminance)
     {
-        var y = Munsell.GetLuminance(value);
+        var y = MunsellFuncs.GetLuminance(value);
         Assert.That(y, Is.EqualTo(expectedLuminance / 100.0).Within(5e-16));
     }
 
@@ -137,25 +124,25 @@ public class KnownMunsellTests
     public void LuminanceToValue(double expectedValue, double luminance)
     {
         var y = luminance / 100.0;
-        var values = Enumerable.Range(0, 4).Select(i => Munsell.GetValue(y, iterationDepth: i)).ToList();
+        var values = Enumerable.Range(0, 4).Select(i => MunsellFuncs.GetValue(y, iterationDepth: i)).ToList();
         
-        Assert.That(values[0], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[0]));
-        Assert.That(values[1], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[1]));
-        Assert.That(values[2], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[2]));
-        Assert.That(values[3], Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[3]));
+        Assert.That(values[0], Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[0]));
+        Assert.That(values[1], Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[1]));
+        Assert.That(values[2], Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[2]));
+        Assert.That(values[3], Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[3]));
         
-        Assert.That(Munsell.IterationDepthError[0], Is.EqualTo(0.0035));
-        Assert.That(Munsell.IterationDepthError[1], Is.EqualTo(0.000005));
-        Assert.That(Munsell.IterationDepthError[2], Is.EqualTo(0.00000000005));
-        Assert.That(Munsell.IterationDepthError[3], Is.EqualTo(0.000000000000005));
+        Assert.That(MunsellFuncs.IterationDepthError[0], Is.EqualTo(0.0035));
+        Assert.That(MunsellFuncs.IterationDepthError[1], Is.EqualTo(0.000005));
+        Assert.That(MunsellFuncs.IterationDepthError[2], Is.EqualTo(0.00000000005));
+        Assert.That(MunsellFuncs.IterationDepthError[3], Is.EqualTo(0.000000000000005));
     }
     
     // TODO: move to roundtrip tests when available
     [TestCaseSource(nameof(RandomLuminanceTestData))]
     public void LuminanceToValueRandom(double expectedValue, double luminance)
     {
-        var v = Munsell.GetValue(luminance);
-        Assert.That(v, Is.EqualTo(expectedValue).Within(Munsell.IterationDepthError[3]));
+        var v = MunsellFuncs.GetValue(luminance);
+        Assert.That(v, Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[3]));
     }
 
     [Test]
@@ -169,7 +156,7 @@ public class KnownMunsellTests
          * far  (0.4240, 0.4030) to (0.4, 0.3863) is 63.32% to (0.3861, 0.3767) · 63.32% of 10YR /6 to 10YR /4 = 10YR /4.73
          * between (0.4, 0.4003) to (0.4, 0.4) is 2.29% to (0.4, 0.3863) · 2.29% of 2.5Y /4.88 to 10YR /4.73 = 2.44Y /4.88
          */
-        var xyyV6 = new Xyy(0.4, 0.4, Munsell.GetLuminance(6));
+        var xyyV6 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6));
         var expectedV6 = new Munsell(2.44, "Y", 6, 4.88);
         var actualV6 = Munsell.FromXyy(xyyV6);
         Assert.That(actualV6.ToString(), Is.EqualTo(expectedV6.ToString()));
@@ -182,7 +169,7 @@ public class KnownMunsellTests
          * far  (0.3778, 0.3719) to (0.4, 0.3884) is 68.52% to (0.4102, 0.3960) · 63.32% of 10YR /4 to 10YR /6 = 10YR /5.37
          * between (0.4, 0.4009) to (0.4, 0.4) is 7.30% to (0.4, 0.3884) · 7.30% of 2.5Y /5.53 to 10YR /5.37 = 2.32Y /5.52
          */
-        var xyyV7 = new Xyy(0.4, 0.4, Munsell.GetLuminance(7));
+        var xyyV7 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(7));
         var expectedV7 = new Munsell(2.32, "Y", 7, 5.52);
         var actualV7 = Munsell.FromXyy(xyyV7);
         Assert.That(actualV7.ToString(), Is.EqualTo(expectedV7.ToString()));
@@ -191,7 +178,7 @@ public class KnownMunsellTests
          * when V is between nodes, use result of lower and upper V and interpolate
          * target V = (6.25 - 6) / (7 - 6) = 25% from 2.44Y /4.88 to 2.32Y /5.52 = 2.41Y 6.25/5.04
          */
-        var xyy = new Xyy(0.4, 0.4, Munsell.GetLuminance(6.25));
+        var xyy = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6.25));
         var expected = new Munsell(2.41, "Y", 6.25, 5.04);
         var actual = Munsell.FromXyy(xyy);
         Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
@@ -215,9 +202,17 @@ public class KnownMunsellTests
          * for the other, the nearest intersect is along the vertical, and will interpolate along that axis
          * but since they are close together the result is expected to be similar
          */
-        var fromHorizontalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4033, Munsell.GetLuminance(6)));
-        var fromVerticalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4032, Munsell.GetLuminance(6)));
+        var fromHorizontalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4033, MunsellFuncs.GetLuminance(6)));
+        var fromVerticalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4032, MunsellFuncs.GetLuminance(6)));
         TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
     }
-   
+
+    [Test]
+    public void Test()
+    {
+        // var munsell = new Munsell(4.2, "YR", 8.1, 5.3);
+        var munsell = new Munsell(6.66, "R", 6.66, 6.66);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        Console.WriteLine(xyy);
+    }
 }

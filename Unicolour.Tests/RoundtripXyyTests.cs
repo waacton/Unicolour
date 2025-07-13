@@ -54,7 +54,7 @@ public class RoundtripXyyTests
         {
             var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
             var munsell = Munsell.FromXyy(original);
-            var roundtrip = Munsell.ToXyy(munsell);
+            var roundtrip = MunsellFuncs.ToXyy(munsell);
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, 0.08);
         }
         catch (InvalidOperationException e)
@@ -83,7 +83,7 @@ public class RoundtripXyyTests
         {
             var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
             var munsell = Munsell.FromXyy(original);
-            var roundtrip = Munsell.ToXyy(munsell);
+            var roundtrip = MunsellFuncs.ToXyy(munsell);
                 
             // conversion between V and Y is accurate
             // including it here would artificially increase reduce the error being tested

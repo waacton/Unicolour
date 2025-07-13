@@ -44,11 +44,11 @@ public class RoundtripMunsellTests
             var xyy = Munsell.ToXyy(original);
             var roundtrip = Munsell.FromXyy(xyy);
 
-            var (originalHue, roundtripHue) = Hue.Adapt(original.HueDegrees, roundtrip.HueDegrees, HueSpan.Shorter);
+            var (originalHue, roundtripHue) = Hue.Adapt(original.Hue.Degrees, roundtrip.Hue.Degrees, HueSpan.Shorter);
                 
             // conversion between V and Y is accurate
             // including it here would artificially increase reduce the error being tested
-            return (Math.Abs(originalHue - roundtripHue), Math.Abs(original.Chroma - roundtrip.Chroma));
+            return (Math.Abs(originalHue - roundtripHue), Math.Abs(original.C - roundtrip.C));
         }
         catch (InvalidOperationException e)
         {

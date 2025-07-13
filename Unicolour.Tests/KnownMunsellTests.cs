@@ -52,7 +52,7 @@ public class KnownMunsellTests
     public void KnownXyy(MunsellTestData data)
     {
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
-        var munsellFromDegrees = new Munsell(MunsellUtils.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
+        var munsellFromDegrees = new Munsell(Munsell.MunsellHue.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
         Assert.That(munsellFromDegrees, Is.EqualTo(munsell));
 
         // the Y value in the raw data is relative to MgO, and is not the correct luminance value
@@ -102,6 +102,7 @@ public class KnownMunsellTests
         var munsell = new Munsell(2.5, "R", 9, 6);
         var expected = new Xyy(0.3665, 0.3183, 76.70 / 100.0);
         var actual = Munsell.ToXyy(munsell);
+        var actual2 = Munsell2.ToXyy(munsell);
         Assert.That(actual.Luminance, Is.EqualTo(expected.Luminance).Within(0.00005));
         
         // same node from raw data contains different value for Y, because it is relative to MgO white
@@ -112,7 +113,23 @@ public class KnownMunsellTests
         Assert.That(actualMgo.Luminance, Is.GreaterThan(expected.Luminance));
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
     }
-    
+
+    [Test]
+    public void DELETETHISTEST()
+    {
+        // var munsellChroma6 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 6));
+        // var munsellChroma7 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 7));
+        // var munsellChroma625 = Munsell2.ToXyy(new Munsell(2.5, "R", 9, 6.25));
+//‘1.14R4.00/14.18
+        var munsell = new Munsell(8.66, "R", 8, 6.25);
+        var xyyA = Munsell.ToXyy(munsell);
+        var xyyB = Munsell2.ToXyy(munsell);
+        Console.WriteLine(munsell);
+        Console.WriteLine(xyyA);
+        Console.WriteLine(xyyB);
+    }
+
+
     [TestCaseSource(nameof(LuminanceTestData))]
     public void ValueToLuminance(double value, double expectedLuminance)
     {

@@ -10,26 +10,31 @@ namespace Wacton.Unicolour.Experimental;
 //       - input xy is beyond all x- and y-values in the dataset (form 2 segments from the 4 points in the same direction (how to choose pairing?) and extrapolate)
 public partial record Munsell
 {
-    public double HueDegrees { get; }
-    public (double number, string letter) Hue { get; }
-    public double Value { get; }
-    public double Chroma { get; }
+    internal MunsellHue Hue { get; }
+    public (double number, string letter) H => (Hue.Number, Hue.Letter);
+    public double V { get; }
+    public double C { get; }
     
     // TODO: remove when Munsell becomes a subclass of ColourRepresentation
-    public ColourTriplet Triplet => new(HueDegrees, Value, Chroma, 0);
+    public ColourTriplet Triplet => new(Hue.Degrees, V, C, 0);
 
-    public Munsell(double hueNumber, string hueLetter, double value, double chroma) : this(ToDegrees(hueNumber, hueLetter), value, chroma) { }
-    public Munsell(double hueDegrees, double value, double chroma)
+    public Munsell(double h1, string h2, double v, double c)
     {
-        HueDegrees = hueDegrees;
-        Hue = FromDegrees(HueDegrees);
-        Value = value;
-        Chroma = chroma;
+        Hue = new MunsellHue(h1, h2);
+        V = v;
+        C = c;
+    }
+    
+    internal Munsell(double h, double v, double c)
+    {
+        Hue = new MunsellHue(h);
+        V = v;
+        C = c;
     }
 
     public Munsell(double greyNumber)
     {
-        HueDegrees = 0;
+        // HueDegrees = 0;
         // Value = null;
         // Chroma = null;
     }
@@ -40,7 +45,7 @@ public partial record Munsell
 
     public static Xyy ToXyy(Munsell munsell)
     {
-        var value = munsell.Value;
+        var value = munsell.V;
         // if (!value.HasValue) throw new NotImplementedException();
         
         var luminance = GetLuminance(value);
@@ -95,6 +100,69 @@ public partial record Munsell
         return Interpolation.Interpolate(vLower, vUpper, distance);
     }
     
-    public override string ToString() => $"{Hue.number:0.##}{Hue.letter} {Value:0.##}/{Chroma:0.##}";
-}
+    internal record MunsellHue
+    {
+        internal double Number { get; }
+        internal string Letter { get; }
+        internal double Degrees { get; }
 
+        internal MunsellHue(double number, string letter)
+        {
+            Number = number;
+            Letter = letter;
+            Degrees = ToDegrees(number, letter);
+        }
+
+        internal MunsellHue(double degrees)
+        {
+            var (number, letter) = FromDegrees(degrees);
+            Number = number;
+            Letter = letter;
+            Degrees = degrees;
+        }
+        
+        // this is only used by the table of radially interpolated hue segments
+        // which are defined anti-clockwise as red -> blue is depicted on a chromaticity diagram
+        // in terms of traditional hue degrees, this means the end is defined first
+        internal bool IsBetween((double number, string letter) end, (double number, string letter) start)
+        {
+            return IsBetween(new MunsellHue(end.number, end.letter), new MunsellHue(start.number, start.letter));
+        }
+        
+        private bool IsBetween(MunsellHue end, MunsellHue start)
+        {
+            var adapted = Wacton.Unicolour.Hue.Adapt(end.Degrees, start.Degrees, HueSpan.Shorter);
+            var min = Math.Min(adapted.start, adapted.end);
+            var max = Math.Max(adapted.start, adapted.end);
+            return Degrees >= min && Degrees <= max || Degrees + 360 >= min && Degrees + 360 <= max;
+        }
+        
+        internal static double ToDegrees(double hueNumber, string hueLetter)
+        {
+            var bandIndex = Array.IndexOf(NodeHueLetters, hueLetter);
+
+            var minDegrees = bandIndex * DegreesPerHueLetter;
+            var maxDegrees = (bandIndex + 1) * DegreesPerHueLetter;
+            var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
+            return Interpolation.Interpolate(minDegrees, maxDegrees, distance);
+        }
+
+        internal static (double number, string letter) FromDegrees(double degrees)
+        {
+            var bandLocation = degrees.Modulo(360) / DegreesPerHueLetter;
+            var bandIndex = (int)Math.Truncate(bandLocation);
+            var hueLetter = NodeHueLetters[bandIndex];
+            var hueNumber = (bandLocation - bandIndex) * 10;
+            if (hueNumber != 0) return (hueNumber, hueLetter);
+        
+            bandIndex = bandIndex == 0 ? NodeHueLetters.Length - 1 : bandIndex - 1;
+            hueLetter = NodeHueLetters[bandIndex];
+            hueNumber = 10;
+            return (hueNumber, hueLetter);
+        }
+        
+        public override string ToString() => $"{Number}{Letter} ({Degrees}°)";
+    }
+    
+    public override string ToString() => $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}";
+}

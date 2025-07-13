@@ -13,6 +13,7 @@ public partial record Munsell
 
     internal record Node(double HueNumber, string HueLetter, double Value, int Chroma, double X, double Y, double LuminanceMagnesiumOxide)
     {
+        internal readonly MunsellHue Hue = new(HueNumber, HueLetter);
         internal readonly double HueNumber = HueNumber;
         internal readonly string HueLetter = HueLetter;
         internal readonly double Value = Value;
@@ -21,12 +22,17 @@ public partial record Munsell
         internal readonly double Y = Y;
         internal readonly double LuminanceMagnesiumOxide = LuminanceMagnesiumOxide; // actual Y = 0.975 * Ymgo
 
-        internal readonly double HueDegrees = MunsellUtils.ToDegrees(HueNumber, HueLetter);
+        internal readonly double HueDegrees = MunsellHue.ToDegrees(HueNumber, HueLetter);
         internal (double x, double y) Point => (X, Y);
+        
+        internal bool IsMatch(MunsellHue hue, double value, double chroma)
+        {
+            return hue.Number == Hue.Number && hue.Letter == Hue.Letter && value == Value && chroma == Chroma;
+        }
 
         internal bool IsMatch(double hueNumber, string hueLetter, double value, double chroma)
         {
-            return hueNumber == HueNumber && hueLetter == HueLetter && value == Value && chroma == Chroma;
+            return hueNumber == Hue.Number && hueLetter == Hue.Letter && value == Value && chroma == Chroma;
         }
 
         public override string ToString() => $"{HueNumber}{HueLetter} {Value}/{Chroma} = ({X}, {Y})";

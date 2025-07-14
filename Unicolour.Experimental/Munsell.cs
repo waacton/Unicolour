@@ -12,6 +12,8 @@ public partial record Munsell
     public double V { get; }
     public double C { get; }
     
+    public bool IsGreyscale => V <= 0.0 || C <= 0.0; // TODO: what about V > 1? probably
+    
     // TODO: remove when Munsell becomes a subclass of ColourRepresentation
     public ColourTriplet Triplet => new(Hue.Degrees, V, C, 0);
 
@@ -110,5 +112,5 @@ public partial record Munsell
         public override string ToString() => $"{Number}{Letter} ({Degrees}°)";
     }
     
-    public override string ToString() => $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}";
+    public override string ToString() => IsGreyscale ? $"N{V:0.##}" : $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}";
 }

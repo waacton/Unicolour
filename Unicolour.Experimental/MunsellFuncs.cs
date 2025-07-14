@@ -259,8 +259,24 @@ internal static class MunsellFuncs
     {
         var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity, degrees: true);
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfig));
+
+        double initialH;
+        double initialC;
+        if (lch.IsGreyscale)
+        {
+            // TODO: use polar coordinates for a rough guess when LCH isn't useful?
+            //       this can happen when Y <= 0 (not tested)
+            //       or when (x,y) coordinates are negative (very unreasonable, but starting search from chroma != 0 does find a roundtrip result)
+            initialH = lch.H;
+            initialC = 1;
+        }
+        else
+        {
+            initialH = lch.H;
+            initialC = lch.C / 5.5;
+        }
         
-        var munsell = new Munsell(lch.H, GetValue(xyy.Luminance), lch.C / 5.5);
+        var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
         var delta = double.MaxValue;
         var iterations = 0;
         
@@ -271,7 +287,7 @@ internal static class MunsellFuncs
             delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
             iterations++;
         } while (delta > 0.000001 && iterations < 10);
-
+        
         return munsell;
     }
     
@@ -302,7 +318,7 @@ internal static class MunsellFuncs
         } while (!hasConverged);
         
         var distance = (targetAngle - start.angle) / (end.angle - start.angle);
-        var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance);
+        var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance).Modulo(360);
         return new Munsell(h, v, c);
     }
     

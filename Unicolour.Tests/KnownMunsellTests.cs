@@ -212,7 +212,8 @@ public class KnownMunsellTests
     {
         // var munsell = new Munsell(4.2, "YR", 8.1, 5.3);
         // var munsell = new Munsell(6.66, "R", 6.66, 6.66);
-        var munsell = new Munsell(4.2, "G", 5.5, 99);
+        // var munsell = new Munsell(4.2, "G", 5.5, 99);
+        var munsell = new Munsell(237.53961331646494, 0.9382942803771765, 18.571708212242463);
         var xyy = MunsellFuncs.ToXyy(munsell);
         var round = MunsellFuncs.FromXyy(xyy);
         Console.WriteLine(munsell);

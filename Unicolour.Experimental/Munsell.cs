@@ -4,12 +4,9 @@ namespace Wacton.Unicolour.Experimental;
 
 // TODO: handle grey ("N" hue e.g. N 5/ ... or 0 chroma e.g. 10YR 5/0)
 // TODO: clamp hue between 0 - 10, clamp value to 10, handle extreme chroma values
-// TODO: handle boundary cases
-//       - input xy is beyond all x-values in the dataset (in either direction; need to extrapolate horizontals from 2x closest points in other direction)
-//       - input xy is beyond all y-values in the dataset (in either direction; need to extrapolate verticals from 2x closest points in other direction)
-//       - input xy is beyond all x- and y-values in the dataset (form 2 segments from the 4 points in the same direction (how to choose pairing?) and extrapolate)
 public partial record Munsell
 {
+    // TODO: expose a constrained hue, modulo'd to 360, and use in conversions
     internal MunsellHue Hue { get; }
     public (double number, string letter) H => (Hue.Number, Hue.Letter);
     public double V { get; }
@@ -44,12 +41,6 @@ public partial record Munsell
         var v = MunsellFuncs.GetValue(xyy.Luminance);
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
-    }
-
-    internal static double GetLuminance(double v)
-    {
-        var y = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
-        return y / 100.0;
     }
     
     internal record MunsellHue
@@ -96,11 +87,14 @@ public partial record Munsell
             var minDegrees = bandIndex * DegreesPerHueLetter;
             var maxDegrees = (bandIndex + 1) * DegreesPerHueLetter;
             var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
-            return Interpolation.Linear(minDegrees, maxDegrees, distance).Modulo(360);
+            var baseDegrees = Interpolation.Linear(minDegrees, maxDegrees, distance);
+            var degrees = baseDegrees - 2 * DegreesPerHueNumber; // shifts degrees so 5R is 0 instead of 0R / 10RP
+            return baseDegrees.Modulo(360);
         }
 
         internal static (double number, string letter) FromDegrees(double degrees)
         {
+            var baseDegrees = degrees + 2 * DegreesPerHueNumber; // shifts degrees so 0R is 0 instead of 5R
             var bandLocation = degrees.Modulo(360) / DegreesPerHueLetter;
             var bandIndex = (int)Math.Truncate(bandLocation);
             var hueLetter = NodeHueLetters[bandIndex];

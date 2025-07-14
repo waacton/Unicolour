@@ -1,3 +1,5 @@
+using static Wacton.Unicolour.Utils;
+
 namespace Wacton.Unicolour;
 
 // TODO: probably need to add Length & Polar to line tests
@@ -10,12 +12,16 @@ internal record LineSegment(Chromaticity Start, Chromaticity End)
     internal Line Line { get; } = new(GetSlopeAndIntercept(Start, End));
     internal double Length { get; } = Distance(Start, End);
     
-    // polar coordinates of end point relative to start point
-    internal (double radius, double angle) Polar => (Length, Math.Atan2(End.Y - Start.Y, End.X - Start.X));
-    
-    internal static double Distance(Chromaticity point1, Chromaticity point2)
+    internal static double Distance(Chromaticity start, Chromaticity end)
     {
-        return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+        return Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
+    }
+
+    internal static (double radius, double angle) Polar(Chromaticity start, Chromaticity end, bool degrees = false)
+    {
+        var radius = Distance(start, end);
+        var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
+        return (radius, degrees ? ToDegrees(angle) : angle);
     }
 
     private static (double slope, double intercept) GetSlopeAndIntercept(Chromaticity point1, Chromaticity point2)

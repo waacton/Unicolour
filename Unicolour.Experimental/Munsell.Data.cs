@@ -2,9 +2,9 @@
 
 public partial record Munsell
 {
-    internal static readonly string[] NodeHueLetters = { "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP", "R" };
-    internal static readonly double[] NodeValues = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    internal static readonly int[] NodeChromas = Enumerable.Range(1, 25).Select(x => x * 2).ToArray();
+    internal static readonly string[] NodeHueLetters = { "R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP" };
+    internal static readonly double[] NodeValues = { 0.0, 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    internal static readonly int[] NodeChromas = Enumerable.Range(0, 25).Select(x => x * 2).ToArray();
 
     // there are 10 letter bands, so each letter band represents 36° of 360° (YR = 0-36°, Y = 36-72°, ..., R = 324-360°)
     // there are 4 numbers in each letter band of 36°, so each number represents 9° of 36° (2.5 = 9°, 5 = 18°, 7.5 = 27°, 10 = 36°)

@@ -8,6 +8,7 @@ internal static class MunsellFuncs
     // TODO: use white point from illuminant after testing
     // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     private static Chromaticity WhitePoint = new(0.31006, 0.31616);
+    private static readonly XyzConfiguration XyzConfig = new(WhitePoint.ToWhitePoint());
     
     internal static Xyy ToXyy(Munsell munsell)
     {
@@ -44,6 +45,8 @@ internal static class MunsellFuncs
     
     private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h)
     {
+        if (nodeV == 0) return WhitePoint;
+        
         var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
         MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
         MunsellHue upperH = new(Math.Ceiling(scaled) * DegreesPerHueNumber);
@@ -74,6 +77,8 @@ internal static class MunsellFuncs
 
         Chromaticity GetXyForC(double nodeC)
         {
+            if (nodeC == 0) return WhitePoint;
+            
             // consecutive hues, same chroma
             var node1 = Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
             var node2 = Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
@@ -83,9 +88,8 @@ internal static class MunsellFuncs
                 return exact.Point;
             }
 
-            // TODO: check hue is adapted properly
-            var polar1 = new LineSegment(WhitePoint, node1.Point).Polar;
-            var polar2 = new LineSegment(WhitePoint, node2.Point).Polar;
+            var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
+            var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
 
             var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
             var angle = Interpolation.Linear(polar1.angle, polar2.angle, hueDistance);
@@ -201,8 +205,7 @@ internal static class MunsellFuncs
             if (result != null) return nodeC;
         }
 
-        // TODO: what does it mean if we've ended up here?!
-        return 0;
+        throw new NotImplementedException($"No chroma found for {nodeH}, {nodeV})!");
     }
 
     internal static double GetLuminance(double v)
@@ -243,5 +246,81 @@ internal static class MunsellFuncs
         var yUpper = GetLuminance(vUpper);
         var distance = (y - yLower) / (yUpper - yLower);
         return Interpolation.Linear(vLower, vUpper, distance);
+    }
+
+    internal static Munsell FromXyy(Xyy xyy)
+    {
+        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity, degrees: true);
+        var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfig));
+        
+        var munsell = new Munsell(lch.H, GetValue(xyy.Luminance), lch.C / 5.5);
+        var delta = double.MaxValue;
+        var iterations = 0;
+        
+        do
+        {
+            munsell = ModifyHue(munsell, target.angle);
+            munsell = ModifyChroma(munsell, target.radius);
+            delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
+            iterations++;
+        } while (delta > 0.000001 && iterations < 20);
+
+        return munsell;
+    }
+    
+    // note: "angle" in this method refers to polar coordinates of (x, y), not to the hue degrees
+    private static Munsell ModifyHue(Munsell munsell, double targetAngle)
+    {
+        // TODO: deconstruction when a colour representation
+        var v = munsell.V;
+        var c = munsell.C;
+        
+        var (_, angle) = Polar(munsell);
+        var hueStep = targetAngle - angle;
+        var isIncreasing = hueStep > 0;
+
+        (Munsell munsell, double angle) start;
+        (Munsell munsell, double angle) end = (munsell, angle);
+
+        do
+        {
+            start = end;
+            var adjustedMunsell = new Munsell(end.munsell.Hue.Degrees + hueStep, v, c);
+            end = (adjustedMunsell, Polar(adjustedMunsell).angle);
+        } while (isIncreasing ? end.angle < targetAngle : end.angle > targetAngle);
+        
+        var distance = (targetAngle - start.angle) / (end.angle - start.angle);
+        var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance);
+        return new Munsell(h, v, c);
+    }
+    
+    private static Munsell ModifyChroma(Munsell munsell, double targetRadius)
+    {
+        // TODO: deconstruction when a colour representation
+        var h = munsell.Hue.Degrees;
+        var v = munsell.V;
+        
+        var (radius, _) = Polar(munsell);
+        var chromaFactor = targetRadius / radius;
+        var isIncreasing = targetRadius > radius;
+        
+        (Munsell munsell, double radius) start;
+        (Munsell munsell, double radius) end = (munsell, radius);
+
+        do
+        {
+            start = end;
+            var adjustedMunsell = new Munsell(h, v, end.munsell.C * chromaFactor);
+            end = (adjustedMunsell, Polar(adjustedMunsell).radius);
+        } while (isIncreasing ? end.radius < targetRadius : end.radius > targetRadius);
+        
+        var distance = (targetRadius - start.radius) / (end.radius - start.radius);
+        var c = Interpolation.Linear(start.munsell.C, end.munsell.C, distance);
+        return new Munsell(h, v, c);
+    }
+    
+    private static (double radius, double angle) Polar(Munsell munsell)
+    {
+        return LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity, degrees: true);
     }
 }

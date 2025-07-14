@@ -55,14 +55,17 @@ internal static class MunsellFuncs
         // so 2 nodes of the same chroma between hues are required for this to work
         var maxC = new[] { MaxChroma(nodeV, lowerH), MaxChroma(nodeV, upperH) }.Min();
         
-        // TODO: unsure if using max chroma only and then extrapolating from hue is acceptable
-        //       doesn't seem roundtrippable with the more accurate algorithm, but could fall back to my basic interpolation?
-        // var lowerNodeC = c > maxC ? NodeChromas.Last(nodeC => nodeC < maxC) : NodeChromas.Last(nodeC => nodeC <= c);
-        // var upperNodeC = c > maxC ? maxC : NodeChromas.First(nodeC => nodeC >= c);
+        // if (c > maxC) throw new NotImplementedException($"No data for both {lowerH} and {upperH} at chroma {c} (max chroma {maxC})");
+        // var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+        // var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
         
-        if (c > maxC) throw new NotImplementedException($"No data for both {lowerH} and {upperH} at chroma {c} (max chroma {maxC})");
-        var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+        // TODO: when c > maxC, this selection of lower and upper nodes will trigger extrapolation
+        //       it's an extension to the original algorithm that attempts to support extreme, unrealistic values
+        //       and the fact that extrapolation is used should maybe be recorded in some kind of search result similar to `Xyz.HctToXyzSearchResult`
+        //       alongside whether or not FromXyy() converged with however many iterations
+        var lowerNodeC = c > maxC ? NodeChromas.Last(nodeC => nodeC < maxC) : NodeChromas.Last(nodeC => nodeC <= c);
+        var upperNodeC = c > maxC ? maxC : NodeChromas.First(nodeC => nodeC >= c);
+        
         if (lowerNodeC == upperNodeC)
         {
             return GetXyForC(lowerNodeC);
@@ -88,6 +91,10 @@ internal static class MunsellFuncs
                 return exact.Point;
             }
 
+            // TODO: is there a scenario where polar1 = -PI and polar2 = +PI (i.e. 0 and 360)
+            //       and need wraparound handling?
+            // var adjustedHues = Hue.Wrap(start, end, HueSpan.Shorter);
+            // return Interpolation.Linear(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
             var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
             var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
 
@@ -263,7 +270,7 @@ internal static class MunsellFuncs
             munsell = ModifyChroma(munsell, target.radius);
             delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
             iterations++;
-        } while (delta > 0.000001 && iterations < 20);
+        } while (delta > 0.000001 && iterations < 10);
 
         return munsell;
     }
@@ -276,8 +283,9 @@ internal static class MunsellFuncs
         var c = munsell.C;
         
         var (_, angle) = Polar(munsell);
+        (targetAngle, angle) = Hue.Wrap(targetAngle, angle, HueSpan.Shorter);
         var hueStep = targetAngle - angle;
-        var isIncreasing = hueStep > 0;
+        bool hasConverged;
 
         (Munsell munsell, double angle) start;
         (Munsell munsell, double angle) end = (munsell, angle);
@@ -287,7 +295,11 @@ internal static class MunsellFuncs
             start = end;
             var adjustedMunsell = new Munsell(end.munsell.Hue.Degrees + hueStep, v, c);
             end = (adjustedMunsell, Polar(adjustedMunsell).angle);
-        } while (isIncreasing ? end.angle < targetAngle : end.angle > targetAngle);
+            (targetAngle, end.angle) = Hue.Wrap(targetAngle, end.angle, HueSpan.Shorter);
+
+            hasConverged = start.angle <= targetAngle && end.angle >= targetAngle
+                           || start.angle >= targetAngle && end.angle <= targetAngle;
+        } while (!hasConverged);
         
         var distance = (targetAngle - start.angle) / (end.angle - start.angle);
         var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance);
@@ -302,7 +314,7 @@ internal static class MunsellFuncs
         
         var (radius, _) = Polar(munsell);
         var chromaFactor = targetRadius / radius;
-        var isIncreasing = targetRadius > radius;
+        bool hasConverged;
         
         (Munsell munsell, double radius) start;
         (Munsell munsell, double radius) end = (munsell, radius);
@@ -312,7 +324,10 @@ internal static class MunsellFuncs
             start = end;
             var adjustedMunsell = new Munsell(h, v, end.munsell.C * chromaFactor);
             end = (adjustedMunsell, Polar(adjustedMunsell).radius);
-        } while (isIncreasing ? end.radius < targetRadius : end.radius > targetRadius);
+            
+            hasConverged = start.radius <= targetRadius && end.radius >= targetRadius
+                           || start.radius >= targetRadius && end.radius <= targetRadius;
+        } while (!hasConverged);
         
         var distance = (targetRadius - start.radius) / (end.radius - start.radius);
         var c = Interpolation.Linear(start.munsell.C, end.munsell.C, distance);

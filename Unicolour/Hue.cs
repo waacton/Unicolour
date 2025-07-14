@@ -1,8 +1,8 @@
 ﻿namespace Wacton.Unicolour;
 
-public class Hue
+internal static class Hue
 {
-    internal static (double start, double end) Adapt(double start, double end, HueSpan hueSpan)
+    internal static (double start, double end) Wrap(double start, double end, HueSpan hueSpan)
     {
         return hueSpan switch
         {

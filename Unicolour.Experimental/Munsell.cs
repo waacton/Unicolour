@@ -74,7 +74,7 @@ public partial record Munsell
         
         private bool IsBetween(MunsellHue end, MunsellHue start)
         {
-            var adapted = Wacton.Unicolour.Hue.Adapt(end.Degrees, start.Degrees, HueSpan.Shorter);
+            var adapted = Wacton.Unicolour.Hue.Wrap(end.Degrees, start.Degrees, HueSpan.Shorter);
             var min = Math.Min(adapted.start, adapted.end);
             var max = Math.Max(adapted.start, adapted.end);
             return Degrees >= min && Degrees <= max || Degrees + 360 >= min && Degrees + 360 <= max;

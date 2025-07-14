@@ -106,7 +106,7 @@ internal static class Interpolation
         var startHue = ignoreHue || startHasHue ? startTriplet.HueValue() : endTriplet.HueValue();
         var endHue = ignoreHue || endHasHue ? endTriplet.HueValue() : startTriplet.HueValue();
         
-        (startHue, endHue) = Hue.Adapt(startHue, endHue, hueSpan);
+        (startHue, endHue) = Hue.Wrap(startHue, endHue, hueSpan);
         var adjustedStartHue = startTriplet.WithHueOverride(startHue);
         var adjustedEndHue = endTriplet.WithHueOverride(endHue);
         return (adjustedStartHue, adjustedEndHue);

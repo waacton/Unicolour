@@ -407,7 +407,7 @@ internal static class MunsellUtils
 
         internal static double InterpolateHue(double start, double end, double distance)
         {
-            var adjustedHues = Hue.Adapt(start, end, HueSpan.Shorter);
+            var adjustedHues = Hue.Wrap(start, end, HueSpan.Shorter);
             return Interpolation.Linear(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
         }
 

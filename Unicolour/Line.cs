@@ -21,7 +21,7 @@ internal record LineSegment(Chromaticity Start, Chromaticity End)
     {
         var radius = Distance(start, end);
         var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
-        return (radius, degrees ? ToDegrees(angle) : angle);
+        return (radius, degrees ? ToDegrees(angle).Modulo(360) : angle);
     }
 
     private static (double slope, double intercept) GetSlopeAndIntercept(Chromaticity point1, Chromaticity point2)

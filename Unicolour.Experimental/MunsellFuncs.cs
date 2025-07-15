@@ -46,26 +46,9 @@ internal static class MunsellFuncs
     private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h)
     {
         if (nodeV == 0) return WhitePoint;
-        
-        var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
-        MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
-        MunsellHue upperH = new(Math.Ceiling(scaled) * DegreesPerHueNumber);
-        
-        // interpolation along the chroma ovoid is the core of this algorithm
-        // so 2 nodes of the same chroma between hues are required for this to work
-        var maxC = new[] { MaxChroma(nodeV, lowerH), MaxChroma(nodeV, upperH) }.Min();
-        
-        // if (c > maxC) throw new NotImplementedException($"No data for both {lowerH} and {upperH} at chroma {c} (max chroma {maxC})");
-        // var lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-        // var upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
-        
-        // TODO: when c > maxC, this selection of lower and upper nodes will trigger extrapolation
-        //       it's an extension to the original algorithm that attempts to support extreme, unrealistic values
-        //       and the fact that extrapolation is used should maybe be recorded in some kind of search result similar to `Xyz.HctToXyzSearchResult`
-        //       alongside whether or not FromXyy() converged with however many iterations
-        var lowerNodeC = c > maxC ? NodeChromas.Last(nodeC => nodeC < maxC) : NodeChromas.Last(nodeC => nodeC <= c);
-        var upperNodeC = c > maxC ? maxC : NodeChromas.First(nodeC => nodeC >= c);
-        
+
+        var (lowerH, upperH) = BoundingH(h);
+        var (lowerNodeC, upperNodeC) = BoundingC(nodeV, c, lowerH, upperH);
         if (lowerNodeC == upperNodeC)
         {
             return GetXyForC(lowerNodeC);
@@ -91,13 +74,11 @@ internal static class MunsellFuncs
                 return exact.Point;
             }
 
-            // TODO: is there a scenario where polar1 = -PI and polar2 = +PI (i.e. 0 and 360)
-            //       and need wraparound handling?
-            // var adjustedHues = Hue.Wrap(start, end, HueSpan.Shorter);
-            // return Interpolation.Linear(adjustedHues.start, adjustedHues.end, distance).Modulo(360);
             var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
             var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
+            (polar1.angle, polar2.angle) = Hue.Wrap(polar1.angle, polar2.angle, HueSpan.Shorter);
 
+            // TODO: do these hue degrees also need wrapping?
             var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
             var angle = Interpolation.Linear(polar1.angle, polar2.angle, hueDistance);
             var angleDistance = (angle - polar1.angle) / (polar2.angle - polar1.angle);
@@ -110,8 +91,8 @@ internal static class MunsellFuncs
             if (useRadialInterpolation)
             {
                 var r = Interpolation.Linear(polar1.radius, polar2.radius, angleDistance);
-                var x = WhitePoint.X + r * Math.Cos(angle);
-                var y = WhitePoint.Y + r * Math.Sin(angle);
+                var x = WhitePoint.X + r * Math.Cos(Utils.ToRadians(angle));
+                var y = WhitePoint.Y + r * Math.Sin(Utils.ToRadians(angle));
                 return new(x, y);
             }
             else
@@ -121,6 +102,41 @@ internal static class MunsellFuncs
                 return new(x, y);
             }
         }
+    }
+    
+    private static (MunsellHue lower, MunsellHue upper) BoundingH(MunsellHue h)
+    {
+        var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
+        MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
+        MunsellHue upperH = new(Math.Ceiling(scaled) * DegreesPerHueNumber);
+        return (lowerH, upperH);
+    }
+    
+    private static (int lower, int upper) BoundingC(double nodeV, double c, MunsellHue lowerH, MunsellHue upperH)
+    {
+        // interpolation along the chroma ovoid is the core of this algorithm
+        // so 2 nodes of the same chroma between hues are required for this to work
+        var maxC = new[] { MaxChroma(nodeV, lowerH), MaxChroma(nodeV, upperH) }.Min();
+        
+        // TODO: when c > maxC, this selection of lower and upper nodes will trigger extrapolation
+        //       it's an extension to the original algorithm that attempts to support extreme, unrealistic values
+        //       and the fact that extrapolation is used should maybe be recorded in some kind of search result similar to `Xyz.HctToXyzSearchResult`
+        //       alongside whether or not FromXyy() converged with however many iterations
+        int lowerNodeC;
+        int upperNodeC;
+
+        if (c > maxC)
+        {
+            lowerNodeC = NodeChromas.Last(nodeC => nodeC < maxC);
+            upperNodeC = maxC;
+        }
+        else
+        {
+            lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
+            upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
+        }
+
+        return (lowerNodeC, upperNodeC);
     }
     
     // TODO: REVIEW CAREFULLY! very easy place for a mistake to be made during transcript
@@ -257,7 +273,7 @@ internal static class MunsellFuncs
 
     internal static Munsell FromXyy(Xyy xyy)
     {
-        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity, degrees: true);
+        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfig));
 
         double initialH;
@@ -277,17 +293,27 @@ internal static class MunsellFuncs
         }
         
         var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
-        var delta = double.MaxValue;
-        var iterations = 0;
+        var iterations = new List<XyyToMunsellIteration>();
+        var converged = false;
+
+        const double convergenceThreshold = 0.000001;
+        const int maxIterations = 10;
         
-        do
+        while (!converged && iterations.Count < maxIterations)
         {
             munsell = ModifyHue(munsell, target.angle);
             munsell = ModifyChroma(munsell, target.radius);
-            delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
-            iterations++;
-        } while (delta > 0.000001 && iterations < 10);
+            var delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
+            converged = delta <= convergenceThreshold;
+            iterations.Add(new(munsell, delta));
+        }
+
+        if (!converged)
+        {
+            munsell = iterations.OrderBy(x => x.Delta).First().Munsell;
+        }
         
+        munsell.XyyToMunsellSearchResult = new XyyToMunsellSearchResult(iterations, converged);
         return munsell;
     }
     
@@ -301,21 +327,21 @@ internal static class MunsellFuncs
         var (_, angle) = Polar(munsell);
         (targetAngle, angle) = Hue.Wrap(targetAngle, angle, HueSpan.Shorter);
         var hueStep = targetAngle - angle;
-        bool hasConverged;
+        var converged = false;
 
-        (Munsell munsell, double angle) start;
+        (Munsell munsell, double angle) start = (default, default)!;
         (Munsell munsell, double angle) end = (munsell, angle);
 
-        do
+        while (!converged)
         {
             start = end;
             var adjustedMunsell = new Munsell(end.munsell.Hue.Degrees + hueStep, v, c);
             end = (adjustedMunsell, Polar(adjustedMunsell).angle);
             (targetAngle, end.angle) = Hue.Wrap(targetAngle, end.angle, HueSpan.Shorter);
 
-            hasConverged = start.angle <= targetAngle && end.angle >= targetAngle
+            converged = start.angle <= targetAngle && end.angle >= targetAngle
                            || start.angle >= targetAngle && end.angle <= targetAngle;
-        } while (!hasConverged);
+        }
         
         var distance = (targetAngle - start.angle) / (end.angle - start.angle);
         var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance).Modulo(360);
@@ -330,20 +356,20 @@ internal static class MunsellFuncs
         
         var (radius, _) = Polar(munsell);
         var chromaFactor = targetRadius / radius;
-        bool hasConverged;
+        var converged = false;
         
-        (Munsell munsell, double radius) start;
+        (Munsell munsell, double radius) start = (default, default)!;
         (Munsell munsell, double radius) end = (munsell, radius);
 
-        do
+        while (!converged)
         {
             start = end;
             var adjustedMunsell = new Munsell(h, v, end.munsell.C * chromaFactor);
             end = (adjustedMunsell, Polar(adjustedMunsell).radius);
             
-            hasConverged = start.radius <= targetRadius && end.radius >= targetRadius
+            converged = start.radius <= targetRadius && end.radius >= targetRadius
                            || start.radius >= targetRadius && end.radius <= targetRadius;
-        } while (!hasConverged);
+        }
         
         var distance = (targetRadius - start.radius) / (end.radius - start.radius);
         var c = Interpolation.Linear(start.munsell.C, end.munsell.C, distance);
@@ -352,6 +378,20 @@ internal static class MunsellFuncs
     
     private static (double radius, double angle) Polar(Munsell munsell)
     {
-        return LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity, degrees: true);
+        return LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity);
+    }
+
+    internal record XyyToMunsellSearchResult(List<XyyToMunsellIteration> Iterations, bool Converged)
+    {
+        internal List<XyyToMunsellIteration> Iterations { get; } = Iterations;
+        internal bool Converged { get; } = Converged;
+        public override string ToString() => $"Iterations:{Iterations.Count} · Converged:{Converged}";
+    }
+    
+    internal record XyyToMunsellIteration(Munsell Munsell, double Delta)
+    {
+        internal Munsell Munsell { get; } = Munsell;
+        internal double Delta { get; } = Delta;
+        public override string ToString() => $"{Munsell} · Delta:{Delta}";
     }
 }

@@ -207,13 +207,23 @@ public class KnownMunsellTests
         TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
     }
 
+    /*
+     *       ViaXyy((198.3955900373936, 1.0531207901848094, 22.87153930469601))
+      ViaXyy((261.4886386509765, 1.239729779169264, 25.364832569319212))
+      ViaXyy((288.7953245271806, 8.00264119073761, 24.197409529363306))
+      ViaXyy((341.5379146188112, 8.458205224767584, 24.04057882529564))
+
+     */
     [Test]
     public void Test()
     {
         // var munsell = new Munsell(4.2, "YR", 8.1, 5.3);
         // var munsell = new Munsell(6.66, "R", 6.66, 6.66);
         // var munsell = new Munsell(4.2, "G", 5.5, 99);
-        var munsell = new Munsell(237.53961331646494, 0.9382942803771765, 18.571708212242463);
+        // var munsell = new Munsell(237.53961331646494, 0.9382942803771765, 18.571708212242463); // negative xy coordinates
+        // var munsell = new Munsell(107.01845505928627, 0.35467330379196027, 11.757722436978339); // missing chroma node? (10Y 0.2) - also need to check min chroma?
+        // var munsell = new Munsell(34.952871816744235, 4.1728654834605825, 17.47029135168143);
+        var munsell = new Munsell(261.4886386509765, 1.239729779169264, 25.364832569319212); // maybe beyond max chroma?
         var xyy = MunsellFuncs.ToXyy(munsell);
         var round = MunsellFuncs.FromXyy(xyy);
         Console.WriteLine(munsell);
@@ -224,10 +234,10 @@ public class KnownMunsellTests
     [Test]
     public void Test2()
     {
-        // var xyy = new Xyy(0.52, 0.27, 11.71 / 100.0);
+        var xyy = new Xyy(0.52, 0.27, 11.71 / 100.0);
         // var xyy = new Xyy(0.33677419510472395, 0.1708935237882816, 0.001797989184534332);
         // var xyy = new Xyy(0.7858633707744189, 0.007105953622768335, 0.274929467457103);
-        var xyy = new Xyy(0.9338835363255807, 0.3152111547768083, 0.6212223067431817);
+        // var xyy = new Xyy(0.9338835363255807, 0.3152111547768083, 0.6212223067431817);
         var munsell = MunsellFuncs.FromXyy(xyy);
         var round = MunsellFuncs.ToXyy(munsell);
         Console.WriteLine(xyy);

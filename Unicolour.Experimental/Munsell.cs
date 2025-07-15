@@ -112,5 +112,8 @@ public partial record Munsell
         public override string ToString() => $"{Number}{Letter} ({Degrees}°)";
     }
     
+    // only for potential debugging or diagnostics
+    internal MunsellFuncs.XyyToMunsellSearchResult? XyyToMunsellSearchResult;
+    
     public override string ToString() => IsGreyscale ? $"N{V:0.##}" : $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}";
 }

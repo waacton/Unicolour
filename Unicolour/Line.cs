@@ -17,11 +17,11 @@ internal record LineSegment(Chromaticity Start, Chromaticity End)
         return Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
     }
 
-    internal static (double radius, double angle) Polar(Chromaticity start, Chromaticity end, bool degrees = false)
+    internal static (double radius, double angle) Polar(Chromaticity start, Chromaticity end)
     {
         var radius = Distance(start, end);
         var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
-        return (radius, degrees ? ToDegrees(angle).Modulo(360) : angle);
+        return (radius, ToDegrees(angle).Modulo(360));
     }
 
     private static (double slope, double intercept) GetSlopeAndIntercept(Chromaticity point1, Chromaticity point2)

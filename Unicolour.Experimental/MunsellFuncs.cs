@@ -240,10 +240,10 @@ internal static class MunsellFuncs
             6 => nodeC switch
             {
                 2 or 4 => h.IsBetween((7.5, "GY"), (5, "R")) || h.IsBetween((7.5, "P"), (5, "BG")),
-                6 => h.IsBetween((2.5, "G"), (2.5, "R")) || h.IsBetween((7.5, "P"), (7.5, "BG")),
-                8 or 10 => h.IsBetween((2.5, "G"), (2.5, "R")) || h.IsBetween((5, "P"), (10, "BG")),
-                12 or 14 => h.IsBetween((2.5, "G"), (2.5, "R")) || h.IsBetween((2.5, "P"), (10, "BG")),
-                >= 16 => h.IsBetween((2.5, "G"), (2.5, "R")) || h.IsBetween((10, "PB"), (10, "BG")),
+                6 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((7.5, "P"), (7.5, "BG")),
+                8 or 10 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((5, "P"), (10, "BG")),
+                12 or 14 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((2.5, "P"), (10, "BG")),
+                >= 16 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((10, "PB"), (10, "BG")),
                 _ => false
             },
             7 => nodeC switch

@@ -1,7 +1,42 @@
 ﻿using static Wacton.Unicolour.Experimental.Munsell;
 
-
 namespace Wacton.Unicolour.Experimental;
+
+internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double LowerV, double UpperV, double LowerC, double UpperC)
+{
+    internal MunsellHue LowerH { get; } = LowerH;
+    internal MunsellHue UpperH { get; } = UpperH;
+    internal double LowerV { get; } = LowerV;
+    internal double UpperV { get; } = UpperV;
+    internal double LowerC { get; } = LowerC;
+    internal double UpperC { get; } = UpperC;
+    
+    internal readonly int[] UpperChromaLimits = {
+        MunsellFuncs.MaxChroma(LowerV, LowerH),
+        MunsellFuncs.MaxChroma(LowerV, UpperH),
+        MunsellFuncs.MaxChroma(UpperV, LowerH),
+        MunsellFuncs.MaxChroma(UpperV, UpperH)
+    };
+    
+    internal readonly int[] LowerChromaLimits = {
+        MunsellFuncs.MinChroma(LowerV, LowerH),
+        MunsellFuncs.MinChroma(LowerV, UpperH),
+        MunsellFuncs.MinChroma(UpperV, LowerH),
+        MunsellFuncs.MinChroma(UpperV, UpperH)
+    };
+
+    internal bool AboveMaxChroma => UpperChromaLimits.Any(limit => UpperC > limit);
+    internal bool BelowMinChroma => LowerChromaLimits.Any(limit => LowerC < limit);
+    internal bool IsChromaWithinRange => !AboveMaxChroma && !BelowMinChroma;
+
+    internal double MaxChromaScale => UpperChromaLimits.Min() == 0.0 ? 0.0 : UpperC / UpperChromaLimits.Min();
+
+    internal double AverageChromaBeyondLimit()
+    {
+        var excesses = UpperChromaLimits.Select(limit => UpperC > limit ? UpperC - limit : 0);
+        return excesses.Average();
+    }
+}
 
 internal static class MunsellFuncs
 {
@@ -9,6 +44,23 @@ internal static class MunsellFuncs
     // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     private static Chromaticity WhitePoint = new(0.31006, 0.31616);
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint.ToWhitePoint());
+
+    internal static MunsellBounds GetBounds(Munsell munsell)
+    {
+        var h = munsell.Hue;
+        var v = munsell.V;
+        var c = munsell.C;
+        
+        // these are the naive bounds, and will be adjusted if not available in the dataset
+        // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
+        //      if it doesn't, a different chroma that exists for both will be used
+        var (lowerH, upperH) = BoundingH(h);
+        var lowerV = NodeValues.Last(nodeV => nodeV <= v);
+        var upperV = NodeValues.First(nodeV => nodeV >= v);
+        var lowerC = NodeChromas.Last(nodeC => nodeC <= c);
+        var upperC = NodeChromas.First(nodeC => nodeC >= c);
+        return new MunsellBounds(lowerH, upperH, lowerV, upperV, lowerC, upperC);
+    }
     
     internal static Xyy ToXyy(Munsell munsell)
     {
@@ -104,7 +156,7 @@ internal static class MunsellFuncs
         }
     }
     
-    private static (MunsellHue lower, MunsellHue upper) BoundingH(MunsellHue h)
+    internal static (MunsellHue lower, MunsellHue upper) BoundingH(MunsellHue h)
     {
         var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
         MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
@@ -129,6 +181,7 @@ internal static class MunsellFuncs
         {
             lowerNodeC = NodeChromas.Last(nodeC => nodeC < maxC);
             upperNodeC = maxC;
+            // Console.WriteLine($"requested chroma {c} too large, max for both {lowerH} & {upperH} is {maxC}, delta: {c - maxC}");
         }
         else
         {
@@ -219,9 +272,21 @@ internal static class MunsellFuncs
         };
     }
     
-    private static int MaxChroma(double nodeV, MunsellHue nodeH)
+    internal static int MaxChroma(double nodeV, MunsellHue nodeH)
     {
         for (var i = NodeChromas.Length - 1; i >= 0; i--)
+        {
+            var nodeC = NodeChromas[i];
+            var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH, nodeV, nodeC));
+            if (result != null) return nodeC;
+        }
+
+        throw new NotImplementedException($"No chroma found for {nodeH}, {nodeV})!");
+    }
+    
+    internal static int MinChroma(double nodeV, MunsellHue nodeH)
+    {
+        for (var i = 0; i < NodeChromas.Length - 1; i++)
         {
             var nodeC = NodeChromas[i];
             var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH, nodeV, nodeC));
@@ -296,7 +361,7 @@ internal static class MunsellFuncs
         var iterations = new List<XyyToMunsellIteration>();
         var converged = false;
 
-        const double convergenceThreshold = 0.000001;
+        const double convergenceThreshold = 0.00001;
         const int maxIterations = 10;
         
         while (!converged && iterations.Count < maxIterations)
@@ -391,6 +456,7 @@ internal static class MunsellFuncs
     internal record XyyToMunsellIteration(Munsell Munsell, double Delta)
     {
         internal Munsell Munsell { get; } = Munsell;
+        internal MunsellBounds Bounds => GetBounds(Munsell);
         internal double Delta { get; } = Delta;
         public override string ToString() => $"{Munsell} · Delta:{Delta}";
     }

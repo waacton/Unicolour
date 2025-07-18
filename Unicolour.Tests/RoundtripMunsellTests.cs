@@ -17,14 +17,61 @@ public class RoundtripMunsellTests
             var xyy = MunsellFuncs.ToXyy(original);
             var roundtrip = MunsellFuncs.FromXyy(xyy);
 
-            Console.WriteLine(roundtrip.XyyToMunsellSearchResult);
-            if (!roundtrip.XyyToMunsellSearchResult!.Converged)
+            if (original.C < 0.5)
             {
-                Assert.Ignore("Did not converge; TODO: assert with higher tolerance");
+                TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.75, 5e-15, 0.5]);
+                return;
+            }
+
+            var originalBounds = original.GetBounds();
+            var roundtripBounds = roundtrip.GetBounds();
+            Console.WriteLine($"original ... C {original.C:F2} is above max chroma by {originalBounds.MaxChromaScale}x ({string.Join(", ", originalBounds.UpperChromaLimits)})");
+            Console.WriteLine($"roundtrip .. C {roundtrip.C:F2} is above max chroma by {roundtripBounds.MaxChromaScale}x ({string.Join(", ", roundtripBounds.UpperChromaLimits)})");
+            if (originalBounds.MaxChromaScale > 2.5 || roundtripBounds.MaxChromaScale > 2.5)
+            {
+                // roundtrip is almost never this inaccurate even when chroma is not within range
+                // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+                TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [7.5, 5e-15, 15]);
+                return;
+            }
+                
+            if (originalBounds.MaxChromaScale > 1.5 || roundtripBounds.MaxChromaScale > 1.5)
+            {
+                // roundtrip is almost never this inaccurate even when chroma is not within range
+                // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+                TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 7]);
+                return;
+            }
+            
+            if (originalBounds.MaxChromaScale > 1 || roundtripBounds.MaxChromaScale > 1)
+            {
+                // roundtrip is almost never this inaccurate even when chroma is not within range
+                // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+                TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 1.25]);
                 return;
             }
             
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.1, 5e-15, 0.1]);
+            
+            //
+            // var bounds = MunsellFuncs.GetBounds(original);
+            // Console.WriteLine($"original  {original} average chroma above limits = {bounds.AverageChromaBeyondLimit()}");
+            //
+            // Console.WriteLine(xyy);
+            //
+            // foreach (var iteration in roundtrip.XyyToMunsellSearchResult.Iterations)
+            // {
+            //     Console.WriteLine($"iteration {iteration.Munsell} average chroma above limits = {iteration.Bounds.AverageChromaBeyondLimit()}");
+            // }
+            //
+            // Console.WriteLine(roundtrip.XyyToMunsellSearchResult);
+            // if (!roundtrip.XyyToMunsellSearchResult!.Converged)
+            // {
+            //     Assert.Ignore("Did not converge; TODO: assert with higher tolerance");
+            //     return;
+            // }
+            //
+            // TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.1, 5e-15, 0.1]);
         }
         catch (NotImplementedException e)
         {

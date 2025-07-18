@@ -132,12 +132,12 @@ internal static class TestUtils
     {
         var details = $"Expected --- {expected}\nActual ----- {actual}";
         string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
-        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"), actual.HueIndex == 0);
+        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"));
         AssertTripletValue(actual.Second, expected.Second, tolerances[1], FailMessage("Channel 2"));
-        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"), actual.HueIndex == 2);
+        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"));
     }
 
-    private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)
+    private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage)
     {
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance), failMessage);
     }

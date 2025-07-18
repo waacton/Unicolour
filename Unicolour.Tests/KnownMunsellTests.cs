@@ -207,28 +207,90 @@ public class KnownMunsellTests
         TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
     }
 
-    /*
-     *       ViaXyy((198.3955900373936, 1.0531207901848094, 22.87153930469601))
-      ViaXyy((261.4886386509765, 1.239729779169264, 25.364832569319212))
-      ViaXyy((288.7953245271806, 8.00264119073761, 24.197409529363306))
-      ViaXyy((341.5379146188112, 8.458205224767584, 24.04057882529564))
 
-     */
+    /*
+      not showing signs of initially much beyond chroma limit
+      ViaXyy((296.99122278711053, 7.1458862344028375, 23.753411792350175))
+      ViaXyy((323.68983215449, 9.248789828312518, 24.491452043176217))
+      ViaXyy((342.0394935653883, 9.329025361760642, 25.859770450315057))
+      ViaXyy((342.676682413887, 8.86670264104983, 17.600438424189612))
+      ViaXyy((99.27903834847132, 0.6756384858878572, 18.217854208673895))
+      ViaXyy((99.29021501653409, 0.7114380838955181, 3.393813318850121))
+      ViaXyy((215.76870092982298, 9.386059990398635, 24.346793792313516))
+      ViaXyy((90.15400657427764, 8.504026262273152, 25.48630965416118))
+      ViaXyy((242.6383075733755, 2.2328441372792684, 24.231759645463015))
+      ViaXyy((249.84998185176948, 6.850177746172708, 24.885076446944645))
+      ViaXyy((306.06862703675625, 7.450675395678025, 25.661328740880105))
+      
+      does not converge
+      ViaXyy((10.357846197671957, 9.267729934046438, 12.320776414129435))
+      ViaXyy((11.740166736842784, 4.402800534264263, 2.4638227277392852))
+      ViaXyy((14.940456541401916, 4.2218144824049295, 6.123591786188552))
+      ViaXyy((21.793297613763357, 2.640517833386938, 19.100890877843067))
+      ViaXyy((261.03621832725435, 0.6098862579241404, 12.34181986003048))
+      ViaXyy((39.5611419937967, 2.0198983883140853, 17.51239891286274))
+      ViaXyy((9.832657990067215, 5.72194569986478, 3.0789138344934406))
+
+      results in negative xy, which means black LCH and no initial start (gets stuck at white point)
+      (237.53961331646494, 0.9382942803771765, 18.571708212242463); // negative xy coordinates
+      
+      no chroma data at all for 10Y 0.2/ so needs to fall back to 0 chroma (white point)
+      (107.01845505928627, 0.35467330379196027, 11.757722436978339)
+      
+      no chroma data at all for these either
+      ViaXyy((102.02004375365254, 0.2544340832926528, 19.199055759042295))
+      ViaXyy((120.80436018871674, 0.15141985879204345, 9.295290360348211))
+      ViaXyy((185.660339017603, 0.05265165828158613, 17.09847455867324))
+      ViaXyy((21.623650354786474, 0.10198991388955747, 2.558440708292178))
+      ViaXyy((310.7389843153769, 0.17841275958321634, 9.710527097398455))
+      ViaXyy((60.02764606853851, 0.015378879617444774, 18.644192832214145))
+
+    */
     [Test]
     public void Test()
     {
         // var munsell = new Munsell(4.2, "YR", 8.1, 5.3);
         // var munsell = new Munsell(6.66, "R", 6.66, 6.66);
         // var munsell = new Munsell(4.2, "G", 5.5, 99);
-        // var munsell = new Munsell(237.53961331646494, 0.9382942803771765, 18.571708212242463); // negative xy coordinates
-        // var munsell = new Munsell(107.01845505928627, 0.35467330379196027, 11.757722436978339); // missing chroma node? (10Y 0.2) - also need to check min chroma?
-        // var munsell = new Munsell(34.952871816744235, 4.1728654834605825, 17.47029135168143);
-        var munsell = new Munsell(261.4886386509765, 1.239729779169264, 25.364832569319212); // maybe beyond max chroma?
-        var xyy = MunsellFuncs.ToXyy(munsell);
-        var round = MunsellFuncs.FromXyy(xyy);
-        Console.WriteLine(munsell);
-        Console.WriteLine(xyy);
-        Console.WriteLine(round);
+        var original = new Munsell(14.634999986621494, 6.912932056226737, 14.467970738013658);
+        var xyy = MunsellFuncs.ToXyy(original);
+        var roundtrip = MunsellFuncs.FromXyy(xyy);
+
+        if (original.C < 0.5)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.75, 5e-15, 0.5]);
+            return;
+        }
+
+        var originalBounds = original.GetBounds();
+        var roundtripBounds = roundtrip.GetBounds();
+        Console.WriteLine($"original ... C {original.C:F2} is above max chroma by {originalBounds.MaxChromaScale}x ({string.Join(", ", originalBounds.UpperChromaLimits)})");
+        Console.WriteLine($"roundtrip .. C {roundtrip.C:F2} is above max chroma by {roundtripBounds.MaxChromaScale}x ({string.Join(", ", roundtripBounds.UpperChromaLimits)})");
+        if (originalBounds.MaxChromaScale > 2.5 || roundtripBounds.MaxChromaScale > 2.5)
+        {
+            // roundtrip is almost never this inaccurate even when chroma is not within range
+            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [7.5, 5e-15, 15]);
+            return;
+        }
+            
+        if (originalBounds.MaxChromaScale > 1.5 || roundtripBounds.MaxChromaScale > 1.5)
+        {
+            // roundtrip is almost never this inaccurate even when chroma is not within range
+            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 7]);
+            return;
+        }
+        
+        if (originalBounds.MaxChromaScale > 1 || roundtripBounds.MaxChromaScale > 1)
+        {
+            // roundtrip is almost never this inaccurate even when chroma is not within range
+            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 1.25]);
+            return;
+        }
+        
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.1, 5e-15, 0.1]);
     }
 
     [Test]

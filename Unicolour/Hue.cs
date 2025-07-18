@@ -2,7 +2,7 @@
 
 internal static class Hue
 {
-    internal static (double start, double end) Wrap(double start, double end, HueSpan hueSpan)
+    internal static (double start, double end) Unwrap(double start, double end, HueSpan hueSpan)
     {
         return hueSpan switch
         {

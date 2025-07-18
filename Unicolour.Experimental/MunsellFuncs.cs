@@ -128,7 +128,7 @@ internal static class MunsellFuncs
 
             var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
             var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
-            (polar1.angle, polar2.angle) = Hue.Wrap(polar1.angle, polar2.angle, HueSpan.Shorter);
+            (polar1.angle, polar2.angle) = Hue.Unwrap(polar1.angle, polar2.angle, HueSpan.Shorter);
 
             // TODO: do these hue degrees also need wrapping?
             var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
@@ -389,27 +389,21 @@ internal static class MunsellFuncs
         var v = munsell.V;
         var c = munsell.C;
         
-        var (_, angle) = Polar(munsell);
-        (targetAngle, angle) = Hue.Wrap(targetAngle, angle, HueSpan.Shorter);
-        var hueStep = targetAngle - angle;
+        HueToAngleData start = null!;
+        HueToAngleData end = new(munsell, targetAngle);
+        var hueStep = end.Unwrapped.targetAngle - end.Unwrapped.angle; 
+
         var converged = false;
-
-        (Munsell munsell, double angle) start = (default, default)!;
-        (Munsell munsell, double angle) end = (munsell, angle);
-
         while (!converged)
         {
             start = end;
-            var adjustedMunsell = new Munsell(end.munsell.Hue.Degrees + hueStep, v, c);
-            end = (adjustedMunsell, Polar(adjustedMunsell).angle);
-            (targetAngle, end.angle) = Hue.Wrap(targetAngle, end.angle, HueSpan.Shorter);
-
-            converged = start.angle <= targetAngle && end.angle >= targetAngle
-                           || start.angle >= targetAngle && end.angle <= targetAngle;
+            end = new HueToAngleData(new(start.Munsell.Hue.Degrees + hueStep, v, c), targetAngle);
+            converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
         }
-        
-        var distance = (targetAngle - start.angle) / (end.angle - start.angle);
-        var h = Interpolation.Linear(start.munsell.Hue.Degrees, end.munsell.Hue.Degrees, distance).Modulo(360);
+
+        var (startAngle, endAngle) = UnwrapAngles(start.Angle, end.Angle);
+        var distance = (start.Unwrapped.targetAngle - start.Unwrapped.angle) / (endAngle - startAngle);
+        var h = Interpolation.Linear(start.Munsell.Hue.Degrees, end.Munsell.Hue.Degrees, distance).Modulo(360);
         return new Munsell(h, v, c);
     }
     
@@ -419,33 +413,64 @@ internal static class MunsellFuncs
         var h = munsell.Hue.Degrees;
         var v = munsell.V;
         
-        var (radius, _) = Polar(munsell);
-        var chromaFactor = targetRadius / radius;
-        var converged = false;
+        ChromaToRadiusData start = null!;
+        ChromaToRadiusData end = new(munsell, targetRadius);
+        var chromaFactor = end.TargetRadius / end.Radius;
         
-        (Munsell munsell, double radius) start = (default, default)!;
-        (Munsell munsell, double radius) end = (munsell, radius);
-
+        var converged = false;
         while (!converged)
         {
             start = end;
-            var adjustedMunsell = new Munsell(h, v, end.munsell.C * chromaFactor);
-            end = (adjustedMunsell, Polar(adjustedMunsell).radius);
-            
-            converged = start.radius <= targetRadius && end.radius >= targetRadius
-                           || start.radius >= targetRadius && end.radius <= targetRadius;
+            end = new ChromaToRadiusData(new(h, v, start.Munsell.C * chromaFactor), targetRadius);
+            converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
         }
         
-        var distance = (targetRadius - start.radius) / (end.radius - start.radius);
-        var c = Interpolation.Linear(start.munsell.C, end.munsell.C, distance);
+        var distance = (start.TargetRadius - start.Radius) / (end.Radius - start.Radius);
+        var c = Interpolation.Linear(start.Munsell.C, end.Munsell.C, distance);
         return new Munsell(h, v, c);
     }
     
-    private static (double radius, double angle) Polar(Munsell munsell)
+    private static (double radius, double angle) Polar(Munsell munsell) => LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity);
+    private static (double start, double end) UnwrapAngles(double start, double end) => Hue.Unwrap(start, end, HueSpan.Shorter);
+    
+    private record HueToAngleData
     {
-        return LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity);
+        internal Munsell Munsell { get; }
+        internal double Angle { get; }
+        internal double TargetAngle { get; }
+        internal (double angle, double targetAngle) Unwrapped { get; }
+        internal bool IsBelowTarget => Unwrapped.angle <= Unwrapped.targetAngle;
+        internal bool IsAboveTarget => Unwrapped.angle >= Unwrapped.targetAngle;
+        
+        internal HueToAngleData(Munsell munsell, double targetAngle)
+        {
+            Munsell = munsell;
+            Angle = Polar(munsell).angle;
+            TargetAngle = targetAngle;
+            Unwrapped = UnwrapAngles(Angle, TargetAngle); 
+        }
+        
+        public override string ToString() => $"{Munsell} ({Angle} vs. {TargetAngle}) --> ({Unwrapped.angle} vs. {Unwrapped.targetAngle})";
     }
-
+    
+    private record ChromaToRadiusData
+    {
+        internal Munsell Munsell { get; }
+        internal double Radius { get; }
+        internal double TargetRadius { get; }
+        internal bool IsBelowTarget => Radius <= TargetRadius;
+        internal bool IsAboveTarget => Radius >= TargetRadius;
+        
+        internal ChromaToRadiusData(Munsell munsell, double targetRadius)
+        {
+            Munsell = munsell;
+            Radius = Polar(munsell).radius;
+            TargetRadius = targetRadius;
+        }
+        
+        public override string ToString() => $"{Munsell} ({Radius} vs. {TargetRadius})";
+    }
+    
     internal record XyyToMunsellSearchResult(List<XyyToMunsellIteration> Iterations, bool Converged)
     {
         internal List<XyyToMunsellIteration> Iterations { get; } = Iterations;

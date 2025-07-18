@@ -126,11 +126,3 @@ internal static class Interpolation
         return startValue + difference * distance;
     }
 }
-
-public enum HueSpan
-{
-    Shorter,
-    Longer,
-    Increasing,
-    Decreasing
-}

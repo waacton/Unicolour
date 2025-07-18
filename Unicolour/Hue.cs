@@ -1,5 +1,13 @@
 ﻿namespace Wacton.Unicolour;
 
+public enum HueSpan
+{
+    Shorter,
+    Longer,
+    Increasing,
+    Decreasing
+}
+
 internal static class Hue
 {
     internal static (double start, double end) Unwrap(double start, double end, HueSpan hueSpan)

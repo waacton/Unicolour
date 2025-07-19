@@ -44,23 +44,6 @@ internal static class MunsellFuncs
     // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     private static Chromaticity WhitePoint = new(0.31006, 0.31616);
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint.ToWhitePoint());
-
-    internal static MunsellBounds GetBounds(Munsell munsell)
-    {
-        var h = munsell.Hue;
-        var v = munsell.V;
-        var c = munsell.C;
-        
-        // these are the naive bounds, and will be adjusted if not available in the dataset
-        // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
-        //      if it doesn't, a different chroma that exists for both will be used
-        var (lowerH, upperH) = BoundingH(h);
-        var lowerV = NodeValues.Last(nodeV => nodeV <= v);
-        var upperV = NodeValues.First(nodeV => nodeV >= v);
-        var lowerC = NodeChromas.Last(nodeC => nodeC <= c);
-        var upperC = NodeChromas.First(nodeC => nodeC >= c);
-        return new MunsellBounds(lowerH, upperH, lowerV, upperV, lowerC, upperC);
-    }
     
     internal static Xyy ToXyy(Munsell munsell)
     {
@@ -99,7 +82,10 @@ internal static class MunsellFuncs
     {
         if (nodeV == 0) return WhitePoint;
 
-        var (lowerH, upperH) = BoundingH(h);
+        // TODO: can this be replaced by using an earlier-calculated Bounds object?
+        var (lowerIntervalH, upperIntervalH) = ToIntervals(h.Degrees, DegreesPerHueNumber);
+        var (lowerH, upperH) = (new MunsellHue(lowerIntervalH), new MunsellHue(upperIntervalH)); 
+        
         var (lowerNodeC, upperNodeC) = BoundingC(nodeV, c, lowerH, upperH);
         if (lowerNodeC == upperNodeC)
         {
@@ -156,12 +142,12 @@ internal static class MunsellFuncs
         }
     }
     
-    internal static (MunsellHue lower, MunsellHue upper) BoundingH(MunsellHue h)
+    internal static (double lower, double upper) ToIntervals(double number, double interval)
     {
-        var scaled = h.Degrees / DegreesPerHueNumber; // maps 0-360 to 0-40 (10 letter bands with 4 numbers per band)
-        MunsellHue lowerH = new(Math.Floor(scaled) * DegreesPerHueNumber);
-        MunsellHue upperH = new(Math.Ceiling(scaled) * DegreesPerHueNumber);
-        return (lowerH, upperH);
+        var scaled = number / interval;
+        var lower = Math.Floor(scaled) * interval;
+        var upper = Math.Ceiling(scaled) * interval;
+        return (lower, upper);
     }
     
     private static (int lower, int upper) BoundingC(double nodeV, double c, MunsellHue lowerH, MunsellHue upperH)
@@ -281,7 +267,7 @@ internal static class MunsellFuncs
             if (result != null) return nodeC;
         }
 
-        throw new NotImplementedException($"No chroma found for {nodeH}, {nodeV})!");
+        throw new NotImplementedException($"No chroma found for {nodeH} at V={nodeV})!");
     }
     
     internal static int MinChroma(double nodeV, MunsellHue nodeH)
@@ -293,7 +279,7 @@ internal static class MunsellFuncs
             if (result != null) return nodeC;
         }
 
-        throw new NotImplementedException($"No chroma found for {nodeH}, {nodeV})!");
+        throw new NotImplementedException($"No chroma found for {nodeH} at V={nodeV})!");
     }
 
     internal static double GetLuminance(double v)
@@ -481,7 +467,6 @@ internal static class MunsellFuncs
     internal record XyyToMunsellIteration(Munsell Munsell, double Delta)
     {
         internal Munsell Munsell { get; } = Munsell;
-        internal MunsellBounds Bounds => GetBounds(Munsell);
         internal double Delta { get; } = Delta;
         public override string ToString() => $"{Munsell} · Delta:{Delta}";
     }

@@ -50,11 +50,10 @@ public partial record Munsell
         // these are the naive bounds, and will be adjusted if not available in the dataset
         // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
         //      if it doesn't, a different chroma that exists for both will be used
-        var (lowerH, upperH) = MunsellFuncs.BoundingH(Hue);
-        var lowerV = NodeValues.Last(nodeV => nodeV <= V);
-        var upperV = NodeValues.First(nodeV => nodeV >= V);
-        var lowerC = NodeChromas.Last(nodeC => nodeC <= C);
-        var upperC = NodeChromas.First(nodeC => nodeC >= C);
+        var hueIntervals = MunsellFuncs.ToIntervals(Hue.Degrees, DegreesPerHueNumber);
+        var (lowerH, upperH) = (new MunsellHue(hueIntervals.lower), new MunsellHue(hueIntervals.upper));
+        var (lowerV, upperV) = MunsellFuncs.ToIntervals(V, V < 1.0 ? 0.2 : 1);
+        var (lowerC, upperC) = MunsellFuncs.ToIntervals(C, 2);
         return new MunsellBounds(lowerH, upperH, lowerV, upperV, lowerC, upperC);
     }
     

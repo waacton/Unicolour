@@ -32,10 +32,10 @@ public class RoundtripMunsellTests
                  * these tolerances are based on gathering this data
                  * ----------
                  * NOTE:
-                 * despite these outliers, the tolerances are remaining like this, and this test can be expected to fail occasionally
+                 * for now the tolerances will not include the outliers, and can be expected to fail occasionally
                  * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
                  * once confident that conversion is robust, and occasional errors are outliers
-                 * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1  
+                 * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
                  */
                 var maxChromaScale = Math.Max(original.GetBounds().MaxChromaScale, roundtrip.GetBounds().MaxChromaScale);
                 tolerance = maxChromaScale switch

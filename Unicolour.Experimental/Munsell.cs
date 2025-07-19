@@ -11,24 +11,21 @@ public partial record Munsell
     public (double number, string letter) H => (Hue.Number, Hue.Letter);
     public double V { get; }
     public double C { get; }
+    internal Lazy<MunsellBounds> Bounds { get; }
     
     public bool IsGreyscale => V <= 0.0 || C <= 0.0; // TODO: what about V > 1? probably
     
     // TODO: remove when Munsell becomes a subclass of ColourRepresentation
     public ColourTriplet Triplet => new(Hue.Degrees, V, C, 0);
 
-    public Munsell(double h1, string h2, double v, double c)
+    public Munsell(double h1, string h2, double v, double c) : this(new MunsellHue(h1, h2), v, c) { }
+    internal Munsell(double h, double v, double c) : this(new MunsellHue(h), v, c) { }
+    private Munsell(MunsellHue h, double v, double c)
     {
-        Hue = new MunsellHue(h1, h2);
+        Hue = h;
         V = v;
         C = c;
-    }
-    
-    internal Munsell(double h, double v, double c)
-    {
-        Hue = new MunsellHue(h);
-        V = v;
-        C = c;
+        Bounds = new Lazy<MunsellBounds>(GetBounds);
     }
 
     public Munsell(double greyNumber)

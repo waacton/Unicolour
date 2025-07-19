@@ -37,7 +37,38 @@ public class RoundtripXyyTests
             var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
             var munsell = MunsellFuncs.FromXyy(original);
             var roundtrip = MunsellFuncs.ToXyy(munsell);
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, 0.00001);
+            
+            double tolerance;
+            if (munsell.C < 0.5)
+            {
+                Console.WriteLine("⚠️ low chroma");
+                tolerance = 0.000001;
+            }
+            else
+            {
+                /*
+                 * "max chroma scale" is a measure of how far outside the munsell dataset the chroma is
+                 * e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
+                 * from running 100,000s of conversions, large deltas during roundtrip conversion correlates pretty well with this
+                 * although there are rare outliers where large deltas appear at lower scales (but never <= 1, i.e. within known data points)
+                 * these tolerances are based on gathering this data
+                 * ----------
+                 * NOTE:
+                 * for now the tolerances will not include the outliers, and can be expected to fail occasionally
+                 * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
+                 * once confident that conversion is robust, and occasional errors are outliers
+                 * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
+                 */
+                Console.WriteLine($"{(munsell.Bounds.Value.MaxChromaScale > 1 ? "⚠️" : string.Empty)} {munsell.Bounds.Value.MaxChromaScale}x above max chroma");
+                tolerance = munsell.Bounds.Value.MaxChromaScale switch
+                {
+                    <= 1 => 0.00001,
+                    <= 5 => 0.025,
+                    _ => 0.035
+                };
+            }
+            
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance, tolerance, 5e-15]);
         }
         catch (NotImplementedException e)
         {
@@ -45,71 +76,52 @@ public class RoundtripXyyTests
         }
     }
     
-    /*
-     * most roundtrips via munsell are notably more accurate but a higher tolerance is needed to handle the worst cases
-     * (the `ViaMunsellAverage` test confirms that the average roundtrip is reasonably accurate)
-     * ----------
-     * an example where some of the larger errors stem from:
-     * consider xyY (0.1750, 0.7506, 0.0135) · V = 1.1207
-     * V1 xy located within 10GY 1/ 6 · 10GY 1/ 8 · 7.5GY 1/ 8 · 7.5GY 1/ 6 (interpolation --> 9.9186GY 1/ 6.8963)
-     * V2 xy located within 10GY 2/12 · 10GY 2/14 · 2.5G  2/14 · 2.5G  2/12 (interpolation --> 0.5494G  1/12.1025)
-     * interpolation between V --> 9.9947GY 1.1207/7.5246
-     * ...
-     * back to xy: 9.9947GY 1.1207/7.5246 suggests we should use 7.5GY /6 · 7.5GY /8 · 10GY /6 · 10GY /8 as basis
-     * V1 interpolation --> (0.1371, 0.8252) · V2 interpolation (0.2681, 0.5631)
-     * interpolation between V --> (0.1530, 0.7936)
-     * ...
-     * (0.1530, 0.7936) is quite different from (0.1750, 0.7506)!
-     * presumably the shift from 7.5GY-10GY hue @ 6-8 chroma --> 10GY-2.5G hue @ 12-14 chroma between V for the same xy location
-     * has a strong impact on interpolated result, especially when conversion to xyY uses 7.5GY-10GY hue @ 6-8 chroma for both V
-     */
-    // [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
-    // public void ViaMunsell(ColourTriplet triplet)
+    // [Test]
+    // public void Data()
     // {
-    //     try
-    //     {
-    //         var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
-    //         var munsell = Munsell.FromXyy(original);
-    //         var roundtrip = MunsellFuncs.ToXyy(munsell);
-    //         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, 0.08);
-    //     }
-    //     catch (InvalidOperationException e)
-    //     {
-    //         // TODO: detect these cases (XY not within dataset; VC not within dataset)
-    //         //       likely use a higher tolerance, they will be a less accurate approximation
-    //         Assert.Ignore(e.Message);
-    //     }
-    // }
-
-    // [Test] // reassurance that roundtrips via munsell are typically reasonably accurate, even if certain data points are not
-    // public void ViaMunsellAverage()
-    // {
-    //     var deltas = RandomColours.XyyTriplets.Select(GetRoundtripDelta).ToArray();
+    //     double[] cThresholds = Enumerable.Range(0, 100).Select(x => x  / 10.0).ToArray();
+    //     var lut = cThresholds.ToDictionary(c => c, _ => -1.0);
+    //     var worstLowC = 0.0;
+    //     var triplets = Enumerable.Range(0, 100000).Select(_ => RandomColours.Xyy()).ToArray();
     //
-    //     // TODO: filter by data that was within dataset vs without
-    //     //       expect to require higher tolerance as data outwith dataset are a less accurate approximation
-    //     var insideDatasetDeltas = deltas.Where(delta => !double.IsNaN(delta.x) && !double.IsNaN(delta.y)).ToArray();
-    //     Assert.That(insideDatasetDeltas.Average(delta => delta.x), Is.LessThan(0.0025));
-    //     Assert.That(insideDatasetDeltas.Average(delta => delta.y), Is.LessThan(0.0025));
-    // }
+    //     foreach (var triplet in triplets)
+    //     {
+    //         try
+    //         {
+    //             var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
+    //             var munsell = MunsellFuncs.FromXyy(original);
+    //             var roundtrip = MunsellFuncs.ToXyy(munsell);
     //
-    // private static (double x, double y) GetRoundtripDelta(ColourTriplet triplet)
-    // {
-    //     try
-    //     {
-    //         var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
-    //         var munsell = Munsell.FromXyy(original);
-    //         var roundtrip = MunsellFuncs.ToXyy(munsell);
-    //             
-    //         // conversion between V and Y is accurate
-    //         // including it here would artificially increase reduce the error being tested
-    //         return (Math.Abs(original.Chromaticity.X - roundtrip.Chromaticity.X), Math.Abs(original.Chromaticity.Y - roundtrip.Chromaticity.Y));
+    //             var maxChromaScale = munsell.Bounds.Value.MaxChromaScale;
+    //             var threshold = cThresholds.Last(c => c <= maxChromaScale);
+    //             var delta = Math.Max(Math.Abs(original.Chromaticity.X - roundtrip.Chromaticity.X), Math.Abs(original.Chromaticity.Y - roundtrip.Chromaticity.Y));
+    //
+    //             if (munsell.C < 0.5)
+    //             {
+    //                 if (delta > worstLowC)
+    //                 {
+    //                     worstLowC = delta;
+    //                 }
+    //                 
+    //                 continue;
+    //             }
+    //
+    //             if (delta > lut[threshold])
+    //             {
+    //                 lut[threshold] = delta;
+    //             }
+    //         }
+    //         catch (NotImplementedException e)
+    //         {
+    //             // Console.WriteLine(e.Message);
+    //         }
     //     }
-    //     catch (InvalidOperationException e)
+    //
+    //     Console.WriteLine("XY deltas");
+    //     Console.WriteLine("Low C : " + worstLowC);
+    //     foreach (var item in lut)
     //     {
-    //         // TODO: detect these cases (XY not within dataset; VC not within dataset)
-    //         //       likely use a higher tolerance, they will be a less accurate approximation
-    //         return (double.NaN, double.NaN);
+    //         Console.WriteLine($"{item.Key} : {item.Value}");
     //     }
     // }
 }

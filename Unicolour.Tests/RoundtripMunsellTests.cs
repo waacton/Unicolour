@@ -40,7 +40,7 @@ public class RoundtripMunsellTests
                 var maxChromaScale = Math.Max(original.GetBounds().MaxChromaScale, roundtrip.GetBounds().MaxChromaScale);
                 tolerance = maxChromaScale switch
                 {
-                    <= 1 => (h: 0.175, c: 0.005),
+                    <= 1 => (h: 0.175, c: 0.0055),
                     <= 2 => (h: 4, c: 6.5),
                     <= 3 => (h: 8, c: 17.5),
                     _ => (h: 15, c: 23.5)

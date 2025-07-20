@@ -64,40 +64,37 @@ internal static class MunsellFuncs
         var y = Interpolation.Linear(lower.Y, upper.Y, distance);
         return new(x, y);
 
-        Chromaticity GetXyForC(double nodeC)
+        Chromaticity GetXyForC(int nodeC)
         {
             if (nodeC == 0) return WhitePoint;
             
             // consecutive hues, same chroma
-            var node1 = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
-            var node2 = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
-            if (node1 == node2)
+            var lower = MunsellCache.Lookup(lowerH, nodeV, nodeC);
+            var upper = MunsellCache.Lookup(upperH, nodeV, nodeC);
+            if (lower == upper)
             {
-                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
-                return exact.Point;
+                return lower;
             }
 
             // TODO: document this algorithm deviation, and try to find a better way to encapsulate it
             //       should only be encountered when V is so low there is only chroma data for one of the hues
             //       in which case, use it as a last resort (alternatives are: default to white point, or return NaN)
             //       but this approach still finds xy coordinates that are surprisingly roundtrippable (with less accuracy)
-            if (node2 == null)
+            if (upper == null)
             {
-                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
-                return exact.Point;
+                return lower;
             }
             
-            if (node1 == null)
+            if (lower == null)
             {
-                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
-                return exact.Point;
+                return upper;
             }
 
-            var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
-            var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
-            (polar1.angle, polar2.angle) = Hue.Unwrap(polar1.angle, polar2.angle);
-            var angle = Interpolation.Linear(polar1.angle, polar2.angle, hueDistance);
-            var angleDistance = (angle - polar1.angle) / (polar2.angle - polar1.angle);
+            var lowerPolar = LineSegment.Polar(WhitePoint, lower);
+            var upperPolar = LineSegment.Polar(WhitePoint, upper);
+            (lowerPolar.angle, upperPolar.angle) = Hue.Unwrap(lowerPolar.angle, upperPolar.angle);
+            var angle = Interpolation.Linear(lowerPolar.angle, upperPolar.angle, hueDistance);
+            var angleDistance = (angle - lowerPolar.angle) / (upperPolar.angle - lowerPolar.angle);
 
             // because lower and upper hues are consecutive, if they are both on segments of radial interpolation
             // can assume they are on the same segment, and radial interpolation should be used
@@ -106,15 +103,15 @@ internal static class MunsellFuncs
             var useRadialInterpolation = isLowerHueOnRadialInterpolationSegment && isUpperHueOnRadialInterpolationSegment;
             if (useRadialInterpolation)
             {
-                var r = Interpolation.Linear(polar1.radius, polar2.radius, angleDistance);
+                var r = Interpolation.Linear(lowerPolar.radius, upperPolar.radius, angleDistance);
                 var x = WhitePoint.X + r * Math.Cos(Utils.ToRadians(angle));
                 var y = WhitePoint.Y + r * Math.Sin(Utils.ToRadians(angle));
                 return new(x, y);
             }
             else
             {
-                var x = Interpolation.Linear(node1.X, node2.X, angleDistance);
-                var y = Interpolation.Linear(node1.Y, node2.Y, angleDistance);
+                var x = Interpolation.Linear(lower.X, upper.X, angleDistance);
+                var y = Interpolation.Linear(lower.Y, upper.Y, angleDistance);
                 return new(x, y);
             }
         }

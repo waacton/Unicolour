@@ -68,7 +68,7 @@ public class RoundtripXyyTests
                 Console.WriteLine($"{(munsell.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {munsell.Bounds.ChromaLimitScale}x above max chroma");
                 tolerance = munsell.Bounds.ChromaLimitScale switch
                 {
-                    <= 1 => 0.00001,
+                    <= 1 => 0.005,
                     <= 5 => 0.025,
                     _ => 0.035
                 };

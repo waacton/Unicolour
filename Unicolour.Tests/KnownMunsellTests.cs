@@ -8,9 +8,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static MunsellTestData[] XyyData = Experimental.Munsell.Nodes.Value.Select(node => new MunsellTestData(node)).ToArray();
+    private static MunsellTestData[] XyyData = Experimental.MunsellCache.Nodes.Value.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
-    
+
     // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
     private static readonly TestCaseData[] LuminanceTestData =
     [
@@ -248,12 +248,16 @@ public class KnownMunsellTests
     [Test]
     public void Test()
     {
-        // var munsell = new Munsell(4.2, "YR", 8.1, 5.3);
-        // var munsell = new Munsell(6.66, "R", 6.66, 6.66);
-        // var munsell = new Munsell(4.2, "G", 5.5, 99);
-        var original = new Munsell(14.634999986621494, 6.912932056226737, 14.467970738013658);
+        // var original = new Munsell(4.2, "YR", 8.1, 5.3);
+        // var original = new Munsell(6.66, "R", 6.66, 6.66);
+        // var original = new Munsell(4.2, "G", 5.5, 99);
+        // var original = new Munsell(116.60697248709873, 0.22737082192960334, 2.1740859211633805);
+        var original = new Munsell(4.098412460750023, 3.574724518514384, 10.196462054672057);
+        var originalBounds = original.Bounds;
+
         var xyy = MunsellFuncs.ToXyy(original);
         var roundtrip = MunsellFuncs.FromXyy(xyy);
+        var roundtripBounds = roundtrip.Bounds;
 
         if (original.C < 0.5)
         {
@@ -261,11 +265,9 @@ public class KnownMunsellTests
             return;
         }
 
-        var originalBounds = original.GetBounds();
-        var roundtripBounds = roundtrip.GetBounds();
-        Console.WriteLine($"original ... C {original.C:F2} is above max chroma by {originalBounds.MaxChromaScale}x ({string.Join(", ", originalBounds.UpperChromaLimits)})");
-        Console.WriteLine($"roundtrip .. C {roundtrip.C:F2} is above max chroma by {roundtripBounds.MaxChromaScale}x ({string.Join(", ", roundtripBounds.UpperChromaLimits)})");
-        if (originalBounds.MaxChromaScale > 2.5 || roundtripBounds.MaxChromaScale > 2.5)
+        // Console.WriteLine($"original ... C {original.C:F2} is above max chroma by {originalBounds.MaxChromaScale}x ({string.Join(", ", originalBounds.UpperChromaLimits)})");
+        // Console.WriteLine($"roundtrip .. C {roundtrip.C:F2} is above max chroma by {roundtripBounds.MaxChromaScale}x ({string.Join(", ", roundtripBounds.UpperChromaLimits)})");
+        if (originalBounds.ChromaLimitScale > 2.5 || roundtripBounds.ChromaLimitScale > 2.5)
         {
             // roundtrip is almost never this inaccurate even when chroma is not within range
             // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
@@ -273,7 +275,7 @@ public class KnownMunsellTests
             return;
         }
             
-        if (originalBounds.MaxChromaScale > 1.5 || roundtripBounds.MaxChromaScale > 1.5)
+        if (originalBounds.ChromaLimitScale > 1.5 || roundtripBounds.ChromaLimitScale > 1.5)
         {
             // roundtrip is almost never this inaccurate even when chroma is not within range
             // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
@@ -281,7 +283,7 @@ public class KnownMunsellTests
             return;
         }
         
-        if (originalBounds.MaxChromaScale > 1 || roundtripBounds.MaxChromaScale > 1)
+        if (originalBounds.ChromaLimitScale > 1 || roundtripBounds.ChromaLimitScale > 1)
         {
             // roundtrip is almost never this inaccurate even when chroma is not within range
             // but certain rare values deviate a lot, and these coincide with chromas well outside the available data

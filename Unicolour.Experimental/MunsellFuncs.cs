@@ -2,42 +2,6 @@
 
 namespace Wacton.Unicolour.Experimental;
 
-internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double LowerV, double UpperV, double LowerC, double UpperC)
-{
-    internal MunsellHue LowerH { get; } = LowerH;
-    internal MunsellHue UpperH { get; } = UpperH;
-    internal double LowerV { get; } = LowerV;
-    internal double UpperV { get; } = UpperV;
-    internal double LowerC { get; } = LowerC;
-    internal double UpperC { get; } = UpperC;
-    
-    internal readonly int[] UpperChromaLimits = {
-        MunsellFuncs.MaxChroma(LowerV, LowerH),
-        MunsellFuncs.MaxChroma(LowerV, UpperH),
-        MunsellFuncs.MaxChroma(UpperV, LowerH),
-        MunsellFuncs.MaxChroma(UpperV, UpperH)
-    };
-    
-    internal readonly int[] LowerChromaLimits = {
-        MunsellFuncs.MinChroma(LowerV, LowerH),
-        MunsellFuncs.MinChroma(LowerV, UpperH),
-        MunsellFuncs.MinChroma(UpperV, LowerH),
-        MunsellFuncs.MinChroma(UpperV, UpperH)
-    };
-
-    internal bool AboveMaxChroma => UpperChromaLimits.Any(limit => UpperC > limit);
-    internal bool BelowMinChroma => LowerChromaLimits.Any(limit => LowerC < limit);
-    internal bool IsChromaWithinRange => !AboveMaxChroma && !BelowMinChroma;
-
-    internal double MaxChromaScale => UpperChromaLimits.Min() == 0.0 ? 0.0 : UpperC / UpperChromaLimits.Min();
-
-    internal double AverageChromaBeyondLimit()
-    {
-        var excesses = UpperChromaLimits.Select(limit => UpperC > limit ? UpperC - limit : 0);
-        return excesses.Average();
-    }
-}
-
 internal static class MunsellFuncs
 {
     // TODO: use white point from illuminant after testing
@@ -50,22 +14,23 @@ internal static class MunsellFuncs
         var h = munsell.Hue;
         var v = munsell.V;
         var c = munsell.C;
+        var bounds = munsell.Bounds;
         
         var luminance = GetLuminance(v);
 
         Chromaticity chromaticity;
         
         // TODO: what if V is out of range?
-        var lowerNodeV = NodeValues.Last(nodeV => nodeV <= v);
-        var upperNodeV = NodeValues.First(nodeV => nodeV >= v);
+        var lowerNodeV = bounds.LowerV;
+        var upperNodeV = bounds.UpperV;
         if (lowerNodeV == upperNodeV)
         {
-            chromaticity = GetXyForValue(lowerNodeV, c, h);
+            chromaticity = GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
         }
         else
         {
-            var lower = GetXyForValue(lowerNodeV, c, h);
-            var upper = GetXyForValue(upperNodeV, c, h);
+            var lower = GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
+            var upper = GetXyForValue(upperNodeV, c, h, bounds, isLowerV: false);
 
             var lowerLuminance = GetLuminance(lowerNodeV);
             var upperLuminance = GetLuminance(upperNodeV);
@@ -78,15 +43,12 @@ internal static class MunsellFuncs
         return new Xyy(chromaticity.X, chromaticity.Y, luminance);
     }
     
-    private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h)
+    private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h, MunsellBounds bounds, bool isLowerV)
     {
         if (nodeV == 0) return WhitePoint;
 
-        // TODO: can this be replaced by using an earlier-calculated Bounds object?
-        var (lowerIntervalH, upperIntervalH) = ToIntervals(h.Degrees, DegreesPerHueNumber);
-        var (lowerH, upperH) = (new MunsellHue(lowerIntervalH), new MunsellHue(upperIntervalH)); 
-        
-        var (lowerNodeC, upperNodeC) = BoundingC(nodeV, c, lowerH, upperH);
+        var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
+        var (lowerNodeC, upperNodeC) = bounds.GetChromaBoundsWithinData(isLowerV);
         if (lowerNodeC == upperNodeC)
         {
             return GetXyForC(lowerNodeC);
@@ -104,11 +66,11 @@ internal static class MunsellFuncs
             if (nodeC == 0) return WhitePoint;
             
             // consecutive hues, same chroma
-            var node1 = Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
-            var node2 = Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
+            var node1 = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
+            var node2 = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
             if (node1 == node2)
             {
-                var exact = Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
+                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
                 return exact.Point;
             }
 
@@ -147,37 +109,9 @@ internal static class MunsellFuncs
         var scaled = number / interval;
         var lower = Math.Floor(scaled) * interval;
         var upper = Math.Ceiling(scaled) * interval;
-        return (lower, upper);
+        return (Math.Round(lower, 1), Math.Round(upper, 1));
     }
-    
-    private static (int lower, int upper) BoundingC(double nodeV, double c, MunsellHue lowerH, MunsellHue upperH)
-    {
-        // interpolation along the chroma ovoid is the core of this algorithm
-        // so 2 nodes of the same chroma between hues are required for this to work
-        var maxC = new[] { MaxChroma(nodeV, lowerH), MaxChroma(nodeV, upperH) }.Min();
-        
-        // TODO: when c > maxC, this selection of lower and upper nodes will trigger extrapolation
-        //       it's an extension to the original algorithm that attempts to support extreme, unrealistic values
-        //       and the fact that extrapolation is used should maybe be recorded in some kind of search result similar to `Xyz.HctToXyzSearchResult`
-        //       alongside whether or not FromXyy() converged with however many iterations
-        int lowerNodeC;
-        int upperNodeC;
 
-        if (c > maxC)
-        {
-            lowerNodeC = NodeChromas.Last(nodeC => nodeC < maxC);
-            upperNodeC = maxC;
-            // Console.WriteLine($"requested chroma {c} too large, max for both {lowerH} & {upperH} is {maxC}, delta: {c - maxC}");
-        }
-        else
-        {
-            lowerNodeC = NodeChromas.Last(nodeC => nodeC <= c);
-            upperNodeC = NodeChromas.First(nodeC => nodeC >= c);
-        }
-
-        return (lowerNodeC, upperNodeC);
-    }
-    
     // TODO: REVIEW CAREFULLY! very easy place for a mistake to be made during transcript
     private static bool IsOnRadialInterpolationHueSegment(double nodeV, double nodeC, MunsellHue h)
     {
@@ -256,30 +190,6 @@ internal static class MunsellFuncs
             },
             _ => false
         };
-    }
-    
-    internal static int MaxChroma(double nodeV, MunsellHue nodeH)
-    {
-        for (var i = NodeChromas.Length - 1; i >= 0; i--)
-        {
-            var nodeC = NodeChromas[i];
-            var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH, nodeV, nodeC));
-            if (result != null) return nodeC;
-        }
-
-        throw new NotImplementedException($"No chroma found for {nodeH} at V={nodeV})!");
-    }
-    
-    internal static int MinChroma(double nodeV, MunsellHue nodeH)
-    {
-        for (var i = 0; i < NodeChromas.Length - 1; i++)
-        {
-            var nodeC = NodeChromas[i];
-            var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH, nodeV, nodeC));
-            if (result != null) return nodeC;
-        }
-
-        throw new NotImplementedException($"No chroma found for {nodeH} at V={nodeV})!");
     }
 
     internal static double GetLuminance(double v)

@@ -11,7 +11,9 @@ public partial record Munsell
     public (double number, string letter) H => (Hue.Number, Hue.Letter);
     public double V { get; }
     public double C { get; }
-    internal Lazy<MunsellBounds> Bounds { get; }
+
+    private readonly Lazy<MunsellBounds> bounds;
+    internal MunsellBounds Bounds => bounds.Value;
     
     public bool IsGreyscale => V <= 0.0 || C <= 0.0; // TODO: what about V > 1? probably
     
@@ -25,7 +27,7 @@ public partial record Munsell
         Hue = h;
         V = v;
         C = c;
-        Bounds = new Lazy<MunsellBounds>(GetBounds);
+        bounds = new Lazy<MunsellBounds>(GetBounds);
     }
 
     public Munsell(double greyNumber)
@@ -41,8 +43,8 @@ public partial record Munsell
         var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
         return new Munsell(h, v, c);
     }
-    
-    internal MunsellBounds GetBounds()
+
+    private MunsellBounds GetBounds()
     {
         // these are the naive bounds, and will be adjusted if not available in the dataset
         // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
@@ -62,17 +64,17 @@ public partial record Munsell
 
         internal MunsellHue(double number, string letter)
         {
+            Degrees = ToDegrees(number, letter);
             Number = number;
             Letter = letter;
-            Degrees = ToDegrees(number, letter);
         }
 
         internal MunsellHue(double degrees)
         {
-            var (number, letter) = FromDegrees(degrees);
+            Degrees = degrees.Modulo(360);
+            var (number, letter) = FromDegrees(Degrees);
             Number = number;
             Letter = letter;
-            Degrees = degrees;
         }
         
         // this is only used by the table of radially interpolated hue segments

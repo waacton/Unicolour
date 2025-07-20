@@ -47,7 +47,7 @@ public class RoundtripXyyTests
             else
             {
                 /*
-                 * "max chroma scale" is a measure of how far outside the munsell dataset the chroma is
+                 * "chroma limit scale" is a measure of how far outside the munsell dataset the chroma is
                  * e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
                  * from running 100,000s of conversions, large deltas during roundtrip conversion correlates pretty well with this
                  * although there are rare outliers where large deltas appear at lower scales (but never <= 1, i.e. within known data points)
@@ -59,8 +59,8 @@ public class RoundtripXyyTests
                  * once confident that conversion is robust, and occasional errors are outliers
                  * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
                  */
-                Console.WriteLine($"{(munsell.Bounds.Value.MaxChromaScale > 1 ? "⚠️" : string.Empty)} {munsell.Bounds.Value.MaxChromaScale}x above max chroma");
-                tolerance = munsell.Bounds.Value.MaxChromaScale switch
+                Console.WriteLine($"{(munsell.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {munsell.Bounds.ChromaLimitScale}x above max chroma");
+                tolerance = munsell.Bounds.ChromaLimitScale switch
                 {
                     <= 1 => 0.00001,
                     <= 5 => 0.025,

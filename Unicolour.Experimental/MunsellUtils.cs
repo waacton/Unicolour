@@ -100,12 +100,12 @@ internal static class MunsellUtils
             
             if (lowerNodeC == upperNodeC)
             {
-                var exact = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+                var exact = MunsellCache.Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
                 return exact.Point;
             }
             
-            var lower = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
-            var upper = Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
+            var lower = MunsellCache.Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, lowerNodeC));
+            var upper = MunsellCache.Nodes.Value.Single(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, upperNodeC));
             
             // TODO: ensure works when null chroma
             var distance = upperNodeC - lowerNodeC == 0 ? 0 : (c - lowerNodeC) / (upperNodeC - lowerNodeC);
@@ -120,7 +120,7 @@ internal static class MunsellUtils
         for (var i = NodeChromas.Length - 1; i >= 0; i--)
         {
             var nodeC = NodeChromas[i];
-            var result = Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, nodeC));
+            var result = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(nodeH.number, nodeH.letter, nodeV, nodeC));
             if (result != null) return nodeC;
         }
 
@@ -209,7 +209,7 @@ internal static class MunsellUtils
     
     private static Boundary? GetBoundary(Chromaticity targetPoint, double nodeV)
     {
-        var nodes = Nodes.Value.Where(data => data.Value == nodeV).OrderBy(data => LineSegment.Distance(targetPoint, data.Point)).ToArray();
+        var nodes = MunsellCache.Nodes.Value.Where(data => data.Value == nodeV).OrderBy(data => LineSegment.Distance(targetPoint, data.Point)).ToArray();
         var closest = nodes.First();
         
         // e.g. the closest node if 5G /8
@@ -230,30 +230,30 @@ internal static class MunsellUtils
             new[]
             {
                 closest,
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, upChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, upChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, upChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, upChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, upChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, downChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, downChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(upHue, nodeV, closest.Chroma))
             },
             new[]
             {
                 closest,
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, downChroma)),
-                Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(closest.HueNumber, closest.HueLetter, nodeV, downChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, downChroma)),
+                MunsellCache.Nodes.Value.SingleOrDefault(data => data.IsMatch(downHue, nodeV, closest.Chroma))
             }
         };
         

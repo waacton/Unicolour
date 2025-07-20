@@ -1,6 +1,4 @@
-﻿using static Wacton.Unicolour.Experimental.MunsellUtils;
-
-namespace Wacton.Unicolour.Experimental;
+﻿namespace Wacton.Unicolour.Experimental;
 
 // TODO: handle grey ("N" hue e.g. N 5/ ... or 0 chroma e.g. 10YR 5/0)
 // TODO: clamp hue between 0 - 10, clamp value to 10, handle extreme chroma values
@@ -35,13 +33,6 @@ public partial record Munsell
         // HueDegrees = 0;
         // Value = null;
         // Chroma = null;
-    }
-    
-    public static Munsell FromXyy(Xyy xyy)
-    {
-        var v = MunsellFuncs.GetValue(xyy.Luminance);
-        var (h, c) = GetHueAndChroma(xyy.Chromaticity, v);
-        return new Munsell(h, v, c);
     }
 
     private MunsellBounds GetBounds()

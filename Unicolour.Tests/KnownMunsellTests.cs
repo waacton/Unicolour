@@ -145,44 +145,44 @@ public class KnownMunsellTests
         Assert.That(v, Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[3]));
     }
 
-    [Test]
-    public void InsideDataset()
-    {
-        /*
-         * closest node to (0.4, 0.4) at V6 is 2.5Y 6/4 (0.3840, 0.3867) and is located within quadrilateral formed by
-         * 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176) · 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767)
-         * nearest boundary intersect is (0.4, 0.4003), opposite intersect is (0.4, 0.3863) from vertical line through point
-         * near (0.3840, 0.3867) to (0.4, 0.4003) is 44.08% to (0.4203, 0.4176) · 44.08% of 2.5Y /4 to 2.5Y /6 = 2.5Y /4.88
-         * far  (0.4240, 0.4030) to (0.4, 0.3863) is 63.32% to (0.3861, 0.3767) · 63.32% of 10YR /6 to 10YR /4 = 10YR /4.73
-         * between (0.4, 0.4003) to (0.4, 0.4) is 2.29% to (0.4, 0.3863) · 2.29% of 2.5Y /4.88 to 10YR /4.73 = 2.44Y /4.88
-         */
-        var xyyV6 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6));
-        var expectedV6 = new Munsell(2.44, "Y", 6, 4.88);
-        var actualV6 = Munsell.FromXyy(xyyV6);
-        Assert.That(actualV6.ToString(), Is.EqualTo(expectedV6.ToString()));
-        
-        /*
-         * closest node to (0.4, 0.4) at V7 is 2.5Y 7/6 (0.4073, 0.4073) and is located within quadrilateral formed by
-         * 2.5Y 7/6 (0.4073, 0.4073) · 2.5Y 7/4 (0.3761, 0.3800) · 10YR 7/4 (0.3778, 0.3719) · 10YR 7/6 (0.4102, 0.3960) 
-         * nearest boundary intersect is (0.4, 0.4009), opposite intersect is (0.4, 0.3884) from vertical line through point
-         * near (0.4073, 0.4073) to (0.4, 0.4009) is 23.40% to (0.3761, 0.3800) · 23.40% of 2.5Y /6 to 2.5Y /4 = 2.5Y /5.53
-         * far  (0.3778, 0.3719) to (0.4, 0.3884) is 68.52% to (0.4102, 0.3960) · 63.32% of 10YR /4 to 10YR /6 = 10YR /5.37
-         * between (0.4, 0.4009) to (0.4, 0.4) is 7.30% to (0.4, 0.3884) · 7.30% of 2.5Y /5.53 to 10YR /5.37 = 2.32Y /5.52
-         */
-        var xyyV7 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(7));
-        var expectedV7 = new Munsell(2.32, "Y", 7, 5.52);
-        var actualV7 = Munsell.FromXyy(xyyV7);
-        Assert.That(actualV7.ToString(), Is.EqualTo(expectedV7.ToString()));
-        
-        /*
-         * when V is between nodes, use result of lower and upper V and interpolate
-         * target V = (6.25 - 6) / (7 - 6) = 25% from 2.44Y /4.88 to 2.32Y /5.52 = 2.41Y 6.25/5.04
-         */
-        var xyy = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6.25));
-        var expected = new Munsell(2.41, "Y", 6.25, 5.04);
-        var actual = Munsell.FromXyy(xyy);
-        Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
-    }
+    // [Test]
+    // public void InsideDataset()
+    // {
+    //     /*
+    //      * closest node to (0.4, 0.4) at V6 is 2.5Y 6/4 (0.3840, 0.3867) and is located within quadrilateral formed by
+    //      * 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176) · 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767)
+    //      * nearest boundary intersect is (0.4, 0.4003), opposite intersect is (0.4, 0.3863) from vertical line through point
+    //      * near (0.3840, 0.3867) to (0.4, 0.4003) is 44.08% to (0.4203, 0.4176) · 44.08% of 2.5Y /4 to 2.5Y /6 = 2.5Y /4.88
+    //      * far  (0.4240, 0.4030) to (0.4, 0.3863) is 63.32% to (0.3861, 0.3767) · 63.32% of 10YR /6 to 10YR /4 = 10YR /4.73
+    //      * between (0.4, 0.4003) to (0.4, 0.4) is 2.29% to (0.4, 0.3863) · 2.29% of 2.5Y /4.88 to 10YR /4.73 = 2.44Y /4.88
+    //      */
+    //     var xyyV6 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6));
+    //     var expectedV6 = new Munsell(2.44, "Y", 6, 4.88);
+    //     var actualV6 = Munsell.FromXyy(xyyV6);
+    //     Assert.That(actualV6.ToString(), Is.EqualTo(expectedV6.ToString()));
+    //     
+    //     /*
+    //      * closest node to (0.4, 0.4) at V7 is 2.5Y 7/6 (0.4073, 0.4073) and is located within quadrilateral formed by
+    //      * 2.5Y 7/6 (0.4073, 0.4073) · 2.5Y 7/4 (0.3761, 0.3800) · 10YR 7/4 (0.3778, 0.3719) · 10YR 7/6 (0.4102, 0.3960) 
+    //      * nearest boundary intersect is (0.4, 0.4009), opposite intersect is (0.4, 0.3884) from vertical line through point
+    //      * near (0.4073, 0.4073) to (0.4, 0.4009) is 23.40% to (0.3761, 0.3800) · 23.40% of 2.5Y /6 to 2.5Y /4 = 2.5Y /5.53
+    //      * far  (0.3778, 0.3719) to (0.4, 0.3884) is 68.52% to (0.4102, 0.3960) · 63.32% of 10YR /4 to 10YR /6 = 10YR /5.37
+    //      * between (0.4, 0.4009) to (0.4, 0.4) is 7.30% to (0.4, 0.3884) · 7.30% of 2.5Y /5.53 to 10YR /5.37 = 2.32Y /5.52
+    //      */
+    //     var xyyV7 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(7));
+    //     var expectedV7 = new Munsell(2.32, "Y", 7, 5.52);
+    //     var actualV7 = Munsell.FromXyy(xyyV7);
+    //     Assert.That(actualV7.ToString(), Is.EqualTo(expectedV7.ToString()));
+    //     
+    //     /*
+    //      * when V is between nodes, use result of lower and upper V and interpolate
+    //      * target V = (6.25 - 6) / (7 - 6) = 25% from 2.44Y /4.88 to 2.32Y /5.52 = 2.41Y 6.25/5.04
+    //      */
+    //     var xyy = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6.25));
+    //     var expected = new Munsell(2.41, "Y", 6.25, 5.04);
+    //     var actual = Munsell.FromXyy(xyy);
+    //     Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
+    // }
     
     // TODO: test data point that isn't bounded
     
@@ -192,20 +192,20 @@ public class KnownMunsellTests
     
     // TODO: get specific examples from ASTM to test against
     
-    [Test]
-    public void InsideDatasetBothAxes()
-    {
-        /*
-         * both of these points reside in the corner of the boundary formed by
-         * 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767) · 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176)
-         * for one, the nearest intersect is along the horizontal, and will interpolate along that axis
-         * for the other, the nearest intersect is along the vertical, and will interpolate along that axis
-         * but since they are close together the result is expected to be similar
-         */
-        var fromHorizontalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4033, MunsellFuncs.GetLuminance(6)));
-        var fromVerticalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4032, MunsellFuncs.GetLuminance(6)));
-        TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
-    }
+    // [Test]
+    // public void InsideDatasetBothAxes()
+    // {
+    //     /*
+    //      * both of these points reside in the corner of the boundary formed by
+    //      * 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767) · 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176)
+    //      * for one, the nearest intersect is along the horizontal, and will interpolate along that axis
+    //      * for the other, the nearest intersect is along the vertical, and will interpolate along that axis
+    //      * but since they are close together the result is expected to be similar
+    //      */
+    //     var fromHorizontalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4033, MunsellFuncs.GetLuminance(6)));
+    //     var fromVerticalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4032, MunsellFuncs.GetLuminance(6)));
+    //     TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
+    // }
 
 
     /*

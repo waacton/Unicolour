@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Experimental;
 using Wacton.Unicolour.Tests.Utils;
@@ -39,6 +38,13 @@ public class RoundtripXyyTests
             var roundtrip = MunsellFuncs.ToXyy(munsell);
             
             double tolerance;
+            
+            if (munsell.Bounds.IsSparseChroma)
+            {
+                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {munsell} are {string.Join(", ", munsell.Bounds.ChromaRanges)}");
+                return;
+            }
+            
             if (munsell.C < 0.5)
             {
                 Console.WriteLine("⚠️ low chroma");

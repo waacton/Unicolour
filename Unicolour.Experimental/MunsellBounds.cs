@@ -1,31 +1,43 @@
 ﻿namespace Wacton.Unicolour.Experimental;
 
-internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue UpperH, double LowerV, double UpperV, double LowerC, double UpperC)
+internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue UpperH, double LowerV, double UpperV, int LowerC, int UpperC)
 {
     internal Munsell.MunsellHue LowerH { get; } = LowerH;
     internal Munsell.MunsellHue UpperH { get; } = UpperH;
     internal double LowerV { get; } = LowerV;
     internal double UpperV { get; } = UpperV;
-    internal double LowerC { get; } = LowerC;
-    internal double UpperC { get; } = UpperC;
+    internal int LowerC { get; } = LowerC;
+    internal int UpperC { get; } = UpperC;
 
-    internal (double lower, double upper) GetChromaBoundsWithinData(bool useLowerV)
+    internal ((int lower, int upper) lowerV, (int lower, int upper) upperV) BoundC => 
+        (GetChromaBoundsWithinData(useLowerV: true), GetChromaBoundsWithinData(useLowerV: false));
+
+    private (int lower, int upper) GetChromaBoundsWithinData(bool useLowerV)
     {
         // interpolation along the chroma ovoid is the core of the algorithm
         // so need to find a single chroma that is available for both hues at this value
         var v = useLowerV ? LowerV : UpperV;
-        var maxForLowerH = MunsellCache.GetChromaLimits(LowerH, v).max;
-        var maxForUpperH = MunsellCache.GetChromaLimits(UpperH, v).max;
-        var maxC = Math.Min(maxForLowerH, maxForUpperH);
+        var rangeLowerH = MunsellCache.GetChromaRange(LowerH, v);
+        var rangeUpperH = MunsellCache.GetChromaRange(UpperH, v);
+        var maxSharedC = Math.Min(rangeLowerH.max, rangeUpperH.max);
         
-        double lowerC;
-        double upperC;
-        
-        // if upper > max, requested chroma doesn't exist in the munsell dataset
-        // so return the two highest available chroma values for extrapolation
-        if (UpperC > maxC) 
+        int lowerC;
+        int upperC;
+
+        if (maxSharedC == 0)
         {
-            upperC = maxC;
+            // if max shared C is 0, for at least one of the hues there is no chroma data at all
+            // so find the smallest C for which one of the hues does have chroma data for
+            // to enable approximation even with limited data
+            var maxIndependentC = Math.Max(rangeLowerH.min, rangeUpperH.min);
+            upperC = maxIndependentC;
+            lowerC = 0; 
+        }
+        else if (UpperC > maxSharedC) 
+        {
+            // if upper > max shared, requested chroma doesn't exist in the munsell dataset for both hues
+            // so return the two highest available chroma values for extrapolation
+            upperC = maxSharedC;
             lowerC = Math.Max(upperC - 2, 0); // when there is no chroma data at all, max chroma is 0, so avoid negative chroma
         }
         else
@@ -37,16 +49,17 @@ internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue Uppe
         return (lowerC, upperC);
     }
     
-    internal readonly (int min, int max)[] ChromaLimits =
+    internal readonly (int min, int max)[] ChromaRanges =
     {
-        MunsellCache.GetChromaLimits(LowerH, LowerV),
-        MunsellCache.GetChromaLimits(UpperH, LowerV),
-        MunsellCache.GetChromaLimits(LowerH, UpperV),
-        MunsellCache.GetChromaLimits(UpperH, UpperV)
+        MunsellCache.GetChromaRange(LowerH, LowerV),
+        MunsellCache.GetChromaRange(UpperH, LowerV),
+        MunsellCache.GetChromaRange(LowerH, UpperV),
+        MunsellCache.GetChromaRange(UpperH, UpperV)
     };
-    
-    internal int ClosestUpperChromaLimit => ChromaLimits.Select(x => x.max).Min();
-    internal double ChromaLimitScale => ClosestUpperChromaLimit == 0.0 ? 0.0 : UpperC / ClosestUpperChromaLimit;
+
+    internal bool IsSparseChroma => ChromaRanges.Any(x => x == (0, 0));
+    internal int ClosestUpperChromaLimit => ChromaRanges.Select(x => x.max).Min();
+    internal double ChromaLimitScale => ClosestUpperChromaLimit == 0.0 ? 0.0 : UpperC / (double)ClosestUpperChromaLimit;
     
     public override string ToString()
     {

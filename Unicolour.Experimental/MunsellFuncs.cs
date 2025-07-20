@@ -50,8 +50,8 @@ internal static class MunsellFuncs
         var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
         var unwrappedH = Hue.Unwrap(lowerH.Degrees, h.Degrees);
         var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / DegreesPerHueNumber;
-        
-        var (lowerNodeC, upperNodeC) = bounds.GetChromaBoundsWithinData(isLowerV);
+
+        var (lowerNodeC, upperNodeC) = isLowerV ? bounds.BoundC.lowerV : bounds.BoundC.upperV;
         if (lowerNodeC == upperNodeC)
         {
             return GetXyForC(lowerNodeC);
@@ -74,6 +74,22 @@ internal static class MunsellFuncs
             if (node1 == node2)
             {
                 var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
+                return exact.Point;
+            }
+
+            // TODO: document this algorithm deviation, and try to find a better way to encapsulate it
+            //       should only be encountered when V is so low there is only chroma data for one of the hues
+            //       in which case, use it as a last resort (alternatives are: default to white point, or return NaN)
+            //       but this approach still finds xy coordinates that are surprisingly roundtrippable (with less accuracy)
+            if (node2 == null)
+            {
+                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(lowerH, nodeV, nodeC));
+                return exact.Point;
+            }
+            
+            if (node1 == null)
+            {
+                var exact = MunsellCache.Nodes.Value.SingleOrDefault(x => x.IsMatch(upperH, nodeV, nodeC));
                 return exact.Point;
             }
 

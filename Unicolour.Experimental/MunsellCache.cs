@@ -2,23 +2,20 @@
 
 internal static class MunsellCache
 {
-    private static Dictionary<(Munsell.MunsellHue h, double v), (int min, int max)> ChromaLimits = new();
+    private static readonly Dictionary<(Munsell.MunsellHue h, double v), (int min, int max)> ChromaRange = new();
 
-    internal static int MinChroma(Munsell.MunsellHue h, double v) => GetChromaLimits(h, v).min;
-    internal static int MaxChroma(Munsell.MunsellHue h, double v) => GetChromaLimits(h, v).max;
-
-    internal static (int min, int max) GetChromaLimits(Munsell.MunsellHue h, double v)
+    internal static (int min, int max) GetChromaRange(Munsell.MunsellHue h, double v)
     {
         var key = (h, v);
-        if (ChromaLimits.TryGetValue(key, out var limits))
+        if (ChromaRange.TryGetValue(key, out var range))
         {
-            return limits;
+            return range;
         }
         
         var nodes = Nodes.Value.Where(x => x.Hue == h && x.Value == v).ToArray();
-        limits = !nodes.Any() ? (0, 0) : (nodes.Min(x => x.Chroma), nodes.Max(x => x.Chroma));
-        ChromaLimits[key] = limits;
-        return limits;
+        range = !nodes.Any() ? (0, 0) : (nodes.Min(x => x.Chroma), nodes.Max(x => x.Chroma));
+        ChromaRange[key] = range;
+        return range;
     }
 
     internal static readonly Lazy<Munsell.Node[]> Nodes = new(() => new Munsell.Node[]

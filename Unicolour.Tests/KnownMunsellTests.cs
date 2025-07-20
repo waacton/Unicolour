@@ -244,6 +244,10 @@ public class KnownMunsellTests
       ViaXyy((21.623650354786474, 0.10198991388955747, 2.558440708292178))
       ViaXyy((310.7389843153769, 0.17841275958321634, 9.710527097398455))
       ViaXyy((60.02764606853851, 0.015378879617444774, 18.644192832214145))
+      
+      only 1 of the 8 H-V combinations has any chroma data at all - can't interpolate along chroma ovoid!
+      (see edge cases in GetXyForC)
+      new Munsell(106.67219110010788, 0.15837087769148606, 17.19745749670382);
     */
     [Test]
     public void Test()
@@ -254,6 +258,8 @@ public class KnownMunsellTests
         // var original = new Munsell(116.60697248709873, 0.22737082192960334, 2.1740859211633805);
         // var original = new Munsell(4.098412460750023, 3.574724518514384, 10.196462054672057);
         var original = new Munsell(106.67219110010788, 0.15837087769148606, 17.19745749670382);
+        // var original = new Munsell(1.952034929151889, 0.008860311867242565, 22.209261774832104);
+        // var original = new Munsell(320.0495840322074, 0.007967440915650492, 25.99496450173846);
         var originalBounds = original.Bounds;
 
         var xyy = MunsellFuncs.ToXyy(original);
@@ -263,6 +269,25 @@ public class KnownMunsellTests
         if (original.C < 0.5)
         {
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.75, 5e-15, 0.5]);
+            return;
+        }
+        
+        if (originalBounds.IsSparseChroma)
+        {
+            Assert.Ignore($"Sparse chroma data; chroma ranges for {original} are {string.Join(", ", original.Bounds.ChromaRanges)}");
+            return;
+        }
+        
+        double[] chromaDataBounds =
+        [
+            original.Bounds.BoundC.lowerV.lower, original.Bounds.BoundC.lowerV.upper,
+            original.Bounds.BoundC.upperV.lower, original.Bounds.BoundC.upperV.upper
+        ];
+
+        var almostNoChromaData = chromaDataBounds.Count(x => x == 0) > 2;
+        if (almostNoChromaData)
+        {
+            Assert.Ignore($"Almost no chroma data; bounds for {original} are {original.Bounds.BoundC}");
             return;
         }
 

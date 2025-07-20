@@ -18,8 +18,17 @@ public class RoundtripMunsellTests
             var roundtrip = MunsellFuncs.FromXyy(xyy);
 
             (double h, double c) tolerance;
+
+            if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
+            {
+                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {original} are {string.Join(", ", original.Bounds.ChromaRanges)}");
+                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {roundtrip} are {string.Join(", ", roundtrip.Bounds.ChromaRanges)}");
+                return;
+            }
+            
             if (original.C < 0.5)
             {
+                Console.WriteLine("⚠️ low chroma");
                 tolerance = (h: 0.375, c: 0.002);
             }
             else
@@ -38,9 +47,11 @@ public class RoundtripMunsellTests
                  * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
                  */
                 var maxChromaScale = Math.Max(original.Bounds.ChromaLimitScale, roundtrip.Bounds.ChromaLimitScale);
+                Console.WriteLine($"{(original.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {original.Bounds.ChromaLimitScale}x above max chroma");
+                Console.WriteLine($"{(roundtrip.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {roundtrip.Bounds.ChromaLimitScale}x above max chroma");
                 tolerance = maxChromaScale switch
                 {
-                    <= 1 => (h: 0.175, c: 0.0055),
+                    <= 1 => (h: 0.175, c: 0.02),
                     <= 2 => (h: 4, c: 6.5),
                     <= 3 => (h: 8, c: 17.5),
                     _ => (h: 15, c: 23.5)

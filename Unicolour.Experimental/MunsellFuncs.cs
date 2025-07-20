@@ -335,8 +335,9 @@ internal static class MunsellFuncs
             end = new ChromaToRadiusData(new(h, v, start.Munsell.C * chromaFactor), targetRadius);
             converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
         }
-        
-        var distance = (start.TargetRadius - start.Radius) / (end.Radius - start.Radius);
+
+        var totalDistance = end.Radius - start.Radius; // extremely rare but end can be directly on target
+        var distance = totalDistance == 0.0 ? 0 : (start.TargetRadius - start.Radius) / totalDistance;
         var c = Interpolation.Linear(start.Munsell.C, end.Munsell.C, distance);
         return new Munsell(h, v, c);
     }

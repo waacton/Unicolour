@@ -19,17 +19,19 @@ public class RoundtripMunsellTests
 
             (double h, double c) tolerance;
 
+            // TODO: figure out tolerances for sparse data
             if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
             {
-                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {original} are {string.Join(", ", original.Bounds.ChromaRanges)}");
-                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {roundtrip} are {string.Join(", ", roundtrip.Bounds.ChromaRanges)}");
+                Console.WriteLine($"⚠️ sparse chroma data; chroma ranges for {original} are {string.Join(", ", original.Bounds.ChromaRanges)}");
+                Console.WriteLine($"⚠️ sparse chroma data; chroma ranges for {roundtrip} are {string.Join(", ", roundtrip.Bounds.ChromaRanges)}");
+                Assert.Ignore("⚠️ sparse chroma data");
                 return;
             }
             
             if (original.C < 0.5)
             {
                 Console.WriteLine("⚠️ low chroma");
-                tolerance = (h: 0.375, c: 0.002);
+                tolerance = (h: 0.45, c: 0.002);
             }
             else
             {

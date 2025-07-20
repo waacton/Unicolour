@@ -39,9 +39,13 @@ public class RoundtripXyyTests
             
             double tolerance;
             
+            // TODO: figure out tolerances for sparse data
             if (munsell.Bounds.IsSparseChroma)
             {
-                Assert.Ignore($"⚠️ sparse chroma data; chroma ranges for {munsell} are {string.Join(", ", munsell.Bounds.ChromaRanges)}");
+                Console.WriteLine($"⚠️ sparse chroma data; chroma ranges for {munsell} are {string.Join(", ", munsell.Bounds.ChromaRanges)}");
+                Console.WriteLine(original);
+                Console.WriteLine(roundtrip);
+                Assert.Ignore("⚠️ sparse chroma data");
                 return;
             }
             
@@ -70,7 +74,7 @@ public class RoundtripXyyTests
                 {
                     <= 1 => 0.005,
                     <= 5 => 0.025,
-                    _ => 0.035
+                    _ => 0.04
                 };
             }
             

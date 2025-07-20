@@ -327,7 +327,11 @@ public class KnownMunsellTests
         // var xyy = new Xyy(0.33677419510472395, 0.1708935237882816, 0.001797989184534332);
         // var xyy = new Xyy(0.7858633707744189, 0.007105953622768335, 0.274929467457103);
         // var xyy = new Xyy(0.9338835363255807, 0.3152111547768083, 0.6212223067431817);
-        var xyy = new Xyy(0.45874396736163936, 0.8456399614207708, 0.2075337930224812);
+        // var xyy = new Xyy(0.45874396736163936, 0.8456399614207708, 0.2075337930224812);
+        
+        // TODO: can trigger chroma radius divide-by-zero, create dedicated test
+        // TODO: is there a way to trigger something similar with hue?
+        var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
         var munsell = MunsellFuncs.FromXyy(xyy);
         var round = MunsellFuncs.ToXyy(munsell);
         Console.WriteLine(xyy);

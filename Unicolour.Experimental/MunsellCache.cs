@@ -2,9 +2,7 @@
 
 internal static class MunsellCache
 {
-    private static readonly Lazy<Dictionary<string, Munsell.Node>> NodeLookup = new(() => Nodes.Value.ToDictionary(GetKey, x => x));
-    private static readonly Dictionary<(Munsell.MunsellHue h, double v), (int min, int max)> ChromaRange = new();
-
+    private static readonly Lazy<Dictionary<string, Munsell.Node>> NodeLookup = new(() => Nodes!.Value.ToDictionary(GetKey, x => x));
     internal static Chromaticity? Lookup(Munsell.MunsellHue h, double v, int c)
     {
         var key = GetKey(h, v, c);
@@ -14,6 +12,7 @@ internal static class MunsellCache
     private static string GetKey(Munsell.Node node) => GetKey(node.Hue, node.Value, node.Chroma);
     private static string GetKey(Munsell.MunsellHue h, double v, int c) => $"{h.Number}{h.Letter} {v}/{c}";
     
+    private static readonly Dictionary<(Munsell.MunsellHue h, double v), (int min, int max)> ChromaRange = new();
     internal static (int min, int max) GetChromaRange(Munsell.MunsellHue h, double v)
     {
         var key = (h, v);

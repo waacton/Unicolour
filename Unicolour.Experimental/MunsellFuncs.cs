@@ -48,6 +48,9 @@ internal static class MunsellFuncs
         if (nodeV == 0) return WhitePoint;
 
         var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
+        var unwrappedH = Hue.Unwrap(lowerH.Degrees, h.Degrees);
+        var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / DegreesPerHueNumber;
+        
         var (lowerNodeC, upperNodeC) = bounds.GetChromaBoundsWithinData(isLowerV);
         if (lowerNodeC == upperNodeC)
         {
@@ -76,10 +79,7 @@ internal static class MunsellFuncs
 
             var polar1 = LineSegment.Polar(WhitePoint, node1.Point);
             var polar2 = LineSegment.Polar(WhitePoint, node2.Point);
-            (polar1.angle, polar2.angle) = Hue.Unwrap(polar1.angle, polar2.angle, HueSpan.Shorter);
-
-            // TODO: do these hue degrees also need wrapping?
-            var hueDistance = (h.Degrees - lowerH.Degrees) / (upperH.Degrees - lowerH.Degrees);
+            (polar1.angle, polar2.angle) = Hue.Unwrap(polar1.angle, polar2.angle);
             var angle = Interpolation.Linear(polar1.angle, polar2.angle, hueDistance);
             var angleDistance = (angle - polar1.angle) / (polar2.angle - polar1.angle);
 
@@ -297,9 +297,11 @@ internal static class MunsellFuncs
             converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
         }
 
-        var (startAngle, endAngle) = UnwrapAngles(start.Angle, end.Angle);
+        var (startAngle, endAngle) = Hue.Unwrap(start.Angle, end.Angle);
         var distance = (start.Unwrapped.targetAngle - start.Unwrapped.angle) / (endAngle - startAngle);
-        var h = Interpolation.Linear(start.Munsell.Hue.Degrees, end.Munsell.Hue.Degrees, distance).Modulo(360);
+        
+        var (startHue, endHue) = Hue.Unwrap(start.Munsell.Hue.Degrees, end.Munsell.Hue.Degrees);
+        var h = Interpolation.Linear(startHue, endHue, distance).Modulo(360);
         return new Munsell(h, v, c);
     }
     
@@ -327,7 +329,6 @@ internal static class MunsellFuncs
     }
     
     private static (double radius, double angle) Polar(Munsell munsell) => LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity);
-    private static (double start, double end) UnwrapAngles(double start, double end) => Hue.Unwrap(start, end, HueSpan.Shorter);
     
     private record HueToAngleData
     {
@@ -343,7 +344,7 @@ internal static class MunsellFuncs
             Munsell = munsell;
             Angle = Polar(munsell).angle;
             TargetAngle = targetAngle;
-            Unwrapped = UnwrapAngles(Angle, TargetAngle); 
+            Unwrapped = Hue.Unwrap(Angle, TargetAngle); 
         }
         
         public override string ToString() => $"{Munsell} ({Angle} vs. {TargetAngle}) --> ({Unwrapped.angle} vs. {Unwrapped.targetAngle})";

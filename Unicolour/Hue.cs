@@ -10,7 +10,7 @@ public enum HueSpan
 
 internal static class Hue
 {
-    internal static (double start, double end) Unwrap(double start, double end, HueSpan hueSpan)
+    internal static (double start, double end) Unwrap(double start, double end, HueSpan hueSpan = HueSpan.Shorter)
     {
         return hueSpan switch
         {

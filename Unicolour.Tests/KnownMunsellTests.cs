@@ -251,8 +251,8 @@ public class KnownMunsellTests
         // var original = new Munsell(4.2, "YR", 8.1, 5.3);
         // var original = new Munsell(6.66, "R", 6.66, 6.66);
         // var original = new Munsell(4.2, "G", 5.5, 99);
-        // var original = new Munsell(116.60697248709873, 0.22737082192960334, 2.1740859211633805);
-        var original = new Munsell(4.098412460750023, 3.574724518514384, 10.196462054672057);
+        var original = new Munsell(116.60697248709873, 0.22737082192960334, 2.1740859211633805);
+        // var original = new Munsell(4.098412460750023, 3.574724518514384, 10.196462054672057);
         var originalBounds = original.Bounds;
 
         var xyy = MunsellFuncs.ToXyy(original);

@@ -120,7 +120,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceTocolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceToColourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
@@ -138,7 +138,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void colourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void ColourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
         

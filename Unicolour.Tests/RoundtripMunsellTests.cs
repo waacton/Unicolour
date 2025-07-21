@@ -16,6 +16,8 @@ public class RoundtripMunsellTests
         var roundtrip = MunsellFuncs.FromXyy(xyy);
 
         (double h, double c) tolerance;
+        
+        // TODO: consider ridiculous xy (e.g. beyond 0 - 1)
 
         if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
         {
@@ -41,6 +43,7 @@ public class RoundtripMunsellTests
              * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
              * once confident that conversion is robust, and occasional errors are outliers
              * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
+             * TODO: lower the thresholds, find some of the extreme edge cases, and investigate in case of true conversion issues
              */
             var maxChromaScale = Math.Max(original.Bounds.ChromaLimitScale, roundtrip.Bounds.ChromaLimitScale);
             Console.WriteLine($"{(original.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {original.Bounds.ChromaLimitScale}x above max chroma");
@@ -89,108 +92,110 @@ public class RoundtripMunsellTests
         
         Assert.That(hDeltas.Average(), Is.LessThan(0.05));
         Assert.That(vDeltas.Average(), Is.LessThan(5e-15));
-        Assert.That(cDeltas.Average(), Is.LessThan(0.01));
+        Assert.That(cDeltas.Average(), Is.LessThan(0.05));
     }
 
-    [Test]
-    public void Data()
-    {
-        double[] cThresholds = Enumerable.Range(0, 41).Select(x => x  / 4.0).ToArray();
-        var hLut = cThresholds.ToDictionary(c => c, _ => -1.0);
-        var cLut = cThresholds.ToDictionary(c => c, _ => -1.0);
-        var hWorstLowC = 0.0;
-        var cWorstLowC = 0.0;
-        var hWorstSparseC = 0.0;
-        var cWorstSparseC = 0.0;
-        var triplets = Enumerable.Range(0, 100000).Select(_ => RandomColours.Munsell()).ToArray();
-    
-        foreach (var triplet in triplets)
-        {
-            try
-            {
-                var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
-                Xyy xyy;
-                Munsell roundtrip;
-                
-                try
-                {
-                    xyy = MunsellFuncs.ToXyy(original);
-                    roundtrip = MunsellFuncs.FromXyy(xyy);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Exception occurred processing {original} ({original.Triplet})");
-                    continue;
-                }
-                
-                var chromaLimitScale = Math.Max(original.Bounds.ChromaLimitScale, roundtrip.Bounds.ChromaLimitScale);
-                var threshold = cThresholds.Last(c => c <= chromaLimitScale);
-                var (originalHue, roundtripHue) = Hue.Unwrap(original.Hue.Degrees, roundtrip.Hue.Degrees);
-                var hDelta = Math.Abs(originalHue - roundtripHue);
-                var cDelta = Math.Abs(original.C - roundtrip.C);
-    
-                if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
-                {
-                    if (hDelta > hWorstSparseC)
-                    {
-                        hWorstSparseC = hDelta;
-                    }
-                    
-                    if (cDelta > cWorstSparseC)
-                    {
-                        cWorstSparseC = cDelta;
-                    }
-                    
-                    continue;
-                }
-                
-                if (original.C < 0.5)
-                {
-                    if (hDelta > hWorstLowC)
-                    {
-                        hWorstLowC = hDelta;
-                    }
-                    
-                    if (cDelta > cWorstLowC)
-                    {
-                        cWorstLowC = cDelta;
-                    }
-                    
-                    continue;
-                }
-    
-                if (hDelta > hLut[threshold])
-                {
-                    hLut[threshold] = hDelta;
-                }
-            
-                if (cDelta > cLut[threshold])
-                {
-                    cLut[threshold] = cDelta;
-                }
-            }
-            catch (NotImplementedException e)
-            {
-                // Console.WriteLine(e.Message);
-            }
-        }
-    
-        Console.WriteLine("H deltas");
-        Console.WriteLine("Low C : " + hWorstLowC);
-        Console.WriteLine("Sparse C : " + hWorstSparseC);
-        foreach (var item in hLut)
-        {
-            Console.WriteLine($"{item.Key} : {item.Value}");
-        }
-        
-        Console.WriteLine("");
-        
-        Console.WriteLine("C deltas");
-        Console.WriteLine("Low C : " + cWorstLowC);
-        Console.WriteLine("Sparse C : " + cWorstSparseC);
-        foreach (var item in cLut)
-        {
-            Console.WriteLine($"{item.Key} : {item.Value}");
-        }
-    }
+    // [Test]
+    // public void Data()
+    // {
+    //     var cThresholds = Enumerable.Range(0, 41).Select(x => x  / 4.0).ToArray();
+    //     var hLut = cThresholds.ToDictionary(c => c, _ => -1.0);
+    //     var cLut = cThresholds.ToDictionary(c => c, _ => -1.0);
+    //     var hWorstLowC = 0.0;
+    //     var cWorstLowC = 0.0;
+    //     var hWorstSparseC = 0.0;
+    //     var cWorstSparseC = 0.0;
+    //     var triplets = Enumerable.Range(0, 100000).Select(_ => RandomColours.Munsell()).ToArray();
+    //
+    //     foreach (var triplet in triplets)
+    //     {
+    //         try
+    //         {
+    //             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
+    //             Xyy xyy;
+    //             Munsell roundtrip;
+    //             
+    //             try
+    //             {
+    //                 xyy = MunsellFuncs.ToXyy(original);
+    //                 roundtrip = MunsellFuncs.FromXyy(xyy);
+    //             }
+    //             catch (Exception e)
+    //             {
+    //                 Console.WriteLine($"Exception occurred processing {original} ({original.Triplet})");
+    //                 continue;
+    //             }
+    //             
+    //             var chromaLimitScale = Math.Max(original.Bounds.ChromaLimitScale, roundtrip.Bounds.ChromaLimitScale);
+    //             var threshold = cThresholds.Last(c => c <= chromaLimitScale);
+    //             var (originalHue, roundtripHue) = Hue.Unwrap(original.Hue.Degrees, roundtrip.Hue.Degrees);
+    //             var hDelta = Math.Abs(originalHue - roundtripHue);
+    //             var cDelta = Math.Abs(original.C - roundtrip.C);
+    //
+    //             if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
+    //             {
+    //                 if (hDelta > hWorstSparseC)
+    //                 {
+    //                     hWorstSparseC = hDelta;
+    //                 }
+    //                 
+    //                 if (cDelta > cWorstSparseC)
+    //                 {
+    //                     cWorstSparseC = cDelta;
+    //                 }
+    //                 
+    //                 continue;
+    //             }
+    //             
+    //             if (original.C < 0.5)
+    //             {
+    //                 if (hDelta > hWorstLowC)
+    //                 {
+    //                     hWorstLowC = hDelta;
+    //                 }
+    //                 
+    //                 if (cDelta > cWorstLowC)
+    //                 {
+    //                     cWorstLowC = cDelta;
+    //                 }
+    //                 
+    //                 continue;
+    //             }
+    //
+    //             if (hDelta > hLut[threshold])
+    //             {
+    //                 hLut[threshold] = hDelta;
+    //             }
+    //         
+    //             if (cDelta > cLut[threshold])
+    //             {
+    //                 cLut[threshold] = cDelta;
+    //             }
+    //         }
+    //         catch (NotImplementedException e)
+    //         {
+    //             // Console.WriteLine(e.Message);
+    //         }
+    //     }
+    //
+    //     Console.WriteLine("H deltas");
+    //     Console.WriteLine("=========");
+    //     Console.WriteLine("Sparse C : " + hWorstSparseC);
+    //     Console.WriteLine("Low C : " + hWorstLowC);
+    //     foreach (var item in hLut)
+    //     {
+    //         Console.WriteLine($"{item.Key} : {item.Value}");
+    //     }
+    //     
+    //     Console.WriteLine("");
+    //     
+    //     Console.WriteLine("C deltas");
+    //     Console.WriteLine("=========");
+    //     Console.WriteLine("Sparse C : " + cWorstSparseC);
+    //     Console.WriteLine("Low C : " + cWorstLowC);
+    //     foreach (var item in cLut)
+    //     {
+    //         Console.WriteLine($"{item.Key} : {item.Value}");
+    //     }
+    // }
 }

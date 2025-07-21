@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using Wacton.Unicolour.Experimental;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static MunsellTestData[] XyyData = Experimental.MunsellCache.Nodes.Value.Select(node => new MunsellTestData(node)).ToArray();
+    private static MunsellTestData[] XyyData = MunsellCache.NodeLookup.Values.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
 
     // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
@@ -52,8 +51,8 @@ public class KnownMunsellTests
     public void KnownXyy(MunsellTestData data)
     {
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
-        var munsellFromDegrees = new Munsell(Munsell.MunsellHue.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
-        Assert.That(munsellFromDegrees, Is.EqualTo(munsell));
+        var munsellFromDegrees = new Munsell(MunsellHue.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
+        Assert.That(munsellFromDegrees.Bounds, Is.EqualTo(munsell.Bounds));
 
         // the Y value in the raw data is relative to MgO, and is not the correct luminance value
         // scale Ymgo to get the intended expected luminance Y for CIE illuminant C 

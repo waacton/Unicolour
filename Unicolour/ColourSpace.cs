@@ -40,5 +40,6 @@ public enum ColourSpace
     Oklrch,
     Cam02,
     Cam16,
-    Hct
+    Hct,
+    Munsell
 }

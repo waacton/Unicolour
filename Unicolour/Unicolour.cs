@@ -43,6 +43,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Cam16? cam16;
     private Hct? hct;
     private Channels? icc;
+    private Munsell? munsell;
     
     private bool? isInPointerGamut;
     private Temperature? temperature;
@@ -92,6 +93,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam02 Cam02 => Get(ref cam02, EvaluateCam02);
     public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
     public Hct Hct => Get(ref hct, EvaluateHct);
+    public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
 
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)

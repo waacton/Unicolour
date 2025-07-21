@@ -1,19 +1,20 @@
-﻿namespace Wacton.Unicolour.Experimental;
+﻿namespace Wacton.Unicolour;
 
 internal static class MunsellCache
 {
-    private static readonly Lazy<Dictionary<string, Munsell.Node>> NodeLookup = new(() => Nodes!.Value.ToDictionary(GetKey, x => x));
-    internal static Chromaticity? Lookup(Munsell.MunsellHue h, double v, int c)
+    private static readonly Lazy<Dictionary<string, Node>> nodeLookup = new(() => GetNodes().ToDictionary(GetKey, x => x));
+    internal static Dictionary<string, Node> NodeLookup => nodeLookup.Value;
+    internal static Chromaticity? Lookup(MunsellHue h, double v, int c)
     {
         var key = GetKey(h, v, c);
-        return NodeLookup.Value.TryGetValue(key, out var node) ? node.Point : null;
+        return NodeLookup.TryGetValue(key, out var node) ? node.Point : null;
     }
 
-    private static string GetKey(Munsell.Node node) => GetKey(node.Hue, node.Value, node.Chroma);
-    private static string GetKey(Munsell.MunsellHue h, double v, int c) => $"{h.Number}{h.Letter} {v}/{c}";
+    private static string GetKey(Node node) => GetKey(node.Hue, node.Value, node.Chroma);
+    private static string GetKey(MunsellHue h, double v, int c) => $"{h.Number}{h.Letter} {v}/{c}";
     
-    private static readonly Dictionary<(Munsell.MunsellHue h, double v), (int min, int max)> ChromaRange = new();
-    internal static (int min, int max) GetChromaRange(Munsell.MunsellHue h, double v)
+    private static readonly Dictionary<(MunsellHue h, double v), (int min, int max)> ChromaRange = new();
+    internal static (int min, int max) GetChromaRange(MunsellHue h, double v)
     {
         var key = (h, v);
         if (ChromaRange.TryGetValue(key, out var range))
@@ -21,13 +22,13 @@ internal static class MunsellCache
             return range;
         }
         
-        var nodes = Nodes.Value.Where(x => x.Hue == h && x.Value == v).ToArray();
+        var nodes = NodeLookup.Values.Where(x => x.Hue == h && x.Value == v).ToArray();
         range = !nodes.Any() ? (0, 0) : (nodes.Min(x => x.Chroma), nodes.Max(x => x.Chroma));
         ChromaRange[key] = range;
         return range;
     }
 
-    internal static readonly Lazy<Munsell.Node[]> Nodes = new(() => new Munsell.Node[]
+    private static Node[] GetNodes() => new Node[] 
     {
         new(2.5, "GY", 0.2, 2, 0.713, 1.414, 0.237),
         new(5, "GY", 0.2, 2, 0.449, 1.145, 0.237),
@@ -5024,5 +5025,5 @@ internal static class MunsellCache
         new(7.5, "Y", 10, 18, 0.462, 0.515, 102.57),
         new(7.5, "Y", 10, 20, 0.467, 0.521, 102.57),
         new(7.5, "Y", 10, 22, 0.472, 0.528, 102.57)
-    });
+    };
 }

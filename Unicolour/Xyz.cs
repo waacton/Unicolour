@@ -14,10 +14,8 @@ public record Xyz : ColourRepresentation
     public Xyz(double x, double y, double z) : this(x, y, z, ColourHeritage.None) {}
     internal Xyz(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Xyz(double x, double y, double z, ColourHeritage heritage) : base(x, y, z, heritage) {}
-
-    protected override string FirstString => $"{X:F4}";
-    protected override string SecondString => $"{Y:F4}";
-    protected override string ThirdString => $"{Z:F4}";
+    
+    protected override string String => $"{X:F4} {Y:F4} {Z:F4}";
     public override string ToString() => base.ToString();
     
     /*

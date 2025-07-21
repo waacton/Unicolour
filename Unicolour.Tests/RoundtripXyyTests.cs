@@ -1,6 +1,5 @@
 using System;
 using NUnit.Framework;
-using Wacton.Unicolour.Experimental;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
@@ -59,7 +58,7 @@ public class RoundtripXyyTests
                 /*
                  * "chroma limit scale" is a measure of how far outside the munsell dataset the chroma is
                  * e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
-                 * from running 100,000s of conversions, large deltas during roundtrip conversion correlates pretty well with this
+                 * from running 10,000,000 roundtrips conversions, large deltas during roundtrip conversion correlates pretty well with this
                  * although there are rare outliers where large deltas appear at lower scales (but never <= 1, i.e. within known data points)
                  * these tolerances are based on gathering this data
                  * ----------

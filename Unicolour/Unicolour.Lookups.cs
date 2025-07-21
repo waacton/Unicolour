@@ -45,6 +45,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => Cam02,
             ColourSpace.Cam16 => Cam16,
             ColourSpace.Hct => Hct,
+            ColourSpace.Munsell => Munsell,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -93,6 +94,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Hct => new Hct(first, second, third, heritage),
+            ColourSpace.Munsell => new Munsell(first, second, third),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -237,6 +239,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz),
+            ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -247,6 +250,7 @@ public partial class Unicolour
         {
             ColourSpace.Xyy => (Xyy)SourceRepresentation,
             ColourSpace.Wxy => Wxy.ToXyy(Wxy, Configuration.Xyz),
+            ColourSpace.Munsell => MunsellFuncs.ToXyy(Munsell),
             _ => Xyy.FromXyz(Xyz, Configuration.Xyz.WhiteChromaticity)
         };
     }
@@ -536,6 +540,16 @@ public partial class Unicolour
         {
             ColourSpace.Hct => (Hct)SourceRepresentation,
             _ => Hct.FromXyz(Xyz, Configuration.Xyz)
+        };
+    }
+    
+    // TODO: this is incorrect - needs to convert from XYZ, in order to adapt to Illuminant C
+    private Munsell EvaluateMunsell()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Munsell => (Munsell)SourceRepresentation,
+            _ => MunsellFuncs.FromXyy(Xyy)
         };
     }
 }

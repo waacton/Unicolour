@@ -94,18 +94,6 @@ internal static class TestUtils
     ];
         
     internal const double MixTolerance = 0.00000000005;
-
-    private static double[] GetTolerances(double tolerance, int? hueIndex)
-    {
-        double[] tolerances = [tolerance, tolerance, tolerance];
-        if (hueIndex == null)
-        {
-            return tolerances;
-        }
-        
-        tolerances[(int)hueIndex] *= 360;
-        return tolerances;
-    }
     
     internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
@@ -128,17 +116,34 @@ internal static class TestUtils
         AssertTriplet(actual, expected, tolerances, info);
     }
     
+    private static double[] GetTolerances(double tolerance, int? hueIndex)
+    {
+        double[] tolerances = [tolerance, tolerance, tolerance];
+        if (hueIndex == null)
+        {
+            return tolerances;
+        }
+        
+        tolerances[(int)hueIndex] *= 360;
+        return tolerances;
+    }
+    
     internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double[] tolerances, string? info = null)
     {
         var details = $"Expected --- {expected}\nActual ----- {actual}";
         string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
-        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"));
+        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"), actual.HueIndex == 0);
         AssertTripletValue(actual.Second, expected.Second, tolerances[1], FailMessage("Channel 2"));
-        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"));
+        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
-    private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage)
+    private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)
     {
+        if (isHue)
+        {
+            (actual, expected) = Hue.Unwrap(actual, expected);
+        }
+        
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance), failMessage);
     }
 

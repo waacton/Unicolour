@@ -13,10 +13,8 @@ public record Xyb : ColourRepresentation
 
     public Xyb(double x, double y, double b) : this(x, y, b, ColourHeritage.None) {}
     internal Xyb(double x, double y, double b, ColourHeritage heritage) : base(x, y, b, heritage) {}
-
-    protected override string FirstString => $"{X:+0.000;-0.000;0.000}";
-    protected override string SecondString => $"{Y:F3}";
-    protected override string ThirdString => $"{B:+0.000;-0.000;0.000}";
+    
+    protected override string String => $"{X:+0.000;-0.000;0.000} {Y:F3} {B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
     /*

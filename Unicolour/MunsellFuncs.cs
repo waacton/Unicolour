@@ -1,6 +1,6 @@
-﻿using static Wacton.Unicolour.Experimental.Munsell;
+﻿using static Wacton.Unicolour.Munsell;
 
-namespace Wacton.Unicolour.Experimental;
+namespace Wacton.Unicolour;
 
 internal static class MunsellFuncs
 {
@@ -49,7 +49,7 @@ internal static class MunsellFuncs
 
         var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
         var unwrappedH = Hue.Unwrap(lowerH.Degrees, h.Degrees);
-        var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / DegreesPerHueNumber;
+        var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / Node.DegreesPerHueNumber;
 
         var (lowerNodeC, upperNodeC) = isLowerV ? bounds.BoundC.lowerV : bounds.BoundC.upperV;
         if (lowerNodeC == upperNodeC)
@@ -73,6 +73,11 @@ internal static class MunsellFuncs
             var upper = MunsellCache.Lookup(upperH, nodeV, nodeC);
             if (lower == upper)
             {
+                if (lower == null)
+                {
+                    Console.WriteLine($"⚠️⚠️⚠️ both lower and upper null for {lowerH} {nodeV} {nodeC} and {upperH} {nodeV} {nodeC}");
+                    throw new InvalidOperationException($"⚠️⚠️⚠️ both lower and upper null for {lowerH} {nodeV} {nodeC} and {upperH} {nodeV} {nodeC}");
+                }
                 return lower;
             }
 

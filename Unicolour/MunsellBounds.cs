@@ -1,9 +1,9 @@
-﻿namespace Wacton.Unicolour.Experimental;
+﻿namespace Wacton.Unicolour;
 
-internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue UpperH, double LowerV, double UpperV, int LowerC, int UpperC)
+internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double LowerV, double UpperV, int LowerC, int UpperC)
 {
-    internal Munsell.MunsellHue LowerH { get; } = LowerH;
-    internal Munsell.MunsellHue UpperH { get; } = UpperH;
+    internal MunsellHue LowerH { get; } = LowerH;
+    internal MunsellHue UpperH { get; } = UpperH;
     internal double LowerV { get; } = LowerV;
     internal double UpperV { get; } = UpperV;
     internal int LowerC { get; } = LowerC;
@@ -48,8 +48,9 @@ internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue Uppe
 
         return (lowerC, upperC);
     }
-    
-    internal readonly (int min, int max)[] ChromaRanges =
+
+
+    internal (int min, int max)[] ChromaRanges => new[]
     {
         MunsellCache.GetChromaRange(LowerH, LowerV),
         MunsellCache.GetChromaRange(UpperH, LowerV),
@@ -57,7 +58,7 @@ internal record MunsellBounds(Munsell.MunsellHue LowerH, Munsell.MunsellHue Uppe
         MunsellCache.GetChromaRange(UpperH, UpperV)
     };
 
-    internal bool IsSparseChroma => ChromaRanges.Any(x => x == (0, 0));
+    internal bool IsSparseChroma => ChromaRanges.Count(x => x == (0, 0)) > 0;
     internal int ClosestUpperChromaLimit => ChromaRanges.Select(x => x.max).Min();
     internal double ChromaLimitScale => ClosestUpperChromaLimit == 0.0 ? 0.0 : UpperC / (double)ClosestUpperChromaLimit;
     

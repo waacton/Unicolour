@@ -218,7 +218,7 @@ internal static class RandomColours
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
-    private static ColourTriplet Munsell() => new(Rng(0, 360), Rng(0, 10), Rng(0, 26)); // from data of "real" colours (smaller range than used in Unicolour)
+    internal static ColourTriplet Munsell() => new(Rng(0, 360), Rng(0, 10), Rng(0, 26)); // from data of "real" colours (smaller range than used in Unicolour)
     private static double Alpha() => TestUtils.RandomDouble();
     
     private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));

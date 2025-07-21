@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Wacton.Unicolour.Experimental;
 
 namespace Wacton.Unicolour.Tests.Utils;
     
@@ -17,7 +16,7 @@ public record MunsellTestData
     internal readonly (double r, double g, double b)? RgbMgo;
     internal bool HasRgbMgoData => RgbMgo != null;
     
-    internal MunsellTestData(Munsell.Node node) : this(node.HueNumber, node.HueLetter, node.Value, node.Chroma, node.X, node.Y, node.LuminanceMagnesiumOxide) {}
+    internal MunsellTestData(Node node) : this(node.HueNumber, node.HueLetter, node.Value, node.Chroma, node.X, node.Y, node.LuminanceMagnesiumOxide) {}
     private MunsellTestData(double hueNumber, string hueLetter, double value, int chroma, double x, double y, double luminanceMgo)
     {
         HueNumber = hueNumber;

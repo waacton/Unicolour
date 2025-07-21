@@ -17,9 +17,7 @@ public record Hsi : ColourRepresentation
     public Hsi(double h, double s, double i) : this(h, s, i, ColourHeritage.None) {}
     internal Hsi(double h, double s, double i, ColourHeritage heritage) : base(h, s, i, heritage) {}
 
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{S * 100:F1}%";
-    protected override string ThirdString => $"{I * 100:F1}%";
+    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {I * 100:F1}%" : $"—° {S * 100:F1}% {I * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

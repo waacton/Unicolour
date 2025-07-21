@@ -19,9 +19,7 @@ public record Okhsv : ColourRepresentation
     public Okhsv(double h, double s, double v) : this(h, s, v, ColourHeritage.None) { }
     internal Okhsv(double h, double s, double v, ColourHeritage heritage) : base(h, s, v, heritage) { }
     
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{S * 100:F1}%";
-    protected override string ThirdString => $"{V * 100:F1}%";
+    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {V * 100:F1}%" : $"—° {S * 100:F1}% {V * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

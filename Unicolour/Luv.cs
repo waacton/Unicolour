@@ -13,9 +13,7 @@ public record Luv : ColourRepresentation
     public Luv(double l, double u, double v) : this(l, u, v, ColourHeritage.None) {}
     internal Luv(double l, double u, double v, ColourHeritage heritage) : base(l, u, v, heritage) {}
 
-    protected override string FirstString => $"{L:F2}";
-    protected override string SecondString => $"{U:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{V:+0.00;-0.00;0.00}";
+    protected override string String => $"{L:F2} {U:+0.00;-0.00;0.00} {V:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

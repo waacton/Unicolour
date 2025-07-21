@@ -14,9 +14,7 @@ public record Ictcp : ColourRepresentation
     internal Ictcp(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Ictcp(double i, double ct, double cp, ColourHeritage heritage) : base(i, ct, cp, heritage) {}
 
-    protected override string FirstString => $"{I:F2}";
-    protected override string SecondString => $"{Ct:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{Cp:+0.00;-0.00;0.00}";
+    protected override string String => $"{I:F2} {Ct:+0.00;-0.00;0.00} {Cp:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

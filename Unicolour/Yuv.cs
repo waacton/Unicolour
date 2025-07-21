@@ -18,9 +18,7 @@ public record Yuv : ColourRepresentation
     internal Yuv(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Yuv(double y, double u, double v, ColourHeritage heritage) : base(y, u, v, heritage) {}
     
-    protected override string FirstString => $"{Y:F3}";
-    protected override string SecondString => $"{U:+0.000;-0.000;0.000}";
-    protected override string ThirdString => $"{V:+0.000;-0.000;0.000}";
+    protected override string String => $"{Y:F3} {U:+0.000;-0.000;0.000} {V:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
     /*

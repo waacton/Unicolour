@@ -13,9 +13,7 @@ public record Hct : ColourRepresentation
     public Hct(double h, double c, double t) : this(h, c, t, ColourHeritage.None) {}
     internal Hct(double h, double c, double t, ColourHeritage heritage) : base(h, c, t, heritage) {}
 
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{C:F2}";
-    protected override string ThirdString => $"{T:F2}";
+    protected override string String => UseAsHued ? $"{H:F1}° {C:F2} {T:F2}" : $"—° {C:F2} {T:F2}";
     public override string ToString() => base.ToString();
     
     /*

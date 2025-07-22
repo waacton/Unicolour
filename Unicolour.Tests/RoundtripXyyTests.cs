@@ -118,7 +118,7 @@ public class RoundtripXyyTests
     //     var lut = cThresholds.ToDictionary(c => c, _ => -1.0);
     //     var worstLowC = 0.0;
     //     var worstSparseC = 0.0;
-    //     var triplets = Enumerable.Range(0, 100000).Select(_ => RandomColours.Xyy()).ToArray();
+    //     var triplets = Enumerable.Range(0, 10000000).Select(_ => RandomColours.Xyy()).ToArray();
     //
     //     foreach (var triplet in triplets)
     //     {

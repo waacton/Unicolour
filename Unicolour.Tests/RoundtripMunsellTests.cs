@@ -105,7 +105,9 @@ public class RoundtripMunsellTests
     //     var cWorstLowC = 0.0;
     //     var hWorstSparseC = 0.0;
     //     var cWorstSparseC = 0.0;
-    //     var triplets = Enumerable.Range(0, 100000).Select(_ => RandomColours.Munsell()).ToArray();
+    //     var hWorstBadXy = 0.0;
+    //     var cWorstBadXy = 0.0;
+    //     var triplets = Enumerable.Range(0, 10000000).Select(_ => RandomColours.Munsell()).ToArray();
     //
     //     foreach (var triplet in triplets)
     //     {
@@ -131,6 +133,21 @@ public class RoundtripMunsellTests
     //             var (originalHue, roundtripHue) = Hue.Unwrap(original.Hue.Degrees, roundtrip.Hue.Degrees);
     //             var hDelta = Math.Abs(originalHue - roundtripHue);
     //             var cDelta = Math.Abs(original.C - roundtrip.C);
+    //
+    //             if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
+    //             {
+    //                 if (hDelta > hWorstBadXy)
+    //                 {
+    //                     hWorstBadXy = hDelta;
+    //                 }
+    //                 
+    //                 if (cDelta > cWorstBadXy)
+    //                 {
+    //                     cWorstBadXy = cDelta;
+    //                 }
+    //                 
+    //                 continue;
+    //             }
     //
     //             if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
     //             {
@@ -180,6 +197,7 @@ public class RoundtripMunsellTests
     //
     //     Console.WriteLine("H deltas");
     //     Console.WriteLine("=========");
+    //     Console.WriteLine("Bad XY : " + hWorstBadXy);
     //     Console.WriteLine("Sparse C : " + hWorstSparseC);
     //     Console.WriteLine("Low C : " + hWorstLowC);
     //     foreach (var item in hLut)
@@ -191,6 +209,7 @@ public class RoundtripMunsellTests
     //     
     //     Console.WriteLine("C deltas");
     //     Console.WriteLine("=========");
+    //     Console.WriteLine("Bad XY : " + cWorstBadXy);
     //     Console.WriteLine("Sparse C : " + cWorstSparseC);
     //     Console.WriteLine("Low C : " + cWorstLowC);
     //     foreach (var item in cLut)

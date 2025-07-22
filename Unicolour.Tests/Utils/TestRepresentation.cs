@@ -6,7 +6,5 @@ internal record TestRepresentation : ColourRepresentation
     
     protected override int? HueIndex => null;
     internal override bool IsGreyscale => false;
-    protected override string FirstString => string.Empty;
-    protected override string SecondString => string.Empty;
-    protected override string ThirdString => string.Empty;
+    protected override string String => string.Empty;
 }

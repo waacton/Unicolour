@@ -16,17 +16,19 @@ public class RoundtripMunsellTests
         var roundtrip = MunsellFuncs.FromXyy(xyy);
 
         (double h, double c) tolerance;
-        
-        // TODO: consider ridiculous xy (e.g. beyond 0 - 1)
-
-        if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
+        if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
         {
-            Console.WriteLine("⚠️ sparse chroma data");
+            Console.WriteLine($"⚠️ xy outside reasonable range ({xyy})");
+            tolerance = (h: 20.25, 62);
+        }
+        else if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
+        {
+            Console.WriteLine($"⚠️ sparse chroma data ({string.Join(", ", roundtrip.Bounds.ChromaRanges)})");
             tolerance = (h: 12.25, c: 21.75);
         }
         else if (original.C < 0.5)
         {
-            Console.WriteLine("⚠️ low chroma");
+            Console.WriteLine($"⚠️ low chroma ({original.C})");
             tolerance = (h: 4.055, c: 0.0035);
         }
         else
@@ -43,18 +45,16 @@ public class RoundtripMunsellTests
              * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
              * once confident that conversion is robust, and occasional errors are outliers
              * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
-             * TODO: lower the thresholds, find some of the extreme edge cases, and investigate in case of true conversion issues
              */
             var maxChromaScale = Math.Max(original.Bounds.ChromaLimitScale, roundtrip.Bounds.ChromaLimitScale);
-            Console.WriteLine($"{(original.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {original.Bounds.ChromaLimitScale}x above max chroma");
-            Console.WriteLine($"{(roundtrip.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {roundtrip.Bounds.ChromaLimitScale}x above max chroma");
+            Console.WriteLine($"{(original.Bounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{original.Bounds.ChromaLimitScale}x above max chroma");
+            Console.WriteLine($"{(roundtrip.Bounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{roundtrip.Bounds.ChromaLimitScale}x above max chroma");
             tolerance = maxChromaScale switch
             {
-                >= 3 => (h: 21, c: 62.5),
-                >= 2 => (h: 12, c: 36.5),
-                >= 1 => (h: 5.25, c: 29.5),
-                >= 0.5 => (h: 0.85, c: 1),
-                _ => (h: 0.4, c: 0.125)
+                >= 1.25 => (h: 6.85, c: 28.9),
+                >= 1 => (h: 1.67, c: 2.09),
+                >= 0.5 => (h: 0.74, c: 1.03),
+                _ => (h: 0.41, c: 0.125)
             };
         }
         

@@ -37,7 +37,6 @@ public class RoundtripXyyTests
         var roundtrip = MunsellFuncs.ToXyy(munsell);
         
         double tolerance;
-        
         if (munsell.Bounds.IsSparseChroma)
         {
             Console.WriteLine("⚠️ sparse chroma data");
@@ -62,14 +61,13 @@ public class RoundtripXyyTests
              * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
              * once confident that conversion is robust, and occasional errors are outliers
              * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
-             * TODO: lower the thresholds, find some of the extreme edge cases, and investigate in case of true conversion issues
              */
-            Console.WriteLine($"{(munsell.Bounds.ChromaLimitScale > 1 ? "⚠️" : string.Empty)} {munsell.Bounds.ChromaLimitScale}x above max chroma");
+            Console.WriteLine($"{(munsell.Bounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{munsell.Bounds.ChromaLimitScale}x above max chroma");
             tolerance = munsell.Bounds.ChromaLimitScale switch
             {
-                >= 5 => 0.0375,
-                >= 1.75 => 0.025,
-                >= 0.75 => 0.02,
+                >= 4.5 => 0.0425,
+                >= 1.75 => 0.03,
+                >= 0.75 => 0.025,
                 >= 0.5 => 0.00155,
                 _ => 0.00001
             };

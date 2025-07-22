@@ -16,10 +16,8 @@ public record Tsl : ColourRepresentation
 
     public Tsl(double t, double s, double l) : this(t, s, l, ColourHeritage.None) {}
     internal Tsl(double t, double s, double l, ColourHeritage heritage) : base(t, s, l, heritage) {}
-
-    protected override string FirstString => UseAsHued ? $"{T:F1}°" : "—°";
-    protected override string SecondString => $"{S * 100:F1}%";
-    protected override string ThirdString => $"{L * 100:F1}%";
+    
+    protected override string String => UseAsHued ? $"{T:F1}° {S * 100:F1}% {L * 100:F1}%" : $"—° {S * 100:F1}% {L * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

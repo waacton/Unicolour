@@ -12,9 +12,7 @@ public record Lms : ColourRepresentation
     internal Lms(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Lms(double l, double m, double s, ColourHeritage heritage) : base(l, m, s, heritage) {}
 
-    protected override string FirstString => $"{L:F4}";
-    protected override string SecondString => $"{M:F4}";
-    protected override string ThirdString => $"{S:F4}";
+    protected override string String => $"{L:F4} {M:F4} {S:F4}";
     public override string ToString() => base.ToString();
     
     /*

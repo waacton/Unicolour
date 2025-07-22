@@ -17,10 +17,8 @@ public record Xyy : ColourRepresentation
 
     public Xyy(double x, double y, double upperY) : this(x, y, upperY, ColourHeritage.None) {}
     internal Xyy(double x, double y, double upperY, ColourHeritage heritage) : base(x, y, upperY, heritage) { }
-
-    protected override string FirstString => $"{Chromaticity.X:F4}";
-    protected override string SecondString => $"{Chromaticity.Y:F4}";
-    protected override string ThirdString => $"{Luminance:F4}";
+    
+    protected override string String => $"{Chromaticity.X:F4} {Chromaticity.Y:F4} {Luminance:F4}";
     public override string ToString() => base.ToString();
     
     /*

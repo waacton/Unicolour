@@ -17,9 +17,7 @@ public record Hpluv : ColourRepresentation
     public Hpluv(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
     internal Hpluv(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
 
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{S:F1}%";
-    protected override string ThirdString => $"{L:F1}%";
+    protected override string String => UseAsHued ? $"{H:F1}° {S:F1}% {L:F1}%" : $"—° {S:F1}% {L:F1}%";
     public override string ToString() => base.ToString();
     
     /*

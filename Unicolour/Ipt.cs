@@ -14,9 +14,7 @@ public record Ipt : ColourRepresentation
     internal Ipt(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Ipt(double i, double p, double t, ColourHeritage heritage) : base(i, p, t, heritage) {}
 
-    protected override string FirstString => $"{I:F2}";
-    protected override string SecondString => $"{P:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{T:+0.00;-0.00;0.00}";
+    protected override string String => $"{I:F2} {P:+0.00;-0.00;0.00} {T:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

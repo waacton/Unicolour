@@ -16,10 +16,8 @@ public record Hwb : ColourRepresentation
 
     public Hwb(double h, double w, double b) : this(h, w, b, ColourHeritage.None) {}
     internal Hwb(double h, double w, double b, ColourHeritage heritage) : base(h, w, b, heritage) {}
-
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{W * 100:F1}%";
-    protected override string ThirdString => $"{B * 100:F1}%";
+    
+    protected override string String => UseAsHued ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"—° {W * 100:F1}% {B * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

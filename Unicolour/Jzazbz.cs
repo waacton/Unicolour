@@ -15,7 +15,6 @@ public record Jzazbz : ColourRepresentation
     public Jzazbz(double j, double a, double b) : this(j, a, b, ColourHeritage.None) {}
     internal Jzazbz(double j, double a, double b, ColourHeritage heritage) : base(j, a, b, heritage) {}
     
-    // TODO: check if should be 2dp now that defaults to HDR
     protected override string String => $"{J:F3} {A:+0.000;-0.000;0.000} {B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     

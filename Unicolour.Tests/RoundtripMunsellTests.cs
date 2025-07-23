@@ -16,20 +16,25 @@ public class RoundtripMunsellTests
         var roundtrip = MunsellFuncs.FromXyy(xyy);
 
         (double h, double c) tolerance;
-        if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
+        if (!roundtrip.XyyToMunsellSearchResult!.Converged)
+        {
+            Console.WriteLine($"⚠️ did not converge ({roundtrip})");
+            tolerance = (h: 7.5, c: 53.5);
+        }
+        else if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
         {
             Console.WriteLine($"⚠️ xy outside reasonable range ({xyy})");
-            tolerance = (h: 20.25, 62);
+            tolerance = (h: 21.5, c: 62.5);
         }
         else if (original.Bounds.IsSparseChroma || roundtrip.Bounds.IsSparseChroma)
         {
             Console.WriteLine($"⚠️ sparse chroma data ({string.Join(", ", roundtrip.Bounds.ChromaRanges)})");
-            tolerance = (h: 12.25, c: 21.75);
+            tolerance = (h: 8.75, c: 21.5);
         }
         else if (original.C < 0.5)
         {
             Console.WriteLine($"⚠️ low chroma ({original.C})");
-            tolerance = (h: 4.055, c: 0.0035);
+            tolerance = (h: 4, c: 0.0035);
         }
         else
         {
@@ -51,10 +56,9 @@ public class RoundtripMunsellTests
             Console.WriteLine($"{(roundtrip.Bounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{roundtrip.Bounds.ChromaLimitScale}x above max chroma");
             tolerance = maxChromaScale switch
             {
-                >= 1.25 => (h: 6.85, c: 28.9),
-                >= 1 => (h: 1.67, c: 2.09),
-                >= 0.5 => (h: 0.74, c: 1.03),
-                _ => (h: 0.41, c: 0.125)
+                >= 1.25 => (h: 6.5, c: 11),
+                >= 1 => (h: 1.725, c: 2.1),
+                _ => (h: 0.45, c: 0.0035)
             };
         }
         
@@ -107,7 +111,9 @@ public class RoundtripMunsellTests
     //     var cWorstSparseC = 0.0;
     //     var hWorstBadXy = 0.0;
     //     var cWorstBadXy = 0.0;
-    //     var triplets = Enumerable.Range(0, 10000000).Select(_ => RandomColours.Munsell()).ToArray();
+    //     var hNoConverge = 0.0;
+    //     var cNoConverge = 0.0;
+    //     var triplets = Enumerable.Range(0, 10_000_000).Select(_ => RandomColours.Munsell()).ToArray();
     //
     //     foreach (var triplet in triplets)
     //     {
@@ -133,6 +139,21 @@ public class RoundtripMunsellTests
     //             var (originalHue, roundtripHue) = Hue.Unwrap(original.Hue.Degrees, roundtrip.Hue.Degrees);
     //             var hDelta = Math.Abs(originalHue - roundtripHue);
     //             var cDelta = Math.Abs(original.C - roundtrip.C);
+    //
+    //             if (!roundtrip.XyyToMunsellSearchResult.Converged)
+    //             {
+    //                 if (hDelta > hNoConverge)
+    //                 {
+    //                     hNoConverge = hDelta;
+    //                 }
+    //                 
+    //                 if (cDelta > cNoConverge)
+    //                 {
+    //                     cNoConverge = cDelta;
+    //                 }
+    //                 
+    //                 continue;
+    //             }
     //
     //             if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
     //             {
@@ -197,6 +218,7 @@ public class RoundtripMunsellTests
     //
     //     Console.WriteLine("H deltas");
     //     Console.WriteLine("=========");
+    //     Console.WriteLine("No converge : " + hNoConverge);
     //     Console.WriteLine("Bad XY : " + hWorstBadXy);
     //     Console.WriteLine("Sparse C : " + hWorstSparseC);
     //     Console.WriteLine("Low C : " + hWorstLowC);
@@ -209,6 +231,7 @@ public class RoundtripMunsellTests
     //     
     //     Console.WriteLine("C deltas");
     //     Console.WriteLine("=========");
+    //     Console.WriteLine("No converge : " + cNoConverge);
     //     Console.WriteLine("Bad XY : " + cWorstBadXy);
     //     Console.WriteLine("Sparse C : " + cWorstSparseC);
     //     Console.WriteLine("Low C : " + cWorstLowC);

@@ -8,6 +8,8 @@
 
         internal MunsellHue(double number, string letter)
         {
+            number = number.Clamp(0, 10);
+            letter = letter.ToUpper();
             Degrees = ToDegrees(number, letter);
             Number = number;
             Letter = letter;
@@ -16,7 +18,7 @@
         internal MunsellHue(double degrees)
         {
             Degrees = degrees.Modulo(360);
-            var (number, letter) = FromDegrees(Degrees);
+            var (number, letter) = double.IsNaN(Degrees) ? (double.NaN, "NaN") : FromDegrees(Degrees);
             Number = number;
             Letter = letter;
         }
@@ -40,7 +42,8 @@
         internal static double ToDegrees(double hueNumber, string hueLetter)
         {
             var bandIndex = Array.IndexOf(Node.NodeHueLetters, hueLetter);
-
+            if (bandIndex == -1) return double.NaN;
+            
             var minDegrees = bandIndex * Node.DegreesPerHueLetter;
             var maxDegrees = (bandIndex + 1) * Node.DegreesPerHueLetter;
             var distance = hueNumber / 10.0; // maps 0 - 10 to 0 - 1
@@ -64,5 +67,5 @@
             return (hueNumber, hueLetter);
         }
         
-        public override string ToString() => $"{Number}{Letter} ({Degrees}°)";
+        public override string ToString() => double.IsNaN(Degrees) ? $"{double.NaN}" : $"{Number}{Letter} ({Degrees}°)";
 }

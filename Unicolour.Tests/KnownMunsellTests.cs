@@ -9,6 +9,7 @@ public class KnownMunsellTests
 {
     private static MunsellTestData[] XyyData = MunsellCache.NodeLookup.Values.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
+    private static Chromaticity WhitePoint = new(0.31006, 0.31616); // TODO: use illuminant C directly? depends if munsell was measured with this approximation to C...?
 
     // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
     private static readonly TestCaseData[] LuminanceTestData =
@@ -143,68 +144,224 @@ public class KnownMunsellTests
         var v = MunsellFuncs.GetValue(luminance);
         Assert.That(v, Is.EqualTo(expectedValue).Within(MunsellFuncs.IterationDepthError[3]));
     }
+    
+    [Test]
+    public void ChromaticityInfinity()
+    {
+        var xyy = new Xyy(double.PositiveInfinity, double.PositiveInfinity, 0.5);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(double.NaN, MunsellFuncs.GetValue(0.5), double.NaN);
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void ChromaticityNotNumber()
+    {
+        var xyy = new Xyy(double.NaN, double.NaN, 0.5);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(double.NaN, MunsellFuncs.GetValue(0.5), double.NaN);
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void LuminanceZero()
+    {
+        var xyy = new Xyy(0.4, 0.4, 0);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(0, 0, 0);
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void LuminanceNegative()
+    {
+        var xyy = new Xyy(0.4, 0.4, -0.5);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(0, 0, 0);
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void LuminanceInfinity()
+    {
+        var xyy = new Xyy(0.4, 0.4, double.PositiveInfinity);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(double.NaN, double.NaN, double.NaN); // without Y, can't resort to a greyscale value
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void LuminanceNotNumber()
+    {
+        var xyy = new Xyy(0.4, 0.4, double.NaN);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        var expected = new ColourTriplet(double.NaN, double.NaN, double.NaN); // without Y, can't resort to a greyscale value
+        TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void HueGreaterThan10()
+    {
+        var munsell = new Munsell(15, "R", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = MunsellFuncs.ToXyy(new Munsell(10, "R", 5, 5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected.Triplet, 0);
+    }
+    
+    [Test]
+    public void HueNegative()
+    {
+        var munsell = new Munsell(-5, "R", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = MunsellFuncs.ToXyy(new Munsell(0, "R", 5, 5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected.Triplet, 0);
+    }
+    
+    [Test]
+    public void HueInfinity()
+    {
+        var munsell = new Munsell(double.PositiveInfinity, "R", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = MunsellFuncs.ToXyy(new Munsell(10, "R", 5, 5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected.Triplet, 0);
+    }
+    
+    [Test]
+    public void HueNotNumber()
+    {
+        var munsell = new Munsell(double.NaN, "R", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void HueLowerCase()
+    {
+        var munsell = new Munsell(5, "r", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = MunsellFuncs.ToXyy(new Munsell(5, "R", 5, 5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected.Triplet, 0);
+    }
+    
+    [Test]
+    public void HueInvalidLetter()
+    {
+        var munsell = new Munsell(5, "X", 5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
 
-    // [Test]
-    // public void InsideDataset()
-    // {
-    //     /*
-    //      * closest node to (0.4, 0.4) at V6 is 2.5Y 6/4 (0.3840, 0.3867) and is located within quadrilateral formed by
-    //      * 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176) · 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767)
-    //      * nearest boundary intersect is (0.4, 0.4003), opposite intersect is (0.4, 0.3863) from vertical line through point
-    //      * near (0.3840, 0.3867) to (0.4, 0.4003) is 44.08% to (0.4203, 0.4176) · 44.08% of 2.5Y /4 to 2.5Y /6 = 2.5Y /4.88
-    //      * far  (0.4240, 0.4030) to (0.4, 0.3863) is 63.32% to (0.3861, 0.3767) · 63.32% of 10YR /6 to 10YR /4 = 10YR /4.73
-    //      * between (0.4, 0.4003) to (0.4, 0.4) is 2.29% to (0.4, 0.3863) · 2.29% of 2.5Y /4.88 to 10YR /4.73 = 2.44Y /4.88
-    //      */
-    //     var xyyV6 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6));
-    //     var expectedV6 = new Munsell(2.44, "Y", 6, 4.88);
-    //     var actualV6 = Munsell.FromXyy(xyyV6);
-    //     Assert.That(actualV6.ToString(), Is.EqualTo(expectedV6.ToString()));
-    //     
-    //     /*
-    //      * closest node to (0.4, 0.4) at V7 is 2.5Y 7/6 (0.4073, 0.4073) and is located within quadrilateral formed by
-    //      * 2.5Y 7/6 (0.4073, 0.4073) · 2.5Y 7/4 (0.3761, 0.3800) · 10YR 7/4 (0.3778, 0.3719) · 10YR 7/6 (0.4102, 0.3960) 
-    //      * nearest boundary intersect is (0.4, 0.4009), opposite intersect is (0.4, 0.3884) from vertical line through point
-    //      * near (0.4073, 0.4073) to (0.4, 0.4009) is 23.40% to (0.3761, 0.3800) · 23.40% of 2.5Y /6 to 2.5Y /4 = 2.5Y /5.53
-    //      * far  (0.3778, 0.3719) to (0.4, 0.3884) is 68.52% to (0.4102, 0.3960) · 63.32% of 10YR /4 to 10YR /6 = 10YR /5.37
-    //      * between (0.4, 0.4009) to (0.4, 0.4) is 7.30% to (0.4, 0.3884) · 7.30% of 2.5Y /5.53 to 10YR /5.37 = 2.32Y /5.52
-    //      */
-    //     var xyyV7 = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(7));
-    //     var expectedV7 = new Munsell(2.32, "Y", 7, 5.52);
-    //     var actualV7 = Munsell.FromXyy(xyyV7);
-    //     Assert.That(actualV7.ToString(), Is.EqualTo(expectedV7.ToString()));
-    //     
-    //     /*
-    //      * when V is between nodes, use result of lower and upper V and interpolate
-    //      * target V = (6.25 - 6) / (7 - 6) = 25% from 2.44Y /4.88 to 2.32Y /5.52 = 2.41Y 6.25/5.04
-    //      */
-    //     var xyy = new Xyy(0.4, 0.4, MunsellFuncs.GetLuminance(6.25));
-    //     var expected = new Munsell(2.41, "Y", 6.25, 5.04);
-    //     var actual = Munsell.FromXyy(xyy);
-    //     Assert.That(actual.ToString(), Is.EqualTo(expected.ToString()));
-    // }
+    [Test]
+    public void ValueZero()
+    {
+        var munsell = new Munsell(180, 0, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, 0);
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
     
-    // TODO: test data point that isn't bounded
+    [Test]
+    public void ValueGreaterThan10()
+    {
+        var munsell = new Munsell(180, 11, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(11));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
     
-    // TODO: test greyscale, once implemented
+    [Test]
+    public void ValueNegative()
+    {
+        var munsell = new Munsell(180, -5, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, 0);
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
     
-    // TODO: test extreme values like NaN, infinity
+    [Test]
+    public void ValueInfinity()
+    {
+        var munsell = new Munsell(5, "R", double.PositiveInfinity, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, double.NaN); // without V, can't resort to a greyscale luminance
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void ValueNotNumber()
+    {
+        var munsell = new Munsell(5, "R", double.NaN, 5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(double.NaN, double.NaN, double.NaN); // without V, can't resort to a greyscale luminance
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+
+    [Test]
+    public void ChromaZero()
+    {
+        var munsell = new Munsell(0, 5, 0);
+        var munsellValueOnly = new Munsell(5);
+
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var xyyValueOnly = MunsellFuncs.ToXyy(munsellValueOnly);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+        TestUtils.AssertTriplet(xyyValueOnly.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void ChromaNegative()
+    {
+        var munsell = new Munsell(5, "R", 5, -5);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void ChromaIntMax()
+    {
+        var munsell = new Munsell(5, "R", 5, int.MaxValue);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+    
+    [Test]
+    public void ChromaInfinity()
+    {
+        var munsell = new Munsell(5, "R", 5, double.PositiveInfinity);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+
+    [Test]
+    public void ChromaNotNumber()
+    {
+        var munsell = new Munsell(5, "R", 5, double.NaN);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
+    }
+
+    // TODO: results in chroma radius divide-by-zero, create dedicated test
+    // var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
+        
+    // TODO: results in hue angle divide-by-zero, create dedicated test
+    // var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
+
+    // TODO: extremely low value results in munsell using white point, create dedicated test
+    //       - polar coordinates of iterations are always (0 radius, 0 angle)
+    //       - hue angle can't converge (stuck at 0 angle)
+    //       - chroma radius would divide by zero
+    //       - essentially: a low enough value will always roundtrip to white, causing xy-deltas of the distance to white
+    //       - detect the roundtrip becoming white and change assertion?
+    // var xyy = new Xyy(0.4, 0.4, 0.000000000000000000025);
     
     // TODO: get specific examples from ASTM to test against
-    
-    // [Test]
-    // public void InsideDatasetBothAxes()
-    // {
-    //     /*
-    //      * both of these points reside in the corner of the boundary formed by
-    //      * 10YR 6/6 (0.4240, 0.4030) · 10YR 6/4 (0.3861, 0.3767) · 2.5Y 6/4 (0.3840, 0.3867) · 2.5Y 6/6 (0.4203, 0.4176)
-    //      * for one, the nearest intersect is along the horizontal, and will interpolate along that axis
-    //      * for the other, the nearest intersect is along the vertical, and will interpolate along that axis
-    //      * but since they are close together the result is expected to be similar
-    //      */
-    //     var fromHorizontalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4033, MunsellFuncs.GetLuminance(6)));
-    //     var fromVerticalInterpolation = Munsell.FromXyy(new Xyy(0.4228, 0.4032, MunsellFuncs.GetLuminance(6)));
-    //     TestUtils.AssertTriplet(fromVerticalInterpolation.Triplet, fromHorizontalInterpolation.Triplet, [0.5, 0, 0.0005]);
-    // }
 
 
     /*
@@ -259,6 +416,7 @@ public class KnownMunsellTests
         var original = new Munsell(106.67219110010788, 0.15837087769148606, 17.19745749670382);
         // var original = new Munsell(1.952034929151889, 0.008860311867242565, 22.209261774832104);
         // var original = new Munsell(320.0495840322074, 0.007967440915650492, 25.99496450173846);
+        // original = new Munsell(257.5033654741102, 3.910311143773271E-06, 18.091912335856705);
         var originalBounds = original.Bounds;
 
         var xyy = MunsellFuncs.ToXyy(original);
@@ -328,9 +486,19 @@ public class KnownMunsellTests
         // var xyy = new Xyy(0.9338835363255807, 0.3152111547768083, 0.6212223067431817);
         // var xyy = new Xyy(0.45874396736163936, 0.8456399614207708, 0.2075337930224812);
         
-        // TODO: can trigger chroma radius divide-by-zero, create dedicated test
-        // TODO: is there a way to trigger something similar with hue?
-        var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
+        // TODO: results in chroma radius divide-by-zero, create dedicated test
+        // var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
+        
+        // TODO: results in hue angle divide-by-zero, create dedicated test
+        // var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
+
+        // TODO: extremely low value results in munsell using white point, create dedicated test
+        //       - polar coordinates of iterations are always (0 radius, 0 angle)
+        //       - hue angle can't converge (stuck at 0 angle)
+        //       - chroma radius would divide by zero
+        //       - essentially: a low enough value will always roundtrip to white, causing xy-deltas of the distance to white
+        //       - detect the roundtrip becoming white and change assertion?
+        var xyy = new Xyy(0.4, 0.4, 0.000000000000000000025);
         var munsell = MunsellFuncs.FromXyy(xyy);
         var round = MunsellFuncs.ToXyy(munsell);
         Console.WriteLine(xyy);

@@ -1,46 +1,42 @@
-﻿using static Wacton.Unicolour.Munsell;
-
-namespace Wacton.Unicolour;
+﻿namespace Wacton.Unicolour;
 
 internal static class MunsellFuncs
 {
     // TODO: use white point from illuminant after testing
     // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-    private static Chromaticity WhitePoint = new(0.31006, 0.31616);
+    internal static Chromaticity WhitePoint = new(0.31006, 0.31616);
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint.ToWhitePoint());
     
     internal static Xyy ToXyy(Munsell munsell)
     {
         var h = munsell.Hue;
-        var v = munsell.V;
-        var c = munsell.C;
+        var (_, v, c) = munsell;
         var bounds = munsell.Bounds;
-        
-        var luminance = GetLuminance(v);
 
-        Chromaticity chromaticity;
-        
-        // TODO: what if V is out of range?
+        var chromaticity = GetChromaticity(h, v, c, bounds);
+        var luminance = GetLuminance(v);
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance, munsell.Heritage);
+    }
+
+    private static Chromaticity GetChromaticity(MunsellHue h, double v, double c, MunsellBounds bounds)
+    {
         var lowerNodeV = bounds.LowerV;
         var upperNodeV = bounds.UpperV;
         if (lowerNodeV == upperNodeV)
         {
-            chromaticity = GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
+            return GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
         }
-        else
-        {
-            var lower = GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
-            var upper = GetXyForValue(upperNodeV, c, h, bounds, isLowerV: false);
+        
+        var lower = GetXyForValue(lowerNodeV, c, h, bounds, isLowerV: true);
+        var upper = GetXyForValue(upperNodeV, c, h, bounds, isLowerV: false);
 
-            var lowerLuminance = GetLuminance(lowerNodeV);
-            var upperLuminance = GetLuminance(upperNodeV);
-            var distance = (luminance - lowerLuminance) / (upperLuminance - lowerLuminance);
-            var x = Interpolation.Linear(lower.X, upper.X, distance);
-            var y = Interpolation.Linear(lower.Y, upper.Y, distance);
-            chromaticity = new(x, y);
-        }
-
-        return new Xyy(chromaticity.X, chromaticity.Y, luminance);
+        var luminance = GetLuminance(v);
+        var lowerLuminance = GetLuminance(lowerNodeV);
+        var upperLuminance = GetLuminance(upperNodeV);
+        var distance = (luminance - lowerLuminance) / (upperLuminance - lowerLuminance);
+        var x = Interpolation.Linear(lower.X, upper.X, distance);
+        var y = Interpolation.Linear(lower.Y, upper.Y, distance);
+        return new(x, y);
     }
     
     private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h, MunsellBounds bounds, bool isLowerV)
@@ -212,6 +208,7 @@ internal static class MunsellFuncs
 
     internal static double GetLuminance(double v)
     {
+        if (v <= 0) return 0;
         var y = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
         return y / 100.0;
     }
@@ -227,6 +224,8 @@ internal static class MunsellFuncs
     internal static readonly double[] IterationDepthError = { 0.0035, 0.000005, 0.00000000005, 0.000000000000005 };
     internal static double GetValue(double y, int iterationDepth = 3)
     {
+        if (y <= 0) return 0;
+
         if (iterationDepth == 0)
         {
             y *= 100;
@@ -241,27 +240,43 @@ internal static class MunsellFuncs
         iterationDepth--;
         var vEstimate = GetValue(y, iterationDepth);
         var error = IterationDepthError[iterationDepth];
-        var vLower = vEstimate - error;
+        var vLower = Math.Max(vEstimate - error, 0);
         var vUpper = vEstimate + error;
         
         var yLower = GetLuminance(vLower);
         var yUpper = GetLuminance(vUpper);
-        var distance = (y - yLower) / (yUpper - yLower);
+        var totalDistance = yUpper - yLower;
+        var distance = totalDistance == 0 ? 0 : (y - yLower) / totalDistance;
         return Interpolation.Linear(vLower, vUpper, distance);
     }
 
     internal static Munsell FromXyy(Xyy xyy)
     {
-        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        var searchResult = Find(xyy);
+        var (h, v, c) = searchResult.Converged
+            ? searchResult.Iterations.Last().Munsell
+            : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
+
+        return new Munsell(h, v, c, xyy.Heritage) { XyyToMunsellSearchResult = searchResult };
+    }
+
+    private static XyyToMunsellSearchResult Find(Xyy xyy)
+    {
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfig));
 
         double initialH;
         double initialC;
-        if (lch.IsGreyscale)
+
+        // when LCH is very close to greyscale, LCH values do not providing a meaningful starting point
+        // (in particular LCH.C / 5.5 approximation no longer works, resulting in chroma modification of x100,000s, rapidly trending to infinity)
+        // so fall back to a less extreme starting point in those cases
+        // TODO: is there a better heuristic when LCH is not useful? worth considering, but this is already passing tests
+        //       e.g. could use the target angle directly for hue, and target radius for chroma?
+        if (lch.C < 0.00005)
         {
-            // TODO: use polar coordinates for a rough guess when LCH isn't useful?
-            //       this can happen when Y <= 0 (not tested)
-            //       or when (x,y) coordinates are negative (very unreasonable, but starting search from chroma != 0 does find a roundtrip result)
+            // initialH = (360 - target.angle) + 90 + Node.DegreesPerHueNumber * 2;
+            // initialH = initialH.Modulo(360);
+            // initialC = target.radius;
             initialH = lch.H;
             initialC = 1;
         }
@@ -272,8 +287,16 @@ internal static class MunsellFuncs
         }
         
         var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
+        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
         var iterations = new List<XyyToMunsellIteration>();
         var converged = false;
+
+        if (lch.IsNaN)
+        {
+            var notNumberIteration = new XyyToMunsellIteration(new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), double.NaN);
+            iterations.Add(notNumberIteration);
+            converged = true;
+        }
 
         const double convergenceThreshold = 0.00001;
         const int maxIterations = 10;
@@ -286,27 +309,22 @@ internal static class MunsellFuncs
             converged = delta <= convergenceThreshold;
             iterations.Add(new(munsell, delta));
         }
-
-        if (!converged)
-        {
-            munsell = iterations.OrderBy(x => x.Delta).First().Munsell;
-        }
         
-        munsell.XyyToMunsellSearchResult = new XyyToMunsellSearchResult(iterations, converged);
-        return munsell;
+        return new XyyToMunsellSearchResult(iterations, converged);
     }
     
     // note: "angle" in this method refers to polar coordinates of (x, y), not to the hue degrees
     private static Munsell ModifyHue(Munsell munsell, double targetAngle)
     {
-        // TODO: deconstruction when a colour representation
-        var v = munsell.V;
-        var c = munsell.C;
-        
+        var (_, v, c) = munsell;
         HueToAngleData start = null!;
         HueToAngleData end = new(munsell, targetAngle);
-        var hueStep = end.Unwrapped.targetAngle - end.Unwrapped.angle; 
-
+        if (end.IsWhitePoint)
+        {
+            return new Munsell(v);
+        }
+        
+        var hueStep = end.Unwrapped.targetAngle - end.Unwrapped.angle;
         var converged = false;
         while (!converged)
         {
@@ -316,7 +334,8 @@ internal static class MunsellFuncs
         }
 
         var (startAngle, endAngle) = Hue.Unwrap(start.Angle, end.Angle);
-        var distance = (start.Unwrapped.targetAngle - start.Unwrapped.angle) / (endAngle - startAngle);
+        var totalDistance = endAngle - startAngle; // extremely rare but end can be directly on target
+        var distance = totalDistance == 0 ? 0 : (start.Unwrapped.targetAngle - start.Unwrapped.angle) / totalDistance;
         
         var (startHue, endHue) = Hue.Unwrap(start.Munsell.Hue.Degrees, end.Munsell.Hue.Degrees);
         var h = Interpolation.Linear(startHue, endHue, distance).Modulo(360);
@@ -325,14 +344,15 @@ internal static class MunsellFuncs
     
     private static Munsell ModifyChroma(Munsell munsell, double targetRadius)
     {
-        // TODO: deconstruction when a colour representation
-        var h = munsell.Hue.Degrees;
-        var v = munsell.V;
-        
+        var (h, v, _) = munsell;
         ChromaToRadiusData start = null!;
         ChromaToRadiusData end = new(munsell, targetRadius);
-        var chromaFactor = end.TargetRadius / end.Radius;
+        if (end.IsWhitePoint)
+        {
+            return new Munsell(v);
+        }
         
+        var chromaFactor = end.TargetRadius / end.Radius;
         var converged = false;
         while (!converged)
         {
@@ -342,7 +362,7 @@ internal static class MunsellFuncs
         }
 
         var totalDistance = end.Radius - start.Radius; // extremely rare but end can be directly on target
-        var distance = totalDistance == 0.0 ? 0 : (start.TargetRadius - start.Radius) / totalDistance;
+        var distance = totalDistance == 0 ? 0 : (start.TargetRadius - start.Radius) / totalDistance;
         var c = Interpolation.Linear(start.Munsell.C, end.Munsell.C, distance);
         return new Munsell(h, v, c);
     }
@@ -353,6 +373,8 @@ internal static class MunsellFuncs
     {
         internal Munsell Munsell { get; }
         internal double Angle { get; }
+        internal double Radius { get; }
+        internal bool IsWhitePoint => Radius == 0.0;
         internal double TargetAngle { get; }
         internal (double angle, double targetAngle) Unwrapped { get; }
         internal bool IsBelowTarget => Unwrapped.angle <= Unwrapped.targetAngle;
@@ -361,7 +383,7 @@ internal static class MunsellFuncs
         internal HueToAngleData(Munsell munsell, double targetAngle)
         {
             Munsell = munsell;
-            Angle = Polar(munsell).angle;
+            (Radius, Angle) = Polar(munsell);
             TargetAngle = targetAngle;
             Unwrapped = Hue.Unwrap(Angle, TargetAngle); 
         }
@@ -372,7 +394,9 @@ internal static class MunsellFuncs
     private record ChromaToRadiusData
     {
         internal Munsell Munsell { get; }
+        internal double Angle { get; }
         internal double Radius { get; }
+        internal bool IsWhitePoint => Radius == 0.0;
         internal double TargetRadius { get; }
         internal bool IsBelowTarget => Radius <= TargetRadius;
         internal bool IsAboveTarget => Radius >= TargetRadius;
@@ -380,7 +404,7 @@ internal static class MunsellFuncs
         internal ChromaToRadiusData(Munsell munsell, double targetRadius)
         {
             Munsell = munsell;
-            Radius = Polar(munsell).radius;
+            (Radius, Angle) = Polar(munsell);
             TargetRadius = targetRadius;
         }
         

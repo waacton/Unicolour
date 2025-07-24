@@ -9,9 +9,8 @@ public class KnownMunsellTests
 {
     private static MunsellTestData[] XyyData = MunsellCache.NodeLookup.Values.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
-    private static Chromaticity WhitePoint = new(0.31006, 0.31616); // TODO: use illuminant C directly? depends if munsell was measured with this approximation to C...?
-
-    // TODO: test extreme values? are values beyond 0 - 10 supported? clamped?
+    private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
+    
     private static readonly TestCaseData[] LuminanceTestData =
     [
         new(0, 0),

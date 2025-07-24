@@ -15,11 +15,16 @@ internal static class Utils
     internal static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     internal static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
     
-    internal static double Modulo(this double value, double modulus)
+    internal static double Modulo(this double value, double modulus, bool inclusive = false)
     {
         if (double.IsNaN(value))
         {
             return double.NaN;
+        }
+
+        if (inclusive && value == modulus)
+        {
+            return value; // e.g. 360 % 360 returns 360 instead of 0 because inclusive
         }
 
         var remainder = value % modulus;

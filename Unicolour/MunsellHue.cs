@@ -17,7 +17,7 @@
 
         internal MunsellHue(double degrees)
         {
-            Degrees = degrees.Modulo(360);
+            Degrees = degrees;
             var (number, letter) = double.IsNaN(Degrees) ? (double.NaN, "NaN") : FromDegrees(Degrees);
             Number = number;
             Letter = letter;
@@ -54,8 +54,9 @@
 
         internal static (double number, string letter) FromDegrees(double degrees)
         {
+            degrees = degrees.Modulo(360);
             var baseDegrees = degrees + 2 * Node.DegreesPerHueNumber; // shifts degrees so 0R is 0 instead of 5R
-            var bandLocation = degrees.Modulo(360) / Node.DegreesPerHueLetter;
+            var bandLocation = degrees / Node.DegreesPerHueLetter;
             var bandIndex = (int)Math.Truncate(bandLocation);
             var hueLetter = Node.NodeHueLetters[bandIndex];
             var hueNumber = (bandLocation - bandIndex) * 10;

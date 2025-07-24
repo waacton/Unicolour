@@ -69,7 +69,8 @@ void ColourSpaces()
         ColourSpace.Lms, ColourSpace.Ipt, ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz,
         ColourSpace.Oklab, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrab, ColourSpace.Oklrch,
         ColourSpace.Cam02, ColourSpace.Cam16,
-        ColourSpace.Hct
+        ColourSpace.Hct,
+        ColourSpace.Munsell
     ];
 
     DrawGradients(purple, orange, "gradient-spaces-purple-orange.png");

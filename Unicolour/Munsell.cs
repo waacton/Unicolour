@@ -9,6 +9,9 @@ public record Munsell : ColourRepresentation
     public (double number, string letter) H => (Hue.Number, Hue.Letter);
     public double V => Second;
     public double C => Third;
+    protected override double ConstrainedFirst => Hue.Degrees.Modulo(360.0);
+    protected override double ConstrainedSecond => Math.Max(V, 0);
+    protected override double ConstrainedThird => Math.Max(C, 0);
     internal override bool IsGreyscale => V <= 0.0 || C <= 0.0;
 
     protected override string String => UseAsHued ? $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
@@ -29,12 +32,14 @@ public record Munsell : ColourRepresentation
     
     private MunsellBounds GetBounds()
     {
+        var (h, v, c) = ConstrainedTriplet;
+        
         // these are the naive bounds, and will be adjusted if not available in the dataset
         // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
         //      if it doesn't, a different chroma that exists for both will be used
-        var (lowerH, upperH) = MunsellFuncs.ToIntervals(Hue.Degrees, Node.DegreesPerHueNumber);
-        var (lowerV, upperV) = MunsellFuncs.ToIntervals(V, V < 1.0 ? 0.2 : 1);
-        var (lowerC, upperC) = MunsellFuncs.ToIntervals(C >= int.MaxValue ? 0 : C, 2);
+        var (lowerH, upperH) = MunsellFuncs.ToIntervals(h, Node.DegreesPerHueNumber);
+        var (lowerV, upperV) = MunsellFuncs.ToIntervals(v, v < 1.0 ? 0.2 : 1);
+        var (lowerC, upperC) = MunsellFuncs.ToIntervals(c >= int.MaxValue ? 0 : c, 2);
         return new MunsellBounds(new(lowerH), new(upperH), lowerV, upperV, (int)lowerC, (int)upperC);
     }
 

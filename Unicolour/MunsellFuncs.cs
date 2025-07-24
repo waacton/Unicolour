@@ -2,15 +2,14 @@
 
 internal static class MunsellFuncs
 {
-    // TODO: use white point from illuminant after testing
-    // private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-    internal static Chromaticity WhitePoint = new(0.31006, 0.31616);
-    private static readonly XyzConfiguration XyzConfig = new(WhitePoint.ToWhitePoint());
+    private static readonly WhitePoint WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2);
+    private static readonly Chromaticity WhitePointChromaticity = WhitePoint.ToChromaticity();
+    private static readonly XyzConfiguration XyzConfig = new(WhitePoint);
     
     internal static Xyy ToXyy(Munsell munsell)
     {
-        var h = munsell.Hue;
-        var (_, v, c) = munsell;
+        var (degrees, v, c) = munsell.ConstrainedTriplet;
+        var h = new MunsellHue(degrees);
         var bounds = munsell.Bounds;
 
         var chromaticity = GetChromaticity(h, v, c, bounds);
@@ -41,7 +40,7 @@ internal static class MunsellFuncs
     
     private static Chromaticity GetXyForValue(double nodeV, double c, MunsellHue h, MunsellBounds bounds, bool isLowerV)
     {
-        if (nodeV == 0) return WhitePoint;
+        if (nodeV == 0) return WhitePointChromaticity;
 
         var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
         var unwrappedH = Hue.Unwrap(lowerH.Degrees, h.Degrees);
@@ -62,7 +61,7 @@ internal static class MunsellFuncs
 
         Chromaticity GetXyForC(int nodeC)
         {
-            if (nodeC == 0) return WhitePoint;
+            if (nodeC == 0) return WhitePointChromaticity;
             
             // consecutive hues, same chroma
             var lower = MunsellCache.Lookup(lowerH, nodeV, nodeC);
@@ -91,8 +90,8 @@ internal static class MunsellFuncs
                 return upper;
             }
 
-            var lowerPolar = LineSegment.Polar(WhitePoint, lower);
-            var upperPolar = LineSegment.Polar(WhitePoint, upper);
+            var lowerPolar = LineSegment.Polar(WhitePointChromaticity, lower);
+            var upperPolar = LineSegment.Polar(WhitePointChromaticity, upper);
             (lowerPolar.angle, upperPolar.angle) = Hue.Unwrap(lowerPolar.angle, upperPolar.angle);
             var angle = Interpolation.Linear(lowerPolar.angle, upperPolar.angle, hueDistance);
             var angleDistance = (angle - lowerPolar.angle) / (upperPolar.angle - lowerPolar.angle);
@@ -105,8 +104,8 @@ internal static class MunsellFuncs
             if (useRadialInterpolation)
             {
                 var r = Interpolation.Linear(lowerPolar.radius, upperPolar.radius, angleDistance);
-                var x = WhitePoint.X + r * Math.Cos(Utils.ToRadians(angle));
-                var y = WhitePoint.Y + r * Math.Sin(Utils.ToRadians(angle));
+                var x = WhitePointChromaticity.X + r * Math.Cos(Utils.ToRadians(angle));
+                var y = WhitePointChromaticity.Y + r * Math.Sin(Utils.ToRadians(angle));
                 return new(x, y);
             }
             else
@@ -287,7 +286,7 @@ internal static class MunsellFuncs
         }
         
         var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
-        var target = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        var target = LineSegment.Polar(WhitePointChromaticity, xyy.Chromaticity);
         var iterations = new List<XyyToMunsellIteration>();
         var converged = false;
 
@@ -367,7 +366,7 @@ internal static class MunsellFuncs
         return new Munsell(h, v, c);
     }
     
-    private static (double radius, double angle) Polar(Munsell munsell) => LineSegment.Polar(WhitePoint, ToXyy(munsell).Chromaticity);
+    private static (double radius, double angle) Polar(Munsell munsell) => LineSegment.Polar(WhitePointChromaticity, ToXyy(munsell).Chromaticity);
     
     private record HueToAngleData
     {

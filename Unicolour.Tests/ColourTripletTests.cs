@@ -141,7 +141,9 @@ public class ColourTripletTests
         new TestCaseData(new ColourTriplet(360, 360, 360, 1), false, null).SetName("Hue index 1, 360 not allowed"),
         new TestCaseData(new ColourTriplet(360, 360, 360, 1), true, null).SetName("Hue index 1, 360 allowed"),
         new TestCaseData(new ColourTriplet(360, 360, 360, 2), false, new ColourTriplet(360, 360, 0, 2)).SetName("Hue index 2, 360 not allowed"),
-        new TestCaseData(new ColourTriplet(360, 360, 360, 2), true, new ColourTriplet(360, 360, 360, 2)).SetName("Hue index 2, 360 allowed")
+        new TestCaseData(new ColourTriplet(360, 360, 360, 2), true, new ColourTriplet(360, 360, 360, 2)).SetName("Hue index 2, 360 allowed"),
+        new TestCaseData(new ColourTriplet(361, 360, 360, 0), false, new ColourTriplet(1, 360, 360, 0)).SetName("Hue index 0, 361 wraps to 1 normally"),
+        new TestCaseData(new ColourTriplet(361, 360, 360, 0), true, new ColourTriplet(1, 360, 360, 0)).SetName("Hue index 0, 361 wraps to 1 when inclusive")
     ];
     
     [TestCaseSource(nameof(ModuloHue360TestData))]

@@ -42,8 +42,8 @@ internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double Lower
         }
         else
         {
-            upperC = UpperC;
-            lowerC = LowerC;
+            upperC = Math.Max(UpperC, 0);
+            lowerC = Math.Max(LowerC, 0);
         }
 
         return (lowerC, upperC);

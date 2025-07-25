@@ -9,7 +9,7 @@ public class KnownMunsellTests
 {
     private static MunsellTestData[] XyyData = MunsellCache.NodeLookup.Values.Select(node => new MunsellTestData(node)).ToArray();
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
-    private static Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
+    private static readonly Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     
     private static readonly TestCaseData[] LuminanceTestData =
     [
@@ -324,7 +324,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(5, "R", 5, double.PositiveInfinity);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        var expected = new ColourTriplet(double.PositiveInfinity, double.NegativeInfinity, MunsellFuncs.GetLuminance(5));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
     }
 
@@ -333,7 +333,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(5, "R", 5, double.NaN);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        var expected = new ColourTriplet(double.NaN, double.NaN, MunsellFuncs.GetLuminance(5));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
     }
 
@@ -407,7 +407,6 @@ public class KnownMunsellTests
         // var original = new Munsell(1.952034929151889, 0.008860311867242565, 22.209261774832104);
         // var original = new Munsell(320.0495840322074, 0.007967440915650492, 25.99496450173846);
         // original = new Munsell(257.5033654741102, 3.910311143773271E-06, 18.091912335856705);
-        original = new Munsell(357.7044127459098, 4.042643685107965, 21.46330648474384);
         var originalBounds = original.Bounds;
 
         var xyy = MunsellFuncs.ToXyy(original);

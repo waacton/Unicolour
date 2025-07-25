@@ -253,25 +253,41 @@ public class KnownMunsellTests
         var xyy = MunsellFuncs.ToXyy(munsell);
         TestUtils.AssertTriplet(xyy.Triplet, new ColourTriplet(expected.X, expected.Y, MunsellFuncs.GetLuminance(5)), 0);
     }
-
-    // TODO: results in chroma radius divide-by-zero, create dedicated test
-    // var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
-        
-    // TODO: results in hue angle divide-by-zero, create dedicated test
-    // var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
-
-    // TODO: extremely low value results in munsell using white point, create dedicated test
-    //       - polar coordinates of iterations are always (0 radius, 0 angle)
-    //       - hue angle can't converge (stuck at 0 angle)
-    //       - chroma radius would divide by zero
-    //       - essentially: a low enough value will always roundtrip to white, causing xy-deltas of the distance to white
-    //       - detect the roundtrip becoming white and change assertion?
-    // var xyy = new Xyy(0.4, 0.4, 0.000000000000000000025);
     
+    [Test] // no delta from exact polar angle match could result in divide-by-zero
+    public void ConvergeHueToExactPolarAngle()
+    {
+        var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
+        Assert.DoesNotThrow(() => MunsellFuncs.FromXyy(xyy));
+    }
+
+    [Test] // no delta from exact polar radius match could result in divide-by-zero
+    public void ConvergeChromaToExactPolarRadius()
+    {
+        var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
+        Assert.DoesNotThrow(() => MunsellFuncs.FromXyy(xyy));
+    }
+    
+    // very low luminance will converge to white point because there is no chroma data; no delta could result in divide-by-zero
+    [TestCase(0)] 
+    [TestCase(0.0000000000000000001)] 
+    [TestCase(double.Epsilon)] 
+    [TestCase(-double.Epsilon)] 
+    public void ConvergeToWhitePoint(double luminance)
+    {
+        var xyy = new Xyy(0.4, 0.4, luminance);
+        var munsell = MunsellFuncs.FromXyy(xyy);
+        Assert.That(munsell.IsGreyscale);
+    }
+    
+    
+
     // TODO: get specific examples from ASTM to test against
 
 
     /*
+     TODO: investigate
+     
       not showing signs of initially much beyond chroma limit
       ViaXyy((296.99122278711053, 7.1458862344028375, 23.753411792350175))
       ViaXyy((323.68983215449, 9.248789828312518, 24.491452043176217))
@@ -312,175 +328,4 @@ public class KnownMunsellTests
       (see edge cases in GetXyForC)
       new Munsell(106.67219110010788, 0.15837087769148606, 17.19745749670382);
     */
-    [Test]
-    public void Test()
-    {
-        // var original = new Munsell(4.2, "YR", 8.1, 5.3);
-        // var original = new Munsell(6.66, "R", 6.66, 6.66);
-        // var original = new Munsell(4.2, "G", 5.5, 99);
-        // var original = new Munsell(116.60697248709873, 0.22737082192960334, 2.1740859211633805);
-        // var original = new Munsell(4.098412460750023, 3.574724518514384, 10.196462054672057);
-        var original = new Munsell(106.67219110010788, 0.15837087769148606, 17.19745749670382);
-        // var original = new Munsell(1.952034929151889, 0.008860311867242565, 22.209261774832104);
-        // var original = new Munsell(320.0495840322074, 0.007967440915650492, 25.99496450173846);
-        // original = new Munsell(257.5033654741102, 3.910311143773271E-06, 18.091912335856705);
-        var originalBounds = original.Bounds;
-
-        var xyy = MunsellFuncs.ToXyy(original);
-        var roundtrip = MunsellFuncs.FromXyy(xyy);
-        var roundtripBounds = roundtrip.Bounds;
-
-        if (original.C < 0.5)
-        {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.75, 5e-15, 0.5]);
-            return;
-        }
-        
-        if (originalBounds.IsSparseChroma)
-        {
-            Assert.Ignore($"Sparse chroma data; chroma ranges for {original} are {string.Join(", ", original.Bounds.ChromaRanges)}");
-            return;
-        }
-        
-        double[] chromaDataBounds =
-        [
-            original.Bounds.BoundC.lowerV.lower, original.Bounds.BoundC.lowerV.upper,
-            original.Bounds.BoundC.upperV.lower, original.Bounds.BoundC.upperV.upper
-        ];
-
-        var almostNoChromaData = chromaDataBounds.Count(x => x == 0) > 2;
-        if (almostNoChromaData)
-        {
-            Assert.Ignore($"Almost no chroma data; bounds for {original} are {original.Bounds.BoundC}");
-            return;
-        }
-
-        // Console.WriteLine($"original ... C {original.C:F2} is above max chroma by {originalBounds.MaxChromaScale}x ({string.Join(", ", originalBounds.UpperChromaLimits)})");
-        // Console.WriteLine($"roundtrip .. C {roundtrip.C:F2} is above max chroma by {roundtripBounds.MaxChromaScale}x ({string.Join(", ", roundtripBounds.UpperChromaLimits)})");
-        if (originalBounds.ChromaLimitScale > 2.5 || roundtripBounds.ChromaLimitScale > 2.5)
-        {
-            // roundtrip is almost never this inaccurate even when chroma is not within range
-            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [7.5, 5e-15, 15]);
-            return;
-        }
-            
-        if (originalBounds.ChromaLimitScale > 1.5 || roundtripBounds.ChromaLimitScale > 1.5)
-        {
-            // roundtrip is almost never this inaccurate even when chroma is not within range
-            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 7]);
-            return;
-        }
-        
-        if (originalBounds.ChromaLimitScale > 1 || roundtripBounds.ChromaLimitScale > 1)
-        {
-            // roundtrip is almost never this inaccurate even when chroma is not within range
-            // but certain rare values deviate a lot, and these coincide with chromas well outside the available data
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [1.25, 5e-15, 1.25]);
-            return;
-        }
-        
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.1, 5e-15, 0.1]);
-    }
-
-    [Test]
-    public void Test2()
-    {
-        // var xyy = new Xyy(0.52, 0.27, 11.71 / 100.0);
-        // var xyy = new Xyy(0.33677419510472395, 0.1708935237882816, 0.001797989184534332);
-        // var xyy = new Xyy(0.7858633707744189, 0.007105953622768335, 0.274929467457103);
-        // var xyy = new Xyy(0.9338835363255807, 0.3152111547768083, 0.6212223067431817);
-        // var xyy = new Xyy(0.45874396736163936, 0.8456399614207708, 0.2075337930224812);
-        
-        // TODO: results in chroma radius divide-by-zero, create dedicated test
-        // var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
-        
-        // TODO: results in hue angle divide-by-zero, create dedicated test
-        // var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
-
-        // TODO: extremely low value results in munsell using white point, create dedicated test
-        //       - polar coordinates of iterations are always (0 radius, 0 angle)
-        //       - hue angle can't converge (stuck at 0 angle)
-        //       - chroma radius would divide by zero
-        //       - essentially: a low enough value will always roundtrip to white, causing xy-deltas of the distance to white
-        //       - detect the roundtrip becoming white and change assertion?
-        var xyy = new Xyy(0.4, 0.4, 0.000000000000000000025);
-        var munsell = MunsellFuncs.FromXyy(xyy);
-        var round = MunsellFuncs.ToXyy(munsell);
-        Console.WriteLine(xyy);
-        Console.WriteLine(munsell);
-        Console.WriteLine(round);
-    }
-    
-    /*
-     * TODO: investigate
-     * 
-⚠️⚠️⚠️ both lower and upper null for 7.5R (27°) 0.2 -2147483648 and 10R (36°) 0.2 -2147483648
-Exception occurred processing 9.39R 0/18.9 ((33.80681244429732, 2.050644811735225E-06, 18.903362414835126))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5PB (261°) 0.2 -2147483648 and 5PB (270°) 0.2 -2147483648
-Exception occurred processing 1.53PB 0/18.09 ((257.5033654741102, 3.910311143773271E-06, 18.091912335856705))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5BG (189°) 0.2 -2147483648 and 5BG (198°) 0.2 -2147483648
-Exception occurred processing 1.92BG 0/23.07 ((186.9160892941697, 7.310419294359605E-06, 23.0669316980006))
-
-⚠️⚠️⚠️ both lower and upper null for 7.5RP (351°) 0.2 -2147483648 and 10RP (0°) 0.2 -2147483648
-Exception occurred processing 9.91RP 0/22.23 ((359.67037085918355, 9.492641701580595E-06, 22.22679177316437))
-
-⚠️⚠️⚠️ both lower and upper null for 5B (234°) 0.2 -2147483648 and 7.5B (243°) 0.2 -2147483648
-Exception occurred processing 2.27B 0/22.68 ((224.15646195665607, 5.262326101540538E-06, 22.681460864607676))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5RP (333°) 0.2 -2147483648 and 5RP (342°) 0.2 -2147483648
-Exception occurred processing 5.04RP 0/24.41 ((342.14907358883937, 5.024521406715721E-06, 24.40717104074474))
-
-⚠️⚠️⚠️ both lower and upper null for 10G (180°) 0.2 -2147483648 and 2.5BG (189°) 0.2 -2147483648
-Exception occurred processing 8.73G 0/18.39 ((175.41388919317313, 2.0322641240966277E-05, 18.390532918565754))
-
-⚠️⚠️⚠️ both lower and upper null for 10G (180°) 0.2 -2147483648 and 2.5BG (189°) 0.2 -2147483648
-Exception occurred processing 0.0057 0.3528 0.0000 ((0.005679423061145217, 0.35275049430912997, 2.3747781692229353E-06))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5Y (81°) 0.2 -2147483648 and 5Y (90°) 0.2 -2147483648
-Exception occurred processing 0.5937 0.4980 0.0000 ((0.593677982656639, 0.4979884040097221, 1.0418822937729999E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 7.5R (27°) 0.2 -2147483648 and 10R (36°) 0.2 -2147483648
-Exception occurred processing 0.8538 0.1339 0.0000 ((0.8537797645759015, 0.13394712648860818, 1.8082870772984094E-06))
-
-⚠️⚠️⚠️ both lower and upper null for 5R (18°) 0.2 -2147483648 and 7.5R (27°) 0.2 -2147483648
-Exception occurred processing 0.7103 0.1225 0.0000 ((0.7103118344040245, 0.12247858303616932, 4.6628746319665737E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 7.5RP (351°) 0.2 -2147483648 and 10RP (0°) 0.2 -2147483648
-Exception occurred processing 0.3328 0.2804 0.0000 ((0.3328306969552116, 0.28038445404645007, 2.5455498176008007E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5YR (45°) 0.2 -2147483648 and 5YR (54°) 0.2 -2147483648
-Exception occurred processing 0.7098 0.3380 0.0000 ((0.7098300238207443, 0.33799491323994124, 1.5133234100295212E-06))
-
-Exception occurred processing 0.3655 0.4407 0.0082 ((0.3654800634039761, 0.440669608021527, 0.008233351479463802))
-
-⚠️⚠️⚠️ both lower and upper null for 10R (36°) 0.2 -2147483648 and 2.5YR (45°) 0.2 -2147483648
-Exception occurred processing 0.6234 0.2951 0.0000 ((0.6233805146558684, 0.29510663354983546, 1.5871483086682403E-06))
-
-⚠️⚠️⚠️ both lower and upper null for 5GY (126°) 0.2 -2147483648 and 7.5GY (135°) 0.2 -2147483648
-Exception occurred processing 0.2897 0.6570 0.0000 ((0.2897434524489263, 0.6570199306994814, 1.1914149765646087E-06))
-
-⚠️⚠️⚠️ both lower and upper null for 10R (36°) 0.2 -2147483648 and 2.5YR (45°) 0.2 -2147483648
-Exception occurred processing 0.6582 0.2584 0.0000 ((0.658222624457091, 0.25842544328759387, 1.8550070294276466E-06))
-
-Exception occurred processing 0.3921 0.4766 0.0069 ((0.3920859907774519, 0.4766220631732515, 0.006886734146503759))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5Y (81°) 0.2 -2147483648 and 5Y (90°) 0.2 -2147483648
-Exception occurred processing 0.9671 0.7615 0.0000 ((0.9670818635065712, 0.7615407484498119, 9.082711404095889E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 2.5Y (81°) 0.2 -2147483648 and 5Y (90°) 0.2 -2147483648
-Exception occurred processing 0.9039 0.7399 0.0000 ((0.9039260256825917, 0.7399404153285378, 3.730999663664747E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 7.5R (27°) 0.2 -2147483648 and 10R (36°) 0.2 -2147483648
-Exception occurred processing 0.9661 0.0546 0.0000 ((0.966062975970821, 0.054618388447916444, 4.2091774765662393E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 5YR (54°) 0.2 -2147483648 and 7.5YR (63°) 0.2 -2147483648
-Exception occurred processing 0.9416 0.4644 0.0000 ((0.9415707192420945, 0.4643649760822697, 9.668391962591727E-07))
-
-⚠️⚠️⚠️ both lower and upper null for 7.5R (27°) 0.2 -2147483648 and 10R (36°) 0.2 -2147483648
-Exception occurred processing 0.9640 0.0324 0.0000 ((0.9640273441005457, 0.03236529251421272, 6.806128668435107E-07))
-     */
 }

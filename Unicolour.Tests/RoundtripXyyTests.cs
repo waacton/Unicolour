@@ -32,13 +32,39 @@ public class RoundtripXyyTests
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
     public void ViaMunsell(ColourTriplet triplet)
     {
-        var original = new Xyy(0.9979248924337157, 0.9373779662854466, 0.03337678162532898);
+        var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
         var munsell = MunsellFuncs.FromXyy(original);
         var roundtrip = MunsellFuncs.ToXyy(munsell);
 
         var tolerance = munsell.XyyToMunsellSearchResult!.Converged ? 0.00001 : 0.15;
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance, tolerance, 5e-15]);
     }
+
+    // [Test]
+    // public void X()
+    // {
+    //     while (true)
+    //     {
+    //         // var original = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
+    //         var original = new Xyy(TestUtils.RandomDouble(), TestUtils.RandomDouble(), TestUtils.RandomDouble());
+    //         Munsell munsell = null!;
+    //         Xyy roundtrip = null!;
+    //
+    //         try
+    //         {
+    //             munsell = MunsellFuncs.FromXyy(original);
+    //             roundtrip = MunsellFuncs.ToXyy(munsell);
+    //         }
+    //         catch (Exception e)
+    //         {
+    //             Console.WriteLine(original.Triplet);
+    //             Console.WriteLine(munsell?.Triplet?.ToString() ?? "no munsell");
+    //             Console.WriteLine(roundtrip?.Triplet?.ToString() ?? "no xyy roundtrip");
+    //             Console.WriteLine(e);
+    //             throw;
+    //         }
+    //     }
+    // }
     
     // [Test]
     // public void Data()

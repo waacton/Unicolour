@@ -39,9 +39,11 @@
             return Degrees >= min && Degrees <= max || Degrees + 360 >= min && Degrees + 360 <= max;
         }
         
+        private static readonly string[] Hues = { "R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP" };
+        
         internal static double ToDegrees(double hueNumber, string hueLetter)
         {
-            var bandIndex = Array.IndexOf(Node.NodeHueLetters, hueLetter);
+            var bandIndex = Array.IndexOf(Hues, hueLetter);
             if (bandIndex == -1) return double.NaN;
             
             var minDegrees = bandIndex * Node.DegreesPerHueLetter;
@@ -58,12 +60,12 @@
             degrees = degrees.Modulo(360);
             var bandLocation = degrees / Node.DegreesPerHueLetter;
             var bandIndex = (int)Math.Truncate(bandLocation);
-            var hueLetter = Node.NodeHueLetters[bandIndex];
+            var hueLetter = Hues[bandIndex];
             var hueNumber = (bandLocation - bandIndex) * 10;
             if (hueNumber != 0) return (hueNumber, hueLetter);
         
-            bandIndex = bandIndex == 0 ? Node.NodeHueLetters.Length - 1 : bandIndex - 1;
-            hueLetter = Node.NodeHueLetters[bandIndex];
+            bandIndex = bandIndex == 0 ? Hues.Length - 1 : bandIndex - 1;
+            hueLetter = Hues[bandIndex];
             hueNumber = 10;
             return (hueNumber, hueLetter);
         }

@@ -2,8 +2,6 @@
 
 internal record Node(double HueNumber, string HueLetter, double Value, int Chroma, double X, double Y, double LuminanceMagnesiumOxide)
 {
-    internal static readonly string[] NodeHueLetters = { "R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP" };
-
     // there are 10 letter bands, so each letter band represents 36° of 360° (YR = 0-36°, Y = 36-72°, ..., R = 324-360°)
     // there are 4 numbers in each letter band of 36°, so each number represents 9° of 36° (2.5 = 9°, 5 = 18°, 7.5 = 27°, 10 = 36°)
     internal const double DegreesPerHueLetter = 36;

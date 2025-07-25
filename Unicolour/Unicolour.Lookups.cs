@@ -239,7 +239,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz),
-            ColourSpace.Munsell => MunsellFuncs.ToXyz(Munsell, Configuration.Xyz),
+            ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -250,6 +250,7 @@ public partial class Unicolour
         {
             ColourSpace.Xyy => (Xyy)SourceRepresentation,
             ColourSpace.Wxy => Wxy.ToXyy(Wxy, Configuration.Xyz),
+            ColourSpace.Munsell => MunsellFuncs.ToXyy2(Munsell, Configuration.Xyz),
             _ => Xyy.FromXyz(Xyz, Configuration.Xyz.WhiteChromaticity)
         };
     }
@@ -542,13 +543,12 @@ public partial class Unicolour
         };
     }
     
-    // TODO: this is incorrect - needs to convert from XYZ, in order to adapt to Illuminant C
     private Munsell EvaluateMunsell()
     {
         return SourceColourSpace switch
         {
             ColourSpace.Munsell => (Munsell)SourceRepresentation,
-            _ => MunsellFuncs.FromXyz(Xyz, Configuration.Xyz)
+            _ => MunsellFuncs.FromXyy2(Xyy, Configuration.Xyz)
         };
     }
 }

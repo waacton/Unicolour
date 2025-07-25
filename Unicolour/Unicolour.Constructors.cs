@@ -4,24 +4,6 @@ namespace Wacton.Unicolour;
 
 public partial class Unicolour
 {
-    // TODO: improve, rename, etc
-    public Unicolour(Notation notation) :
-        this(Configuration.Default, notation)
-    {
-    }
-    
-    public Unicolour(Configuration config, Notation notation) :
-        this(config, ColourSpace.Munsell, NotationToHvc(notation))
-    {
-        source = $"{nameof(Notation)} {notation}"; // TODO: fix notation
-    }
-    
-    private static (double h, double v, double c) NotationToHvc(Notation notation)
-    {
-        var munsellHue = new MunsellHue(notation.H1, notation.H2);
-        return (munsellHue.Degrees, notation.V, notation.C);
-    }
-    
     /* construction from colour space values */
     public Unicolour(ColourSpace colourSpace, (double first, double second, double third) tuple, double alpha = 1.0) :
         this(colourSpace, tuple.first, tuple.second, tuple.third, alpha)

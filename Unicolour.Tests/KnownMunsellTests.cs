@@ -7,7 +7,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static readonly Chromaticity WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
+    private static readonly XyzConfiguration XyzConfig = new(Illuminant.C, Observer.Degree2);
+    private static Chromaticity WhiteChromaticity => XyzConfig.WhiteChromaticity;
+
     
     // TODO: every radial vs linear segment
     // TODO: one of each band
@@ -18,7 +20,7 @@ public class KnownMunsellTests
         new(new Xyy(0.2437, 0.3240, 21.98 / 100), new Munsell(5.6, "BG", 5.30, 5.3)),
         new(new Xyy(0.4183, 0.3790, 72.22 / 100), new Munsell(5.4, "YR", 8.78, 7.6)),
         new(new Xyy(0.4690, 0.4953, 50.30 / 100), new Munsell(5.6, "Y", 7.56, 13.7)),
-        new(new Xyy(0.5000, 0.4540, 46.02 / 100), new Munsell(10, "YR", 7.2, 13.5)),
+        new(new Xyy(0.5000, 0.4540, 46.02 / 100), new Munsell(10, "YR", 7.2, 13.5))
     ];
 
     [TestCaseSource(nameof(AstmData))]
@@ -32,10 +34,13 @@ public class KnownMunsellTests
     [Test]
     public void Red()
     {
-        var m = new Unicolour(Configuration.Default, new Munsell(5, "R", 5, 18));
-        
         var red = new Unicolour("#f3083d");
         var munsell = red.Munsell;
+        var roundtrip = new Unicolour(ColourSpace.Munsell, munsell.Tuple);
+        var rgb = roundtrip.Rgb;
+        
+        var roundtrip2 = new Unicolour(new Configuration(xyzConfig: new(Illuminant.C, Observer.Degree2)), ColourSpace.Munsell, munsell.Tuple);
+        var rgb2 = roundtrip2.Rgb;
     }
     
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
@@ -209,7 +214,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(hueNumber, hueLetter, 5, 10);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(5));
+        var expected = new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, MunsellFuncs.GetLuminance(5));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
     }
     
@@ -238,10 +243,10 @@ public class KnownMunsellTests
     
     private static readonly TestCaseData[] ValueData =
     [
-        new(0, new ColourTriplet(WhitePoint.X, WhitePoint.Y, 0)),
-        new(-5, new ColourTriplet(WhitePoint.X, WhitePoint.Y, 0)),
-        new(11, new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(11))),
-        new(double.PositiveInfinity, new ColourTriplet(WhitePoint.X, WhitePoint.Y, double.NaN)), // no luminance without V
+        new(0, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, 0)),
+        new(-5, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, 0)),
+        new(11, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, MunsellFuncs.GetLuminance(11))),
+        new(double.PositiveInfinity, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, double.NaN)), // no luminance without V
         new(double.NaN, new ColourTriplet(double.NaN, double.NaN, double.NaN)) // no luminance without V
     ];
 
@@ -262,15 +267,15 @@ public class KnownMunsellTests
         var munsellValueOnly = new Munsell(value);
         var xyyValueOnly = MunsellFuncs.ToXyy(munsellValueOnly);
         
-        var expected = new ColourTriplet(WhitePoint.X, WhitePoint.Y, MunsellFuncs.GetLuminance(value));
+        var expected = new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, MunsellFuncs.GetLuminance(value));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
         TestUtils.AssertTriplet(xyyValueOnly.Triplet, expected, 0);
     }
     
     private static readonly TestCaseData[] ChromaData =
     [
-        new(0, new Chromaticity(WhitePoint.X, WhitePoint.Y)),
-        new(-5, new Chromaticity(WhitePoint.X, WhitePoint.Y)),
+        new(0, WhiteChromaticity),
+        new(-5, WhiteChromaticity),
         new(double.PositiveInfinity, new Chromaticity(double.PositiveInfinity, double.NegativeInfinity)),
         new(double.NaN, new Chromaticity(double.NaN, double.NaN))
     ];
@@ -288,7 +293,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var polar = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        var polar = LineSegment.Polar(XyzConfig.WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => MunsellFuncs.ModifyHue(munsell, polar.angle));
     }
 
@@ -297,7 +302,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var polar = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        var polar = LineSegment.Polar(XyzConfig.WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => MunsellFuncs.ModifyChroma(munsell, polar.radius));
     }
     

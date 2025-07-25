@@ -40,7 +40,7 @@ public record Munsell : ColourRepresentation
         var (lowerH, upperH) = MunsellFuncs.ToIntervals(h, Node.DegreesPerHueNumber);
         var (lowerV, upperV) = MunsellFuncs.ToIntervals(v, v < 1.0 ? 0.2 : 1);
         var (lowerC, upperC) = MunsellFuncs.ToIntervals(c, 2);
-        return new MunsellBounds(new(lowerH), new(upperH), lowerV, upperV, lowerC, upperC);
+        return new MunsellBounds(new(lowerH.Modulo(360)), new(upperH.Modulo(360)), lowerV, upperV, lowerC, upperC);
     }
 
     // only for potential debugging or diagnostics

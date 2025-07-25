@@ -4,9 +4,9 @@ internal static class MunsellCache
 {
     private static readonly Lazy<Dictionary<string, Node>> nodeLookup = new(() => GetNodes().ToDictionary(GetKey, x => x));
     internal static Dictionary<string, Node> NodeLookup => nodeLookup.Value;
-    internal static Chromaticity? Lookup(MunsellHue h, double v, int c)
+    internal static Chromaticity? Lookup(MunsellHue h, double v, double c)
     {
-        var key = GetKey(h, v, c);
+        var key = GetKey(h, v, (int)c);
         return NodeLookup.TryGetValue(key, out var node) ? node.Point : null;
     }
 

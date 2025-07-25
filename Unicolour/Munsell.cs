@@ -39,8 +39,8 @@ public record Munsell : ColourRepresentation
         //      if it doesn't, a different chroma that exists for both will be used
         var (lowerH, upperH) = MunsellFuncs.ToIntervals(h, Node.DegreesPerHueNumber);
         var (lowerV, upperV) = MunsellFuncs.ToIntervals(v, v < 1.0 ? 0.2 : 1);
-        var (lowerC, upperC) = MunsellFuncs.ToIntervals(c >= int.MaxValue ? 0 : c, 2);
-        return new MunsellBounds(new(lowerH), new(upperH), lowerV, upperV, (int)lowerC, (int)upperC);
+        var (lowerC, upperC) = MunsellFuncs.ToIntervals(c, 2);
+        return new MunsellBounds(new(lowerH), new(upperH), lowerV, upperV, lowerC, upperC);
     }
 
     // only for potential debugging or diagnostics

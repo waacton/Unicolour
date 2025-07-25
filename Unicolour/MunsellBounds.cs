@@ -1,18 +1,18 @@
 ﻿namespace Wacton.Unicolour;
 
-internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double LowerV, double UpperV, int LowerC, int UpperC)
+internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double LowerV, double UpperV, double LowerC, double UpperC)
 {
     internal MunsellHue LowerH { get; } = LowerH;
     internal MunsellHue UpperH { get; } = UpperH;
     internal double LowerV { get; } = LowerV;
     internal double UpperV { get; } = UpperV;
-    internal int LowerC { get; } = LowerC;
-    internal int UpperC { get; } = UpperC;
-
-    internal ((int lower, int upper) lowerV, (int lower, int upper) upperV) BoundC => 
+    internal double LowerC { get; } = LowerC;
+    internal double UpperC { get; } = UpperC;
+    
+    internal ((double lower, double upper) lowerV, (double lower, double upper) upperV) BoundC => 
         (GetChromaBoundsWithinData(useLowerV: true), GetChromaBoundsWithinData(useLowerV: false));
 
-    private (int lower, int upper) GetChromaBoundsWithinData(bool useLowerV)
+    private (double lower, double upper) GetChromaBoundsWithinData(bool useLowerV)
     {
         // interpolation along the chroma ovoid is the core of the algorithm
         // so need to find a single chroma that is available for both hues at this value
@@ -21,8 +21,8 @@ internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double Lower
         var rangeUpperH = MunsellCache.GetChromaRange(UpperH, v);
         var maxSharedC = Math.Min(rangeLowerH.max, rangeUpperH.max);
         
-        int lowerC;
-        int upperC;
+        double lowerC;
+        double upperC;
 
         if (maxSharedC == 0)
         {
@@ -60,7 +60,7 @@ internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double Lower
 
     internal bool IsSparseChroma => ChromaRanges.Count(x => x == (0, 0)) > 0;
     internal int ClosestUpperChromaLimit => ChromaRanges.Select(x => x.max).Min();
-    internal double ChromaLimitScale => ClosestUpperChromaLimit == 0.0 ? 0.0 : UpperC / (double)ClosestUpperChromaLimit;
+    internal double ChromaLimitScale => ClosestUpperChromaLimit == 0.0 ? 0.0 : UpperC / ClosestUpperChromaLimit;
     
     public override string ToString()
     {

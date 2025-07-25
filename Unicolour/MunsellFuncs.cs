@@ -59,7 +59,7 @@ internal static class MunsellFuncs
         var y = Interpolation.Linear(lower.Y, upper.Y, distance);
         return new(x, y);
 
-        Chromaticity GetXyForC(int nodeC)
+        Chromaticity GetXyForC(double nodeC)
         {
             if (nodeC == 0) return WhitePointChromaticity;
             

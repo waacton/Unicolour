@@ -1,10 +1,56 @@
 ﻿namespace Wacton.Unicolour;
 
+public record Notation
+{
+    public double H1;
+    public string H2;
+    public double V;
+    public double C;
+    
+    public Notation(double h1, string h2, double v, double c)
+    {
+        H1 = h1;
+        H2 = h2;
+        V = v;
+        C = c;
+    }
+
+    public Notation(double v)
+    {
+        V = v;
+    }
+}
+
 internal static class MunsellFuncs
 {
     private static readonly WhitePoint WhitePoint = Illuminant.C.GetWhitePoint(Observer.Degree2);
     private static readonly Chromaticity WhitePointChromaticity = WhitePoint.ToChromaticity();
     private static readonly XyzConfiguration XyzConfig = new(WhitePoint);
+    
+    /*
+     * Munsell is a transform of XYZ (in terms of Unicolour implementation)
+     * Forward: http://dx.doi.org/10.1002/col.20715
+     * Reverse: http://dx.doi.org/10.1002/col.20715
+     */
+    
+    internal static Munsell FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
+    {
+        // var xyy_old = Xyy.FromXyz(xyz, xyzConfig.WhiteChromaticity);
+        var adapted = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, WhitePoint, xyzConfig.AdaptationMatrix);
+        var xyzC = new Xyz(adapted.Triplet, xyz.Heritage);
+        var xyy = Xyy.FromXyz(xyzC, WhitePointChromaticity);
+        var munsell = FromXyy(xyy);
+        var (h, v, c) = munsell;
+        return new Munsell(h, v, c, ColourHeritage.From(xyz)) { XyyToMunsellSearchResult = munsell.XyyToMunsellSearchResult};
+    }
+    
+    internal static Xyz ToXyz(Munsell munsell, XyzConfiguration xyzConfig)
+    {
+        var xyy = ToXyy(munsell);
+        var xyzC = Xyy.ToXyz(xyy);
+        var adapted = Adaptation.WhitePoint(xyzC, WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
+        return new Xyz(adapted.Triplet, ColourHeritage.From(munsell));
+    }
     
     internal static Xyy ToXyy(Munsell munsell)
     {
@@ -14,7 +60,7 @@ internal static class MunsellFuncs
 
         var chromaticity = GetChromaticity(h, v, c, bounds);
         var luminance = GetLuminance(v);
-        return new Xyy(chromaticity.X, chromaticity.Y, luminance, munsell.Heritage);
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance);
     }
 
     private static Chromaticity GetChromaticity(MunsellHue h, double v, double c, MunsellBounds bounds)
@@ -246,7 +292,7 @@ internal static class MunsellFuncs
             ? searchResult.Iterations.Last().Munsell
             : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
 
-        return new Munsell(h, v, c, xyy.Heritage) { XyyToMunsellSearchResult = searchResult };
+        return new Munsell(h, v, c) { XyyToMunsellSearchResult = searchResult };
     }
 
     private static XyyToMunsellSearchResult Find(Xyy xyy)

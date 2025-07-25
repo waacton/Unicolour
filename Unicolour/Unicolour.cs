@@ -123,7 +123,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         backingField ??= evaluate();
         return (bool)backingField;
     }
-
+    
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
@@ -140,6 +140,58 @@ public partial class Unicolour : IEquatable<Unicolour>
         SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
         Alpha = new Alpha(alpha);
     }
+    
+    public Unicolour(Configuration config, ColourRepresentation colourRepresentation, double alpha = 1.0)
+    {
+        Configuration = config;
+        SourceColourSpace = RepresentationTypeToColourSpace[colourRepresentation.GetType()];
+        SourceRepresentation = colourRepresentation;
+        Alpha = new Alpha(alpha);
+    }
+    
+    private static readonly Dictionary<Type, ColourSpace> RepresentationTypeToColourSpace = new()
+    {
+        { typeof(Rgb), ColourSpace.Rgb },
+        { typeof(Rgb255), ColourSpace.Rgb255 },
+        { typeof(RgbLinear), ColourSpace.RgbLinear },
+        { typeof(Hsb), ColourSpace.Hsb },
+        { typeof(Hsl), ColourSpace.Hsl },
+        { typeof(Hwb), ColourSpace.Hwb },
+        { typeof(Hsi), ColourSpace.Hsi },
+        { typeof(Xyz), ColourSpace.Xyz },
+        { typeof(Xyy), ColourSpace.Xyy },
+        { typeof(Wxy), ColourSpace.Wxy },
+        { typeof(Lab), ColourSpace.Lab },
+        { typeof(Lchab), ColourSpace.Lchab },
+        { typeof(Luv), ColourSpace.Luv },
+        { typeof(Lchuv), ColourSpace.Lchuv },
+        { typeof(Hsluv), ColourSpace.Hsluv },
+        { typeof(Hpluv), ColourSpace.Hpluv },
+        { typeof(Ypbpr), ColourSpace.Ypbpr },
+        { typeof(Ycbcr), ColourSpace.Ycbcr },
+        { typeof(Ycgco), ColourSpace.Ycgco },
+        { typeof(Yuv), ColourSpace.Yuv },
+        { typeof(Yiq), ColourSpace.Yiq },
+        { typeof(Ydbdr), ColourSpace.Ydbdr },
+        { typeof(Tsl), ColourSpace.Tsl },
+        { typeof(Xyb), ColourSpace.Xyb },
+        { typeof(Lms), ColourSpace.Lms },
+        { typeof(Ipt), ColourSpace.Ipt },
+        { typeof(Ictcp), ColourSpace.Ictcp },
+        { typeof(Jzazbz), ColourSpace.Jzazbz },
+        { typeof(Jzczhz), ColourSpace.Jzczhz },
+        { typeof(Oklab), ColourSpace.Oklab },
+        { typeof(Oklch), ColourSpace.Oklch },
+        { typeof(Okhsv), ColourSpace.Okhsv },
+        { typeof(Okhsl), ColourSpace.Okhsl },
+        { typeof(Okhwb), ColourSpace.Okhwb },
+        { typeof(Oklrab), ColourSpace.Oklrab },
+        { typeof(Oklrch), ColourSpace.Oklrch },
+        { typeof(Cam02), ColourSpace.Cam02 },
+        { typeof(Cam16), ColourSpace.Cam16 },
+        { typeof(Hct), ColourSpace.Hct },
+        { typeof(Munsell), ColourSpace.Munsell }
+    };
 
     public double Contrast(Unicolour other) => Comparison.Contrast(this, other);
     public double Difference(Unicolour reference, DeltaE deltaE) => Comparison.Difference(this, reference, deltaE);

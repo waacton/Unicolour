@@ -28,9 +28,16 @@ public class KnownMunsellTests
         var munsell = MunsellFuncs.FromXyy(xyy);
         TestUtils.AssertTriplet(munsell.Triplet, expected.Triplet, [0.5, 0.1, 0.1]);
     }
-    
-    // TODO: ASTM 7.5G 5/10 reckons --> 0.2200, 0.4082, 19.27 -->  XYZ-C 10.39, 19.27, 1755 --> XYZ-D65 X10.86, 19.46, 15.51
 
+    [Test]
+    public void Red()
+    {
+        var m = new Unicolour(Configuration.Default, new Munsell(5, "R", 5, 18));
+        
+        var red = new Unicolour("#f3083d");
+        var munsell = red.Munsell;
+    }
+    
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
     // CIE Y for illuminant C is ~0.975x MgO Y
     private const double MgoScale = 0.975;

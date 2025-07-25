@@ -257,15 +257,19 @@ public class KnownMunsellTests
     [Test] // no delta from exact polar angle match could result in divide-by-zero
     public void ConvergeHueToExactPolarAngle()
     {
-        var xyy = new Xyy(0.3920859907774519, 0.4766220631732515, 0.006886734146503759);
-        Assert.DoesNotThrow(() => MunsellFuncs.FromXyy(xyy));
+        var munsell = new Munsell(10, "G", 4, 6);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var polar = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        Assert.DoesNotThrow(() => MunsellFuncs.ModifyHue(munsell, polar.angle));
     }
 
     [Test] // no delta from exact polar radius match could result in divide-by-zero
     public void ConvergeChromaToExactPolarRadius()
     {
-        var xyy = new Xyy(0.730963800200384, 0.9350813326959242, 0.0013968641601151965);
-        Assert.DoesNotThrow(() => MunsellFuncs.FromXyy(xyy));
+        var munsell = new Munsell(10, "G", 4, 6);
+        var xyy = MunsellFuncs.ToXyy(munsell);
+        var polar = LineSegment.Polar(WhitePoint, xyy.Chromaticity);
+        Assert.DoesNotThrow(() => MunsellFuncs.ModifyChroma(munsell, polar.radius));
     }
     
     // very low luminance will converge to white point because there is no chroma data; no delta could result in divide-by-zero

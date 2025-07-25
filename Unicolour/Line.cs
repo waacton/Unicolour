@@ -2,7 +2,6 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-// TODO: probably need to add Length & Polar to line tests
 internal record LineSegment(Chromaticity Start, Chromaticity End)
 {
     internal LineSegment((double x, double y) start, (double x, double y) end) : this(new Chromaticity(start.x, start.y), new Chromaticity(end.x, end.y)) { }

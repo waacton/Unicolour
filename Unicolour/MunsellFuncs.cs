@@ -259,13 +259,10 @@ internal static class MunsellFuncs
         // when LCH is very close to greyscale, LCH values do not providing a meaningful starting point
         // (in particular LCH.C / 5.5 approximation no longer works, resulting in chroma modification of x100,000s, rapidly trending to infinity)
         // so fall back to a less extreme starting point in those cases
-        // TODO: is there a better heuristic when LCH is not useful? worth considering, but this is already passing tests
-        //       e.g. could use the target angle directly for hue, and target radius for chroma?
         if (lch.C < 0.00005)
         {
-            // initialH = (360 - target.angle) + 90 + Node.DegreesPerHueNumber * 2;
-            // initialH = initialH.Modulo(360);
-            // initialC = target.radius;
+            // note: could potentially find a better heuristic (e.g. use target angle for hue and target radius for chroma)
+            // which might speed up convergence, but this is passing tests so more than suitable for now
             initialH = lch.H;
             initialC = 1;
         }
@@ -303,7 +300,7 @@ internal static class MunsellFuncs
     }
     
     // note: "angle" in this method refers to polar coordinates of (x, y), not to the hue degrees
-    private static Munsell ModifyHue(Munsell munsell, double targetAngle)
+    internal static Munsell ModifyHue(Munsell munsell, double targetAngle)
     {
         var (_, v, c) = munsell;
         HueToAngleData start = null!;
@@ -331,7 +328,7 @@ internal static class MunsellFuncs
         return new Munsell(h, v, c);
     }
     
-    private static Munsell ModifyChroma(Munsell munsell, double targetRadius)
+    internal static Munsell ModifyChroma(Munsell munsell, double targetRadius)
     {
         var (h, v, _) = munsell;
         ChromaToRadiusData start = null!;

@@ -9,7 +9,7 @@
         internal MunsellHue(double number, string letter)
         {
             number = number.Clamp(0, 10);
-            letter = letter.ToUpper();
+            letter = letter.Trim().ToUpper();
             Degrees = ToDegrees(number, letter);
             Number = number;
             Letter = letter;

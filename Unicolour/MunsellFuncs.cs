@@ -280,7 +280,7 @@ internal static class MunsellFuncs
         var iterations = new List<XyyToMunsellIteration>();
         var converged = false;
 
-        if (lch.IsNaN)
+        if (lch.IsNaN || double.IsInfinity(target.radius))
         {
             var notNumberIteration = new XyyToMunsellIteration(new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), double.NaN);
             iterations.Add(notNumberIteration);
@@ -342,6 +342,11 @@ internal static class MunsellFuncs
         }
         
         var chromaFactor = end.TargetRadius / end.Radius;
+        if (double.IsInfinity(chromaFactor))
+        {
+            return new Munsell(h, v, end.Munsell.C * chromaFactor);
+        }
+        
         var converged = false;
         while (!converged)
         {

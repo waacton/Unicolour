@@ -63,35 +63,25 @@ internal static class MunsellFuncs
         {
             if (nodeC == 0) return WhitePointChromaticity;
             
-            // consecutive hues, same chroma
-            var lower = MunsellCache.Lookup(lowerH, nodeV, nodeC);
-            var upper = MunsellCache.Lookup(upperH, nodeV, nodeC);
-            if (lower == upper)
-            {
-                if (lower == null)
-                {
-                    Console.WriteLine($"⚠️⚠️⚠️ both lower and upper null for {lowerH} {nodeV} {nodeC} and {upperH} {nodeV} {nodeC}");
-                    throw new InvalidOperationException($"⚠️⚠️⚠️ both lower and upper null for {lowerH} {nodeV} {nodeC} and {upperH} {nodeV} {nodeC}");
-                }
-                return lower;
-            }
-
-            // TODO: document this algorithm deviation, and try to find a better way to encapsulate it
-            //       should only be encountered when V is so low there is only chroma data for one of the hues
-            //       in which case, use it as a last resort (alternatives are: default to white point, or return NaN)
-            //       but this approach still finds xy coordinates that are surprisingly roundtrippable (with less accuracy)
-            if (upper == null)
-            {
-                return lower;
-            }
+            var lowerXy = MunsellCache.Lookup(lowerH, nodeV, nodeC);
+            var upperXy = MunsellCache.Lookup(upperH, nodeV, nodeC);
             
-            if (lower == null)
+            // extension to algorithm to handle edge cases
+            // and allow extrapolation in cases where only one of the hues has chroma data
+            // (typically when value is very small)
+            if (lowerXy == null || upperXy == null)
             {
-                return upper;
+                if (lowerXy == null && upperXy == null) return new(double.NaN, double.NaN);
+                return (lowerXy ?? upperXy)!;
             }
 
-            var lowerPolar = LineSegment.Polar(WhitePointChromaticity, lower);
-            var upperPolar = LineSegment.Polar(WhitePointChromaticity, upper);
+            if (lowerXy == upperXy)
+            {
+                return lowerXy;
+            }
+
+            var lowerPolar = LineSegment.Polar(WhitePointChromaticity, lowerXy);
+            var upperPolar = LineSegment.Polar(WhitePointChromaticity, upperXy);
             (lowerPolar.angle, upperPolar.angle) = Hue.Unwrap(lowerPolar.angle, upperPolar.angle);
             var angle = Interpolation.Linear(lowerPolar.angle, upperPolar.angle, hueDistance);
             var angleDistance = (angle - lowerPolar.angle) / (upperPolar.angle - lowerPolar.angle);
@@ -110,8 +100,8 @@ internal static class MunsellFuncs
             }
             else
             {
-                var x = Interpolation.Linear(lower.X, upper.X, angleDistance);
-                var y = Interpolation.Linear(lower.Y, upper.Y, angleDistance);
+                var x = Interpolation.Linear(lowerXy.X, upperXy.X, angleDistance);
+                var y = Interpolation.Linear(lowerXy.Y, upperXy.Y, angleDistance);
                 return new(x, y);
             }
         }

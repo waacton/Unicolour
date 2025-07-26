@@ -174,8 +174,7 @@ internal static class MunsellFuncs
         return (Math.Round(lower, 1), Math.Round(upper, 1));
     }
 
-    // TODO: REVIEW CAREFULLY! very easy place for a mistake to be made during transcript
-    private static bool IsOnRadialInterpolationHueSegment(double nodeV, double nodeC, MunsellHue h)
+    internal static bool IsOnRadialInterpolationHueSegment(double nodeV, double nodeC, MunsellHue h)
     {
         return nodeV switch
         {
@@ -231,10 +230,10 @@ internal static class MunsellFuncs
             7 => nodeC switch
             {
                 2 or 4 or 6 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((5, "P"), (10, "BG")),
-                8 => h.IsBetween((2.5, "G"), (2.5, "R")) || h.IsBetween((2.5, "P"), (10, "BG")),
+                8 => h.IsBetween((2.5, "G"), (5, "R")) || h.IsBetween((2.5, "P"), (10, "BG")),
                 10 => h.IsBetween((5, "Y"), (5, "R")) || h.IsBetween((2.5, "G"), (10, "Y")) || h.IsBetween((2.5, "P"), (10, "BG")),
                 12 => h.IsBetween((7.5, "Y"), (7.5, "R")) || h.IsBetween((2.5, "G"), (10, "Y")) || h.IsBetween((2.5, "P"), (10, "PB")),
-                >= 14 => h.IsBetween((5, "YR"), (7.5, "R")) || h.IsBetween((10, "GY"), (2.5, "GY")) || h.IsBetween((2.5, "P"), (10, "BG")),
+                >= 14 => h.IsBetween((5, "YR"), (7.5, "R")) || h.IsBetween((10, "GY"), (2.5, "GY")) || h.IsBetween((2.5, "P"), (10, "PB")),
                 _ => false
             },
             8 => nodeC switch

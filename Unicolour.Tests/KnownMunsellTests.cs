@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,8 +8,6 @@ namespace Wacton.Unicolour.Tests;
 public class KnownMunsellTests
 {
     private static readonly Chromaticity WhiteChromaticity = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
-    
-    // TODO: every radial vs linear segment
     
     private static readonly TestCaseData[] AstmData =
     [
@@ -334,5 +333,165 @@ public class KnownMunsellTests
         var xyy = new Xyy(0.4, 0.4, luminance);
         var munsell = MunsellFuncs.FromXyy(xyy);
         Assert.That(munsell.IsGreyscale);
+    }
+
+    private static readonly TestCaseData[] RadialData = GetRadialData();
+    [TestCaseSource(nameof(RadialData))]
+    public void RadialInterpolation(int v, int c, MunsellHue h, bool isRadial)
+    {
+        Assert.That(MunsellFuncs.IsOnRadialInterpolationHueSegment(v, c, h), Is.EqualTo(isRadial));
+    }
+
+    private static TestCaseData[] GetRadialData()
+    {
+        var data = new List<(int v, int c, MunsellHue h, bool isRadial)>();
+        data.Add(new(0, 5, new MunsellHue(0), false));
+        
+        data.Add(new(1, 1, new MunsellHue(0), false));
+        data.AddRange(Get(1, 2, new(10, "Y"), new(5, "YR")));
+        data.AddRange(Get(1, 2, new(10, "Y"), new(5, "YR")));
+        data.AddRange(Get(1, 2, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(1, 4, new(7.5, "Y"), new(2.5, "YR")));
+        data.AddRange(Get(1, 4, new(10, "PB"), new(7.5, "BG")));
+        data.AddRange(Get(1, 6, new(10, "PB"), new(5, "BG")));
+        data.AddRange(Get(1, 8, new(7.5, "PB"), new(7.5, "B")));
+        data.AddRange(Get(1, 10, new(7.5, "PB"), new(2.5, "PB")));
+        
+        data.Add(new(2, 1, new MunsellHue(0), false));
+        data.AddRange(Get(2, 2, new(7.5, "Y"), new(5, "YR")));
+        data.AddRange(Get(2, 2, new(10, "PB"), new(7.5, "PB")));
+        data.AddRange(Get(2, 4, new(10, "Y"), new(2.5, "YR")));
+        data.AddRange(Get(2, 4, new(10, "PB"), new(2.5, "B")));
+        data.AddRange(Get(2, 6, new(2.5, "Y"), new(7.5, "R")));
+        data.AddRange(Get(2, 6, new(10, "PB"), new(2.5, "B")));
+        data.AddRange(Get(2, 8, new(5, "YR"), new(7.5, "R")));
+        data.AddRange(Get(2, 8, new(10, "PB"), new(10, "BG")));
+        data.AddRange(Get(2, 10, new(7.5, "PB"), new(5, "B")));
+        
+        data.Add(new(3, 1, new MunsellHue(0), false));
+        data.AddRange(Get(3, 2, new(7.5, "GY"), new(10, "R")));
+        data.AddRange(Get(3, 2, new(5, "P"), new(5, "B")));
+        data.AddRange(Get(3, 4, new(7.5, "GY"), new(5, "R")));
+        data.AddRange(Get(3, 4, new(2.5, "PB"), new(5, "BG")));
+        data.AddRange(Get(3, 6, new(7.5, "GY"), new(7.5, "R")));
+        data.AddRange(Get(3, 6, new(2.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(3, 8, new(7.5, "GY"), new(7.5, "R")));
+        data.AddRange(Get(3, 8, new(2.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(3, 10, new(7.5, "GY"), new(7.5, "R")));
+        data.AddRange(Get(3, 10, new(2.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(3, 12, new(2.5, "G"), new(7.5, "R")));
+        data.AddRange(Get(3, 12, new(10, "PB"), new(7.5, "BG")));
+        
+        data.Add(new(4, 1, new MunsellHue(0), false));
+        data.AddRange(Get(4, 2, new(2.5, "G"), new(7.5, "R")));
+        data.AddRange(Get(4, 2, new(5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(4, 4, new(2.5, "G"), new(7.5, "R")));
+        data.AddRange(Get(4, 4, new(5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(4, 6, new(10, "GY"), new(7.5, "R")));
+        data.AddRange(Get(4, 6, new(2.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(4, 8, new(10, "GY"), new(7.5, "R")));
+        data.AddRange(Get(4, 8, new(2.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(4, 10, new(10, "GY"), new(7.5, "R")));
+        data.AddRange(Get(4, 10, new(10, "PB"), new(7.5, "BG")));
+        
+        data.Add(new(5, 1, new MunsellHue(0), false));
+        data.AddRange(Get(5, 2, new(7.5, "GY"), new(5, "R")));
+        data.AddRange(Get(5, 2, new(5, "P"), new(5, "BG")));
+        data.AddRange(Get(5, 4, new(2.5, "G"), new(2.5, "R")));
+        data.AddRange(Get(5, 4, new(5, "P"), new(5, "BG")));
+        data.AddRange(Get(5, 6, new(2.5, "G"), new(2.5, "R")));
+        data.AddRange(Get(5, 6, new(5, "P"), new(5, "BG")));
+        data.AddRange(Get(5, 8, new(2.5, "G"), new(2.5, "R")));
+        data.AddRange(Get(5, 8, new(5, "P"), new(5, "BG")));
+        data.AddRange(Get(5, 10, new(2.5, "G"), new(2.5, "R")));
+        data.AddRange(Get(5, 10, new(2.5, "P"), new(5, "BG")));
+        
+        data.Add(new(6, 1, new MunsellHue(0), false));
+        data.AddRange(Get(6, 2, new(7.5, "GY"), new(5, "R")));
+        data.AddRange(Get(6, 2, new(7.5, "P"), new(5, "BG")));
+        data.AddRange(Get(6, 4, new(7.5, "GY"), new(5, "R")));
+        data.AddRange(Get(6, 4, new(7.5, "P"), new(5, "BG")));
+        data.AddRange(Get(6, 6, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 6, new(7.5, "P"), new(7.5, "BG")));
+        data.AddRange(Get(6, 8, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 8, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(6, 10, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 10, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(6, 12, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 12, new(2.5, "P"), new(10, "BG")));
+        data.AddRange(Get(6, 14, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 14, new(2.5, "P"), new(10, "BG")));
+        data.AddRange(Get(6, 16, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(6, 16, new(10, "PB"), new(10, "BG")));
+        
+        data.Add(new(7, 1, new MunsellHue(0), false));
+        data.AddRange(Get(7, 2, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(7, 2, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(7, 4, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(7, 4, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(7, 6, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(7, 6, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(7, 8, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(7, 8, new(2.5, "P"), new(10, "BG")));
+        data.AddRange(Get(7, 10, new(5, "Y"), new(5, "R")));
+        data.AddRange(Get(7, 10, new(2.5, "G"), new(10, "Y")));
+        data.AddRange(Get(7, 10, new(2.5, "P"), new(10, "BG")));
+        data.AddRange(Get(7, 12, new(7.5, "Y"), new(7.5, "R")));
+        data.AddRange(Get(7, 12, new(2.5, "G"), new(10, "Y")));
+        data.AddRange(Get(7, 12, new(2.5, "P"), new(10, "PB")));
+        data.AddRange(Get(7, 14, new(5, "YR"), new(7.5, "R")));
+        data.AddRange(Get(7, 14, new(10, "GY"), new(2.5, "GY")));
+        data.AddRange(Get(7, 14, new(2.5, "P"), new(10, "PB")));
+        
+        data.Add(new(8, 1, new MunsellHue(0), false));
+        data.AddRange(Get(8, 2, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 2, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 4, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 4, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 6, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 6, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 8, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 8, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 10, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 10, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 12, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(8, 12, new(5, "P"), new(10, "BG")));
+        data.AddRange(Get(8, 14, new(5, "YR"), new(5, "R")));
+        data.AddRange(Get(8, 14, new(10, "GY"), new(2.5, "GY")));
+        data.AddRange(Get(8, 14, new(5, "P"), new(10, "BG")));
+        
+        data.Add(new(9, 1, new MunsellHue(0), false));
+        data.AddRange(Get(9, 2, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(9, 2, new(10, "PB"), new(5, "BG")));
+        data.AddRange(Get(9, 4, new(10, "GY"), new(5, "R")));
+        data.AddRange(Get(9, 4, new(10, "PB"), new(5, "R")));
+        data.AddRange(Get(9, 6, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(9, 8, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(9, 10, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(9, 12, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(9, 14, new(2.5, "G"), new(5, "R")));
+        data.AddRange(Get(9, 16, new(2.5, "G"), new(5, "GY")));
+        
+        data.Add(new(10, 1, new MunsellHue(0), false));
+        return data.Distinct().Select(x => new TestCaseData(x.v, x.c, x.h, x.isRadial)).ToArray();
+
+        List<(int v, int c, MunsellHue h, bool isRadial)> Get(int v, int c, MunsellHue end, MunsellHue start)
+        {
+            return
+            [
+                (v, c, Offset(end, forward: true), false),
+                (v, c, end, true),
+                (v, c, Offset(end, forward: false), true),
+                (v, c, Offset(start, forward: true), true),
+                (v, c, start, true),
+                (v, c, Offset(start, forward: false), false)
+            ];
+            
+            MunsellHue Offset(MunsellHue hue, bool forward)
+            {
+                var degrees = forward ? Node.DegreesPerHueNumber / 4.0 : -Node.DegreesPerHueNumber / 4.0;
+                return new MunsellHue((hue.Degrees + degrees).Modulo(360));
+            }
+        }
     }
 }

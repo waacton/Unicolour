@@ -48,22 +48,4 @@ internal record MunsellBounds(MunsellHue LowerH, MunsellHue UpperH, double Lower
 
         return (lowerC, upperC);
     }
-
-
-    internal (int min, int max)[] ChromaRanges => new[]
-    {
-        MunsellCache.GetChromaRange(LowerH, LowerV),
-        MunsellCache.GetChromaRange(UpperH, LowerV),
-        MunsellCache.GetChromaRange(LowerH, UpperV),
-        MunsellCache.GetChromaRange(UpperH, UpperV)
-    };
-
-    internal bool IsSparseChroma => ChromaRanges.Count(x => x == (0, 0)) > 0;
-    internal int ChromaLimit => ChromaRanges.Select(x => x.max).Min();
-    internal double ChromaLimitScale => ChromaLimit == 0.0 ? 0.0 : UpperC / ChromaLimit;
-    
-    public override string ToString()
-    {
-        return $"H: {LowerH} \u27f6 {UpperH} · V: {LowerV} \u27f6 {UpperV} · C: {LowerC:G} \u27f6 {UpperC:G}";
-    }
 }

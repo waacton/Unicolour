@@ -17,6 +17,4 @@ internal record Node(double HueNumber, string HueLetter, double Value, int Chrom
     internal readonly double LuminanceMagnesiumOxide = LuminanceMagnesiumOxide; // actual Y = 0.975 * Ymgo
 
     internal Chromaticity Point => new(X, Y);
-
-    public override string ToString() => $"{HueNumber}{HueLetter} {Value}/{Chroma} = ({X}, {Y})";
 }

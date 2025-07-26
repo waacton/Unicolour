@@ -405,11 +405,6 @@ internal static class MunsellFuncs
         }
         
         var chromaFactor = end.TargetRadius / end.Radius;
-        if (double.IsInfinity(chromaFactor))
-        {
-            return new Munsell(h, v, end.Munsell.C * chromaFactor);
-        }
-        
         var converged = false;
         while (!converged)
         {

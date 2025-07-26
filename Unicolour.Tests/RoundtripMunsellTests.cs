@@ -17,46 +17,42 @@ public class RoundtripMunsellTests
 
         var originalBounds = Munsell.GetBounds(original);
         var roundtripBounds = Munsell.GetBounds(roundtrip);
+        
+        /*
+         * "chroma limit scale" is a measure of how far outside the munsell dataset the chroma is
+         * e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
+         * from running 10,000,000 roundtrips conversions, large deltas during roundtrip conversion correlates pretty well with this
+         * although there are rare outliers where large deltas appear at lower scales (but never <= 1, i.e. within known data points)
+         * these tolerances are based on gathering this data
+         * ----------
+         * NOTE:
+         * for now the tolerances will not include the outliers, and can be expected to fail occasionally
+         * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
+         * once confident that conversion is robust, and occasional errors are outliers
+         * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
+         */
 
         (double h, double c) tolerance;
         if (!roundtrip.XyyToMunsellSearchResult!.Converged)
         {
-            Console.WriteLine($"⚠️ did not converge ({roundtrip})");
             tolerance = (h: 7.5, c: 53.5);
         }
         else if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
         {
-            Console.WriteLine($"⚠️ xy outside reasonable range ({xyy})");
             tolerance = (h: 21.5, c: 62.5);
         }
-        else if (originalBounds.IsSparseChroma || roundtripBounds.IsSparseChroma)
+        else if (IsSparseChroma(originalBounds) || IsSparseChroma(roundtripBounds))
         {
-            Console.WriteLine($"⚠️ sparse chroma data ({string.Join(", ", Munsell.GetBounds(roundtrip).ChromaRanges)})");
             tolerance = (h: 8.75, c: 21.5);
         }
         else if (original.C < 0.5)
         {
-            Console.WriteLine($"⚠️ low chroma ({original.C})");
             tolerance = (h: 4, c: 0.0035);
         }
         else
         {
-            /*
-             * "chroma limit scale" is a measure of how far outside the munsell dataset the chroma is
-             * e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
-             * from running 10,000,000 roundtrips conversions, large deltas during roundtrip conversion correlates pretty well with this
-             * although there are rare outliers where large deltas appear at lower scales (but never <= 1, i.e. within known data points)
-             * these tolerances are based on gathering this data
-             * ----------
-             * NOTE:
-             * for now the tolerances will not include the outliers, and can be expected to fail occasionally
-             * so that they can be reviewed to determine if they are indeed outliers, or actually an issue in conversion
-             * once confident that conversion is robust, and occasional errors are outliers
-             * it is likely the tolerances for simplicity will become 1) very small for scale <= 1 and 2) very large for >= 1
-             */
-            var maxChromaScale = Math.Max(originalBounds.ChromaLimitScale, roundtripBounds.ChromaLimitScale);
-            Console.WriteLine($"{(originalBounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{originalBounds.ChromaLimitScale}x above max chroma");
-            Console.WriteLine($"{(roundtripBounds.ChromaLimitScale > 1 ? "⚠️ " : string.Empty)}{roundtripBounds.ChromaLimitScale}x above max chroma");
+
+            var maxChromaScale = Math.Max(ChromaLimitScale(originalBounds), ChromaLimitScale(roundtripBounds));
             tolerance = maxChromaScale switch
             {
                 >= 1.25 => (h: 6.5, c: 11),
@@ -100,6 +96,33 @@ public class RoundtripMunsellTests
         Assert.That(hDeltas.Average(), Is.LessThan(0.05));
         Assert.That(vDeltas.Average(), Is.LessThan(5e-15));
         Assert.That(cDeltas.Average(), Is.LessThan(0.05));
+    }
+    
+    private static bool IsSparseChroma(MunsellBounds bounds)
+    {
+        var chromaRanges = new[]
+        {
+            MunsellCache.GetChromaRange(bounds.LowerH, bounds.LowerV),
+            MunsellCache.GetChromaRange(bounds.UpperH, bounds.LowerV),
+            MunsellCache.GetChromaRange(bounds.LowerH, bounds.UpperV),
+            MunsellCache.GetChromaRange(bounds.UpperH, bounds.UpperV)
+        };
+
+        return chromaRanges.Count(x => x == (0, 0)) > 0;
+    }
+
+    private static double ChromaLimitScale(MunsellBounds bounds)
+    {
+        var chromaRanges = new[]
+        {
+            MunsellCache.GetChromaRange(bounds.LowerH, bounds.LowerV),
+            MunsellCache.GetChromaRange(bounds.UpperH, bounds.LowerV),
+            MunsellCache.GetChromaRange(bounds.LowerH, bounds.UpperV),
+            MunsellCache.GetChromaRange(bounds.UpperH, bounds.UpperV)
+        };
+        
+        var chromaLimit = chromaRanges.Select(x => x.max).Min();
+        return chromaLimit == 0.0 ? 0.0 : bounds.UpperC / chromaLimit;
     }
 
     // [Test]

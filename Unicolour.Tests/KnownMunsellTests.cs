@@ -109,8 +109,7 @@ public class KnownMunsellTests
     public void StandardRgbToMunsell(Munsell expectedMunsell, Rgb255 rgb)
     {
         var colour = new Unicolour(RgbDataConfig, ColourSpace.Rgb255, rgb.Tuple);
-        var actual = colour.Munsell.UseAsGreyscale ? colour.Munsell.Triplet.WithHueOverride(0) : colour.Munsell.Triplet;
-        TestUtils.AssertTriplet(actual, expectedMunsell.Triplet, 0.25);
+        TestUtils.AssertTriplet<Munsell>(colour, expectedMunsell.Triplet, 0.25);
     }
     
     [Test]

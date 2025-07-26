@@ -31,11 +31,20 @@ internal static class MunsellFuncs
         {
             adaptedXyy = xyy;
         }
-        
-        var searchResult = Find(adaptedXyy);
-        var (h, v, c) = searchResult.Converged
-            ? searchResult.Iterations.Last().Munsell
-            : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
+
+        double h, v, c;
+        XyyToMunsellSearchResult? searchResult = null;
+        if (xyy.UseAsGreyscale)
+        {
+            (h, v, c) = (0, GetValue(xyy.Luminance), 0);
+        }
+        else
+        {
+            searchResult = Find(adaptedXyy);
+            (h, v, c) = searchResult.Converged
+                ? searchResult.Iterations.Last().Munsell
+                : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
+        }
 
         return new Munsell(h, v, c, ColourHeritage.From(xyy)) { XyyToMunsellSearchResult = searchResult };
     }
@@ -46,7 +55,7 @@ internal static class MunsellFuncs
         var h = new MunsellHue(degrees);
         var bounds = Munsell.GetBounds(munsell);
 
-        var chromaticity = GetChromaticity(h, v, c, bounds);
+        var chromaticity = munsell.UseAsGreyscale ? WhiteChromaticity : GetChromaticity(h, v, c, bounds);
         var adaptedXyy = new Xyy(chromaticity.X, chromaticity.Y, GetLuminance(v));
         
         Xyy xyy;

@@ -94,7 +94,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Hct => new Hct(first, second, third, heritage),
-            ColourSpace.Munsell => new Munsell(first, second, third),
+            ColourSpace.Munsell => new Munsell(first, second, third, heritage),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }

@@ -15,7 +15,8 @@ public class MixHeritageTests
         ColourSpace.Tsl,
         ColourSpace.Jzczhz,
         ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrch,
-        ColourSpace.Hct
+        ColourSpace.Hct,
+        ColourSpace.Munsell
     ];
 
     private static readonly List<ColourSpace> NonHuedSpaces = TestUtils.AllColourSpaces.Except(HuedSpaces).ToList();

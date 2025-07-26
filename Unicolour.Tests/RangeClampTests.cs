@@ -406,6 +406,18 @@ public class RangeClampTests
         var representations = new[] { beyondMax, beyondMin };
         AssertConstrainedValue(representations, x => x.ConstrainedH, x => x.ConstrainedTriplet.First);
     }
+    
+    [Test]
+    public void MunsellRange()
+    {
+        Range hRange = new(0.0, 360.0);
+        Range vRange = new(0.0, 1.0);
+        Range cRange = new(0.0, 1.0);
+        var beyondMax = new Munsell(hRange.BeyondMax, 10, 50);
+        var beyondMin = new Munsell(hRange.BeyondMin, vRange.BeyondMin, cRange.BeyondMin);
+        AssertConstrained(beyondMax.ConstrainedTriplet.First, beyondMax.Triplet.First);
+        AssertConstrained(beyondMin.Triplet, beyondMin.ConstrainedTriplet);
+    }
 
     private static void AssertConstrained(ColourTriplet lesser, ColourTriplet greater)
     {

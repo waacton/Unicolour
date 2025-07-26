@@ -57,6 +57,9 @@ public class HuedTests
     
     [Test]
     public void Hct() => AssertUnicolour(new(ColourSpace.Hct, 180, 0, 0), []);
+    
+    [Test]
+    public void Munsell() => AssertUnicolour(new(ColourSpace.Munsell, 180, 0, 0), []);
 
     private static void AssertUnicolour(Unicolour colour, List<ColourSpace> adjacentHuedSpaces)
     {

@@ -171,6 +171,7 @@ internal static class RandomColours
             ColourSpace.Cam02 => Cam02(),
             ColourSpace.Cam16 => Cam16(),
             ColourSpace.Hct => Hct(),
+            ColourSpace.Munsell => Munsell(),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }

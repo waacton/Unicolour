@@ -142,6 +142,9 @@ public class NotNumberTests
     
     [TestCaseSource(nameof(TestData))]
     public void Hct(Configuration config, double h, double c, double t) => AssertUnicolour(new(config, ColourSpace.Hct, h, c, t));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Munsell(Configuration config, double h, double v, double c) => AssertUnicolour(new(config, ColourSpace.Munsell, h, v, c));
 
     [TestCaseSource(nameof(TestData))]
     public void Icc(Configuration config, double c, double m, double y) => AssertUnicolour(new(config, new Channels(c, m, y, 0.0)));

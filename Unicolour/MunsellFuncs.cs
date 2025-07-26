@@ -40,10 +40,7 @@ internal static class MunsellFuncs
         }
         else
         {
-            searchResult = Find(adaptedXyy);
-            (h, v, c) = searchResult.Converged
-                ? searchResult.Iterations.Last().Munsell
-                : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
+            ((h, v, c), searchResult) = Find(adaptedXyy);
         }
 
         return new Munsell(h, v, c, ColourHeritage.From(xyy)) { XyyToMunsellSearchResult = searchResult };
@@ -74,6 +71,7 @@ internal static class MunsellFuncs
         return new Xyy(x, y, luminance, ColourHeritage.From(munsell));
     }
     
+    // TODO: replace with ToXyy2
     internal static Xyy ToXyy(Munsell munsell)
     {
         var (degrees, v, c) = munsell.ConstrainedTriplet;
@@ -306,19 +304,21 @@ internal static class MunsellFuncs
         return Interpolation.Linear(vLower, vUpper, distance);
     }
 
+    // TODO: replace with ToXyy2
     internal static Munsell FromXyy(Xyy xyy)
     {
-        var searchResult = Find(xyy);
-        var (h, v, c) = searchResult.Converged
-            ? searchResult.Iterations.Last().Munsell
-            : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
-
+        var ((h, v, c), searchResult) = Find(xyy);
         return new Munsell(h, v, c) { XyyToMunsellSearchResult = searchResult };
     }
 
-    private static XyyToMunsellSearchResult Find(Xyy xyy)
+    private static (Munsell munsell, XyyToMunsellSearchResult searchResult) Find(Xyy xyy)
     {
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfig));
+        var target = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
+        if (lch.IsNaN || double.IsInfinity(target.radius))
+        {
+            return (new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), new XyyToMunsellSearchResult(double.NaN, false));
+        }
 
         double initialH;
         double initialC;
@@ -340,30 +340,29 @@ internal static class MunsellFuncs
         }
         
         var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
-        var target = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
-        var iterations = new List<XyyToMunsellIteration>();
+        var iterations = 0;
+        var closestResult = new XyyToMunsellSearchResult(double.MaxValue, false);
         var converged = false;
-
-        if (lch.IsNaN || double.IsInfinity(target.radius))
-        {
-            var notNumberIteration = new XyyToMunsellIteration(new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), double.NaN);
-            iterations.Add(notNumberIteration);
-            converged = true;
-        }
 
         const double convergenceThreshold = 0.00001;
         const int maxIterations = 10;
         
-        while (!converged && iterations.Count < maxIterations)
+        while (!converged && iterations < maxIterations)
         {
             munsell = ModifyHue(munsell, target.angle);
             munsell = ModifyChroma(munsell, target.radius);
             var delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell).Chromaticity);
             converged = delta <= convergenceThreshold;
-            iterations.Add(new(munsell, delta));
+            iterations++;
+            
+            var result = new XyyToMunsellSearchResult(delta, converged);
+            if (result.Delta < closestResult.Delta || double.IsNaN(closestResult.Delta))
+            {
+                closestResult = result;
+            }
         }
-        
-        return new XyyToMunsellSearchResult(iterations, converged);
+
+        return (munsell, closestResult);
     }
     
     // note: "angle" in this method refers to polar coordinates of (x, y), not to the hue degrees
@@ -468,18 +467,11 @@ internal static class MunsellFuncs
         
         public override string ToString() => $"{Munsell} ({Radius} vs. {TargetRadius})";
     }
-    
-    internal record XyyToMunsellSearchResult(List<XyyToMunsellIteration> Iterations, bool Converged)
+
+    internal record XyyToMunsellSearchResult(double Delta, bool Converged)
     {
-        internal List<XyyToMunsellIteration> Iterations { get; } = Iterations;
-        internal bool Converged { get; } = Converged;
-        public override string ToString() => $"Iterations:{Iterations.Count} · Converged:{Converged}";
-    }
-    
-    internal record XyyToMunsellIteration(Munsell Munsell, double Delta)
-    {
-        internal Munsell Munsell { get; } = Munsell;
         internal double Delta { get; } = Delta;
-        public override string ToString() => $"{Munsell} · Delta:{Delta}";
+        internal bool Converged { get; } = Converged;
+        public override string ToString() => $"Delta:{Delta} · Converged:{Converged}";
     }
 }

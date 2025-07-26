@@ -42,8 +42,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Cam02? cam02;
     private Cam16? cam16;
     private Hct? hct;
-    private Channels? icc;
     private Munsell? munsell;
+    private Channels? icc;
     
     private bool? isInPointerGamut;
     private Temperature? temperature;

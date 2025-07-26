@@ -1,7 +1,5 @@
 ﻿namespace Wacton.Unicolour;
 
-// TODO: handle grey ("N" hue e.g. N 5/ ... or 0 chroma e.g. 10YR 5/0)
-// TODO: clamp hue between 0 - 10, clamp value to 10, handle extreme chroma values
 public record Munsell : ColourRepresentation
 {
     protected internal override int? HueIndex => 0;
@@ -17,9 +15,6 @@ public record Munsell : ColourRepresentation
     protected override string String => UseAsHued ? $"{H.number:0.##}{H.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
     public override string ToString() => base.ToString();
 
-    private readonly Lazy<MunsellBounds> bounds;
-    internal MunsellBounds Bounds => bounds.Value;
-
     public Munsell(double h1, string h2, double v, double c) : this(new MunsellHue(h1, h2), v, c, ColourHeritage.None) { }
     public Munsell(double v) : this(new MunsellHue(0), v, 0, ColourHeritage.Greyscale) { }
     internal Munsell(double h, double v, double c) : this(new MunsellHue(h), v, c, ColourHeritage.None) { }
@@ -27,12 +22,11 @@ public record Munsell : ColourRepresentation
     private Munsell(MunsellHue h, double v, double c, ColourHeritage heritage) : base(h.Degrees, v, c, heritage)
     {
         Hue = h;
-        bounds = new Lazy<MunsellBounds>(GetBounds);
     }
     
-    private MunsellBounds GetBounds()
+    internal static MunsellBounds GetBounds(Munsell munsell)
     {
-        var (h, v, c) = ConstrainedTriplet;
+        var (h, v, c) = munsell.ConstrainedTriplet;
         
         // these are the naive bounds, and will be adjusted if not available in the dataset
         // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation

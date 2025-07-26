@@ -36,7 +36,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
         var munsellFromDegrees = new Munsell(MunsellHue.ToDegrees(data.HueNumber, data.HueLetter), data.Value, data.Chroma);
-        Assert.That(munsellFromDegrees.Bounds, Is.EqualTo(munsell.Bounds));
+        Assert.That(munsellFromDegrees, Is.EqualTo(munsell));
 
         // the Y value in the raw data is relative to MgO, and is not the correct luminance value
         // scale Ymgo to get the intended expected luminance Y for CIE illuminant C 

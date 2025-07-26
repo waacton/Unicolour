@@ -125,7 +125,10 @@ public class SmokeTests
         new(ColourSpace.Cam16, 50, -1, 1, 0.5),
         new(ColourSpace.Hct, 0, 0, 0, 0),
         new(ColourSpace.Hct, 360, 120, 100, 1),
-        new(ColourSpace.Hct, 180, 60, 50, 0.5)
+        new(ColourSpace.Hct, 180, 60, 50, 0.5),
+        new(ColourSpace.Munsell, 0, 0, 0, 0),
+        new(ColourSpace.Munsell, 360, 10, 20, 1),
+        new(ColourSpace.Munsell, 180, 5, 10, 0.5)
     ];
     
     [TestCaseSource(nameof(ColourSpaceTestCases))]

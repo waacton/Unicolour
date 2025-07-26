@@ -44,7 +44,7 @@ internal static class MunsellFuncs
     {
         var (degrees, v, c) = munsell.ConstrainedTriplet;
         var h = new MunsellHue(degrees);
-        var bounds = munsell.Bounds;
+        var bounds = Munsell.GetBounds(munsell);
 
         var chromaticity = GetChromaticity(h, v, c, bounds);
         var adaptedXyy = new Xyy(chromaticity.X, chromaticity.Y, GetLuminance(v));
@@ -69,7 +69,7 @@ internal static class MunsellFuncs
     {
         var (degrees, v, c) = munsell.ConstrainedTriplet;
         var h = new MunsellHue(degrees);
-        var bounds = munsell.Bounds;
+        var bounds = Munsell.GetBounds(munsell);
 
         var chromaticity = GetChromaticity(h, v, c, bounds);
         var luminance = GetLuminance(v);

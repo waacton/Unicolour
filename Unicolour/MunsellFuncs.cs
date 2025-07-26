@@ -37,7 +37,7 @@ internal static class MunsellFuncs
             ? searchResult.Iterations.Last().Munsell
             : searchResult.Iterations.OrderBy(x => x.Delta).First().Munsell;
 
-        return new Munsell(h, v, c, ColourHeritage.From(adaptedXyy)) { XyyToMunsellSearchResult = searchResult };
+        return new Munsell(h, v, c, ColourHeritage.From(xyy)) { XyyToMunsellSearchResult = searchResult };
     }
     
     internal static Xyy ToXyy2(Munsell munsell, XyzConfiguration xyzConfig)

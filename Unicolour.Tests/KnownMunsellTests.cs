@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,12 +6,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static readonly XyzConfiguration XyzConfig = new(Illuminant.C, Observer.Degree2);
-    private static Chromaticity WhiteChromaticity => XyzConfig.WhiteChromaticity;
-
+    private static readonly Chromaticity WhiteChromaticity = Illuminant.C.GetWhitePoint(Observer.Degree2).ToChromaticity();
     
     // TODO: every radial vs linear segment
-    // TODO: one of each band
     
     private static readonly TestCaseData[] AstmData =
     [
@@ -29,18 +25,6 @@ public class KnownMunsellTests
         // ASTM approach is to convert graphically, less accurate than the implemented algorithm
         var munsell = MunsellFuncs.FromXyy(xyy);
         TestUtils.AssertTriplet(munsell.Triplet, expected.Triplet, [0.5, 0.1, 0.1]);
-    }
-
-    [Test]
-    public void Red()
-    {
-        var red = new Unicolour("#f3083d");
-        var munsell = red.Munsell;
-        var roundtrip = new Unicolour(ColourSpace.Munsell, munsell.Tuple);
-        var rgb = roundtrip.Rgb;
-        
-        var roundtrip2 = new Unicolour(new Configuration(xyzConfig: new(Illuminant.C, Observer.Degree2)), ColourSpace.Munsell, munsell.Tuple);
-        var rgb2 = roundtrip2.Rgb;
     }
     
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
@@ -65,35 +49,69 @@ public class KnownMunsellTests
         Assert.That(actual.Luminance, Is.EqualTo(expectedLuminance).Within(0.00025));
     }
     
+    private static readonly Configuration RgbDataConfig = new(xyzConfig: new XyzConfiguration(Illuminant.D65, Observer.Degree2, Cam02.MCAT02.Data));
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
+    
     [TestCaseSource(nameof(RgbData))]
     public void KnownRgb(MunsellTestData data)
     {
+        var expectedRgb = data.RgbMgo!.Value;
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
         var xyy = MunsellFuncs.ToXyy(munsell);
 
         /*
          * to the best of my knowledge, the sRGB data for "real" colours provided by RIT aren't quite right
-         * but can be matched with error < 0.01 RGB (2.55 in Byte255 format) when:
-         * 1) incorrectly using raw Y MgO as the luminance instead of correcting to Y for illuminant C
+         * but can be matched with error < 0.01035 RGB (2.63925 in Byte255 format) when:
+         * 1) using CIECAT02 chromatic adaptation transform as mentioned in the data notes
+         * 2) incorrectly using raw Y MgO as the luminance instead of correcting to Y for illuminant C
          *    - this results in an exact match for X_C, Y_C, Z_C in the dataset
-         *    - without this, error increases to < 0.0114 (2.9 in Byte255 format)
-         * 2) questionably using XYZ values rounded to 4 decimal places
-         *    - without this but using Y MgO, error reduces to < 0.01033 (~2.63 in Byte255 format)
-         * 3) using CIECAT02 chromatic adaptation transform as mentioned in the data notes
+         *    - without this, error increases to < 0.0112 (2.856 in Byte255 format)
          */
+        var colourIncorrectY = new Unicolour(RgbDataConfig, ColourSpace.Munsell, munsell.Tuple);
+        var actualRgbIncorrectY = colourIncorrectY.Rgb.ConstrainedTriplet;
+        TestUtils.AssertTriplet(actualRgbIncorrectY, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.0112);
+        
         xyy = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / MgoScale);
         var xyzC = Xyy.ToXyz(xyy);
-        xyzC = new Xyz(Math.Round(xyzC.X, 4), Math.Round(xyzC.Y, 4), Math.Round(xyzC.Z, 4));
         var xyzD65 = Adaptation.WhitePoint(xyzC, Illuminant.C.GetWhitePoint(Observer.Degree2), Illuminant.D65.GetWhitePoint(Observer.Degree2), Cam02.MCAT02);
-        xyzD65 = new Xyz(Math.Round(xyzD65.X, 4), Math.Round(xyzD65.Y, 4), Math.Round(xyzD65.Z, 4));
         var colour = new Unicolour(ColourSpace.Xyz, xyzD65.Tuple);
-        
-        var expectedRgb = data.RgbMgo!.Value;
         var actualRgb = colour.Rgb.ConstrainedTriplet;
-        TestUtils.AssertTriplet(actualRgb, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.01); // tolerance of 2.55 in byte255 format
-        
-        // TODO: use actual unicolour Munsell -> RGB, show error < 0.0114
+        TestUtils.AssertTriplet(actualRgb, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.01035); // tolerance of 2.63925 in byte255 format
+    }
+    
+    // expecting similar results to https://www.andrewwerth.com/color/
+    // though unclear what CAT was used (CIECAT02 gives closest match), if MgO Y was accounted for, was rounding used, is their code correct etc.
+    // so naturally some tolerance
+    private static readonly TestCaseData[] StandardRgbData =
+    [
+        new(new Munsell(5, "R", 5, 18), new Rgb255(243, 8, 61)),
+        new(new Munsell(2.5, "YR", 6, 14), new Rgb255(237, 113, 10)),
+        new(new Munsell(10, "Y", 9, 12), new Rgb255(242, 236, 2)),
+        new(new Munsell(5, "GY", 9, 12), new Rgb255(207, 245, 41)),
+        new(new Munsell(2.5, "G", 6, 10), new Rgb255(20, 171, 99)),
+        new(new Munsell(2.5, "BG", 7, 8), new Rgb255(54, 195, 171)),
+        new(new Munsell(7.5, "B", 6, 8), new Rgb255(45, 160, 198)),
+        new(new Munsell(7.5, "PB", 3, 24), new Rgb255(59, 13, 215)),
+        new(new Munsell(5, "P", 5, 26), new Rgb255(199, 3, 249)),
+        new(new Munsell(10, "RP", 6, 14), new Rgb255(246, 97, 130)),
+        new(new Munsell(9), new Rgb255(229, 229, 229)),
+        new(new Munsell(5), new Rgb255(122, 122, 122)),
+        new(new Munsell(1), new Rgb255(28, 28, 28))
+    ];
+    
+    [TestCaseSource(nameof(StandardRgbData))]
+    public void StandardRgbFromMunsell(Munsell munsell, Rgb255 expectedRgb)
+    {
+        var colour = new Unicolour(RgbDataConfig, ColourSpace.Munsell, munsell.Tuple);
+        TestUtils.AssertTriplet<Rgb255>(colour, expectedRgb.Triplet, 2);
+    } 
+    
+    [TestCaseSource(nameof(StandardRgbData))]
+    public void StandardRgbToMunsell(Munsell expectedMunsell, Rgb255 rgb)
+    {
+        var colour = new Unicolour(RgbDataConfig, ColourSpace.Rgb255, rgb.Tuple);
+        var actual = colour.Munsell.UseAsGreyscale ? colour.Munsell.Triplet.WithHueOverride(0) : colour.Munsell.Triplet;
+        TestUtils.AssertTriplet(actual, expectedMunsell.Triplet, 0.25);
     }
     
     [Test]
@@ -293,7 +311,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var polar = LineSegment.Polar(XyzConfig.WhiteChromaticity, xyy.Chromaticity);
+        var polar = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => MunsellFuncs.ModifyHue(munsell, polar.angle));
     }
 
@@ -302,7 +320,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = MunsellFuncs.ToXyy(munsell);
-        var polar = LineSegment.Polar(XyzConfig.WhiteChromaticity, xyy.Chromaticity);
+        var polar = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => MunsellFuncs.ModifyChroma(munsell, polar.radius));
     }
     

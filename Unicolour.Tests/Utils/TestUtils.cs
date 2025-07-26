@@ -288,6 +288,7 @@ internal static class TestUtils
         { typeof(Oklrch), ColourSpace.Oklrch },
         { typeof(Cam02), ColourSpace.Cam02 },
         { typeof(Cam16), ColourSpace.Cam16 },
-        { typeof(Hct), ColourSpace.Hct }
+        { typeof(Hct), ColourSpace.Hct },
+        { typeof(Munsell), ColourSpace.Munsell }
     };
 }

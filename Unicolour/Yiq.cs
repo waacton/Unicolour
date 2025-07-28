@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Yiq : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double I => Second;
     public double Q => Third;

@@ -480,6 +480,15 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 99.99999999999, false)]
     public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(new(ColourSpace.Hct, h, c, t), expected);
+    
+    [TestCase(180.0, 5, 0.0, true)]
+    [TestCase(180.0, 5, -0.00000000001, true)]
+    [TestCase(180.0, 5, 0.00000000001, false)]
+    [TestCase(180.0, 0.0, 10, true)]
+    [TestCase(180.0, -0.00000000001, 10, true)]
+    [TestCase(180.0, 0.00000000001, 10, false)]
+    [TestCase(180.0, 10, 10, false)]
+    public void Munsell(double h, double v, double c, bool expected) => AssertUnicolour(new(ColourSpace.Munsell, h, v, c), expected);
 
     private static void AssertUnicolour(Unicolour colour, bool shouldBeGreyscale)
     {

@@ -2,7 +2,7 @@
 
 public record Lms : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double L => First;
     public double M => Second;
     public double S => Third;

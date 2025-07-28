@@ -29,7 +29,8 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
         new(ColourSpace.Okhsv, new Range(0, 1), new Range(0, 1)),
         new(ColourSpace.Okhsl, new Range(0, 1), new Range(0, 1)),
         new(ColourSpace.Okhwb, new Range(0, 1), new Range(0, 1)),
-        new(ColourSpace.Hct, new Range(0, 120), new Range(0, 100))
+        new(ColourSpace.Hct, new Range(0, 120), new Range(0, 100)),
+        new(ColourSpace.Munsell, new Range(0, 10), new Range(0, 26))
     ];
 
     private readonly Func<double, double> mapFromDegree;

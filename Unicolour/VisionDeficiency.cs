@@ -72,7 +72,7 @@ public static class VisionDeficiency
             {
                 var start = lower[row, col];
                 var end = upper[row, col];
-                interpolated[row, col] = Interpolation.Interpolate(start, end, distance);
+                interpolated[row, col] = Interpolation.Linear(start, end, distance);
             }
         }
 

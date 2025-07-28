@@ -167,6 +167,7 @@ public class EqualityTests
         AssertEqual(colour1.Lchuv, colour2.Lchuv);
         AssertEqual(colour1.Lms, colour2.Lms);
         AssertEqual(colour1.Luv, colour2.Luv);
+        AssertEqual(colour1.Munsell, colour2.Munsell);
         AssertEqual(colour1.Oklab, colour2.Oklab);
         AssertEqual(colour1.Oklch, colour2.Oklch);
         AssertEqual(colour1.Okhsl, colour2.Okhsl);
@@ -192,6 +193,11 @@ public class EqualityTests
         if (colour1.Xyz.HctToXyzSearchResult != null)
         {
             AssertEqual(colour1.Xyz.HctToXyzSearchResult, colour2.Xyz.HctToXyzSearchResult);
+        }
+        
+        if (colour1.Munsell.XyyToMunsellSearchResult != null)
+        {
+            AssertEqual(colour1.Munsell.XyyToMunsellSearchResult, colour2.Munsell.XyyToMunsellSearchResult);
         }
 
         AssertConfigurationEqual(colour1.Configuration, colour2.Configuration);

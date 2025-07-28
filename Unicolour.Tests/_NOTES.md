@@ -13,7 +13,6 @@ Tests to add / update for new colour spaces:
 - Range clamp tests
 - Difference tests (if colour space has corresponding ΔE)
 - Configuration tests (if colour space requires configuration)
-- Lazy evaluation tests
 
 To obtain code coverage metrics (as GitLab CI is setup to do):
 

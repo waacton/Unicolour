@@ -26,6 +26,13 @@ internal class Slider
     
     private string GetValueText()
     {
+        // this approach could be used for all spaces and triplet indexes for much finer control
+        if (ColourSpace == ColourSpace.Munsell && index == 0)
+        {
+            var hue = Hue.ToMunsell(Value);
+            return $"{hue.number:F1}{hue.letter}";
+        }
+        
         return Range.Distance switch
         {
             < 0.5 => $"{Value:F3}",
@@ -37,6 +44,12 @@ internal class Slider
     
     private double GetStep()
     {
+        // this approach could be used for all spaces and triplet indexes for much finer control
+        if (ColourSpace == ColourSpace.Munsell && index == 0)
+        {
+            return 0.36; // 0.1 munsell hue
+        }
+        
         return Range.Distance switch
         {
             < 0.5 => 0.001,

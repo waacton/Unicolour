@@ -84,6 +84,7 @@ internal static class TestUtils
     internal static readonly Configuration D65Config = new(xyzConfig: XyzConfiguration.D65); // same as Configuration.Default
     internal static readonly Configuration D50Config = new(xyzConfig: XyzConfiguration.D50);
     internal static readonly Configuration EqualEnergyConfig = new(xyzConfig: new(Illuminant.E, Observer.Degree2));
+    internal static readonly Configuration CConfig = new(xyzConfig: new(Illuminant.C, Observer.Degree2));
     
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
@@ -94,43 +95,59 @@ internal static class TestUtils
     ];
         
     internal const double MixTolerance = 0.00000000005;
-
-    internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
-    {
-        var details = $"Expected --- {expected}\nActual ----- {actual}";
-        string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
-        AssertTripletValue(actual.First, expected.First, tolerance, FailMessage("Channel 1"), actual.HueIndex == 0);
-        AssertTripletValue(actual.Second, expected.Second, tolerance, FailMessage("Channel 2"));
-        AssertTripletValue(actual.Third, expected.Third, tolerance, FailMessage("Channel 3"), actual.HueIndex == 2);
-    }
-
+    
     internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
     {
         var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
         var colourRepresentation = colour.GetRepresentation(colourSpace);
-        AssertTriplet(colourRepresentation.Triplet, expected, tolerance);
+        var tolerances = GetTolerances(tolerance, colourRepresentation.HueIndex);
+        AssertTriplet(colourRepresentation.Triplet, expected, tolerances);
+    }
+    
+    internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double[] tolerances) where T : ColourRepresentation
+    {
+        var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
+        var colourRepresentation = colour.GetRepresentation(colourSpace);
+        AssertTriplet(colourRepresentation.Triplet, expected, tolerances);
+    }
+
+    internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
+    {
+        var tolerances = GetTolerances(tolerance, expected.HueIndex);
+        AssertTriplet(actual, expected, tolerances, info);
+    }
+    
+    private static double[] GetTolerances(double tolerance, int? hueIndex)
+    {
+        double[] tolerances = [tolerance, tolerance, tolerance];
+        if (hueIndex == null)
+        {
+            return tolerances;
+        }
+        
+        tolerances[(int)hueIndex] *= 360;
+        return tolerances;
+    }
+    
+    internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double[] tolerances, string? info = null)
+    {
+        var details = $"Expected --- {expected}\nActual ----- {actual}";
+        string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
+        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"), actual.HueIndex == 0);
+        AssertTripletValue(actual.Second, expected.Second, tolerances[1], FailMessage("Channel 2"));
+        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"), actual.HueIndex == 2);
     }
 
     private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)
     {
-        if (!isHue) Assert.That(actual, Is.EqualTo(expected).Within(tolerance), failMessage);
-        else AssertNormalisedForHue(actual, expected, tolerance, failMessage);
+        if (isHue)
+        {
+            (actual, expected) = Hue.Unwrap(actual, expected);
+        }
+        
+        Assert.That(actual, Is.EqualTo(expected).Within(tolerance), failMessage);
     }
 
-    private static void AssertNormalisedForHue(double actualHue, double expectedHue, double tolerance, string failMessage)
-    {
-        double Normalise(double value) => value / 360.0;
-        var actual = Normalise(actualHue);
-        var expected = Normalise(expectedHue);
-        var expectedPlus360 = Normalise(expectedHue + 360);
-        var expectedMinus360 = Normalise(expectedHue - 360);
-        Assert.That(actual, 
-            Is.EqualTo(expected).Within(tolerance)
-            .Or.EqualTo(expectedPlus360).Within(tolerance)
-            .Or.EqualTo(expectedMinus360).Within(tolerance), 
-            failMessage);
-    }
-    
     internal static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
     {
         Assert.That(triplet.First, Is.EqualTo(expected.first).Within(MixTolerance), "First");
@@ -272,6 +289,7 @@ internal static class TestUtils
         { typeof(Oklrch), ColourSpace.Oklrch },
         { typeof(Cam02), ColourSpace.Cam02 },
         { typeof(Cam16), ColourSpace.Cam16 },
-        { typeof(Hct), ColourSpace.Hct }
+        { typeof(Hct), ColourSpace.Hct },
+        { typeof(Munsell), ColourSpace.Munsell }
     };
 }

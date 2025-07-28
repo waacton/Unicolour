@@ -42,7 +42,8 @@ internal static class ColourLookup
         { ColourSpace.Oklrch, [new(0, 1), new(0, 0.5), new(0, 360)] },
         { ColourSpace.Cam02, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Cam16, [new(0, 100), new(-50, 50), new(-50, 50)] },
-        { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] }
+        { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
+        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
     };
     
     internal static readonly Dictionary<ColourSpace, string[]> AxisLookup = new()
@@ -85,7 +86,8 @@ internal static class ColourLookup
         { ColourSpace.Oklrch, ["L", "C", "H"] },
         { ColourSpace.Cam02, ["J", "A", "B"] },
         { ColourSpace.Cam16, ["J", "A", "B"] },
-        { ColourSpace.Hct, ["H", "C", "T"] }
+        { ColourSpace.Hct, ["H", "C", "T"] },
+        { ColourSpace.Munsell, ["H", "V", "C"] }
     };
 }
 

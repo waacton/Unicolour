@@ -25,7 +25,7 @@ internal static class Interpolation
             hueSpan, premultiplyAlpha, mapToDegree);
         
         var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithDegreeMap(mapFromDegree);
-        var alpha = Interpolate(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
+        var alpha = Linear(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
         
         if (premultiplyAlpha)
         {
@@ -106,53 +106,23 @@ internal static class Interpolation
         var startHue = ignoreHue || startHasHue ? startTriplet.HueValue() : endTriplet.HueValue();
         var endHue = ignoreHue || endHasHue ? endTriplet.HueValue() : startTriplet.HueValue();
         
-        (startHue, endHue) = AdjustHues(startHue, endHue, hueSpan);
+        (startHue, endHue) = Hue.Unwrap(startHue, endHue, hueSpan);
         var adjustedStartHue = startTriplet.WithHueOverride(startHue);
         var adjustedEndHue = endTriplet.WithHueOverride(endHue);
         return (adjustedStartHue, adjustedEndHue);
     }
-
-    private static (double start, double end) AdjustHues(double start, double end, HueSpan hueSpan)
-    {
-        return hueSpan switch
-        {
-            HueSpan.Shorter => (end - start) switch
-            {
-                > 180 => (start + 360, end),
-                < -180 => (start, end + 360),
-                _ => (start, end)
-            },
-            HueSpan.Longer => (end - start) switch
-            {
-                > 0 and < 180 => (start + 360, end),
-                > -180 and <= 0 => (start, end + 360),
-                _ => (start, end)
-            },
-            HueSpan.Increasing => (start, end < start ? end + 360 : end),
-            HueSpan.Decreasing => (start < end ? start + 360 : start, end),
-            _ => throw new ArgumentOutOfRangeException(nameof(hueSpan), hueSpan, null)
-        };
-    }
     
     private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
     {
-        var first = Interpolate(start.First, end.First, distance);
-        var second = Interpolate(start.Second, end.Second, distance);
-        var third = Interpolate(start.Third, end.Third, distance);
+        var first = Linear(start.First, end.First, distance);
+        var second = Linear(start.Second, end.Second, distance);
+        var third = Linear(start.Third, end.Third, distance);
         return new(first, second, third, start.HueIndex);
     }
 
-    internal static double Interpolate(double startValue, double endValue, double distance)
+    internal static double Linear(double startValue, double endValue, double distance)
     {
         var difference = endValue - startValue;
         return startValue + difference * distance;
     }
-}
-
-public enum HueSpan
-{
-    Shorter,
-    Longer,
-    Increasing,
-    Decreasing
 }

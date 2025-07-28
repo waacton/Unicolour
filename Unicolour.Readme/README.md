@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/225,669/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/236,405/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -35,7 +35,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 8. 🥽 [Experimental](#-experimental)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single colour and its representation across [35+ colour spaces](#convert-between-colour-spaces).
+A `Unicolour` encapsulates a single colour and its representation across [40 colour spaces](#convert-between-colour-spaces).
 It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
 
 > [!NOTE]
@@ -50,6 +50,7 @@ It can be used to [mix and compare colours](#mix-colours), and offers [many usef
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
+> Munsell ·
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
 > ```c#
 > Unicolour pink = new("#FF1493");
@@ -179,6 +180,7 @@ var (l, c, h) = colour.Oklch;
 | CIECAM02                                                                                | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                     | `ColourSpace.Hct`       | `.Hct`         |
+| Munsell                                                                                 | `ColourSpace.Munsell`   | `.Munsell`     |
 | CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup> | -                       | `.Icc`         |
 
 <details>
@@ -240,13 +242,15 @@ flowchart LR
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
   HCT{{HCT}}
-  ICC(["ICC Profile"])
+  Munsell{{Munsell}}
+  ICC{{"ICC Profile"}}
   CMYK("CMYK")
   
   XYZ --> ICC
   ICC -.-> CMYK
   RGB -.-> CMYK
   XYZ --> XYY
+  XYY --> Munsell
   XYY --> WXY
   XYZ --> RGBLIN
   RGBLIN --> RGB
@@ -291,9 +295,9 @@ This diagram summarises how colour space conversions are implemented in Unicolou
 - XYZ is considered the root colour space
 - Arrows indicate forward transformations from one colour space to another
   - For each forward transformation there is a corresponding reverse transformation
-- Square nodes indicate colour spaces affected by white point configuration
-- Hexagonal nodes indicate colour spaces restricted to D65/2°
-- Rounded nodes indicate colour spaces unaffected by white point configuration
+- Square nodes indicate colour spaces where white point is determined by configuration
+- Hexagonal nodes indicate colour spaces where white point is restricted and cannot be configured
+- Rounded nodes indicate colour spaces where there is no white point
 </details>
 
 ### Mix colours

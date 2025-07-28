@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Xyb : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double X => First;
     public double Y => Second;
     public double B => Third;

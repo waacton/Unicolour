@@ -381,10 +381,10 @@
         UpdateColour();
         UpdateSliders();
     }
-
+    
     private List<Unicolour> GetColourStops(Unicolour start, Unicolour end)
     {
-        var sections = currentSpace == ColourSpace.Hct ? 8 : 16;
+        var sections = currentSpace is ColourSpace.Hct or ColourSpace.Munsell ? 8 : 16;
         var stops = new List<Unicolour> { start };
         for (var i = 1; i < sections; i++)
         {

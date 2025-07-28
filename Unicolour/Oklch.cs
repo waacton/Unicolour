@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Oklch : ColourRepresentation
 {
-    protected override int? HueIndex => 2;
+    protected internal override int? HueIndex => 2;
     public double L => First;
     public double C => Second;
     public double H => Third;

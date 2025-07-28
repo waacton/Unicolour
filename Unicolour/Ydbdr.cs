@@ -2,7 +2,7 @@
 
 public record Ydbdr : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double Db => Second;
     public double Dr => Third;

@@ -5,7 +5,7 @@ public abstract record ColourRepresentation
     protected readonly double First;
     protected readonly double Second;
     protected readonly double Third;
-    protected abstract int? HueIndex { get; }
+    protected internal abstract int? HueIndex { get; }
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     public (double, double, double) Tuple => (First, Second, Third);
     internal ColourHeritage Heritage { get; }

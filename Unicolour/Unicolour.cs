@@ -42,6 +42,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Cam02? cam02;
     private Cam16? cam16;
     private Hct? hct;
+    private Munsell? munsell;
     private Channels? icc;
     
     private bool? isInPointerGamut;
@@ -92,6 +93,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam02 Cam02 => Get(ref cam02, EvaluateCam02);
     public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
     public Hct Hct => Get(ref hct, EvaluateHct);
+    public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
 
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
@@ -121,7 +123,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         backingField ??= evaluate();
         return (bool)backingField;
     }
-
+    
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {

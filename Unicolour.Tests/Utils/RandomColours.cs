@@ -47,6 +47,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> Cam02Triplets = [];
     public static readonly List<ColourTriplet> Cam16Triplets = [];
     public static readonly List<ColourTriplet> HctTriplets = [];
+    public static readonly List<ColourTriplet> MunsellTriplets = [];
     public static readonly List<Temperature> Temperatures = [];
     public static readonly List<Chromaticity> Chromaticities = [];
 
@@ -116,6 +117,7 @@ internal static class RandomColours
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
             HctTriplets.Add(Hct());
+            MunsellTriplets.Add(Munsell());
             Temperatures.Add(Temperature());
             Chromaticities.Add(Chromaticity());
         }
@@ -169,6 +171,7 @@ internal static class RandomColours
             ColourSpace.Cam02 => Cam02(),
             ColourSpace.Cam16 => Cam16(),
             ColourSpace.Hct => Hct(),
+            ColourSpace.Munsell => Munsell(),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -216,6 +219,7 @@ internal static class RandomColours
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
+    private static ColourTriplet Munsell() => new(Rng(0, 360), Rng(0, 10), Rng(0, 26)); // from data of "real" colours (smaller range than used in Unicolour)
     private static double Alpha() => TestUtils.RandomDouble();
     
     private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));

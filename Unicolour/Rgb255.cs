@@ -2,7 +2,7 @@
 
 public record Rgb255 : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public int R => (int)First;
     public int G => (int)Second;
     public int B => (int)Third;

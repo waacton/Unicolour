@@ -50,7 +50,7 @@ It can be used to [mix and compare colours](#mix-colours), and offers [many usef
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
 > CIECAM02 · CAM16 · 
 > HCT · 
-> Munsell ·
+> Munsell HVC ·
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
 > ```c#
 > Unicolour pink = new("#FF1493");
@@ -180,7 +180,7 @@ var (l, c, h) = colour.Oklch;
 | CIECAM02                                                                                | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                                   | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                     | `ColourSpace.Hct`       | `.Hct`         |
-| Munsell                                                                                 | `ColourSpace.Munsell`   | `.Munsell`     |
+| Munsell HVC                                                                             | `ColourSpace.Munsell`   | `.Munsell`     |
 | CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup> | -                       | `.Icc`         |
 
 <details>
@@ -242,7 +242,7 @@ flowchart LR
   CAM16(CAM16)
   CAM16UCS(CAM16-UCS)
   HCT{{HCT}}
-  Munsell{{Munsell}}
+  Munsell{{"Munsell HVC"}}
   ICC{{"ICC Profile"}}
   CMYK("CMYK")
   
@@ -299,6 +299,16 @@ This diagram summarises how colour space conversions are implemented in Unicolou
 - Hexagonal nodes indicate colour spaces where white point is restricted and cannot be configured
 - Rounded nodes indicate colour spaces where there is no white point
 </details>
+
+> [!TIP]
+>
+> Munsell HVC colours are defined by 4 attributes, but are managed in Unicolour using 3.
+> The Munsell hue notation is mapped to conventional degrees, with 5R at 0° and 360° and 5BG at 180°.
+> This mapping is accessible via the `Hue.FromMunsell()` utility function, e.g. for Munsell colour 6.1RP 5.5/19.5
+> ```c#
+> Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
+> Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
+> ```
 
 ### Mix colours
 Two colours can be mixed by [interpolating between them in any colour space](#gradients),
@@ -742,6 +752,7 @@ The default chromatic adaptation is the Bradford method but [this can be customi
 | `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv                                                                                                         |
 | `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                            |
 | None (always D65/2°)                | IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch · HCT |
+| None (always C/2°)                  | Munsell HVC                                                                                                                                                                                                 |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

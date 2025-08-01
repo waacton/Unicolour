@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/225,669/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/236,405/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -35,7 +35,7 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 8. 🥽 [Experimental](https://github.com/waacton/Unicolour#-experimental)
 
 ## 🧭 Overview
-A `Unicolour` encapsulates a single colour and its representation across [35+ colour spaces](https://github.com/waacton/Unicolour#convert-between-colour-spaces).
+A `Unicolour` encapsulates a single colour and its representation across [40 colour spaces](https://github.com/waacton/Unicolour#convert-between-colour-spaces).
 It can be used to [mix and compare colours](https://github.com/waacton/Unicolour#mix-colours), and offers [many useful features](https://github.com/waacton/Unicolour#-features) for working with colour.
 
 > **Supported colour spaces**
@@ -49,6 +49,7 @@ It can be used to [mix and compare colours](https://github.com/waacton/Unicolour
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch ·
 > CIECAM02 · CAM16 ·
 > HCT ·
+> Munsell HVC ·
 > CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion)
 > ```cs
 > Unicolour pink = new("#FF1493");
@@ -178,7 +179,16 @@ var (l, c, h) = colour.Oklch;
 | CIECAM02                                                                            | `ColourSpace.Cam02`     | `.Cam02`       |
 | CAM16                                                                               | `ColourSpace.Cam16`     | `.Cam16`       |
 | HCT                                                                                 | `ColourSpace.Hct`       | `.Hct`         |
+| Munsell HVC                                                                         | `ColourSpace.Munsell`   | `.Munsell`     |
 | CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion) | -                       | `.Icc`         |
+
+> Munsell HVC colours are defined by 4 attributes, but are managed in Unicolour using 3.
+> The Munsell hue notation is mapped to conventional degrees, with 5R at 0° and 360° and 5BG at 180°.
+> This mapping is accessible via the `Hue.FromMunsell()` helper function, e.g. for Munsell colour 6.1RP 5.5/19.5
+> ```c#
+> Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
+> Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
+> ```
 
 ### Mix colours
 Two colours can be mixed by [interpolating between them in any colour space](https://github.com/waacton/Unicolour#gradients),
@@ -568,6 +578,7 @@ The default chromatic adaptation is the Bradford method but [this can be customi
 | `XyzConfiguration`                  | CIEXYZ · CIExyY · WXY · CIELAB · CIELChab · CIELUV · CIELChuv · HSLuv · HPLuv                                                                                                                    |
 | `CamConfiguration`                  | CIECAM02 · CAM16                                                                                                                                                                                 |
 | None (always D65/2°)                | IPT · ICTCP · Jzazbz · JzCzhz · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch · HCT                                                                                                                    |
+| None (always C/2°)                  | Munsell HVC                                                                                                                                                                                      |
 
 ### Convert between configurations
 A `Unicolour` can be converted to a different configuration,

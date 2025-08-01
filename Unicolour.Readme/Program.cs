@@ -39,6 +39,7 @@ void ProcessDocsReadme(string readmePath)
     // GitHub Pages currently doesn't support alerts or Mermaid 😑 - just remove them
     textForDocs = Regex.Replace(textForDocs, @"<details>(.|\n)*?<\/details>", string.Empty);
     textForDocs = textForDocs.Replace("> [!NOTE]", string.Empty);
+    textForDocs = textForDocs.Replace("> [!TIP]", string.Empty);
 
     var ukText = textForDocs;
     ukText += Environment.NewLine;
@@ -164,6 +165,9 @@ void FeatureConvert()
 {
     Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
     var (l, c, h) = colour.Oklch;
+    
+    Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
+    Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
 }
 
 void FeatureMix()

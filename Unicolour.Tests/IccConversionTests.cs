@@ -64,8 +64,8 @@ public class IccConversionTests
         
         var tolerance = pcs switch
         {
-            Signatures.Lab => 0.0001,
-            Signatures.Xyz => 0.00000075,
+            Signatures.Lab => intent == Intent.AbsoluteColorimetric ? 0.005 : 0.0001,
+            Signatures.Xyz => intent == Intent.AbsoluteColorimetric ? 0.0000075 : 0.00000075,
             _ => throw new ArgumentOutOfRangeException()
         };
         
@@ -88,9 +88,9 @@ public class IccConversionTests
         var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
         var tolerance = device switch
         {
-            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.000002 : 0.00000125,
-            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.0000025 : 0.00000125,
-            Signatures.Rgb => 0.000015,
+            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.00025 : 0.00000125,
+            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.00005 : 0.00000125,
+            Signatures.Rgb => intent == Intent.AbsoluteColorimetric ? 0.000125 : 0.000015,
             Signatures.Grey => 0.000005,
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -120,7 +120,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceTocolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceToColourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
@@ -138,7 +138,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void colourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void ColourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
         

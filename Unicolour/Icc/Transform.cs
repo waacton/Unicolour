@@ -12,9 +12,19 @@ internal abstract class Transform
     protected bool IsLabPcs => header.Pcs == Signatures.Lab;
     private double[] MediaWhite => tags.MediaWhite.Value!.ToArray();
     
-    // seems largely useless, value must be D50 when rounded to 4 decimals, i.e the same as RefWhite
-    // but reference implementation uses this value specifically for absolute intent PCS adjustment
-    private double[] PcsIlluminant => header.PcsIlluminant.ToArray();
+    /*
+     * note: not header.PcsIlluminant!
+     * as my previous comments wondered about, the illuminant should be set to D50 (4dp) to meet ICC specifications
+     * but for some reason many profiles do not adhere to the spec, so ignoring custom illuminant in line with the reference implementation
+     * however v5+ / iccMAX will need to take it into account under certain conditions
+     * ----------
+     * see also the discussion I raised here: https://github.com/InternationalColorConsortium/DemoIccMAX/issues/164#issuecomment-3221521027
+     * from Max Derhak:
+     * - "It uses the XYZ specified by the ICC.1 specification if the version is less than 5"
+     * - "If the spectral viewing conditions are set to use D50 with 2 degree observer, then the standard V4 XYZ illuminant values will be used.
+     *    Otherwise the header illuminant XYZ values get used"
+     */
+    private double[] PcsIlluminant => RefWhite; 
 
     private readonly bool hasPerceptualHandling;
     

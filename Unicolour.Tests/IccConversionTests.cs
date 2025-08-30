@@ -64,8 +64,8 @@ public class IccConversionTests
         
         var tolerance = pcs switch
         {
-            Signatures.Lab => intent == Intent.AbsoluteColorimetric ? 0.005 : 0.0001,
-            Signatures.Xyz => intent == Intent.AbsoluteColorimetric ? 0.0000075 : 0.00000075,
+            Signatures.Lab => 0.0001,
+            Signatures.Xyz => 0.00000075,
             _ => throw new ArgumentOutOfRangeException()
         };
         
@@ -88,9 +88,9 @@ public class IccConversionTests
         var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
         var tolerance = device switch
         {
-            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.00025 : 0.00000125,
-            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.00005 : 0.00000125,
-            Signatures.Rgb => intent == Intent.AbsoluteColorimetric ? 0.000125 : 0.000015,
+            Signatures.Cmyk => 0.00000175,
+            Signatures.Clr7 => 0.00000175,
+            Signatures.Rgb => 0.000015,
             Signatures.Grey => 0.000005,
             _ => throw new ArgumentOutOfRangeException()
         };

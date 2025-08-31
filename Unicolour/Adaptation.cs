@@ -3,7 +3,7 @@ namespace Wacton.Unicolour;
 // http://www.brucelindbloom.com/index.html?Eqn_ChromAdapt.html
 public static class Adaptation
 {
-    // HPE for LMS conversion is the matrix originallu used in the von Kries transformation for chromatic adaptation
+    // HPE for LMS conversion is the matrix originally used in the von Kries transformation for chromatic adaptation
     // doesn't matter that it's D65-relative; during adaptation both source & destination use D65 as a common relative space
     public static readonly double[,] VonKries = Lms.HuntPointerEstevez.Data;
     

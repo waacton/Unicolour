@@ -9,7 +9,7 @@ using Wacton.Unicolour.Tests.Utils;
 namespace Wacton.Unicolour.Tests;
 
 /*
- * test data extracted from ICC's demonstration implementation of iccMAX
+ * test data extracted from ICC reference implementation of iccMAX
  * (https://github.com/InternationalColorConsortium/DemoIccMAX)
  * if these values are wrong because the ICC can't write software
  * that conforms to their own complex specification

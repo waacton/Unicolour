@@ -24,7 +24,7 @@ internal abstract class Transform
      * - "If the spectral viewing conditions are set to use D50 with 2 degree observer, then the standard V4 XYZ illuminant values will be used.
      *    Otherwise the header illuminant XYZ values get used"
      */
-    private double[] PcsIlluminant => RefWhite; 
+    private static double[] PcsIlluminant => RefWhite; 
 
     private readonly bool hasPerceptualHandling;
     

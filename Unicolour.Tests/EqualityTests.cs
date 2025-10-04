@@ -159,6 +159,8 @@ public class EqualityTests
         AssertEqual(colour1.Ictcp, colour2.Ictcp);
         AssertEqual(colour1.Ipt, colour2.Ipt);
         AssertEqual(colour1.IsImaginary, colour2.IsImaginary);
+        AssertEqual(colour1.IsInMacAdamLimits, colour2.IsInMacAdamLimits);
+        AssertEqual(colour1.IsInPointerGamut, colour2.IsInPointerGamut);
         AssertEqual(colour1.IsInRgbGamut, colour2.IsInRgbGamut);
         AssertEqual(colour1.Jzazbz, colour2.Jzazbz);
         AssertEqual(colour1.Jzczhz, colour2.Jzczhz);

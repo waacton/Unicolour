@@ -1,5 +1,7 @@
-﻿namespace Wacton.Unicolour;
-using static Hue;
+﻿using static Wacton.Unicolour.Hue;
+using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public partial record Munsell : ColourRepresentation
 {
@@ -135,7 +137,7 @@ public partial record Munsell : ColourRepresentation
     private static (Munsell munsell, XyyToMunsellSearchResult searchResult) FindMunsell(Xyy xyy)
     {
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfigC));
-        var target = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
+        var target = Polar(WhiteChromaticity, xyy.Chromaticity);
         if (lch.IsNaN || double.IsInfinity(target.radius))
         {
             return (new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), new XyyToMunsellSearchResult(double.NaN, false));
@@ -171,7 +173,7 @@ public partial record Munsell : ColourRepresentation
         {
             munsell = ModifyHue(munsell, target.angle);
             munsell = ModifyChroma(munsell, target.radius);
-            var delta = LineSegment.Distance(xyy.Chromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
+            var delta = Distance(xyy.Chromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
             converged = delta <= convergenceThreshold;
             iterations++;
             
@@ -248,8 +250,8 @@ public partial record Munsell : ColourRepresentation
             return lowerChromaticity;
         }
 
-        var lowerPolar = LineSegment.Polar(WhiteChromaticity, lowerChromaticity);
-        var upperPolar = LineSegment.Polar(WhiteChromaticity, upperChromaticity);
+        var lowerPolar = Polar(WhiteChromaticity, lowerChromaticity);
+        var upperPolar = Polar(WhiteChromaticity, upperChromaticity);
         (lowerPolar.angle, upperPolar.angle) = Unwrap(lowerPolar.angle, upperPolar.angle);
         var angle = Interpolation.Linear(lowerPolar.angle, upperPolar.angle, hueDistance);
         var angleDistance = (angle - lowerPolar.angle) / (upperPolar.angle - lowerPolar.angle);
@@ -262,8 +264,8 @@ public partial record Munsell : ColourRepresentation
         if (useRadialInterpolation)
         {
             var r = Interpolation.Linear(lowerPolar.radius, upperPolar.radius, angleDistance);
-            var x = WhiteChromaticity.X + r * Math.Cos(Utils.ToRadians(angle));
-            var y = WhiteChromaticity.Y + r * Math.Sin(Utils.ToRadians(angle));
+            var x = WhiteChromaticity.X + r * Math.Cos(ToRadians(angle));
+            var y = WhiteChromaticity.Y + r * Math.Sin(ToRadians(angle));
             return new(x, y);
         }
         else

@@ -23,14 +23,14 @@ internal static class GamutMapping
 
     internal static Unicolour ToPointerGamut(Unicolour colour)
     {
-        var config = colour.Configuration;
-        var alpha = colour.Alpha.A;
-        var lchab = colour.Lchab;
-        
         if (colour.IsInPointerGamut)
         {
             return colour.Clone();
         }
+        
+        var config = colour.Configuration;
+        var alpha = colour.Alpha.A;
+        var lchab = colour.Lchab;
 
         if (lchab.UseAsNaN)
         {
@@ -45,6 +45,47 @@ internal static class GamutMapping
             : new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, PointerGamut.GetMaxC(l, h), h, alpha);
 
         return gamutBoundaryColour.ConvertToConfiguration(config);
+    }
+    
+    internal static Unicolour ToMacAdamLimits(Unicolour colour)
+    {
+        if (colour.IsInMacAdamLimits)
+        {
+            return colour.Clone();
+        }
+        
+        var config = colour.Configuration;
+        var alpha = colour.Alpha.A;
+        
+        if (colour.Xyy.UseAsNaN || colour.Xyz.UseAsNaN)
+        {
+            return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
+        }
+
+        colour = colour.ConvertToConfiguration(MacAdamLimits.Config);
+
+        // effectively WXY purity reduction, but because there is a boundary for each possible luminance
+        // can simply find where the line to the white point intersects the boundary
+        Chromaticity intersect;
+        var luminance = colour.Xyy.Luminance;
+        if (luminance >= 1)
+        {
+            intersect = MacAdamLimits.Config.Xyz.WhiteChromaticity;
+        }
+        else
+        {
+            var boundary = new Boundary(new(() => MacAdamLimits.Get(luminance)));
+            var intersects = boundary.GetIntersects(colour.Chromaticity, MacAdamLimits.Config.Xyz.WhiteChromaticity);
+            if (!intersects.HasValue)
+            {
+                return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
+            }
+            
+            intersect = intersects.Value.near.Point;
+        }
+
+        var macAdamLimitColour = new Unicolour(config, ColourSpace.Xyy, intersect.X, intersect.Y, luminance, alpha);
+        return macAdamLimitColour.ConvertToConfiguration(config);
     }
 
     private static Unicolour RgbClipping(Unicolour colour)
@@ -129,6 +170,8 @@ internal static class GamutMapping
         return current.IsInRgbGamut ? current : RgbClipping(current);
     }
     
+    // NOTE: cannot simply use the RGB triangle and find intersect from white point
+    // because that doesn't take luminance into account (triangle is the maximum possible area over all luminances)
     private static Unicolour WxyPurityReduction(Unicolour colour)
     {
         var config = colour.Configuration;

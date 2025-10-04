@@ -30,12 +30,12 @@ public record Wxy : ColourRepresentation
         var chromaticity = xyy.Chromaticity;
         var luminance = xyy.Luminance;
         
-        var intersects = xyy.UseAsNaN || xyy.UseAsGreyscale
+        var result = xyy.UseAsNaN || xyy.UseAsGreyscale
             ? null
-            : xyzConfig.SpectralBoundary.FindIntersects(chromaticity);
+            : xyzConfig.SpectralBoundary.GetWavelengthAndPurity(chromaticity);
 
-        var w = intersects?.DominantWavelength ?? SpectralBoundary.MinWavelength;
-        var x = intersects?.ExcitationPurity ?? 0;
+        var w = result?.dominantWavelength ?? SpectralBoundary.MinWavelength;
+        var x = result?.excitationPurity ?? 0;
         var y = luminance;
         return new Wxy(w, x, y, ColourHeritage.From(xyy));
     }

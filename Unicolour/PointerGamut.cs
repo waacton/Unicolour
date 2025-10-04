@@ -52,14 +52,14 @@ internal static class PointerGamut
     
     internal static bool IsInGamut(Unicolour colour)
     {
-        if (colour.Lchab.UseAsNaN) return false;
-        
         var config = Config.Value;
         if (colour.Configuration.Xyz.Illuminant != config.Xyz.Illuminant 
             || colour.Configuration.Xyz.Observer != config.Xyz.Observer)
         {
             colour = colour.ConvertToConfiguration(config);
         }
+        
+        if (colour.Lchab.UseAsNaN) return false;
         
         var (l, c, h) = colour.Lchab.ConstrainedTriplet;
         

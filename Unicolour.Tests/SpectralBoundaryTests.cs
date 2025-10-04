@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -15,135 +14,19 @@ public class SpectralBoundaryTests
     [Test] 
     public void SampleIsWhitePoint()
     {
-        var intersects = SpectralBoundary.FindIntersects(WhiteChromaticity);
+        var intersects = SpectralBoundary.GetIntersects(WhiteChromaticity);
         Assert.That(intersects, Is.Null);
     }
     
-    // when the sample coordinate contains infinity
-    // intersect can be calculated but distance to any other coordinate is infinity
-    // resulting in infinity boundary intersect coordinates (no distinction between which is "near" vs "far")
-    [Test]
-    public void InfiniteDistanceToSampleX([Values(0.1, 0, -0.1)] double offset)
-    {
-        var intersects = SpectralBoundary.FindIntersects(new(double.PositiveInfinity, WhiteChromaticity.Y + offset));
-        Assert.That(intersects, Is.Null);
-    }
-    
-    // when the sample coordinate contains infinity
-    // intersect can be calculated but distance to any other coordinate is infinity
-    // resulting in infinity boundary intersect coordinates (no distinction between which is "near" vs "far")
-    [Test]
-    public void InfiniteDistanceToSampleY([Values(0.1, 0, -0.1)] double offset)
-    {
-        var intersects = SpectralBoundary.FindIntersects(new(WhiteChromaticity.X + offset, double.PositiveInfinity));
-        Assert.That(intersects, Is.Null);
-    }
-    
-    [TestCase(0.1, false)]
-    [TestCase(-0.1, false)]
-    [TestCase(1.1, true)]
-    [TestCase(-1.1, true)]
-    public void HorizontalIntersect(double offset, bool expectedImaginary)
-    {
-        var sample = new Chromaticity(WhiteChromaticity.X + offset, WhiteChromaticity.Y);
-        var intersects = SpectralBoundary.FindIntersects(sample)!;
-        var isImaginary = SpectralBoundary.IsOutside(sample);
-        Assert.That(intersects.Sample.Y, Is.EqualTo(sample.Y));
-        Assert.That(intersects.White.Y, Is.EqualTo(sample.Y));
-        Assert.That(intersects.Near.Chromaticity.Y, Is.EqualTo(sample.Y));
-        Assert.That(intersects.Far.Chromaticity.Y, Is.EqualTo(sample.Y));
-        Assert.That(isImaginary, Is.EqualTo(expectedImaginary));
-    }
-    
-    [TestCase(0.1, false)]
-    [TestCase(-0.1, false)]
-    [TestCase(1.1, true)]
-    [TestCase(-1.1, true)]
-    public void VerticalIntersect(double offset, bool expectedImaginary)
-    {
-        var sample = new Chromaticity(WhiteChromaticity.X, WhiteChromaticity.Y + offset);
-        var intersects = SpectralBoundary.FindIntersects(sample)!;
-        var isImaginary = SpectralBoundary.IsOutside(sample);
-        Assert.That(intersects.Sample.X, Is.EqualTo(sample.X));
-        Assert.That(intersects.White.X, Is.EqualTo(sample.X));
-        Assert.That(intersects.Near.Chromaticity.X, Is.EqualTo(sample.X));
-        Assert.That(intersects.Far.Chromaticity.X, Is.EqualTo(sample.X));
-        Assert.That(isImaginary, Is.EqualTo(expectedImaginary));
-    }
-
-    [Test]
-    public void SameSample()
-    {
-        var sample1 = new Chromaticity(WhiteChromaticity.X + 0.1, WhiteChromaticity.Y + 0.1);
-        var sample2 = new Chromaticity(WhiteChromaticity.X + 0.1, WhiteChromaticity.Y + 0.1);
-        var intersects1 = SpectralBoundary.FindIntersects(sample1)!;
-        var intersects2 = SpectralBoundary.FindIntersects(sample2)!;
-        TestUtils.AssertEqual(intersects1.Near, intersects2.Near);
-        TestUtils.AssertEqual(intersects1.Far, intersects2.Far);
-        TestUtils.AssertEqual(intersects1.Sample, intersects2.Sample);
-        TestUtils.AssertEqual(intersects1.White, intersects2.White);
-        TestUtils.AssertEqual(intersects1, intersects2);
-    }
-    
-    [Test]
-    public void DifferentSampleSameLine()
-    {
-        var sample1 = new Chromaticity(WhiteChromaticity.X + 0.1, WhiteChromaticity.Y + 0.1);
-        var sample2 = new Chromaticity(WhiteChromaticity.X + 1.1, WhiteChromaticity.Y + 1.1);
-        var intersects1 = SpectralBoundary.FindIntersects(sample1)!;
-        var intersects2 = SpectralBoundary.FindIntersects(sample2)!;
-        
-        TestUtils.AssertEqual(intersects1.Near.Segment, intersects2.Near.Segment);
-        TestUtils.AssertEqual(intersects1.Near.Wavelength, intersects2.Near.Wavelength);
-        TestUtils.AssertEqual(intersects1.Near.DistanceToWhite, intersects2.Near.DistanceToWhite);
-        TestUtils.AssertNotEqual(intersects1.Near.DistanceToSample, intersects2.Near.DistanceToSample);
-        TestUtils.AssertEqual(intersects1.Far.Segment, intersects2.Far.Segment);
-        TestUtils.AssertEqual(intersects1.Far.Wavelength, intersects2.Far.Wavelength);
-        TestUtils.AssertEqual(intersects1.Far.DistanceToWhite, intersects2.Far.DistanceToWhite);
-        TestUtils.AssertNotEqual(intersects1.Far.DistanceToSample, intersects2.Far.DistanceToSample);
-        
-        TestUtils.AssertNotEqual(intersects1.Near, intersects2.Near);
-        TestUtils.AssertNotEqual(intersects1.Far, intersects2.Far);
-        TestUtils.AssertNotEqual(intersects1.Sample, intersects2.Sample);
-        TestUtils.AssertEqual(intersects1.White, intersects2.White);
-        
-        TestUtils.AssertNotEqual(intersects1, intersects2);
-    }
-    
-    [Test]
-    public void DifferentSampleDifferentLine()
-    {
-        var sample1 = new Chromaticity(WhiteChromaticity.X + 0.1, WhiteChromaticity.Y + 0.1);
-        var sample2 = new Chromaticity(WhiteChromaticity.X - 0.1, WhiteChromaticity.Y + 0.1);
-        var intersects1 = SpectralBoundary.FindIntersects(sample1)!;
-        var intersects2 = SpectralBoundary.FindIntersects(sample2)!;
-        
-        TestUtils.AssertNotEqual(intersects1.Near.Segment, intersects2.Near.Segment);
-        TestUtils.AssertNotEqual(intersects1.Near.Wavelength, intersects2.Near.Wavelength);
-        TestUtils.AssertNotEqual(intersects1.Near.DistanceToWhite, intersects2.Near.DistanceToWhite);
-        TestUtils.AssertNotEqual(intersects1.Near.DistanceToSample, intersects2.Near.DistanceToSample);
-        TestUtils.AssertNotEqual(intersects1.Far.Segment, intersects2.Far.Segment);
-        TestUtils.AssertNotEqual(intersects1.Far.Wavelength, intersects2.Far.Wavelength);
-        TestUtils.AssertNotEqual(intersects1.Far.DistanceToWhite, intersects2.Far.DistanceToWhite);
-        TestUtils.AssertNotEqual(intersects1.Far.DistanceToSample, intersects2.Far.DistanceToSample);
-        
-        TestUtils.AssertNotEqual(intersects1.Near, intersects2.Near);
-        TestUtils.AssertNotEqual(intersects1.Far, intersects2.Far);
-        TestUtils.AssertNotEqual(intersects1.Sample, intersects2.Sample);
-        TestUtils.AssertEqual(intersects1.White, intersects2.White);
-        
-        TestUtils.AssertNotEqual(intersects1, intersects2);
-    }
-
     [Test]
     public void SingleIntersect()
     {
         /*
          * there is only 1 intersect when white point is 360nm monochromatic light (bottom-left of horseshoe) and sample is at (0.8, 0.2)
-         * which is the same location on the boundary as the white point
+         * which is the same location on the boundary as the white point (reference)
          * in which case:
          * - the near and far intersects are the same intersect
-         * - the intersection is the exact location of the white point
+         * - the intersect point is the exact location of the white point
          * - the dominant wavelength is the monochromatic wavelength
          * - excitation purity cannot be calculated; the intersect is both pure monochromatic light AND the white point where there is no colour
          */
@@ -151,15 +34,14 @@ public class SpectralBoundaryTests
         var minWavelengthWhite = WhitePoint.FromXyz(minWavelengthXyz).ToChromaticity();
         var boundary = new SpectralBoundary(Observer.Degree2, minWavelengthWhite);
         var sample = new Chromaticity(0.8, 0.2);
-        var intersects = boundary.FindIntersects(sample)!;
-        var isImaginarySample = boundary.IsOutside(sample);
-        var isImaginaryWhitePoint = boundary.IsOutside(minWavelengthWhite);
-        Assert.That(intersects.Far, Is.EqualTo(intersects.Near));
-        Assert.That(intersects.Near.DistanceToWhite, Is.Zero);
-        Assert.That(intersects.DominantWavelength, Is.EqualTo(SpectralBoundary.MinWavelength));
-        Assert.That(intersects.ExcitationPurity, Is.NaN);
-        Assert.That(isImaginarySample, Is.True);
-        Assert.That(isImaginaryWhitePoint, Is.False);
+        var (near, far) = boundary.GetIntersects(sample)!.Value;
+        var isSampleInside = boundary.Contains(sample);
+        var isWhiteInside = boundary.Contains(minWavelengthWhite);
+        Assert.That(far, Is.EqualTo(near));
+        Assert.That(near.Point, Is.EqualTo(minWavelengthWhite));
+        Assert.That(near.DistanceFromReference, Is.Zero);
+        Assert.That(isSampleInside, Is.False);
+        Assert.That(isWhiteInside, Is.True);
     }
     
     [Test]
@@ -168,12 +50,12 @@ public class SpectralBoundaryTests
         var white = new Chromaticity(0.8, 0.4);
         var sample = new Chromaticity(0.4, 0.8);
         var boundary = new SpectralBoundary(Observer.Degree2, white);
-        var intersects = boundary.FindIntersects(sample)!;
-        var isImaginarySample = boundary.IsOutside(sample);
-        var isImaginaryWhitePoint = boundary.IsOutside(white);
+        var intersects = boundary.GetIntersects(sample);
+        var isSampleInside = boundary.Contains(sample);
+        var isWhiteInside = boundary.Contains(white);
         Assert.That(intersects, Is.Null);
-        Assert.That(isImaginarySample, Is.True);
-        Assert.That(isImaginaryWhitePoint, Is.True);
+        Assert.That(isSampleInside, Is.False);
+        Assert.That(isWhiteInside, Is.False);
     }
     
     private const int MidWavelength = SpectralBoundary.MinWavelength + (SpectralBoundary.MaxWavelength - SpectralBoundary.MinWavelength) / 2;

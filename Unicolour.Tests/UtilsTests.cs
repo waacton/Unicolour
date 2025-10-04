@@ -42,6 +42,8 @@ public class UtilsTests
 
     [Test]
     public void CubeRootZero() => AssertCubeRoot(0, 0);
+    
+    private static void AssertCubeRoot(double value, double result) => Assert.That(CubeRoot(value), Is.EqualTo(result).Within(0.0000000000000001));
 
     [Test]
     public void ModuloSameAsDividend([Values(-10, -1, -0.1, 0.1, 1, 10)] double dividend)
@@ -144,10 +146,30 @@ public class UtilsTests
         AssertModulo(double.NaN, modulus, double.NaN);
     }
     
-    private static void AssertCubeRoot(double value, double result) => Assert.That(CubeRoot(value), Is.EqualTo(result).Within(0.0000000000000001));
-
     private static void AssertModulo(double dividend, double modulus, double expected)
     {
         Assert.That(dividend.Modulo(modulus), Is.EqualTo(expected).Within(0.00000000005));
+    }
+    
+    private static readonly TestCaseData[] PolarCoordinateData =
+    [
+        new(new Chromaticity(1, 1), new Chromaticity(2, 1), 1, 0),
+        new(new Chromaticity(1, 1), new Chromaticity(2, 2), 1.4142135623731, 45),
+        new(new Chromaticity(1, 1), new Chromaticity(1, 2), 1, 90),
+        new(new Chromaticity(1, 1), new Chromaticity(0, 2), 1.4142135623731, 135),
+        new(new Chromaticity(1, 1), new Chromaticity(0, 1), 1, 180),
+        new(new Chromaticity(1, 1), new Chromaticity(0, 0), 1.4142135623731, 225),
+        new(new Chromaticity(1, 1), new Chromaticity(1, 0), 1, 270),
+        new(new Chromaticity(1, 1), new Chromaticity(2, 0), 1.4142135623731, 315)
+    ];
+
+    [TestCaseSource(nameof(PolarCoordinateData))]
+    public void PolarCoordinates(Chromaticity start, Chromaticity end, double expectedRadius, double expectedAngle)
+    {
+        var distance = Distance(start, end);
+        var (radius, angle) = Polar(start, end);
+        Assert.That(radius, Is.EqualTo(distance));
+        Assert.That(radius, Is.EqualTo(expectedRadius).Within(0.0000000000001));
+        Assert.That(angle, Is.EqualTo(expectedAngle));
     }
 }

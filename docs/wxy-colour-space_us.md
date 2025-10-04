@@ -157,7 +157,7 @@ which is in the sRGB gamut](wxy-9.png)
 ![CIE xy chromaticity diagram
 demonstrating how reducing purity can be used for gamut mapping](wxy-10.png)
 
-Purity-reduction gamut mapping [available in Unicolour](https://github.com/waacton/Unicolour#map-color-into-rgb-gamut).
+Purity-reduction gamut mapping is [available in Unicolour](https://github.com/waacton/Unicolour#map-color-into-gamut).
 A basic implementation can be achieved with only a few lines of code.
 
 ```c#

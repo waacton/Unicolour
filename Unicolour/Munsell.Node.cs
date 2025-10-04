@@ -1,5 +1,6 @@
-﻿namespace Wacton.Unicolour;
-using static Hue;
+﻿using static Wacton.Unicolour.Hue;
+
+namespace Wacton.Unicolour;
 
 public partial record Munsell
 {

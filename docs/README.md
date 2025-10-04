@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/236,405/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/237,247/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -269,14 +269,19 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 
 ### Map colour into gamut
 Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut RGB colour.
-Mapping to Pointer's gamut will return the closest real surface colour of the same lightness and hue.
+Mapping to Pointer's gamut will return the closest empirically real surface colour of the same lightness and hue.
+Mapping to MacAdam limits will return the closest theoretically real surface colour of the same wavelength and luminance.
 ```c#
 var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
-var isInRgb = veryRed.IsInRgbGamut;
-var normalRed = veryRed.MapToRgbGamut();
 
-var isInPointer = veryRed.IsInPointerGamut;
-var surfaceRed = veryRed.MapToPointerGamut();
+var isDisplayable = veryRed.IsInRgbGamut;
+var displayRed = veryRed.MapToRgbGamut();
+
+var isEmpiricalSurface = veryRed.IsInPointerGamut;
+var empiricalRed = veryRed.MapToPointerGamut();
+
+var isTheoreticalSurface = veryRed.IsInMacAdamLimits;
+var theoreticalRed = veryRed.MapToMacAdamLimits();
 ```
 
 | RGB&nbsp;gamut&nbsp;mapping&nbsp;method                                                                 | Enum                            |
@@ -677,17 +682,21 @@ can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/tree/
 |--------------------------------------------------------------------------------------------------------------------------------------|
 | _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      |
 
+| ![CIE xy chromaticity diagram with MacAdam limits, created with Unicolour](diagram-xy-macadam-limits.png) |
+|----------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with MacAdam limits_                                                              |                                              
+
 | ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](diagram-spectral-locus.png) |
 |---------------------------------------------------------------------------------------------------------------------------------------|
 | _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                           |
 
-| ![CIE 1960 colour space, created with Unicolour](diagram-uv-chromaticity.png) |
-|------------------------------------------------------------------------------------|
-| _CIE 1960 colour space_                                                            |
-
 | ![CIE 1960 colour space with Planckian or blackbody locus, created with Unicolour](diagram-uv-chromaticity-blackbody.png) |
 |--------------------------------------------------------------------------------------------------------------------------------|
 | _CIE 1960 colour space with Planckian or blackbody locus_                                                                      |
+
+| ![CIE 1960 colour space with MacAdam limits, created with Unicolour](diagram-uv-macadam-limits.png) |
+|----------------------------------------------------------------------------------------------------------|
+| _CIE 1960 colour space with MacAdam limits_                                                              |
 
 ### Console
 Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console)
@@ -740,6 +749,7 @@ Perceptually uniform colourmaps / palettes:
 - [Cubehelix](https://people.phy.cam.ac.uk/dag9/CUBEHELIX/) (sequential)
 
 Colour data used in academic literature:
+- [MacAdam](https://doi.org/10.2307/1420820) limits of surface colours
 - [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
 - [Ebner-Fairchild](https://doi.org/10.1117/12.298269) constant perceived-hue data
 

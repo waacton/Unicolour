@@ -45,8 +45,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Munsell? munsell;
     private Channels? icc;
     
-    private bool? isInPointerGamut;
     private Temperature? temperature;
+    private bool? isInPointerGamut;
+    private bool? isInMacAdamLimits;
     private bool? isImaginary;
     private string? description;
     private string? source;
@@ -100,14 +101,15 @@ public partial class Unicolour : IEquatable<Unicolour>
             : Channels.UncalibratedFromRgb(Rgb));
     
     public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public bool IsInRgbGamut => Rgb.IsInGamut;
-    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public Temperature Temperature => Get(ref temperature, () => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
     public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
-    public bool IsImaginary => Get(ref isImaginary, () => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity));
+    public bool IsInRgbGamut => Rgb.IsInGamut;
+    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
+    public bool IsInMacAdamLimits => Get(ref isInMacAdamLimits, () => MacAdamLimits.IsInLimits(this));
+    public bool IsImaginary => Get(ref isImaginary, () => !Configuration.Xyz.SpectralBoundary.Contains(Chromaticity));
     public string Description => Get(ref description, () => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl)));
     public Alpha Alpha { get; }
     private string Source => Get(ref source, () => $"{SourceColourSpace} {SourceRepresentation}");
@@ -167,7 +169,14 @@ public partial class Unicolour : IEquatable<Unicolour>
         var mapped = GamutMapping.ToPointerGamut(this);
         mapped.isInPointerGamut = !mapped.SourceRepresentation.UseAsNaN; 
         return mapped;
-    } 
+    }
+
+    public Unicolour MapToMacAdamLimits()
+    {
+        var mapped = GamutMapping.ToMacAdamLimits(this);
+        mapped.isInMacAdamLimits = !mapped.SourceRepresentation.UseAsNaN; 
+        return mapped;
+    }
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
@@ -184,7 +193,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         var alpha = Alpha.A;
         return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha)
         {
-            isInPointerGamut = isInPointerGamut
+            isInPointerGamut = isInPointerGamut,
+            isInMacAdamLimits = isInMacAdamLimits
         };
     }
     

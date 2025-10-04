@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 using static Wacton.Unicolour.Hue;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -323,7 +324,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var polar = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
+        var polar = Polar(WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => Munsell.ModifyHue(munsell, polar.angle));
     }
 
@@ -332,7 +333,7 @@ public class KnownMunsellTests
     {
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var polar = LineSegment.Polar(WhiteChromaticity, xyy.Chromaticity);
+        var polar = Polar(WhiteChromaticity, xyy.Chromaticity);
         Assert.DoesNotThrow(() => Munsell.ModifyChroma(munsell, polar.radius));
     }
         

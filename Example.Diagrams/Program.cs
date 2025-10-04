@@ -1,5 +1,6 @@
 ﻿using ScottPlot;
 using ScottPlot.Plottables;
+using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Example.Diagrams;
 
 const string outputDirectory = "../../../../Unicolour.Readme/docs/";
@@ -15,12 +16,18 @@ var spectralLocus = Utils.GetSpectralLocus();
 var rgbGamut = Utils.GetRgbGamut();
 var blackbodyLocus = Utils.GetBlackbodyLocus();
 var isotherms = Utils.GetIsotherms();
+var macAdamLimits = new[]
+{
+    MacAdam.Limits10, MacAdam.Limits20, MacAdam.Limits30, MacAdam.Limits40, MacAdam.Limits50, 
+    MacAdam.Limits60, MacAdam.Limits70, MacAdam.Limits80, MacAdam.Limits90, MacAdam.Limits95
+};
 
 SpectralLocus();
 XyChromaticityWithRgb();
 XyChromaticityWithBlackbody();
-UvChromaticity();
+XyMacAdamLimits();
 UvChromaticityWithBlackbody();
+UvMacAdamLimits();
 return;
 
 void SpectralLocus()
@@ -129,7 +136,37 @@ void XyChromaticityWithBlackbody()
     plot.SavePng(Path.Combine(outputDirectory, "diagram-xy-chromaticity-blackbody.png"), width, height);
 }
 
-void UvChromaticity()
+void XyMacAdamLimits()
+{
+    var rangeX = (0.0, 0.8);
+    var rangeY = (0.0, 0.9);
+    var plot = Utils.GetEmptyPlot(rangeX, rangeY, majorTickInterval: 0.1);
+
+    var spectralCoordinates = spectralLocus.Select(colour => new Coordinates(colour.Chromaticity.X, colour.Chromaticity.Y)).ToList();
+    spectralCoordinates.Add(spectralCoordinates.First());
+    var spectralLocusScatter = plot.Add.Scatter(spectralCoordinates);
+    spectralLocusScatter.Color = Colors.Black;
+    spectralLocusScatter.LineWidth = 2.5f;
+    spectralLocusScatter.MarkerStyle = MarkerStyle.None;
+    
+    foreach (var limits in macAdamLimits)
+    {
+        var coordinates = limits.Select(colour => new Coordinates(colour.Chromaticity.X, colour.Chromaticity.Y)).ToList();
+        coordinates.Add(coordinates.First());
+        var scatter = plot.Add.Scatter(coordinates);
+
+        var luminance = limits.First().RelativeLuminance; // all colours in the group will have the same luminance
+        var mapColour = Colourmaps.Flare.Map(1 - luminance).Rgb.Byte255;
+        var color = new Color((byte)mapColour.R, (byte)mapColour.G, (byte)mapColour.B);
+        scatter.LineStyle = new LineStyle { Color = color, Width = 2.5f };
+        scatter.MarkerStyle = MarkerStyle.None;
+    }
+
+    var width = Utils.GetWidth(rangeX, rangeY, height);
+    plot.SavePng(Path.Combine(outputDirectory, "diagram-xy-macadam-limits.png"), width, height);
+}
+
+void UvChromaticityWithBlackbody()
 {
     var rangeU = (0.0, 0.7);
     var rangeV = (0.0, 0.4);
@@ -148,35 +185,12 @@ void UvChromaticity()
     spectralLocusScatter.LineWidth = 2.5f;
     spectralLocusScatter.MarkerStyle = MarkerStyle.None;
     
-    var width = Utils.GetWidth(rangeU, rangeV, height);
-    plot.SavePng(Path.Combine(outputDirectory, "diagram-uv-chromaticity.png"), width, height);
-}
-
-void UvChromaticityWithBlackbody()
-{
-    var rangeU = (0.1, 0.45);
-    var rangeV = (0.25, 0.4);
-    var plot = Utils.GetEmptyPlot(rangeU, rangeV, majorTickInterval: 0.05);
-    
-    var fillMarkers = Utils.GetUvFillMarkers(rangeU, rangeV, increment: 0.00025);
-    foreach (var marker in fillMarkers)
-    {
-        plot.Add.Plottable(marker);
-    }
-
-    var spectralCoordinates = spectralLocus.Select(colour => new Coordinates(colour.Chromaticity.U, colour.Chromaticity.V)).ToList();
-    spectralCoordinates.Add(spectralCoordinates.First());
-    var spectralLocusScatter = plot.Add.Scatter(spectralCoordinates);
-    spectralLocusScatter.Color = Colors.Black;
-    spectralLocusScatter.LineWidth = 2.5f;
-    spectralLocusScatter.MarkerStyle = MarkerStyle.None;
-
     var blackbodyCoordinates = blackbodyLocus.Select(colour => new Coordinates(colour.Chromaticity.U, colour.Chromaticity.V)).ToList();
     var blackbodyScatter = plot.Add.Scatter(blackbodyCoordinates);
     blackbodyScatter.Color = Colors.Black;
     blackbodyScatter.LineWidth = 2.5f;
     blackbodyScatter.MarkerStyle = MarkerStyle.None;
-
+    
     foreach (var (startColour, endColour) in isotherms)
     {
         var startCoordinates = new Coordinates(startColour.Chromaticity.U, startColour.Chromaticity.V);
@@ -188,4 +202,34 @@ void UvChromaticityWithBlackbody()
     
     var width = Utils.GetWidth(rangeU, rangeV, height);
     plot.SavePng(Path.Combine(outputDirectory, "diagram-uv-chromaticity-blackbody.png"), width, height);
+}
+
+void UvMacAdamLimits()
+{
+    var rangeU = (0.0, 0.7);
+    var rangeV = (0.0, 0.4);
+    var plot = Utils.GetEmptyPlot(rangeU, rangeV, majorTickInterval: 0.05);
+
+    var spectralCoordinates = spectralLocus.Select(colour => new Coordinates(colour.Chromaticity.U, colour.Chromaticity.V)).ToList();
+    spectralCoordinates.Add(spectralCoordinates.First());
+    var spectralLocusScatter = plot.Add.Scatter(spectralCoordinates);
+    spectralLocusScatter.Color = Colors.Black;
+    spectralLocusScatter.LineWidth = 2.5f;
+    spectralLocusScatter.MarkerStyle = MarkerStyle.None;
+    
+    foreach (var limits in macAdamLimits)
+    {
+        var coordinates = limits.Select(colour => new Coordinates(colour.Chromaticity.U, colour.Chromaticity.V)).ToList();
+        coordinates.Add(coordinates.First());
+        var scatter = plot.Add.Scatter(coordinates);
+
+        var luminance = limits.First().RelativeLuminance; // all colours in the group will have the same luminance
+        var mapColour = Colourmaps.Flare.Map(1 - luminance).Rgb.Byte255;
+        var color = new Color((byte)mapColour.R, (byte)mapColour.G, (byte)mapColour.B);
+        scatter.LineStyle = new LineStyle { Color = color, Width = 2.5f };
+        scatter.MarkerStyle = MarkerStyle.None;
+    }
+
+    var width = Utils.GetWidth(rangeU, rangeV, height);
+    plot.SavePng(Path.Combine(outputDirectory, "diagram-uv-macadam-limits.png"), width, height);
 }

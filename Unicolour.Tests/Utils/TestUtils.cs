@@ -83,8 +83,8 @@ internal static class TestUtils
 
     internal static readonly Configuration D65Config = new(xyzConfig: XyzConfiguration.D65); // same as Configuration.Default
     internal static readonly Configuration D50Config = new(xyzConfig: XyzConfiguration.D50);
-    internal static readonly Configuration EqualEnergyConfig = new(xyzConfig: new(Illuminant.E, Observer.Degree2));
-    internal static readonly Configuration CConfig = new(xyzConfig: new(Illuminant.C, Observer.Degree2));
+    internal static readonly Configuration EqualEnergyConfig = new(xyzConfig: new(Illuminant.E, Observer.Degree2, "Equal Energy"));
+    internal static readonly Configuration CConfig = new(xyzConfig: new(Illuminant.C, Observer.Degree2, "C"));
     
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
@@ -183,6 +183,8 @@ internal static class TestUtils
             AccessProperty(() => colour.Ictcp);
             AccessProperty(() => colour.Ipt);
             AccessProperty(() => colour.IsImaginary);
+            AccessProperty(() => colour.IsInMacAdamLimits);
+            AccessProperty(() => colour.IsInPointerGamut);
             AccessProperty(() => colour.IsInRgbGamut);
             AccessProperty(() => colour.Jzazbz);
             AccessProperty(() => colour.Jzczhz);

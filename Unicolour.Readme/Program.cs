@@ -198,11 +198,15 @@ void FeatureCompare()
 void FeatureGamutMap()
 {
     var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
-    var isInRgb = veryRed.IsInRgbGamut;
-    var normalRed = veryRed.MapToRgbGamut();
-    
-    var isInPointer = veryRed.IsInPointerGamut;
-    var surfaceRed = veryRed.MapToPointerGamut();
+
+    var isDisplayable = veryRed.IsInRgbGamut;
+    var displayRed = veryRed.MapToRgbGamut();
+
+    var isEmpiricalSurface = veryRed.IsInPointerGamut;
+    var empiricalRed = veryRed.MapToPointerGamut();
+
+    var isTheoreticalSurface = veryRed.IsInMacAdamLimits;
+    var theoreticalRed = veryRed.MapToMacAdamLimits();
 }
 
 void FeatureCvd()

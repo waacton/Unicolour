@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public partial record Munsell
 {
@@ -79,7 +81,7 @@ public partial record Munsell
         internal Adjustment(Munsell munsell, double target, bool isTargetAngle)
         {
             Munsell = munsell;
-            (Radius, Angle) = LineSegment.Polar(WhiteChromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
+            (Radius, Angle) = Polar(WhiteChromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
             Target = target;
             IsTargetAngle = isTargetAngle;
             Unwrapped = Hue.Unwrap(Angle, Target); 

@@ -36,20 +36,20 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across [40 colour spaces](#convert-between-colour-spaces).
-It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
+It can be used to [mix](#mix-colours) and [compare](#compare-colours) colours, and offers [many useful features](#-features) for working with colour.
 
 
 > **Supported colour spaces**
 >
-> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · 
-> CIEXYZ · CIExyY · WXY · 
-> CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv · 
-> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
-> TSL · XYB · 
-> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
+> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI ·
+> CIEXYZ · CIExyY · WXY ·
+> CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
+> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
+> TSL · XYB ·
+> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
-> CIECAM02 · CAM16 · 
-> HCT · 
+> CIECAM02 · CAM16 ·
+> HCT ·
 > Munsell HVC ·
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
 > ```c#
@@ -117,13 +117,14 @@ var difference = white.Difference(black, DeltaE.Ciede2000);
 Console.WriteLine(difference); // 100.0000
 ```
 
-Other useful colour information is available, such as chromaticity coordinates,
-[temperature](#convert-between-colour-and-temperature), and [dominant wavelength](#get-wavelength-attributes).
+Other useful colour information is available, such as [chromaticity coordinates](#access-colourimetric-components),
+[temperature](#derive-temperature-metrics), and [dominant wavelength](#get-wavelength-attributes).
 ```c#
 var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
-Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
-Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+Console.WriteLine(equalEnergy.RelativeLuminance);  // 0.5
+Console.WriteLine(equalEnergy.Chromaticity.Xy);    // (0.3333, 0.3333)
+Console.WriteLine(equalEnergy.Chromaticity.Uv);    // (0.2105, 0.3158)
+Console.WriteLine(equalEnergy.Temperature);        // 5455.5 K (Δuv -0.00442)
 Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 ```
 
@@ -138,6 +139,14 @@ so there is no need to manually chain multiple functions and removes the risk of
 Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 var (l, c, h) = colour.Oklch;
 ```
+
+
+>
+> RGB colours can also be constructed using their hex values:
+> ```c#
+> Unicolour pink = new("ff1493");
+> var hex = pink.Hex; // #FF1493
+> ```
 
 | Colour&nbsp;space                                                                       | Enum                    | Property       |
 |-----------------------------------------------------------------------------------------|-------------------------|----------------|
@@ -189,7 +198,7 @@ var (l, c, h) = colour.Oklch;
 >
 > Munsell HVC colours are defined by 4 attributes, but are managed in Unicolour using 3.
 > The Munsell hue notation is mapped to conventional degrees, with 5R at 0° and 360° and 5BG at 180°.
-> This mapping is accessible via the `Hue.FromMunsell()` utility function, e.g. for Munsell colour 6.1RP 5.5/19.5
+> This mapping is accessible via the `Hue.FromMunsell()` utility function, e.g. for Munsell colour 6.1RP 5.5/19.5:
 > ```c#
 > Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
 > Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
@@ -200,8 +209,8 @@ Two colours can be mixed by [interpolating between them in any colour space](#gr
 taking into account cyclic hue, interpolation distance, and alpha premultiplication.
 Palettes provide a range of evenly distributed mixes of two colours.
 ```c#
-var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
-var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0, alpha: 1.0);
+var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 1.0);
 var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing);
 var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
 var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
@@ -310,8 +319,18 @@ var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
 | Blue&nbsp;cone&nbsp;monochromacy&nbsp;(missing&nbsp;red&nbsp;&&nbsp;green&nbsp;cones) | `Cvd.BlueConeMonochromacy` |
 | Achromatopsia&nbsp;(missing&nbsp;all&nbsp;cones)                                      | `Cvd.Achromatopsia`        |
 
-### Convert between colour and temperature
-Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) of a colour can be ascertained, and can be used to create a colour.
+### Access colourimetric components
+Notable colourimetric components are conveniently accessible, and can be used to create a colour.
+```c#
+var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+var chromaticity = grey.Chromaticity;
+var luminance = grey.RelativeLuminance;
+
+var white = new Unicolour(chromaticity, luminance: 1.0);
+```
+
+### Derive temperature metrics
+Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) can be derived from a colour, and can be used to create a colour.
 CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
 ```c#
 var chromaticity = new Chromaticity(0.3457, 0.3585);
@@ -324,25 +343,30 @@ var (x, y) = d65.Chromaticity;
 ```
 
 ### Get wavelength attributes
-The dominant wavelength and excitation purity of a colour can be derived using the spectral locus.
+The dominant wavelength and excitation purity of a colour can be ascertained using the spectral locus.
+They can be used to create a colour alongside the [WXY colour space](https://unicolour.wacton.xyz/wxy-colour-space).
 Wavelengths from 360 nm to 700 nm are supported.
 ```c#
 var chromaticity = new Chromaticity(0.1, 0.8);
 var hyperGreen = new Unicolour(chromaticity);
 var dominantWavelength = hyperGreen.DominantWavelength;
 var excitationPurity = hyperGreen.ExcitationPurity;
+
+var laserRed = new Unicolour(ColourSpace.Wxy, 670, 1.0, 0.5);
 ```
 
 ### Detect imaginary colours
-Whether a colour is imaginary — one that cannot be produced by the eye — can be determined using the spectral locus.
-They are the colours that lie outside the horseshoe-shaped curve of the [CIE xy chromaticity diagram](#diagrams).
+Colours that lie outside the spectral locus — 
+the horseshoe-shaped curve of the [CIE xy chromaticity diagram](#diagrams) — 
+cannot be produced by the eye.
+These imaginary colours are mathematically possible and can be detected.
 ```c#
 var chromaticity = new Chromaticity(0.05, 0.05);
 var impossibleBlue = new Unicolour(chromaticity);
 var isImaginary = impossibleBlue.IsImaginary;
 ```
 
-### Create colour from spectral power distribution
+### Interpret spectral power distributions
 A colour can be created from a spectral power distribution (SPD).
 Wavelengths should be provided in either 1 nm or 5 nm intervals, and omitted wavelengths are assumed to have zero spectral power.
 ```c#

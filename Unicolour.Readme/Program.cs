@@ -69,6 +69,7 @@ void ProcessDocsReadme(string readmePath)
         .Replace("-colour", "-color")
         .Replace("colourful", "colorful")
         .Replace(" grey ", " gray ")
+        .Replace(" grey.", " gray.")
         // .Replace("ise ", "ize ")
         .Replace("ised ", "ized ")
         .Replace("ises ", "izes ")
@@ -155,9 +156,10 @@ void Quickstart()
     Console.WriteLine(difference); // 100.0000
 
     var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-    Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
-    Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
-    Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+    Console.WriteLine(equalEnergy.RelativeLuminance);  // 0.5
+    Console.WriteLine(equalEnergy.Chromaticity.Xy);    // (0.3333, 0.3333)
+    Console.WriteLine(equalEnergy.Chromaticity.Uv);    // (0.2105, 0.3158)
+    Console.WriteLine(equalEnergy.Temperature);        // 5455.5 K (Δuv -0.00442)
     Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 }
 
@@ -166,14 +168,23 @@ void FeatureConvert()
     Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
     var (l, c, h) = colour.Oklch;
     
-    Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
-    Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
+    void Tip1()
+    {
+        Unicolour pink = new("ff1493");
+        var hex = pink.Hex; // #FF1493
+    }
+
+    void Tip2()
+    {
+        Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
+        Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
+    }
 }
 
 void FeatureMix()
 {
-    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
-    var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0, alpha: 1.0);
+    var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 1.0);
     var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
     var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
     var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
@@ -216,6 +227,15 @@ void FeatureCvd()
     var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
 }
 
+void FeatureColourimetric()
+{
+    var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+    var chromaticity = grey.Chromaticity;
+    var luminance = grey.RelativeLuminance;
+
+    var white = new Unicolour(chromaticity, luminance: 1.0);
+}
+
 void FeatureTemperature()
 {
     var chromaticity = new Chromaticity(0.3457, 0.3585);
@@ -233,6 +253,8 @@ void FeatureWavelength()
     var hyperGreen = new Unicolour(chromaticity);
     var dominantWavelength = hyperGreen.DominantWavelength;
     var excitationPurity = hyperGreen.ExcitationPurity;
+    
+    var laserRed = new Unicolour(ColourSpace.Wxy, 670, 1.0, 0.5);
 }
 
 void FeatureImaginary()

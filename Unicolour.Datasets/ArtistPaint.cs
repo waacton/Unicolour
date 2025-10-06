@@ -494,7 +494,7 @@ public static class ArtistPaint
         },
         K1, K2, nameof(TitaniumWhite));
     
-    public static IEnumerable<Pigment> All => new List<Pigment>
+    public static IEnumerable<Pigment> All => new[]
     {
         BismuthVanadateYellow, BoneBlack,
         CadmiumOrange, CadmiumRedLight, CeruleanBlueChromium, CobaltBlue,

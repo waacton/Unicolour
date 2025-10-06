@@ -58,23 +58,23 @@ public static class HungBerns
     public static readonly Unicolour MagentaRed75 = new(Config, ColourSpace.Xyz, 0.5677, 0.3553, 0.5313);
     public static readonly Unicolour MagentaRedRef = new(Config, ColourSpace.Xyz, 0.6436, 0.3553, 0.5366);
 
-    public static readonly List<Unicolour> AllRed = new() { Red25, Red50, Red75, RedRef };
-    public static readonly List<Unicolour> AllRedYellow = new() { RedYellow25, RedYellow50, RedYellow75, RedYellowRef };
-    public static readonly List<Unicolour> AllYellow = new() { Yellow25, Yellow50, Yellow75, YellowRef };
-    public static readonly List<Unicolour> AllYellowGreen = new() { YellowGreen25, YellowGreen50, YellowGreen75, YellowGreenRef };
-    public static readonly List<Unicolour> AllGreen = new() { Green25, Green50, Green75, GreenRef };
-    public static readonly List<Unicolour> AllGreenCyan = new() { GreenCyan25, GreenCyan50, GreenCyan75, GreenCyanRef };
-    public static readonly List<Unicolour> AllCyan = new() { Cyan25, Cyan50, Cyan75, CyanRef };
-    public static readonly List<Unicolour> AllCyanBlue = new() { CyanBlue25, CyanBlue50, CyanBlue75, CyanBlueRef };
-    public static readonly List<Unicolour> AllBlue = new() { Blue25, Blue50, Blue75, BlueRef };
-    public static readonly List<Unicolour> AllBlueMagenta = new() { BlueMagenta25, BlueMagenta50, BlueMagenta75, BlueMagentaRef };
-    public static readonly List<Unicolour> AllMagenta = new() { Magenta25, Magenta50, Magenta75, MagentaRef };
-    public static readonly List<Unicolour> AllMagentaRed = new() { MagentaRed25, MagentaRed50, MagentaRed75, MagentaRedRef };
+    public static readonly IEnumerable<Unicolour> AllRed = new[] { Red25, Red50, Red75, RedRef };
+    public static readonly IEnumerable<Unicolour> AllRedYellow = new[] { RedYellow25, RedYellow50, RedYellow75, RedYellowRef };
+    public static readonly IEnumerable<Unicolour> AllYellow = new[] { Yellow25, Yellow50, Yellow75, YellowRef };
+    public static readonly IEnumerable<Unicolour> AllYellowGreen = new[] { YellowGreen25, YellowGreen50, YellowGreen75, YellowGreenRef };
+    public static readonly IEnumerable<Unicolour> AllGreen = new[] { Green25, Green50, Green75, GreenRef };
+    public static readonly IEnumerable<Unicolour> AllGreenCyan = new[] { GreenCyan25, GreenCyan50, GreenCyan75, GreenCyanRef };
+    public static readonly IEnumerable<Unicolour> AllCyan = new[] { Cyan25, Cyan50, Cyan75, CyanRef };
+    public static readonly IEnumerable<Unicolour> AllCyanBlue = new[] { CyanBlue25, CyanBlue50, CyanBlue75, CyanBlueRef };
+    public static readonly IEnumerable<Unicolour> AllBlue = new[] { Blue25, Blue50, Blue75, BlueRef };
+    public static readonly IEnumerable<Unicolour> AllBlueMagenta = new[] { BlueMagenta25, BlueMagenta50, BlueMagenta75, BlueMagentaRef };
+    public static readonly IEnumerable<Unicolour> AllMagenta = new[] { Magenta25, Magenta50, Magenta75, MagentaRef };
+    public static readonly IEnumerable<Unicolour> AllMagentaRed = new[] { MagentaRed25, MagentaRed50, MagentaRed75, MagentaRedRef };
    
-    public static readonly List<Unicolour> All25 = new() { Red25, RedYellow25, Yellow25, YellowGreen25, Green25, GreenCyan25, Cyan25, CyanBlue25, Blue25, BlueMagenta25, Magenta25, MagentaRed25 };
-    public static readonly List<Unicolour> All50 = new() { Red50, RedYellow50, Yellow50, YellowGreen50, Green50, GreenCyan50, Cyan50, CyanBlue50, Blue50, BlueMagenta50, Magenta50, MagentaRed50 };
-    public static readonly List<Unicolour> All75 = new() { Red75, RedYellow75, Yellow75, YellowGreen75, Green75, GreenCyan75, Cyan75, CyanBlue75, Blue75, BlueMagenta75, Magenta75, MagentaRed75 };
-    public static readonly List<Unicolour> AllRef = new() { RedRef, RedYellowRef, YellowRef, YellowGreenRef, GreenRef, GreenCyanRef, CyanRef, CyanBlueRef, BlueRef, BlueMagentaRef, MagentaRef, MagentaRedRef };
+    public static readonly IEnumerable<Unicolour> All25 = new[] { Red25, RedYellow25, Yellow25, YellowGreen25, Green25, GreenCyan25, Cyan25, CyanBlue25, Blue25, BlueMagenta25, Magenta25, MagentaRed25 };
+    public static readonly IEnumerable<Unicolour> All50 = new[] { Red50, RedYellow50, Yellow50, YellowGreen50, Green50, GreenCyan50, Cyan50, CyanBlue50, Blue50, BlueMagenta50, Magenta50, MagentaRed50 };
+    public static readonly IEnumerable<Unicolour> All75 = new[] { Red75, RedYellow75, Yellow75, YellowGreen75, Green75, GreenCyan75, Cyan75, CyanBlue75, Blue75, BlueMagenta75, Magenta75, MagentaRed75 };
+    public static readonly IEnumerable<Unicolour> AllRef = new[] { RedRef, RedYellowRef, YellowRef, YellowGreenRef, GreenRef, GreenCyanRef, CyanRef, CyanBlueRef, BlueRef, BlueMagentaRef, MagentaRef, MagentaRedRef };
 
     public static IEnumerable<Unicolour> All => new List<Unicolour>()
         .Concat(AllRed)

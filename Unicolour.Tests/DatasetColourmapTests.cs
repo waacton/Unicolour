@@ -19,7 +19,7 @@ public class DatasetColourmapTests
         Colourmaps.Cubehelix
     ];
     
-    private static readonly Dictionary<Colourmap, Unicolour[]> Lookups = new()
+    private static readonly Dictionary<Colourmap, IEnumerable<Unicolour>> Lookups = new()
     {
         { Colourmaps.Viridis, Viridis.Lookup },
         { Colourmaps.Plasma, Plasma.Lookup },
@@ -277,7 +277,7 @@ public class DatasetColourmapTests
     [TestCaseSource(nameof(IndexTestData))]
     public void MapToIndex(Colourmap colourmap, int index, double expectedR, double expectedG, double expectedB)
     {
-        var lookup = Lookups[colourmap];
+        var lookup = Lookups[colourmap].ToArray();
         var maxIndex = lookup.Length - 1;
         var distance = index / (double)maxIndex;
         var colour = colourmap.Map(distance);
@@ -288,7 +288,7 @@ public class DatasetColourmapTests
     [TestCaseSource(nameof(InterpolatedTestData))]
     public void MapToInterpolated(Colourmap colourmap, double index, double expectedR, double expectedG, double expectedB)
     {
-        var maxIndex = Lookups[colourmap].Length - 1;
+        var maxIndex = Lookups[colourmap].Count() - 1;
         var colour = colourmap.Map(index / maxIndex);
         TestUtils.AssertTriplet<Rgb>(colour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0000000000001);
     }
@@ -394,7 +394,7 @@ public class DatasetColourmapTests
     }
     
     [TestCaseSource(nameof(LookupCountTestData))]
-    public void Count(Unicolour[] lookup, int expectedCount) => Assert.That(lookup.Distinct().Count(), Is.EqualTo(expectedCount));
+    public void Count(IEnumerable<Unicolour> lookup, int expectedCount) => Assert.That(lookup.Distinct().Count(), Is.EqualTo(expectedCount));
 
     [Test]
     public void CubehelixDefault([Range(0, 999)] int lookupIndex)

@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/236,405/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/237,247/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with colour:
@@ -36,20 +36,20 @@ See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) �
 
 ## 🧭 Overview
 A `Unicolour` encapsulates a single colour and its representation across [40 colour spaces](#convert-between-colour-spaces).
-It can be used to [mix and compare colours](#mix-colours), and offers [many useful features](#-features) for working with colour.
+It can be used to [mix](#mix-colours) and [compare](#compare-colours) colours, and offers [many useful features](#-features) for working with colour.
 
 > [!NOTE]
 > **Supported colour spaces**
 >
-> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI · 
-> CIEXYZ · CIExyY · WXY · 
-> CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv · 
-> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ · 
-> TSL · XYB · 
-> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> · 
+> RGB · Linear&nbsp;RGB · HSB&nbsp;/&nbsp;HSV · HSL · HWB · HSI ·
+> CIEXYZ · CIExyY · WXY ·
+> CIELAB · CIELCh<sub>ab</sub> · CIELUV · CIELCh<sub>uv</sub> · HSLuv · HPLuv ·
+> YPbPr · YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_ · YCgCo · YUV&nbsp;_(PAL)_ · YIQ&nbsp;_(NTSC)_ · YDbDr&nbsp;_(SECAM)_ ·
+> TSL · XYB ·
+> LMS · IPT · IC<sub>T</sub>C<sub>P</sub> · J<sub>z</sub>a<sub>z</sub>b<sub>z</sub> · J<sub>z</sub>C<sub>z</sub>h<sub>z</sub> ·
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Okl<sub>r</sub>ab · Okl<sub>r</sub>ch ·
-> CIECAM02 · CAM16 · 
-> HCT · 
+> CIECAM02 · CAM16 ·
+> HCT ·
 > Munsell HVC ·
 > CMYK&nbsp;/&nbsp;ICC&nbsp;Profile <sup>[?](#use-icc-profiles-for-cmyk-conversion)</sup>
 > ```c#
@@ -117,13 +117,14 @@ var difference = white.Difference(black, DeltaE.Ciede2000);
 Console.WriteLine(difference); // 100.0000
 ```
 
-Other useful colour information is available, such as chromaticity coordinates,
-[temperature](#convert-between-colour-and-temperature), and [dominant wavelength](#get-wavelength-attributes).
+Other useful colour information is available, such as [chromaticity coordinates](#access-colourimetric-components),
+[temperature](#derive-temperature-metrics), and [dominant wavelength](#get-wavelength-attributes).
 ```c#
 var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
-Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
-Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+Console.WriteLine(equalEnergy.RelativeLuminance);  // 0.5
+Console.WriteLine(equalEnergy.Chromaticity.Xy);    // (0.3333, 0.3333)
+Console.WriteLine(equalEnergy.Chromaticity.Uv);    // (0.2105, 0.3158)
+Console.WriteLine(equalEnergy.Temperature);        // 5455.5 K (Δuv -0.00442)
 Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 ```
 
@@ -138,6 +139,14 @@ so there is no need to manually chain multiple functions and removes the risk of
 Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
 var (l, c, h) = colour.Oklch;
 ```
+
+> [!TIP]
+>
+> RGB colours can also be constructed using their hex values:
+> ```c#
+> Unicolour pink = new("ff1493");
+> var hex = pink.Hex; // #FF1493
+> ```
 
 | Colour&nbsp;space                                                                       | Enum                    | Property       |
 |-----------------------------------------------------------------------------------------|-------------------------|----------------|
@@ -304,7 +313,7 @@ This diagram summarises how colour space conversions are implemented in Unicolou
 >
 > Munsell HVC colours are defined by 4 attributes, but are managed in Unicolour using 3.
 > The Munsell hue notation is mapped to conventional degrees, with 5R at 0° and 360° and 5BG at 180°.
-> This mapping is accessible via the `Hue.FromMunsell()` utility function, e.g. for Munsell colour 6.1RP 5.5/19.5
+> This mapping is accessible via the `Hue.FromMunsell()` utility function, e.g. for Munsell colour 6.1RP 5.5/19.5:
 > ```c#
 > Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
 > Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
@@ -315,8 +324,8 @@ Two colours can be mixed by [interpolating between them in any colour space](#gr
 taking into account cyclic hue, interpolation distance, and alpha premultiplication.
 Palettes provide a range of evenly distributed mixes of two colours.
 ```c#
-var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
-var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0, alpha: 1.0);
+var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 1.0);
 var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing);
 var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
 var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
@@ -384,14 +393,19 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 
 ### Map colour into gamut
 Colours that cannot be displayed with the [configured RGB model](#rgbconfiguration) can be mapped to the closest in-gamut RGB colour.
-Mapping to Pointer's gamut will return the closest real surface colour of the same lightness and hue.
+Mapping to Pointer's gamut will return the closest empirically real surface colour of the same lightness and hue.
+Mapping to MacAdam limits will return the closest theoretically real surface colour of the same wavelength and luminance.
 ```c#
 var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
-var isInRgb = veryRed.IsInRgbGamut;
-var normalRed = veryRed.MapToRgbGamut();
 
-var isInPointer = veryRed.IsInPointerGamut;
-var surfaceRed = veryRed.MapToPointerGamut();
+var isDisplayable = veryRed.IsInRgbGamut;
+var displayRed = veryRed.MapToRgbGamut();
+
+var isEmpiricalSurface = veryRed.IsInPointerGamut;
+var empiricalRed = veryRed.MapToPointerGamut();
+
+var isTheoreticalSurface = veryRed.IsInMacAdamLimits;
+var theoreticalRed = veryRed.MapToMacAdamLimits();
 ```
 
 | RGB&nbsp;gamut&nbsp;mapping&nbsp;method                                                                 | Enum                            |
@@ -420,8 +434,18 @@ var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
 | Blue&nbsp;cone&nbsp;monochromacy&nbsp;(missing&nbsp;red&nbsp;&&nbsp;green&nbsp;cones) | `Cvd.BlueConeMonochromacy` |
 | Achromatopsia&nbsp;(missing&nbsp;all&nbsp;cones)                                      | `Cvd.Achromatopsia`        |
 
-### Convert between colour and temperature
-Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) of a colour can be ascertained, and can be used to create a colour.
+### Access colourimetric components
+Notable colourimetric components are conveniently accessible, and can be used to create a colour.
+```c#
+var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+var chromaticity = grey.Chromaticity;
+var luminance = grey.RelativeLuminance;
+
+var white = new Unicolour(chromaticity, luminance: 1.0);
+```
+
+### Derive temperature metrics
+Correlated colour temperature (CCT) and delta UV (∆<sub>uv</sub>) can be derived from a colour, and can be used to create a colour.
 CCT from 500 K to 1,000,000,000 K is supported but only CCT from 1,000 K to 20,000 K is guaranteed to have high accuracy.
 ```c#
 var chromaticity = new Chromaticity(0.3457, 0.3585);
@@ -434,25 +458,30 @@ var (x, y) = d65.Chromaticity;
 ```
 
 ### Get wavelength attributes
-The dominant wavelength and excitation purity of a colour can be derived using the spectral locus.
+The dominant wavelength and excitation purity of a colour can be ascertained using the spectral locus.
+They can be used to create a colour alongside the [WXY colour space](https://unicolour.wacton.xyz/wxy-colour-space).
 Wavelengths from 360 nm to 700 nm are supported.
 ```c#
 var chromaticity = new Chromaticity(0.1, 0.8);
 var hyperGreen = new Unicolour(chromaticity);
 var dominantWavelength = hyperGreen.DominantWavelength;
 var excitationPurity = hyperGreen.ExcitationPurity;
+
+var laserRed = new Unicolour(ColourSpace.Wxy, 670, 1.0, 0.5);
 ```
 
 ### Detect imaginary colours
-Whether a colour is imaginary — one that cannot be produced by the eye — can be determined using the spectral locus.
-They are the colours that lie outside the horseshoe-shaped curve of the [CIE xy chromaticity diagram](#diagrams).
+Colours that lie outside the spectral locus — 
+the horseshoe-shaped curve of the [CIE xy chromaticity diagram](#diagrams) — 
+cannot be produced by the eye.
+These imaginary colours are mathematically possible and can be detected.
 ```c#
 var chromaticity = new Chromaticity(0.05, 0.05);
 var impossibleBlue = new Unicolour(chromaticity);
 var isImaginary = impossibleBlue.IsImaginary;
 ```
 
-### Create colour from spectral power distribution
+### Interpret spectral power distributions
 A colour can be created from a spectral power distribution (SPD).
 Wavelengths should be provided in either 1 nm or 5 nm intervals, and omitted wavelengths are assumed to have zero spectral power.
 ```c#
@@ -611,15 +640,15 @@ Defines the RGB colour space parameters, often used to specify a wider gamut tha
 ```mermaid
 mindmap
   root(RGB)
-    ("R 0.64 0.33<br>G 0.30 0.60<br>B 0.15 0.06")
+    ("R 0.64 0.33<br> G 0.30 0.60<br>B 0.15 0.06")
       ("D65")
         ("sRGB")
         ("Rec. 709")
         ("xvYCC")
-    ("R 0.680 0.320<br>G 0.265 0.690<br>B 0.150 0.060")
+    ("R 0.68 0.32<br>G 0.27 0.69<br>B 0.15 0.06")
       ("D65")
         ("Display P3")
-    ("R 0.708 0.292<br>G 0.170 0.797<br>B 0.131 0.046")
+    ("R 0.71 0.29<br>G 0.17 0.80<br>B 0.13 0.05")
       ("D65")
         ("Rec. 2020")
         ("Rec. 2100 PQ")
@@ -627,14 +656,14 @@ mindmap
     ("R 0.64 0.33<br>G 0.21 0.71<br>B 0.15 0.06")
       ("D65")
         ("A98 RGB")
-    ("R 0.734699 0.265301<br>G 0.159597 0.840403<br>B 0.036598 0.000105")
+    ("R 0.73 0.27<br>G 0.16 0.84<br>B 0.03 0.00")
       ("D50")
         ("ProPhoto RGB")
-    ("R 0.7347 0.2653<br>G 0.0000 1.0000<br>B 0.0001 -0.0770")
+    ("R 0.73 0.27<br>G 0.00 1.00<br>B 0.00 -0.08")
       ("W 0.32168 0.33767")
         ("ACES 2065-1")
-    ("R 0.713 0.293<br>G 0.165 0.830<br>B 0.128 0.044")
-      ("W 0.32168 0.33767")
+    ("R 0.71 0.29<br>G 0.17 0.83<br>B 0.13 0.04")
+      ("“D60”")
         ("ACEScg")
         ("ACEScct")
         ("ACEScc")
@@ -649,7 +678,7 @@ mindmap
       ("C")
         ("PAL-M (Rec. 470)")
         ("NTSC (Rec. 470)")
-    ("R 0.630 0.340<br>G 0.310 0.595<br>B 0.155 0.070")
+    ("R 0.63 0.34<br>G 0.31 0.60<br>B 0.16 0.07")
       ("C")
         ("PAL 525 (Rec. 1700)")
       ("D65")
@@ -844,17 +873,21 @@ can be seen in the [Example.Diagrams](Example.Diagrams/Program.cs) project.
 |--------------------------------------------------------------------------------------------------------------------------------------|
 | _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      |
 
+| ![CIE xy chromaticity diagram with MacAdam limits, created with Unicolour](docs/diagram-xy-macadam-limits.png) |
+|----------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with MacAdam limits_                                                              |                                              
+
 | ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](docs/diagram-spectral-locus.png) |
 |---------------------------------------------------------------------------------------------------------------------------------------|
 | _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                           |
 
-| ![CIE 1960 colour space, created with Unicolour](docs/diagram-uv-chromaticity.png) |
-|------------------------------------------------------------------------------------|
-| _CIE 1960 colour space_                                                            |
-
 | ![CIE 1960 colour space with Planckian or blackbody locus, created with Unicolour](docs/diagram-uv-chromaticity-blackbody.png) |
 |--------------------------------------------------------------------------------------------------------------------------------|
 | _CIE 1960 colour space with Planckian or blackbody locus_                                                                      |
+
+| ![CIE 1960 colour space with MacAdam limits, created with Unicolour](docs/diagram-uv-macadam-limits.png) |
+|----------------------------------------------------------------------------------------------------------|
+| _CIE 1960 colour space with MacAdam limits_                                                              |
 
 ### Console
 Example code to create a colourful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console)
@@ -907,6 +940,7 @@ Perceptually uniform colourmaps / palettes:
 - [Cubehelix](https://people.phy.cam.ac.uk/dag9/CUBEHELIX/) (sequential)
 
 Colour data used in academic literature:
+- [MacAdam](https://doi.org/10.2307/1420820) limits of surface colours
 - [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
 - [Ebner-Fairchild](https://doi.org/10.1117/12.298269) constant perceived-hue data
 

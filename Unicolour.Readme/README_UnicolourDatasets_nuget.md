@@ -21,6 +21,7 @@ Perceptually uniform colourmaps / palettes:
 - [Cubehelix](https://people.phy.cam.ac.uk/dag9/CUBEHELIX/) (sequential)
 
 Colour data used in academic literature:
+- [MacAdam](https://doi.org/10.2307/1420820) limits of surface colours
 - [Hung-Berns](https://doi.org/10.1002/col.5080200506) constant hue loci data
 - [Ebner-Fairchild](https://doi.org/10.1117/12.298269) constant perceived-hue data
 

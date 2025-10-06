@@ -8,14 +8,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>3.0.1</Version>
+        <Version>3.1.0</Version>
         <Authors>William Acton</Authors>
         <Description>Datasets for use with 🌈 Wacton.Unicolour</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
         <PackageTags>unicolour colour color colour-data color-data colour-dataset color-dataset colormap colormaps colourmap colourmaps color-palette colour-palette pigments paints</PackageTags>
-        <PackageReleaseNotes>Support Unicolour v6</PackageReleaseNotes>
+        <PackageReleaseNotes>Add MacAdam limits dataset</PackageReleaseNotes>
         <PackageIcon>Resources\Unicolour.Datasets.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README_UnicolourDatasets_nuget.md</PackageReadmeFile>

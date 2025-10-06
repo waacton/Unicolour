@@ -10,7 +10,7 @@ public class Mako : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Mako);
     
-    public static readonly Unicolour[] Lookup = 
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.04503935, 0.01482344, 0.02092227),
         new(Config, ColourSpace.Rgb, 0.04933018, 0.01709292, 0.02535719),

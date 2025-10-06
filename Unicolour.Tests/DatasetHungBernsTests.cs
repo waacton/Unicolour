@@ -58,7 +58,7 @@ public class DatasetHungBernsTests
     }
     
     [TestCaseSource(nameof(GroupedByHue))]
-    public void GroupedHue(List<Unicolour> colours)
+    public void GroupedHue(IEnumerable<Unicolour> colours)
     {
         // questionable, but would expect hue group to be no more than 30 degrees different (360 / 12 groups)
         var hues = colours.Select(x => x.Lchab.H).ToList();
@@ -66,7 +66,7 @@ public class DatasetHungBernsTests
     }
     
     [TestCaseSource(nameof(GroupedByHue))]
-    public void OrderedChroma(List<Unicolour> colours)
+    public void OrderedChroma(IEnumerable<Unicolour> colours)
     {
         // assumes the hue list is returned in the order they were defined, not ideal
         var chromas = colours.Select(x => x.Lchab.C).ToList();

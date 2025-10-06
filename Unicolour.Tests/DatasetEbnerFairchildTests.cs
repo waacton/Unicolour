@@ -54,8 +54,9 @@ public class DatasetEbnerFairchildTests
     }
 
     [TestCaseSource(nameof(GroupedByHue))]
-    public void GroupedHue(List<Unicolour> colours, double expectedHue, int expectedCount)
+    public void GroupedHue(IEnumerable<Unicolour> colours, double expectedHue, int expectedCount)
     {
+        colours = colours.ToArray();
         Assert.That(colours.Count, Is.EqualTo(expectedCount));
         
         // questionable, but would be surprised if a Lab's hue for a group was beyond a neighbouring group's hue

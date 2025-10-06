@@ -10,7 +10,7 @@ public class Icefire : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Icefire);
 
-    public static readonly Unicolour[] Lookup = 
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.73936227, 0.90443867, 0.85757238),
         new(Config, ColourSpace.Rgb, 0.72888063, 0.89639109, 0.85488394),

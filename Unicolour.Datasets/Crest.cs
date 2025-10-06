@@ -10,7 +10,7 @@ public class Crest : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Crest);
 
-    public static readonly Unicolour[] Lookup = 
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.6468274, 0.80289262, 0.56592265),
         new(Config, ColourSpace.Rgb, 0.64233318, 0.80081141, 0.56639461),

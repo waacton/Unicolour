@@ -185,6 +185,6 @@ with monochromatic light at 530 nm and -530 nm](wxy-11.png)
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2024 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.
 
 Also available in [British](wxy-colour-space.md) 🇬🇧.

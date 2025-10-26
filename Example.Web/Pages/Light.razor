@@ -1,6 +1,4 @@
-﻿@* @page "/Light" TODO: decide if want to route via layout *@
-
-<div class="column gap-large dark-background power-button-reference-point">
+﻿<div class="column gap-large dark-background power-button-reference-point">
     <LightSpaces />
 
     @if (powerMode)
@@ -8,8 +6,8 @@
         <LightSpaces />
     }
 
-    <button class="power-button monospace" @onclick="TogglePower">
-        <span>&#x23FB;</span> @* ⏻ *@
+    <button class="power-button monospace @(powerMode ?  "colour-background" : "")" @onclick="TogglePower">
+        <span class=@(powerMode ?  "text-on-colour" : "")>🗲</span>
     </button>
 </div>
 

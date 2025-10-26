@@ -4,7 +4,7 @@
         <img class="icon unicolour-icon" src="icon-192.png" alt="Unicolour icon"/>
     </a>
     
-    <label class="title-text">Unicolour Picker</label>
+    <label class="title-text colour-text">Unicolour Picker</label>
     
     <a href="https://github.com/waacton/Unicolour" target="_blank" rel="noopener noreferrer" aria-label="Unicolour GitHub">
         @* https://github.com/logos - 98x96 size is from the original SVG *@
@@ -36,16 +36,17 @@
  the css here is for elements that adapt to the current colour selected on a child page
 *@
 <style>
-    body {
+    body, .colour-background {
         background: linear-gradient(to bottom, @cssInsideGamut, @cssOutsideGamut), var(--light-stripes) no-repeat;
     }
     
-    .title-text {
+    .colour-text {
         color: @(conversionError ? light.Hex : cssInsideGamut);
     }
     
     .text-on-colour {
         color: @(useLightText ? light.Hex : dark.Hex);
         filter: drop-shadow(0 0 0.075rem @(useLightText ? dark.Hex : light.Hex));
+        opacity: 0.9;
     }
 </style>

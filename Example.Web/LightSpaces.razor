@@ -8,7 +8,6 @@
         </select>
     </div>
 
-    @* these could be componentised but event callbacks and state management is too much hassle for an example *@
     @foreach (var slider in sliders)
     {
         <div class="slider-wrapper">
@@ -21,29 +20,3 @@
         </div>
     }
 </div>
-
-@* 
- most styles are defined in global app.css
- the css here is for elements that are specific to this page
- e.g. colour space selection component (the actual colour sliders will be used in different pages in future, so are global)
-*@
-<style>
-    .colour-space-row {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        width: 100%;
-    }
-    
-    .colour-space-select {
-        flex: 0 0 33%;
-    }
-    
-    @@media screen and (max-width: 720px) {
-        .colour-space-select {
-            flex: 0 0 50%;
-        }
-    }
-</style>

@@ -4,10 +4,10 @@ namespace Wacton.Unicolour.Example.Web.Pages;
 
 public partial class Light : ComponentBase
 {
-    private bool powerMode;
+    private bool dualMode;
     
-    private void TogglePower()
+    private void ToggleDualMode()
     {
-        powerMode = !powerMode;
+        dualMode = !dualMode;
     }
 }

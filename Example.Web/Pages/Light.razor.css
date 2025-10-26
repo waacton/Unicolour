@@ -1,0 +1,17 @@
+.dual-button-reference-point {
+    position: relative;
+}
+
+.dual-button {
+    /* easiest way to centre button content it seems... */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 3rem;
+
+    /* and it's also absolute positioned to be top-right inside the dark background area */
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+}

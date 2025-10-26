@@ -33,7 +33,8 @@
 
 @* 
  most styles are defined in global app.css
- the css here is for elements that adapt to the current colour selected on a child page
+ the css here is for elements that adapt to the current colour selected on a child component
+ note: they can't be moved to an isolated .razor.css file because they need to reference code variables
 *@
 <style>
     body, .colour-background {

@@ -1,0 +1,18 @@
+.colour-space-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.colour-space-select {
+    flex: 0 0 33%;
+}
+
+@media screen and (max-width: 720px) {
+    .colour-space-select {
+        flex: 0 0 50%;
+    }
+}

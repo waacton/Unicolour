@@ -1,0 +1,34 @@
+﻿@* @page "/Light" TODO: decide if want to route via layout *@
+
+<div class="column gap-large dark-background power-button-reference-point">
+    <LightSpaces />
+
+    @if (powerMode)
+    {
+        <LightSpaces />
+    }
+
+    <button class="power-button monospace" @onclick="TogglePower">
+        <span>&#x23FB;</span> @* ⏻ *@
+    </button>
+</div>
+
+<style>
+    .power-button {
+        /* easiest way to centre button content it seems... */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3rem;
+        width: 3rem;
+        
+        /* and it's also absolute positioned to be top-right inside the dark background area */
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+    }
+
+    .power-button-reference-point {
+        position: relative;
+    }
+</style>

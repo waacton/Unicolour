@@ -59,28 +59,8 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 /*
-  10. Custom defaults
+  10. Blazor defaults that seem useful
 */
-
-:root {
-    --dark: #404046;
-    --less-dark: #606069;
-    --light: #E8E8FF;
-    --less-light: #DADAF0;
-    --default-accent: #FF1493
-}
-
-body {
-    background: var(--default-accent); /* overridden when app is loaded */
-}
-
-#app {
-    height: 100%;
-}
-
-/*
-  11. Blazor defaults that seem useful
- */
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -119,3 +99,211 @@ html, body {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+    
+/*
+  11. Custom defaults for app
+*/
+
+:root {
+    --dark: #404046;
+    --less-dark: #606069;
+    --light: #E8E8FF;
+    --less-light: #DADAF0;
+    --default-accent: #FF1493;
+    --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
+    --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
+}
+
+body {
+    background: var(--default-accent); /* overridden when app is loaded, needed for the "loading" screen */
+}
+
+* {
+    user-select: none
+}
+
+#app {
+    height: 100%;
+}
+
+.top-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--dark);
+    filter: drop-shadow(0 0 0.05rem var(--light));
+    padding: 1rem;
+}
+
+.icon {
+    height: 48px;
+}
+
+.unicolour-icon {
+    background: var(--dark);
+    border: 1px solid var(--dark);
+    border-radius: 0.5rem;
+    filter: drop-shadow(0 0 0.05rem var(--light));
+}
+
+.title-text {
+    /* color: this attribute is set by app */
+    font-variant: all-small-caps;
+    font-size: 2rem;
+    letter-spacing: 0.25rem;
+}
+
+.max-width-wrapper {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 64px 32px 0 32px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+    .gap-small { 
+        gap: 0.5rem;
+    }
+    
+    .gap-medium {
+        gap: 1rem;
+    }
+    
+    .gap-large {
+        gap: 2rem;
+    }
+
+.dark-background {
+    background: var(--dark);
+    border: 1px solid var(--dark);
+    border-radius: 0.5rem;
+    filter: drop-shadow(0 0 0.05rem var(--light));
+    padding: 1.5rem;
+}
+
+select, button {
+    background-color: var(--dark);
+    color: var(--light);
+    width: 100%;
+    height: 3rem;
+    border: 1px solid var(--dark);
+    border-radius: 0.5rem;
+    filter: drop-shadow(0 0 0.05rem var(--light));
+}
+
+    select:hover, button:hover {
+        filter: drop-shadow(0 0 0.075rem var(--light));
+    }
+    
+    select:active, button:active {
+        border: 1px solid var(--less-dark);
+        filter: drop-shadow(0 0 0.075rem var(--light));
+    }
+
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+input[type=range] {
+    appearance: none;
+    width: 100%;
+    height: 3rem;
+    border-radius: 0.5rem;
+    filter: drop-shadow(0 0 0.05rem var(--light));
+}
+
+input[type=range]::-webkit-slider-thumb {
+    appearance: none;
+    width: 1.5rem;
+    height: 3rem;
+    border: 1px dashed var(--dark);
+    border-radius: 0.5rem;
+    outline: 1px dashed var(--light);
+    background: transparent;
+}
+
+input[type=range]::-moz-range-thumb {
+    appearance: none;
+    width: 1.5rem;
+    height: 2.9rem; /* not quite 3rem like -webkit */
+    border: 1px dashed var(--dark);
+    border-radius: 0.5rem;
+    outline: 1px dashed var(--light);
+    background: transparent;
+}
+
+.show-thumb::-webkit-slider-thumb {
+    opacity: 1
+}
+
+.show-thumb::-moz-range-thumb {
+    opacity: 1
+}
+
+.hide-thumb::-webkit-slider-thumb {
+    opacity: 0
+}
+
+.hide-thumb::-moz-range-thumb {
+    opacity: 0
+}
+
+.slider-gradient {
+    /* background-image: this attribute is set inline by app for better use of dynamic values  */
+    background-repeat: no-repeat, repeat, repeat;
+    background-size: 100% 50%, 100%, 100%;
+    background-position: center, center, center;
+}
+
+.slider-value-text {
+    flex: 0 0 4rem;
+    text-align: right;
+    margin: 0 0.5rem;
+}
+
+.slider-axis-text {
+    flex: 0 0 1.25rem;
+    text-align: left;
+}
+
+.text-on-dark {
+    color: var(--light);
+}
+
+.text-on-colour {
+    /* color: this attribute is set by app */
+    /* filter: this attribute is set by app, because it requires dynamic colour */
+    text-align: center;
+    opacity: 0.9;
+}
+
+.monospace {
+    font-family: monospace;
+    font-size: 1rem;
+    letter-spacing: 0.05rem;
+    white-space: pre;
+}
+
+@media screen and (max-width: 720px) {
+    .icon {
+        height: 32px;
+    }
+
+    .title-text {
+        font-size: 1.75rem;
+    }
+}

@@ -5,10 +5,11 @@ internal class Slider
     private readonly int index;
     internal double Value { get; set; }
     internal string ValueText => GetValueText();
-    internal string AxisText => ColourLookup.AxisLookup[ColourSpace][index];
-
+    
     internal ColourSpace ColourSpace { get; set; }
+    internal string AxisText => ColourLookup.AxisLookup[ColourSpace][index];
     private Range Range => ColourLookup.RangeLookup[ColourSpace][index];
+
     internal double Min => Range.Min;
     internal double Max => Range.Max;
     internal bool InRange => Value >= Min && Value <= Max;
@@ -18,10 +19,9 @@ internal class Slider
     internal string CssGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, 100)));
     internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInRgbGamut ? 100 : 50)));
     
-    internal Slider(int index, double value)
+    internal Slider(int index)
     {
         this.index = index;
-        Value = value;
     }
     
     private string GetValueText()

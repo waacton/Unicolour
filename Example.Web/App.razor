@@ -1,11 +1,12 @@
-﻿<div class="top-bar">
-    <a href="https://unicolour.wacton.xyz" target="_blank" rel="noopener noreferrer">
+﻿@using Wacton.Unicolour.Example.Web.Pages
+<div class="top-bar">
+    <a href="https://unicolour.wacton.xyz" target="_blank" rel="noopener noreferrer" aria-label="Unicolour website">
         <img class="icon unicolour-icon" src="icon-192.png" alt="Unicolour icon"/>
     </a>
     
     <label class="title-text">Unicolour Picker</label>
     
-    <a href="https://github.com/waacton/Unicolour" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/waacton/Unicolour" target="_blank" rel="noopener noreferrer" aria-label="Unicolour GitHub">
         @* https://github.com/logos - 98x96 size is from the original SVG *@
         <svg class="icon" viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
@@ -17,35 +18,11 @@
 </div>
 
 <div class="max-width-wrapper">
-    <div class="column">
-        <div class="column dark-background">
-            <div class="colour-space-row">
-                <select class="colour-space-select monospace" @onchange="SetColourSpace">
-                    @foreach (var colourSpace in ColourLookup.RangeLookup.Keys)
-                    {
-                        <option value="@colourSpace">@colourSpace</option>
-                    }
-                </select>
-            </div>
+    <div class="column gap-medium">
 
-            <div class="slider-wrapper">
-                <input id="slider1" class="gradient1" type="range" min="@slider1.Min" max="@slider1.Max" step="@slider1.Step" value="@slider1.Value" @oninput="args => SetValue(1, args)">
-                <label class="slider-value-text monospace text-on-dark">@slider1.ValueText</label>
-                <label class="slider-axis-text monospace text-on-dark">@slider1.AxisText</label>
-            </div>
-            <div class="slider-wrapper">
-                <input id="slider2" class="gradient2" type="range" min="@slider2.Min" max="@slider2.Max" step="@slider2.Step" value="@slider2.Value" @oninput="args => SetValue(2, args)">
-                <label class="slider-value-text monospace text-on-dark">@slider2.ValueText</label>
-                <label class="slider-axis-text monospace text-on-dark">@slider2.AxisText</label>
-            </div>
-            <div class="slider-wrapper">
-                <input id="slider3" class="gradient3" type="range" min="@slider3.Min" max="@slider3.Max" step="@slider3.Step" value="@slider3.Value" @oninput="args => SetValue(3, args)">
-                <label class="slider-value-text monospace text-on-dark">@slider3.ValueText</label>
-                <label class="slider-axis-text monospace text-on-dark">@slider3.AxisText</label>
-            </div>
-        </div>
-
-        <div class="column text-on-colour monospace">
+        <Light />
+        
+        <div class="column gap-medium text-on-colour monospace">
             <label>@rgbText</label>
             <label>
                 <span class="warning-emoji">@warningEmoji</span> <span>@warningText</span>
@@ -54,346 +31,21 @@
     </div>
 </div>
 
-
+@* 
+ most styles are defined in global app.css
+ the css here is for elements that adapt to the current colour selected on a child page
+*@
 <style>
-    :root {
-        --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
-        --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
-    }
-    
-    * {
-        user-select: none
-    }
-    
     body {
-        background-image: linear-gradient(to bottom, @inGamutCss, @outGamutCss), var(--light-stripes);
-        background-repeat: no-repeat;
-    }
-    
-    .top-bar {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        background: var(--dark);
-        border: 1px solid var(--dark);
-        filter: drop-shadow(0 0 0.05rem var(--light));
-        padding: 1rem;
-    }
-    
-    .icon {
-        height: 48px;
-    }
-    
-    .unicolour-icon {
-        background: var(--dark);
-        border: 1px solid var(--dark);
-        border-radius: 0.5rem;
-        filter: drop-shadow(0 0 0.05rem var(--light));
+        background: linear-gradient(to bottom, @cssInsideGamut, @cssOutsideGamut), var(--light-stripes) no-repeat;
     }
     
     .title-text {
-        color: @(conversionError ? light.Hex : inGamutCss);
-        font-variant: all-small-caps;
-        font-size: 2rem;
-        letter-spacing: 0.25rem;
-    }
-    
-    .max-width-wrapper {
-        max-width: 720px;
-        margin-left: auto;
-        margin-right: auto;
-        padding: 64px 32px 0 32px;
-    }
-    
-    .column {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        width: 100%;
-        height: 100%;
-    }
-    
-    .dark-background {
-        background: var(--dark);
-        border: 1px solid var(--dark);
-        border-radius: 0.5rem;
-        filter: drop-shadow(0 0 0.05rem var(--light));
-        padding: 1.5rem;
-    }
-    
-    .colour-space-row {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 0.5rem;
-        width: 100%;
-    }
-    
-    select {
-        background-color: var(--dark);
-        color: var(--light);
-        width: 100%;
-        height: 3rem;
-        border: 1px solid var(--dark);
-        border-radius: 0.5rem;
-        filter: drop-shadow(0 0 0.05rem var(--light));
-    }
-    
-    .colour-space-select {
-        flex: 0 0 33%;
-    }
-        
-    .slider-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-
-    input[type=range] {
-        appearance: none;
-        width: 100%;
-        height: 3rem;
-        border-radius: 0.5rem;
-        filter: drop-shadow(0 0 0.05rem var(--light));
-    }
-    
-    input[type=range]::-webkit-slider-thumb {
-        appearance: none;
-        width: 1.5rem;
-        height: 3rem;
-        border: 1px dashed var(--dark);
-        border-radius: 0.5rem;
-        outline: 1px dashed var(--light);
-        background: transparent;
-    }
-    
-    input[type=range]::-moz-range-thumb {
-        appearance: none;
-        width: 1.5rem;
-        height: 2.9rem; /* not quite 3rem like -webkit */
-        border: 1px dashed var(--dark);
-        border-radius: 0.5rem;
-        outline: 1px dashed var(--light);
-        background: transparent;
-    }
-    
-    #slider1::-webkit-slider-thumb {
-        opacity: @(slider1.InRange ? "1" : "0");
-    }
-    
-    #slider1::-moz-range-thumb {
-        opacity: @(slider1.InRange ? "1" : "0");
-    }
-    
-    #slider2::-webkit-slider-thumb {
-        opacity: @(slider2.InRange ? "1" : "0");
-    }
-    
-    #slider2::-moz-range-thumb {
-        opacity: @(slider2.InRange ? "1" : "0");
-    }
-        
-    #slider3::-webkit-slider-thumb {
-        opacity: @(slider3.InRange ? "1" : "0");
-    }
-    
-    #slider3::-moz-range-thumb {
-        opacity: @(slider3.InRange ? "1" : "0");
-    }
-    
-    .gradient1 {
-        background-image: linear-gradient(to right, @slider1.CssGradient), linear-gradient(to right, @slider1.CssAlphaGradient), var(--dark-stripes);
-        background-repeat: no-repeat, repeat, repeat;
-        background-size: 100% 50%, 100%, 100%;
-        background-position: center, center, center;
-    }
-    
-    .gradient2 {
-        background-image: linear-gradient(to right, @slider2.CssGradient), linear-gradient(to right, @slider2.CssAlphaGradient), var(--dark-stripes);
-        background-repeat: no-repeat, repeat, repeat;
-        background-size: 100% 50%, 100%, 100%;
-        background-position: center, center, center;
-    }
-    
-    .gradient3 {
-        background-image: linear-gradient(to right, @slider3.CssGradient), linear-gradient(to right, @slider3.CssAlphaGradient), var(--dark-stripes);
-        background-repeat: no-repeat, repeat, repeat;
-        background-size: 100% 50%, 100%, 100%;
-        background-position: center, center, center;
-    }
-    
-    .slider-value-text {
-        flex: 0 0 4rem;
-        text-align: right;
-        margin: 0 0.5rem;
-    }
-    
-    .slider-axis-text {
-        flex: 0 0 1.25rem;
-        text-align: left;
-    }
-    
-    .text-on-dark {
-        color: var(--light);
+        color: @(conversionError ? light.Hex : cssInsideGamut);
     }
     
     .text-on-colour {
-        color: @(lightTextOnColour ? light.Hex : dark.Hex);
-        text-align: center;
-        filter: drop-shadow(0 0 0.075rem @(lightTextOnColour ? dark.Hex : light.Hex));
-        opacity: 0.9;
-    }
-    
-    .monospace {
-        font-family: monospace;
-        font-size: 1rem;
-        letter-spacing: 0.05rem;
-        white-space: pre;
-    }
-    
-    @@media screen and (max-width: 720px) {
-        .icon {
-            height: 32px;
-        }
-        
-        .title-text {
-            font-size: 1.75rem;
-        }
-        
-        .colour-space-select {
-            flex: 0 0 50%;
-        }
+        color: @(useLightText ? light.Hex : dark.Hex);
+        filter: drop-shadow(0 0 0.075rem @(useLightText ? dark.Hex : light.Hex));
     }
 </style>
-
-@code {
-    private readonly Unicolour dark = new("404046");
-    private readonly Unicolour light = new("e8e8ff");
-
-    private ColourSpace currentSpace = ColourSpace.Rgb255;
-    private Unicolour currentColour = null!;
-    private bool lightTextOnColour = true;
-    private string rgbText = null!;
-    private string warningEmoji = null!;
-    private string warningText = null!;
-
-    private readonly Slider slider1 = new(0, 255);
-    private readonly Slider slider2 = new(1, 20);
-    private readonly Slider slider3 = new(2, 147);
-
-    private bool conversionError;
-    private bool outOfGamut;
-    private string inGamutCss = null!;
-    private string outGamutCss = null!;
-
-    public App()
-    {
-        UpdateColour();
-        UpdateSliders();
-    }
-
-    private static string ParseColourSpaceName(ChangeEventArgs args) => (args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty;
-
-    private void SetColourSpace(ChangeEventArgs args)
-    {
-        Enum.TryParse(ParseColourSpaceName(args), out currentSpace);
-        var (first, second, third) = currentColour.GetRepresentation(currentSpace);
-        slider1.Value = first;
-        slider2.Value = second;
-        slider3.Value = third;
-        UpdateSliders();
-    }
-
-    private void UpdateColour()
-    {
-        currentColour = new Unicolour(currentSpace, slider1.Value, slider2.Value, slider3.Value);
-        conversionError = Utils.HasConversionError(currentColour);
-        outOfGamut = !currentColour.IsInRgbGamut;
-        
-        inGamutCss = Utils.ToCss(currentColour, 100);
-        outGamutCss = Utils.ToCss(currentColour, outOfGamut ? 50 : 100);
-
-        var rgbString = conversionError ? "NaN" : currentColour.Rgb.ToString();
-        var hexString = outOfGamut ? "#------" : currentColour.Hex;
-        rgbText = $"RGB {rgbString} · {hexString}";
-
-        if (conversionError)
-        {
-            lightTextOnColour = false;
-        }
-        else
-        {
-            lightTextOnColour = currentColour.Contrast(light) > currentColour.Contrast(dark);
-        }
-
-        if (conversionError)
-        {
-            warningText = "Cannot be converted";
-            warningEmoji = "❌";
-        }
-        else if (outOfGamut)
-        {
-            var (clippedR, clippedG, clippedB) = currentColour.Rgb.ConstrainedTriplet;
-            warningText = $"Out of gamut, clipped to\nRGB {clippedR:F2} {clippedG:F2} {clippedB:F2} · {currentColour.Rgb.Byte255.ConstrainedHex}";
-            warningEmoji = "⚠️";
-        }
-        else
-        {
-            warningText = string.Empty;
-            warningEmoji = string.Empty;
-        }
-    }
-
-    private void UpdateSliders()
-    {
-        slider1.ColourSpace = currentSpace;
-        slider2.ColourSpace = currentSpace;
-        slider3.ColourSpace = currentSpace;
-        slider1.Stops = GetColourStops(new Unicolour(currentSpace, slider1.Min, slider2.Value, slider3.Value), new Unicolour(currentSpace, slider1.Max, slider2.Value, slider3.Value));
-        slider2.Stops = GetColourStops(new Unicolour(currentSpace, slider1.Value, slider2.Min, slider3.Value), new Unicolour(currentSpace, slider1.Value, slider2.Max, slider3.Value));
-        slider3.Stops = GetColourStops(new Unicolour(currentSpace, slider1.Value, slider2.Value, slider3.Min), new Unicolour(currentSpace, slider1.Value, slider2.Value, slider3.Max));
-    }
-
-    private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
-    private void SetValue(int i, ChangeEventArgs args) => SetValue(i, ParseValue(args));
-
-    private void SetValue(int i, double value)
-    {
-        switch (i)
-        {
-            case 1:
-                slider1.Value = value;
-                break;
-            case 2:
-                slider2.Value = value;
-                break;
-            case 3:
-                slider3.Value = value;
-                break;
-        }
-
-        UpdateColour();
-        UpdateSliders();
-    }
-    
-    private List<Unicolour> GetColourStops(Unicolour start, Unicolour end)
-    {
-        var sections = currentSpace is ColourSpace.Hct or ColourSpace.Munsell ? 8 : 16;
-        var stops = new List<Unicolour> { start };
-        for (var i = 1; i < sections; i++)
-        {
-            var distance = 1.0 / sections * i;
-            stops.Add(start.Mix(end, currentSpace, distance, HueSpan.Increasing));
-        }
-
-        stops.Add(end);
-        return stops;
-    }
-
-}

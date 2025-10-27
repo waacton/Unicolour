@@ -112,6 +112,17 @@ html, body {
     --default-accent: #FF1493;
     --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
     --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
+    
+    --icon-width: 48px;
+    --icon-width-mobile: 32px;
+    --icon-padding: 1rem;
+    --border-width: 1px;
+    --top-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
+    --top-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
+    --nav-bar-height: 3rem;
+    --nav-bar-height-mobile: 2rem;
+    
+    --border-radius: 0.5rem;
 }
 
 body {
@@ -127,25 +138,30 @@ body {
 }
 
 .top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: var(--top-bar-height);
+    width: 100%;
+    
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
     background: var(--dark);
-    border: 1px solid var(--dark);
+    border: var(--border-width) solid var(--dark);
     filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: 1rem;
+    padding: var(--icon-padding);
 }
 
 .icon {
-    height: 48px;
+    height: var(--icon-width);
 }
 
 .unicolour-icon {
     background: var(--dark);
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
+    border: var(--border-width) solid var(--dark);
+    border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
 }
 
@@ -155,8 +171,14 @@ body {
     letter-spacing: 0.25rem;
 }
 
+.content {
+    padding-top: var(--top-bar-height); /* ensure no content is hidden behind top bar (for proper scrolling) */
+    padding-bottom: var(--nav-bar-height); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
+}
+
 .max-width-wrapper {
     max-width: 720px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding: 64px 32px 0 32px;
@@ -185,8 +207,8 @@ body {
 
 .dark-background {
     background: var(--dark);
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
+    border: var(--border-width) solid var(--dark);
+    border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
     padding: 1.5rem;
 }
@@ -196,8 +218,8 @@ select, button {
     color: var(--light);
     width: 100%;
     height: 3rem;
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
+    border: var(--border-width) solid var(--dark);
+    border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
 }
 
@@ -206,7 +228,7 @@ select, button {
     }
     
     select:active, button:active {
-        border: 1px solid var(--less-dark);
+        border: var(--border-width) solid var(--less-dark);
         filter: drop-shadow(0 0 0.075rem var(--light));
     }
 
@@ -221,7 +243,7 @@ input[type=range] {
     appearance: none;
     width: 100%;
     height: 3rem;
-    border-radius: 0.5rem;
+    border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
 }
 
@@ -229,9 +251,9 @@ input[type=range]::-webkit-slider-thumb {
     appearance: none;
     width: 1.5rem;
     height: 3rem;
-    border: 1px dashed var(--dark);
-    border-radius: 0.5rem;
-    outline: 1px dashed var(--light);
+    border: var(--border-width) dashed var(--dark);
+    border-radius: var(--border-radius);
+    outline: var(--border-width) dashed var(--light);
     background: transparent;
 }
 
@@ -239,9 +261,9 @@ input[type=range]::-moz-range-thumb {
     appearance: none;
     width: 1.5rem;
     height: 2.9rem; /* not quite 3rem like -webkit */
-    border: 1px dashed var(--dark);
-    border-radius: 0.5rem;
-    outline: 1px dashed var(--light);
+    border: var(--border-width) dashed var(--dark);
+    border-radius: var(--border-radius);
+    outline: var(--border-width) dashed var(--light);
     background: transparent;
 }
 
@@ -290,12 +312,52 @@ input[type=range]::-moz-range-thumb {
     white-space: pre;
 }
 
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: var(--nav-bar-height);
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--dark);
+    border: var(--border-width) solid var(--dark);
+    filter: drop-shadow(0 0 0.05rem var(--light));
+    padding: var(--icon-padding);
+}
+
+.nav-text {
+    font-variant: all-small-caps;
+    font-size: 1.25rem;
+    letter-spacing: 0.25rem;
+}
+
 @media screen and (max-width: 720px) {
+    .top-bar {
+        height: var(--top-bar-height-mobile)
+    }
+    
     .icon {
-        height: 32px;
+        height: var(--icon-width-mobile);
     }
 
     .title-text {
         font-size: 1.75rem;
     }
+    
+    .content {
+        padding-top: var(--top-bar-height-mobile); /* ensure no content is hidden behind top bar (for proper scrolling) */
+        padding-bottom: var(--nav-bar-height-mobile); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
+    }
+    
+    /*.nav-bar {*/
+    /*    height: var(--nav-bar-height-mobile);*/
+    /*}*/
+    
+    /*.nav-text {*/
+    /*    font-size: 1rem;*/
+    /*}*/
 }

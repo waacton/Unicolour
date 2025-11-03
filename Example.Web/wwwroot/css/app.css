@@ -371,6 +371,7 @@ input[type=range]::-moz-range-thumb {
     min-height: var(--input-height);
     height: var(--nav-button-height);
     width: var(--input-height);
+    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
 }
 
 @media screen and (max-width: 720px) {

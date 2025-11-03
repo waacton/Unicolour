@@ -44,7 +44,19 @@
 *@
 <style>
     body, .colour-background {
-        background: linear-gradient(to bottom, @cssInsideGamut, @cssOutsideGamut), var(--light-stripes) no-repeat;
+        /* 
+         * gradient only applied between top-bar and nav-bar
+         * not using background-position & background-size because the background is used outside of the content area (e.g. nav bar)
+         */
+        background-image: linear-gradient(
+            to bottom,
+            @cssInsideGamut,
+            @cssInsideGamut var(--top-bar-height),
+            @cssOutsideGamut calc(100vh - var(--nav-bar-height)),
+            @cssOutsideGamut
+        ), var(--light-stripes);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
     }
     
     .colour-text {
@@ -55,5 +67,17 @@
         color: @(useLightText ? light.Hex : dark.Hex);
         filter: drop-shadow(0 0 0.075rem @(useLightText ? dark.Hex : light.Hex));
         opacity: 0.9;
+    }
+
+    @@media screen and (max-width: 720px) {
+        body, .colour-background  {
+            background-image: linear-gradient(
+                to bottom,
+                @cssInsideGamut,
+                @cssInsideGamut var(--top-bar-height-mobile),
+                @cssOutsideGamut calc(100vh - var(--nav-bar-height-mobile)),
+                @cssOutsideGamut
+            ), var(--light-stripes);
+        }
     }
 </style>

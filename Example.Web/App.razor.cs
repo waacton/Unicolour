@@ -4,6 +4,8 @@ namespace Wacton.Unicolour.Example.Web;
 
 public partial class App : ComponentBase
 {
+    private Mode mode = Mode.Light;
+    
     private bool conversionError;
     private string cssInsideGamut = null!;
     private string cssOutsideGamut = null!;
@@ -40,7 +42,7 @@ public partial class App : ComponentBase
 
         if (conversionError)
         {
-            useLightText = false;
+            useLightText = true;
         }
         else
         {
@@ -63,5 +65,17 @@ public partial class App : ComponentBase
             warningText = string.Empty;
             warningEmoji = string.Empty;
         }
+    }
+
+    private void SetMode(Mode newMode)
+    {
+        mode = newMode;
+    }
+
+    private enum Mode
+    {
+        Light,
+        Print,
+        Paint
     }
 }

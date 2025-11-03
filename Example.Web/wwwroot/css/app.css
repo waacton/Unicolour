@@ -163,7 +163,7 @@ body {
 .content {
     margin-top: var(--top-bar-height); /* ensure no content is hidden behind top bar (for proper scrolling) */
     margin-bottom: var(--nav-bar-height); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
-    padding-bottom: 1rem;
+    padding-bottom: var(--icon-padding);
     overflow-y: auto;
     z-index: 0;
 }
@@ -182,7 +182,8 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: var(--icon-padding);
+    padding-left: var(--icon-padding);
+    padding-right: var(--icon-padding);
     
     z-index: 1;
 }
@@ -340,7 +341,12 @@ input[type=range]::-moz-range-thumb {
     white-space: pre;
 }
 
-
+    .monospace-small {
+        font-family: monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.075rem;
+        white-space: pre;
+    }
 
 .nav-text {
     font-variant: all-small-caps;

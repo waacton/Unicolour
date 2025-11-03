@@ -112,17 +112,25 @@ html, body {
     --default-accent: #FF1493;
     --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
     --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
-    
+
     --icon-width: 48px;
     --icon-width-mobile: 32px;
     --icon-padding: 1rem;
+    --content-padding: 1.5rem;
     --border-width: 1px;
+    --border-radius: 0.5rem;
+    --input-height: 3rem;
+    
     --top-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
     --top-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
-    --nav-bar-height: 3rem;
+    --nav-bar-height: 2rem;
     --nav-bar-height-mobile: 2rem;
     
-    --border-radius: 0.5rem;
+    /* nav buttons are cut-off by the smaller nav bar; increase the height by the cut-off amount to always show an effective 3rem button area  */
+    --nav-button-offset: calc(var(--input-height) - var(--nav-bar-height));
+    --nav-button-height: calc(var(--input-height) + var(--nav-button-offset));
+    --nav-button-offset-mobile: calc(var(--input-height) - var(--nav-bar-height-mobile));
+    --nav-button-height-mobile: calc(var(--input-height) + var(--nav-button-offset-mobile));
 }
 
 body {
@@ -163,7 +171,7 @@ body {
 .content {
     margin-top: var(--top-bar-height); /* ensure no content is hidden behind top bar (for proper scrolling) */
     margin-bottom: var(--nav-bar-height); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
-    padding-bottom: var(--icon-padding);
+    padding-bottom: var(--content-padding);
     overflow-y: auto;
     z-index: 0;
 }
@@ -171,16 +179,17 @@ body {
 .nav-bar {
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: 12.5%;
     height: var(--nav-bar-height);
-    width: 100%;
-
+    width: 75%;
+    
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-around;
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
     filter: drop-shadow(0 0 0.05rem var(--light));
     padding-left: var(--icon-padding);
     padding-right: var(--icon-padding);
@@ -239,14 +248,14 @@ body {
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: 1.5rem;
+    padding: var(--content-padding);
 }
 
 select, button {
     background-color: var(--dark);
     color: var(--light);
     width: 100%;
-    height: 3rem;
+    height: var(--input-height);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
@@ -271,15 +280,15 @@ select, button {
 input[type=range] {
     appearance: none;
     width: 100%;
-    height: 3rem;
+    height: var(--input-height);
     border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
 }
 
 input[type=range]::-webkit-slider-thumb {
     appearance: none;
-    width: 1.5rem;
-    height: 3rem;
+    width: calc(var(--input-height) / 2);
+    height: var(--input-height);
     border: var(--border-width) dashed var(--dark);
     border-radius: var(--border-radius);
     outline: var(--border-width) dashed var(--light);
@@ -288,7 +297,7 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]::-moz-range-thumb {
     appearance: none;
-    width: 1.5rem;
+    width: calc(var(--input-height) / 2);
     height: 2.9rem; /* not quite 3rem like -webkit */
     border: var(--border-width) dashed var(--dark);
     border-radius: var(--border-radius);
@@ -341,17 +350,27 @@ input[type=range]::-moz-range-thumb {
     white-space: pre;
 }
 
-    .monospace-small {
-        font-family: monospace;
-        font-size: 0.75rem;
-        letter-spacing: 0.075rem;
-        white-space: pre;
-    }
+.nav-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
 
-.nav-text {
-    font-variant: all-small-caps;
-    font-size: 1.25rem;
-    letter-spacing: 0.25rem;
+.nav-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.075rem;
+    width: 2.5rem;
+}
+
+.nav-button {
+    /* easiest way to centre button content it seems... */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--input-height);
+    height: var(--nav-button-height);
+    width: var(--input-height);
 }
 
 @media screen and (max-width: 720px) {
@@ -365,7 +384,11 @@ input[type=range]::-moz-range-thumb {
     }
 
     .nav-bar {
-        height: var(--nav-bar-height-mobile)
+        left: 0;
+        width: 100%;
+        justify-content: space-between;
+        height: var(--nav-bar-height-mobile);
+        border-radius: 0;
     }
     
     .icon {
@@ -376,7 +399,7 @@ input[type=range]::-moz-range-thumb {
         font-size: 1.75rem;
     }
 
-    .nav-text {
-        height: var(--nav-bar-height-mobile)
+    .nav-button {
+        height: var(--nav-button-height-mobile);
     }
 }

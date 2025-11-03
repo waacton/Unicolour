@@ -27,10 +27,10 @@
                     <Light />
                     break;
                 case Mode.Print:
-                    <h1>PRINT</h1>
+                    <h1>🚧</h1>
                     break;
                 case Mode.Paint:
-                    <h1>PAINT</h1>
+                    <h1>🚧</h1>
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -51,27 +51,27 @@
 
 <div class="nav-bar">
     <div class="nav-item">
-        <label class="monospace-small @(mode == Mode.Print ? "colour-text" : "text-on-dark")">PRINT</label>
-        <button class="mode-button monospace @(mode == Mode.Print ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Print))">
+        <label class="monospace nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">PRINT</label>
+        <button class="monospace nav-button @(mode == Mode.Print ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Print))">
             <span class=@(mode == Mode.Print ? "text-on-colour" : "text-on-dark")>🖨️</span>
         </button>
-        <label class="monospace-small @(mode == Mode.Print ? "colour-text" : "text-on-dark")">CMYK</label>
+        <label class="monospace nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">CMYK</label>
     </div>
     
     <div class="nav-item">
-        <label class="monospace-small @(mode == Mode.Light ? "colour-text" : "text-on-dark")">LIGHT</label>
-        <button class="mode-button monospace @(mode == Mode.Light ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Light))">
+        <label class="monospace nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">LIGHT</label>
+        <button class="monospace nav-button @(mode == Mode.Light ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Light))">
             <span class=@(mode == Mode.Light ? "text-on-colour" : "text-on-dark")>🌈</span>
         </button>
-        <label class="monospace-small @(mode == Mode.Light ? "colour-text" : "text-on-dark")">RGB+</label>
+        <label class="monospace nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">RGB+</label>
     </div>
 
     <div class="nav-item">
-        <label class="monospace-small @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">PAINT</label>
-        <button class="mode-button monospace @(mode == Mode.Paint ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Paint))">
+        <label class="monospace nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">PAINT</label>
+        <button class="monospace nav-button @(mode == Mode.Paint ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Paint))">
             <span class=@(mode == Mode.Paint ? "text-on-colour" : "text-on-dark")>🎨</span>
         </button>
-        <label class="monospace-small @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">RYB</label>
+        <label class="monospace nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">RYB</label>
     </div>
 </div>
 
@@ -105,22 +105,6 @@
         color: @(useLightText ? light.Hex : dark.Hex);
         filter: drop-shadow(0 0 0.075rem @(useLightText ? dark.Hex : light.Hex));
         opacity: 0.9;
-    }
-
-    .nav-item {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .mode-button {
-        /* easiest way to centre button content it seems... */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 3rem;
-        width: 3rem;
     }
     
     @@media screen and (max-width: 720px) {

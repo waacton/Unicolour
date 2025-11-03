@@ -7,11 +7,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 3rem;
-    width: 3rem;
-
+    height: var(--input-height);
+    width: var(--input-height);
+    
     /* and it's also absolute positioned to be top-right inside the dark background area */
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: var(--content-padding);
+    right: var(--content-padding);
 }

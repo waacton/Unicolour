@@ -89,7 +89,7 @@
         background-image: linear-gradient(
             to bottom,
             @cssInsideGamut,
-            @cssInsideGamut var(--top-bar-height),
+            @cssInsideGamut calc(var(--top-bar-height) + var(--content-padding-top)),
             @cssOutsideGamut calc(100vh - var(--nav-bar-height)),
             @cssOutsideGamut
         ), var(--dark-stripes);
@@ -112,7 +112,7 @@
             background-image: linear-gradient(
                 to bottom,
                 @cssInsideGamut,
-                @cssInsideGamut var(--top-bar-height-mobile),
+                @cssInsideGamut calc(var(--top-bar-height-mobile) + var(--content-padding-top)),
                 @cssOutsideGamut calc(100vh - var(--nav-bar-height-mobile)),
                 @cssOutsideGamut
             ), var(--dark-stripes);

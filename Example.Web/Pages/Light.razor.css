@@ -12,6 +12,6 @@
     
     /* and it's also absolute positioned to be top-right inside the dark background area */
     position: absolute;
-    top: var(--content-padding);
-    right: var(--content-padding);
+    top: var(--dark-background-padding);
+    right: var(--dark-background-padding);
 }

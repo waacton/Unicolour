@@ -116,10 +116,12 @@ html, body {
     --icon-width: 48px;
     --icon-width-mobile: 32px;
     --icon-padding: 1rem;
-    --content-padding: 1.5rem;
     --border-width: 1px;
     --border-radius: 0.5rem;
     --input-height: 3rem;
+    --content-padding: 32px;
+    --content-padding-top: calc(var(--content-padding) * 2);
+    --dark-background-padding: 1.5rem;
     
     --top-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
     --top-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
@@ -171,7 +173,6 @@ body {
 .content {
     margin-top: var(--top-bar-height); /* ensure no content is hidden behind top bar (for proper scrolling) */
     margin-bottom: var(--nav-bar-height); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
-    padding-bottom: var(--content-padding);
     overflow-y: auto;
     z-index: 0;
 }
@@ -219,7 +220,7 @@ body {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    padding: 64px 32px 0 32px;
+    padding: var(--content-padding-top) var(--content-padding) var(--content-padding) var(--content-padding);
 }
 
 .column {
@@ -248,7 +249,7 @@ body {
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
     filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: var(--content-padding);
+    padding: var(--dark-background-padding);
 }
 
 select, button {

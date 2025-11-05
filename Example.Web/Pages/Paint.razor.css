@@ -1,0 +1,8 @@
+.paint-button {
+    /* easiest way to centre button content it seems... */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--input-height);
+    width: var(--input-height);
+}

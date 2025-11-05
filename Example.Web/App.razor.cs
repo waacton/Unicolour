@@ -14,8 +14,8 @@ public partial class App : ComponentBase
     private string warningEmoji = null!;
     private string warningText = null!;
     
-    private readonly Unicolour dark = new("404046");
-    private readonly Unicolour light = new("e8e8ff");
+    internal static readonly Unicolour Dark = new("404046");
+    internal static readonly Unicolour Light = new("e8e8ff");
     
     protected override void OnInitialized()
     {
@@ -46,7 +46,7 @@ public partial class App : ComponentBase
         }
         else
         {
-            useLightText = colour.Contrast(light) > colour.Contrast(dark);
+            useLightText = colour.Contrast(Light) > colour.Contrast(Dark);
         }
 
         if (conversionError)

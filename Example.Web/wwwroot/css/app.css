@@ -119,6 +119,7 @@ html, body {
     --border-width: 1px;
     --border-radius: 0.5rem;
     --input-height: 3rem;
+    --slider-thumb-width: calc(var(--input-height) / 2);
     --content-padding: 32px;
     --content-padding-top: calc(var(--content-padding) * 2);
     --dark-background-padding: 1.5rem;
@@ -276,6 +277,8 @@ select, button {
     align-items: center;
     justify-content: center;
     width: 100%;
+    
+    position: relative;
 }
 
 input[type=range] {
@@ -288,7 +291,7 @@ input[type=range] {
 
 input[type=range]::-webkit-slider-thumb {
     appearance: none;
-    width: calc(var(--input-height) / 2);
+    width: var(--slider-thumb-width);
     height: var(--input-height);
     border: var(--border-width) dashed var(--dark);
     border-radius: var(--border-radius);
@@ -298,7 +301,7 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]::-moz-range-thumb {
     appearance: none;
-    width: calc(var(--input-height) / 2);
+    width: var(--slider-thumb-width);
     height: 2.9rem; /* not quite 3rem like -webkit */
     border: var(--border-width) dashed var(--dark);
     border-radius: var(--border-radius);
@@ -340,8 +343,18 @@ input[type=range]::-moz-range-thumb {
     text-align: left;
 }
 
+.slider-label {
+    position: absolute;
+    left: calc(var(--slider-thumb-width) + 0.5rem);
+    pointer-events: none;
+}
+
 .text-on-dark {
     color: var(--light);
+}
+
+.text-on-light {
+    color: var(--dark);
 }
 
 .monospace {

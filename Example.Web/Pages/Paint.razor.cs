@@ -9,7 +9,7 @@ public partial class Paint : ComponentBase
     // private readonly static Pigment yellowPigment = PigmentGenerator.From(new("#FFFF00"));
     // private readonly static Pigment bluePigment = PigmentGenerator.From(new("#0000FF"));
     
-        private static Dictionary<Pigment, string> NameLookup = new()
+    private static Dictionary<Pigment, string> NameLookup = new()
     {
         { ArtistPaint.BoneBlack, "Bone Black" },
         { ArtistPaint.TitaniumWhite, "Titanium White" },
@@ -59,50 +59,95 @@ public partial class Paint : ComponentBase
 
     private static readonly Pigment[] allPigments =
     [
-        ArtistPaint.BismuthVanadateYellow,
-        ArtistPaint.HansaYellowOpaque,
-        ArtistPaint.DiarylideYellow,
-        ArtistPaint.CadmiumOrange,
-        ArtistPaint.PyrroleOrange,
-        ArtistPaint.CadmiumRedLight,
-        ArtistPaint.PyrroleRed,
-        ArtistPaint.QuinacridoneRed,
         ArtistPaint.QuinacridoneMagenta,
-        ArtistPaint.DioxazinePurple,
-        ArtistPaint.PhthaloBlueRedShade,
-        ArtistPaint.PhthaloBlueGreenShade,
-        ArtistPaint.UltramarineBlue,
-        ArtistPaint.CobaltBlue,
-        ArtistPaint.CeruleanBlueChromium,
+        ArtistPaint.QuinacridoneRed,
+        ArtistPaint.PyrroleRed,
+        ArtistPaint.CadmiumRedLight,
+        ArtistPaint.PyrroleOrange,
+        ArtistPaint.CadmiumOrange,
+        ArtistPaint.DiarylideYellow,
+        ArtistPaint.HansaYellowOpaque,
+        ArtistPaint.BismuthVanadateYellow,
         ArtistPaint.PhthaloGreenYellowShade,
         ArtistPaint.PhthaloGreenBlueShade,
+        ArtistPaint.CeruleanBlueChromium,
+        ArtistPaint.CobaltBlue,
+        ArtistPaint.UltramarineBlue,
+        ArtistPaint.PhthaloBlueGreenShade,
+        ArtistPaint.PhthaloBlueRedShade,
+        ArtistPaint.DioxazinePurple,
         ArtistPaint.BoneBlack,
-        ArtistPaint.TitaniumWhite,
+        ArtistPaint.TitaniumWhite
     ];
-    
-    private static readonly Pigment[] pigments = [ArtistPaint.QuinacridoneRed, ArtistPaint.HansaYellowOpaque, ArtistPaint.CobaltBlue];
-    private static readonly string[] names = ["Quinacridone Red", "Hansa Yellow", "Cobalt Blue"];
-    private static readonly string[] axes = ["R", "Y", "B"]; // TODO: can slider axis text be merged with label, and positioned differently for long names?
-    private static readonly Unicolour[] colours = pigments.Select(x => ColourLookup![x]).ToArray();
-    private readonly SliderSolidColour[] sliders = Enumerable.Range(0, pigments.Length).Select(CreateSlider).ToArray();
 
-    private static SliderSolidColour CreateSlider(int index) => new(colours[index], names[index], axes[index]);
-    
+    private static readonly List<Pigment> Pigments = [];
+    private static readonly List<string> Names = [];
+    // private static readonly List<string> axes = ["R", "Y", "B"]; // TODO: can slider axis text be merged with label, and positioned differently for long names?
+    private static readonly List<Unicolour> Colours = [];
+    private static readonly List<SliderSolidColour> Sliders = [];
+
     protected override void OnInitialized()
     {
-        SetSliderValue(sliders[0], 1.0);
+        Pigments.Clear();
+        Names.Clear();
+        Colours.Clear();
+        Sliders.Clear();
+
+        AddPigment(ArtistPaint.QuinacridoneRed);
+        AddPigment(ArtistPaint.HansaYellowOpaque);
+        AddPigment(ArtistPaint.CobaltBlue);
+
+        SetSliderValue(Sliders[0], 1.0);
     }
     
     private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
-    private void SetSliderValue(SliderSolidColour slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
-    private void SetSliderValue(SliderSolidColour slider, double value)
+    private static void SetSliderValue(SliderSolidColour slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
+    private static void SetSliderValue(SliderSolidColour slider, double value)
     {
         slider.Value = value;
         SetColour();
     }
 
-    private void SetColour()
+    private static void SetColour()
     {
-        State.Colour = new Unicolour(pigments, sliders.Select(x => x.Value).ToArray());
+        State.Colour = new Unicolour(Pigments.ToArray(), Sliders.Select(x => x.Value).ToArray());
     }
+
+    private static void AddPigment(Pigment pigment)
+    {
+        var colour = ColourLookup[pigment];
+        var name = NameLookup[pigment];
+        
+        Pigments.Add(pigment);
+        Colours.Add(colour);
+        Names.Add(name);
+        Sliders.Add(new SliderSolidColour(colour, name, string.Empty));
+    }
+
+    private static void RemovePigment(Pigment pigment)
+    {
+        var colour = ColourLookup[pigment];
+        var name = NameLookup[pigment];
+        var slider = Sliders.Single(x => x.LabelText == name);
+        
+        Pigments.Remove(pigment);
+        Colours.Remove(colour);
+        Names.Remove(name);
+        Sliders.Remove(slider);
+    }
+
+    private static void TogglePigment(Pigment pigment)
+    {
+        if (Pigments.Contains(pigment))
+        {
+            RemovePigment(pigment);
+            SetColour();
+        }
+        else
+        {
+            AddPigment(pigment);
+        }
+    }
+
+    private static bool IsSelected(Pigment pigment) => Pigments.Contains(pigment);
 }

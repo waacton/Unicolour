@@ -36,7 +36,7 @@
                     throw new ArgumentOutOfRangeException();
             }
 
-            <div class="column gap-medium text-on-colour monospace">
+            <div class="column gap-medium monospace @(useLightText ? "text-on-dark-colour" : "text-on-light-colour")">
                 <label>@rgbText</label>
                 @if (!string.IsNullOrEmpty(warningText))
                 {
@@ -99,12 +99,6 @@
     
     .colour-text {
         color: @(conversionError ? Light.Hex : cssInsideGamut);
-    }
-    
-    .text-on-colour {
-        color: @(useLightText ? Light.Hex : Dark.Hex);
-        filter: drop-shadow(0 0 0.075rem @(useLightText ? Dark.Hex : Light.Hex));
-        opacity: 0.9;
     }
     
     @@media screen and (max-width: 720px) {

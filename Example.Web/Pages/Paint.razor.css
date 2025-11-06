@@ -1,3 +1,9 @@
+.palette {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
 .paint-button {
     /* easiest way to centre button content it seems... */
     display: flex;
@@ -5,4 +11,21 @@
     justify-content: center;
     height: var(--input-height);
     width: var(--input-height);
+    font-size: 1.5rem;
+}
+
+    .paint-button:hover {
+        filter: var(--border-filter-light-strong);
+    }
+
+    .paint-button:active {
+        filter: var(--border-filter-light-strong);
+    }
+    
+.paint-button-deselected {
+    filter: none;
+}
+
+.paint-button-circle {
+    filter: var(--border-filter-light);
 }

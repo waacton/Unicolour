@@ -118,6 +118,9 @@ html, body {
     --icon-padding: 1rem;
     --border-width: 1px;
     --border-radius: 0.5rem;
+    --border-filter-light: drop-shadow(0 0 0.05rem var(--light));
+    --border-filter-light-strong: drop-shadow(0 0 0.075rem var(--light));
+    --border-filter-dark: drop-shadow(0 0 0.05rem var(--dark));
     --input-height: 3rem;
     --slider-thumb-width: calc(var(--input-height) / 2);
     --content-padding: 32px;
@@ -165,7 +168,7 @@ body {
     justify-content: space-between;
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
     padding: var(--icon-padding);
 
     z-index: 2;
@@ -192,7 +195,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
     padding-left: var(--icon-padding);
     padding-right: var(--icon-padding);
     
@@ -207,7 +210,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
 }
 
 .title-text {
@@ -249,7 +252,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
     padding: var(--dark-background-padding);
 }
 
@@ -260,16 +263,16 @@ select, button {
     height: var(--input-height);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
 }
 
     select:hover, button:hover {
-        filter: drop-shadow(0 0 0.075rem var(--light));
+        filter: var(--border-filter-light-strong);
     }
     
     select:active, button:active {
         border: var(--border-width) solid var(--less-dark);
-        filter: drop-shadow(0 0 0.075rem var(--light));
+        filter: var(--border-filter-light-strong);
     }
 
 .slider-wrapper {
@@ -286,7 +289,7 @@ input[type=range] {
     width: 100%;
     height: var(--input-height);
     border-radius: var(--border-radius);
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    filter: var(--border-filter-light);
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -355,6 +358,18 @@ input[type=range]::-moz-range-thumb {
 
 .text-on-light {
     color: var(--dark);
+}
+
+.text-on-light-colour {
+    color: var(--dark);
+    filter: var(--border-filter-light);
+    opacity: 0.9;
+}
+
+.text-on-dark-colour {
+    color: var(--light);
+    filter: var(--border-filter-dark);
+    opacity: 0.9;
 }
 
 .monospace {

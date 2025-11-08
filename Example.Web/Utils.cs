@@ -109,7 +109,7 @@ internal static class Utils
         { ColourSpace.Munsell, ["H", "V", "C"] }
     };
 
-    public static readonly Dictionary<Pigment, string> PigmentToName = new()
+    internal static readonly Dictionary<Pigment, string> PigmentToName = new()
     {
         { ArtistPaint.BoneBlack, "Bone Black" },
         { ArtistPaint.TitaniumWhite, "Titanium White" },
@@ -132,7 +132,7 @@ internal static class Utils
         { ArtistPaint.PhthaloGreenYellowShade, "Phthalo Green (Yellow Shade)" }
     };
 
-    public static readonly Dictionary<Pigment, Unicolour> PigmentToColour = new()
+    internal static readonly Dictionary<Pigment, Unicolour> PigmentToColour = new()
     {
         { ArtistPaint.BoneBlack, GetSinglePigmentColour(ArtistPaint.BoneBlack) },
         { ArtistPaint.TitaniumWhite, GetSinglePigmentColour(ArtistPaint.TitaniumWhite) },
@@ -156,4 +156,37 @@ internal static class Utils
     };
     
     private static Unicolour GetSinglePigmentColour(Pigment pigment) => new Unicolour([pigment], [1]).MapToRgbGamut(GamutMap.RgbClipping);
+        
+    internal static string[] IccAxes(string space)
+    {
+        return space switch
+        {
+            "XYZ " => ["X", "Y", "Z"],
+            "Lab " => ["L", "A", "B"],
+            "Luv " => ["L", "U", "V"],
+            "YCbr" => ["Y", "Cb", "Cr"],
+            "Yxy " => ["Y", "x", "y"],
+            "RGB " => ["R", "G", "B"],
+            "GRAY" => ["K"],
+            "HSV " => ["H", "S", "V"],
+            "HLS " => ["H", "L", "S"],
+            "CMYK" => ["C", "M", "Y", "K"],
+            "CMY " => ["C", "M", "Y"],
+            "2CLR" => ["C1", "C2"],
+            "3CLR" => ["C1", "C2", "C3"],
+            "4CLR" => ["C1", "C2", "C3", "C4"],
+            "5CLR" => ["C1", "C2", "C3", "C4", "C5"],
+            "6CLR" => ["C1", "C2", "C3", "C4", "C5", "C6"],
+            "7CLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7"],
+            "8CLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"],
+            "9CLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9"],
+            "ACLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10"],
+            "BCLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11"],
+            "CCLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12"],
+            "DCLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13"],
+            "ECLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14"],
+            "FCLR" => ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13", "C14", "C15"],
+            _ => []
+        };
+    }
 }

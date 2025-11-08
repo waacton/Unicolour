@@ -49,7 +49,7 @@ public partial class Paint : ComponentBase
     {
         var pigments = PigmentToSlider.Keys.ToArray();
         var weights = PigmentToSlider.Values.Select(x => x.Value).ToArray();
-        State.Colour = new Unicolour(pigments, weights);
+        State.Update(pigments, weights);
     }
 
     private static void AddPigment(Pigment pigment)

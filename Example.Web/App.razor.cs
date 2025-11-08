@@ -21,7 +21,7 @@ public partial class App : ComponentBase
     {
         UpdateDisplay();
 
-        State.OnChange += () =>
+        State.OnColourChange += () =>
         {
             UpdateDisplay();
             StateHasChanged();

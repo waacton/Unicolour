@@ -6,14 +6,33 @@ namespace Wacton.Unicolour.Example.Web.Pages;
 
 public partial class Print : ComponentBase
 {
-    private Profile? profile = null;
-    private Configuration config = new(iccConfig: new IccConfiguration(null, "Uncalibrated CMYK"));
     private readonly List<SliderGradientColour> sliders = [];
 
     protected override void OnInitialized()
     {
         CreateSliders();
         UpdateSliderGradients();
+        
+        // TODO: include this if wanting to show light picker at the same time
+        //       ... but think about handling everything as response to OnColourChange, not just this
+        // State.OnColourChange += () =>
+        // {
+        //     var profile = State.Config.Icc.Profile;
+        //     var axes = profile == null
+        //         ? ["C", "M", "Y", "K"] // uncalibrated
+        //         : Utils.IccAxes(profile.Header.DataColourSpace);
+        //
+        //     for (var i = 0; i < axes.Length; i++)
+        //     {
+        //         var value = State.Colour.Icc.Values[i];
+        //         sliders[i].Value = value;
+        //         sliders[i].ValueText = $"{value:F2}";
+        //     }
+        //
+        //     UpdateSliderGradients();
+        //     
+        //     StateHasChanged();
+        // };
     }
     
     private async Task SetProfile(InputFileChangeEventArgs args)
@@ -23,10 +42,10 @@ public partial class Print : ComponentBase
         var memory = new Memory<byte>(new byte[file.Size]);
         _ = await stream.ReadAsync(memory);
 
-        profile = new Profile(memory.ToArray(), file.Name);
-        config = new Configuration(iccConfig: new IccConfiguration(profile, profile.Name));
+        var profile = new Profile(memory.ToArray(), file.Name);
+        var config = new Configuration(iccConfig: new IccConfiguration(profile, profile.Name));
         
-        ConvertColourState();
+        State.Update(config);
         CreateSliders();
         UpdateSliderGradients();
     }
@@ -35,6 +54,7 @@ public partial class Print : ComponentBase
     {
         sliders.Clear();
 
+        var profile = State.Config.Icc.Profile;
         var axes = profile == null
             ? ["C", "M", "Y", "K"] // uncalibrated
             : Utils.IccAxes(profile.Header.DataColourSpace);
@@ -60,6 +80,7 @@ public partial class Print : ComponentBase
     private void SetSliderValue(SliderGradientColour slider, double value)
     {
         slider.Value = value;
+        slider.ValueText = $"{value:F2}";
         UpdateSliderGradients();
         UpdateColourState();
     }
@@ -85,15 +106,10 @@ public partial class Print : ComponentBase
         }
     }
 
-    private Unicolour GetColour(double[] values) => new(config, new Channels(values));
-    
-    private void ConvertColourState()
-    {
-        State.Colour = State.Colour.ConvertToConfiguration(config);
-    }
+    private static Unicolour GetColour(double[] values) => new(State.Config, new Channels(values));
     
     private void UpdateColourState()
     {
-        State.Colour = GetColour(sliders.Select(x => x.Value).ToArray());
+        State.Update(new Channels(sliders.Select(x => x.Value).ToArray()));
     }
 }

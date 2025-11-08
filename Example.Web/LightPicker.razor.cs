@@ -14,7 +14,7 @@ public partial class LightPicker : ComponentBase
         UpdateSliderProperties();
         UpdateSliderGradients();
 
-        State.OnChange += () =>
+        State.OnColourChange += () =>
         {
             UpdateSliderProperties();
             UpdateSliderGradients();
@@ -101,8 +101,5 @@ public partial class LightPicker : ComponentBase
         }
     }
 
-    private void UpdateColourState()
-    {
-        State.Colour = new Unicolour(colourSpace, sliders[0].Value, sliders[1].Value, sliders[2].Value);
-    }
+    private void UpdateColourState() => State.Update(colourSpace, sliders[0].Value, sliders[1].Value, sliders[2].Value);
 }

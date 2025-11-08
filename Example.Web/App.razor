@@ -17,7 +17,7 @@
     </a>
 </div>
 
-<div class="content">
+<div class="content monospace">
     <div class="max-width-wrapper">
         <div class="column gap-medium">
 
@@ -27,7 +27,7 @@
                     <Light />
                     break;
                 case Mode.Print:
-                    <h1>🚧</h1>
+                    <Print />
                     break;
                 case Mode.Paint:
                     <Paint />
@@ -36,7 +36,7 @@
                     throw new ArgumentOutOfRangeException();
             }
 
-            <div class="column gap-medium monospace @(useLightText ? "text-on-dark-colour" : "text-on-light-colour")">
+            <div class="column gap-medium @(useLightText ? "text-on-dark-colour" : "text-on-light-colour")">
                 <label>@rgbText</label>
                 @if (!string.IsNullOrEmpty(warningText))
                 {
@@ -49,29 +49,29 @@
     </div>
 </div>
 
-<div class="nav-bar">
+<div class="nav-bar monospace">
     <div class="nav-item">
-        <label class="monospace nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">PRINT</label>
-        <button class="monospace nav-button @(mode == Mode.Print ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Print))">
+        <label class="nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">PRINT</label>
+        <button class="nav-button @(mode == Mode.Print ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Print))">
             <span class=@(mode == Mode.Print ? "text-on-colour" : "text-on-dark")>🖨️</span>
         </button>
-        <label class="monospace nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">CMYK</label>
+        <label class="nav-label @(mode == Mode.Print ? "colour-text" : "text-on-dark")">CMYK</label>
     </div>
     
     <div class="nav-item">
-        <label class="monospace nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">LIGHT</label>
-        <button class="monospace nav-button @(mode == Mode.Light ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Light))">
+        <label class="nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">LIGHT</label>
+        <button class="nav-button @(mode == Mode.Light ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Light))">
             <span class=@(mode == Mode.Light ? "text-on-colour" : "text-on-dark")>🌈</span>
         </button>
-        <label class="monospace nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">RGB+</label>
+        <label class="nav-label @(mode == Mode.Light ? "colour-text" : "text-on-dark")">RGB+</label>
     </div>
 
     <div class="nav-item">
-        <label class="monospace nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">PAINT</label>
-        <button class="monospace nav-button @(mode == Mode.Paint ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Paint))">
+        <label class="nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">PAINT</label>
+        <button class="nav-button @(mode == Mode.Paint ? "colour-background" : "")" @onclick="@(() => SetMode(Mode.Paint))">
             <span class=@(mode == Mode.Paint ? "text-on-colour" : "text-on-dark")>🎨</span>
         </button>
-        <label class="monospace nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">RYB</label>
+        <label class="nav-label @(mode == Mode.Paint ? "colour-text" : "text-on-dark")">RYB</label>
     </div>
 </div>
 

@@ -6,7 +6,7 @@
         <LightPicker />
     }
 
-    <button class="dual-button monospace @(dualMode ?  "colour-background" : "")" @onclick="ToggleDualMode">
+    <button class="dual-button @(dualMode ?  "colour-background" : "")" @onclick="ToggleDualMode">
         <span class=@(dualMode ?  "text-on-colour" : "")>☰</span>
     </button>
 </div>

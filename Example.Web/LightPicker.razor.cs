@@ -73,10 +73,10 @@ public partial class LightPicker : ComponentBase
         }
 
         slider.Value = value;
-        slider.Range = range;
-        slider.Step = step;
         slider.ValueText = valueText;
         slider.AxisText = Utils.SpaceToAxes[colourSpace][index];
+        slider.Range = range;
+        slider.Step = step;
     }
     
     private void UpdateSliderGradients()

@@ -1,9 +1,9 @@
 ﻿<div class="column gap-large dark-background">
     <div class="column gap-medium">
         <div class="palette gap-small">
-            @foreach (var pigment in allPigments)
+            @foreach (var pigment in AllPigments)
             {
-                @if (IsSelected(pigment))
+                @if (IsDisplayed(pigment))
                 {
                     <button class="paint-button" 
                             style="background: @Utils.PigmentToColour[pigment].Hex;" 
@@ -24,7 +24,7 @@
         </div>
 
         <div class="column gap-small">
-            @foreach (var slider in Sliders)
+            @foreach (var slider in PigmentToSlider.Values)
             {
                 <div class="slider-wrapper">
                     <input class="slider-gradient @(slider.InRange ? "show-thumb" : "hide-thumb")"

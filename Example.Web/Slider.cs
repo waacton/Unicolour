@@ -1,6 +1,6 @@
-namespace Wacton.Unicolour.Example.Web;
+﻿namespace Wacton.Unicolour.Example.Web;
 
-internal class SliderGradientColour
+public abstract class Slider
 {
     internal double Value { get; set; }
     internal string ValueText { get; set; } = null!;
@@ -11,8 +11,19 @@ internal class SliderGradientColour
     internal double Min => Range.Min;
     internal double Max => Range.Max;
     internal bool InRange => Value >= Min && Value <= Max;
-    
+}
+
+internal class SliderGradientColour : Slider
+{
     internal Unicolour[] Stops { get; set; } = [];
     internal string CssGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, 100)));
     internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInRgbGamut ? 100 : 50)));
+}
+
+internal class SliderSolidColour : Slider
+{
+    internal Unicolour Colour { get; set; } = null!;
+    internal string LabelText { get; set; } = null!;
+    internal string CssBackground => Colour.Hex;
+    internal bool UseLightLabelText => Colour.Contrast(App.Light) > Colour.Contrast(App.Dark);
 }

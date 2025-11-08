@@ -10,7 +10,7 @@ public partial class Paint : ComponentBase
     // private readonly static Pigment yellowPigment = PigmentGenerator.From(new("#FFFF00"));
     // private readonly static Pigment bluePigment = PigmentGenerator.From(new("#0000FF"));
 
-    private static readonly Pigment[] allPigments =
+    private static readonly Pigment[] AllPigments =
     [
         ArtistPaint.QuinacridoneMagenta, ArtistPaint.QuinacridoneRed, ArtistPaint.PyrroleRed, ArtistPaint.CadmiumRedLight,
         ArtistPaint.PyrroleOrange, ArtistPaint.CadmiumOrange,
@@ -20,25 +20,20 @@ public partial class Paint : ComponentBase
         ArtistPaint.DioxazinePurple,
         ArtistPaint.BoneBlack, ArtistPaint.TitaniumWhite
     ];
-
-    private static readonly List<Pigment> Pigments = [];
-    private static readonly List<string> Names = [];
-    // private static readonly List<string> axes = ["R", "Y", "B"]; // TODO: can slider axis text be merged with label, and positioned differently for long names?
-    private static readonly List<Unicolour> Colours = [];
-    private static readonly List<SliderSolidColour> Sliders = [];
+    
+    private static readonly Dictionary<Pigment, SliderSolidColour> PigmentToSlider = new();
 
     protected override void OnInitialized()
     {
-        Pigments.Clear();
-        Names.Clear();
-        Colours.Clear();
-        Sliders.Clear();
+        PigmentToSlider.Clear();
 
         AddPigment(ArtistPaint.QuinacridoneRed);
         AddPigment(ArtistPaint.HansaYellowOpaque);
         AddPigment(ArtistPaint.CobaltBlue);
 
-        SetSliderValue(Sliders[0], 1.0);
+        SetSliderValue(PigmentToSlider[ArtistPaint.QuinacridoneRed], 1.0);
+        SetSliderValue(PigmentToSlider[ArtistPaint.HansaYellowOpaque], 0.0);
+        SetSliderValue(PigmentToSlider[ArtistPaint.CobaltBlue], 0.0);
     }
     
     private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
@@ -46,40 +41,38 @@ public partial class Paint : ComponentBase
     private static void SetSliderValue(SliderSolidColour slider, double value)
     {
         slider.Value = value;
+        slider.ValueText = $"{value:F2}";
         SetColour();
     }
 
     private static void SetColour()
     {
-        State.Colour = new Unicolour(Pigments.ToArray(), Sliders.Select(x => x.Value).ToArray());
+        var pigments = PigmentToSlider.Keys.ToArray();
+        var weights = PigmentToSlider.Values.Select(x => x.Value).ToArray();
+        State.Colour = new Unicolour(pigments, weights);
     }
 
     private static void AddPigment(Pigment pigment)
     {
-        var colour = Utils.PigmentToColour[pigment];
-        var name = Utils.PigmentToName[pigment];
-        
-        Pigments.Add(pigment);
-        Colours.Add(colour);
-        Names.Add(name);
-        Sliders.Add(new SliderSolidColour(colour, name, string.Empty));
-    }
+        var slider = new SliderSolidColour
+        {
+            Colour = Utils.PigmentToColour[pigment].MapToRgbGamut(GamutMap.RgbClipping), 
+            LabelText = Utils.PigmentToName[pigment], 
+            Range = new(0, 1), 
+            Step = 0.01
+        };
 
+        PigmentToSlider.Add(pigment, slider);
+    }
+    
     private static void RemovePigment(Pigment pigment)
     {
-        var colour = Utils.PigmentToColour[pigment];
-        var name = Utils.PigmentToName[pigment];
-        var slider = Sliders.Single(x => x.LabelText == name);
-        
-        Pigments.Remove(pigment);
-        Colours.Remove(colour);
-        Names.Remove(name);
-        Sliders.Remove(slider);
+        PigmentToSlider.Remove(pigment);
     }
 
     private static void TogglePigment(Pigment pigment)
     {
-        if (Pigments.Contains(pigment))
+        if (IsDisplayed(pigment))
         {
             RemovePigment(pigment);
             SetColour();
@@ -90,5 +83,5 @@ public partial class Paint : ComponentBase
         }
     }
 
-    private static bool IsSelected(Pigment pigment) => Pigments.Contains(pigment);
+    private static bool IsDisplayed(Pigment pigment) => PigmentToSlider.ContainsKey(pigment);
 }

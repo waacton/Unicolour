@@ -335,18 +335,18 @@ input[type=range]::-moz-range-thumb {
     background-position: center, center, center;
 }
 
-.slider-value-text {
+.slider-value {
     flex: 0 0 4rem;
     text-align: right;
     margin: 0 0.5rem;
 }
 
-.slider-axis-text {
+.slider-label-right {
     flex: 0 0 1.25rem;
     text-align: left;
 }
 
-.slider-label {
+.slider-label-inside {
     position: absolute;
     left: calc(var(--slider-thumb-width) + 0.5rem);
     pointer-events: none;

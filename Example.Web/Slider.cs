@@ -4,7 +4,7 @@ public abstract class Slider
 {
     internal double Value { get; set; }
     internal string ValueText { get; set; } = null!;
-    internal string AxisText { get; set; } = null!;
+    internal string LabelText { get; set; } = null!;
     internal Range Range { get; set; } = null!;
     internal double Step { get; set; }
     
@@ -23,7 +23,6 @@ internal class SliderGradientColour : Slider
 internal class SliderSolidColour : Slider
 {
     internal Unicolour Colour { get; set; } = null!;
-    internal string LabelText { get; set; } = null!;
     internal string CssBackground => Colour.Hex;
     internal bool UseLightLabelText => Colour.Contrast(App.Light) > Colour.Contrast(App.Dark);
 }

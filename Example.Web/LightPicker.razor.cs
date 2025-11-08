@@ -74,7 +74,7 @@ public partial class LightPicker : ComponentBase
 
         slider.Value = value;
         slider.ValueText = valueText;
-        slider.AxisText = Utils.SpaceToAxes[colourSpace][index];
+        slider.LabelText = Utils.SpaceToAxes[colourSpace][index];
         slider.Range = range;
         slider.Step = step;
     }

@@ -6,17 +6,17 @@
                 @if (IsSelected(pigment))
                 {
                     <button class="paint-button" 
-                            style="background: @ColourLookup[pigment].Hex;" 
+                            style="background: @Utils.PigmentToColour[pigment].Hex;" 
                             @onclick="() => RemovePigment(pigment)"
-                            title="Toggle @(NameLookup[pigment])">
+                            title="Toggle @Utils.PigmentToName[pigment]">
                     </button>
                 }
                 else
                 {
                     <button class="paint-button paint-button-deselected" 
-                            style="color: @ColourLookup[pigment].Hex;" 
+                            style="color: @Utils.PigmentToColour[pigment].Hex;" 
                             @onclick="() => AddPigment(pigment)"
-                            title="Toggle @(NameLookup[pigment])">
+                            title="Toggle @Utils.PigmentToName[pigment]">
                         <span class="paint-button-circle">⬤</span>
                     </button>
                 }

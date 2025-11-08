@@ -7,7 +7,7 @@ public partial class LightPicker : ComponentBase
     private ColourSpace colourSpace = ColourSpace.Rgb255;
     private readonly SliderGradientColour[] sliders = [new(), new(), new()];
 
-    private static ColourSpace[] ColourSpaceOptions = ColourLookup.RangeLookup.Keys.OrderBy(x => x.ToString()).ToArray();
+    private static ColourSpace[] ColourSpaceOptions = Utils.SpaceToRange.Keys.OrderBy(space => space.ToString()).ToArray();
     
     protected override void OnInitialized()
     {
@@ -52,49 +52,31 @@ public partial class LightPicker : ComponentBase
     private void UpdateSlider(int index, double value)
     {
         var slider = sliders[index];
-        var range = ColourLookup.RangeLookup[colourSpace][index];
+        var range = Utils.SpaceToRange[colourSpace][index];
+
+        double step;
+        string valueText;
+        
+        // this approach could be used for explicit, granular control over how sliders behave for each axis in each space
+        // but default fallbacks are generally good enough for this example
+        if (colourSpace == ColourSpace.Munsell && index == 0)
+        {
+            step = 0.36;
+
+            var hue = Hue.ToMunsell(value);
+            valueText = $"{hue.number:F1}{hue.letter}";
+        }
+        else
+        {
+            step = range.DefaultStep;
+            valueText = range.DefaultValueString(value);
+        }
 
         slider.Value = value;
         slider.Range = range;
-        slider.Step = GetStep();
-        slider.ValueText = GetValueText();
-        slider.AxisText = ColourLookup.AxisLookup[colourSpace][index];
-        return;
-
-        double GetStep()
-        {
-            // this approach could be used for all spaces and triplet indexes for much finer control
-            if (colourSpace == ColourSpace.Munsell && index == 0)
-            {
-                return 0.36; // 0.1 munsell hue
-            }
-        
-            return range.Distance switch
-            {
-                < 0.5 => 0.001,
-                < 5 => 0.01,
-                < 50 => 0.1,
-                _ => 1
-            };
-        }
-            
-        string GetValueText()
-        {
-            // this approach could be used for all spaces and triplet indexes for much finer control
-            if (colourSpace == ColourSpace.Munsell && index == 0)
-            {
-                var hue = Hue.ToMunsell(value);
-                return $"{hue.number:F1}{hue.letter}";
-            }
-        
-            return range.Distance switch
-            {
-                < 0.5 => $"{value:F3}",
-                < 5 => $"{value:F2}",
-                < 50 => $"{value:F1}",
-                _ => $"{value:F0}"
-            };
-        }
+        slider.Step = step;
+        slider.ValueText = valueText;
+        slider.AxisText = Utils.SpaceToAxes[colourSpace][index];
     }
     
     private void UpdateSliderGradients()

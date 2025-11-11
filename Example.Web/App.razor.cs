@@ -26,6 +26,8 @@ public partial class App : ComponentBase
             UpdateDisplay();
             StateHasChanged();
         };
+        
+        State.OnBusyChange += StateHasChanged;
     }
 
     private void UpdateDisplay()

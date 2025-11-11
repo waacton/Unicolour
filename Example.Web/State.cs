@@ -6,6 +6,7 @@ namespace Wacton.Unicolour.Example.Web;
 // not worth the effort of state injection or cascading callbacks
 public static class State
 {
+    public static event Action? OnColourChange;
     private static Unicolour colour = new("ff1493");
     public static Unicolour Colour
     {
@@ -16,8 +17,23 @@ public static class State
             OnColourChange?.Invoke();
         }
     }
+    
+    public static event Action? OnBusyChange;
+    private static string busyMessage = string.Empty;
+    public static string BusyMessage
+    {
+        get => busyMessage;
+        private set
+        {
+            busyMessage = value;
+            OnBusyChange?.Invoke();
+        }
+    }
 
-    public static Configuration Config { get; private set; } = new(iccConfig: new IccConfiguration(profile: null, "⚠️ Uncalibrated CMYK"));
+    public static bool IsBusy => !string.IsNullOrEmpty(BusyMessage);
+
+    public static readonly Configuration NoConfig = new(iccConfig: new IccConfiguration(profile: null, "⚠️ Uncalibrated CMYK"));
+    public static Configuration Config { get; private set; } = NoConfig;
     
     public static void Update(ColourSpace colourSpace, double first, double second, double third)
     {
@@ -40,5 +56,13 @@ public static class State
         colour = colour.ConvertToConfiguration(config); // avoid triggering onColourChange; colour isn't actually changing
     }
 
-    public static event Action? OnColourChange;
+    public static void SetBusy(string message)
+    {
+        BusyMessage = message.ToUpper();
+    }
+    
+    public static void ClearBusy()
+    {
+        BusyMessage = string.Empty;
+    }
 }

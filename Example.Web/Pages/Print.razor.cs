@@ -7,7 +7,7 @@ namespace Wacton.Unicolour.Example.Web.Pages;
 public partial class Print : ComponentBase
 {
     private readonly List<SliderGradientColour> sliders = [];
-
+    
     protected override void OnInitialized()
     {
         CreateSliders();
@@ -37,17 +37,28 @@ public partial class Print : ComponentBase
     
     private async Task SetProfile(InputFileChangeEventArgs args)
     {
+        State.SetBusy("Reading profile data...");
         var file = args.File;
-        await using var stream = file.OpenReadStream(maxAllowedSize: 32_768_000); // 32,000 KB - following that default 512000 == 500 KB
         var memory = new Memory<byte>(new byte[file.Size]);
+        var stream = file.OpenReadStream(maxAllowedSize: 32_768_000); // 32,000 KB - following that default 512000 == 500 KB
         _ = await stream.ReadAsync(memory);
 
-        var profile = new Profile(memory.ToArray(), file.Name);
-        var config = new Configuration(iccConfig: new IccConfiguration(profile, profile.Name));
+        Configuration config;
+        
+        try
+        {
+            var profile = new Profile(memory.ToArray(), file.Name);
+            config = new Configuration(iccConfig: new IccConfiguration(profile, profile.Name));
+        }
+        catch (Exception)
+        {
+            config = State.NoConfig;
+        }
         
         State.Update(config);
         CreateSliders();
         UpdateSliderGradients();
+        State.ClearBusy();
     }
     
     private void CreateSliders()

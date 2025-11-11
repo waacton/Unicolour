@@ -5,6 +5,7 @@ namespace Wacton.Unicolour.Icc;
 internal class Clut
 {
     private readonly Array clutGrid;
+    private readonly List<int[]> inputBinaryVectors;
     
     internal int InputChannels { get; }
     internal int GridPoints { get; }
@@ -17,6 +18,7 @@ internal class Clut
         GridPoints = gridPoints;
         OutputChannels = outputChannels;
         clutGrid = InitialiseClutGrid(values);
+        inputBinaryVectors = GenerateVectorsOfBaseN(inputChannels, 2);
     }
     
     private Array InitialiseClutGrid(double[] values)
@@ -73,22 +75,21 @@ internal class Clut
     {
         var clutIndexes = clutInputs.Select(clutInput => new ClutIndex(clutInput, GridPoints)).ToList();
         
-        var binaryVectors = GenerateVectorsOfBaseN(InputChannels, 2);
         var weightedOutputs = new List<double[]>();
-        foreach (var binaryVector in binaryVectors)
+        foreach (var inputBinaryVector in inputBinaryVectors)
         {
-            var inputChannelIndexes = new List<int>();
-            var distanceComponents = new List<double>();
-            for (var i = 0; i < binaryVector.Length; i++)
+            var inputChannelIndexes = new int[InputChannels];
+            var distanceComponents = new double[InputChannels];
+            for (var i = 0; i < InputChannels; i++)
             {
-                var binary = binaryVector[i];
+                var binary = inputBinaryVector[i];
                 var clutIndex = clutIndexes[i];
-                inputChannelIndexes.Add(binary == 0 ? clutIndex.Lower : clutIndex.Upper);
-                distanceComponents.Add(binary == 0 ? clutIndex.DistanceToLower : clutIndex.DistanceToUpper);
+                inputChannelIndexes[i] = binary == 0 ? clutIndex.Lower : clutIndex.Upper;
+                distanceComponents[i] = binary == 0 ? clutIndex.DistanceToLower : clutIndex.DistanceToUpper;
             }
 
-            var output = GetOutput(inputChannelIndexes.ToArray());
-            var distance = distanceComponents.Aggregate((accumulate, item) => accumulate * item);
+            var output = GetOutput(inputChannelIndexes);
+            var distance = Product(distanceComponents);
             var weightedOutput = output.Select(x => x * distance).ToArray();
             weightedOutputs.Add(weightedOutput);
         }
@@ -96,6 +97,18 @@ internal class Clut
         var outputComponents = Enumerable.Range(0, OutputChannels).Select(outputChannel => weightedOutputs.Select(x => x[outputChannel])).ToArray();
         var outputSummed = outputComponents.Select(x => x.Sum()).ToArray();
         return outputSummed;
+    }
+
+    // avoiding .Aggregate((accumulate, item) => accumulate * item) to improve performance
+    private static double Product(double[] values)
+    {
+        var result = 1.0;
+        foreach (var value in values)
+        {
+            result *= value;
+        }
+
+        return result;
     }
 
     private static List<int[]> GenerateVectorsOfBaseN(int n, int @base)
@@ -150,12 +163,21 @@ internal class Clut
         var output = new double[OutputChannels];
         for (var i = 0; i < OutputChannels; i++)
         {
-            var indexes = inputChannelIndexes.Concat(new[] { i }).ToArray();
+            var indexes = Append(inputChannelIndexes, i);
             var value = (double)clutGrid.GetValue(indexes);
             output[i] = value;
         }
 
         return output;
+    }
+
+    private static int[] Append(int[] array, int value)
+    {
+        var count = array.Length;
+        var newArray = new int[count + 1];
+        Array.Copy(array, newArray, count);
+        newArray[count] = value;
+        return newArray;
     }
     
     private class ClutIndex

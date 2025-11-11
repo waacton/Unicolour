@@ -125,6 +125,18 @@
     .busy-text {
         font-weight: 600;
         letter-spacing: 0.125rem;
+    } 
+
+    @@media screen and (max-width: 720px) {
+        body, .colour-background  {
+            background-image: linear-gradient(
+                to bottom,
+                @cssInsideGamut,
+                @cssInsideGamut 50%,
+                @cssOutsideGamut calc(100vh - var(--nav-bar-height-mobile)),
+                @cssOutsideGamut
+            ), var(--dark-stripes);
+        }
     }
 
     /* 
@@ -149,16 +161,4 @@
         to { background-position: -200% 0 }
     }
     */
-    
-    @@media screen and (max-width: 720px) {
-        body, .colour-background  {
-            background-image: linear-gradient(
-                to bottom,
-                @cssInsideGamut,
-                @cssInsideGamut 50%,
-                @cssOutsideGamut calc(100vh - var(--nav-bar-height-mobile)),
-                @cssOutsideGamut
-            ), var(--dark-stripes);
-        }
-    }
 </style>

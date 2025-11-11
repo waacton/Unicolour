@@ -13,6 +13,11 @@ public partial class Print : ComponentBase
         CreateSliders();
         UpdateSliderGradients();
         
+        // conversion to/from ICC profile does not typically roundtrip
+        // if a profile is loaded, and a vibrant RGB is chosen, the output CMYK will be duller variation
+        // so update the colour to reflect what the RGB of the duller CMYK converts to
+        UpdateColourState();
+        
         // TODO: include this if wanting to show light picker at the same time
         //       ... but think about handling everything as response to OnColourChange, not just this
         // State.OnColourChange += () =>

@@ -39,6 +39,7 @@ void ProcessDocsReadme(string readmePath)
     // GitHub Pages currently doesn't support alerts or Mermaid 😑 - just remove them
     textForDocs = Regex.Replace(textForDocs, @"<details>(.|\n)*?<\/details>", string.Empty);
     textForDocs = textForDocs.Replace("> [!NOTE]", string.Empty);
+    textForDocs = textForDocs.Replace("> [!TIP]", string.Empty);
 
     var ukText = textForDocs;
     ukText += Environment.NewLine;
@@ -68,6 +69,7 @@ void ProcessDocsReadme(string readmePath)
         .Replace("-colour", "-color")
         .Replace("colourful", "colorful")
         .Replace(" grey ", " gray ")
+        .Replace(" grey.", " gray.")
         // .Replace("ise ", "ize ")
         .Replace("ised ", "ized ")
         .Replace("ises ", "izes ")
@@ -154,9 +156,10 @@ void Quickstart()
     Console.WriteLine(difference); // 100.0000
 
     var equalEnergy = new Unicolour(ColourSpace.Xyz, 0.5, 0.5, 0.5);
-    Console.WriteLine(equalEnergy.Chromaticity.Xy); // (0.3333, 0.3333)
-    Console.WriteLine(equalEnergy.Chromaticity.Uv); // (0.2105, 0.3158)
-    Console.WriteLine(equalEnergy.Temperature); // 5455.5 K (Δuv -0.00442)
+    Console.WriteLine(equalEnergy.RelativeLuminance);  // 0.5
+    Console.WriteLine(equalEnergy.Chromaticity.Xy);    // (0.3333, 0.3333)
+    Console.WriteLine(equalEnergy.Chromaticity.Uv);    // (0.2105, 0.3158)
+    Console.WriteLine(equalEnergy.Temperature);        // 5455.5 K (Δuv -0.00442)
     Console.WriteLine(equalEnergy.DominantWavelength); // 596.1
 }
 
@@ -164,12 +167,24 @@ void FeatureConvert()
 {
     Unicolour colour = new(ColourSpace.Rgb255, 192, 255, 238);
     var (l, c, h) = colour.Oklch;
+    
+    void Tip1()
+    {
+        Unicolour pink = new("ff1493");
+        var hex = pink.Hex; // #FF1493
+    }
+
+    void Tip2()
+    {
+        Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
+        Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
+    }
 }
 
 void FeatureMix()
 {
-    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0);
-    var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0);
+    var red = new Unicolour(ColourSpace.Rgb, 1.0, 0.0, 0.0, alpha: 1.0);
+    var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 1.0);
     var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
     var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
     var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
@@ -194,17 +209,31 @@ void FeatureCompare()
 void FeatureGamutMap()
 {
     var veryRed = new Unicolour(ColourSpace.Rgb, 1.25, -0.39, -0.14);
-    var isInRgb = veryRed.IsInRgbGamut;
-    var normalRed = veryRed.MapToRgbGamut();
-    
-    var isInPointer = veryRed.IsInPointerGamut;
-    var surfaceRed = veryRed.MapToPointerGamut();
+
+    var isDisplayable = veryRed.IsInRgbGamut;
+    var displayRed = veryRed.MapToRgbGamut();
+
+    var isEmpiricalSurface = veryRed.IsInPointerGamut;
+    var empiricalRed = veryRed.MapToPointerGamut();
+
+    var isTheoreticalSurface = veryRed.IsInMacAdamLimits;
+    var theoreticalRed = veryRed.MapToMacAdamLimits();
 }
 
 void FeatureCvd()
 {
     var colour = new Unicolour(ColourSpace.Rgb255, 192, 255, 238);
-    var noRed = colour.Simulate(Cvd.Protanopia);
+    var missingRed = colour.Simulate(Cvd.Protanopia);
+    var defectiveRed = colour.Simulate(Cvd.Protanomaly, 0.5);
+}
+
+void FeatureColourimetric()
+{
+    var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+    var chromaticity = grey.Chromaticity;
+    var luminance = grey.RelativeLuminance;
+
+    var white = new Unicolour(chromaticity, luminance: 1.0);
 }
 
 void FeatureTemperature()
@@ -224,6 +253,8 @@ void FeatureWavelength()
     var hyperGreen = new Unicolour(chromaticity);
     var dominantWavelength = hyperGreen.DominantWavelength;
     var excitationPurity = hyperGreen.ExcitationPurity;
+    
+    var laserRed = new Unicolour(ColourSpace.Wxy, 670, 1.0, 0.5);
 }
 
 void FeatureImaginary()

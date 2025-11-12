@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Oklab : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double L => First;
     public double A => Second;
     public double B => Third;
@@ -14,9 +14,7 @@ public record Oklab : ColourRepresentation
     internal Oklab(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Oklab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
 
-    protected override string FirstString => $"{L:F2}";
-    protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{B:+0.00;-0.00;0.00}";
+    protected override string String => $"{L:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

@@ -9,7 +9,7 @@ public static class EbnerFairchild
     public static readonly Unicolour White = new(Config, ColourSpace.Xyz, WhiteXyz.Tuple);
     
     public static readonly Unicolour Hue0Ref = new(Config, ColourSpace.Xyz, 0.4092, 0.2812, 0.3060);
-    public static readonly List<Unicolour> AllHue0 = new()
+    public static readonly IEnumerable<Unicolour> AllHue0 = new[]
     {
         Hue0Ref,
         new(Config, ColourSpace.Xyz, 0.024951, 0.019086, 0.020329),	
@@ -35,7 +35,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue24Ref = new(Config, ColourSpace.Xyz, 0.3953, 0.2812, 0.1845);
-    public static readonly List<Unicolour> AllHue24 = new()
+    public static readonly IEnumerable<Unicolour> AllHue24 = new[]
     {
         Hue24Ref,
         new(Config, ColourSpace.Xyz, 0.024364, 0.019086, 0.014688),	
@@ -61,7 +61,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue48Ref = new(Config, ColourSpace.Xyz, 0.3577, 0.2812, 0.1125);
-    public static readonly List<Unicolour> AllHue48 = new()
+    public static readonly IEnumerable<Unicolour> AllHue48 = new[]
     {
         Hue48Ref,
         new(Config, ColourSpace.Xyz, 0.036781, 0.029891, 0.014811),	
@@ -87,7 +87,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue72Ref = new(Config, ColourSpace.Xyz, 0.5151, 0.4828, 0.1778);
-    public static readonly List<Unicolour> AllHue72 = new()
+    public static readonly IEnumerable<Unicolour> AllHue72 = new[]
     {
         Hue72Ref,
         new(Config, ColourSpace.Xyz, 0.033197, 0.029891, 0.011480),	
@@ -113,7 +113,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue96Ref = new(Config, ColourSpace.Xyz, 0.5184, 0.5668, 0.2112);
-    public static readonly List<Unicolour> AllHue96 = new()
+    public static readonly IEnumerable<Unicolour> AllHue96 = new[]
     {
         Hue96Ref,
         new(Config, ColourSpace.Xyz, 0.028909, 0.029891, 0.010142),	
@@ -139,7 +139,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue120Ref = new(Config, ColourSpace.Xyz, 0.3765, 0.4828, 0.1994);
-    public static readonly List<Unicolour> AllHue120 = new()
+    public static readonly IEnumerable<Unicolour> AllHue120 = new[]
     {
         Hue120Ref,
         new(Config, ColourSpace.Xyz, 0.023295, 0.029891, 0.012151),	
@@ -165,7 +165,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue144Ref = new(Config, ColourSpace.Xyz, 0.2873, 0.4828, 0.2109);
-    public static readonly List<Unicolour> AllHue144 = new()
+    public static readonly IEnumerable<Unicolour> AllHue144 = new[]
     {
         Hue144Ref,
         new(Config, ColourSpace.Xyz, 0.020570, 0.029891, 0.016832),	
@@ -191,7 +191,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue168Ref = new(Config, ColourSpace.Xyz, 0.3076, 0.4828, 0.4277);
-    public static readonly List<Unicolour> AllHue168 = new()
+    public static readonly IEnumerable<Unicolour> AllHue168 = new[]
     {
         Hue168Ref,
         new(Config, ColourSpace.Xyz, 0.021080, 0.029891, 0.027904),	
@@ -217,7 +217,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue192Ref = new(Config, ColourSpace.Xyz, 0.3488, 0.4828, 0.6019);
-    public static readonly List<Unicolour> AllHue192 = new()
+    public static readonly IEnumerable<Unicolour> AllHue192 = new[]
     {
         Hue192Ref,
         new(Config, ColourSpace.Xyz, 0.023453, 0.029891, 0.037174),	
@@ -243,7 +243,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue216Ref = new(Config, ColourSpace.Xyz, 0.3787, 0.4828, 0.7231);
-    public static readonly List<Unicolour> AllHue216 = new()
+    public static readonly IEnumerable<Unicolour> AllHue216 = new[]
     {
         Hue216Ref,
         new(Config, ColourSpace.Xyz, 0.024666, 0.029891, 0.044851),	
@@ -269,7 +269,7 @@ public static class EbnerFairchild
     };
 
     public static readonly Unicolour Hue240Ref = new(Config, ColourSpace.Xyz, 0.3421, 0.4075, 0.7197);
-    public static readonly List<Unicolour> AllHue240 = new()
+    public static readonly IEnumerable<Unicolour> AllHue240 = new[]
     {
         Hue240Ref,
         new(Config, ColourSpace.Xyz, 0.026197, 0.029891, 0.049052),	
@@ -294,7 +294,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue264Ref = new(Config, ColourSpace.Xyz, 0.3149, 0.3405, 0.6623);
-    public static readonly List<Unicolour> AllHue264 = new()
+    public static readonly IEnumerable<Unicolour> AllHue264 = new[]
     {
         Hue264Ref,
         new(Config, ColourSpace.Xyz, 0.027982, 0.029891, 0.086685),	
@@ -320,7 +320,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue288Ref = new(Config, ColourSpace.Xyz, 0.2051, 0.1842, 0.5713);
-    public static readonly List<Unicolour> AllHue288 = new()
+    public static readonly IEnumerable<Unicolour> AllHue288 = new[]
     {
         Hue288Ref,
         new(Config, ColourSpace.Xyz, 0.030398, 0.029891, 0.061233),	
@@ -349,7 +349,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue312Ref = new(Config, ColourSpace.Xyz, 0.2765, 0.1842, 0.6201);
-    public static readonly List<Unicolour> AllHue312 = new()
+    public static readonly IEnumerable<Unicolour> AllHue312 = new[]
     {
         Hue312Ref,
         new(Config, ColourSpace.Xyz, 0.037048, 0.029891, 0.059648),	
@@ -379,7 +379,7 @@ public static class EbnerFairchild
     };
     
     public static readonly Unicolour Hue336Ref = new(Config, ColourSpace.Xyz, 0.4562, 0.2812, 0.5520);
-    public static readonly List<Unicolour> AllHue336 = new()
+    public static readonly IEnumerable<Unicolour> AllHue336 = new[]
     {
         Hue336Ref,
         new(Config, ColourSpace.Xyz, 0.059792, 0.029891, 0.067983),	

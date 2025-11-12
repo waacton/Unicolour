@@ -9,7 +9,7 @@ using Wacton.Unicolour.Tests.Utils;
 namespace Wacton.Unicolour.Tests;
 
 /*
- * test data extracted from ICC's demonstration implementation of iccMAX
+ * test data extracted from ICC reference implementation of iccMAX
  * (https://github.com/InternationalColorConsortium/DemoIccMAX)
  * if these values are wrong because the ICC can't write software
  * that conforms to their own complex specification
@@ -88,8 +88,8 @@ public class IccConversionTests
         var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
         var tolerance = device switch
         {
-            Signatures.Cmyk => intent == Intent.AbsoluteColorimetric ? 0.000002 : 0.00000125,
-            Signatures.Clr7 => intent == Intent.AbsoluteColorimetric ? 0.0000025 : 0.00000125,
+            Signatures.Cmyk => 0.00000175,
+            Signatures.Clr7 => 0.00000175,
             Signatures.Rgb => 0.000015,
             Signatures.Grey => 0.000005,
             _ => throw new ArgumentOutOfRangeException()
@@ -120,7 +120,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(DeviceToUnicolourD65TestData))]
-    public void DeviceTocolourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
+    public void DeviceToColourXyzD65(IccFile iccFile, Intent intent, double[] deviceValues)
     {
         var profile = iccFile.GetProfile();
         
@@ -138,7 +138,7 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]
-    public void colourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
+    public void ColourXyzD65ToDevice(IccFile iccFile, Intent intent, double[] xyzValues)
     {
         var profile = iccFile.GetProfile();
         

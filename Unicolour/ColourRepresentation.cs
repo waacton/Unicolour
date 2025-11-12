@@ -5,7 +5,7 @@ public abstract record ColourRepresentation
     protected readonly double First;
     protected readonly double Second;
     protected readonly double Third;
-    protected abstract int? HueIndex { get; }
+    protected internal abstract int? HueIndex { get; }
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     public (double, double, double) Tuple => (First, Second, Third);
     internal ColourHeritage Heritage { get; }
@@ -49,9 +49,7 @@ public abstract record ColourRepresentation
         Heritage = heritage;
     }
 
-    protected abstract string FirstString { get; }
-    protected abstract string SecondString { get; }
-    protected abstract string ThirdString { get; }
+
     
     public double[] ToArray() => new[] { First, Second, Third };
     
@@ -61,11 +59,8 @@ public abstract record ColourRepresentation
         second = Second;
         third = Third;
     }
-
-    public override string ToString()
-    {
-        var values = $"{FirstString} {SecondString} {ThirdString}";
-        return UseAsNaN ? $"NaN [{values}]" : values;
-    }
+    
+    protected abstract string String { get; }
+    public override string ToString() => UseAsNaN ? $"NaN [{String}]" : String;
 }
 

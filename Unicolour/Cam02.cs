@@ -5,7 +5,7 @@ namespace Wacton.Unicolour;
 
 public record Cam02 : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double J => First;
     public double A => Second;
     public double B => Third;
@@ -29,10 +29,8 @@ public record Cam02 : ColourRepresentation
         Ucs = ucs;
         Model ??= ucs.ToModel(ViewingConditions(camConfig)); 
     }
-
-    protected override string FirstString => $"{J:F2}";
-    protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{B:+0.00;-0.00;0.00}";
+    
+    protected override string String => $"{J:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*
@@ -41,7 +39,7 @@ public record Cam02 : ColourRepresentation
      * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
      */
     
-    private static readonly Matrix MCAT02 = new(new[,]
+    internal static readonly Matrix MCAT02 = new(new[,]
     {
         { +0.7328, +0.4296, -0.1624 },
         { -0.7036, +1.6975, +0.0061 },

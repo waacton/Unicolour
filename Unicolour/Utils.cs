@@ -6,7 +6,7 @@ internal static class Utils
 {
     internal const string Unnamed = "(unnamed)";
     
-    // based on smallest value required for monochromatic light to be treated as intersecting the spectral locus (see: Spectral.Intersect.IsOnSegment)
+    // based on smallest value required for monochromatic light to be treated as intersecting the spectral locus (see: Intersect.IsOnSegment)
     // only intended for when a little bit of rounding is necessary
     internal static bool IsEffectivelyZero(this double x) => Math.Abs(x) < 5e-14;
     internal static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
@@ -15,11 +15,16 @@ internal static class Utils
     internal static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     internal static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
     
-    internal static double Modulo(this double value, double modulus)
+    internal static double Modulo(this double value, double modulus, bool inclusive = false)
     {
         if (double.IsNaN(value))
         {
             return double.NaN;
+        }
+
+        if (inclusive && value == modulus)
+        {
+            return value; // e.g. 360 % 360 returns 360 instead of 0 because inclusive
         }
 
         var remainder = value % modulus;
@@ -73,5 +78,17 @@ internal static class Utils
         var axis1 = c * Math.Cos(ToRadians(h));
         var axis2 = c * Math.Sin(ToRadians(h));
         return (l, axis1, axis2);
+    }
+    
+    internal static double Distance(Chromaticity start, Chromaticity end)
+    {
+        return Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
+    }
+    
+    internal static (double radius, double angle) Polar(Chromaticity start, Chromaticity end)
+    {
+        var radius = Distance(start, end);
+        var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
+        return (radius, ToDegrees(angle).Modulo(360));
     }
 }

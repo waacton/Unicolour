@@ -107,10 +107,10 @@ internal static class DataTypes
         return new XyzType(x, y, z);
     }
     
-    internal static double[] ToArray(this (double x, double y, double z) tuple)
-    {
-        return new [] { tuple.x, tuple.y, tuple.z };
-    }
+    // internal static double[] ToArray(this (double x, double y, double z) tuple)
+    // {
+    //     return new [] { tuple.x, tuple.y, tuple.z };
+    // }
 }
 
 // the ICC specification distinguishes between "XyzNumber" and "XyzType"

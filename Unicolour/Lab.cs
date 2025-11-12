@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Lab : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double L => First;
     public double A => Second;
     public double B => Third;
@@ -12,10 +12,8 @@ public record Lab : ColourRepresentation
     
     public Lab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
     internal Lab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
-
-    protected override string FirstString => $"{L:F2}";
-    protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{B:+0.00;-0.00;0.00}";
+    
+    protected override string String => $"{L:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

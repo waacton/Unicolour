@@ -81,6 +81,9 @@ public class SmokeTests
         new(ColourSpace.Xyb, -0.03, 0, -0.4, 0),
         new(ColourSpace.Xyb, 0.03, 1, 0.4, 1),
         new(ColourSpace.Xyb, 0, 0.5, 0, 0.5),
+        new(ColourSpace.Lms, 0, 0, 0, 0),
+        new(ColourSpace.Lms, 1, 1, 1, 1),
+        new(ColourSpace.Lms, 0.4, 0.5, 0.6, 0.5),
         new(ColourSpace.Ipt, 0, -0.75, -0.75, 0),
         new(ColourSpace.Ipt, 1, 0.75, 0.75, 1),
         new(ColourSpace.Ipt, 0.5, -0.01, 0.01, 0.5),
@@ -122,7 +125,10 @@ public class SmokeTests
         new(ColourSpace.Cam16, 50, -1, 1, 0.5),
         new(ColourSpace.Hct, 0, 0, 0, 0),
         new(ColourSpace.Hct, 360, 120, 100, 1),
-        new(ColourSpace.Hct, 180, 60, 50, 0.5)
+        new(ColourSpace.Hct, 180, 60, 50, 0.5),
+        new(ColourSpace.Munsell, 0, 0, 0, 0),
+        new(ColourSpace.Munsell, 360, 10, 20, 1),
+        new(ColourSpace.Munsell, 180, 5, 10, 0.5)
     ];
     
     [TestCaseSource(nameof(ColourSpaceTestCases))]

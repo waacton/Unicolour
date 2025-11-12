@@ -159,13 +159,17 @@ public class EqualityTests
         AssertEqual(colour1.Ictcp, colour2.Ictcp);
         AssertEqual(colour1.Ipt, colour2.Ipt);
         AssertEqual(colour1.IsImaginary, colour2.IsImaginary);
+        AssertEqual(colour1.IsInMacAdamLimits, colour2.IsInMacAdamLimits);
+        AssertEqual(colour1.IsInPointerGamut, colour2.IsInPointerGamut);
         AssertEqual(colour1.IsInRgbGamut, colour2.IsInRgbGamut);
         AssertEqual(colour1.Jzazbz, colour2.Jzazbz);
         AssertEqual(colour1.Jzczhz, colour2.Jzczhz);
         AssertEqual(colour1.Lab, colour2.Lab);
         AssertEqual(colour1.Lchab, colour2.Lchab);
-        AssertEqual(colour1.Luv, colour2.Luv);
         AssertEqual(colour1.Lchuv, colour2.Lchuv);
+        AssertEqual(colour1.Lms, colour2.Lms);
+        AssertEqual(colour1.Luv, colour2.Luv);
+        AssertEqual(colour1.Munsell, colour2.Munsell);
         AssertEqual(colour1.Oklab, colour2.Oklab);
         AssertEqual(colour1.Oklch, colour2.Oklch);
         AssertEqual(colour1.Okhsl, colour2.Okhsl);
@@ -191,6 +195,11 @@ public class EqualityTests
         if (colour1.Xyz.HctToXyzSearchResult != null)
         {
             AssertEqual(colour1.Xyz.HctToXyzSearchResult, colour2.Xyz.HctToXyzSearchResult);
+        }
+        
+        if (colour1.Munsell.XyyToMunsellSearchResult != null)
+        {
+            AssertEqual(colour1.Munsell.XyyToMunsellSearchResult, colour2.Munsell.XyyToMunsellSearchResult);
         }
 
         AssertConfigurationEqual(colour1.Configuration, colour2.Configuration);

@@ -20,48 +20,11 @@ public class Tags : List<Tag>
     
     internal Lazy<XyzType?> MediaWhite { get; }
     
-    private Tags()
+    internal Tags(Stream stream)
     {
-        AToB0 = new Lazy<Luts?>(() => Read(Signatures.AToB0, Luts.AToBFromStream));
-        AToB2 = new Lazy<Luts?>(() => Read(Signatures.AToB2, Luts.AToBFromStream));
-        AToB1 = new Lazy<Luts?>(() => Read(Signatures.AToB1, Luts.AToBFromStream));
-        BToA0 = new Lazy<Luts?>(() => Read(Signatures.BToA0, Luts.BToAFromStream));
-        BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
-        BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
-        
-        RedMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType ));
-        GreenMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
-        BlueMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));
-        RedTrc = new Lazy<Curve?>(() => Read(Signatures.RedTrc, Curve.FromStream));
-        GreenTrc = new Lazy<Curve?>(() => Read(Signatures.GreenTrc, Curve.FromStream));
-        BlueTrc = new Lazy<Curve?>(() => Read(Signatures.BlueTrc, Curve.FromStream));
-        
-        GreyTrc = new Lazy<Curve?>(() => Read(Signatures.GreyTrc, Curve.FromStream));
-        
-        MediaWhite = new Lazy<XyzType?>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
-    }
-
-    internal bool Has(string signature) => this.Any(x => x.Signature == signature);
-    internal bool HasAll(params string[] signatures) => signatures.All(Has);
-    internal bool HasAny(params string[] signatures) => signatures.Any(Has);
-
-    private T? Read<T>(string signature, Func<Stream, T> read)
-    {
-        var tag = this.SingleOrDefault(x => x.Signature == signature);
-        if (tag == null) return default;
-        using var stream = new MemoryStream(tag.Data);
-        var result = read(stream);
-        return result;
-    }
-    
-    internal static Tags FromFile(FileInfo fileInfo)
-    {
-        using var stream = fileInfo.OpenRead();
-        stream.Seek(128, SeekOrigin.Begin); // tag table begins at byte 128
-
+        /* initialisation of tags just gathers the raw byte data, ready for parsing later on when needed */
+        stream.Seek(128, SeekOrigin.Begin);         // tag table begins at byte 128
         var tagCount = stream.ReadUInt32();         // bytes 0 - 3
-
-        var tags = new Tags();
         for (var i = 0; i < tagCount; i++)
         {
             var signature = stream.ReadSignature(); // bytes 4 - 7 (and repeating)
@@ -76,9 +39,36 @@ public class Tags : List<Tag>
             stream.Seek(streamPosition, SeekOrigin.Begin);
             
             var tag = new Tag(signature, offset, size, data);
-            tags.Add(tag);
+            Add(tag);
         }
 
-        return tags;
+        /* tags used in transforms have their data parsed lazily as needed */
+        AToB0 = new Lazy<Luts?>(() => Read(Signatures.AToB0, Luts.AToBFromStream));
+        AToB2 = new Lazy<Luts?>(() => Read(Signatures.AToB2, Luts.AToBFromStream));
+        AToB1 = new Lazy<Luts?>(() => Read(Signatures.AToB1, Luts.AToBFromStream));
+        BToA0 = new Lazy<Luts?>(() => Read(Signatures.BToA0, Luts.BToAFromStream));
+        BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
+        BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
+        RedMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType ));
+        GreenMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
+        BlueMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));
+        RedTrc = new Lazy<Curve?>(() => Read(Signatures.RedTrc, Curve.FromStream));
+        GreenTrc = new Lazy<Curve?>(() => Read(Signatures.GreenTrc, Curve.FromStream));
+        BlueTrc = new Lazy<Curve?>(() => Read(Signatures.BlueTrc, Curve.FromStream));
+        GreyTrc = new Lazy<Curve?>(() => Read(Signatures.GreyTrc, Curve.FromStream));
+        MediaWhite = new Lazy<XyzType?>(() => Read(Signatures.MediaWhitePoint, DataTypes.ReadXyzType));
+    }
+    
+    internal bool Has(string signature) => this.Any(x => x.Signature == signature);
+    internal bool HasAll(params string[] signatures) => signatures.All(Has);
+    internal bool HasAny(params string[] signatures) => signatures.Any(Has);
+
+    private T? Read<T>(string signature, Func<Stream, T> read)
+    {
+        var tag = this.SingleOrDefault(x => x.Signature == signature);
+        if (tag == null) return default;
+        using var stream = new MemoryStream(tag.Data);
+        var result = read(stream);
+        return result;
     }
 }

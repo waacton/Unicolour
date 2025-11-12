@@ -18,9 +18,8 @@ public class IccNonexistentTests
     [Test]
     public void BCurvesOnly()
     {
-        const string path = "b_curves_only.icc";
-        WriteProfileWithBCurvesOnly(path);
-        var profile = new Profile(path);
+        var bytes = GetProfileWithBCurvesOnly();
+        var profile = new Profile(bytes, "b curves only");
 
         Assert.That(profile.Tags.AToB0.Value!.ToString(), Is.EqualTo("B [x3]"));
         Assert.That(profile.Tags.BToA0.Value!.ToString(), Is.EqualTo("B [x3]"));
@@ -31,16 +30,17 @@ public class IccNonexistentTests
         Assert.That(roundtrip, Is.EqualTo(deviceValues));
     }
     
-    private static void WriteProfileWithBCurvesOnly(string modifiedPath)
+    private static byte[] GetProfileWithBCurvesOnly()
     {
-        var profile = IccFile.RommRgb.GetProfile();
+        var iccFile = IccFile.RommRgb;
+        var profile = iccFile.GetProfile();
         var a2b0 = profile.Tags.Single(x => x.Signature == Signatures.AToB0);
         var b2a0 = profile.Tags.Single(x => x.Signature == Signatures.BToA0);
      
         // set the offset of every LUT element except B curves to 0, indicating that they are not present
         // (see Luts.ReadTablesAB for details)
         
-        var bytes = File.ReadAllBytes(profile.FileInfo.FullName);
+        var bytes = File.ReadAllBytes(iccFile.Path);
         byte[] bytesToZero =
         [
             16, 17, 18, 19, // matrix offset
@@ -54,31 +54,28 @@ public class IccNonexistentTests
             bytes[a2b0.Offset + i] = 0;
             bytes[b2a0.Offset + i] = 0;
         }
-        
-        File.WriteAllBytes(modifiedPath, bytes);
+
+        return bytes;
     }
     
     /* not found a profile that uses an 8-bit CLUT in LutAToB or LutBToA */
     [Test]
     public void Clut8Bit()
     {
-        var profile = IccFile.Swop2013.GetProfile();
+        var iccFile = IccFile.Swop2013;
+        var profile = iccFile.GetProfile();
         var a2b0 = profile.Tags.Single(x => x.Signature == Signatures.AToB0);
         var b2a0 = profile.Tags.Single(x => x.Signature == Signatures.BToA0);
         
         // CLUT data start at byte 80, byte 16 is the precision
         // force clut precision to be 8-bit (1 = 8-bit, 2 = 16-bit)
-        var bytes = File.ReadAllBytes(profile.FileInfo.FullName);
+        var bytes = File.ReadAllBytes(iccFile.Path);
         bytes[a2b0.Offset + 80 + 16] = 1; 
         bytes[b2a0.Offset + 80 + 16] = 1;
         
-        const string modifiedName = "modified_clut_precision.icc";
-        File.WriteAllBytes(modifiedName, bytes);
-
-        var modifiedProfile = new Profile(modifiedName);
+        var modifiedProfile = new Profile(bytes, "modified clut precision");
         Assert.DoesNotThrow(() => modifiedProfile.Transform.ToXyz([0.2, 0.4, 0.6, 0.8], Intent.Perceptual));
         Assert.DoesNotThrow(() => modifiedProfile.Transform.FromXyz([0.25, 0.5, 0.75], Intent.Perceptual));
-        File.Delete(modifiedName);
     }
     
     /* not found a profile that uses a table curve ('curv') consisting of a single value */

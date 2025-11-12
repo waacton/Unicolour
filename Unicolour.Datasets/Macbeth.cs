@@ -38,10 +38,10 @@ public static class Macbeth
     public static readonly Unicolour Neutral35 = new(Config, ColourSpace.Rgb255, 85, 85, 85);
     public static readonly Unicolour Black = new(Config, ColourSpace.Rgb255, 52, 52, 52);
     
-    public static readonly List<Unicolour> Natural = new() { DarkSkin, LightSkin, BlueSky, Foliage, BlueFlower, BluishGreen };
-    public static readonly List<Unicolour> Miscellaneous = new() { Orange, PurplishBlue, ModerateRed, Purple, YellowGreen, OrangeYellow };
-    public static readonly List<Unicolour> PrimaryAndSecondary = new() { Blue, Green, Red, Yellow, Magenta, Cyan };
-    public static readonly List<Unicolour> Greyscale = new() { White, Neutral8, Neutral65, Neutral5, Neutral35, Black };
+    public static readonly IEnumerable<Unicolour> Natural = new[] { DarkSkin, LightSkin, BlueSky, Foliage, BlueFlower, BluishGreen };
+    public static readonly IEnumerable<Unicolour> Miscellaneous = new[] { Orange, PurplishBlue, ModerateRed, Purple, YellowGreen, OrangeYellow };
+    public static readonly IEnumerable<Unicolour> PrimaryAndSecondary = new[] { Blue, Green, Red, Yellow, Magenta, Cyan };
+    public static readonly IEnumerable<Unicolour> Greyscale = new[] { White, Neutral8, Neutral65, Neutral5, Neutral35, Black };
 
     public static IEnumerable<Unicolour> All => new List<Unicolour>()
         .Concat(Natural)

@@ -52,14 +52,14 @@ internal static class PointerGamut
     
     internal static bool IsInGamut(Unicolour colour)
     {
-        if (colour.Lchab.UseAsNaN) return false;
-        
         var config = Config.Value;
         if (colour.Configuration.Xyz.Illuminant != config.Xyz.Illuminant 
             || colour.Configuration.Xyz.Observer != config.Xyz.Observer)
         {
             colour = colour.ConvertToConfiguration(config);
         }
+        
+        if (colour.Lchab.UseAsNaN) return false;
         
         var (l, c, h) = colour.Lchab.ConstrainedTriplet;
         
@@ -94,8 +94,8 @@ internal static class PointerGamut
         var c10 = vertices[(nextL, prevH)];
         var c11 = vertices[(nextL, nextH)];
 
-        var c0 = Interpolation.Interpolate(c00, c01, hDistance);
-        var c1 = Interpolation.Interpolate(c10, c11, hDistance);
-        return Interpolation.Interpolate(c0, c1, lDistance);
+        var c0 = Interpolation.Linear(c00, c01, hDistance);
+        var c1 = Interpolation.Linear(c10, c11, hDistance);
+        return Interpolation.Linear(c0, c1, lDistance);
     }
 }

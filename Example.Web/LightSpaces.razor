@@ -1,0 +1,22 @@
+﻿<div class="column gap-small">
+    <div class="colour-space-row">
+        <select class="colour-space-select monospace" @onchange="SetColourSpace" title="Colour space selector">
+            @foreach (var colourSpaceOption in ColourSpaceOptions)
+            {
+                <option value="@colourSpaceOption" selected="@(colourSpaceOption == colourSpace)">@colourSpaceOption</option>
+            }
+        </select>
+    </div>
+
+    @foreach (var slider in sliders)
+    {
+        <div class="slider-wrapper">
+            <input class="slider-gradient @(slider.InRange ? "show-thumb" : "hide-thumb")"
+                   style="background-image: linear-gradient(to right, @slider.CssGradient), linear-gradient(to right, @slider.CssAlphaGradient), var(--dark-stripes)"
+                   type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" @oninput="args => SetSliderValue(slider, args)"
+                   title="Slider @(slider.AxisText)">
+            <label class="slider-value-text monospace text-on-dark">@slider.ValueText</label>
+            <label class="slider-axis-text monospace text-on-dark">@slider.AxisText</label>
+        </div>
+    }
+</div>

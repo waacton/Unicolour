@@ -5,7 +5,7 @@ namespace Wacton.Unicolour;
 
 public record Cam16 : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double J => First;
     public double A => Second;
     public double B => Third;
@@ -30,9 +30,7 @@ public record Cam16 : ColourRepresentation
         Model ??= ucs.ToModel(ViewingConditions(camConfig)); 
     }
 
-    protected override string FirstString => $"{J:F2}";
-    protected override string SecondString => $"{A:+0.00;-0.00;0.00}";
-    protected override string ThirdString => $"{B:+0.00;-0.00;0.00}";
+    protected override string String => $"{J:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
     /*

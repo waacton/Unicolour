@@ -10,7 +10,7 @@ public class Rocket : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Rocket);
 
-    public static readonly Unicolour[] Lookup = 
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.01060815, 0.01808215, 0.10018654),
         new(Config, ColourSpace.Rgb, 0.01428972, 0.02048237, 0.10374486),

@@ -2,7 +2,7 @@
 
 public record Rgb255 : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public int R => (int)First;
     public int G => (int)Second;
     public int B => (int)Third;
@@ -18,9 +18,7 @@ public record Rgb255 : ColourRepresentation
 
     public Rgb255(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
     internal Rgb255(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
-
-    protected override string FirstString => $"{R}";
-    protected override string SecondString => $"{G}";
-    protected override string ThirdString => $"{B}";
+    
+    protected override string String => $"{R} {G} {B}";
     public override string ToString() => base.ToString();
 }

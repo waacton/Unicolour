@@ -66,10 +66,11 @@ void ColourSpaces()
         ColourSpace.Hsluv, ColourSpace.Hpluv,
         ColourSpace.Ypbpr, ColourSpace.Ycbcr, ColourSpace.Ycgco, ColourSpace.Yuv, ColourSpace.Yiq, ColourSpace.Ydbdr,
         ColourSpace.Tsl, ColourSpace.Xyb,
-        ColourSpace.Ipt, ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz,
+        ColourSpace.Lms, ColourSpace.Ipt, ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz,
         ColourSpace.Oklab, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrab, ColourSpace.Oklrch,
         ColourSpace.Cam02, ColourSpace.Cam16,
-        ColourSpace.Hct
+        ColourSpace.Hct,
+        ColourSpace.Munsell
     ];
 
     DrawGradients(purple, orange, "gradient-spaces-purple-orange.png");
@@ -133,7 +134,15 @@ void VisionDeficiency()
     Unicolour start = new(ColourSpace.Hsb, 0, 0.666, 1);
     Unicolour end = new(ColourSpace.Hsb, 360, 0.666, 1);
 
-    var cvds = new List<Cvd?> { null, Cvd.Protanopia, Cvd.Deuteranopia, Cvd.Tritanopia, Cvd.Achromatopsia };
+    var cvds = new List<Cvd?>
+    {
+        null, 
+        Cvd.Protanomaly, Cvd.Protanopia, 
+        Cvd.Deuteranomaly, Cvd.Deuteranopia, 
+        Cvd.Tritanomaly, Cvd.Tritanopia,
+        Cvd.BlueConeMonochromacy, Cvd.Achromatopsia
+    };
+    
     var rows = cvds
         .Select(cvd => Utils.Draw((cvd?.ToString() ?? "No deficiency", black), width, rowHeight, GetColour(cvd)))
         .ToList();
@@ -149,7 +158,7 @@ void VisionDeficiency()
             // not interpolating through OKLCH for the spectrum
             // because the uniform luminance results in flat gradient for achromatopsia
             var mixed = start.Mix(end, ColourSpace.Hsb, column / (double)width, HueSpan.Increasing);
-            return cvd.HasValue ? mixed.Simulate(cvd.Value) : mixed;
+            return cvd.HasValue ? mixed.Simulate(cvd.Value, severity: 0.333) : mixed;
         };
     }
 }

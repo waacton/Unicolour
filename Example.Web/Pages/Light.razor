@@ -1,0 +1,12 @@
+﻿<div class="column gap-large dark-background dual-button-reference-point">
+    <LightSpaces />
+
+    @if (dualMode)
+    {
+        <LightSpaces />
+    }
+
+    <button class="dual-button monospace @(dualMode ?  "colour-background" : "")" @onclick="ToggleDualMode">
+        <span class=@(dualMode ?  "text-on-colour" : "")>☰</span>
+    </button>
+</div>

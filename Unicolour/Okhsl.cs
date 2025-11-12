@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Okhsl : ColourRepresentation
 {
-    protected override int? HueIndex => 0;
+    protected internal override int? HueIndex => 0;
     public double H => First;
     public double S => Second;
     public double L => Third;
@@ -19,9 +19,7 @@ public record Okhsl : ColourRepresentation
     public Okhsl(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
     internal Okhsl(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
     
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{S * 100:F1}%";
-    protected override string ThirdString => $"{L * 100:F1}%";
+    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {L * 100:F1}%" : $"—° {S * 100:F1}% {L * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

@@ -7,7 +7,7 @@ public class RoundtripXyyTests
 {
     private const double Tolerance = 0.0000000005;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
-    
+
     [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
     public void ViaXyz(ColourTriplet triplet)
     {
@@ -24,5 +24,16 @@ public class RoundtripXyyTests
         var wxy = Wxy.FromXyy(original, XyzConfig);
         var roundtrip = Wxy.ToXyy(wxy, XyzConfig);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    public void ViaMunsell(ColourTriplet triplet)
+    {
+        var original = new Xyy(triplet.First, triplet.Second, triplet.Third);
+        var munsell = Munsell.FromXyy(original, TestUtils.CConfig.Xyz);
+        var roundtrip = Munsell.ToXyy(munsell, TestUtils.CConfig.Xyz);
+
+        var tolerance = munsell.XyyToMunsellSearchResult!.Converged ? 0.00001 : 0.15;
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance, tolerance, 5e-15]);
     }
 }

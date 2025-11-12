@@ -2,7 +2,7 @@
 
 public record Jzazbz : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double J => First;
     public double A => Second;
     public double B => Third;
@@ -14,10 +14,8 @@ public record Jzazbz : ColourRepresentation
     
     public Jzazbz(double j, double a, double b) : this(j, a, b, ColourHeritage.None) {}
     internal Jzazbz(double j, double a, double b, ColourHeritage heritage) : base(j, a, b, heritage) {}
-
-    protected override string FirstString => $"{J:F3}";
-    protected override string SecondString => $"{A:+0.000;-0.000;0.000}";
-    protected override string ThirdString => $"{B:+0.000;-0.000;0.000}";
+    
+    protected override string String => $"{J:F3} {A:+0.000;-0.000;0.000} {B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
     /*

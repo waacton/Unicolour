@@ -99,6 +99,9 @@ public class NotNumberTests
     public void Xyb(Configuration config, double x, double y, double b) => AssertUnicolour(new(config, ColourSpace.Xyb, x, y, b));
     
     [TestCaseSource(nameof(TestData))]
+    public void Lms(Configuration config, double l, double m, double s) => AssertUnicolour(new(config, ColourSpace.Lms, l, m, s));
+    
+    [TestCaseSource(nameof(TestData))]
     public void Ipt(Configuration config, double i, double p, double t) => AssertUnicolour(new(config, ColourSpace.Ipt, i, p, t));
 
     [TestCaseSource(nameof(TestData))]
@@ -139,6 +142,9 @@ public class NotNumberTests
     
     [TestCaseSource(nameof(TestData))]
     public void Hct(Configuration config, double h, double c, double t) => AssertUnicolour(new(config, ColourSpace.Hct, h, c, t));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Munsell(Configuration config, double h, double v, double c) => AssertUnicolour(new(config, ColourSpace.Munsell, h, v, c));
 
     [TestCaseSource(nameof(TestData))]
     public void Icc(Configuration config, double c, double m, double y) => AssertUnicolour(new(config, new Channels(c, m, y, 0.0)));

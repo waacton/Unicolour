@@ -10,7 +10,7 @@ public class Turbo : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Turbo);
     
-    public static readonly Unicolour[] Lookup =
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.18995, 0.07176, 0.23217),
         new(Config, ColourSpace.Rgb, 0.19483, 0.08339, 0.26149),

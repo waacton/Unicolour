@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Jzczhz : ColourRepresentation
 {
-    protected override int? HueIndex => 2;
+    protected internal override int? HueIndex => 2;
     public double J => First;
     public double C => Second;
     public double H => Third;
@@ -17,10 +17,8 @@ public record Jzczhz : ColourRepresentation
 
     public Jzczhz(double j, double c, double h) : this(j, c, h, ColourHeritage.None) {}
     internal Jzczhz(double j, double c, double h, ColourHeritage heritage) : base(j, c, h, heritage) {}
-
-    protected override string FirstString => $"{J:F3}";
-    protected override string SecondString => $"{C:F3}";
-    protected override string ThirdString => UseAsHued ? $"{H:F1}°" : "—°";
+    
+    protected override string String => UseAsHued ? $"{J:F3} {C:F3} {H:F1}°" : $"{J:F3} {C:F3} —°";
     public override string ToString() => base.ToString();
     
     /*

@@ -138,18 +138,22 @@ public class ColourController : MonoBehaviour
             { ColourSpace.Ydbdr, (new(0, 1), new(-1.33, 1.33), new(-1.33, 1.33)) },
             { ColourSpace.Tsl, (new(0, 360), new(0, 1), new(0, 1)) },
             { ColourSpace.Xyb, (new(-0.0154, 0.0281), new(0, 0.845), new(-0.278, 0.388)) },
+            { ColourSpace.Lms, (new(0, 1), new(0, 1), new(0, 1)) },
             { ColourSpace.Ipt, (new(0, 1), new(-0.453, 0.662), new(-0.748, 0.651)) },
-            { ColourSpace.Ictcp, (new(0, 0.508), new(-0.264, 0.261), new(-0.148, 0.258)) },
-            { ColourSpace.Jzazbz, (new(0, 0.167), new(-0.0929, 0.109), new(-0.156, 0.115)) },
-            { ColourSpace.Jzczhz, (new(0, 0.167), new(0, 0.159), new(0, 360)) },
+            { ColourSpace.Ictcp, (new(0, 0.581), new(-0.281, 0.277), new(-0.161, 0.279)) },
+            { ColourSpace.Jzazbz, (new(0, 0.222), new(-0.109, 0.130), new(-0.186, 0.135)) },
+            { ColourSpace.Jzczhz, (new(0, 0.222), new(0, 0.190), new(0, 360)) },
             { ColourSpace.Oklab, (new(0, 1), new(-0.234, 0.276), new(-0.312, 0.199)) },
             { ColourSpace.Oklch, (new(0, 1), new(0, 0.322), new(0, 360)) },
             { ColourSpace.Okhsv, (new(0, 360), new(0, 1), new(0, 1)) },
             { ColourSpace.Okhsl, (new(0, 360), new(0, 1), new(0, 1)) },
             { ColourSpace.Okhwb, (new(0, 360), new(0, 1), new(0, 1)) },
+            { ColourSpace.Oklrab, (new(0, 1), new(-0.234, 0.276), new(-0.312, 0.199)) },
+            { ColourSpace.Oklrch, (new(0, 1), new(0, 0.322), new(0, 360)) },
             { ColourSpace.Cam02, (new(0, 100), new(-32.2, 41.5), new(-39.2, 35.6)) },
             { ColourSpace.Cam16, (new(0, 100), new(-35.5, 43.2), new(-37.9, 33)) },
-            { ColourSpace.Hct, (new(0, 360), new(0, 113), new(0, 100)) }
+            { ColourSpace.Hct, (new(0, 360), new(0, 113), new(0, 100)) },
+            { ColourSpace.Munsell, (new(0, 360), new(0, 10), new(0, 26)) }
         };
     }
 

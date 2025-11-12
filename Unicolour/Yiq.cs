@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 public record Yiq : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double I => Second;
     public double Q => Third;
@@ -20,9 +20,7 @@ public record Yiq : ColourRepresentation
     internal Yiq(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
     internal Yiq(double y, double i, double q, ColourHeritage heritage) : base(y, i, q, heritage) {}
     
-    protected override string FirstString => $"{Y:F3}";
-    protected override string SecondString => $"{I:+0.000;-0.000;0.000}";
-    protected override string ThirdString => $"{Q:+0.000;-0.000;0.000}";
+    protected override string String => $"{Y:F3} {I:+0.000;-0.000;0.000} {Q:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
     /*

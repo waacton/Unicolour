@@ -32,6 +32,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> YdbdrTriplets = [];
     public static readonly List<ColourTriplet> TslTriplets = [];
     public static readonly List<ColourTriplet> XybTriplets = [];
+    public static readonly List<ColourTriplet> LmsTriplets = [];
     public static readonly List<ColourTriplet> IptTriplets = [];
     public static readonly List<ColourTriplet> IctcpTriplets = [];
     public static readonly List<ColourTriplet> JzazbzTriplets = [];
@@ -46,6 +47,7 @@ internal static class RandomColours
     public static readonly List<ColourTriplet> Cam02Triplets = [];
     public static readonly List<ColourTriplet> Cam16Triplets = [];
     public static readonly List<ColourTriplet> HctTriplets = [];
+    public static readonly List<ColourTriplet> MunsellTriplets = [];
     public static readonly List<Temperature> Temperatures = [];
     public static readonly List<Chromaticity> Chromaticities = [];
 
@@ -100,6 +102,7 @@ internal static class RandomColours
             YdbdrTriplets.Add(Ydbdr());
             TslTriplets.Add(Tsl());
             XybTriplets.Add(Xyb());
+            LmsTriplets.Add(Lms());
             IptTriplets.Add(Ipt());
             IctcpTriplets.Add(Ictcp());
             JzazbzTriplets.Add(Jzazbz());
@@ -114,6 +117,7 @@ internal static class RandomColours
             Cam02Triplets.Add(Cam02());
             Cam16Triplets.Add(Cam16());
             HctTriplets.Add(Hct());
+            MunsellTriplets.Add(Munsell());
             Temperatures.Add(Temperature());
             Chromaticities.Add(Chromaticity());
         }
@@ -152,6 +156,7 @@ internal static class RandomColours
             ColourSpace.Ydbdr => Ydbdr(),
             ColourSpace.Tsl => Tsl(),
             ColourSpace.Xyb => Xyb(),
+            ColourSpace.Lms => Lms(),
             ColourSpace.Ipt => Ipt(),
             ColourSpace.Ictcp => Ictcp(),
             ColourSpace.Jzazbz => Jzazbz(),
@@ -166,6 +171,7 @@ internal static class RandomColours
             ColourSpace.Cam02 => Cam02(),
             ColourSpace.Cam16 => Cam16(),
             ColourSpace.Hct => Hct(),
+            ColourSpace.Munsell => Munsell(),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -198,6 +204,7 @@ internal static class RandomColours
     private static ColourTriplet Ydbdr() => new(Rng(), Rng(-1.333, 1.333), Rng(-1.333, 1.333));
     private static ColourTriplet Tsl() => new(Rng(0, 360), Rng(), Rng());
     private static ColourTriplet Xyb() => new(Rng(-0.03, 0.03), Rng(), Rng(-0.4, 0.4)); 
+    private static ColourTriplet Lms() => new(Rng(), Rng(), Rng());
     private static ColourTriplet Ipt() => new(Rng(), Rng(-0.75, 0.75), Rng(-0.75, 0.75)); 
     private static ColourTriplet Ictcp() => new(Rng(), Rng(-0.5, 0.5), Rng(-0.5, 0.5)); 
     private static ColourTriplet Jzazbz() => new(Rng(0, 0.17), Rng(-0.10, 0.11), Rng(-0.16, 0.12)); // from own test values (SDR) - ranges suggested by paper (0->1, -0.5->0.5, -0.5->0.5) easily produce XYZ with NaNs [https://doi.org/10.1364/OE.25.015131]
@@ -212,6 +219,7 @@ internal static class RandomColours
     private static ColourTriplet Cam02() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values 
     private static ColourTriplet Cam16() => new(Rng(0, 100), Rng(-50, 50), Rng(-50, 50)); // from own test values
     private static ColourTriplet Hct() => new(Rng(0, 360), Rng(0, 120), Rng(0, 100)); // from own test values 
+    private static ColourTriplet Munsell() => new(Rng(0, 360), Rng(0, 10), Rng(0, 26)); // from data of "real" colours (smaller range than used in Unicolour)
     private static double Alpha() => TestUtils.RandomDouble();
     
     private static Temperature Temperature() => new(Rng(1000, 20000), Rng(-0.05, 0.05));

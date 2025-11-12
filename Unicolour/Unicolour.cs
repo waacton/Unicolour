@@ -27,6 +27,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Ydbdr? ydbdr;
     private Tsl? tsl;
     private Xyb? xyb;
+    private Lms? lms;
     private Ipt? ipt;
     private Ictcp? ictcp;
     private Jzazbz? jzazbz;
@@ -41,10 +42,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Cam02? cam02;
     private Cam16? cam16;
     private Hct? hct;
+    private Munsell? munsell;
     private Channels? icc;
     
-    private bool? isInPointerGamut;
     private Temperature? temperature;
+    private bool? isInPointerGamut;
+    private bool? isInMacAdamLimits;
     private bool? isImaginary;
     private string? description;
     private string? source;
@@ -76,6 +79,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Ydbdr Ydbdr => Get(ref ydbdr, EvaluateYdbdr);
     public Tsl Tsl => Get(ref tsl, EvaluateTsl);
     public Xyb Xyb => Get(ref xyb, EvaluateXyb);
+    public Lms Lms => Get(ref lms, EvaluateLms);
     public Ipt Ipt => Get(ref ipt, EvaluateIpt);
     public Ictcp Ictcp => Get(ref ictcp, EvaluateIctcp);
     public Jzazbz Jzazbz => Get(ref jzazbz, EvaluateJzazbz);
@@ -90,20 +94,22 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam02 Cam02 => Get(ref cam02, EvaluateCam02);
     public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
     public Hct Hct => Get(ref hct, EvaluateHct);
+    public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
 
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
             : Channels.UncalibratedFromRgb(Rgb));
     
     public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public bool IsInRgbGamut => Rgb.IsInGamut;
-    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
     public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public Temperature Temperature => Get(ref temperature, () => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
     public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
     public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
-    public bool IsImaginary => Get(ref isImaginary, () => Configuration.Xyz.SpectralBoundary.IsOutside(Chromaticity));
+    public bool IsInRgbGamut => Rgb.IsInGamut;
+    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
+    public bool IsInMacAdamLimits => Get(ref isInMacAdamLimits, () => MacAdamLimits.IsInLimits(this));
+    public bool IsImaginary => Get(ref isImaginary, () => !Configuration.Xyz.SpectralBoundary.Contains(Chromaticity));
     public string Description => Get(ref description, () => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl)));
     public Alpha Alpha { get; }
     private string Source => Get(ref source, () => $"{SourceColourSpace} {SourceRepresentation}");
@@ -119,7 +125,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         backingField ??= evaluate();
         return (bool)backingField;
     }
-
+    
     internal Unicolour(Configuration config, ColourHeritage heritage,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
@@ -151,9 +157,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     }
 
     public Unicolour Blend(Unicolour backdrop, BlendMode blendMode) => Blending.Blend(this, backdrop, blendMode);
-
-    public Unicolour Simulate(Cvd cvd) => VisionDeficiency.Simulate(cvd, this);
-
+    
+    public Unicolour Simulate(Cvd cvd, double severity = 1.0) => VisionDeficiency.Simulate(cvd, severity, this);
+    
     public Unicolour MapToRgbGamut(GamutMap gamutMap = GamutMap.OklchChromaReduction) => GamutMapping.ToRgbGamut(this, gamutMap);
 
     public Unicolour MapToPointerGamut()
@@ -163,7 +169,14 @@ public partial class Unicolour : IEquatable<Unicolour>
         var mapped = GamutMapping.ToPointerGamut(this);
         mapped.isInPointerGamut = !mapped.SourceRepresentation.UseAsNaN; 
         return mapped;
-    } 
+    }
+
+    public Unicolour MapToMacAdamLimits()
+    {
+        var mapped = GamutMapping.ToMacAdamLimits(this);
+        mapped.isInMacAdamLimits = !mapped.SourceRepresentation.UseAsNaN; 
+        return mapped;
+    }
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
@@ -180,7 +193,8 @@ public partial class Unicolour : IEquatable<Unicolour>
         var alpha = Alpha.A;
         return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha)
         {
-            isInPointerGamut = isInPointerGamut
+            isInPointerGamut = isInPointerGamut,
+            isInMacAdamLimits = isInMacAdamLimits
         };
     }
     

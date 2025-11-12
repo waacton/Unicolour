@@ -2,7 +2,7 @@
 
 public record Ycbcr : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double Cb => Second;
     public double Cr => Third;
@@ -17,9 +17,7 @@ public record Ycbcr : ColourRepresentation
     public Ycbcr(double y, double cb, double cr) : this(y, cb, cr, ColourHeritage.None) {}
     internal Ycbcr(double y, double cb, double cr, ColourHeritage heritage) : base(y, cb, cr, heritage) {}
     
-    protected override string FirstString => $"{Y:F0}";
-    protected override string SecondString => $"{Cb:F0}";
-    protected override string ThirdString => $"{Cr:F0}";
+    protected override string String => $"{Y:F0} {Cb:0} {Cr:0}";
     public override string ToString() => base.ToString();
     
     /*

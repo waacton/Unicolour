@@ -28,18 +28,22 @@ internal static class ColourLookup
         { ColourSpace.Ydbdr, [new(0, 1), new(-1.333, 1.333), new(-1.333, 1.333)] },
         { ColourSpace.Tsl, [new(0, 360), new(0, 1), new(0, 1)] },
         { ColourSpace.Xyb, [new(-0.03, 0.03), new(0, 1.0), new(-0.4, 0.4)] },
+        { ColourSpace.Lms, [new(0, 1), new(0, 1), new(0, 1)] },
         { ColourSpace.Ipt, [new(0, 1), new(-0.75, 0.75), new(-0.75, 0.75)] },
         { ColourSpace.Ictcp, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
-        { ColourSpace.Jzazbz, [new(0, 0.17), new(-0.11, 0.11), new(-0.16, 0.16)] },
-        { ColourSpace.Jzczhz, [new(0, 0.17), new(0, 0.16), new(0, 360)] },
+        { ColourSpace.Jzazbz, [new(0, 1), new(-0.21, 0.21), new(-0.21, 0.21)] },
+        { ColourSpace.Jzczhz, [new(0, 1), new(0, 0.26), new(0, 360)] },
         { ColourSpace.Oklab, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
         { ColourSpace.Oklch, [new(0, 1), new(0, 0.5), new(0, 360)] },
         { ColourSpace.Okhsv, [new(0, 360), new(0, 1), new(0, 1)] },
         { ColourSpace.Okhsl, [new(0, 360), new(0, 1), new(0, 1)] },
         { ColourSpace.Okhwb, [new(0, 360), new(0, 1), new(0, 1)] },
+        { ColourSpace.Oklrab, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
+        { ColourSpace.Oklrch, [new(0, 1), new(0, 0.5), new(0, 360)] },
         { ColourSpace.Cam02, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Cam16, [new(0, 100), new(-50, 50), new(-50, 50)] },
-        { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] }
+        { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
+        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
     };
     
     internal static readonly Dictionary<ColourSpace, string[]> AxisLookup = new()
@@ -68,6 +72,7 @@ internal static class ColourLookup
         { ColourSpace.Ydbdr, ["Y", "Db", "Dr"] },
         { ColourSpace.Tsl, ["T", "S", "L"] },
         { ColourSpace.Xyb, ["X", "Y", "B"] },
+        { ColourSpace.Lms, ["L", "M", "S"] },
         { ColourSpace.Ipt, ["I", "P", "T"] },
         { ColourSpace.Ictcp, ["I", "Ct", "Cp"] },
         { ColourSpace.Jzazbz, ["J", "A", "B"] },
@@ -77,9 +82,12 @@ internal static class ColourLookup
         { ColourSpace.Okhsv, ["H", "S", "V"] },
         { ColourSpace.Okhsl, ["H", "S", "L"] },
         { ColourSpace.Okhwb, ["H", "W", "B"] },
+        { ColourSpace.Oklrab, ["L", "A", "B"] },
+        { ColourSpace.Oklrch, ["L", "C", "H"] },
         { ColourSpace.Cam02, ["J", "A", "B"] },
         { ColourSpace.Cam16, ["J", "A", "B"] },
-        { ColourSpace.Hct, ["H", "C", "T"] }
+        { ColourSpace.Hct, ["H", "C", "T"] },
+        { ColourSpace.Munsell, ["H", "V", "C"] }
     };
 }
 

@@ -1,0 +1,37 @@
+/* /LightSpaces.razor.rz.scp.css */
+.colour-space-row[b-q6sx5uuzh4] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.colour-space-select[b-q6sx5uuzh4] {
+    flex: 0 0 33%;
+}
+
+@media screen and (max-width: 720px) {
+    .colour-space-select[b-q6sx5uuzh4] {
+        flex: 0 0 50%;
+    }
+}
+/* /Pages/Light.razor.rz.scp.css */
+.dual-button-reference-point[b-lw9p7rykct] {
+    position: relative;
+}
+
+.dual-button[b-lw9p7rykct] {
+    /* easiest way to centre button content it seems... */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 3rem;
+
+    /* and it's also absolute positioned to be top-right inside the dark background area */
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+}

@@ -310,6 +310,29 @@ public class GreyscaleTests
     [TestCase(0.1, 1.0, -0.1, false)]
     public void Xyb(double x, double y, double b, bool expected) => AssertUnicolour(new(ColourSpace.Xyb, x, y, b), expected);
     
+    [TestCase(0.0, 0.0, 0.0, true)]
+    [TestCase(-0.00000000001, 0.0, -0.0, false)]
+    [TestCase(-0.0, -0.00000000001, 0.0, false)]
+    [TestCase(0.0, -0.0, -0.00000000001, false)]
+    [TestCase(0.00000000001, 0.0, 0.0, false)]
+    [TestCase(0.0, 0.00000000001, 0.0, false)]
+    [TestCase(0.0, 0.0, 0.00000000001, false)]
+    [TestCase(0.5, 0.5, 0.5, true)]
+    [TestCase(0.50000000001, 0.5, 0.5, false)]
+    [TestCase(0.5, 0.50000000001, 0.5, false)]
+    [TestCase(0.5, 0.5, 0.50000000001, false)]
+    [TestCase(0.49999999999, 0.5, 0.5, false)]
+    [TestCase(0.5, 0.49999999999, 0.5, false)]
+    [TestCase(0.5, 0.5, 0.49999999999, false)]
+    [TestCase(1.0, 1.0, 1.0, true)]
+    [TestCase(1.00000000001, 1.0, 1.0, false)]
+    [TestCase(1.0, 1.00000000001, 1.0, false)]
+    [TestCase(1.0, 1.0, 1.00000000001, false)]
+    [TestCase(0.99999999999, 1.0, 1.0, false)]
+    [TestCase(1.0, 0.99999999999, 1.0, false)]
+    [TestCase(1.0, 1.0, 0.99999999999, false)]
+    public void Lms(double l, double m, double s, bool expected) => AssertUnicolour(new(ColourSpace.Lms, l, m, s), expected);
+    
     [TestCase(0.5, 0.0, 0.0, true)]
     [TestCase(0.5, 0.00000000001, 0.0, false)]
     [TestCase(0.5, -0.00000000001, 0.0, false)]
@@ -457,6 +480,15 @@ public class GreyscaleTests
     [TestCase(180.0, 50, 100.00000000001, true)]
     [TestCase(180.0, 50, 99.99999999999, false)]
     public void Hct(double h, double c, double t, bool expected) => AssertUnicolour(new(ColourSpace.Hct, h, c, t), expected);
+    
+    [TestCase(180.0, 5, 0.0, true)]
+    [TestCase(180.0, 5, -0.00000000001, true)]
+    [TestCase(180.0, 5, 0.00000000001, false)]
+    [TestCase(180.0, 0.0, 10, true)]
+    [TestCase(180.0, -0.00000000001, 10, true)]
+    [TestCase(180.0, 0.00000000001, 10, false)]
+    [TestCase(180.0, 10, 10, false)]
+    public void Munsell(double h, double v, double c, bool expected) => AssertUnicolour(new(ColourSpace.Munsell, h, v, c), expected);
 
     private static void AssertUnicolour(Unicolour colour, bool shouldBeGreyscale)
     {

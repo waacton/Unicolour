@@ -47,15 +47,16 @@ public class DatasetEbnerFairchildTests
     ];
     
     [TestCaseSource(nameof(ReferenceHues))]
-    public void ReferenceHue(Unicolour colour, int expectedHue)
+    public void ReferenceHue(Unicolour colour, double expectedHue)
     {
         const double tolerance = 0.05;
         Assert.That(colour.Lchab.H, Is.EqualTo(expectedHue).Within(tolerance).Or.EqualTo(expectedHue + 360).Within(tolerance));
     }
 
     [TestCaseSource(nameof(GroupedByHue))]
-    public void GroupedHue(List<Unicolour> colours, int expectedHue, int expectedCount)
+    public void GroupedHue(IEnumerable<Unicolour> colours, double expectedHue, int expectedCount)
     {
+        colours = colours.ToArray();
         Assert.That(colours.Count, Is.EqualTo(expectedCount));
         
         // questionable, but would be surprised if a Lab's hue for a group was beyond a neighbouring group's hue

@@ -2,7 +2,7 @@
 
 public record Wxy : ColourRepresentation
 {
-    protected override int? HueIndex => 0;
+    protected internal override int? HueIndex => 0;
     public double W => First;
     public double X => Second;
     public double Y => Third;
@@ -16,9 +16,7 @@ public record Wxy : ColourRepresentation
     public Wxy(double w, double x, double y) : this(w, x, y, ColourHeritage.None) {}
     internal Wxy(double w, double x, double y, ColourHeritage heritage) : base(w, x, y, heritage) { }
     
-    protected override string FirstString => UseAsHued ? $"{W:F1}nm" : "—nm";
-    protected override string SecondString => $"{X * 100:F1}%";
-    protected override string ThirdString => $"{Y:F4}";
+    protected override string String => UseAsHued ? $"{W:F1}nm {X * 100:F1}% {Y:F4}%" : $"—nm {X * 100:F1}% {Y:F4}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,12 +30,12 @@ public record Wxy : ColourRepresentation
         var chromaticity = xyy.Chromaticity;
         var luminance = xyy.Luminance;
         
-        var intersects = xyy.UseAsNaN || xyy.UseAsGreyscale
+        var result = xyy.UseAsNaN || xyy.UseAsGreyscale
             ? null
-            : xyzConfig.SpectralBoundary.FindIntersects(chromaticity);
+            : xyzConfig.SpectralBoundary.GetWavelengthAndPurity(chromaticity);
 
-        var w = intersects?.DominantWavelength ?? SpectralBoundary.MinWavelength;
-        var x = intersects?.ExcitationPurity ?? 0;
+        var w = result?.dominantWavelength ?? SpectralBoundary.MinWavelength;
+        var x = result?.excitationPurity ?? 0;
         var y = luminance;
         return new Wxy(w, x, y, ColourHeritage.From(xyy));
     }

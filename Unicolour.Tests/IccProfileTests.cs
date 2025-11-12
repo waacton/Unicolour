@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
@@ -12,11 +13,12 @@ public class IccProfileTests
     [Test]
     public void Fogra39()
     {
-        var profile = IccFile.Fogra39.GetProfile();
+        var iccFile = IccFile.Fogra39;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(8652444));
         Assert.That(header.PreferredCmmType, Is.EqualTo(Signatures.Null));
@@ -71,11 +73,12 @@ public class IccProfileTests
     [Test]
     public void Fogra55()
     {
-        var profile = IccFile.Fogra55.GetProfile();
+        var iccFile = IccFile.Fogra55;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(2547980));
         Assert.That(header.PreferredCmmType, Is.EqualTo("APPL"));
@@ -132,11 +135,12 @@ public class IccProfileTests
     [Test]
     public void JapanColor2011()
     {
-        var profile = IccFile.JapanColor2011.GetProfile();
+        var iccFile = IccFile.JapanColor2011;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(1979304));
         Assert.That(header.PreferredCmmType, Is.EqualTo(Signatures.Null));
@@ -187,11 +191,12 @@ public class IccProfileTests
     [Test]
     public void Prmg()
     {
-        var profile = IccFile.Prmg.GetProfile();
+        var iccFile = IccFile.Prmg;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(2601512));
         Assert.That(header.PreferredCmmType, Is.EqualTo("appl"));
@@ -210,7 +215,7 @@ public class IccProfileTests
         Assert.That(header.PcsIlluminant, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
         Assert.That(header.ProfileCreator, Is.EqualTo("KODA"));
         Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("a80356bf-2ac2ddb3-6e263ccd-ccf31828")));
-        Assert.That(profile.CalculateProfileId(), Is.EqualTo(header.ProfileId));
+        Assert.That(Profile.CalculateId(File.ReadAllBytes(iccFile.Path)), Is.EqualTo(header.ProfileId));
         
         Assert.That(tags.Count, Is.EqualTo(13));
         AssertTag(tags[0], "cprt", 288, 166);
@@ -246,11 +251,12 @@ public class IccProfileTests
     [Test]
     public void RommRgb()
     {
-        var profile = IccFile.RommRgb.GetProfile();
+        var iccFile = IccFile.RommRgb;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
-        
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(864));
         Assert.That(header.PreferredCmmType, Is.EqualTo("none"));
@@ -269,7 +275,7 @@ public class IccProfileTests
         Assert.That(header.PcsIlluminant, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
         Assert.That(header.ProfileCreator, Is.EqualTo("none"));
         Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("2c98a166-95257d52-13906e04-02c0eac9")));
-        Assert.That(profile.CalculateProfileId(), Is.EqualTo(header.ProfileId));
+        Assert.That(Profile.CalculateId(File.ReadAllBytes(iccFile.Path)), Is.EqualTo(header.ProfileId));
         
         Assert.That(tags.Count, Is.EqualTo(6));
         AssertTag(tags[0], "desc", 204, 84);
@@ -298,11 +304,12 @@ public class IccProfileTests
     [Test]
     public void StandardRgbV4()
     {
-        var profile = IccFile.StandardRgbV4.GetProfile();
+        var iccFile = IccFile.StandardRgbV4;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(60960));
         Assert.That(header.PreferredCmmType, Is.EqualTo(Signatures.Null));
@@ -321,7 +328,7 @@ public class IccProfileTests
         Assert.That(header.PcsIlluminant, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
         Assert.That(header.ProfileCreator, Is.EqualTo(Signatures.Null));
         Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("34562abf-994ccd06-6d2c5721-d0d68c5d")));
-        Assert.That(profile.CalculateProfileId(), Is.EqualTo(header.ProfileId));
+        Assert.That(Profile.CalculateId(File.ReadAllBytes(iccFile.Path)), Is.EqualTo(header.ProfileId));
         
         Assert.That(tags.Count, Is.EqualTo(9));
         AssertTag(tags[0], "desc", 240, 118);
@@ -353,11 +360,12 @@ public class IccProfileTests
     [Test]
     public void StandardRgbV2()
     {
-        var profile = IccFile.StandardRgbV2.GetProfile();
+        var iccFile = IccFile.StandardRgbV2;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(3024));
         Assert.That(header.PreferredCmmType, Is.EqualTo(Signatures.Null));
@@ -376,7 +384,7 @@ public class IccProfileTests
         Assert.That(header.PcsIlluminant, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
         Assert.That(header.ProfileCreator, Is.EqualTo(Signatures.Null));
         Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("3d0eb2de-ae9397be-9b6726ce-8c0a43ce")));
-        Assert.That(profile.CalculateProfileId(), Is.EqualTo(header.ProfileId));
+        Assert.That(Profile.CalculateId(File.ReadAllBytes(iccFile.Path)), Is.EqualTo(header.ProfileId));
         
         Assert.That(tags.Count, Is.EqualTo(16));
         AssertTag(tags[0], "desc", 324, 99);
@@ -415,11 +423,12 @@ public class IccProfileTests
     [Test]
     public void StandardRgbGreyV4()
     {
-        var profile = IccFile.StandardRgbGreyV4.GetProfile();
+        var iccFile = IccFile.StandardRgbGreyV4;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(360));
         Assert.That(header.PreferredCmmType, Is.EqualTo("lcms"));
@@ -438,7 +447,7 @@ public class IccProfileTests
         Assert.That(header.PcsIlluminant, Is.EqualTo((0.96420, 1.00000, 0.82491)).Within(0.000005));
         Assert.That(header.ProfileCreator, Is.EqualTo("hand"));
         Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("bbba6208-bba6b00f-c97a69b7-67a6edc1")));
-        Assert.That(profile.CalculateProfileId(), Is.EqualTo(header.ProfileId));
+        Assert.That(Profile.CalculateId(File.ReadAllBytes(iccFile.Path)), Is.EqualTo(header.ProfileId));
         
         Assert.That(tags.Count, Is.EqualTo(5));
         AssertTag(tags[0], "desc", 192, 36);
@@ -466,11 +475,12 @@ public class IccProfileTests
     [Test]
     public void D65Xyz()
     {
-        var profile = IccFile.D65Xyz.GetProfile();
+        var iccFile = IccFile.D65Xyz;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(968));
         Assert.That(header.PreferredCmmType, Is.EqualTo("none"));
@@ -527,11 +537,12 @@ public class IccProfileTests
     [Test]
     public void CxScannerGrey()
     {
-        var profile = IccFile.CxScannerGrey.GetProfile();
+        var iccFile = IccFile.CxScannerGrey;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(3012));
         Assert.That(header.PreferredCmmType, Is.EqualTo("appl"));
@@ -578,11 +589,12 @@ public class IccProfileTests
     [Test]
     public void CxHue45Abstract()
     {
-        var profile = IccFile.CxHue45Abstract.GetProfile();
+        var iccFile = IccFile.CxHue45Abstract;
+        var profile = iccFile.GetProfile();
         var header = profile.Header;
         var tags = profile.Tags;
         
-        Assert.That(profile.FileInfo.Length, Is.EqualTo(header.ProfileSize));
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
         
         Assert.That(header.ProfileSize, Is.EqualTo(11624));
         Assert.That(header.PreferredCmmType, Is.EqualTo("HDM "));

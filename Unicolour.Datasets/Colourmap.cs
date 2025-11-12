@@ -50,9 +50,9 @@ public abstract class Colourmap
         return palette;
     }
     
-    protected static Unicolour InterpolateColourTable(Unicolour[] colourTable, double x)
+    protected static Unicolour InterpolateColourTable(IEnumerable<Unicolour> colourTable, double x)
     {
-        var (lowerColour, upperColour, mixAmount) = Lut.Lookup(colourTable, x);
+        var (lowerColour, upperColour, mixAmount) = Lut.Lookup(colourTable.ToArray(), x);
         return lowerColour.Mix(upperColour, ColourSpace.Rgb, mixAmount);
     }
 }

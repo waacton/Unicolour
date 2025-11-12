@@ -8,14 +8,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>6.0.0</Version>
+        <Version>6.3.0</Version>
         <Authors>William Acton</Authors>
         <Description>🌈 Colour / Color conversion, interpolation, and comparison for .NET</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb Oklrab Oklrch CAM02 CAM16 HCT ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing colour-blending color-blending color-palette colour-palette comparison colour-comparison color-comparison contrast luminance delta-e deltaE chromaticity display-p3 rec-2020 rec-2100 rec-2100-pq rec-2100-hlg rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM HDR chromatic-adaptation gamut-map gamut-mapping pointers-gamut temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia deuteranopia tritanopia achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour pigments pigment-mixing kubelka-munk paints paint-mixing</PackageTags>
-        <PackageReleaseNotes>Add configurable dynamic range, custom chromatic adaptation, Pointer's gamut mapping, layering colours with blending &amp; compositing, Oklrab &amp; Oklrch support</PackageReleaseNotes>
+        <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB LMS IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb Oklrab Oklrch CAM02 CAM16 HCT munsell HVC ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing colour-blending color-blending color-palette colour-palette comparison colour-comparison color-comparison contrast luminance delta-e deltaE chromaticity colourimetry colorimetry display-p3 rec-2020 rec-2100 rec-2100-pq rec-2100-hlg rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM HDR chromatic-adaptation gamut-map gamut-mapping pointers-gamut macadam-limits temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia protanomaly deuteranopia deuteranomaly tritanopia tritanomaly blue-cone-monochromacy achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour pigments pigment-mixing kubelka-munk paints paint-mixing</PackageTags>
+        <PackageReleaseNotes>Add MacAdam limits check and mapping</PackageReleaseNotes>
         <PackageIcon>Resources\Unicolour.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README_Unicolour_nuget.md</PackageReadmeFile>
@@ -63,6 +63,15 @@
         </Compile>
         <Compile Update="Unicolour.Unseen.cs">
             <DependentUpon>Unicolour.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Munsell.Adjustment.cs">
+          <DependentUpon>Munsell.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Munsell.Bounds.cs">
+          <DependentUpon>Munsell.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Munsell.Node.cs">
+          <DependentUpon>Munsell.cs</DependentUpon>
         </Compile>
     </ItemGroup>
 

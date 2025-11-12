@@ -67,13 +67,16 @@
         <None Update="docs\diagram-xy-chromaticity-blackbody.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="docs\diagram-xy-macadam-limits.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="docs\diagram-spectral-locus.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\diagram-uv-chromaticity.png">
+        <None Update="docs\diagram-uv-chromaticity-blackbody.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\diagram-uv-chromaticity-blackbody.png">
+        <None Update="docs\diagram-uv-macadam-limits.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\console-info.png">

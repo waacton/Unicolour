@@ -32,6 +32,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => Ydbdr,
             ColourSpace.Tsl => Tsl,
             ColourSpace.Xyb => Xyb,
+            ColourSpace.Lms => Lms,
             ColourSpace.Ipt => Ipt,
             ColourSpace.Ictcp => Ictcp,
             ColourSpace.Jzazbz => Jzazbz,
@@ -46,6 +47,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => Cam02,
             ColourSpace.Cam16 => Cam16,
             ColourSpace.Hct => Hct,
+            ColourSpace.Munsell => Munsell,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -79,6 +81,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => new Ydbdr(first, second, third, heritage),
             ColourSpace.Tsl => new Tsl(first, second, third, heritage),
             ColourSpace.Xyb => new Xyb(first, second, third, heritage),
+            ColourSpace.Lms => new Lms(first, second, third, heritage),
             ColourSpace.Ipt => new Ipt(first, second, third, heritage),
             ColourSpace.Ictcp => new Ictcp(first, second, third, heritage),
             ColourSpace.Jzazbz => new Jzazbz(first, second, third, heritage),
@@ -93,6 +96,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => new Cam02(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, heritage),
             ColourSpace.Hct => new Hct(first, second, third, heritage),
+            ColourSpace.Munsell => new Munsell(first, second, third, heritage),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -222,6 +226,7 @@ public partial class Unicolour
             ColourSpace.Ydbdr => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Tsl => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
             ColourSpace.Xyb => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz),
+            ColourSpace.Lms => Lms.ToXyz(Lms, Configuration.Xyz),
             ColourSpace.Ipt => Ipt.ToXyz(Ipt, Configuration.Xyz),
             ColourSpace.Ictcp => Ictcp.ToXyz(Ictcp, Configuration.Xyz, Configuration.DynamicRange),
             ColourSpace.Jzazbz => Jzazbz.ToXyz(Jzazbz, Configuration.Xyz, Configuration.DynamicRange),
@@ -236,6 +241,7 @@ public partial class Unicolour
             ColourSpace.Cam02 => Cam02.ToXyz(Cam02, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Configuration.Cam, Configuration.Xyz),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz),
+            ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -246,6 +252,7 @@ public partial class Unicolour
         {
             ColourSpace.Xyy => (Xyy)SourceRepresentation,
             ColourSpace.Wxy => Wxy.ToXyy(Wxy, Configuration.Xyz),
+            ColourSpace.Munsell => Munsell.ToXyy(Munsell, Configuration.Xyz),
             _ => Xyy.FromXyz(Xyz, Configuration.Xyz.WhiteChromaticity)
         };
     }
@@ -394,6 +401,15 @@ public partial class Unicolour
         };
     }
     
+    private Lms EvaluateLms()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Lms => (Lms)SourceRepresentation,
+            _ => Lms.FromXyz(Xyz, Configuration.Xyz)
+        };
+    }
+    
     private Ipt EvaluateIpt()
     {
         return SourceColourSpace switch
@@ -526,6 +542,15 @@ public partial class Unicolour
         {
             ColourSpace.Hct => (Hct)SourceRepresentation,
             _ => Hct.FromXyz(Xyz, Configuration.Xyz)
+        };
+    }
+    
+    private Munsell EvaluateMunsell()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Munsell => (Munsell)SourceRepresentation,
+            _ => Munsell.FromXyy(Xyy, Configuration.Xyz)
         };
     }
 }

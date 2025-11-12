@@ -10,7 +10,7 @@ public class Flare : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Flare);
 
-    public static readonly Unicolour[] Lookup = 
+    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
     {
         new(Config, ColourSpace.Rgb, 0.92907237, 0.68878959, 0.50411509),
         new(Config, ColourSpace.Rgb, 0.92891402, 0.68494686, 0.50173994),

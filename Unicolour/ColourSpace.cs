@@ -26,6 +26,7 @@ public enum ColourSpace
     Ydbdr,
     Tsl,
     Xyb,
+    Lms,
     Ipt,
     Ictcp,
     Jzazbz,
@@ -39,5 +40,6 @@ public enum ColourSpace
     Oklrch,
     Cam02,
     Cam16,
-    Hct
+    Hct,
+    Munsell
 }

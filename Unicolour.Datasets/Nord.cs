@@ -22,10 +22,10 @@ public static class Nord
     public static readonly Unicolour Nord14 = new(Config, "#a3be8c");
     public static readonly Unicolour Nord15 = new(Config, "#b48ead");
 
-    public static readonly List<Unicolour> PolarNight = new() { Nord0, Nord1, Nord2, Nord3 };
-    public static readonly List<Unicolour> SnowStorm = new() { Nord4, Nord5, Nord6 };
-    public static readonly List<Unicolour> Frost = new() { Nord7, Nord8, Nord9, Nord10 };
-    public static readonly List<Unicolour> Aurora = new() { Nord11, Nord12, Nord13, Nord14, Nord15 };
+    public static readonly IEnumerable<Unicolour> PolarNight = new[] { Nord0, Nord1, Nord2, Nord3 };
+    public static readonly IEnumerable<Unicolour> SnowStorm = new[] { Nord4, Nord5, Nord6 };
+    public static readonly IEnumerable<Unicolour> Frost = new[] { Nord7, Nord8, Nord9, Nord10 };
+    public static readonly IEnumerable<Unicolour> Aurora = new[] { Nord11, Nord12, Nord13, Nord14, Nord15 };
     
     public static IEnumerable<Unicolour> All => new List<Unicolour>()
         .Concat(PolarNight)

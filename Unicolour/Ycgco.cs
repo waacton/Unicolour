@@ -2,7 +2,7 @@
 
 public record Ycgco : ColourRepresentation
 {
-    protected override int? HueIndex => null;
+    protected internal override int? HueIndex => null;
     public double Y => First;
     public double Cg => Second;
     public double Co => Third;
@@ -17,9 +17,7 @@ public record Ycgco : ColourRepresentation
     public Ycgco(double y, double cg, double co) : this(y, cg, co, ColourHeritage.None) {}
     internal Ycgco(double y, double cg, double co, ColourHeritage heritage) : base(y, cg, co, heritage) {}
     
-    protected override string FirstString => $"{Y:F3}";
-    protected override string SecondString => $"{Cg:+0.000;-0.000;0.000}";
-    protected override string ThirdString => $"{Co:+0.000;-0.000;0.000}";
+    protected override string String => $"{Y:F3} {Cg:+0.000;-0.000;0.000} {Co:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
     /*

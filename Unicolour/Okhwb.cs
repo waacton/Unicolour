@@ -2,7 +2,7 @@
 
 public record Okhwb : ColourRepresentation
 {
-    protected override int? HueIndex => 0;
+    protected internal override int? HueIndex => 0;
     public double H => First;
     public double W => Second;
     public double B => Third;
@@ -16,10 +16,8 @@ public record Okhwb : ColourRepresentation
 
     public Okhwb(double h, double w, double b) : this(h, w, b, ColourHeritage.None) {}
     internal Okhwb(double h, double w, double b, ColourHeritage heritage) : base(h, w, b, heritage) {}
-
-    protected override string FirstString => UseAsHued ? $"{H:F1}°" : "—°";
-    protected override string SecondString => $"{W * 100:F1}%";
-    protected override string ThirdString => $"{B * 100:F1}%";
+    
+    protected override string String => UseAsHued ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"—° {W * 100:F1}% {B * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*

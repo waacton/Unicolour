@@ -4,8 +4,6 @@ namespace Wacton.Unicolour.Example.Web;
 
 public partial class App : ComponentBase
 {
-    private Mode mode = Mode.Light;
-    
     private bool conversionError;
     private string cssInsideGamut = null!;
     private string cssOutsideGamut = null!;
@@ -19,18 +17,19 @@ public partial class App : ComponentBase
     
     protected override void OnInitialized()
     {
-        UpdateDisplay();
+        UpdateMainDisplay();
 
         State.OnColourChange += () =>
         {
-            UpdateDisplay();
+            UpdateMainDisplay();
             StateHasChanged();
         };
-        
+
+        State.OnModeChange += StateHasChanged;
         State.OnBusyChange += StateHasChanged;
     }
 
-    private void UpdateDisplay()
+    private void UpdateMainDisplay()
     {
         var colour = State.Colour;
         
@@ -67,17 +66,5 @@ public partial class App : ComponentBase
             warningText = string.Empty;
             warningEmoji = string.Empty;
         }
-    }
-
-    private void SetMode(Mode newMode)
-    {
-        mode = newMode;
-    }
-
-    private enum Mode
-    {
-        Light,
-        Print,
-        Paint
     }
 }

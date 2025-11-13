@@ -2,6 +2,6 @@
 
 namespace Wacton.Unicolour.Example.Web;
 
-public partial class NavMenu : ComponentBase
+public partial class NavBar : ComponentBase
 {
 }

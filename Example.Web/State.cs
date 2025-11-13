@@ -2,7 +2,7 @@
 
 namespace Wacton.Unicolour.Example.Web;
 
-// arguably unpleasant but seems fine for a small app with 1 item of shared state
+// arguably unpleasant but seems fine for a small app with a couple of items of shared state
 // not worth the effort of state injection or cascading callbacks
 public static class State
 {
@@ -18,23 +18,6 @@ public static class State
         }
     }
     
-    public static event Action? OnBusyChange;
-    private static string busyMessage = string.Empty;
-    public static string BusyMessage
-    {
-        get => busyMessage;
-        private set
-        {
-            busyMessage = value;
-            OnBusyChange?.Invoke();
-        }
-    }
-
-    public static bool IsBusy => !string.IsNullOrEmpty(BusyMessage);
-
-    public static readonly Configuration NoConfig = new(iccConfig: new IccConfiguration(profile: null, "⚠️ Uncalibrated CMYK"));
-    public static Configuration Config { get; private set; } = NoConfig;
-    
     public static void Update(ColourSpace colourSpace, double first, double second, double third)
     {
         Colour = new Unicolour(Config, colourSpace, first, second, third); 
@@ -49,12 +32,40 @@ public static class State
     {
         Colour = new Unicolour(Config, channels); 
     }
-
+    
+    public static readonly Configuration NoConfig = new(iccConfig: new IccConfiguration(profile: null, "⚠️ Uncalibrated CMYK"));
+    public static Configuration Config { get; private set; } = NoConfig;
     public static void Update(Configuration config)
     {
         Config = config;
         colour = colour.ConvertToConfiguration(config); // avoid triggering onColourChange; colour isn't actually changing
     }
+    
+    public static event Action? OnModeChange;
+    private static Mode mode = Mode.Light;
+    public static Mode Mode
+    {
+        get => mode;
+        set
+        {
+            mode = value;
+            OnModeChange?.Invoke();
+        }
+    }
+        
+    public static event Action? OnBusyChange;
+    private static string busyMessage = string.Empty;
+    public static string BusyMessage
+    {
+        get => busyMessage;
+        private set
+        {
+            busyMessage = value;
+            OnBusyChange?.Invoke();
+        }
+    }
+
+    public static bool IsBusy => !string.IsNullOrEmpty(BusyMessage);
 
     public static void SetBusy(string message)
     {

@@ -70,18 +70,5 @@ public partial class Paint : ComponentBase
         PigmentToSlider.Remove(pigment);
     }
 
-    private static void TogglePigment(Pigment pigment)
-    {
-        if (IsDisplayed(pigment))
-        {
-            RemovePigment(pigment);
-            SetColour();
-        }
-        else
-        {
-            AddPigment(pigment);
-        }
-    }
-
     private static bool IsDisplayed(Pigment pigment) => PigmentToSlider.ContainsKey(pigment);
 }

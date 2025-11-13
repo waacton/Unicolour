@@ -63,6 +63,7 @@ public partial class Print : ComponentBase
         State.Update(config);
         CreateSliders();
         UpdateSliderGradients();
+        UpdateColourState();
         State.ClearBusy();
     }
     

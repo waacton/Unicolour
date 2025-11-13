@@ -16,8 +16,8 @@
                    type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
                    @oninput="args => SetSliderValue(slider, args)"
                    title="Slider @(slider.LabelText)">
-            <label class="slider-value text-on-dark">@slider.ValueText</label>
-            <label class="slider-label-right text-on-dark">@slider.LabelText</label>
+            <label class="slider-value light-text">@slider.ValueText</label>
+            <label class="slider-label-right light-text">@slider.LabelText</label>
         </div>
     }
 </div>

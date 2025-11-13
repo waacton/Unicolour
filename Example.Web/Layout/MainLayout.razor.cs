@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Wacton.Unicolour.Example.Web;
+namespace Wacton.Unicolour.Example.Web.Layout;
 
-public partial class App : ComponentBase
+public partial class MainLayout : LayoutComponentBase
 {
+    // arguably this could all be moved to State...
     private bool conversionError;
     private string cssInsideGamut = null!;
     private string cssOutsideGamut = null!;
@@ -11,6 +12,8 @@ public partial class App : ComponentBase
     private string rgbText = null!;
     private string warningEmoji = null!;
     private string warningText = null!;
+    
+    private string TextOnColourCssClass => useLightText ? "light-text-with-contrast" : "dark-text-with-contrast";
     
     internal static readonly Unicolour Dark = new("404046");
     internal static readonly Unicolour Light = new("e8e8ff");
@@ -25,7 +28,6 @@ public partial class App : ComponentBase
             StateHasChanged();
         };
 
-        State.OnModeChange += StateHasChanged;
         State.OnBusyChange += StateHasChanged;
     }
 

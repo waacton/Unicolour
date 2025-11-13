@@ -112,15 +112,15 @@ html, body {
     --default-accent: #FF1493;
     --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
     --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
-
+    --dark-shadow: 0 0 0.05rem var(--dark);
+    --light-shadow: 0 0 0.05rem var(--light);
+    --light-shadow-strong: 0 0 0.075rem var(--light);
+    
     --icon-width: 48px;
     --icon-width-mobile: 32px;
     --icon-padding: 1rem;
     --border-width: 1px;
     --border-radius: 0.5rem;
-    --border-filter-light: drop-shadow(0 0 0.05rem var(--light));
-    --border-filter-light-strong: drop-shadow(0 0 0.075rem var(--light));
-    --border-filter-dark: drop-shadow(0 0 0.05rem var(--dark));
     --input-height: 3rem;
     --slider-thumb-width: calc(var(--input-height) / 2);
     --content-padding: 32px;
@@ -168,7 +168,7 @@ body {
     justify-content: space-between;
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
     padding: var(--icon-padding);
 
     z-index: 2;
@@ -195,7 +195,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius) var(--border-radius) 0 0;
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
     padding-left: var(--icon-padding);
     padding-right: var(--icon-padding);
     
@@ -210,7 +210,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
 }
 
 .title-text {
@@ -252,7 +252,7 @@ body {
     background: var(--dark);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
     padding: var(--dark-background-padding);
 }
 
@@ -263,7 +263,7 @@ select, button, .label-as-button {
     height: var(--input-height);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
 }
 
     .label-as-button {
@@ -273,12 +273,12 @@ select, button, .label-as-button {
     }
 
     select:hover, button:hover, .label-as-button:hover {
-        filter: var(--border-filter-light-strong);
+        filter: drop-shadow(var(--light-shadow-strong));
     }
     
     select:active, button:active, .label-as-button:active {
         border: var(--border-width) solid var(--less-dark);
-        filter: var(--border-filter-light-strong);
+        filter: drop-shadow(var(--light-shadow-strong));
     }
 
 .slider-wrapper {
@@ -295,7 +295,7 @@ input[type=range] {
     width: 100%;
     height: var(--input-height);
     border-radius: var(--border-radius);
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -358,24 +358,22 @@ input[type=range]::-moz-range-thumb {
     pointer-events: none;
 }
 
-.text-on-dark {
+.light-text {
     color: var(--light);
 }
 
-.text-on-light {
+.dark-text {
     color: var(--dark);
 }
 
-.text-on-light-colour {
+.dark-text-with-contrast {
     color: var(--dark);
-    filter: var(--border-filter-light);
-    opacity: 0.9;
+    text-shadow: var(--light-shadow);
 }
 
-.text-on-dark-colour {
+.light-text-with-contrast {
     color: var(--light);
-    filter: var(--border-filter-dark);
-    opacity: 0.9;
+    text-shadow: var(--dark-shadow);
 }
 
 .monospace {
@@ -383,26 +381,6 @@ input[type=range]::-moz-range-thumb {
     font-size: 1rem;
     letter-spacing: 0.05rem;
     white-space: pre;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.nav-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.075rem;
-    width: 2.5rem;
-}
-
-.nav-button {
-    min-height: var(--input-height);
-    height: var(--nav-button-height);
-    width: var(--input-height);
-    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
 }
 
 @media screen and (max-width: 720px) {
@@ -414,14 +392,6 @@ input[type=range]::-moz-range-thumb {
         margin-top: var(--top-bar-height-mobile); /* ensure no content is hidden behind top bar (for proper scrolling) */
         margin-bottom: var(--nav-bar-height-mobile); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
     }
-
-    .nav-bar {
-        left: 0;
-        width: 100%;
-        justify-content: space-between;
-        height: var(--nav-bar-height-mobile);
-        border-radius: 0;
-    }
     
     .icon {
         height: var(--icon-width-mobile);
@@ -430,15 +400,11 @@ input[type=range]::-moz-range-thumb {
     .title-text {
         font-size: 1.75rem;
     }
-
-    .nav-button {
-        height: var(--nav-button-height-mobile);
-    }
 }
 
 /* 
-    these classes use dynamically changing colour so need to generated by code in App.razor
-    but defined here to provide better IDE navigation (classes generated inside App.razor <style> are not discoverable) 
+    these classes use dynamically changing colour so need to generated by code in MainLayout.razor
+    but defined here to provide better IDE navigation (classes generated inside MainLayout.razor <style> are not discoverable) 
  */
 .colour-background {}
 .colour-text {}

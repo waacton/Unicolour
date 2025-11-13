@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour.Example.Web;
+﻿using Wacton.Unicolour.Example.Web.Layout;
+
+namespace Wacton.Unicolour.Example.Web;
 
 public abstract class Slider
 {
@@ -24,5 +26,5 @@ internal class SliderSolidColour : Slider
 {
     internal Unicolour Colour { get; set; } = null!;
     internal string CssBackground => Colour.Hex;
-    internal bool UseLightLabelText => Colour.Contrast(App.Light) > Colour.Contrast(App.Dark);
+    internal string LabelTextCssClass => Colour.Contrast(MainLayout.Light) > Colour.Contrast(MainLayout.Dark) ? "light-text-with-contrast" : "dark-text-with-contrast";
 }

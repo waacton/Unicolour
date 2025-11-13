@@ -1,4 +1,6 @@
-﻿<div class="column gap-large dark-background">
+﻿@page "/paint"
+
+<div class="column gap-large dark-background">
     <div class="column gap-medium">
         <div class="palette gap-small">
             @foreach (var pigment in AllPigments)
@@ -32,8 +34,8 @@
                            type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
                            @oninput="args => SetSliderValue(slider, args)"
                            title="Slider @(slider.LabelText)">
-                    <label class="slider-value text-on-dark">@slider.ValueText</label>
-                    <label class="slider-label-inside @(slider.UseLightLabelText ? "text-on-dark" : "      text-on-light") monospace">@slider.LabelText</label>
+                    <label class="slider-value light-text">@slider.ValueText</label>
+                    <label class="slider-label-inside @slider.LabelTextCssClass monospace">@slider.LabelText</label>
                 </div>
             }
         </div>

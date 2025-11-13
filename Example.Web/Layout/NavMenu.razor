@@ -1,0 +1,54 @@
+﻿<div class="nav-bar monospace">
+    <div class="nav-item">
+        <label class="nav-label @LabelTextCssClass(PrintRoute)">PRINT</label>
+        <NavLink href="@($"/{PrintRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(PrintRoute)">
+                <span class="@ButtonTextCssClass(PrintRoute)">🖨️</span>
+            </button>
+        </NavLink>
+        <label class="nav-label @LabelTextCssClass(PrintRoute)">CMYK</label>
+    </div>
+
+    <div class="nav-item">
+        <label class="nav-label @LabelTextCssClass(LightRoute)">LIGHT</label>
+        <NavLink href="@($"/{LightRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(LightRoute)">
+                <span class="@ButtonTextCssClass(LightRoute)">🌈</span>
+            </button>
+        </NavLink>
+        <label class="nav-label @LabelTextCssClass(LightRoute)">RGB+</label>
+    </div>
+
+    <div class="nav-item">
+        <label class="nav-label @LabelTextCssClass(PaintRoute)">PAINT</label>
+        <NavLink href="@($"/{PaintRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(PaintRoute)">
+                <span class="@ButtonTextCssClass(PaintRoute)">🎨</span>
+            </button>
+        </NavLink>
+        <label class="nav-label @LabelTextCssClass(PaintRoute)">RYB</label>
+    </div>
+</div>
+
+@code {
+    [Inject] public NavigationManager NavigationManager { get; set; } = null!;
+
+    private string currentRoute = null!;
+
+    private const string LightRoute = "";
+    private const string PrintRoute = "print";
+    private const string PaintRoute = "paint";
+    
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += (_, args) =>
+        {
+            currentRoute = NavigationManager.ToBaseRelativePath(args.Location);
+            StateHasChanged();
+        };
+    }
+
+    private string LabelTextCssClass(string route) => route == currentRoute ? "colour-text" : "light-text";
+    private string? ButtonBackgroundCssClass(string route) => route == currentRoute ? "colour-background" : null;
+    private string ButtonTextCssClass(string route) => route == currentRoute ? "text-on-colour" : "light-text";
+}

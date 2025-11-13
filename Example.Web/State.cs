@@ -40,18 +40,6 @@ public static class State
         Config = config;
         colour = colour.ConvertToConfiguration(config); // avoid triggering onColourChange; colour isn't actually changing
     }
-    
-    public static event Action? OnModeChange;
-    private static Mode mode = Mode.Light;
-    public static Mode Mode
-    {
-        get => mode;
-        set
-        {
-            mode = value;
-            OnModeChange?.Invoke();
-        }
-    }
         
     public static event Action? OnBusyChange;
     private static string busyMessage = string.Empty;

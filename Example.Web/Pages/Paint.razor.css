@@ -10,11 +10,11 @@
 }
 
     .paint-button:hover {
-        filter: var(--border-filter-light-strong);
+        filter: drop-shadow(var(--light-shadow-strong));
     }
 
     .paint-button:active {
-        filter: var(--border-filter-light-strong);
+        filter: drop-shadow(var(--light-shadow-strong));
     }
     
 .paint-button-deselected {
@@ -22,5 +22,5 @@
 }
 
 .paint-button-circle {
-    filter: var(--border-filter-light);
+    filter: drop-shadow(var(--light-shadow));
 }

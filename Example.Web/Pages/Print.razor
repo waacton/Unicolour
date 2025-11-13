@@ -1,4 +1,6 @@
-﻿<div class="column gap-large dark-background">
+﻿@page "/print"
+
+<div class="column gap-large dark-background">
     <div class="column gap-small">
         <div class="profile-row">
             <div class="profile-input">
@@ -7,7 +9,7 @@
                 <InputFile hidden id="fileInput" OnChange="SetProfile"/>
             </div>
             
-            <label class="profile-label text-on-dark">@State.Config.Icc.Name</label>
+            <label class="profile-label light-text">@State.Config.Icc.Name</label>
         </div>
 
         @foreach (var slider in sliders)
@@ -18,8 +20,8 @@
                        type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
                        @oninput="args => SetSliderValue(slider, args)"
                        title="Slider @(slider.LabelText)">
-                <label class="slider-value text-on-dark">@slider.ValueText</label>
-                <label class="slider-label-right text-on-dark">@slider.LabelText</label>
+                <label class="slider-value light-text">@slider.ValueText</label>
+                <label class="slider-label-right light-text">@slider.LabelText</label>
             </div>
         }
     </div>

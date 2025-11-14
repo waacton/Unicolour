@@ -77,6 +77,10 @@ a[b-d51cbrydqb] {
         height: var(--nav-bar-height-mobile);
         border-radius: 0;
     }
+
+    .nav-label[b-d51cbrydqb] {
+        font-size: 0.66rem;
+    }
     
     .nav-button[b-d51cbrydqb] {
         height: var(--nav-button-height-mobile);

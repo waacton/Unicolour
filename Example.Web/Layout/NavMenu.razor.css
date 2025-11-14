@@ -32,6 +32,10 @@
         height: var(--nav-bar-height-mobile);
         border-radius: 0;
     }
+
+    .nav-label {
+        font-size: 0.66rem;
+    }
     
     .nav-button {
         height: var(--nav-button-height-mobile);

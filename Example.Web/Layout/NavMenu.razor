@@ -31,7 +31,8 @@
 </div>
 
 @code {
-    [Inject] public NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] 
+    public NavigationManager NavigationManager { get; set; } = null!;
 
     private string currentRoute = null!;
 
@@ -41,11 +42,18 @@
     
     protected override void OnInitialized()
     {
+        UpdateCurrentRoute(NavigationManager.Uri);
+        
         NavigationManager.LocationChanged += (_, args) =>
         {
-            currentRoute = NavigationManager.ToBaseRelativePath(args.Location);
-            StateHasChanged();
+            UpdateCurrentRoute(args.Location);
         };
+    }
+
+    private void UpdateCurrentRoute(string location)
+    {
+        currentRoute = NavigationManager.ToBaseRelativePath(location);
+        StateHasChanged();
     }
 
     private string LabelTextCssClass(string route) => route == currentRoute ? "colour-text" : "light-text";

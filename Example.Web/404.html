@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+    <meta charset="UTF-8">
+    <title>Unicolour · 404</title>
+    <script>
+        /*
+         * extra guff for navigating to SPA routes while nested inside of 'github pages' deployment
+         * e.g. site.com/colour-picker/      --> github serves /colour-picker/index.html
+         *      site.com/colour-picker/paint --> github tries to serve /colour-picker/paint ... but doesn't exist so 404 ... need it to actually serve /colour-picker/index.html
+         * 1. site.com/colour-picker/paint triggers github's 404.html
+         * 2. 404.html has a script to redirect to site.com/colour-picker/?page=paint
+         * 3. site.com/colour-picker/ is served with query parameter ?page=paint
+         * 4. blazor app is rendered, and if query parameter is detected it will navigate the SPA to that page
+         */
+        const path = window.location.pathname;
+        if (path.includes('/colour-picker/')) {
+
+            const parts = path.split('/colour-picker/');
+            const basePath = parts[0];
+            const targetPage = parts[1];
+            const targetUrl = basePath + '/colour-picker/?page=' + targetPage;
+            window.location.replace(targetUrl);
+        }
+    </script>
+</head>
+<body style="height: 100%; margin: 0">
+    <div style="height: 100%; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <a href="https://unicolour.wacton.xyz">Unicolour website</a>
+        <a href="https://unicolour.wacton.xyz/colour-picker/">Colour picker for light and RGB+</a>
+        <a href="https://unicolour.wacton.xyz/colour-picker/print">Colour picker for print and CMYK</a>
+        <a href="https://unicolour.wacton.xyz/colour-picker/paint">Colour picker for paint and RYB</a>
+    </div>
+</body>
+</html>

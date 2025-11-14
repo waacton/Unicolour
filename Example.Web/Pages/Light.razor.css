@@ -2,16 +2,10 @@
     position: relative;
 }
 
+/* positioned to be top-right inside the dark background area */
 .dual-button {
-    /* easiest way to centre button content it seems... */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 3rem;
-    width: 3rem;
-
-    /* and it's also absolute positioned to be top-right inside the dark background area */
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: var(--dark-background-padding);
+    right: var(--dark-background-padding);
+    width: var(--input-height);
 }

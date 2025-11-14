@@ -1,5 +1,5 @@
-/* /LightSpaces.razor.rz.scp.css */
-.colour-space-row[b-q6sx5uuzh4] {
+/* /ColourSpacePicker.razor.rz.scp.css */
+.colour-space-row[b-4c22hqmrqv] {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -8,13 +8,78 @@
     width: 100%;
 }
 
-.colour-space-select[b-q6sx5uuzh4] {
+.colour-space-select[b-4c22hqmrqv] {
     flex: 0 0 33%;
 }
 
 @media screen and (max-width: 720px) {
-    .colour-space-select[b-q6sx5uuzh4] {
+    .colour-space-select[b-4c22hqmrqv] {
         flex: 0 0 50%;
+    }
+}
+/* /IccPicker.razor.rz.scp.css */
+.profile-row[b-77n72a46uf] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.profile-input[b-77n72a46uf] {
+    height: var(--input-height);
+    flex: 0 0 33%;
+}
+
+.profile-label[b-77n72a46uf] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 720px) {
+    .profile-input[b-77n72a46uf] {
+        flex: 0 0 50%;
+    }
+}
+/* /Layout/NavMenu.razor.rz.scp.css */
+a[b-d51cbrydqb] {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.nav-item[b-d51cbrydqb] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-label[b-d51cbrydqb] {
+    font-size: 0.75rem;
+    letter-spacing: 0.075rem;
+    width: 2.5rem;
+}
+
+.nav-button[b-d51cbrydqb] {
+    cursor: pointer;
+    min-height: var(--input-height);
+    height: var(--nav-button-height);
+    width: var(--input-height);
+    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+}
+
+@media screen and (max-width: 720px) {
+    .nav-bar[b-d51cbrydqb] {
+        left: 0;
+        width: 100%;
+        justify-content: space-between;
+        height: var(--nav-bar-height-mobile);
+        border-radius: 0;
+    }
+    
+    .nav-button[b-d51cbrydqb] {
+        height: var(--nav-button-height-mobile);
     }
 }
 /* /Pages/Light.razor.rz.scp.css */
@@ -22,16 +87,89 @@
     position: relative;
 }
 
+/* positioned to be top-right inside the dark background area */
 .dual-button[b-lw9p7rykct] {
-    /* easiest way to centre button content it seems... */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 3rem;
-    width: 3rem;
-
-    /* and it's also absolute positioned to be top-right inside the dark background area */
     position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: var(--dark-background-padding);
+    right: var(--dark-background-padding);
+    width: var(--input-height);
+}
+/* /Pages/Paint.razor.rz.scp.css */
+.palette[b-ey8hfw9yvz] {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.paint-button[b-ey8hfw9yvz] {
+    width: var(--input-height);
+    font-size: 1.5rem;
+}
+
+    .paint-button:hover[b-ey8hfw9yvz] {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+
+    .paint-button:active[b-ey8hfw9yvz] {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+    
+.paint-button-deselected[b-ey8hfw9yvz] {
+    filter: none;
+}
+
+.paint-button-circle[b-ey8hfw9yvz] {
+    filter: drop-shadow(var(--light-shadow));
+}
+/* /Pages/Print.razor.rz.scp.css */
+.profile-row[b-l0for04g6x] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.profile-input[b-l0for04g6x] {
+    height: var(--input-height);
+    flex: 0 0 33%;
+}
+
+.profile-label[b-l0for04g6x] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 720px) {
+    .profile-input[b-l0for04g6x] {
+        flex: 0 0 50%;
+    }
+}
+/* /PigmentPicker.razor.rz.scp.css */
+.palette[b-nxulgbh659] {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.paint-button[b-nxulgbh659] {
+    width: var(--input-height);
+    font-size: 1.5rem;
+}
+
+    .paint-button:hover[b-nxulgbh659] {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+
+    .paint-button:active[b-nxulgbh659] {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+    
+.paint-button-deselected[b-nxulgbh659] {
+    filter: none;
+}
+
+.paint-button-circle[b-nxulgbh659] {
+    filter: drop-shadow(var(--light-shadow));
 }

@@ -1,0 +1,39 @@
+﻿a {
+    text-decoration: inherit;
+    color: inherit;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.075rem;
+    width: 2.5rem;
+}
+
+.nav-button {
+    cursor: pointer;
+    min-height: var(--input-height);
+    height: var(--nav-button-height);
+    width: var(--input-height);
+    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+}
+
+@media screen and (max-width: 720px) {
+    .nav-bar {
+        left: 0;
+        width: 100%;
+        justify-content: space-between;
+        height: var(--nav-bar-height-mobile);
+        border-radius: 0;
+    }
+    
+    .nav-button {
+        height: var(--nav-button-height-mobile);
+    }
+}

@@ -1,0 +1,108 @@
+﻿@inherits LayoutComponentBase
+
+@if (State.IsBusy)
+{
+    <div class="busy-wrapper">
+        <label class="busy-text monospace @TextOnColourCssClass">@State.BusyMessage</label>
+    </div>
+}
+
+<TopBar />
+
+<main>
+    <div class="content monospace">
+        <div class="max-width-wrapper">
+            <div class="column gap-medium">
+
+                @Body
+
+                <div class="column gap-medium @TextOnColourCssClass">
+                    <label>@rgbText</label>
+                    @if (!string.IsNullOrEmpty(warningText))
+                    {
+                        <label class="warning-text">
+                            <span>@warningEmoji</span> <span>@warningText</span>
+                        </label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<NavMenu />
+
+<style>
+    body, .colour-background {
+        /* 
+         * gradient only applied between top-bar and nav-bar
+         * not using background-position & background-size because the background is used outside of the content area (e.g. nav bar)
+         */
+        background-image: linear-gradient(
+            to bottom,
+            @cssInsideGamut,
+            @cssInsideGamut 50%,
+            @cssOutsideGamut calc(100vh - var(--nav-bar-height)),
+            @cssOutsideGamut
+        ), var(--dark-stripes);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    
+    .colour-text {
+        color: @(conversionError ? Light.Hex : cssInsideGamut);
+    }
+    
+    .busy-wrapper {
+        position: absolute;
+        z-index: 3;
+
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        background: rgb(from @cssInsideGamut r g b / 92.5%);
+    }
+
+    .busy-text {
+        font-weight: 600;
+        letter-spacing: 0.125rem;
+    } 
+
+    @@media screen and (max-width: 720px) {
+        body, .colour-background  {
+            background-image: linear-gradient(
+                to bottom,
+                @cssInsideGamut,
+                @cssInsideGamut 50%,
+                @cssOutsideGamut calc(100vh - var(--nav-bar-height-mobile)),
+                @cssOutsideGamut
+            ), var(--dark-stripes);
+        }
+    }
+
+    /* 
+    NOTE: no point doing this; blazor webassembly is restricted to single-threaded
+    if async/await actually worked, this would animate text colour while client busy processing
+    ----------
+    background-size is 200% so initially only gradient 0 to 50% will be visible - only a white part of the gradient
+    background-position will animate from 0 (left-aligned) to 100% (right-aligned) to 200% (loop back to left-aligned)
+    - 0 to 100% (left-aligned to right-aligned) shifts the background image to the left
+    - use negative positioning to shift the image to the right, creating the animation effect
+    
+    .busy-wrapper {
+        background-image: linear-gradient(to right, var(--light) 70%, @cssInsideGamut 85%, var(--light) 100%);
+        background-size: 200% 100%;
+        background-position: 0 0;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: busy-animation 2.5s linear infinite;
+    }
+    
+    @@keyframes busy-animation {
+        to { background-position: -200% 0 }
+    }
+    */
+</style>

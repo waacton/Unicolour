@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Wacton.Unicolour.Example.Web;
+namespace Wacton.Unicolour.Example.Web.Layout;
 
-public partial class App : ComponentBase
+public partial class MainLayout : LayoutComponentBase
 {
+    // arguably this could all be moved to State...
     private bool conversionError;
     private string cssInsideGamut = null!;
     private string cssOutsideGamut = null!;
@@ -12,21 +13,25 @@ public partial class App : ComponentBase
     private string warningEmoji = null!;
     private string warningText = null!;
     
-    private readonly Unicolour dark = new("404046");
-    private readonly Unicolour light = new("e8e8ff");
+    private string TextOnColourCssClass => useLightText ? "light-text-with-contrast" : "dark-text-with-contrast";
+    
+    internal static readonly Unicolour Dark = new("404046");
+    internal static readonly Unicolour Light = new("e8e8ff");
     
     protected override void OnInitialized()
     {
-        UpdateDisplay();
+        UpdateMainDisplay();
 
-        State.OnChange += () =>
+        State.OnColourChange += () =>
         {
-            UpdateDisplay();
+            UpdateMainDisplay();
             StateHasChanged();
         };
+
+        State.OnBusyChange += StateHasChanged;
     }
 
-    private void UpdateDisplay()
+    private void UpdateMainDisplay()
     {
         var colour = State.Colour;
         
@@ -40,11 +45,11 @@ public partial class App : ComponentBase
 
         if (conversionError)
         {
-            useLightText = false;
+            useLightText = true;
         }
         else
         {
-            useLightText = colour.Contrast(light) > colour.Contrast(dark);
+            useLightText = colour.Contrast(Light) > colour.Contrast(Dark);
         }
 
         if (conversionError)

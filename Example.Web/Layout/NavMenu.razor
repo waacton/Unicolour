@@ -1,7 +1,7 @@
 ﻿<div class="nav-bar monospace">
     <div class="nav-item">
         <label class="nav-label @LabelTextCssClass(PrintRoute)">PRINT</label>
-        <NavLink href="@($"/{PrintRoute}")">
+        <NavLink href="@($"{PrintRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(PrintRoute)">
                 <span class="@ButtonTextCssClass(PrintRoute)">🖨️</span>
             </button>
@@ -11,7 +11,7 @@
 
     <div class="nav-item">
         <label class="nav-label @LabelTextCssClass(LightRoute)">LIGHT</label>
-        <NavLink href="@($"/{LightRoute}")">
+        <NavLink href="@($"{LightRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(LightRoute)">
                 <span class="@ButtonTextCssClass(LightRoute)">🌈</span>
             </button>
@@ -21,7 +21,7 @@
 
     <div class="nav-item">
         <label class="nav-label @LabelTextCssClass(PaintRoute)">PAINT</label>
-        <NavLink href="@($"/{PaintRoute}")">
+        <NavLink href="@($"{PaintRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(PaintRoute)">
                 <span class="@ButtonTextCssClass(PaintRoute)">🎨</span>
             </button>
@@ -35,7 +35,7 @@
 
     private string currentRoute = null!;
 
-    private const string LightRoute = "";
+    internal const string LightRoute = "";
     private const string PrintRoute = "print";
     private const string PaintRoute = "paint";
     

@@ -1,0 +1,26 @@
+.palette {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.paint-button {
+    width: var(--input-height);
+    font-size: 1.5rem;
+}
+
+    .paint-button:hover {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+
+    .paint-button:active {
+        filter: drop-shadow(var(--light-shadow-strong));
+    }
+    
+.paint-button-deselected {
+    filter: none;
+}
+
+.paint-button-circle {
+    filter: drop-shadow(var(--light-shadow));
+}

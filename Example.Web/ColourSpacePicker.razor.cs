@@ -2,10 +2,10 @@
 
 namespace Wacton.Unicolour.Example.Web;
 
-public partial class LightPicker : ComponentBase
+public partial class ColourSpacePicker : ComponentBase
 {
     private ColourSpace colourSpace = ColourSpace.Rgb255;
-    private readonly SliderGradientColour[] sliders = [new(), new(), new()];
+    private readonly GradientColourSlider[] sliders = [new(), new(), new()];
 
     private static ColourSpace[] ColourSpaceOptions = Utils.SpaceToRange.Keys.OrderBy(space => space.ToString()).ToArray();
     
@@ -33,8 +33,8 @@ public partial class LightPicker : ComponentBase
     }
 
     private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
-    private void SetSliderValue(SliderGradientColour slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
-    private void SetSliderValue(SliderGradientColour slider, double value)
+    private void SetSliderValue(GradientColourSlider slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
+    private void SetSliderValue(GradientColourSlider slider, double value)
     {
         slider.Value = value;
         UpdateSliderGradients();

@@ -15,14 +15,14 @@ public abstract class Slider
     internal bool InRange => Value >= Min && Value <= Max;
 }
 
-internal class SliderGradientColour : Slider
+internal class GradientColourSlider : Slider
 {
     internal Unicolour[] Stops { get; set; } = [];
     internal string CssGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, 100)));
     internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInRgbGamut ? 100 : 50)));
 }
 
-internal class SliderSolidColour : Slider
+internal class SolidColourSlider : Slider
 {
     internal Unicolour Colour { get; set; } = null!;
     internal string CssBackground => Colour.Hex;

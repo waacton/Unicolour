@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Wacton.Unicolour.Datasets;
 
-namespace Wacton.Unicolour.Example.Web.Pages;
+namespace Wacton.Unicolour.Example.Web;
 
-public partial class Paint : ComponentBase
+public partial class PigmentPicker : ComponentBase
 {
     // TODO: single-constant approximation variant?
     // private readonly static Pigment redPigment = PigmentGenerator.From(new("#FF0000"));
@@ -21,7 +21,7 @@ public partial class Paint : ComponentBase
         ArtistPaint.BoneBlack, ArtistPaint.TitaniumWhite
     ];
     
-    private static readonly Dictionary<Pigment, SliderSolidColour> PigmentToSlider = new();
+    private static readonly Dictionary<Pigment, SolidColourSlider> PigmentToSlider = new();
 
     protected override void OnInitialized()
     {
@@ -37,8 +37,8 @@ public partial class Paint : ComponentBase
     }
     
     private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
-    private static void SetSliderValue(SliderSolidColour slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
-    private static void SetSliderValue(SliderSolidColour slider, double value)
+    private static void SetSliderValue(SolidColourSlider slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
+    private static void SetSliderValue(SolidColourSlider slider, double value)
     {
         slider.Value = value;
         slider.ValueText = $"{value:F2}";
@@ -54,7 +54,7 @@ public partial class Paint : ComponentBase
 
     private static void AddPigment(Pigment pigment)
     {
-        var slider = new SliderSolidColour
+        var slider = new SolidColourSlider
         {
             Colour = Utils.PigmentToColour[pigment].MapToRgbGamut(GamutMap.RgbClipping), 
             LabelText = Utils.PigmentToName[pigment], 

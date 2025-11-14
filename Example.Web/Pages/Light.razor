@@ -1,14 +1,26 @@
 ﻿@page "/"
 
 <div class="column gap-large dark-background dual-button-reference-point">
-    <LightPicker />
+    <ColourSpacePicker />
 
     @if (dualMode)
     {
-        <LightPicker />
+        <ColourSpacePicker />
     }
 
-    <button class="dual-button @(dualMode ?  "colour-background" : "")" @onclick="ToggleDualMode">
-        <span class=@(dualMode ?  "text-on-colour" : "")>☰</span>
+    <button class="dual-button @ButtonBackgroundCssClass" @onclick="ToggleDualMode">
+        <span class="@ButtonTextCssClass">☰</span>
     </button>
 </div>
+
+@code {
+    private bool dualMode;
+    
+    private string? ButtonBackgroundCssClass => dualMode ? "colour-background" : null;
+    private string ButtonTextCssClass => dualMode ? "text-on-colour" : "light-text";
+    
+    private void ToggleDualMode()
+    {
+        dualMode = !dualMode;
+    }
+}

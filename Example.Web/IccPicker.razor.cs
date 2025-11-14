@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Wacton.Unicolour.Icc;
 
-namespace Wacton.Unicolour.Example.Web.Pages;
+namespace Wacton.Unicolour.Example.Web;
 
-public partial class Print : ComponentBase
+public partial class IccPicker : ComponentBase
 {
-    private readonly List<SliderGradientColour> sliders = [];
+    private readonly List<GradientColourSlider> sliders = [];
     
     protected override void OnInitialized()
     {
@@ -17,27 +17,6 @@ public partial class Print : ComponentBase
         // if a profile is loaded, and a vibrant RGB is chosen, the output CMYK will be duller variation
         // so update the colour to reflect what the RGB of the duller CMYK converts to
         UpdateColourState();
-        
-        // TODO: include this if wanting to show light picker at the same time
-        //       ... but think about handling everything as response to OnColourChange, not just this
-        // State.OnColourChange += () =>
-        // {
-        //     var profile = State.Config.Icc.Profile;
-        //     var axes = profile == null
-        //         ? ["C", "M", "Y", "K"] // uncalibrated
-        //         : Utils.IccAxes(profile.Header.DataColourSpace);
-        //
-        //     for (var i = 0; i < axes.Length; i++)
-        //     {
-        //         var value = State.Colour.Icc.Values[i];
-        //         sliders[i].Value = value;
-        //         sliders[i].ValueText = $"{value:F2}";
-        //     }
-        //
-        //     UpdateSliderGradients();
-        //     
-        //     StateHasChanged();
-        // };
     }
     
     private async Task SetProfile(InputFileChangeEventArgs args)
@@ -79,7 +58,7 @@ public partial class Print : ComponentBase
         for (var i = 0; i < axes.Length; i++)
         {
             var value = State.Colour.Icc.Values[i];
-            var slider = new SliderGradientColour
+            var slider = new GradientColourSlider
             {
                 Value = value,
                 ValueText = $"{value:F2}",
@@ -93,8 +72,8 @@ public partial class Print : ComponentBase
     }
 
     private static double ParseValue(ChangeEventArgs args) => double.Parse((args.Value == null ? string.Empty : args.Value.ToString()) ?? string.Empty);
-    private void SetSliderValue(SliderGradientColour slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
-    private void SetSliderValue(SliderGradientColour slider, double value)
+    private void SetSliderValue(GradientColourSlider slider, ChangeEventArgs args) => SetSliderValue(slider, ParseValue(args));
+    private void SetSliderValue(GradientColourSlider slider, double value)
     {
         slider.Value = value;
         slider.ValueText = $"{value:F2}";

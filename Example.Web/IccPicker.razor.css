@@ -1,0 +1,24 @@
+﻿.profile-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.profile-input {
+    height: var(--input-height);
+    flex: 0 0 33%;
+}
+
+.profile-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 720px) {
+    .profile-input {
+        flex: 0 0 50%;
+    }
+}

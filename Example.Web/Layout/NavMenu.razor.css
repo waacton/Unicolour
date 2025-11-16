@@ -16,6 +16,14 @@
     width: 2.5rem;
 }
 
+.nav-left-text {
+    text-align: right;
+}
+
+.nav-right-text {
+    text-align: left;
+}
+
 .nav-button {
     cursor: pointer;
     min-height: var(--input-height);
@@ -28,9 +36,11 @@
     .nav-bar {
         left: 0;
         width: 100%;
-        justify-content: space-between;
+        justify-content: space-evenly;
         height: var(--nav-bar-height-mobile);
         border-radius: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .nav-label {
@@ -39,5 +49,11 @@
     
     .nav-button {
         height: var(--nav-button-height-mobile);
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .nav-label {
+        display: none;
     }
 }

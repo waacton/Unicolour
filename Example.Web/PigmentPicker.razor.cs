@@ -31,8 +31,8 @@ public partial class PigmentPicker : ComponentBase
         AddPigment(ArtistPaint.HansaYellowOpaque);
         AddPigment(ArtistPaint.CobaltBlue);
 
-        SetSliderValue(PigmentToSlider[ArtistPaint.QuinacridoneRed], 1.0);
-        SetSliderValue(PigmentToSlider[ArtistPaint.HansaYellowOpaque], 0.0);
+        SetSliderValue(PigmentToSlider[ArtistPaint.QuinacridoneRed], 0.0);
+        SetSliderValue(PigmentToSlider[ArtistPaint.HansaYellowOpaque], 1.0);
         SetSliderValue(PigmentToSlider[ArtistPaint.CobaltBlue], 0.0);
     }
     
@@ -63,11 +63,13 @@ public partial class PigmentPicker : ComponentBase
         };
 
         PigmentToSlider.Add(pigment, slider);
+        SetSliderValue(slider, 0);
     }
     
     private static void RemovePigment(Pigment pigment)
     {
         PigmentToSlider.Remove(pigment);
+        SetColour();
     }
 
     private static bool IsDisplayed(Pigment pigment) => PigmentToSlider.ContainsKey(pigment);

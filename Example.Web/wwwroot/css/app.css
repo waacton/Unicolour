@@ -217,6 +217,8 @@ body {
     font-variant: all-small-caps;
     font-size: 2rem;
     letter-spacing: 0.25rem;
+    text-align: center;
+    line-height: 1.5rem;
 }
 
 .max-width-wrapper {
@@ -286,8 +288,6 @@ select, button, .label-as-button {
     align-items: center;
     justify-content: center;
     width: 100%;
-    
-    position: relative;
 }
 
 input[type=range] {
@@ -355,6 +355,9 @@ input[type=range]::-moz-range-thumb {
 .slider-label-inside {
     position: absolute;
     left: calc(var(--slider-thumb-width) + 0.5rem);
+    max-width: 50%; /* not ideal, should really involve width of slider itself for true reusability */
+    text-overflow: ellipsis;
+    overflow: hidden;
     pointer-events: none;
 }
 

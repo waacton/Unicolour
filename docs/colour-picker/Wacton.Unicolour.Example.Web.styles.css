@@ -61,6 +61,14 @@ a[b-d51cbrydqb] {
     width: 2.5rem;
 }
 
+.nav-left-text[b-d51cbrydqb] {
+    text-align: right;
+}
+
+.nav-right-text[b-d51cbrydqb] {
+    text-align: left;
+}
+
 .nav-button[b-d51cbrydqb] {
     cursor: pointer;
     min-height: var(--input-height);
@@ -73,9 +81,11 @@ a[b-d51cbrydqb] {
     .nav-bar[b-d51cbrydqb] {
         left: 0;
         width: 100%;
-        justify-content: space-between;
+        justify-content: space-evenly;
         height: var(--nav-bar-height-mobile);
         border-radius: 0;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .nav-label[b-d51cbrydqb] {
@@ -84,6 +94,12 @@ a[b-d51cbrydqb] {
     
     .nav-button[b-d51cbrydqb] {
         height: var(--nav-button-height-mobile);
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .nav-label[b-d51cbrydqb] {
+        display: none;
     }
 }
 /* /Pages/Light.razor.rz.scp.css */

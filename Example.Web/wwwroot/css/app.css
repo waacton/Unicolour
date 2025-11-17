@@ -202,7 +202,13 @@ body {
     z-index: 1;
 }
 
+.no-resize {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
 .icon {
+    width: var(--icon-width);
     height: var(--icon-width);
 }
 
@@ -397,11 +403,20 @@ input[type=range]::-moz-range-thumb {
     }
     
     .icon {
+        width: var(--icon-width-mobile);
         height: var(--icon-width-mobile);
     }
 
     .title-text {
         font-size: 1.75rem;
+    }
+
+    .max-width-wrapper {
+        padding: var(--content-padding-top) 0 var(--content-padding) 0;
+    }
+
+    .dark-background {
+        border-radius: 0;
     }
 }
 

@@ -2,35 +2,33 @@
     <div class="palette gap-small">
         @foreach (var pigment in AllPigments)
         {
-            @if (IsDisplayed(pigment))
-            {
-                <button class="paint-button" 
-                        style="background: @Utils.PigmentToColour[pigment].Hex;" 
-                        @onclick="() => RemovePigment(pigment)"
-                        title="Toggle @Utils.PigmentToName[pigment]">
-                </button>
-            }
-            else
-            {
-                <button class="paint-button paint-button-deselected" 
-                        style="color: @Utils.PigmentToColour[pigment].Hex;" 
-                        @onclick="() => AddPigment(pigment)"
-                        title="Toggle @Utils.PigmentToName[pigment]">
-                    <span class="paint-button-circle">⬤</span>
-                </button>
-            }
+            <button class="paint-button @ButtonDeselectedCssClass(pigment)"
+                    style="color: @Utils.PigmentToColour[pigment].Hex; @BackgroundCssStyle(pigment)"
+                    @onclick="() => TogglePigment(pigment)"
+                    title="Toggle @Utils.PigmentToName[pigment]">
+                @if (!IsDisplayed(pigment))
+                {
+                    <span class="paint-button-circle"
+                          style="color: @Utils.PigmentToColour[pigment].Hex;">⬤</span>
+                }
+            </button>
         }
     </div>
 
     <div class="column gap-small">
-        @foreach (var slider in PigmentToSlider.Values)
+        @foreach (var pigment in AllPigments)
         {
+            @if (!PigmentToSlider.TryGetValue(pigment, out var slider))
+            {
+                continue;
+            }
+
             <div class="slider-wrapper">
                 <input class="slider-gradient @(slider.InRange ? "show-thumb" : "hide-thumb")"
                        style="background: @slider.CssBackground"
                        type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
                        @oninput="args => SetSliderValue(slider, args)"
-                       title="Slider @(slider.LabelText)">
+                       title="Slider @slider.LabelText">
                 <label class="slider-value light-text">@slider.ValueText</label>
                 <label class="slider-label-inside @slider.LabelTextCssClass monospace">@slider.LabelText</label>
             </div>

@@ -25,7 +25,11 @@ public partial class PigmentPicker : ComponentBase
 
     protected override void OnInitialized()
     {
-        PigmentToSlider.Clear();
+        if (PigmentToSlider.Count != 0)
+        {
+            SetColour();
+            return;
+        }
 
         AddPigment(ArtistPaint.QuinacridoneRed);
         AddPigment(ArtistPaint.HansaYellowOpaque);
@@ -52,6 +56,18 @@ public partial class PigmentPicker : ComponentBase
         State.Update(pigments, weights);
     }
 
+    private static void TogglePigment(Pigment pigment)
+    {
+        if (IsDisplayed(pigment))
+        {
+            RemovePigment(pigment);
+        }
+        else
+        {
+            AddPigment(pigment);
+        }
+    }
+
     private static void AddPigment(Pigment pigment)
     {
         var slider = new SolidColourSlider
@@ -73,4 +89,6 @@ public partial class PigmentPicker : ComponentBase
     }
 
     private static bool IsDisplayed(Pigment pigment) => PigmentToSlider.ContainsKey(pigment);
+    private static string? ButtonDeselectedCssClass(Pigment pigment) => IsDisplayed(pigment) ? null : "paint-button-deselected";
+    private static string? BackgroundCssStyle(Pigment pigment) => IsDisplayed(pigment) ? $"background: {Utils.PigmentToColour[pigment].Hex}" : null;
 }

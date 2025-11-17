@@ -73,8 +73,9 @@ a[b-d51cbrydqb] {
     cursor: pointer;
     min-height: var(--input-height);
     height: var(--nav-button-height);
-    width: var(--input-height);
-    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+    width: calc(var(--input-height) + 1rem);
+    filter: drop-shadow(0 0.69rem 0.05rem var(--light)); /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+    font-size: 1.25rem;
 }
 
 @media screen and (max-width: 720px) {
@@ -89,17 +90,12 @@ a[b-d51cbrydqb] {
     }
 
     .nav-label[b-d51cbrydqb] {
-        font-size: 0.66rem;
+        display: none;
     }
     
     .nav-button[b-d51cbrydqb] {
         height: var(--nav-button-height-mobile);
-    }
-}
-
-@media screen and (max-width: 420px) {
-    .nav-label[b-d51cbrydqb] {
-        display: none;
+        width: calc(var(--input-height) + 2rem);
     }
 }
 /* /Pages/Light.razor.rz.scp.css */
@@ -113,58 +109,6 @@ a[b-d51cbrydqb] {
     top: var(--dark-background-padding);
     right: var(--dark-background-padding);
     width: var(--input-height);
-}
-/* /Pages/Paint.razor.rz.scp.css */
-.palette[b-ey8hfw9yvz] {
-    display: flex; 
-    justify-content: center;
-    flex-wrap: wrap; 
-}
-
-.paint-button[b-ey8hfw9yvz] {
-    width: var(--input-height);
-    font-size: 1.5rem;
-}
-
-    .paint-button:hover[b-ey8hfw9yvz] {
-        filter: drop-shadow(var(--light-shadow-strong));
-    }
-
-    .paint-button:active[b-ey8hfw9yvz] {
-        filter: drop-shadow(var(--light-shadow-strong));
-    }
-    
-.paint-button-deselected[b-ey8hfw9yvz] {
-    filter: none;
-}
-
-.paint-button-circle[b-ey8hfw9yvz] {
-    filter: drop-shadow(var(--light-shadow));
-}
-/* /Pages/Print.razor.rz.scp.css */
-.profile-row[b-l0for04g6x] {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    width: 100%;
-}
-
-.profile-input[b-l0for04g6x] {
-    height: var(--input-height);
-    flex: 0 0 33%;
-}
-
-.profile-label[b-l0for04g6x] {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-@media screen and (max-width: 720px) {
-    .profile-input[b-l0for04g6x] {
-        flex: 0 0 50%;
-    }
 }
 /* /PigmentPicker.razor.rz.scp.css */
 .palette[b-nxulgbh659] {

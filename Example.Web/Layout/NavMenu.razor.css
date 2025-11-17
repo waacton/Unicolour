@@ -28,8 +28,9 @@
     cursor: pointer;
     min-height: var(--input-height);
     height: var(--nav-button-height);
-    width: var(--input-height);
-    filter: drop-shadow(0 0.69rem 0.05rem var(--light)) /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+    width: calc(var(--input-height) + 1rem);
+    filter: drop-shadow(0 0.69rem 0.05rem var(--light)); /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
+    font-size: 1.25rem;
 }
 
 @media screen and (max-width: 720px) {
@@ -44,16 +45,11 @@
     }
 
     .nav-label {
-        font-size: 0.66rem;
+        display: none;
     }
     
     .nav-button {
         height: var(--nav-button-height-mobile);
-    }
-}
-
-@media screen and (max-width: 420px) {
-    .nav-label {
-        display: none;
+        width: calc(var(--input-height) + 2rem);
     }
 }

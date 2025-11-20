@@ -1,7 +1,7 @@
 ﻿<div class="column gap-small">
     <div class="profile-row">
         <div class="profile-input">
-            <!-- this is unpleasant; would prefer to use ::file-selector-button but it cuts off the drop-shadow filter -->
+            <!-- this is unpleasant; would prefer to use ::file-selector-button but it cuts off anything outside the box model (e.g. outlines, filter drop shadows) -->
             <label for="fileInput" class="label-as-button">Load profile</label>
             <InputFile hidden id="fileInput" accept=".icc,.icm" OnChange="SetProfile"/>
         </div>

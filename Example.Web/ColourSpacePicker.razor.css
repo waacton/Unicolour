@@ -16,3 +16,9 @@
         flex: 0 0 50%;
     }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+    .colour-space-select {
+        transition: flex var(--transition);
+    }
+}

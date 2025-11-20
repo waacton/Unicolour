@@ -1,32 +1,44 @@
 ﻿<div class="nav-bar monospace">
     <div class="nav-item">
-        <label class="nav-label nav-left-text @LabelTextCssClass(PrintRoute)">PRINT</label>
+        <div class="nav-label nav-left-text @LabelTextCssClass(PrintRoute)">
+            <label>PRINT</label>
+        </div>
         <NavLink href="@($"{PrintRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(PrintRoute)">
                 <span class="@ButtonTextCssClass(PrintRoute)">🖨️</span>
             </button>
         </NavLink>
-        <label class="nav-label nav-right-text @LabelTextCssClass(PrintRoute)">CMYK</label>
+        <div class="nav-label nav-right-text @LabelTextCssClass(PrintRoute)">
+            <label>CMYK</label>
+        </div>
     </div>
 
     <div class="nav-item">
-        <label class="nav-label nav-left-text @LabelTextCssClass(LightRoute)">LIGHT</label>
+        <div class="nav-label nav-left-text @LabelTextCssClass(LightRoute)">
+            <label>LIGHT</label>
+        </div>
         <NavLink href="@($"{LightRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(LightRoute)">
                 <span class="@ButtonTextCssClass(LightRoute)">🌈</span>
             </button>
         </NavLink>
-        <label class="nav-label nav-right-text @LabelTextCssClass(LightRoute)">RGB+</label>
+        <div class="nav-label nav-right-text @LabelTextCssClass(LightRoute)">
+            <label>RGB+</label>
+        </div>
     </div>
 
     <div class="nav-item">
-        <label class="nav-label nav-left-text @LabelTextCssClass(PaintRoute)">PAINT</label>
+        <div class="nav-label nav-left-text @LabelTextCssClass(PaintRoute)">
+            <label>PAINT</label>
+        </div>
         <NavLink href="@($"{PaintRoute}")">
             <button class="nav-button @ButtonBackgroundCssClass(PaintRoute)">
                 <span class="@ButtonTextCssClass(PaintRoute)">🎨</span>
             </button>
         </NavLink>
-        <label class="nav-label nav-right-text @LabelTextCssClass(PaintRoute)">RYB</label>
+        <div class="nav-label nav-right-text @LabelTextCssClass(PaintRoute)">
+            <label>RYB</label>
+        </div>
     </div>
 </div>
 
@@ -56,7 +68,7 @@
         StateHasChanged();
     }
 
-    private string LabelTextCssClass(string route) => route == currentRoute ? "colour-text" : "light-text";
+    private string LabelTextCssClass(string route) => route == currentRoute ? "colour-text bold-text" : "light-text";
     private string? ButtonBackgroundCssClass(string route) => route == currentRoute ? "colour-background" : null;
     private string ButtonTextCssClass(string route) => route == currentRoute ? "text-on-colour" : "light-text";
 }

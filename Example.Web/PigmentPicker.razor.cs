@@ -53,7 +53,7 @@ public partial class PigmentPicker : ComponentBase
     {
         var pigments = PigmentToSlider.Keys.ToArray();
         var weights = PigmentToSlider.Values.Select(x => x.Value).ToArray();
-        State.Update(pigments, weights);
+        State.UpdateColour(pigments, weights);
     }
 
     private static void TogglePigment(Pigment pigment)

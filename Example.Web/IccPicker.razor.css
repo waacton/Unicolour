@@ -22,3 +22,9 @@
         flex: 0 0 50%;
     }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+    .profile-input {
+        transition: flex var(--transition);
+    }
+}

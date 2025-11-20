@@ -1,0 +1,59 @@
+﻿@*
+CSS isolation (.razor.css files) is not suitable here
+because the CSS properties have to be regenerated whenever the selected colour changes
+all other blazor components should use .razor.css files for styles specific to them
+*@
+<style>
+    body, .colour-background {
+        /* 
+         * gradient only starts at 50% to allow top of the background to show the solid in-gamut colour
+         * not using background-position & background-size because the background is used outside of the content area (e.g. nav bar)
+         */
+        background-image: linear-gradient(
+            to bottom,
+            @cssInsideGamut 50%,
+            @cssOutsideGamut
+        ), var(--dark-stripes);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .colour-text {
+        color: @(ConversionResult == ConversionResult.Error ? Utils.Light.Hex : cssInsideGamut);
+    }
+
+    .busy-wrapper {
+        background: rgb(from @cssInsideGamut r g b / 92.5%);
+    }
+
+    /* 
+    NOTE: no point doing this; blazor webassembly is restricted to single-threaded
+    if async/await actually worked, this would animate text colour while client busy processing
+    ----------
+    background-size is 200% so initially only gradient 0 to 50% will be visible - only a white part of the gradient
+    background-position will animate from 0 (left-aligned) to 100% (right-aligned) to 200% (loop back to left-aligned)
+    - 0 to 100% (left-aligned to right-aligned) shifts the background image to the left
+    - use negative positioning to shift the image to the right, creating the animation effect
+    
+    .busy-wrapper {
+        background-image: linear-gradient(to right, var(--light) 70%, @cssInsideGamut 85%, var(--light) 100%);
+            background-size: 200% 100%;
+            background-position: 0 0;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: busy-animation 2.5s linear infinite;
+        }
+        
+        @@keyframes busy-animation {
+            to { background-position: -200% 0 }
+        }
+    */
+</style>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        OnColourChange += StateHasChanged;
+    }
+}

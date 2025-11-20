@@ -105,16 +105,31 @@ html, body {
 */
 
 :root {
-    --dark: #404046;
-    --less-dark: #606069;
-    --light: #E8E8FF;
-    --less-light: #DADAF0;
+    /* 404046 -> E8E8FF in sRGB space */
+    --grey01: #404046;
+    --grey02: #515159;
+    --grey03: #62626B;
+    --grey04: #72727E;
+    --grey05: #838390;
+    --grey06: #9494A2;
+    --grey07: #A5A5B5;
+    --grey08: #B6B6C8;
+    --grey09: #C6C6DA;
+    --grey10: #D7D7EC;
+    --grey11: #E8E8FF;
+    
+    --dark: var(--grey01);
+    --mid: var(--grey04);
+    --lightish: var(--grey07);
+    --light: var(--grey11);
     --default-accent: #FF1493;
-    --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
-    --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
-    --dark-shadow: 0 0 0.05rem var(--dark);
-    --light-shadow: 0 0 0.05rem var(--light);
-    --light-shadow-strong: 0 0 0.075rem var(--light);
+
+    --outline-normal: 1px solid var(--mid);
+    --outline-hover: 1px solid var(--lightish);
+    --outline-active: 1px solid var(--light);
+    --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--grey02) 10px, var(--grey02) 20px);
+    --dark-shadow: 0 0 0.25rem var(--dark);
+    --light-shadow: 0 0 0.25rem var(--light);
     
     --icon-width: 48px;
     --icon-width-mobile: 32px;
@@ -123,20 +138,20 @@ html, body {
     --border-radius: 0.5rem;
     --input-height: 3rem;
     --slider-thumb-width: calc(var(--input-height) / 2);
-    --content-padding: 32px;
-    --content-padding-top: calc(var(--content-padding) * 2);
     --dark-background-padding: 1.5rem;
-    
-    --top-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
-    --top-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
+
+    --title-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
+    --title-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
     --nav-bar-height: 2rem;
-    --nav-bar-height-mobile: 2rem;
+    --nav-bar-height-mobile: 1.5rem;
+    --nav-button-height: calc(var(--input-height) + 1rem);
+    --nav-button-height-mobile: calc(var(--input-height) + 0.5rem);
+    --top-bar-height: calc(var(--title-bar-height) + var(--nav-bar-height));
+    --top-bar-height-mobile: calc(var(--title-bar-height-mobile) + var(--nav-bar-height-mobile));
+    --bottom-bar-height: 6rem;
+    --bottom-bar-height-mobile: 4rem;
     
-    /* nav buttons are cut-off by the smaller nav bar; increase the height by the cut-off amount to always show an effective 3rem button area  */
-    --nav-button-offset: calc(var(--input-height) - var(--nav-bar-height));
-    --nav-button-height: calc(var(--input-height) + var(--nav-button-offset));
-    --nav-button-offset-mobile: calc(var(--input-height) - var(--nav-bar-height-mobile));
-    --nav-button-height-mobile: calc(var(--input-height) + var(--nav-button-offset-mobile));
+    --transition: 0.25s ease;
 }
 
 body {
@@ -155,84 +170,9 @@ body {
     align-items: stretch;
 }
 
-.top-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: var(--top-bar-height);
-    width: 100%;
-    
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--dark);
-    border: var(--border-width) solid var(--dark);
-    filter: drop-shadow(var(--light-shadow));
-    padding: var(--icon-padding);
-
-    z-index: 2;
-}
-
-.content {
-    margin-top: var(--top-bar-height); /* ensure no content is hidden behind top bar (for proper scrolling) */
-    margin-bottom: var(--nav-bar-height); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
-    overflow-y: auto;
-    z-index: 0;
-}
-
-.nav-bar {
-    position: fixed;
-    bottom: 0;
-    left: 12.5%;
-    height: var(--nav-bar-height);
-    width: 75%;
-    
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    background: var(--dark);
-    border: var(--border-width) solid var(--dark);
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
-    filter: drop-shadow(var(--light-shadow));
-    padding-left: var(--icon-padding);
-    padding-right: var(--icon-padding);
-    
-    z-index: 1;
-}
-
-.no-resize {
-    flex-shrink: 0;
-    flex-grow: 0;
-}
-
 .icon {
     width: var(--icon-width);
     height: var(--icon-width);
-}
-
-.unicolour-icon {
-    background: var(--dark);
-    border: var(--border-width) solid var(--dark);
-    border-radius: var(--border-radius);
-    filter: drop-shadow(var(--light-shadow));
-}
-
-.title-text {
-    font-variant: all-small-caps;
-    font-size: 2rem;
-    letter-spacing: 0.25rem;
-    text-align: center;
-    line-height: 1.5rem;
-}
-
-.max-width-wrapper {
-    max-width: 720px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding: var(--content-padding-top) var(--content-padding) var(--content-padding) var(--content-padding);
 }
 
 .column {
@@ -258,9 +198,8 @@ body {
 
 .dark-background {
     background: var(--dark);
-    border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: drop-shadow(var(--light-shadow));
+    outline: var(--outline-normal);
     padding: var(--dark-background-padding);
 }
 
@@ -271,7 +210,7 @@ select, button, .label-as-button {
     height: var(--input-height);
     border: var(--border-width) solid var(--dark);
     border-radius: var(--border-radius);
-    filter: drop-shadow(var(--light-shadow));
+    outline: var(--outline-normal);
 }
 
     .label-as-button {
@@ -281,12 +220,11 @@ select, button, .label-as-button {
     }
 
     select:hover, button:hover, .label-as-button:hover {
-        filter: drop-shadow(var(--light-shadow-strong));
+        outline: var(--outline-hover);
     }
     
     select:active, button:active, .label-as-button:active {
-        border: var(--border-width) solid var(--less-dark);
-        filter: drop-shadow(var(--light-shadow-strong));
+        outline: var(--outline-active);
     }
 
 .slider-wrapper {
@@ -301,7 +239,7 @@ input[type=range] {
     width: 100%;
     height: var(--input-height);
     border-radius: var(--border-radius);
-    filter: drop-shadow(var(--light-shadow));
+    outline: var(--outline-normal);
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -312,24 +250,26 @@ input[type=range]::-webkit-slider-thumb {
     border-radius: var(--border-radius);
     outline: var(--border-width) dashed var(--light);
     background: transparent;
+    position: relative; /* ensures thumb is rendered on top of slider if any overlap */
 }
 
 input[type=range]::-moz-range-thumb {
     appearance: none;
     width: var(--slider-thumb-width);
-    height: 2.9rem; /* not quite 3rem like -webkit */
+    height: var(--input-height);
     border: var(--border-width) dashed var(--dark);
     border-radius: var(--border-radius);
     outline: var(--border-width) dashed var(--light);
     background: transparent;
+    position: relative; /* ensures thumb is rendered on top of slider if any overlap */
 }
 
 .show-thumb::-webkit-slider-thumb {
-    opacity: 1
+    opacity: 1;
 }
 
 .show-thumb::-moz-range-thumb {
-    opacity: 1
+    opacity: 1;
 }
 
 .hide-thumb::-webkit-slider-thumb {
@@ -356,6 +296,10 @@ input[type=range]::-moz-range-thumb {
 .slider-label-right {
     flex: 0 0 1.25rem;
     text-align: left;
+}
+
+.slider-label-inside-reference-point {
+    position: relative;
 }
 
 .slider-label-inside {
@@ -393,36 +337,26 @@ input[type=range]::-moz-range-thumb {
 }
 
 @media screen and (max-width: 720px) {
-    .top-bar {
-        height: var(--top-bar-height-mobile)
-    }
-
-    .content {
-        margin-top: var(--top-bar-height-mobile); /* ensure no content is hidden behind top bar (for proper scrolling) */
-        margin-bottom: var(--nav-bar-height-mobile); /* ensure no content is hidden behind bottom nav bar (for proper scrolling) */
-    }
-    
     .icon {
         width: var(--icon-width-mobile);
         height: var(--icon-width-mobile);
     }
+}
 
-    .title-text {
-        font-size: 1.75rem;
+@media (prefers-reduced-motion: no-preference)
+{
+    .icon {
+        transition: height var(--transition), width var(--transition);
     }
 
-    .max-width-wrapper {
-        padding: var(--content-padding-top) 0 var(--content-padding) 0;
-    }
-
-    .dark-background {
-        border-radius: 0;
+    select, button, .label-as-button {
+        transition: height var(--transition), width var(--transition);
     }
 }
 
 /* 
-    these classes use dynamically changing colour so need to generated by code in MainLayout.razor
-    but defined here to provide better IDE navigation (classes generated inside MainLayout.razor <style> are not discoverable) 
+    these classes use dynamically changing colour so need to generated by code in State.razor
+    but defined here to provide better IDE navigation (classes generated inside State.razor <style> are not discoverable) 
  */
 .colour-background {}
 .colour-text {}

@@ -1,0 +1,43 @@
+﻿<div class="bottom-bar monospace colour-background @Utils.TextOnColourCssClass(State.Colour)">
+    <div class="result-grid">
+        @if (State.ConversionResult == ConversionResult.Error)
+        {
+            <label class="result-text">RGB</label>
+            <label class="result-text result-numeric">-</label>
+            <label class="result-text result-numeric">-</label>
+            <label class="result-text result-numeric">-</label>
+            <label class="result-text" style="grid-column: 6">#------</label>
+            
+            <label class="result-subtext">❌</label>
+            <label class="result-subtext result-numeric">NaN</label>
+            <label class="result-subtext result-numeric">NaN</label>
+            <label class="result-subtext result-numeric">NaN</label>
+            <label class="result-subtext" style="grid-column: 6">invalid</label>
+        }
+        else
+        {
+            <label class="result-text">RGB</label>
+            <label class="result-text result-numeric">@($"{State.ColourInGamut.Rgb.R:f2}")</label>
+            <label class="result-text result-numeric">@($"{State.ColourInGamut.Rgb.G:f2}")</label>
+            <label class="result-text result-numeric">@($"{State.ColourInGamut.Rgb.B:f2}")</label>
+            <label class="result-text" style="grid-column: 6">@State.ColourInGamut.Hex</label>
+            
+            @if (State.ConversionResult == ConversionResult.OutOfGamut)
+            {
+                <label class="result-subtext">⚠️</label>
+                <label class="result-subtext result-numeric">@($"{State.Colour.Rgb.R:f2}")</label>
+                <label class="result-subtext result-numeric">@($"{State.Colour.Rgb.G:f2}")</label>
+                <label class="result-subtext result-numeric">@($"{State.Colour.Rgb.B:f2}")</label>
+                <label class="result-subtext" style="grid-column: 6">out of gamut</label>
+            }
+        }
+    </div>
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        State.OnColourChange += StateHasChanged;
+    }
+}

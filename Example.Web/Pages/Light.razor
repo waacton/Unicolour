@@ -17,10 +17,15 @@
     private bool dualMode;
     
     private string? ButtonBackgroundCssClass => dualMode ? "colour-background" : null;
-    private string ButtonTextCssClass => dualMode ? "text-on-colour" : "light-text";
+    private string ButtonTextCssClass => dualMode ? Utils.TextOnColourCssClass(State.Colour) : "light-text";
     
     private void ToggleDualMode()
     {
         dualMode = !dualMode;
+    }
+    
+    protected override void OnInitialized()
+    {
+        State.OnColourChange += StateHasChanged;
     }
 }

@@ -3,6 +3,20 @@
     color: inherit;
 }
 
+.nav-bar {
+    height: var(--nav-bar-height);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    background: var(--dark);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    outline: var(--outline-normal);
+    padding-left: var(--icon-padding);
+    padding-right: var(--icon-padding);
+}
+
+
 .nav-item {
     display: flex;
     flex-direction: row;
@@ -11,9 +25,11 @@
 }
 
 .nav-label {
+    display: initial;
     font-size: 0.75rem;
     letter-spacing: 0.075rem;
     width: 2.5rem;
+    overflow: hidden; /* required for transitioning to 0 width at small screen */
 }
 
 .nav-left-text {
@@ -26,30 +42,38 @@
 
 .nav-button {
     cursor: pointer;
+    position: relative;
     min-height: var(--input-height);
     height: var(--nav-button-height);
     width: calc(var(--input-height) + 1rem);
-    filter: drop-shadow(0 0.69rem 0.05rem var(--light)); /* moves filter away from button edge, where there is already a drop-shadow from the nav-bar */
     font-size: 1.25rem;
 }
 
 @media screen and (max-width: 720px) {
     .nav-bar {
-        left: 0;
         width: 100%;
-        justify-content: space-evenly;
         height: var(--nav-bar-height-mobile);
-        border-radius: 0;
         padding-left: 0;
         padding-right: 0;
     }
 
+    /* can't animate display: none */
     .nav-label {
-        display: none;
+        width: 0;
     }
     
     .nav-button {
         height: var(--nav-button-height-mobile);
-        width: calc(var(--input-height) + 2rem);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference)
+{
+    .nav-bar {
+        transition: height var(--transition);
+    }
+
+    .nav-label {
+        transition: width var(--transition);
     }
 }

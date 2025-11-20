@@ -39,7 +39,7 @@ public partial class IccPicker : ComponentBase
             config = State.NoConfig;
         }
         
-        State.Update(config);
+        State.UpdateConfig(config);
         CreateSliders();
         UpdateSliderGradients();
         UpdateColourState();
@@ -106,6 +106,6 @@ public partial class IccPicker : ComponentBase
     
     private void UpdateColourState()
     {
-        State.Update(new Channels(sliders.Select(x => x.Value).ToArray()));
+        State.UpdateColour(new Channels(sliders.Select(x => x.Value).ToArray()));
     }
 }

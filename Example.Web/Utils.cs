@@ -4,6 +4,9 @@ namespace Wacton.Unicolour.Example.Web;
 
 internal static class Utils
 {
+    internal static readonly Unicolour Dark = new("404046");
+    internal static readonly Unicolour Light = new("e8e8ff");
+    
     internal static string ToCss(Unicolour colour, double alpha)
     {
         if (HasConversionError(colour))
@@ -19,6 +22,15 @@ internal static class Utils
     {
         // if the constrained hex has no value, RGB is invalid (likely a NaN during conversion)
         return colour.Rgb.Byte255.ConstrainedHex == "-";
+    }
+
+    internal static string TextOnColourCssClass(Unicolour colour)
+    {
+        if (HasConversionError(colour)) return "light-text-with-contrast";
+        var inGamut = colour.MapToRgbGamut(GamutMap.RgbClipping);
+        return inGamut.Contrast(Light) > inGamut.Contrast(Dark) 
+            ? "light-text-with-contrast" 
+            : "dark-text-with-contrast";
     }
 
     internal static readonly Dictionary<ColourSpace, Range[]> SpaceToRange = new()

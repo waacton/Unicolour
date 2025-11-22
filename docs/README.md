@@ -22,7 +22,11 @@ Written in C# with zero dependencies and fully cross-platform compatible.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
-See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a colour picker for any colour space — made with Unicolour.
+See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) 
+— a colour picker for any colour space,
+including [print](https://unicolour.wacton.xyz/colour-picker/print) (CMYK · ICC profiles)
+and [paint](https://unicolour.wacton.xyz/colour-picker/paint) (RYB · pigments)
+— made with Unicolour.
 
 **Contents**
 1. 🧭 [Overview](#-overview)

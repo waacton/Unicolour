@@ -108,6 +108,20 @@ public class SpectralJsTests
     }
     
     [Test]
+    public void MixEmptyPigments()
+    {
+        var colour = SpectralJs.Mix([], [1.0]);
+        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+    }
+    
+    [Test]
+    public void MixEmptyConcentration()
+    {
+        var colour = SpectralJs.Mix([Red], []);
+        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+    }
+    
+    [Test]
     public void PaletteTwo() => AssertPalette(Blue, Yellow, 2, [BlueToYellowHex.First(), BlueToYellowHex.Last()]);
     
     [Test]

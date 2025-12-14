@@ -226,6 +226,24 @@ public class PigmentTests
         double[] concentrations = [-0.5, 0.0];
         AssertReflectance(pigments, concentrations, expected: null, expectedXyzNaN: true);
     }
+    
+    [Test]
+    public void EmptyPigments()
+    {
+        Pigment[] pigments = [];
+        double[] concentrations = [1.0];
+        AssertReflectance(pigments, concentrations, expected: null, expectedXyzNaN: true);
+    }
+    
+    [Test]
+    public void EmptyConcentration()
+    {
+        Pigment pigment1 = new(400, 10, [0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5], k1, k2);
+        Pigment pigment2 = new(400, 10, [0.5, 0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5, 0.5], k1, k2);
+        Pigment[] pigments = [pigment1, pigment2];
+        double[] concentrations = [];
+        AssertReflectance(pigments, concentrations, expected: null, expectedXyzNaN: true);
+    }
 
     private static readonly Configuration ConfigWithIlluminantSpd = TestUtils.D50Config; // contains D50 SPD (as well as precalculated D65 white point)
     private static readonly Configuration ConfigWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(96.422, 100.000, 82.521))); // D50 white point only

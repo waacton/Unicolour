@@ -2,9 +2,12 @@
 
 namespace Wacton.Unicolour.Icc;
 
+// multidimensional lookup
+// e.g. with 4 input channels, 25 grid points, 3 output channels = 5D-CLUT of [25, 25, 25, 25, 3]
 internal class Clut
 {
-    private readonly Array clutGrid;
+    private readonly double[] values;
+    private readonly List<int[]> inputBinaryVectors;
     
     internal int InputChannels { get; }
     internal int GridPoints { get; }
@@ -13,39 +16,11 @@ internal class Clut
     // NOTE: # of values should = gridPoints ^ inputChannels * outputChannels (e.g. 37 ^ 3 * 4 = 202,612)
     internal Clut(double[] values, int inputChannels, int gridPoints, int outputChannels)
     {
+        this.values = values;
         InputChannels = inputChannels;
         GridPoints = gridPoints;
         OutputChannels = outputChannels;
-        clutGrid = InitialiseClutGrid(values);
-    }
-    
-    private Array InitialiseClutGrid(double[] values)
-    {
-        // e.g. CLUT grid with 4 input channels, 25 grid points, 3 output channels
-        // = 5D-CLUT of [25, 25, 25, 25, 3]
-        var dimensionLengths = new List<int>();
-        for (var i = 0; i < InputChannels; i++)
-        {
-            dimensionLengths.Add(GridPoints);
-        }
-
-        dimensionLengths.Add(OutputChannels);
-
-        var grid = Array.CreateInstance(typeof(double), dimensionLengths.ToArray());
-        var inputGridCoordinates = GenerateVectorsOfBaseN(InputChannels, GridPoints);
-        foreach (var inputGridCoordinate in inputGridCoordinates)
-        {
-            for (var outputChannel = 0; outputChannel < OutputChannels; outputChannel++)
-            {
-                var index = GetIndex(inputGridCoordinate, outputChannel);
-
-                var indexes = inputGridCoordinate.ToList();
-                indexes.Add(outputChannel);
-                grid.SetValue(values[index], indexes.ToArray());
-            }
-        }
-
-        return grid;
+        inputBinaryVectors = GenerateVectorsOfBaseN(inputChannels, 2);
     }
     
     /*
@@ -71,36 +46,70 @@ internal class Clut
      */
     internal double[] Lookup(double[] clutInputs)
     {
-        var clutIndexes = clutInputs.Select(clutInput => new ClutIndex(clutInput, GridPoints)).ToList();
+        var clutIndexes = clutInputs.Select(clutInput => new ClutIndex(clutInput, GridPoints)).ToArray();
         
-        var binaryVectors = GenerateVectorsOfBaseN(InputChannels, 2);
-        var weightedOutputs = new List<double[]>();
-        foreach (var binaryVector in binaryVectors)
+        var result = new double[OutputChannels];
+        foreach (var inputBinaryVector in inputBinaryVectors)
         {
-            var inputChannelIndexes = new List<int>();
-            var distanceComponents = new List<double>();
-            for (var i = 0; i < binaryVector.Length; i++)
+            var inputIndexes = new int[InputChannels];
+            var distances = new double[InputChannels];
+            for (var i = 0; i < InputChannels; i++)
             {
-                var binary = binaryVector[i];
+                var binary = inputBinaryVector[i];
                 var clutIndex = clutIndexes[i];
-                inputChannelIndexes.Add(binary == 0 ? clutIndex.Lower : clutIndex.Upper);
-                distanceComponents.Add(binary == 0 ? clutIndex.DistanceToLower : clutIndex.DistanceToUpper);
+                inputIndexes[i] = binary == 0 ? clutIndex.Lower : clutIndex.Upper;
+                distances[i] = binary == 0 ? clutIndex.DistanceToLower : clutIndex.DistanceToUpper;
             }
 
-            var output = GetOutput(inputChannelIndexes.ToArray());
-            var distance = distanceComponents.Aggregate((accumulate, item) => accumulate * item);
-            var weightedOutput = output.Select(x => x * distance).ToArray();
-            weightedOutputs.Add(weightedOutput);
+            var output = GetOutput(inputIndexes);
+            var distance = Product(distances);
+            for (var i = 0; i < OutputChannels; i++)
+            {
+                result[i] += output[i] * distance;
+            }
         }
         
-        var outputComponents = Enumerable.Range(0, OutputChannels).Select(outputChannel => weightedOutputs.Select(x => x[outputChannel])).ToArray();
-        var outputSummed = outputComponents.Select(x => x.Sum()).ToArray();
-        return outputSummed;
+        return result;
     }
 
+    private double[] GetOutput(int[] inputIndexes)
+    {
+        var output = new double[OutputChannels];
+        var outputIndex = GetOutputIndex(inputIndexes);
+        for (var i = 0; i < OutputChannels; i++)
+        {
+            output[i] = values[outputIndex + i];
+        }
+    
+        return output;
+    }
+    
+    /*
+     * e.g. Fogra39 CMYK -> LAB: 4 input channels, 25 grid points, 3 output channels
+     * index = (cIndex * 25^3 * 3) + (mIndex * 25^2 * 3) + (yIndex * 25^1 * 3) + (kIndex * 25^0 * 3)
+     * L = index + 0, A = index + 1, B = index + 2
+     *
+     * e.g. Fogra55 CMYKOGV -> LAB: 7 input channels, 5 grid points, 3 output channels
+     * index = (cIndex * 5^6 * 3) + (mIndex * 5^5 * 3) + (yIndex * 5^4 * 3) + (kIndex * 5^3 * 3) +
+     *         (oIndex * 5^2 * 3) + (gIndex * 5^1 * 3) + (vIndex * 5^0 * 3)
+     * L = index + 0, A = index + 1, B = index + 2
+     */
+    private int GetOutputIndex(int[] gridIndexes)
+    {
+        var outputIndex = 0;
+        for (var i = 0; i < gridIndexes.Length; i++)
+        {
+            var gridIndex = gridIndexes[i];
+            var power = gridIndexes.Length - 1 - i;
+            outputIndex += gridIndex * Power(GridPoints, power) * OutputChannels;
+        }
+
+        return outputIndex;
+    }
+    
     private static List<int[]> GenerateVectorsOfBaseN(int n, int @base)
     {
-        var totalVectors = (int)Math.Pow(@base, n);
+        var totalVectors = Power(@base, n);
 
         var vectors = new List<int[]>();
         for (var i = 0; i < totalVectors; i++)
@@ -123,39 +132,27 @@ internal class Clut
         return vectors;
     }
     
-    /*
-     * e.g. Fogra39 CMYK -> LAB: 4 input channels, 25 grid points, 3 output channels
-     * index = (cGrid * 25^3 * 3) + (mGrid * 25^2 * 3) + (yGrid * 25^1 * 3) + (kGrid * 25^0 * 3)
-     *
-     * e.g. Fogra55 CMYKOGV -> LAB: 7 input channels, 5 grid points, 3 output channels
-     * index = (cGrid * 5^6 * 3) + (mGrid * 5^5 * 3) + (yGrid * 5^4 * 3) + (kGrid * 5^3 * 3) +
-     *         (oGrid * 5^2 * 3) + (gGrid * 5^1 * 3) + (vGrid * 5^0 * 3)
-     */
-    private int GetIndex(int[] gridPointInputs, int outputChannel)
+    // avoiding .Aggregate((accumulate, item) => accumulate * item) to improve performance
+    private static double Product(double[] values)
     {
-        var index = 0;
-        for (var gridPointInputIndex = 0; gridPointInputIndex < gridPointInputs.Length; gridPointInputIndex++)
+        var result = 1.0;
+        foreach (var value in values)
         {
-            var gridPointInput = gridPointInputs[gridPointInputIndex];
-            var power = gridPointInputs.Length - 1 - gridPointInputIndex;
-            index += gridPointInput * (int)Math.Pow(GridPoints, power) * OutputChannels;
+            result *= value;
         }
 
-        index += outputChannel;
-        return index;
+        return result;
     }
-    
-    private double[] GetOutput(int[] inputChannelIndexes)
+
+    private static int Power(int number, int exponent)
     {
-        var output = new double[OutputChannels];
-        for (var i = 0; i < OutputChannels; i++)
+        var result = 1;
+        for (var i = 1; i <= exponent; i++)
         {
-            var indexes = inputChannelIndexes.Concat(new[] { i }).ToArray();
-            var value = (double)clutGrid.GetValue(indexes);
-            output[i] = value;
+            result *= number;
         }
 
-        return output;
+        return result;
     }
     
     private class ClutIndex

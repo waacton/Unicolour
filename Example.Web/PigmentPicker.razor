@@ -1,0 +1,39 @@
+﻿<div class="column gap-medium">
+    <div class="palette gap-small">
+        @foreach (var pigment in AllPigments)
+        {
+            <button class="paint-button @ButtonDeselectedCssClass(pigment)"
+                    style="color: @Utils.PigmentToColour[pigment].Hex; @BackgroundCssStyle(pigment)"
+                    @onclick="() => TogglePigment(pigment)"
+                    title="Toggle @Utils.PigmentToName[pigment]">
+                @if (!IsDisplayed(pigment))
+                {
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="paint-button-circle" cx="50" cy="50" r="32" fill="@Utils.Dark.Hex" />
+                        <circle cx="50" cy="50" r="28" fill="@Utils.PigmentToColour[pigment].Hex"/>
+                    </svg>
+                }
+            </button>
+        }
+    </div>
+
+    <div class="column gap-small">
+        @foreach (var pigment in AllPigments)
+        {
+            @if (!PigmentToSlider.TryGetValue(pigment, out var slider))
+            {
+                continue;
+            }
+
+            <div class="slider-wrapper slider-label-inside-reference-point">
+                <input class="slider-gradient @(slider.InRange ? "show-thumb" : "hide-thumb")"
+                       style="background: @slider.CssBackground"
+                       type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
+                       @oninput="args => SetSliderValue(slider, args)"
+                       title="Slider @slider.LabelText">
+                <label class="slider-value light-text">@slider.ValueText</label>
+                <label class="slider-label-inside @Utils.TextOnColourCssClass(slider.Colour) monospace">@slider.LabelText</label>
+            </div>
+        }
+    </div>
+</div>

@@ -1,61 +1,29 @@
+﻿using Wacton.Unicolour.Example.Web.Layout;
+
 namespace Wacton.Unicolour.Example.Web;
 
-internal class Slider
+public abstract class Slider
 {
-    private readonly int index;
     internal double Value { get; set; }
-    internal string ValueText => GetValueText();
+    internal string ValueText { get; set; } = null!;
+    internal string LabelText { get; set; } = null!;
+    internal Range Range { get; set; } = null!;
+    internal double Step { get; set; }
     
-    internal ColourSpace ColourSpace { get; set; }
-    internal string AxisText => ColourLookup.AxisLookup[ColourSpace][index];
-    private Range Range => ColourLookup.RangeLookup[ColourSpace][index];
-
     internal double Min => Range.Min;
     internal double Max => Range.Max;
     internal bool InRange => Value >= Min && Value <= Max;
-    internal double Step => GetStep();
-    internal List<Unicolour> Stops { get; set; } = [];
+}
 
+internal class GradientColourSlider : Slider
+{
+    internal Unicolour[] Stops { get; set; } = [];
     internal string CssGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, 100)));
     internal string CssAlphaGradient => string.Join(",", Stops.Select(x => Utils.ToCss(x, x.IsInRgbGamut ? 100 : 50)));
-    
-    internal Slider(int index)
-    {
-        this.index = index;
-    }
-    
-    private string GetValueText()
-    {
-        // this approach could be used for all spaces and triplet indexes for much finer control
-        if (ColourSpace == ColourSpace.Munsell && index == 0)
-        {
-            var hue = Hue.ToMunsell(Value);
-            return $"{hue.number:F1}{hue.letter}";
-        }
-        
-        return Range.Distance switch
-        {
-            < 0.5 => $"{Value:F3}",
-            < 5 => $"{Value:F2}",
-            < 50 => $"{Value:F1}",
-            _ => $"{Value:F0}"
-        };
-    }
-    
-    private double GetStep()
-    {
-        // this approach could be used for all spaces and triplet indexes for much finer control
-        if (ColourSpace == ColourSpace.Munsell && index == 0)
-        {
-            return 0.36; // 0.1 munsell hue
-        }
-        
-        return Range.Distance switch
-        {
-            < 0.5 => 0.001,
-            < 5 => 0.01,
-            < 50 => 0.1,
-            _ => 1
-        };
-    }
+}
+
+internal class SolidColourSlider : Slider
+{
+    internal Unicolour Colour { get; set; } = null!;
+    internal string CssBackground => Colour.Hex;
 }

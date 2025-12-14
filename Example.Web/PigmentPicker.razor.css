@@ -1,0 +1,27 @@
+.palette {
+    display: flex; 
+    justify-content: center;
+    flex-wrap: wrap; 
+}
+
+.paint-button {
+    width: var(--input-height);
+    font-size: 1.5rem;
+}
+
+    .paint-button:hover {
+        outline: var(--outline-hover);
+    }
+
+    .paint-button:active {
+        outline: var(--outline-active);
+    }
+    
+.paint-button-deselected {
+    outline: none;
+}
+
+.paint-button-circle {
+    stroke: var(--mid);
+    stroke-width: 0.15rem;
+}

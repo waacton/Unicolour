@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+@*
+not sure if this is an abuse of blazor components
+but the static state is rendered as a component because it dynamically creates a <style> element
+(e.g. when colour is changed, it modifies the background CSS property)
+the <style> element could have been added to an existing real component such as MainLayout
+but conceptually makes more sense to link the <style> with the thing that generates it
+*@
+<State />
+
+@if (State.IsBusy)
+{
+    <div class="busy-wrapper">
+        <label class="busy-text monospace @Utils.TextOnColourCssClass(State.Colour)">@State.BusyMessage</label>
+    </div>
+}
+
+<TopBar />
+
+<main>
+    <div class="content monospace">
+        <div class="max-width-wrapper">
+            <div class="column gap-medium">
+                @Body
+            </div>
+        </div>
+    </div>
+
+    <BottomBar />
+</main>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        State.OnBusyChange += StateHasChanged;
+    }
+}

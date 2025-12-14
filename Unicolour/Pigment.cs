@@ -39,6 +39,11 @@ public class Pigment
 
     internal static SpectralCoefficients? GetReflectance(Pigment[] pigments, double[] weights)
     {
+        if (!pigments.Any())
+        {
+            return null;
+        }
+        
         var examplePigment = pigments.First();
         var kubelkaMunk = examplePigment.KubelkaMunk;
         var wavelengths = examplePigment.Wavelengths;

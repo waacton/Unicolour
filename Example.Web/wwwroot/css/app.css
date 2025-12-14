@@ -105,13 +105,53 @@ html, body {
 */
 
 :root {
-    --dark: #404046;
-    --less-dark: #606069;
-    --light: #E8E8FF;
-    --less-light: #DADAF0;
+    /* 404046 -> E8E8FF in sRGB space */
+    --grey01: #404046;
+    --grey02: #515159;
+    --grey03: #62626B;
+    --grey04: #72727E;
+    --grey05: #838390;
+    --grey06: #9494A2;
+    --grey07: #A5A5B5;
+    --grey08: #B6B6C8;
+    --grey09: #C6C6DA;
+    --grey10: #D7D7EC;
+    --grey11: #E8E8FF;
+    
+    --dark: var(--grey01);
+    --mid: var(--grey04);
+    --lightish: var(--grey07);
+    --light: var(--grey11);
     --default-accent: #FF1493;
-    --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--less-dark) 10px, var(--less-dark) 20px);
-    --light-stripes: repeating-linear-gradient(-45deg, var(--light), var(--light) 10px, var(--less-light) 10px, var(--less-light) 20px);
+
+    --outline-normal: 1px solid var(--mid);
+    --outline-hover: 1px solid var(--lightish);
+    --outline-active: 1px solid var(--light);
+    --dark-stripes: repeating-linear-gradient(-45deg, var(--dark), var(--dark) 10px, var(--grey02) 10px, var(--grey02) 20px);
+    --dark-shadow: 0 0 0.25rem var(--dark);
+    --light-shadow: 0 0 0.25rem var(--light);
+    
+    --icon-width: 48px;
+    --icon-width-mobile: 32px;
+    --icon-padding: 1rem;
+    --border-width: 1px;
+    --border-radius: 0.5rem;
+    --input-height: 3rem;
+    --slider-thumb-width: calc(var(--input-height) / 2);
+    --dark-background-padding: 1.5rem;
+
+    --title-bar-height: calc(var(--icon-width) + 2 * var(--icon-padding) + 2 * var(--border-width));
+    --title-bar-height-mobile: calc(var(--icon-width-mobile) + 2 * var(--icon-padding) + 2 * var(--border-width));
+    --nav-bar-height: 2rem;
+    --nav-bar-height-mobile: 1.5rem;
+    --nav-button-height: calc(var(--input-height) + 1rem);
+    --nav-button-height-mobile: calc(var(--input-height) + 0.5rem);
+    --top-bar-height: calc(var(--title-bar-height) + var(--nav-bar-height));
+    --top-bar-height-mobile: calc(var(--title-bar-height-mobile) + var(--nav-bar-height-mobile));
+    --bottom-bar-height: 6rem;
+    --bottom-bar-height-mobile: 4rem;
+    
+    --transition: 0.25s ease;
 }
 
 body {
@@ -124,42 +164,15 @@ body {
 
 #app {
     height: 100%;
-}
-
-.top-bar {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    background: var(--dark);
-    border: 1px solid var(--dark);
-    filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: 1rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 .icon {
-    height: 48px;
-}
-
-.unicolour-icon {
-    background: var(--dark);
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
-    filter: drop-shadow(0 0 0.05rem var(--light));
-}
-
-.title-text {
-    font-variant: all-small-caps;
-    font-size: 2rem;
-    letter-spacing: 0.25rem;
-}
-
-.max-width-wrapper {
-    max-width: 720px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 64px 32px 0 32px;
+    width: var(--icon-width);
+    height: var(--icon-width);
 }
 
 .column {
@@ -185,29 +198,33 @@ body {
 
 .dark-background {
     background: var(--dark);
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
-    filter: drop-shadow(0 0 0.05rem var(--light));
-    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    outline: var(--outline-normal);
+    padding: var(--dark-background-padding);
 }
 
-select, button {
+select, button, .label-as-button {
     background-color: var(--dark);
     color: var(--light);
     width: 100%;
-    height: 3rem;
-    border: 1px solid var(--dark);
-    border-radius: 0.5rem;
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    height: var(--input-height);
+    border: var(--border-width) solid var(--dark);
+    border-radius: var(--border-radius);
+    outline: var(--outline-normal);
 }
 
-    select:hover, button:hover {
-        filter: drop-shadow(0 0 0.075rem var(--light));
+    .label-as-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    select:hover, button:hover, .label-as-button:hover {
+        outline: var(--outline-hover);
     }
     
-    select:active, button:active {
-        border: 1px solid var(--less-dark);
-        filter: drop-shadow(0 0 0.075rem var(--light));
+    select:active, button:active, .label-as-button:active {
+        outline: var(--outline-active);
     }
 
 .slider-wrapper {
@@ -220,37 +237,39 @@ select, button {
 input[type=range] {
     appearance: none;
     width: 100%;
-    height: 3rem;
-    border-radius: 0.5rem;
-    filter: drop-shadow(0 0 0.05rem var(--light));
+    height: var(--input-height);
+    border-radius: var(--border-radius);
+    outline: var(--outline-normal);
 }
 
 input[type=range]::-webkit-slider-thumb {
     appearance: none;
-    width: 1.5rem;
-    height: 3rem;
-    border: 1px dashed var(--dark);
-    border-radius: 0.5rem;
-    outline: 1px dashed var(--light);
+    width: var(--slider-thumb-width);
+    height: var(--input-height);
+    border: var(--border-width) dashed var(--dark);
+    border-radius: var(--border-radius);
+    outline: var(--border-width) dashed var(--light);
     background: transparent;
+    position: relative; /* ensures thumb is rendered on top of slider if any overlap */
 }
 
 input[type=range]::-moz-range-thumb {
     appearance: none;
-    width: 1.5rem;
-    height: 2.9rem; /* not quite 3rem like -webkit */
-    border: 1px dashed var(--dark);
-    border-radius: 0.5rem;
-    outline: 1px dashed var(--light);
+    width: var(--slider-thumb-width);
+    height: var(--input-height);
+    border: var(--border-width) dashed var(--dark);
+    border-radius: var(--border-radius);
+    outline: var(--border-width) dashed var(--light);
     background: transparent;
+    position: relative; /* ensures thumb is rendered on top of slider if any overlap */
 }
 
 .show-thumb::-webkit-slider-thumb {
-    opacity: 1
+    opacity: 1;
 }
 
 .show-thumb::-moz-range-thumb {
-    opacity: 1
+    opacity: 1;
 }
 
 .hide-thumb::-webkit-slider-thumb {
@@ -268,19 +287,46 @@ input[type=range]::-moz-range-thumb {
     background-position: center, center, center;
 }
 
-.slider-value-text {
+.slider-value {
     flex: 0 0 4rem;
     text-align: right;
     margin: 0 0.5rem;
 }
 
-.slider-axis-text {
+.slider-label-right {
     flex: 0 0 1.25rem;
     text-align: left;
 }
 
-.text-on-dark {
+.slider-label-inside-reference-point {
+    position: relative;
+}
+
+.slider-label-inside {
+    position: absolute;
+    left: calc(var(--slider-thumb-width) + 0.5rem);
+    max-width: 50%; /* not ideal, should really involve width of slider itself for true reusability */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.light-text {
     color: var(--light);
+}
+
+.dark-text {
+    color: var(--dark);
+}
+
+.dark-text-with-contrast {
+    color: var(--dark);
+    text-shadow: var(--light-shadow);
+}
+
+.light-text-with-contrast {
+    color: var(--light);
+    text-shadow: var(--dark-shadow);
 }
 
 .monospace {
@@ -292,10 +338,25 @@ input[type=range]::-moz-range-thumb {
 
 @media screen and (max-width: 720px) {
     .icon {
-        height: 32px;
-    }
-
-    .title-text {
-        font-size: 1.75rem;
+        width: var(--icon-width-mobile);
+        height: var(--icon-width-mobile);
     }
 }
+
+@media (prefers-reduced-motion: no-preference)
+{
+    .icon {
+        transition: height var(--transition), width var(--transition);
+    }
+
+    select, button, .label-as-button {
+        transition: height var(--transition), width var(--transition);
+    }
+}
+
+/* 
+    these classes use dynamically changing colour so need to generated by code in State.razor
+    but defined here to provide better IDE navigation (classes generated inside State.razor <style> are not discoverable) 
+ */
+.colour-background {}
+.colour-text {}

@@ -1,12 +1,31 @@
-﻿<div class="column gap-large dark-background dual-button-reference-point">
-    <LightSpaces />
+﻿@page "/"
+
+<div class="column gap-large dark-background dual-button-reference-point">
+    <ColourSpacePicker />
 
     @if (dualMode)
     {
-        <LightSpaces />
+        <ColourSpacePicker />
     }
 
-    <button class="dual-button monospace @(dualMode ?  "colour-background" : "")" @onclick="ToggleDualMode">
-        <span class=@(dualMode ?  "text-on-colour" : "")>☰</span>
+    <button class="dual-button @ButtonBackgroundCssClass" @onclick="ToggleDualMode">
+        <span class="@ButtonTextCssClass">☰</span>
     </button>
 </div>
+
+@code {
+    private bool dualMode;
+    
+    private string? ButtonBackgroundCssClass => dualMode ? "colour-background" : null;
+    private string ButtonTextCssClass => dualMode ? Utils.TextOnColourCssClass(State.Colour) : "light-text";
+    
+    private void ToggleDualMode()
+    {
+        dualMode = !dualMode;
+    }
+    
+    protected override void OnInitialized()
+    {
+        State.OnColourChange += StateHasChanged;
+    }
+}

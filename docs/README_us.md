@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/237,247/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/237,251/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 
 Unicolour is the most comprehensive .NET library for working with color:
@@ -22,7 +22,11 @@ Written in C# with zero dependencies and fully cross-platform compatible.
 
 Targets [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0) for use in .NET 5.0+, .NET Core 2.0+ and .NET Framework 4.6.1+ applications.
 
-See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) — a color picker for any color space — made with Unicolour.
+See a [live demo in the browser](https://unicolour.wacton.xyz/colour-picker/) 
+— a color picker for any color space,
+including [print](https://unicolour.wacton.xyz/colour-picker/print) (CMYK · ICC profiles)
+and [paint](https://unicolour.wacton.xyz/colour-picker/paint) (RYB · pigments)
+— made with Unicolour.
 
 **Contents**
 1. 🧭 [Overview](#-overview)

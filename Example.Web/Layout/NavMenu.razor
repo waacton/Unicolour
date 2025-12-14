@@ -1,0 +1,74 @@
+﻿<div class="nav-bar monospace">
+    <div class="nav-item">
+        <div class="nav-label nav-left-text @LabelTextCssClass(PrintRoute)">
+            <label>PRINT</label>
+        </div>
+        <NavLink href="@($"{PrintRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(PrintRoute)">
+                <span class="@ButtonTextCssClass(PrintRoute)">🖨️</span>
+            </button>
+        </NavLink>
+        <div class="nav-label nav-right-text @LabelTextCssClass(PrintRoute)">
+            <label>CMYK</label>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <div class="nav-label nav-left-text @LabelTextCssClass(LightRoute)">
+            <label>LIGHT</label>
+        </div>
+        <NavLink href="@($"{LightRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(LightRoute)">
+                <span class="@ButtonTextCssClass(LightRoute)">🌈</span>
+            </button>
+        </NavLink>
+        <div class="nav-label nav-right-text @LabelTextCssClass(LightRoute)">
+            <label>RGB+</label>
+        </div>
+    </div>
+
+    <div class="nav-item">
+        <div class="nav-label nav-left-text @LabelTextCssClass(PaintRoute)">
+            <label>PAINT</label>
+        </div>
+        <NavLink href="@($"{PaintRoute}")">
+            <button class="nav-button @ButtonBackgroundCssClass(PaintRoute)">
+                <span class="@ButtonTextCssClass(PaintRoute)">🎨</span>
+            </button>
+        </NavLink>
+        <div class="nav-label nav-right-text @LabelTextCssClass(PaintRoute)">
+            <label>RYB</label>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject] 
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private string currentRoute = null!;
+
+    internal const string LightRoute = "";
+    private const string PrintRoute = "print";
+    private const string PaintRoute = "paint";
+    
+    protected override void OnInitialized()
+    {
+        UpdateCurrentRoute(NavigationManager.Uri);
+        
+        NavigationManager.LocationChanged += (_, args) =>
+        {
+            UpdateCurrentRoute(args.Location);
+        };
+    }
+
+    private void UpdateCurrentRoute(string location)
+    {
+        currentRoute = NavigationManager.ToBaseRelativePath(location);
+        StateHasChanged();
+    }
+
+    private string LabelTextCssClass(string route) => route == currentRoute ? "colour-text bold-text" : "light-text";
+    private string? ButtonBackgroundCssClass(string route) => route == currentRoute ? "colour-background" : null;
+    private string ButtonTextCssClass(string route) => route == currentRoute ? "text-on-colour" : "light-text";
+}

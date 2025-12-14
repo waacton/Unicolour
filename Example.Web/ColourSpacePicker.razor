@@ -13,10 +13,11 @@
         <div class="slider-wrapper">
             <input class="slider-gradient @(slider.InRange ? "show-thumb" : "hide-thumb")"
                    style="background-image: linear-gradient(to right, @slider.CssGradient), linear-gradient(to right, @slider.CssAlphaGradient), var(--dark-stripes)"
-                   type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" @oninput="args => SetSliderValue(slider, args)"
-                   title="Slider @(slider.AxisText)">
-            <label class="slider-value-text monospace text-on-dark">@slider.ValueText</label>
-            <label class="slider-axis-text monospace text-on-dark">@slider.AxisText</label>
+                   type="range" min="@slider.Min" max="@slider.Max" step="@slider.Step" value="@slider.Value" 
+                   @oninput="args => SetSliderValue(slider, args)"
+                   title="Slider @(slider.LabelText)">
+            <label class="slider-value light-text">@slider.ValueText</label>
+            <label class="slider-label-right light-text">@slider.LabelText</label>
         </div>
     }
 </div>

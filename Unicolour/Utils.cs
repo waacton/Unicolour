@@ -11,7 +11,7 @@ internal static class Utils
     internal static bool IsEffectivelyZero(this double x) => Math.Abs(x) < 5e-14;
     internal static double Clamp(this double x, double min, double max) => x < min ? min : x > max ? max : x;
     internal static double Clamp(this int x, int min, int max) => x < min ? min : x > max ? max : x;
-    internal static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
+    internal static double CubeRoot(double x) => x < 0 ? -Power(-x, 1 / 3.0) : Power(x, 1 / 3.0);
     internal static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     internal static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
     
@@ -38,6 +38,25 @@ internal static class Utils
         var useSubtraction = remainder < 0 ^ modulus < 0;
         return useSubtraction ? modulus + remainder : remainder; 
     }
+
+    internal static bool UseOldPower = false;
+    
+    internal static double Power(double number, int exponent)
+    {
+        if (UseOldPower) return Math.Pow(number, exponent);
+        // if (exponent > 15) return Math.Pow(number, exponent);
+        // if (exponent < 0) return Math.Pow(number, exponent);
+    
+        var result = 1.0;
+        for (var i = 1; i <= exponent; i++)
+        {
+            result *= number;
+        }
+
+        return result;
+    }
+
+    internal static double Power(double number, double exponent) => Math.Pow(number, exponent);
     
     internal static (double r, double g, double b, double a) ParseHex(string colourHex)
     {
@@ -67,7 +86,7 @@ internal static class Utils
     
     internal static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
     {
-        var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
+        var chroma = Math.Sqrt(Power(axis1, 2) + Power(axis2, 2));
         var hue = ToDegrees(Math.Atan2(axis2, axis1));
         return new ColourTriplet(lightness, chroma, hue.Modulo(360.0));
     }
@@ -82,7 +101,7 @@ internal static class Utils
     
     internal static double Distance(Chromaticity start, Chromaticity end)
     {
-        return Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
+        return Math.Sqrt(Power(end.X - start.X, 2) + Power(end.Y - start.Y, 2));
     }
     
     internal static (double radius, double angle) Polar(Chromaticity start, Chromaticity end)

@@ -44,8 +44,8 @@ internal static class Utils
     internal static double Power(double number, int exponent)
     {
         if (UseOldPower) return Math.Pow(number, exponent);
-        // if (exponent > 15) return Math.Pow(number, exponent);
-        // if (exponent < 0) return Math.Pow(number, exponent);
+        if (exponent > 15) return Math.Pow(number, exponent);
+        if (exponent < 0) return Math.Pow(number, exponent);
     
         var result = 1.0;
         for (var i = 1; i <= exponent; i++)

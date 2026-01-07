@@ -4,16 +4,26 @@
         <OutputType>Exe</OutputType>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <TargetFrameworks>net8.0;net472</TargetFrameworks>
         <LangVersion>latestmajor</LangVersion>
+        <TargetFrameworks>net8.0;net472</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+      <PackageReference Include="Wacton.Unicolour" Version="6.3.0" Aliases="NuGetPackage"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+      <ProjectReference Include="..\Unicolour\Unicolour.csproj" Aliases="LocalProject" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Data\Coated_Fogra39L_VIGC_300.icc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Data\Ref-ECG-CMYKOGV_FOGRA55_TAC300.icc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+    
 </Project>

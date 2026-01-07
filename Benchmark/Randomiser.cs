@@ -1,4 +1,5 @@
-﻿using Wacton.Unicolour;
+﻿extern alias LocalProject;
+using LocalProject::Wacton.Unicolour;
 
 namespace Benchmark;
 
@@ -17,54 +18,7 @@ public class Randomiser(int Seed)
         return new Unicolour(configuration ?? Configuration.Default, colourSpace, Triplet(colourSpace).Tuple, Alpha());
     }
 
-    internal Dictionary<ColourSpace, ColourTriplet> Triplets()
-    {
-        return new()
-        {
-            { ColourSpace.Rgb, Rgb() },
-            { ColourSpace.Rgb255, Rgb255() },
-            { ColourSpace.RgbLinear, RgbLinear() },
-            { ColourSpace.Hsb, Hsb() },
-            { ColourSpace.Hsl, Hsl() },
-            { ColourSpace.Hwb, Hwb() },
-            { ColourSpace.Hsi, Hsi() },
-            { ColourSpace.Xyz, Xyz() },
-            { ColourSpace.Xyy, Xyy() },
-            { ColourSpace.Wxy, Wxy() },
-            { ColourSpace.Lab, Lab() },
-            { ColourSpace.Lchab, Lchab() },
-            { ColourSpace.Luv, Luv() },
-            { ColourSpace.Lchuv, Lchuv() },
-            { ColourSpace.Hsluv, Hsluv() },
-            { ColourSpace.Hpluv, Hpluv() },
-            { ColourSpace.Ypbpr, Ypbpr() },
-            { ColourSpace.Ycbcr, Ycbcr() },
-            { ColourSpace.Ycgco, Ycgco() },
-            { ColourSpace.Yuv, Yuv() },
-            { ColourSpace.Yiq, Yiq() },
-            { ColourSpace.Ydbdr, Ydbdr() },
-            { ColourSpace.Tsl, Tsl() },
-            { ColourSpace.Xyb, Xyb() },
-            { ColourSpace.Lms, Lms() },
-            { ColourSpace.Ipt, Ipt() },
-            { ColourSpace.Ictcp, Ictcp() },
-            { ColourSpace.Jzazbz, Jzazbz() },
-            { ColourSpace.Jzczhz, Jzczhz() },
-            { ColourSpace.Oklab, Oklab() },
-            { ColourSpace.Oklch, Oklch() },
-            { ColourSpace.Okhsv, Okhsv() },
-            { ColourSpace.Okhsl, Okhsl() },
-            { ColourSpace.Okhwb, Okhwb() },
-            { ColourSpace.Oklrab, Oklrab() },
-            { ColourSpace.Oklrch, Oklrch() },
-            { ColourSpace.Cam02, Cam02() },
-            { ColourSpace.Cam16, Cam16() },
-            { ColourSpace.Hct, Hct() },
-            { ColourSpace.Munsell, Munsell() },
-        };
-    }
-    
-    private ColourTriplet Triplet(ColourSpace colourSpace)
+    internal ColourTriplet Triplet(ColourSpace colourSpace)
     {
         return colourSpace switch
         {
@@ -111,6 +65,12 @@ public class Randomiser(int Seed)
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
+    
+    // ICC channels can be up to 15 dimensions
+    internal double[] Channels() =>
+    [
+        Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double(), Double()
+    ];
 
     // W3C has useful information about the practical range of values (e.g. https://www.w3.org/TR/css-color-4/#serializing-oklab-oklch)
     private ColourTriplet Rgb255() => new(Int(256), Int(256), Int(256));
@@ -172,4 +132,6 @@ public class Randomiser(int Seed)
 
         return hex;
     }
+
+    public override string ToString() => $"seed {Seed}";
 }

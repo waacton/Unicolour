@@ -144,6 +144,7 @@ internal class Clut
         return result;
     }
 
+    // TODO: annotate; why isn't this used generally in the codebase if it brings performance improvements here?
     private static int Power(int number, int exponent)
     {
         var result = 1;

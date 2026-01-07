@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <AssemblyName>Wacton.Unicolour.Experimental</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Experimental</RootNamespace>
+        <AssemblyName>Local.Unicolour.Experimental</AssemblyName> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
+        <RootNamespace>Local.Unicolour.Experimental</RootNamespace> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
         <LangVersion>10</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -46,7 +46,7 @@
     <!-- enables test module to access internal classes and methods -->
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>Wacton.Unicolour.Tests</_Parameter1>
+            <_Parameter1>Local.Unicolour.Tests</_Parameter1> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
         </AssemblyAttribute>
     </ItemGroup>
 

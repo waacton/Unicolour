@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
-        <AssemblyName>Wacton.Unicolour.Tests</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Tests</RootNamespace>
+        <AssemblyName>Local.Unicolour.Tests</AssemblyName> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
+        <RootNamespace>Local.Unicolour.Tests</RootNamespace> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
     </PropertyGroup>
 
     <ItemGroup>

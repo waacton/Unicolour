@@ -11,8 +11,8 @@ using BenchmarkDotNet.Jobs;
 
 namespace Benchmark;
 
-[DryJob(RuntimeMoniker.Net481)]
-[DryJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net481)]
+[SimpleJob(RuntimeMoniker.Net80)]
 [Config(typeof(Config))]
 public class ConvertFromIcc
 {

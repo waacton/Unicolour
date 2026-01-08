@@ -144,6 +144,16 @@ internal class Clut
         return result;
     }
 
+    /*
+     * benchmarks show that in isolation this Power() is faster than Math.Pow() - often 50% to 90%+ faster - until exponent reaches ~25
+     * yet in practice, replacing Math.Pow() with Power() in other parts of the codebase has negligible benefit, and in some cases reduces performance!
+     * but specifically in this CLUT class, this alone has resulted in 10% to 50% faster execution, depending on the context (i.e. larger gains for 7CLR)
+     * best guess about why this results is an improvement here, but not elsewhere, is that the compiler can't make the same optimisations as elsewhere:
+     * - CLUT code doesn't use hardcoded exponents that are known at compile-time, so this simple loop is quicker than Math.Pow()'s dynamic calculation?
+     * - CLUT code power raising happens inside nested loops, so this loop offers a clear way to reuse registers etc?
+     * the point is: Power() has measurable improvement in this situation, but is not widely applicable
+     * and applying this elsewhere is probably comparable to trying to beat the compiler at optimisation
+     */
     private static int Power(int number, int exponent)
     {
         var result = 1;

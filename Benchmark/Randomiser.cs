@@ -5,18 +5,13 @@ namespace Benchmark;
 
 public class Randomiser(int Seed)
 {
-    internal int Seed = Seed;
+    internal readonly int Seed = Seed;
     private readonly Random random = new(Seed);
     private double Double() => random.NextDouble();
     private double Double(double min, double max) => random.NextDouble() * (max - min) + min;
     private int Int(int max) => random.Next(max);
 
     public Randomiser() : this(new Random().Next(int.MinValue, int.MaxValue)) {}
-    
-    internal Unicolour Unicolour(ColourSpace colourSpace, Configuration? configuration = null)
-    {
-        return new Unicolour(configuration ?? Configuration.Default, colourSpace, Triplet(colourSpace).Tuple, Alpha());
-    }
 
     internal ColourTriplet Triplet(ColourSpace colourSpace)
     {

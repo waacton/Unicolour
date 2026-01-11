@@ -2,7 +2,7 @@
 using BenchmarkDotNet.Running;
 
 /*
- * dotnet run -c Release --project Benchmark\Benchmark.csproj --framework net8.0 --runtimes net8.0 net481
+ * dotnet run -c Release --project Benchmark\Benchmark.csproj --framework net10.0 --runtimes net10.0 net8.0 net472
  */
 
 // serialises a seed to be deserialised and used by the randomiser in each benchmark

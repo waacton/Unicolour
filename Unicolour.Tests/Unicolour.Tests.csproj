@@ -9,12 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JunitXml.TestLogger" Version="3.1.12" /> <!-- used by GitLab CI to generate test reports (outcomes, durations, NOT coverage) https://docs.gitlab.com/ci/testing/unit_test_reports/ - see artifacts:reports:junit in .yml file -->
+        <PackageReference Include="JunitXml.TestLogger" Version="8.0.0" /> <!-- used by GitLab CI to generate test reports (outcomes, durations, NOT coverage) https://docs.gitlab.com/ci/testing/unit_test_reports/ - see artifacts:reports:junit in .yml file - however, test-result.xml file is now > 30MB so GitLab is currently unable to process it -->
         <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
         <PackageReference Include="NUnit" Version="4.4.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="6.1.0" />
-        <PackageReference Include="coverlet.collector" Version="6.0.2"> <!-- calculates test coverage in the cobertura format (which can be parsed by `reportgenerator`), and is triggered by collect:"XPlat Code Coverage" (which detects this as an implementation at runtime) -->
+        <PackageReference Include="coverlet.collector" Version="6.0.4"> <!-- calculates test coverage in the cobertura format (which can be parsed by `reportgenerator`), and is triggered by collect:"XPlat Code Coverage" (which detects this as an implementation at runtime) -->
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

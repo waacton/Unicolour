@@ -5,6 +5,7 @@
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
 [![tests passed](https://badgen.net/static/tests/237,251/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+![AI usage](https://badgen.net/static/AI/0%20%25✨/8800ff/)
 
 Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion

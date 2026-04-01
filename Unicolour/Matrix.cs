@@ -126,8 +126,8 @@ internal class Matrix
         return new ColourTriplet(Data[0, 0], Data[1, 0], Data[2, 0]);
     }
 
-    internal static Matrix From(ColourRepresentation representation) => From(representation.Tuple);
-    internal static Matrix From((double first, double second, double third) tuple) => From(tuple.first, tuple.second, tuple.third);
+    internal static Matrix From(ColourRepresentation representation) => From(representation.Triplet);
+    internal static Matrix From(ColourTriplet triplet) => From(triplet.First, triplet.Second, triplet.Third);
     internal static Matrix From(double first, double second, double third)
     {
         return new Matrix(new[,]

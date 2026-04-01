@@ -6,16 +6,11 @@ public record RgbLinear : ColourRepresentation
     public double R => First;
     public double G => Second;
     public double B => Third;
-    public double ConstrainedR => ConstrainedFirst;
-    public double ConstrainedG => ConstrainedSecond;
-    public double ConstrainedB => ConstrainedThird;
-    protected override double ConstrainedFirst => R.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => G.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
-
-    public RgbLinear(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
-    internal RgbLinear(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
+    
+    protected override bool IsAchromatic => R == G && G == B;
+    
+    public RgbLinear(double r, double g, double b) : this(r, g, b, Limitation.None) {}
+    internal RgbLinear(double r, double g, double b, Limitation limitation) : base(r, g, b, limitation) {}
     
     protected override string String => $"{R:F2} {G:F2} {B:F2}";
     public override string ToString() => base.ToString();
@@ -26,19 +21,26 @@ public record RgbLinear : ColourRepresentation
      * Reverse: https://en.wikipedia.org/wiki/SRGB#From_sRGB_to_CIE_XYZ
      */
     
-    internal static RgbLinear FromXyz(Xyz xyz, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
+    internal static RgbLinear FromXyz(Xyz xyz, RgbConfiguration rgbConfig, ChromaticAdaptor chromaticAdaptor)
     {
-        var xyzMatrix = Matrix.From(xyz);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        var (r, g, b) = rgbToXyzMatrix.Inverse().Multiply(xyzMatrix).ToTriplet();
-        return new RgbLinear(r, g, b, ColourHeritage.From(xyz));
+        // note that http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html has precalculated XYZ to RGB matrices
+        // which is the equivalent of CAT(RgbToXyz, RgbWhite, XyzWhite).Inverse()
+        // but this code multiplies matrices in a different order; mathematically the same, just those matrices won't be seen here
+        var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, rgbConfig.WhitePoint);
+        var adaptedXyzMatrix = Matrix.From(adaptedXyz);
+        var rgbMatrix = rgbConfig.RgbToXyzMatrix.Inverse().Multiply(adaptedXyzMatrix);
+        var (r, g, b) = rgbMatrix.ToTriplet();
+        return new RgbLinear(r, g, b, xyz.Limitation);
     }
     
-    internal static Xyz ToXyz(RgbLinear rgbLinear, RgbConfiguration rgbConfig, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(RgbLinear rgbLinear, RgbConfiguration rgbConfig, ChromaticAdaptor chromaticAdaptor)
     {
+        // note that http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html has precalculated RGB to XYZ matrices
+        // which is the equivalent of CAT(RgbToXyz, RgbWhite, XyzWhite)
+        // but this code multiplies matrices in a different order; mathematically the same, just those matrices won't be seen here
         var rgbLinearMatrix = Matrix.From(rgbLinear);
-        var rgbToXyzMatrix = Adaptation.WhitePoint(rgbConfig.RgbToXyzMatrix, rgbConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        var (x, y, z) = rgbToXyzMatrix.Multiply(rgbLinearMatrix).ToTriplet();
-        return new Xyz(x, y, z, ColourHeritage.From(rgbLinear));
+        var adaptedXyzMatrix = rgbConfig.RgbToXyzMatrix.Multiply(rgbLinearMatrix);
+        var adaptedXyz = new Xyz(adaptedXyzMatrix.ToTriplet(), rgbConfig.WhitePoint, rgbLinear.Limitation);
+        return chromaticAdaptor.AdaptFrom(adaptedXyz);
     }
 }

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
@@ -12,7 +10,7 @@ public class EqualityTests
     [Test]
     public void SameReference([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
         var colour2 = colour1;
         AssertUnicoloursEqual(colour1, colour2);
     }
@@ -28,7 +26,7 @@ public class EqualityTests
     [Test]
     public void DifferentType([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour = RandomColours.UnicolourFrom(colourSpace);
+        var colour = Rng.Unicolour(colourSpace);
         var notUnicolour = new object();
         AssertNotEqual(colour, notUnicolour);
     }
@@ -36,21 +34,21 @@ public class EqualityTests
     [Test]
     public void NullUnicolour([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour = RandomColours.UnicolourFrom(colourSpace);
+        var colour = Rng.Unicolour(colourSpace);
         Assert.That(colour.Equals(null), Is.False);
     }
     
     [Test]
     public void NullObject([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour = RandomColours.UnicolourFrom(colourSpace);
+        var colour = Rng.Unicolour(colourSpace);
         Assert.That(colour.Equals(null as object), Is.False);
     }
     
     [Test]
     public void EqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
         var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Tuple, colour1.Alpha.A);
         AssertUnicoloursEqual(colour1, colour2);
     }
@@ -58,7 +56,7 @@ public class EqualityTests
     [Test]
     public void NotEqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace, TestUtils.DefaultFogra39Config);
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
         var difference = colourSpace == ColourSpace.Rgb255 ? 1 : 0.1;
         var differentTuple = GetDifferent(colour1.GetRepresentation(colourSpace).Triplet, difference).Tuple;
         var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, colour1.Alpha.A + 0.1);
@@ -122,20 +120,6 @@ public class EqualityTests
     private static CamConfiguration GetNew(CamConfiguration config, string name) => new(config.WhitePoint, config.AdaptingLuminance, config.BackgroundLuminance, config.Surround, name);
     private static DynamicRange GetNew(DynamicRange config, string name) => new(config.WhiteLuminance, config.MaxLuminance, config.MinLuminance, config.HlgWhiteLevel, name);
     private static IccConfiguration GetNew(IccConfiguration config, string name) => config.Profile == null ? new(config.Profile, name) : new(config.Profile, config.Intent, name);
-    
-    [Test]
-    public void DifferentColourHeritageObjects()
-    {
-        var heritages = new List<ColourHeritage> { ColourHeritage.None, ColourHeritage.NaN, ColourHeritage.Greyscale };
-        foreach (var heritage in heritages)
-        {
-            foreach (var otherHeritage in heritages.Except([heritage]))
-            {
-                AssertNotEqual(heritage, otherHeritage);
-            }
-        }
-    }
-    
     private static ColourTriplet GetDifferent(ColourTriplet triplet, double diff = 0.1) => new(triplet.First + diff, triplet.Second + diff, triplet.Third + diff);
 
     private static void AssertUnicoloursEqual(Unicolour colour1, Unicolour colour2)
@@ -170,11 +154,13 @@ public class EqualityTests
         AssertEqual(colour1.Lms, colour2.Lms);
         AssertEqual(colour1.Luv, colour2.Luv);
         AssertEqual(colour1.Munsell, colour2.Munsell);
-        AssertEqual(colour1.Oklab, colour2.Oklab);
-        AssertEqual(colour1.Oklch, colour2.Oklch);
         AssertEqual(colour1.Okhsl, colour2.Okhsl);
         AssertEqual(colour1.Okhsv, colour2.Okhsv);
         AssertEqual(colour1.Okhwb, colour2.Okhwb);
+        AssertEqual(colour1.Oklab, colour2.Oklab);
+        AssertEqual(colour1.Oklch, colour2.Oklch);
+        AssertEqual(colour1.Oklrab, colour2.Oklrab);
+        AssertEqual(colour1.Oklrch, colour2.Oklrch);
         AssertEqual(colour1.RelativeLuminance, colour2.RelativeLuminance);
         AssertEqual(colour1.Rgb, colour2.Rgb);
         AssertEqual(colour1.Rgb.Byte255, colour2.Rgb.Byte255);
@@ -217,7 +203,10 @@ public class EqualityTests
         AssertEqual(config1.Rgb.FromLinear, config2.Rgb.FromLinear);
         AssertEqual(config1.Rgb.ToLinear, config2.Rgb.ToLinear);
         AssertEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
+        AssertEqual(config1.Xyz.Illuminant, config2.Xyz.Illuminant);
         AssertEqual(config1.Xyz.Observer, config2.Xyz.Observer);
+        AssertEqual(config1.Xyz.ChromaticAdaptation, config2.Xyz.ChromaticAdaptation);
+        AssertEqual(config1.Xyz.ChromaticAdaptor, config2.Xyz.ChromaticAdaptor);
         AssertEqual(config1.Xyz.SpectralBoundary, config2.Xyz.SpectralBoundary);
         AssertEqual(config1.Xyz.Planckian, config2.Xyz.Planckian);
         AssertEqual(config1.Ybr.Kr, config2.Ybr.Kr);

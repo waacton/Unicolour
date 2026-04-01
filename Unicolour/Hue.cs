@@ -46,7 +46,7 @@ public static class Hue
         var distance = hueNumber / 10.0;
         var baseDegrees = Interpolation.Linear(minDegrees, maxDegrees, distance);
         var degrees = baseDegrees - 2 * Munsell.DegreesPerHueNumber; // shifts degrees so 5R is 0 instead of 0R / 10RP
-        return degrees.Modulo(360);
+        return degrees.WithHueModulo();
     }
 
     public static (double number, string letter) ToMunsell(double degrees)
@@ -54,7 +54,7 @@ public static class Hue
         if (double.IsNaN(degrees) || double.IsInfinity(degrees)) return (double.NaN, string.Empty);
 
         var baseDegrees = degrees + 2 * Munsell.DegreesPerHueNumber; // shifts degrees so 0R is 0 instead of 5R
-        baseDegrees = baseDegrees.Modulo(360);
+        baseDegrees = baseDegrees.WithHueModulo();
         var bandLocation = baseDegrees / Munsell.DegreesPerHueLetter;
         var bandIndex = (int)Math.Truncate(bandLocation);
         var hueLetter = Munsell.Hues[bandIndex];

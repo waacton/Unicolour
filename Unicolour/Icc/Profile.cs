@@ -46,21 +46,21 @@ public class Profile
         }
     }
     
-    internal Xyz ToXyz(double[] deviceValues, XyzConfiguration xyzConfig, Intent intent)
+    internal double[] FromXyz(Xyz xyz, Intent intent, ChromaticAdaptor chromaticAdaptor)
+    {
+        // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
+        // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
+        var xyzD50 = chromaticAdaptor.AdaptTo(xyz, Transform.XyzD50.WhitePoint).ToArray();
+        return Transform.FromXyz(xyzD50, intent);
+    }
+    
+    internal Xyz ToXyz(double[] deviceValues, Intent intent, ChromaticAdaptor chromaticAdaptor)
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
         var xyzD50 = Transform.ToXyz(deviceValues, intent);
-        var xyz = new Xyz(xyzD50[0], xyzD50[1], xyzD50[2]);
-        return Adaptation.WhitePoint(xyz, Transform.XyzD50.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-    }
-    
-    internal double[] FromXyz(Xyz xyz, XyzConfiguration xyzConfig, Intent intent)
-    {
-        // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
-        // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
-        var xyzD50 = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, Transform.XyzD50.WhitePoint, xyzConfig.AdaptationMatrix).ToArray();
-        return Transform.FromXyz(xyzD50, intent);
+        var xyz = new Xyz(xyzD50[0], xyzD50[1], xyzD50[2], Transform.XyzD50.WhitePoint);
+        return chromaticAdaptor.AdaptFrom(xyz);
     }
     
     internal void ErrorIfUnsupported()
@@ -131,7 +131,7 @@ public class Profile
         return new TransformNone(Header, Tags);
     }
     
-    private static readonly int[] IndexesToZeroForHash = { 44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99 };
+    private static readonly int[] IndexesToZeroForHash = [44, 45, 46, 47, 64, 65, 66, 67, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99];
     public static byte[] CalculateId(byte[] bytes)
     {
         foreach (var index in IndexesToZeroForHash)

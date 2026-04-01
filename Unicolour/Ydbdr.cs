@@ -6,16 +6,11 @@ public record Ydbdr : ColourRepresentation
     public double Y => First;
     public double Db => Second;
     public double Dr => Third;
-    public double ConstrainedY => ConstrainedFirst;
-    public double ConstrainedDb => ConstrainedSecond;
-    public double ConstrainedDr => ConstrainedThird;
-    protected override double ConstrainedFirst => Y.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => Db.Clamp(-DbMax, DbMax);
-    protected override double ConstrainedThird => Dr.Clamp(-DrMax, DrMax);
-    internal override bool IsGreyscale => Db.Equals(0.0) && Dr.Equals(0.0); // Y = 0 does not imply black; Y = 1 does not imply white
-
-    public Ydbdr(double y, double db, double dr) : this(y, db, dr, ColourHeritage.None) {}
-    internal Ydbdr(double y, double db, double dr, ColourHeritage heritage) : base(y, db, dr, heritage) {}
+    
+    protected override bool IsAchromatic => Db == 0.0 && Dr == 0.0;
+    
+    public Ydbdr(double y, double db, double dr) : this(y, db, dr, Limitation.None) {}
+    internal Ydbdr(double y, double db, double dr, Limitation limitation) : base(y, db, dr, limitation) {}
     
     protected override string String => $"{Y:F3} {Db:+0.000;-0.000;0.000} {Dr:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -35,7 +30,7 @@ public record Ydbdr : ColourRepresentation
         var (y, u, v) = yuv;
         var db = DbMax * u;
         var dr = -DrMax * v;
-        return new Ydbdr(y, db, dr, ColourHeritage.From(yuv));
+        return new Ydbdr(y, db, dr, yuv.Limitation);
     }
     
     internal static Yuv ToYuv(Ydbdr ydbdr)
@@ -43,6 +38,6 @@ public record Ydbdr : ColourRepresentation
         var (y, db, dr) = ydbdr;
         var u = db / DbMax;
         var v = dr / -DrMax;
-        return new Yuv(y, u, v, ColourHeritage.From(ydbdr));
+        return new Yuv(y, u, v, ydbdr.Limitation);
     }
 }

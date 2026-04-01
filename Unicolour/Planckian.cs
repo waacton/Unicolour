@@ -18,7 +18,7 @@ internal class Planckian
     
     internal List<Coordinate> Get(double startCct, double endCct, double stepPercentage)
     {
-        var coordinates = new List<Coordinate>();
+        List<Coordinate> coordinates = [];
         var cct = startCct;
         var stepMultiplier = stepPercentage / 100.0;
 

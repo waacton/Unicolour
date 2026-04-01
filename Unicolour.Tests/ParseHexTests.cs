@@ -11,7 +11,9 @@ public class ParseHexTests
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
     public void NamedHexSameRgbAsSystem(TestColour namedColour) => AssertHexParse(namedColour.Hex!);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HexStrings))]
+    internal static List<string> HexStrings = new int[1000].Select(_ => Rng.Hex()).ToList();
+
+    [TestCaseSource(nameof(HexStrings))]
     public void HexSameRgbAsSystem(string hex) => AssertHexParse(hex);
 
     [Test]
@@ -46,7 +48,7 @@ public class ParseHexTests
 
     private static List<string> GeneratePotentialHexStrings()
     {
-        var result = new List<string>();
+        List<string> result = [];
         for (var charValue = 0; charValue < 128; charValue++)
         {
             for (var i = 0; i < 8; i++)

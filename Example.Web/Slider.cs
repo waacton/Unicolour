@@ -1,6 +1,4 @@
-﻿using Wacton.Unicolour.Example.Web.Layout;
-
-namespace Wacton.Unicolour.Example.Web;
+﻿namespace Wacton.Unicolour.Example.Web;
 
 public abstract class Slider
 {
@@ -24,6 +22,6 @@ internal class GradientColourSlider : Slider
 
 internal class SolidColourSlider : Slider
 {
-    internal Unicolour Colour { get; set; } = null!;
+    internal Unicolour Colour { get; init; } = null!;
     internal string CssBackground => Colour.Hex;
 }

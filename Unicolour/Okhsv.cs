@@ -8,18 +8,14 @@ public record Okhsv : ColourRepresentation
     public double H => First;
     public double S => Second;
     public double V => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedS => ConstrainedSecond;
-    public double ConstrainedV => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => S.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => V.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => S <= 0.0 || V <= 0.0;
     
-    public Okhsv(double h, double s, double v) : this(h, s, v, ColourHeritage.None) { }
-    internal Okhsv(double h, double s, double v, ColourHeritage heritage) : base(h, s, v, heritage) { }
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsAchromatic => false;
     
-    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {V * 100:F1}%" : $"—° {S * 100:F1}% {V * 100:F1}%";
+    public Okhsv(double h, double s, double v) : this(h, s, v, Limitation.None) { }
+    internal Okhsv(double h, double s, double v, Limitation limitation) : base(h, s, v, limitation) { }
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {V * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {V * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,119 +28,114 @@ public record Okhsv : ColourRepresentation
      * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
     
-    internal static Okhsv FromOklab(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Okhsv FromOklab(Oklab oklab, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
         var (l, a, b) = oklab;
-        var (_, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
-        var aPrime = a / c;
-        var bPrime = b / c;
         
-        double s, v;
-        if (oklab.IsGreyscale)
+        if (oklab.Limitation == Limitation.Achromatic)
         {
             // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
-            // which is when L <= 0 || L >= 1 || C == 0, i.e. greyscale 
-            // when greyscale assume no S, since greyscale has no saturation
-            // and want V to match Lr of OKLrCH from https://bottosson.github.io/misc/colorpicker/ (see also "a new lightness estimate" https://bottosson.github.io/posts/colorpicker/#summary)
+            // which is when Oklab has no chroma information, so fall back to 0 saturation
+            // and set V to match Lr of OKLrCH from https://bottosson.github.io/misc/colorpicker/ (see also "a new lightness estimate" https://bottosson.github.io/posts/colorpicker/#summary)
             // which appears to be just Toe(l) (https://github.com/bottosson/bottosson.github.io/blob/f6f08b7fde9436be1f20f66cebbc739d660898fd/misc/colorpicker/main.js#L134)
-            (s, v) = (0.0, Toe(l));
-        }
-        else
-        {
-            var cusp = FindCusp(aPrime, bPrime, xyzConfig, rgbConfig);
-            var (sMax, tMax) = (cusp.S, cusp.T);
-            const double s0 = 0.5;
-            var k = 1 - s0 / sMax;
-            
-            var t = tMax / (c + l * tMax);
-            var lv = t * l;
-            var cv = t * c;
-            
-            var lvt = ToeInverse(lv);
-            var cvt = cv * lvt / lv;
-            
-            var rgbScale = ToLinearRgb(new Oklab(lvt, aPrime * cvt, bPrime * cvt), xyzConfig, rgbConfig);
-            var scaleL = CubeRoot(1.0 / new[] { rgbScale.R, rgbScale.G, rgbScale.B, 0.0 }.Max());
-            
-            l /= scaleL;
-            l = Toe(l);
-            
-            v = l / lv;
-            s = (s0 + tMax) * cv / (tMax * s0 + tMax * k * cv);
+            return new Okhsv(0, 0, Toe(l), oklab.Limitation);
         }
         
-        return new Okhsv(h.Modulo(360.0), s, v, ColourHeritage.From(oklab));
+        var (_, c, h) = ToLchTriplet(oklab.Triplet);
+        var aPrime = a / c;
+        var bPrime = b / c;
+
+        var cusp = FindCusp(aPrime, bPrime, chromaticAdaptor, rgbConfig);
+        var (sMax, tMax) = (cusp.S, cusp.T);
+        const double s0 = 0.5;
+        var k = 1 - s0 / sMax;
+            
+        var t = tMax / (c + l * tMax);
+        var lv = t * l;
+        var cv = t * c;
+            
+        var lvt = ToeInverse(lv);
+        var cvt = cv * lvt / lv;
+            
+        var rgbScale = ToLinearRgb(new Oklab(lvt, aPrime * cvt, bPrime * cvt), chromaticAdaptor, rgbConfig);
+        var scaleL = CubeRoot(1.0 / new[] { rgbScale.R, rgbScale.G, rgbScale.B, 0.0 }.Max());
+            
+        l /= scaleL;
+        l = Toe(l);
+            
+        var v = l / lv;
+        var s = (s0 + tMax) * cv / (tMax * s0 + tMax * k * cv);
+        
+        return new Okhsv(h, s, v, oklab.Limitation);
     }
     
-    internal static Oklab ToOklab(Okhsv okhsv, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Oklab ToOklab(Okhsv okhsv, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
-        var (h, s, v) = okhsv;
-        double l, a, b;
+        var (h, s, v) = okhsv.WithHueModulo();
+
         if (v == 0.0)
         {
             // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
-            // when no V:
-            // - assume no L, since L tends towards 0 as V decreases
-            // - assume no A an B, since A and B tend towards 0 as V decreases
-            (l, a, b) = (0, 0, 0);
-        }
-        else
-        {
-            var (_, aPrime, bPrime) = FromLchTriplet(new(double.NaN, 1, h));
-            
-            var cusp = FindCusp(aPrime, bPrime, xyzConfig, rgbConfig);
-            var (sMax, tMax) = (cusp.S, cusp.T);
-            const float s0 = 0.5f;
-            var k = 1 - s0 / sMax;
-            
-            var lv = 1 - s * s0 / (s0 + tMax - tMax * k * s);
-            var cv = s * tMax * s0 / (s0 + tMax - tMax * k * s);
-            
-            l = v * lv;
-            var c = v * cv;
-            
-            var lvt = ToeInverse(lv);
-            var cvt = cv * lvt / lv;
-            
-            var lNew = ToeInverse(l);
-            c = c * lNew / l;
-            l = lNew;
-            
-            var rgbScale = ToLinearRgb(new Oklab(lvt, aPrime * cvt, bPrime * cvt), xyzConfig, rgbConfig);
-            var scaleL = CubeRoot(1.0 / new[] { rgbScale.R, rgbScale.G, rgbScale.B, 0.0 }.Max());
-            
-            l *= scaleL;
-            c *= scaleL;
-
-            a = c * aPrime;
-            b = c * bPrime;
+            // when 0 V:
+            // - assume 0 L, since L tends towards 0 as V decreases
+            // - assume 0 A and B, since A and B tend towards 0 as V decreases
+            return new Oklab(0, 0, 0, okhsv.Limitation);
         }
 
-        return new Oklab(l, a, b, ColourHeritage.From(okhsv));
+        var (_, aPrime, bPrime) = FromLchTriplet(new(double.NaN, 1, h));
+            
+        var cusp = FindCusp(aPrime, bPrime, chromaticAdaptor, rgbConfig);
+        var (sMax, tMax) = (cusp.S, cusp.T);
+        const float s0 = 0.5f;
+        var k = 1 - s0 / sMax;
+            
+        var lv = 1 - s * s0 / (s0 + tMax - tMax * k * s);
+        var cv = s * tMax * s0 / (s0 + tMax - tMax * k * s);
+
+        var l = v * lv;
+        var c = v * cv;
+            
+        var lvt = ToeInverse(lv);
+        var cvt = cv * lvt / lv;
+            
+        var lNew = ToeInverse(l);
+        c = c * lNew / l;
+        l = lNew;
+            
+        var rgbScale = ToLinearRgb(new Oklab(lvt, aPrime * cvt, bPrime * cvt), chromaticAdaptor, rgbConfig);
+        var scaleL = CubeRoot(1.0 / new[] { rgbScale.R, rgbScale.G, rgbScale.B, 0.0 }.Max());
+            
+        l *= scaleL;
+        c *= scaleL;
+
+        var a = c * aPrime;
+        var b = c * bPrime;
+
+        return new Oklab(l, a, b, okhsv.Limitation);
     }
 
-    internal static Cusp FindCusp(double a, double b, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Cusp FindCusp(double a, double b, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
         var sCusp = ComputeMaxSaturation(a, b);
-        var rgbAtMax = ToLinearRgb(new Oklab(1, sCusp * a, sCusp * b), xyzConfig, rgbConfig);
+        var rgbAtMax = ToLinearRgb(new Oklab(1, sCusp * a, sCusp * b), chromaticAdaptor, rgbConfig);
         var lCusp = CubeRoot(1.0 / new[] { rgbAtMax.R, rgbAtMax.G, rgbAtMax.B }.Max());
         var cCusp = lCusp * sCusp;
         return new(lCusp, cCusp);
     }
 
-    private static readonly List<(double k0, double k1, double k2, double k3, double k4)> ConstantsK = new()
-    {
+    private static readonly List<(double k0, double k1, double k2, double k3, double k4)> ConstantsK =
+    [
         (+1.19086277, +1.76576728, +0.59662641, +0.75515197, +0.56771245),
         (+0.73956515, -0.45954404, +0.08285427, +0.12541070, +0.14503204),
         (+1.35733652, -0.00915799, -1.15130210, -0.50559606, 0.00692167)
-    };
+    ];
     
-    private static readonly List<(double wl, double wm, double ws)> ConstantsW = new()
-    {
+    private static readonly List<(double wl, double wm, double ws)> ConstantsW =
+    [
         (+4.0767416621, -3.3077115913, +0.2309699292),
         (-1.2684380046, +2.6097574011, -0.3413193965),
         (-0.0041960863, -0.7034186147, +1.7076147010)
-    };
+    ];
     
     private static double ComputeMaxSaturation(double a, double b)
     {
@@ -194,10 +185,10 @@ public record Okhsv : ColourRepresentation
         return saturation - f * f1 / (Math.Pow(f1, 2) - 0.5 * f * f2);
     }
 
-    private static RgbLinear ToLinearRgb(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    private static RgbLinear ToLinearRgb(Oklab oklab, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
-        var xyz = Oklab.ToXyz(oklab, xyzConfig, rgbConfig);
-        var rgbLinear = RgbLinear.FromXyz(xyz, rgbConfig, xyzConfig);
+        var xyz = Oklab.ToXyz(oklab, chromaticAdaptor, rgbConfig);
+        var rgbLinear = RgbLinear.FromXyz(xyz, rgbConfig, chromaticAdaptor);
         return rgbLinear;
     }
     

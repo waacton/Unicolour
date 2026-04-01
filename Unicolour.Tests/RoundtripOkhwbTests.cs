@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -6,8 +7,10 @@ namespace Wacton.Unicolour.Tests;
 public class RoundtripOkhwbTests
 {
     private const double Tolerance = 0.00000000001;
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Okhwb, 1500);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OkhwbTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaOkhsv(ColourTriplet triplet)
     {
         // note: cannot test round trip of all OKHWB values as OKHWB <-> OKHSV is not 1:1
@@ -15,8 +18,8 @@ public class RoundtripOkhwbTests
         // (e.g. W 100 B 50 == W 66.666 B 33.333)
         // and OKHSV -> OKHWB will always produce OKHWB that results in W + B <= 100%
         var original = new Okhwb(triplet.First, triplet.Second, triplet.Third);
-        var scale = original.ConstrainedW + original.ConstrainedB;
-        var scaled = new Okhwb(original.H, original.ConstrainedW / scale, original.ConstrainedB / scale);
+        var scale = original.W + original.B;
+        var scaled = new Okhwb(original.H, original.W / scale, original.B / scale);
 
         var needsScaling = scale > 1.0;
         if (needsScaling)

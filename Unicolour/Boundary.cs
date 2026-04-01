@@ -11,7 +11,7 @@ internal class Boundary
     {
         segments = new Lazy<Segment[]>(() =>
         {
-            var result = new List<Segment>();
+            List<Segment> result = [];
             for (var i = 0; i < points.Value.Length; i++)
             {
                 var start = points.Value[i];
@@ -58,7 +58,7 @@ internal class Boundary
         return (near, far);
     }
     
-    private static readonly (Intersect[] near, Intersect[] far) NoIntersects = (Array.Empty<Intersect>(), Array.Empty<Intersect>());
+    private static readonly (Intersect[] near, Intersect[] far) NoIntersects = ([], []);
     private (Intersect[] near, Intersect[] far) FindIntersects(Chromaticity sample, Chromaticity reference)
     {
         if (sample == reference) return NoIntersects;
@@ -84,7 +84,7 @@ internal class Boundary
         // in this case, just choose one intersect to be the far one
         if (!farIntersects.Any() && nearIntersects.Length > 1)
         {
-            farIntersects = new[] { nearIntersects.Last() };
+            farIntersects = [nearIntersects.Last()];
             nearIntersects = nearIntersects.Except(farIntersects).ToArray();
         }
         

@@ -956,8 +956,8 @@ public static class Xkcd
     public static readonly Unicolour YellowyGreen = new(Config, "#bff128");
 
 
-    public static IEnumerable<Unicolour> All => new List<Unicolour>
-    {
+    public static IEnumerable<Unicolour> All => 
+    [
         AcidGreen, Adobe, Algae, AlgaeGreen, AlmostBlack, Amber, Amethyst, Apple, AppleGreen, Apricot, Aqua, AquaBlue, AquaGreen, AquaMarine, Aquamarine, ArmyGreen, Asparagus, Aubergine, Auburn, Avocado, AvocadoGreen, Azul, Azure,
         BabyBlue, BabyGreen, BabyPink, BabyPoo, BabyPoop, BabyPoopGreen, BabyPukeGreen, BabyPurple, BabyShitBrown, BabyShitGreen, Banana, BananaYellow, BarbiePink, BarfGreen, Barney, BarneyPurple, BattleshipGrey, Beige, Berry, Bile, Black, Bland, Blood, BloodOrange, BloodRed, Blue, Blue_Green, Blue_Grey, Blue_Purple, Blueberry, BlueBlue, Bluegreen, BlueGreen, Bluegrey, BlueGrey, BluePurple, BlueViolet, BlueWithAHintOfPurple, BlueyGreen, BlueyGrey, BlueyPurple, Bluish, BluishGreen, BluishGrey, BluishPurple, Blurple, Blush, BlushPink, Booger, BoogerGreen, Bordeaux, BoringGreen, BottleGreen, Brick, BrickOrange, BrickRed, BrightAqua, BrightBlue, BrightCyan, BrightGreen, BrightLavender, BrightLightBlue, BrightLightGreen, BrightLilac, BrightLime, BrightLimeGreen, BrightMagenta, BrightOlive, BrightOrange, BrightPink, BrightPurple, BrightRed, BrightSeaGreen, BrightSkyBlue, BrightTeal, BrightTurquoise, BrightViolet, BrightYellow, BrightYellowGreen, BritishRacingGreen, Bronze, Brown, BrownGreen, BrownGrey, Brownish, BrownishGreen, BrownishGrey, BrownishOrange, BrownishPink, BrownishPurple, BrownishRed, BrownishYellow, BrownOrange, BrownRed, BrownYellow, BrownyGreen, BrownyOrange, Bruise, Bubblegum, BubbleGumPink, BubblegumPink, Buff, Burgundy, BurntOrange, BurntRed, BurntSiena, BurntSienna, BurntUmber, BurntYellow, Burple, Butter, Butterscotch, ButterYellow,
         CadetBlue, Camel, Camo, CamoGreen, CamouflageGreen, Canary, CanaryYellow, CandyPink, Caramel, Carmine, Carnation, CarnationPink, CarolinaBlue, Celadon, Celery, Cement, Cerise, Cerulean, CeruleanBlue, Charcoal, CharcoalGrey, Chartreuse, Cherry, CherryRed, Chestnut, Chocolate, ChocolateBrown, Cinnamon, Claret, Clay, ClayBrown, ClearBlue, CloudyBlue, Cobalt, CobaltBlue, Cocoa, Coffee, CoolBlue, CoolGreen, CoolGrey, Copper, Coral, CoralPink, Cornflower, CornflowerBlue, Cranberry, Cream, Creme, Crimson, Custard, Cyan,
@@ -980,8 +980,8 @@ public static class Xkcd
         UglyBlue, UglyBrown, UglyGreen, UglyPink, UglyPurple, UglyYellow, Ultramarine, UltramarineBlue, Umber,
         Velvet, Vermillion, VeryDarkBlue, VeryDarkBrown, VeryDarkGreen, VeryDarkPurple, VeryLightBlue, VeryLightBrown, VeryLightGreen, VeryLightPink, VeryLightPurple, VeryPaleBlue, VeryPaleGreen, VibrantBlue, VibrantGreen, VibrantPurple, Violet, VioletBlue, VioletPink, VioletRed, Viridian, VividBlue, VividGreen, VividPurple, Vomit, VomitGreen, VomitYellow,
         WarmBlue, WarmBrown, WarmGrey, WarmPink, WarmPurple, WashedOutGreen, WaterBlue, Watermelon, WeirdGreen, Wheat, White, WindowsBlue, Wine, WineRed, Wintergreen, Wisteria,
-        Yellow, Yellow_Green, YellowBrown, Yellowgreen, YellowGreen, Yellowish, YellowishBrown, YellowishGreen, YellowishOrange, YellowishTan, YellowOchre, YellowOrange, YellowTan, YellowyBrown, YellowyGreen,
-    };
+        Yellow, Yellow_Green, YellowBrown, Yellowgreen, YellowGreen, Yellowish, YellowishBrown, YellowishGreen, YellowishOrange, YellowishTan, YellowOchre, YellowOrange, YellowTan, YellowyBrown, YellowyGreen
+    ];
 
     public static Unicolour? FromName(string name)
     {
@@ -989,7 +989,7 @@ public static class Xkcd
         
         // first try to use the name as though it is the exact text used in the spec
         var lowercase = name.ToLower();
-        Lookup.TryGetValue(lowercase, out Unicolour? value);
+        Lookup.TryGetValue(lowercase, out var value);
         if (value != null)
         {
             return value;

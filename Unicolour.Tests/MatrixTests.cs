@@ -219,7 +219,7 @@ public class MatrixTests
             { triplet.Third }
         });
         
-        var matrixFromTuple = Matrix.From(triplet.Tuple);
+        var matrixFromTuple = Matrix.From(triplet);
         var matrixFromValues = Matrix.From(triplet.First, triplet.Second, triplet.Third);
 
         Assert.That(matrixFromData.ToTriplet(), Is.EqualTo(triplet));

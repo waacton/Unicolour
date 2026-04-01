@@ -10,8 +10,8 @@ public class Viridis : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Viridis);
     
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.267004, 0.004874, 0.329415),
         new(Config, ColourSpace.Rgb, 0.26851, 0.009605, 0.335427),
         new(Config, ColourSpace.Rgb, 0.269944, 0.014625, 0.341379),
@@ -268,5 +268,5 @@ public class Viridis : Colourmap
         new(Config, ColourSpace.Rgb, 0.974417, 0.90359, 0.130215),
         new(Config, ColourSpace.Rgb, 0.983868, 0.904867, 0.136897),
         new(Config, ColourSpace.Rgb, 0.993248, 0.906157, 0.143936)
-    };
+    ];
 }

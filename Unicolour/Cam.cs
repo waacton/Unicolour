@@ -46,7 +46,7 @@ public static class Cam
         internal Model ToModel(ViewingConditions view)
         {
             var j = J / (1.7 - 0.007 * J);
-            (j, var m, var h) = ToLchTriplet(j, A, B);
+            (j, var m, var h) = ToLchTriplet(new(j, A, B));
             m = (Math.Exp(0.0228 * m) - 1) / 0.0228;
 
             var q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
@@ -81,10 +81,10 @@ public static class Cam
         private const double Angle4 = 237.53;
         private const double Angle5 = 380.14;
 
-        private static readonly string[] Names = { "R", "Y", "G", "B", "R" };
-        private static readonly double[] Angles = { Angle1, Angle2, Angle3, Angle4, Angle5 };
-        private static readonly double[] Es = { 0.8, 0.7, 1.0, 1.2, 0.8 };
-        private static readonly double[] Quads = { 0.0, 100.0, 200.0, 300.0, 400.0 };
+        private static readonly string[] Names = ["R", "Y", "G", "B", "R"];
+        private static readonly double[] Angles = [Angle1, Angle2, Angle3, Angle4, Angle5];
+        private static readonly double[] Es = [0.8, 0.7, 1.0, 1.2, 0.8];
+        private static readonly double[] Quads = [0.0, 100.0, 200.0, 300.0, 400.0];
 
         private static string Name(int i) => Get(Names, i);
         private static double Angle(int i) => Get(Angles, i);

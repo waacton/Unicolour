@@ -18,7 +18,7 @@ public class KnownSpdTests
     {
         var spd = new Spd(StartWavelength, interval: 1, Wavelengths.Select(_ => 8.0).ToArray());
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.3333, 0.3333, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.3333, 0.3333, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
 
@@ -27,7 +27,7 @@ public class KnownSpdTests
     {
         var spd = new Spd(StartWavelength, interval: 1, Wavelengths.Select(wavelength => (double)(wavelength - StartWavelength)).ToArray());
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.4299, 0.4040, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.4299, 0.4040, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
     
@@ -36,7 +36,7 @@ public class KnownSpdTests
     {
         var spd = new Spd(StartWavelength, interval: 1, Wavelengths.Select(wavelength => (double)(EndWavelength - wavelength)).ToArray());
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.2762, 0.2916, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.2762, 0.2916, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
     
@@ -45,7 +45,7 @@ public class KnownSpdTests
     {
         var spd = new Spd(StartWavelength, interval: 1, Wavelengths.Select(wavelength => Math.Pow(wavelength - StartWavelength, 3)).ToArray());
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.5542, 0.4128, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.5542, 0.4128, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
     
@@ -54,7 +54,7 @@ public class KnownSpdTests
     {
         var spd = new Spd(StartWavelength, interval: 1, Wavelengths.Select(wavelength => Math.Pow(EndWavelength - wavelength, 3)).ToArray());
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.2013, 0.2004, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.2013, 0.2004, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
 
@@ -63,7 +63,7 @@ public class KnownSpdTests
     {
         var spd = Spd.Monochromatic(580);
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.5125, 0.4866, 1.0000), 0.00005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.5125, 0.4866, 1.0000), 0.00005);
         AssertWhitePoint(spd);
     }
     
@@ -74,8 +74,8 @@ public class KnownSpdTests
         // as opposed to some kind of "black" illumination (illuminating with the absence of any light...)
         var spd = new Spd(start: 580, interval: 1);
         var colour = new Unicolour(spd);
-        TestUtils.AssertTriplet<Xyy>(colour, new(double.NaN, double.NaN, double.NaN), 0);
-        TestUtils.AssertTriplet<Xyy>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
 
     private static void AssertWhitePoint(Spd spd)
@@ -85,6 +85,6 @@ public class KnownSpdTests
         var xyzConfig = new XyzConfiguration(new Illuminant(spd), Observer.Degree2);
         var config = new Configuration(xyzConfig: xyzConfig);
         var colour = new Unicolour(config, spd);
-        TestUtils.AssertTriplet<Rgb>(colour, new(1.0, 1.0, 1.0), 0.00000000001);
+        TestUtils.AssertColour(colour, new Rgb(1.0, 1.0, 1.0), 0.00000000001);
     }
 }

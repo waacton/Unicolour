@@ -5,6 +5,7 @@ namespace Wacton.Unicolour;
 internal static class Utils
 {
     internal const string Unnamed = "(unnamed)";
+    internal const string NoHue = "—";
     
     // based on smallest value required for monochromatic light to be treated as intersecting the spectral locus (see: Intersect.IsOnSegment)
     // only intended for when a little bit of rounding is necessary
@@ -14,7 +15,8 @@ internal static class Utils
     internal static double CubeRoot(double x) => x < 0 ? -Math.Pow(-x, 1 / 3.0) : Math.Pow(x, 1 / 3.0);
     internal static double ToDegrees(double radians) => radians * (180.0 / Math.PI);
     internal static double ToRadians(double degrees) => degrees * (Math.PI / 180.0);
-    
+
+    internal static double WithHueModulo(this double value) => value.Modulo(360);
     internal static double Modulo(this double value, double modulus, bool inclusive = false)
     {
         if (double.IsNaN(value))
@@ -64,17 +66,24 @@ internal static class Utils
 
         return int.Parse(chars, NumberStyles.HexNumber);
     }
-    
-    internal static ColourTriplet ToLchTriplet(double lightness, double axis1, double axis2)
+
+    internal static ColourTriplet ToLchTriplet(ColourTriplet labTriplet)
     {
-        var chroma = Math.Sqrt(Math.Pow(axis1, 2) + Math.Pow(axis2, 2));
-        var hue = ToDegrees(Math.Atan2(axis2, axis1));
-        return new ColourTriplet(lightness, chroma, hue.Modulo(360.0));
+        var (l, a, b) = labTriplet.WithHueModulo();
+        var chroma = Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
+        var hue = ToDegrees(Math.Atan2(b, a));
+        return new ColourTriplet(l, chroma, hue.Modulo(360.0));
     }
     
     internal static (double lightness, double axis1, double axis2) FromLchTriplet(ColourTriplet lchTriplet)
     {
-        var (l, c, h) = lchTriplet;
+        var (l, c, h) = lchTriplet.WithHueModulo();
+        if (c < 0)
+        {
+            return (l, 0, 0); // cartesian spaces cannot represent non-negative chroma (unclear what negative chroma would even mean)
+        }
+        
+        c = Math.Max(c, 0); 
         var axis1 = c * Math.Cos(ToRadians(h));
         var axis2 = c * Math.Sin(ToRadians(h));
         return (l, axis1, axis2);
@@ -89,6 +98,6 @@ internal static class Utils
     {
         var radius = Distance(start, end);
         var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
-        return (radius, ToDegrees(angle).Modulo(360));
+        return (radius, ToDegrees(angle).WithHueModulo());
     }
 }

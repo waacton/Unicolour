@@ -18,7 +18,7 @@ public class KnownIccTests
     {
         var cmyk = new Channels(0.0, 0.7, 0.2, 0.0);
         var colour = new Unicolour(GetConfig(IccFile.Fogra39), cmyk);
-        TestUtils.AssertTriplet<Lab>(colour, new(63.673303, 51.576902, 5.811058), Tolerance);
+        TestUtils.AssertColour(colour, new Lab(63.673303, 51.576902, 5.811058), Tolerance);
     }
     
     [Test] // https://www.w3.org/TR/css-color-5/#ex-swop5v2
@@ -26,7 +26,7 @@ public class KnownIccTests
     {
         var cmyk = new Channels(0.0, 0.7, 0.2, 0.0);
         var colour = new Unicolour(GetConfig(IccFile.Swop2006), cmyk);
-        TestUtils.AssertTriplet<Lab>(colour, new(64.965217, 52.119710, 5.406966), Tolerance);
+        TestUtils.AssertColour(colour, new Lab(64.965217, 52.119710, 5.406966), Tolerance);
     }
     
     [Test] // https://www.w3.org/TR/css-color-5/#ex-device-cmyk-naive
@@ -34,7 +34,7 @@ public class KnownIccTests
     {
         var cmyk = new Channels(0.0, 0.81, 0.81, 0.3);
         var colour = new Unicolour(cmyk);
-        TestUtils.AssertTriplet<Rgb255>(colour, new(178, 34, 34), 0);
+        TestUtils.AssertColour(colour, new Rgb255(178, 34, 34), 0);
     }
     
     [Test] // https://www.w3.org/TR/css-color-5/#ex-device-cmyk-colprof
@@ -42,7 +42,7 @@ public class KnownIccTests
     {
         var cmyk = new Channels(0.0, 0.81, 0.81, 0.3);
         var colour = new Unicolour(GetConfig(IccFile.Fogra39), cmyk);
-        TestUtils.AssertTriplet<Lab>(colour, new(45.060, 45.477, 35.459), Tolerance);
+        TestUtils.AssertColour(colour, new Lab(45.060, 45.477, 35.459), Tolerance);
     }
     
     // NOTE: these values don't match

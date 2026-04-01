@@ -10,8 +10,8 @@ public class Plasma : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Plasma);
 
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.050383, 0.029803, 0.527975),
         new(Config, ColourSpace.Rgb, 0.063536, 0.028426, 0.533124),
         new(Config, ColourSpace.Rgb, 0.075353, 0.027206, 0.538007),
@@ -268,5 +268,5 @@ public class Plasma : Colourmap
         new(Config, ColourSpace.Rgb, 0.944152, 0.961916, 0.146861),
         new(Config, ColourSpace.Rgb, 0.941896, 0.96859, 0.140956),
         new(Config, ColourSpace.Rgb, 0.940015, 0.975158, 0.131326)
-    };
+    ];
 }

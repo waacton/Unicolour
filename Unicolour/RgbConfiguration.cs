@@ -92,7 +92,7 @@ public class RgbConfiguration
             { zr, zg, zb }
         });
         
-        var xyzWhite = WhitePoint.AsXyzMatrix();
+        var xyzWhite = Matrix.From(WhitePoint.Triplet);
         var (sr, sg, sb) = fromPrimaries.Inverse().Multiply(xyzWhite).ToTriplet();
 
         return new Matrix(new[,]

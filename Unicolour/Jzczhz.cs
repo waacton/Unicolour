@@ -8,17 +8,14 @@ public record Jzczhz : ColourRepresentation
     public double J => First;
     public double C => Second;
     public double H => Third;
-    public double ConstrainedH => ConstrainedThird;
-    protected override double ConstrainedThird => H.Modulo(360.0);
     
-    // no clear lightness upper-bound
-    // (paper says lightness J is 0 - 1 but seems like it's a scaling of their plot of Rec.2020 gamut - in my tests maxes out after ~0.17)
-    internal override bool IsGreyscale => J <= 0.0 || C <= 0.0;
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsAchromatic => false;
+    
+    public Jzczhz(double j, double c, double h) : this(j, c, h, Limitation.None) {}
+    internal Jzczhz(double j, double c, double h, Limitation limitation) : base(j, c, h, limitation) {}
 
-    public Jzczhz(double j, double c, double h) : this(j, c, h, ColourHeritage.None) {}
-    internal Jzczhz(double j, double c, double h, ColourHeritage heritage) : base(j, c, h, heritage) {}
-    
-    protected override string String => UseAsHued ? $"{J:F3} {C:F3} {H:F1}°" : $"{J:F3} {C:F3} —°";
+    protected override string String => Limitation != Limitation.Achromatic ? $"{J:F3} {C:F3} {H:F1}°" : $"{J:F3} {C:F3} {NoHue}°";
     public override string ToString() => base.ToString();
     
     /*
@@ -29,13 +26,13 @@ public record Jzczhz : ColourRepresentation
     
     internal static Jzczhz FromJzazbz(Jzazbz jzazbz)
     {
-        var (jz, cz, hz) = ToLchTriplet(jzazbz.J, jzazbz.A, jzazbz.B);
-        return new Jzczhz(jz, cz, hz, ColourHeritage.From(jzazbz));
+        var (jz, cz, hz) = ToLchTriplet(jzazbz.Triplet);
+        return new Jzczhz(jz, cz, hz, jzazbz.Limitation);
     }
     
     internal static Jzazbz ToJzazbz(Jzczhz jzczhz)
     {
-        var (jz, az, bz) = FromLchTriplet(jzczhz.ConstrainedTriplet);
-        return new Jzazbz(jz, az, bz, ColourHeritage.From(jzczhz));
+        var (jz, az, bz) = FromLchTriplet(jzczhz.Triplet);
+        return new Jzazbz(jz, az, bz, jzczhz.Limitation);
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -5,14 +6,24 @@ namespace Wacton.Unicolour.Tests;
 
 public class RoundtripOklrchTests
 {
-    private const double DefaultTolerance = 0.00000000001;
+    private const double Tolerance = 0.00000000001;
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Oklrch, 1500);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.OklrchTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaOklrab(ColourTriplet triplet)
     {
         var original = new Oklrch(triplet.First, triplet.Second, triplet.Third);
         var oklrab = Oklrch.ToOklrab(original);
         var roundtrip = Oklrch.FromOklrab(oklrab);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, DefaultTolerance);
+
+        if (original.C < 0)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.L, 0, 0, HueIndex: 2), Tolerance);
+        }
+        else
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        }
     }
 }

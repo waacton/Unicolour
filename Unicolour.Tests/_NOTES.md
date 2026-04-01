@@ -4,13 +4,12 @@ Tests to add / update for new colour spaces:
 - Roundtrip conversion tests
 - Mixing tests
 - Mixing greyscale tests (if colour space has hue component)
-- Mix heritage tests
-- Hued tests (if colour space has hue component)
+- Mix limitation tests
 - Equality tests
 - Extreme values tests
-- Greyscale tests
+- Achromatic tests
+- Achromatic from hue tests (if colour space has hue component)
 - Not number tests
-- Range clamp tests
 - Difference tests (if colour space has corresponding ΔE)
 - Configuration tests (if colour space requires configuration)
 

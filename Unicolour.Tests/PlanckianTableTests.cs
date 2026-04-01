@@ -17,8 +17,8 @@ public class PlanckianTableTests
         var equalCmf = new Cmf(Cmf.RequiredWavelengths.ToDictionary(wavelength => wavelength, _ => (1.0, 1.0, 1.0)));
         var equalObserver = new Observer(equalCmf, "constant");
         var chromaticity = new Chromaticity(1 / 3.0, 1 / 3.0);
-        var expectedCoordinates = new List<Coordinate>
-        {
+        List<Coordinate> expectedCoordinates =
+        [
             new(0, double.NaN, double.NaN),
             new(100, chromaticity.U, chromaticity.V),
             new(200, chromaticity.U, chromaticity.V),
@@ -26,7 +26,7 @@ public class PlanckianTableTests
             new(800, chromaticity.U, chromaticity.V),
             new(1600, chromaticity.U, chromaticity.V),
             new(3200, chromaticity.U, chromaticity.V)
-        };
+        ];
 
         var planckian = new Planckian(equalObserver);
         var actualCoordinates = planckian.Get(startCct: 100, endCct: 1600, stepPercentage: 100);

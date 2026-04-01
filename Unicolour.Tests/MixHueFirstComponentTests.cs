@@ -45,11 +45,11 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
         : base(colourSpace, first, second, third)
     {
         mapFromDegree = colourSpace == ColourSpace.Wxy
-            ? degree => Wxy.DegreeToWavelength(degree, XyzConfiguration.D65)
+            ? degree => Wxy.DegreeToWavelength(degree, XyzConfiguration.D65.SpectralBoundary)
             : degree => degree;
         
         mapToDegree = colourSpace == ColourSpace.Wxy
-            ? degree => Wxy.WavelengthToDegree(degree, XyzConfiguration.D65)
+            ? degree => Wxy.WavelengthToDegree(degree, XyzConfiguration.D65.SpectralBoundary)
             : degree => degree;
     }
 

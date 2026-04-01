@@ -42,15 +42,15 @@ internal static class DataTypes
     {
         // first 16 bits are CMM hints, second 16 bits reserved for ICC
         var flags = stream.ReadUInt32();
-        return new[]
-        {
+        return
+        [
             (flags & 0b0001) == 0 ? NotEmbedded : Embedded,
             (flags & 0b0010) == 0 ? Independent : NotIndependent
             
             // v5+ / iccMAX:
             // (flags & 0b0100) == 0 ? "MSC subset" : "not MSC subset",
             // (flags & 0b1000) == 0 ? "extended encoding range" : "not extended encoding range"
-        };
+        ];
     }
     
     internal const string Reflective = "reflective";
@@ -66,8 +66,8 @@ internal static class DataTypes
     {
         // first 32 bits are vendor specific, second 32 bits reserved for ICC
         var flags = stream.ReadUInt64();
-        return new[]
-        {
+        return
+        [
             (flags & 0b00000001) == 0 ? Reflective : Transparency,
             (flags & 0b00000010) == 0 ? Glossy : Matte,
             (flags & 0b00000100) == 0 ? Positive : Negative,
@@ -78,7 +78,7 @@ internal static class DataTypes
             // (flags & 0b00100000) == 0 ? "non-textured" : "textured",
             // (flags & 0b01000000) == 0 ? "isotropic" : "non-isotropic",
             // (flags & 0b10000000) == 0 ? "non self-luminous" : "self-luminous"
-        };
+        ];
     }
 
     // v5+ / iccMAX
@@ -123,6 +123,6 @@ internal record XyzType(double x, double y, double z)
     internal double y { get; } = y;
     internal double z { get; } = z;
     
-    internal double[] ToArray() => new [] { x, y, z };
+    internal double[] ToArray() => [x, y, z];
     internal (double x, double y, double z) ToTuple() => (x, y, z);
 }

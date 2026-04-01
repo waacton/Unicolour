@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -12,7 +13,7 @@ public class KnownLchuvTests
     public void Red(string illuminantName, double l, double c, double h)
     {
         var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchuv>(red, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(red, new Lchuv(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 87.7347, 135.7804, 127.7236)]
@@ -20,7 +21,7 @@ public class KnownLchuvTests
     public void Green(string illuminantName, double l, double c, double h)
     {
         var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchuv>(green, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(green, new Lchuv(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 32.2970, 130.6812, 265.8727)]
@@ -28,7 +29,7 @@ public class KnownLchuvTests
     public void Blue(string illuminantName, double l, double c, double h)
     {
         var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchuv>(blue, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(blue, new Lchuv(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.0, 0.0, 0.0)]
@@ -36,7 +37,7 @@ public class KnownLchuvTests
     public void Black(string illuminantName, double l, double c, double h)
     {
         var black = StandardRgb.Black.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchuv>(black, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(black, new Lchuv(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 100.0000, 0.0)]
@@ -46,5 +47,12 @@ public class KnownLchuvTests
         var white = StandardRgb.White.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         Assert.That(white.Lchuv.L, Is.EqualTo(l).Within(Tolerance));
         Assert.That(white.Lchuv.C, Is.EqualTo(c).Within(Tolerance));
+    }
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Lchuv.ToString().Contains(NoHue));
     }
 }

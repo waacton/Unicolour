@@ -1,5 +1,6 @@
 ﻿using ScottPlot;
 using ScottPlot.Plottables;
+using Wacton.Unicolour;
 using Wacton.Unicolour.Datasets;
 using Wacton.Unicolour.Example.Diagrams;
 
@@ -16,11 +17,11 @@ var spectralLocus = Utils.GetSpectralLocus();
 var rgbGamut = Utils.GetRgbGamut();
 var blackbodyLocus = Utils.GetBlackbodyLocus();
 var isotherms = Utils.GetIsotherms();
-var macAdamLimits = new[]
-{
+IEnumerable<Unicolour>[] macAdamLimits =
+[
     MacAdam.Limits10, MacAdam.Limits20, MacAdam.Limits30, MacAdam.Limits40, MacAdam.Limits50, 
     MacAdam.Limits60, MacAdam.Limits70, MacAdam.Limits80, MacAdam.Limits90, MacAdam.Limits95
-};
+];
 
 SpectralLocus();
 XyChromaticityWithRgb();

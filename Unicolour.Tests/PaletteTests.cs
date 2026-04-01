@@ -14,8 +14,8 @@ public class PaletteTests
         [ValueSource(nameof(HueSpans))] HueSpan hueSpan,
         [Values(true, false)] bool premultiplyAlpha)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace);
-        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        var colour1 = Rng.Unicolour(colourSpace);
+        var colour2 = Rng.Unicolour(colourSpace);
         
         const int count = 9;
         var palette = colour1.Palette(colour2, colourSpace, count, hueSpan, premultiplyAlpha).ToArray();
@@ -35,8 +35,8 @@ public class PaletteTests
         [ValueSource(nameof(HueSpans))] HueSpan hueSpan,
         [Values(true, false)] bool premultiplyAlpha)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace);
-        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        var colour1 = Rng.Unicolour(colourSpace);
+        var colour2 = Rng.Unicolour(colourSpace);
         var palette = colour1.Palette(colour2, colourSpace, count: 2, hueSpan, premultiplyAlpha).ToArray();
         Assert.That(palette.Length, Is.EqualTo(2));
         Assert.That(palette[0], Is.EqualTo(colour1.Mix(colour2, colourSpace, 0, hueSpan, premultiplyAlpha)));
@@ -49,8 +49,8 @@ public class PaletteTests
         [ValueSource(nameof(HueSpans))] HueSpan hueSpan,
         [Values(true, false)] bool premultiplyAlpha)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace);
-        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        var colour1 = Rng.Unicolour(colourSpace);
+        var colour2 = Rng.Unicolour(colourSpace);
         var palette = colour1.Palette(colour2, colourSpace, count: 1, hueSpan, premultiplyAlpha).ToArray();
         Assert.That(palette.Length, Is.EqualTo(1));
         Assert.That(palette[0], Is.EqualTo(colour1.Mix(colour2, colourSpace, 0.5, hueSpan, premultiplyAlpha)));
@@ -62,8 +62,8 @@ public class PaletteTests
         [ValueSource(nameof(HueSpans))] HueSpan hueSpan,
         [Values(true, false)] bool premultiplyAlpha)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace);
-        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        var colour1 = Rng.Unicolour(colourSpace);
+        var colour2 = Rng.Unicolour(colourSpace);
         var palette = colour1.Palette(colour2, colourSpace, count: 0, hueSpan, premultiplyAlpha).ToArray();
         Assert.That(palette, Is.Empty);
     }
@@ -74,8 +74,8 @@ public class PaletteTests
         [ValueSource(nameof(HueSpans))] HueSpan hueSpan,
         [Values(true, false)] bool premultiplyAlpha)
     {
-        var colour1 = RandomColours.UnicolourFrom(colourSpace);
-        var colour2 = RandomColours.UnicolourFrom(colourSpace);
+        var colour1 = Rng.Unicolour(colourSpace);
+        var colour2 = Rng.Unicolour(colourSpace);
         var palette = colour1.Palette(colour2, colourSpace, count: -1, hueSpan, premultiplyAlpha).ToArray();
         Assert.That(palette, Is.Empty);
     }

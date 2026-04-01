@@ -246,7 +246,7 @@ public class PigmentTests
     }
 
     private static readonly Configuration ConfigWithIlluminantSpd = TestUtils.D50Config; // contains D50 SPD (as well as precalculated D65 white point)
-    private static readonly Configuration ConfigWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(96.422, 100.000, 82.521))); // D50 white point only
+    private static readonly Configuration ConfigWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(0.96422, 1.00000, 0.82521))); // D50 white point only
     
     private static void AssertReflectance(Pigment[] pigments, double[] concentrations, double[]? expected, bool expectedXyzNaN)
     {

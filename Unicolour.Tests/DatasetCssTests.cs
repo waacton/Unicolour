@@ -10,7 +10,7 @@ namespace Wacton.Unicolour.Tests;
 public class DatasetCssTests
 {
     // https://www.w3.org/TR/css-color-4/#named-colors
-    private static readonly Dictionary<string, ColourTriplet> Rgb255Lookup = new()
+    private static readonly Dictionary<string, Rgb255> Rgb255Lookup = new()
     {
         { "aliceblue", new(240, 248, 255) },
         { "antiquewhite", new(250, 235, 215) },
@@ -320,13 +320,13 @@ public class DatasetCssTests
     public void Rgb255(string name, Unicolour colour)
     {
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(colour, expected, 0);
+        TestUtils.AssertColour(colour, expected, 0);
     }
 
     [Test]
     public void Transparent()
     {
-        TestUtils.AssertTriplet<Rgb255>(Css.Transparent, new(0, 0, 0), 0);
+        TestUtils.AssertColour(Css.Transparent, new Rgb255(0, 0, 0), 0);
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
     
@@ -374,7 +374,7 @@ public class DatasetCssTests
         Assert.That(colour, Is.Not.Null);
         
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(colour!, expected, 0);
+        TestUtils.AssertColour(colour!, expected, 0);
     }
 
     private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();

@@ -58,14 +58,14 @@ public static class SpectralJs
     
     public static IEnumerable<Unicolour> Palette(Unicolour start, Unicolour end, int count)
     {
-        var colours = new[] { start, end };
+        Unicolour[] colours = [start, end];
         count = Math.Max(count, 0);
 
-        var palette = new List<Unicolour>();
+        List<Unicolour> palette = [];
         for (var i = 0; i < count; i++)
         {
             var distance = count == 1 ? 0.5 : i / (double)(count - 1);
-            var weights = new[] { 1 - distance, distance };
+            double[] weights = [1 - distance, distance];
             palette.Add(Mix(colours, weights));
         }
 

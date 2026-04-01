@@ -19,7 +19,7 @@ public static class PigmentGenerator
     {
         var rgb = colour.Rgb;
         var xyz = colour.Xyz;
-        var xyzConfig = colour.Configuration.Xyz;
+        var chromaticAdaptor = colour.Configuration.Xyz.ChromaticAdaptor;
         
         // handle black and white as special conditions
         // unlikely to encounter exact RGB of 0s or 1s unless intentionally specified
@@ -29,7 +29,7 @@ public static class PigmentGenerator
         {
             (0.0, 0.0, 0.0) => new double[Wavelengths].Select(_ => Tolerance).ToArray(),
             (1.0, 1.0, 1.0) => new double[Wavelengths].Select(_ => 1.0).ToArray(),
-            _ => GenerateReflectance(xyz, xyzConfig)
+            _ => GenerateReflectance(xyz, chromaticAdaptor)
         };
 
         return new Pigment(Start, Interval, reflectance);
@@ -43,11 +43,11 @@ public static class PigmentGenerator
      * to attempt to better support wide-gamut (http://scottburns.us/rec-2020-rgb-to-spectrum-conversion-for-reflectances/)
      * but was inaccurate in roundtrip tests; perhaps one to revisit in future
      */
-    private static double[] GenerateReflectance(Xyz xyz, XyzConfiguration xyzConfig)
+    private static double[] GenerateReflectance(Xyz xyz, ChromaticAdaptor chromaticAdaptor)
     {
         // custom illuminant from users might not have SPD, or SPD might not have the required wavelengths
         // so for simplicity and consistency, calculations are performed in default D65/2° (also assumed by matrix A)
-        var d65Xyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
+        var d65Xyz = chromaticAdaptor.AdaptTo(xyz, D65WhitePoint);
         var d65XyzMatrix = Matrix.From(d65Xyz);
         
         var z = new double[Wavelengths];

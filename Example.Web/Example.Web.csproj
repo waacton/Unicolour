@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>Wacton.Unicolour.Example.Web</AssemblyName>
         <RootNamespace>Wacton.Unicolour.Example.Web</RootNamespace>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

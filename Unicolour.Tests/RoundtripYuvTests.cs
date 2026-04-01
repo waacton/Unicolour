@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -6,8 +7,10 @@ namespace Wacton.Unicolour.Tests;
 public class RoundtripYuvTests
 {
     private const double Tolerance = 0.0000000005;
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Yuv, 1500);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YuvTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaRgb(ColourTriplet triplet)
     {
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);
@@ -16,7 +19,7 @@ public class RoundtripYuvTests
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YuvTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYiq(ColourTriplet triplet)
     {
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);
@@ -25,7 +28,7 @@ public class RoundtripYuvTests
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YuvTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYdbdr(ColourTriplet triplet)
     {
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);

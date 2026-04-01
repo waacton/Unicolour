@@ -282,7 +282,7 @@ public class DatasetColourmapTests
         var distance = index / (double)maxIndex;
         var colour = colourmap.Map(distance);
         Assert.That(colour, Is.EqualTo(lookup[index]));
-        TestUtils.AssertTriplet<Rgb>(colour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0);
+        TestUtils.AssertColour(colour, new Rgb(expectedR, expectedG, expectedB), 0.0);
     }
     
     [TestCaseSource(nameof(InterpolatedTestData))]
@@ -290,7 +290,7 @@ public class DatasetColourmapTests
     {
         var maxIndex = Lookups[colourmap].Count() - 1;
         var colour = colourmap.Map(index / maxIndex);
-        TestUtils.AssertTriplet<Rgb>(colour, new ColourTriplet(expectedR, expectedG, expectedB), 0.0000000000001);
+        TestUtils.AssertColour(colour, new Rgb(expectedR, expectedG, expectedB), 0.0000000000001);
     }
     
     [Test]
@@ -402,7 +402,7 @@ public class DatasetColourmapTests
         var expected = CubehelixColours.Default[lookupIndex];
         var fraction = lookupIndex / 999.0;
         var actual = Colourmaps.Cubehelix.Map(fraction);
-        TestUtils.AssertTriplet<Rgb>(actual, expected, 0.0005);
+        TestUtils.AssertColour(actual, new Rgb(expected.First, expected.Second, expected.Third), 0.0005);
     }
     
     [Test]
@@ -411,6 +411,6 @@ public class DatasetColourmapTests
         var expected = CubehelixColours.Custom[lookupIndex];
         var fraction = lookupIndex / 999.0;
         var actual = Cubehelix.Map(fraction, -6.6, 0.6, 1.75, 0.75);
-        TestUtils.AssertTriplet<Rgb>(actual, expected, 0.0005);
+        TestUtils.AssertColour(actual, new Rgb(expected.First, expected.Second, expected.Third), 0.0005);
     } 
 }

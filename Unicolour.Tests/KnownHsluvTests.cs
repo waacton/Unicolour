@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -11,35 +12,42 @@ public class KnownHsluvTests
     public void Red()
     {
         var red = StandardRgb.Red;
-        TestUtils.AssertTriplet<Hsluv>(red, new(12.177, 100.00, 53.237), Tolerance);
+        TestUtils.AssertColour(red, new Hsluv(12.177, 100.00, 53.237), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = StandardRgb.Green;
-        TestUtils.AssertTriplet<Hsluv>(green, new(127.72, 100.00, 87.736), Tolerance);
+        TestUtils.AssertColour(green, new Hsluv(127.72, 100.00, 87.736), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = StandardRgb.Blue;
-        TestUtils.AssertTriplet<Hsluv>(blue, new(265.87, 100.00, 32.301), Tolerance);
+        TestUtils.AssertColour(blue, new Hsluv(265.87, 100.00, 32.301), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = StandardRgb.Black;
-        TestUtils.AssertTriplet<Hsluv>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(black, new Hsluv(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertTriplet<Hsluv>(white, new(180.0, 0.0, 100.0), Tolerance);
+        TestUtils.AssertColour(white, new Hsluv(180.0, 0.0, 100.0), Tolerance);
+    }
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Hsluv.ToString().Contains(NoHue));
     }
     
     /*
@@ -55,10 +63,10 @@ public class KnownHsluvTests
         var colour = new Unicolour(hex);
         var info = $"{hex} \n-> RGB: {colour.Rgb} \n-> XYZ: {colour.Xyz} \n-> LUV: {colour.Luv} \n-> LCH: {colour.Lchuv}";
         
-        ColourTriplet HandleNoHue(ColourTriplet triplet, bool hasHue) => hasHue ? triplet : triplet.WithHueOverride(0);
-        var lchuv = HandleNoHue(colour.Lchuv.Triplet, colour.Lchuv.UseAsHued);
-        var hsluv = HandleNoHue(colour.Hsluv.Triplet, colour.Hsluv.UseAsHued);
-        var hpluv = HandleNoHue(colour.Hpluv.Triplet, colour.Hpluv.UseAsHued);
+        ColourTriplet HandleNoHue(ColourTriplet triplet, bool isAchromatic) => isAchromatic ? triplet.WithHueOverride(0) : triplet;
+        var lchuv = HandleNoHue(colour.Lchuv.Triplet, colour.Lchuv.Limitation == Limitation.Achromatic);
+        var hsluv = HandleNoHue(colour.Hsluv.Triplet, colour.Hsluv.Limitation == Limitation.Achromatic);
+        var hpluv = HandleNoHue(colour.Hpluv.Triplet, colour.Hpluv.Limitation == Limitation.Achromatic);
         
         // accuracy drops off when saturation goes beyond 100% (mostly at 1,500%+), so be slightly more tolerant for larger values
         AssertSnapshot(colour.Rgb.Triplet, testColour.Rgb!, 0.00000000001, info);

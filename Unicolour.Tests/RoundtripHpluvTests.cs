@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,7 +8,9 @@ public class RoundtripHpluvTests
 {
     private const double Tolerance = 0.00000000001;
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HpluvTriplets))]
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Hpluv, 1500);
+    
+    [TestCaseSource(nameof(Triplets))]
     public void ViaLchuv(ColourTriplet triplet)
     {
         var original = new Hpluv(triplet.First, triplet.Second, triplet.Third);

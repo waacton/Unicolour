@@ -10,8 +10,8 @@ public class Magma : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Magma);
     
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.001462, 0.000466, 0.013866),
         new(Config, ColourSpace.Rgb, 0.002258, 0.001295, 0.018331),
         new(Config, ColourSpace.Rgb, 0.003279, 0.002305, 0.023708),
@@ -268,5 +268,5 @@ public class Magma : Colourmap
         new(Config, ColourSpace.Rgb, 0.987691, 0.977154, 0.734536),
         new(Config, ColourSpace.Rgb, 0.987387, 0.984288, 0.742002),
         new(Config, ColourSpace.Rgb, 0.987053, 0.991438, 0.749504)
-    };
+    ];
 }

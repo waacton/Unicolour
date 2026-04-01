@@ -4,15 +4,15 @@ namespace Wacton.Unicolour.Tests.Utils;
 
 internal static class StandardRgb
 {
-    internal static Unicolour Red = new(ColourSpace.Rgb, 1, 0, 0);
-    internal static Unicolour Green = new(ColourSpace.Rgb, 0, 1, 0);
-    internal static Unicolour Blue = new(ColourSpace.Rgb, 0, 0, 1);
-    internal static Unicolour Cyan = new(ColourSpace.Rgb, 0, 1, 1);
-    internal static Unicolour Magenta = new(ColourSpace.Rgb, 1, 0, 1);
-    internal static Unicolour Yellow = new(ColourSpace.Rgb, 1, 1, 0);
-    internal static Unicolour Black = new(ColourSpace.Rgb, 0, 0, 0);
-    internal static Unicolour White = new(ColourSpace.Rgb, 1, 1, 1);
-    internal static Unicolour Grey = new(ColourSpace.Rgb, 0.5, 0.5, 0.5);
+    internal static readonly Unicolour Red = new(ColourSpace.Rgb, 1, 0, 0);
+    internal static readonly Unicolour Green = new(ColourSpace.Rgb, 0, 1, 0);
+    internal static readonly Unicolour Blue = new(ColourSpace.Rgb, 0, 0, 1);
+    internal static readonly Unicolour Cyan = new(ColourSpace.Rgb, 0, 1, 1);
+    internal static readonly Unicolour Magenta = new(ColourSpace.Rgb, 1, 0, 1);
+    internal static readonly Unicolour Yellow = new(ColourSpace.Rgb, 1, 1, 0);
+    internal static readonly Unicolour Black = new(ColourSpace.Rgb, 0, 0, 0);
+    internal static readonly Unicolour White = new(ColourSpace.Rgb, 1, 1, 1);
+    internal static readonly Unicolour Grey = new(ColourSpace.Rgb, 0.5, 0.5, 0.5);
 
     internal static readonly Dictionary<string, Unicolour> Lookup = new()
     {

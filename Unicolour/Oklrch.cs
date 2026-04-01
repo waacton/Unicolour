@@ -8,14 +8,14 @@ public record Oklrch : ColourRepresentation
     public double L => First;
     public double C => Second;
     public double H => Third;
-    public double ConstrainedH => ConstrainedThird;
-    protected override double ConstrainedThird => H.Modulo(360.0);
-    internal override bool IsGreyscale => L is <= 0.0 or >= 1.0 || C <= 0.0;
-
-    public Oklrch(double l, double c, double h) : this(l, c, h, ColourHeritage.None) {}
-    internal Oklrch(double l, double c, double h, ColourHeritage heritage) : base(l, c, h, heritage) {}
     
-    protected override string String => UseAsHued ? $"{L:F2} {C:F2} {H:F1}°" : $"{L:F2} {C:F2} —°";
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsAchromatic => false;
+    
+    public Oklrch(double l, double c, double h) : this(l, c, h, Limitation.None) {}
+    internal Oklrch(double l, double c, double h, Limitation limitation) : base(l, c, h, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{L:F2} {C:F2} {H:F1}°" : $"{L:F2} {C:F2} {NoHue}°";
     public override string ToString() => base.ToString();
     
     /*
@@ -30,13 +30,13 @@ public record Oklrch : ColourRepresentation
     
     internal static Oklrch FromOklrab(Oklrab oklrab)
     {
-        var (l, c, h) = ToLchTriplet(oklrab.L, oklrab.A, oklrab.B);
-        return new Oklrch(l, c, h, ColourHeritage.From(oklrab));
+        var (l, c, h) = ToLchTriplet(oklrab.Triplet);
+        return new Oklrch(l, c, h, oklrab.Limitation);
     }
     
     internal static Oklrab ToOklrab(Oklrch oklrch)
     {
-        var (l, a, b) = FromLchTriplet(oklrch.ConstrainedTriplet);
-        return new Oklrab(l, a, b, ColourHeritage.From(oklrch));
+        var (l, a, b) = FromLchTriplet(oklrch.Triplet);
+        return new Oklrab(l, a, b, oklrch.Limitation);
     }
 }

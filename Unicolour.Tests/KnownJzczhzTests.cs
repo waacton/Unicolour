@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -11,21 +12,21 @@ public class KnownJzczhzTests
     public void Red()
     {
         var red = StandardRgb.Red;
-        TestUtils.AssertTriplet<Jzczhz>(red, new(0.13438, 0.16252, 43.502), Tolerance);
+        TestUtils.AssertColour(red, new Jzczhz(0.13438, 0.16252, 43.502), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = StandardRgb.Green;
-        TestUtils.AssertTriplet<Jzczhz>(green, new(0.17681, 0.1614, 132.5), Tolerance);
+        TestUtils.AssertColour(green, new Jzczhz(0.17681, 0.1614, 132.5), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = StandardRgb.Blue;
-        TestUtils.AssertTriplet<Jzczhz>(blue, new(0.09577, 0.19029, 257.61), Tolerance);
+        TestUtils.AssertColour(blue, new Jzczhz(0.09577, 0.19029, 257.61), Tolerance);
     }
     
     [Test]
@@ -42,5 +43,12 @@ public class KnownJzczhzTests
         var white = StandardRgb.White;
         Assert.That(white.Jzczhz.J, Is.EqualTo(0.22207).Within(Tolerance));
         Assert.That(white.Jzczhz.C, Is.EqualTo(0.0002).Within(Tolerance));
+    }
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Jzczhz.ToString().Contains(NoHue));
     }
 }

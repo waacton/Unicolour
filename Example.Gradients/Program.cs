@@ -30,12 +30,12 @@ void Simple()
     // "deep pink" to "aquamarine" (CSS colours)
     Unicolour start = new("FF1493");    
     Unicolour end = new("7FFFD4");
-
+    
     // calculate each column by mixing on demand at every distance between start and end
     // NOTE: can achieve same result by doing the palette approach below with 1024 colours
     Unicolour GetMixedColour(int column) => start.Mix(end, ColourSpace.Oklch, column / (double)width, HueSpan.Decreasing);
     var mixingRow = Utils.Draw(width, rowHeight, GetMixedColour);
-
+    
     // calculate each column according to a pre-generated palette between start and end
     var palette = start.Palette(end, ColourSpace.Oklch, blocks, HueSpan.Decreasing).ToArray();
     Unicolour GetPaletteColour(int column) => palette[column / columnsPerBlock];
@@ -56,7 +56,7 @@ void ColourSpaces()
     Unicolour purple = new(ColourSpace.Hsb, 260, 1.0, 0.333);
     Unicolour orange = new(ColourSpace.Hsl, 30, 1.0, 0.666);
     Unicolour green = new(ColourSpace.Rgb, 0, 1, 0);
-
+    
     List<ColourSpace> colourSpaces =
     [
         ColourSpace.Rgb, ColourSpace.Rgb255, ColourSpace.RgbLinear,
@@ -99,21 +99,20 @@ void Temperature()
     const int width = 1200;
     const int rowHeight = 120;
 
-    var scaledPoints = new List<Unicolour>();
+    List<Unicolour> scaledPoints = [];
     for (var i = 1000; i <= 13000; i += 100)
     {
-        var rgb = new Unicolour(i).Rgb;
-        var rgbComponents = new[] { rgb.R, rgb.G, rgb.B };
+        var rgbComponents = new Unicolour(i).Rgb.ToArray();
         var max = rgbComponents.Max();
         var scaledRgb = rgbComponents.Select(x => x / max).ToArray();
         var scaledUnicolour = new Unicolour(ColourSpace.Rgb, scaledRgb[0], scaledRgb[1], scaledRgb[2]);
         scaledPoints.Add(scaledUnicolour);
     }
 
-    var rows = new List<Image<Rgba32>>
-    {
+    List<Image<Rgba32>> rows =
+    [
         Utils.Draw(("CCT (1,000 K - 13,000 K)", black), width, rowHeight, GetColour())
-    };
+    ];
 
     var image = Utils.DrawRows(rows, width, rowHeight);
     image.Save(Path.Combine(outputDirectory, "gradient-temperature.png"));
@@ -134,14 +133,14 @@ void VisionDeficiency()
     Unicolour start = new(ColourSpace.Hsb, 0, 0.666, 1);
     Unicolour end = new(ColourSpace.Hsb, 360, 0.666, 1);
 
-    var cvds = new List<Cvd?>
-    {
-        null, 
-        Cvd.Protanomaly, Cvd.Protanopia, 
-        Cvd.Deuteranomaly, Cvd.Deuteranopia, 
+    List<Cvd?> cvds =
+    [
+        null,
+        Cvd.Protanomaly, Cvd.Protanopia,
+        Cvd.Deuteranomaly, Cvd.Deuteranopia,
         Cvd.Tritanomaly, Cvd.Tritanopia,
         Cvd.BlueConeMonochromacy, Cvd.Achromatopsia
-    };
+    ];
     
     var rows = cvds
         .Select(cvd => Utils.Draw((cvd?.ToString() ?? "No deficiency", black), width, rowHeight, GetColour(cvd)))
@@ -168,12 +167,12 @@ void AlphaInterpolation()
     const int width = 1000;
     const int rowHeight = 100;
 
-    var colourPoints = new[] { Css.Red, Css.Transparent, Css.Blue };
-    var rows = new List<Image<Rgba32>>
-    {
+    Unicolour[] colourPoints = [Css.Red, Css.Transparent, Css.Blue];
+    List<Image<Rgba32>> rows =
+    [
         Utils.Draw(("With premultiplied alpha", black), width, rowHeight, GetColour(true)),
         Utils.Draw(("Without premultiplied alpha", black), width, rowHeight, GetColour(false))
-    };
+    ];
     
     var image = Utils.DrawRows(rows, width, rowHeight);
     image.Save(Path.Combine(outputDirectory, "gradient-alpha-interpolation.png"));
@@ -340,17 +339,17 @@ void SpectralJs()
     const int width = 540;
     const int rowHeight = 60;
 
-    var colours = new List<(Unicolour start, Unicolour end)>
-    {
+    List<(Unicolour start, Unicolour end)> colours =
+    [
         // default colours on https://onedayofcrypto.art/
         (new Unicolour("#002185"), new Unicolour("#FCD200")),
-        
+
         // colours taken from github example https://github.com/rvanwijnen/spectral.js#usage
-        (new Unicolour("#005E72"), new Unicolour("#EAD9A7")), 
+        (new Unicolour("#005E72"), new Unicolour("#EAD9A7")),
         (new Unicolour("#FF8A3E"), new Unicolour("#FF006D")),
         (new Unicolour("#002185"), new Unicolour("#F0F0F0")),
         (new Unicolour("#DFE800"), new Unicolour("#CC3536"))
-    };
+    ];
     
     DrawMixes();
     DrawPalettes();
@@ -383,7 +382,7 @@ void SpectralJs()
         const int blocks = 9;
         const int columnsPerBlock = width / blocks;
 
-        var palettes = colours.Select(colours => Experimental.SpectralJs.Palette(colours.start, colours.end, blocks).ToArray()).ToList();
+        var palettes = colours.Select(x => Experimental.SpectralJs.Palette(x.start, x.end, blocks).ToArray()).ToList();
         var rows = palettes
             .Select(palette => Utils.Draw(width, rowHeight, GetColour(palette)))
             .ToList();

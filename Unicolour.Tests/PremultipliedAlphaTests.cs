@@ -16,10 +16,10 @@ public class PremultipliedAlphaTests
         var withPremultipliedAlpha1 = red.Mix(transparentBlack, ColourSpace.Rgb);
         var withPremultipliedAlpha2 = transparentBlack.Mix(red, ColourSpace.Rgb);
         
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0.5, 0, 0), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0.5, 0, 0), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha1, new(1.0, 0, 0), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha2, new(1.0, 0, 0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha1, new Rgb(0.5, 0, 0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha2, new Rgb(0.5, 0, 0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha1, new Rgb(1.0, 0, 0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha2, new Rgb(1.0, 0, 0), TestUtils.MixTolerance);
     }
     
     [Test] // https://www.w3.org/TR/css-color-4/#ex-gradient-transition-premultiply
@@ -33,10 +33,10 @@ public class PremultipliedAlphaTests
         var withPremultipliedAlpha1 = transparentBlack.Mix(blue, ColourSpace.Rgb);
         var withPremultipliedAlpha2 = blue.Mix(transparentBlack, ColourSpace.Rgb);
         
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0, 0, 0.5), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0, 0, 0.5), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha1, new(0, 0, 1.0), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha2, new(0, 0, 1.0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha1, new Rgb(0, 0, 0.5), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha2, new Rgb(0, 0, 0.5), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha1, new Rgb(0, 0, 1.0), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha2, new Rgb(0, 0, 1.0), TestUtils.MixTolerance);
     }
     
     [Test] // https://www.w3.org/TR/css-color-4/#ex-premultiplied-srgb
@@ -50,10 +50,10 @@ public class PremultipliedAlphaTests
         var withPremultipliedAlpha1 = purple.Mix(pink, ColourSpace.Rgb);
         var withPremultipliedAlpha2 = pink.Mix(purple, ColourSpace.Rgb);
         
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha1, new(0.43, 0.19, 0.81), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(notPremultipliedAlpha2, new(0.43, 0.19, 0.81), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha1, new(0.468, 0.204, 0.776), TestUtils.MixTolerance);
-        TestUtils.AssertTriplet<Rgb>(withPremultipliedAlpha2, new(0.468, 0.204, 0.776), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha1, new Rgb(0.43, 0.19, 0.81), TestUtils.MixTolerance);
+        TestUtils.AssertColour(notPremultipliedAlpha2, new Rgb(0.43, 0.19, 0.81), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha1, new Rgb(0.468, 0.204, 0.776), TestUtils.MixTolerance);
+        TestUtils.AssertColour(withPremultipliedAlpha2, new Rgb(0.468, 0.204, 0.776), TestUtils.MixTolerance);
     }
     
     [Test] // https://www.w3.org/TR/css-color-4/#ex-premultiplied-lab
@@ -63,8 +63,8 @@ public class PremultipliedAlphaTests
         var pinkConfig = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50);
         var yellow = new Unicolour(yellowConfig, ColourSpace.Rgb, 0.76, 0.62, 0.03, alpha: 0.4);
         var pink = new Unicolour(pinkConfig, ColourSpace.Rgb, 0.84, 0.19, 0.72, alpha: 0.6);
-        TestUtils.AssertTriplet<Lab>(yellow, new(66.93, 4.87, 68.62), 0.05);
-        TestUtils.AssertTriplet<Lab>(pink, new(53.50, 82.67, -33.90), 0.05);
+        TestUtils.AssertColour(yellow, new Lab(66.93, 4.87, 68.62), 0.05);
+        TestUtils.AssertColour(pink, new Lab(53.50, 82.67, -33.90), 0.05);
         
         // unicolour does not support interpolation between colours of different configurations
         // (because not clear what the result colour's configuration should be)
@@ -77,10 +77,10 @@ public class PremultipliedAlphaTests
         var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lab);
         var withPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lab);
         
-        TestUtils.AssertTriplet<Lab>(notPremultipliedAlpha1, new(60.22, 43.77, 17.36), 0.05);
-        TestUtils.AssertTriplet<Lab>(notPremultipliedAlpha2, new(60.22, 43.77, 17.36), 0.05);
-        TestUtils.AssertTriplet<Lab>(withPremultipliedAlpha1, new(58.87, 51.55, 7.11), 0.05);
-        TestUtils.AssertTriplet<Lab>(withPremultipliedAlpha2, new(58.87, 51.55, 7.11), 0.05);
+        TestUtils.AssertColour(notPremultipliedAlpha1, new Lab(60.22, 43.77, 17.36), 0.05);
+        TestUtils.AssertColour(notPremultipliedAlpha2, new Lab(60.22, 43.77, 17.36), 0.05);
+        TestUtils.AssertColour(withPremultipliedAlpha1, new Lab(58.87, 51.55, 7.11), 0.05);
+        TestUtils.AssertColour(withPremultipliedAlpha2, new Lab(58.87, 51.55, 7.11), 0.05);
     }
     
     [Test] // https://www.w3.org/TR/css-color-4/#ex-premultiplied-lch
@@ -90,8 +90,8 @@ public class PremultipliedAlphaTests
         var pinkConfig = new Configuration(RgbConfiguration.DisplayP3, XyzConfiguration.D50);
         var yellow = new Unicolour(yellowConfig, ColourSpace.Rgb, 0.76, 0.62, 0.03, alpha: 0.4);
         var pink = new Unicolour(pinkConfig, ColourSpace.Rgb, 0.84, 0.19, 0.72, alpha: 0.6);
-        TestUtils.AssertTriplet<Lchab>(yellow, new(66.93, 68.79, 85.94), 0.05);
-        TestUtils.AssertTriplet<Lchab>(pink, new(53.50, 89.35, 337.7), 0.05);
+        TestUtils.AssertColour(yellow, new Lchab(66.93, 68.79, 85.94), 0.05);
+        TestUtils.AssertColour(pink, new Lchab(53.50, 89.35, 337.7), 0.05);
         
         // unicolour does not support interpolation between colours of different configurations
         // (because not clear what the result colour's configuration should be)
@@ -104,9 +104,9 @@ public class PremultipliedAlphaTests
         var withPremultipliedAlpha1 = yellow.Mix(pink, ColourSpace.Lchab);
         var withPremultipliedAlpha2 = pink.Mix(yellow, ColourSpace.Lchab);
         
-        TestUtils.AssertTriplet<Lchab>(notPremultipliedAlpha1, new(60.22, 79.07, 31.82), 0.05);
-        TestUtils.AssertTriplet<Lchab>(notPremultipliedAlpha2, new(60.22, 79.07, 31.82), 0.05);
-        TestUtils.AssertTriplet<Lchab>(withPremultipliedAlpha1, new(58.87, 81.13, 31.82), 0.05);
-        TestUtils.AssertTriplet<Lchab>(withPremultipliedAlpha2, new(58.87, 81.13, 31.82), 0.05);
+        TestUtils.AssertColour(notPremultipliedAlpha1, new Lchab(60.22, 79.07, 31.82), 0.05);
+        TestUtils.AssertColour(notPremultipliedAlpha2, new Lchab(60.22, 79.07, 31.82), 0.05);
+        TestUtils.AssertColour(withPremultipliedAlpha1, new Lchab(58.87, 81.13, 31.82), 0.05);
+        TestUtils.AssertColour(withPremultipliedAlpha2, new Lchab(58.87, 81.13, 31.82), 0.05);
     }
 }

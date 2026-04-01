@@ -7,7 +7,7 @@ public partial class ColourSpacePicker : ComponentBase
     private ColourSpace colourSpace = ColourSpace.Rgb255;
     private readonly GradientColourSlider[] sliders = [new(), new(), new()];
 
-    private static ColourSpace[] ColourSpaceOptions = Utils.SpaceToRange.Keys.OrderBy(space => space.ToString()).ToArray();
+    private static readonly ColourSpace[] ColourSpaceOptions = Utils.SpaceToRange.Keys.OrderBy(space => space.ToString()).ToArray();
     
     protected override void OnInitialized()
     {

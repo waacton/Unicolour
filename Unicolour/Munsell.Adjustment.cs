@@ -33,7 +33,7 @@ public partial record Munsell
         var distance = totalDistance == 0 ? 0 : (start.Unwrapped.target - start.Unwrapped.angle) / totalDistance;
         
         var (startHue, endHue) = Hue.Unwrap(start.Munsell.H, end.Munsell.H);
-        var h = Interpolation.Linear(startHue, endHue, distance).Modulo(360);
+        var h = Interpolation.Linear(startHue, endHue, distance).WithHueModulo();
         return new Munsell(h, v, c);
     }
     
@@ -81,7 +81,7 @@ public partial record Munsell
         internal Adjustment(Munsell munsell, double target, bool isTargetAngle)
         {
             Munsell = munsell;
-            (Radius, Angle) = Polar(WhiteChromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
+            (Radius, Angle) = Polar(MunsellWhitePoint.Chromaticity, ToXyy(munsell, MunsellXyzConfig.ChromaticAdaptor).Chromaticity);
             Target = target;
             IsTargetAngle = isTargetAngle;
             Unwrapped = Hue.Unwrap(Angle, Target); 

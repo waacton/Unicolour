@@ -10,8 +10,8 @@ public class Twilight : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Twilight);
 
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.885750158407544, 0.850009249430678, 0.887973650642719),
         new(Config, ColourSpace.Rgb, 0.885750158407544, 0.850009249430678, 0.887973650642719),
         new(Config, ColourSpace.Rgb, 0.88378520195539, 0.850729405403106, 0.887232220969498),
@@ -523,5 +523,5 @@ public class Twilight : Colourmap
         new(Config, ColourSpace.Rgb, 0.885258979726304, 0.849558928109892, 0.880884147940248),
         new(Config, ColourSpace.Rgb, 0.885547148119523, 0.849871742836315, 0.883362061211709),
         new(Config, ColourSpace.Rgb, 0.885711551228456, 0.850021861158563, 0.885725389900871)
-    };
+    ];
 }

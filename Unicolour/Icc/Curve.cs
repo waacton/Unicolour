@@ -102,7 +102,7 @@ internal abstract record Curve
     internal Curve Inverse()
     {
         var tableToInvert = AsTable();
-        var inverse = new List<double>();
+        List<double> inverse = [];
 
         const double length = 2048;
         for (var i = 0; i < length; i++)
@@ -176,7 +176,7 @@ internal record ParametricCurve(Func<double, double> function, string name) : Cu
 
     protected override double[] AsTable()
     {
-        var table = new List<double>();
+        List<double> table = [];
 
         const double length = 2048;
         for (var i = 0; i < length; i++)

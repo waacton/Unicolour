@@ -129,7 +129,7 @@ public class PointerGamutTests
 
         var mapped = colour.MapToPointerGamut();
         Assert.That(mapped.IsInPointerGamut, Is.True);
-        TestUtils.AssertTriplet<Rgb>(mapped, new(expectedR, expectedG, expectedB), 0.00005);
+        TestUtils.AssertColour(mapped, new Rgb(expectedR, expectedG, expectedB), 0.00005);
         Assert.That(mapped.Lchab.C, Is.EqualTo(expectedC).Within(0.005));
     }
 
@@ -152,7 +152,7 @@ public class PointerGamutTests
         // mapping should still return an in-gamut colour, with the exception of NaNs
         var original = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, value, value, value);
         var gamutMapped = original.MapToPointerGamut();
-        Assert.That(gamutMapped.IsInPointerGamut, gamutMapped.Lchab.UseAsNaN ? Is.False : Is.True);
+        Assert.That(gamutMapped.IsInPointerGamut, gamutMapped.Lchab.Limitation == Limitation.NaN ? Is.False : Is.True);
     }
     
     private static void AssertMaxC(double l, double h, double expectedC)

@@ -106,7 +106,7 @@ public abstract class MixHueAgnosticTests
         var colour2 = new Unicolour(ColourSpace, 0, 0, 0, 1.5);
         var mixed = colour1.Mix(colour2, ColourSpace, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(2.0));
-        Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(1.0));
+        Assert.That(mixed.Alpha.Clipped.A, Is.EqualTo(1.0));
     }
     
     [Test]
@@ -116,7 +116,7 @@ public abstract class MixHueAgnosticTests
         var colour2 = new Unicolour(ColourSpace, 0, 0, 0, -0.5);
         var mixed = colour1.Mix(colour2, ColourSpace, 3);
         Assert.That(mixed.Alpha.A, Is.EqualTo(-1.0));
-        Assert.That(mixed.Alpha.ConstrainedA, Is.EqualTo(0.0));
+        Assert.That(mixed.Alpha.Clipped.A, Is.EqualTo(0.0));
     }
     
     protected void AssertMix(Unicolour colour, (double first, double second, double third, double alpha) expected)

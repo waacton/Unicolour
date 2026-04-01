@@ -6,11 +6,12 @@ public record Oklrab : ColourRepresentation
     public double L => First;
     public double A => Second;
     public double B => Third;
-    internal override bool IsGreyscale => L is <= 0.0 or >= 1.0 || (A.Equals(0.0) && B.Equals(0.0));
-
-    public Oklrab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
-    internal Oklrab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
     
+    protected override bool IsAchromatic => A == 0.0 && B == 0.0;
+    
+    public Oklrab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
+    internal Oklrab(double l, double a, double b, Limitation limitation) : base(l, a, b, limitation) {}
+
     protected override string String => $"{L:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
@@ -28,13 +29,13 @@ public record Oklrab : ColourRepresentation
     {
         var (l, a, b) = oklab;
         var lr = Okhsv.Toe(l);
-        return new Oklrab(lr, a, b, ColourHeritage.From(oklab));
+        return new Oklrab(lr, a, b, oklab.Limitation);
     }
     
     internal static Oklab ToOklab(Oklrab oklrab)
     {
         var (lr, a, b) = oklrab;
         var l = Okhsv.ToeInverse(lr);
-        return new Oklab(l, a, b, ColourHeritage.From(oklrab));
+        return new Oklab(l, a, b, oklrab.Limitation);
     }
 }

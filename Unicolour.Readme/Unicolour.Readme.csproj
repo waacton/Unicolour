@@ -2,11 +2,12 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AssemblyName>Wacton.Unicolour.Readme</AssemblyName>
         <RootNamespace>Wacton.Unicolour.Readme</RootNamespace>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -87,6 +88,9 @@
         </None>
         <None Update="docs\heatmaps-sun.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\not-by-ai.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\unity-spaces.gif">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>

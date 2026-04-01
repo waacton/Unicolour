@@ -6,68 +6,43 @@ public class XyzConfiguration
     public static readonly XyzConfiguration D50 = new(Illuminant.D50, Observer.Degree2, nameof(D50));
     
     public WhitePoint WhitePoint { get; }
-    public Chromaticity WhiteChromaticity => WhitePoint.ToChromaticity();
-    public Observer Observer { get; }
     internal Illuminant? Illuminant { get; }
+    public Observer Observer { get; }
+    internal ChromaticAdaptation ChromaticAdaptation { get; }
+    internal ChromaticAdaptor ChromaticAdaptor { get; }
     internal SpectralBoundary SpectralBoundary { get; }
     internal Planckian Planckian { get; }
-    internal Matrix AdaptationMatrix { get; }
     public string Name { get; }
 
     // even if white point has been hardcoded, still need observer to calculate CCT
     // should be safe to assume 2 degree observer
     public XyzConfiguration(WhitePoint whitePoint, string name = Utils.Unnamed) : 
-        this(whitePoint, Observer.Degree2, Adaptation.Bradford, name)
+        this(whitePoint, Observer.Degree2, ChromaticAdaptation.Bradford, name)
     {
     }
     
     public XyzConfiguration(Illuminant illuminant, Observer observer, string name = Utils.Unnamed) : 
-        this(illuminant, observer, Adaptation.Bradford, name)
+        this(illuminant, observer, ChromaticAdaptation.Bradford, name)
     {
         Illuminant = illuminant;
     }
     
-    public XyzConfiguration(Illuminant illuminant, Observer observer, double[,] adaptation, string name = Utils.Unnamed) : 
-        this(illuminant.GetWhitePoint(observer), observer, adaptation, name)
+    public XyzConfiguration(Illuminant illuminant, Observer observer, ChromaticAdaptation chromaticAdaptation, string name = Utils.Unnamed) : 
+        this(illuminant.GetWhitePoint(observer), observer, chromaticAdaptation, name)
     {
         Illuminant = illuminant;
     }
     
-    public XyzConfiguration(WhitePoint whitePoint, Observer observer, double[,] adaptation, string name = Utils.Unnamed)
+    public XyzConfiguration(WhitePoint whitePoint, Observer observer, ChromaticAdaptation chromaticAdaptation, string name = Utils.Unnamed)
     {
         WhitePoint = whitePoint;
         Observer = observer;
-        SpectralBoundary = new SpectralBoundary(observer, WhiteChromaticity);
+        ChromaticAdaptation = chromaticAdaptation;
+        ChromaticAdaptor = new ChromaticAdaptor(WhitePoint, ChromaticAdaptation);
+        SpectralBoundary = new SpectralBoundary(observer, WhitePoint);
         Planckian = new Planckian(observer);
-        AdaptationMatrix = GetAdaptationMatrix(adaptation);
         Name = name;
     }
 
-    private static Matrix GetAdaptationMatrix(double[,] adaptation)
-    {
-        const int rows = 3;
-        const int cols = 3;
-        
-        var maxRow = adaptation.GetLength(0);
-        var maxCol = adaptation.GetLength(1);
-        if (maxRow == rows && maxCol == cols)
-        {
-            return new Matrix(adaptation);
-        }
-
-        var data = new double[rows, cols];
-        for (var row = 0; row < rows; row++)
-        {
-            var hasRow = maxRow >= row + 1;
-            for (var col = 0; col < cols; col++)
-            {
-                var hasCol = maxCol >= col + 1;
-                data[row, col] = hasRow && hasCol ? adaptation[row, col] : double.NaN;
-            }
-        }
-        
-        return new Matrix(data);
-    }
-    
     public override string ToString() => $"{Name} · white point {WhitePoint}";
 }

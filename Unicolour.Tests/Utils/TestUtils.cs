@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 
@@ -8,14 +9,9 @@ namespace Wacton.Unicolour.Tests.Utils;
 
 internal static class TestUtils
 {
-    private static readonly Random Random = new();
-    internal static double RandomDouble() => Random.NextDouble();
-    internal static double RandomDouble(double min, double max) => Random.NextDouble() * (max - min) + min;
-    internal static int RandomInt(int max) => Random.Next(max);
+    internal static readonly ColourSpace[] AllColourSpaces = Enum.GetValues<ColourSpace>();
     
-    internal static List<ColourSpace> AllColourSpaces => Enum.GetValues<ColourSpace>().ToList();
-    
-    internal static readonly List<Illuminant> AllIlluminants =
+    internal static readonly Illuminant[] AllIlluminants =
     [
         Illuminant.A,
         Illuminant.C,
@@ -44,7 +40,7 @@ internal static class TestUtils
         { nameof(Observer.Degree10), Observer.Degree10 }
     };
     
-    internal static readonly List<RgbConfiguration> NonDefaultRgbConfigs =
+    internal static readonly RgbConfiguration[] NonDefaultRgbConfigs =
     [
         RgbConfiguration.DisplayP3,
         RgbConfiguration.Rec2020,
@@ -71,7 +67,7 @@ internal static class TestUtils
         RgbConfiguration.Secam625
     ];
     
-    internal static readonly List<YbrConfiguration> NonDefaultYbrConfigs =
+    internal static readonly YbrConfiguration[] NonDefaultYbrConfigs =
     [
         YbrConfiguration.Rec709,
         YbrConfiguration.Rec2020,
@@ -89,26 +85,36 @@ internal static class TestUtils
     // generating planckian tables is expensive, but this is the set of tables needed for most temperature tests
     internal static readonly Planckian PlanckianObserverDegree2 = new(Observer.Degree2);
     
-    internal static List<double> ExtremeDoubles =
+    internal static double[] ExtremeDoubles =
     [
         double.MinValue, double.MaxValue, double.Epsilon, double.NegativeInfinity, double.PositiveInfinity, double.NaN
     ];
+    
+    internal static Limitation[] Limitations(Unicolour colour, ColourSpace[] colourSpaces, bool baselines)
+    {
+        var colourRepresentations = colourSpaces.Select(colour.GetRepresentation);
+        return baselines
+            ? colourRepresentations.Select(x => x.LimitationBaseline).ToArray()
+            : colourRepresentations.Select(x => x.Limitation).ToArray();
+    }
         
     internal const double MixTolerance = 0.00000000005;
+
+    internal static double MaxDiff(ColourTriplet actual, ColourTriplet expected)
+    {
+        actual = actual.WithHueModulo();
+        expected = expected.WithHueModulo();
+
+        var diffs = actual.ToArray().Zip(expected.ToArray(), (a, b) => Math.Abs(a - b));
+        return diffs.Max();
+    }
     
-    internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertColour<T>(Unicolour colour, T expected, double tolerance) where T : ColourRepresentation
     {
         var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
         var colourRepresentation = colour.GetRepresentation(colourSpace);
         var tolerances = GetTolerances(tolerance, colourRepresentation.HueIndex);
-        AssertTriplet(colourRepresentation.Triplet, expected, tolerances);
-    }
-    
-    internal static void AssertTriplet<T>(Unicolour colour, ColourTriplet expected, double[] tolerances) where T : ColourRepresentation
-    {
-        var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
-        var colourRepresentation = colour.GetRepresentation(colourSpace);
-        AssertTriplet(colourRepresentation.Triplet, expected, tolerances);
+        AssertTriplet(colourRepresentation.Triplet, expected.Triplet, tolerances);
     }
 
     internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
@@ -131,21 +137,27 @@ internal static class TestUtils
     
     internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double[] tolerances, string? info = null)
     {
-        var details = $"Expected --- {expected}\nActual ----- {actual}";
-        string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
-        AssertTripletValue(actual.First, expected.First, tolerances[0], FailMessage("Channel 1"), actual.HueIndex == 0);
-        AssertTripletValue(actual.Second, expected.Second, tolerances[1], FailMessage("Channel 2"));
-        AssertTripletValue(actual.Third, expected.Third, tolerances[2], FailMessage("Channel 3"), actual.HueIndex == 2);
-    }
-
-    private static void AssertTripletValue(double actual, double expected, double tolerance, string failMessage, bool isHue = false)
-    {
-        if (isHue)
+        var details = new StringBuilder();
+        details.AppendLine($"Actual ----- {actual}");
+        details.AppendLine($"Expected --- {expected}");
+        
+        if (expected.HueIndex != null)
         {
-            (actual, expected) = Hue.Unwrap(actual, expected);
+            details.AppendLine($"Adjust for hue (index {expected.HueIndex})");
+            
+            // cannot use modulo because that will always keep 0 and the modulus (e.g. 360) separate
+            // instead, unwrap the 2 hues so they are as close as possible on a line
+            var unwrapped = Hue.Unwrap(actual.HueValue(), expected.HueValue());
+            actual = actual.WithHueOverride(unwrapped.start);
+            expected = expected.WithHueOverride(unwrapped.end);
+            details.AppendLine($"Actual ----- {actual}");
+            details.AppendLine($"Expected --- {expected}");
         }
         
-        Assert.That(actual, Is.EqualTo(expected).Within(tolerance), failMessage);
+        string FailMessage(string channel) => $"{(info == null ? string.Empty : $"{info} · ")}{channel}\n{details}";
+        Assert.That(actual.First, Is.EqualTo(expected.First).Within(tolerances[0]), FailMessage("Channel 1"));
+        Assert.That(actual.Second, Is.EqualTo(expected.Second).Within(tolerances[1]), FailMessage("Channel 2"));
+        Assert.That(actual.Third, Is.EqualTo(expected.Third).Within(tolerances[2]), FailMessage("Channel 3"));
     }
 
     internal static void AssertMixed(ColourTriplet triplet, double alpha, (double first, double second, double third, double alpha) expected)
@@ -195,6 +207,8 @@ internal static class TestUtils
             AccessProperty(() => colour.Luv);
             AccessProperty(() => colour.Oklab);
             AccessProperty(() => colour.Oklch);
+            AccessProperty(() => colour.Oklrab);
+            AccessProperty(() => colour.Oklrch);
             AccessProperty(() => colour.Okhsl);
             AccessProperty(() => colour.Okhsv);
             AccessProperty(() => colour.Okhwb);

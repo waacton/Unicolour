@@ -46,7 +46,6 @@ public static class VisionDeficiency
             _ => InterpolateMatrices(simulationMatrices, severity)
         };
         
-        // since simulated RGB-Linear often results in values outwith 0 - 1, seems unnecessary to use constrained inputs
         return ApplySimulation(colour, ColourSpace.RgbLinear, simulationMatrix);
     }
     
@@ -54,7 +53,7 @@ public static class VisionDeficiency
     {
         var colourMatrix = Matrix.From(colour.GetRepresentation(colourSpace));
         var simulatedLms = new Matrix(simulationMatrix).Multiply(colourMatrix).ToTriplet();
-        return new Unicolour(colourSpace, simulatedLms.Tuple);
+        return new Unicolour(colourSpace, simulatedLms.Tuple, colour.Alpha.A);
     }
 
     private static double[,] InterpolateMatrices(double[][,] matrices, double severity)
@@ -88,7 +87,7 @@ public static class VisionDeficiency
 
     // https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
     private static readonly double[][,] ProtanomalyRgbSim =
-    {
+    [
         Identity,
         new[,]
         {
@@ -150,10 +149,10 @@ public static class VisionDeficiency
             { 0.114503, 0.786281, 0.099216 },
             { -0.003882, -0.048116, 1.051998 }
         }
-    };
+    ];
     
     private static readonly double[][,] DeuteranomalyRgbSim =
-    {
+    [
         Identity,
         new[,]
         {
@@ -215,10 +214,10 @@ public static class VisionDeficiency
             { 0.280085, 0.672501, 0.047413 },
             { -0.011820, 0.042940, 0.968881 }
         }
-    };
+    ];
 
     private static readonly double[][,] TritanomalyRgbSim =
-    {
+    [
         Identity,
         new[,]
         {
@@ -280,7 +279,7 @@ public static class VisionDeficiency
             { -0.078411, 0.930809, 0.147602 },
             { 0.004733, 0.691367, 0.303900 }
         }
-    };
+    ];
     
     // https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
     private static readonly double[,] BlueConeMonochromacyLmsSim =

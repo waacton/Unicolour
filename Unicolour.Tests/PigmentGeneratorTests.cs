@@ -14,7 +14,7 @@ public class PigmentGeneratorTests
 
     static PigmentGeneratorTests()
     {
-        var randomColours = RandomColours.RgbTriplets.Take(100).Select(x => new Unicolour(ColourSpace.Rgb, x.Tuple)).ToArray();
+        var randomColours = Rng.Unicolours(ColourSpace.Rgb, 100);
         TestData.Add(new(StandardRgb.Black));
         TestData.Add(new(StandardRgb.White));
         TestData.Add(new(StandardRgb.Grey));
@@ -42,7 +42,7 @@ public class PigmentGeneratorTests
         Assert.That(pigment.R!.Coefficients, Is.All.NaN);
         
         var colour = new Unicolour([pigment], [1.0]);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
 
     [Test]
@@ -53,6 +53,6 @@ public class PigmentGeneratorTests
         Assert.That(pigment.R!.Coefficients, Is.All.NaN);
         
         var colour = new Unicolour([pigment], [1.0]);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
 }

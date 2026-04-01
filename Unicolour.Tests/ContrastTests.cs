@@ -19,7 +19,7 @@ public class ContrastTests
     [Test]
     public void RandomColourContrast()
     {
-        var random = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+        var random = Rng.Unicolour(ColourSpace.Rgb);
         AssertKnownContrast(random, random, 1);
     }
     

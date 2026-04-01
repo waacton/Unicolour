@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
@@ -10,23 +12,16 @@ public class RoundtripRgb255Tests
     private static readonly YbrConfiguration YbrConfig = YbrConfiguration.Rec601;
     private static readonly DynamicRange DynamicRange = DynamicRange.Standard;
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
-    public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Rgb255, 1500);
+    internal static readonly List<ColourTriplet> TripletsSubset = Triplets.Take(300).ToList();
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.UnboundRgb255Triplets))]
-    public void ViaRgbLinearUnbound(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
+    [TestCaseSource(nameof(Triplets))]
+    public void ViaRgbLinear(ColourTriplet triplet) => AssertViaRgbLinear(triplet, RgbConfiguration.StandardRgb);
     
     // testing RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
     [Test, Combinatorial]
     public void ViaRgbLinearDifferentConfig(
-        [ValueSource(typeof(RandomColours), nameof(RandomColours.Rgb255TripletsSubset))] ColourTriplet triplet,
-        [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
-        => AssertViaRgbLinear(triplet, rgbConfig);
-    
-    // testing unbound RGB ↔ RGB Linear with all configurations to ensure roundtrip of companding / gamma correction
-    [Test, Combinatorial]
-    public void ViaRgbLinearUnboundDifferentConfig(
-        [ValueSource(typeof(RandomColours), nameof(RandomColours.UnboundRgb255TripletsSubset))] ColourTriplet triplet,
+        [ValueSource(nameof(TripletsSubset))] ColourTriplet triplet,
         [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultRgbConfigs))] RgbConfiguration rgbConfig) 
         => AssertViaRgbLinear(triplet, rgbConfig);
     
@@ -41,7 +36,7 @@ public class RoundtripRgb255Tests
         {
             var lower = RgbModels.Acescc.MinNonlinearValue;
             var upper = RgbModels.Acescc.FromLinear(RgbModels.Acescc.MaxLinearValue);
-            AssertBoundedRoundtrip(original, roundtrip, lower, upper);
+            AssertClippedRoundtrip(original, roundtrip, lower, upper);
             return;
         }
 
@@ -49,7 +44,7 @@ public class RoundtripRgb255Tests
         if (rgbConfig == RgbConfiguration.Acescct)
         {
             var upper = RgbModels.Acescct.FromLinear(RgbModels.Acescct.MaxLinearValue);
-            AssertBoundedRoundtrip(original, roundtrip, double.MinValue, upper);
+            AssertClippedRoundtrip(original, roundtrip, double.MinValue, upper);
             return;
         }
         
@@ -63,25 +58,43 @@ public class RoundtripRgb255Tests
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaHsb(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
         var hsb = Hsb.FromRgb(original);
         var roundtrip = Hsb.ToRgb(hsb);
-        AssertRoundtrip(triplet, original, roundtrip);
+        
+        if (hsb.B == 0)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+        }
+        else
+        {
+            AssertRoundtrip(triplet, original, roundtrip);
+        }
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.RgbTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaHsi(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
         var hsi = Hsi.FromRgb(original);
         var roundtrip = Hsi.ToRgb(hsi);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+
+        // can happen when combining negative and positive RGB values
+        var zeroIntensity = original.R + original.G + original.B == 0;
+        if (zeroIntensity)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+        }
+        else
+        {
+            AssertRoundtrip(triplet, original, roundtrip);
+        }
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYpbpr(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
@@ -90,16 +103,16 @@ public class RoundtripRgb255Tests
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYcgco(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
         var ycgco = Ycgco.FromRgb(original);
         var roundtrip = Ycgco.ToRgb(ycgco);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        AssertRoundtrip(triplet, original, roundtrip);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYuv(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
@@ -108,24 +121,43 @@ public class RoundtripRgb255Tests
         AssertRoundtrip(triplet, original, roundtrip);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaTsl(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
         var tsl = Tsl.FromRgb(original, YbrConfig);
         var roundtrip = Tsl.ToRgb(tsl, YbrConfig);
-        AssertRoundtrip(triplet, original, roundtrip);
+        
+        // can happen when combining negative and positive RGB values
+        var zeroIntensity = original.R + original.G + original.B == 0;
+        if (zeroIntensity)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(double.NaN, double.NaN, double.NaN), Tolerance);
+        }
+        else
+        {
+            AssertRoundtrip(triplet, original, roundtrip);
+        }
     }
     
     // although RGB -> CMYK -> RGB results in same values, cannot guarantee roundtrip of CMYK -> RGB -> CMYK
     // e.g. CMYK[0.5, 0.5, 0.5, 0.5] = RGB[0.25, 0.25, 0.25] = CMYK[0, 0, 0, 0.75]
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaCmyk(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
         var cmyk = Channels.UncalibratedFromRgb(original);
         var roundtrip = Channels.UncalibratedToRgb(cmyk);
-        AssertRoundtrip(triplet, original, roundtrip);
+
+        // pure 1.0 black only happens if max RGB channel was 0.0, losing chroma information for the roundtrip
+        if (cmyk.Values[3] == 1.0)  
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+        }
+        else
+        {
+            AssertRoundtrip(triplet, original, roundtrip);
+        }
     }
     
     /*
@@ -133,7 +165,7 @@ public class RoundtripRgb255Tests
      * just here for the sake of completeness
      */
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Rgb255Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaCmy(ColourTriplet triplet)
     {
         var original = new Rgb(triplet.First / 255.0, triplet.Second / 255.0, triplet.Third / 255.0);
@@ -149,10 +181,10 @@ public class RoundtripRgb255Tests
         TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, original.Byte255.Triplet, Tolerance);
     }
     
-    private static void AssertBoundedRoundtrip(Rgb original, Rgb roundtrip, double lower, double upper)
+    private static void AssertClippedRoundtrip(Rgb original, Rgb roundtrip, double lower, double upper)
     {
-        var boundOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
-        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, boundOriginal.Byte255.Triplet, Tolerance);
+        var clampedOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
+        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, clampedOriginal.Byte255.Triplet, Tolerance);
     }
     
     private static void AssertPqRoundtrip(Rgb original, Rgb roundtrip)

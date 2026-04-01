@@ -97,28 +97,28 @@ public class SpectralJsTests
         var negative = new Unicolour(ColourSpace.RgbLinear, -0.5, -0.5, -0.5);
         var positive = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
         var colour = SpectralJs.Mix([negative, positive], [0.5, 0.5]);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixNoConcentration()
     {
         var colour = SpectralJs.Mix([StandardRgb.Black, StandardRgb.White], [-0.5, 0.0]);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixEmptyPigments()
     {
         var colour = SpectralJs.Mix([], [1.0]);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixEmptyConcentration()
     {
         var colour = SpectralJs.Mix([Red], []);
-        TestUtils.AssertTriplet<Xyz>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]

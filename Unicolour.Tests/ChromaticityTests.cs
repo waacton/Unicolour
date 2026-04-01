@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -5,7 +6,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class ChromaticityTests
 {
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.XyyTriplets))]
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Xyy, 1500);
+    
+    [TestCaseSource(nameof(Triplets))]
     public void SameAsXyy(ColourTriplet triplet)
     {
         var chromaticity = new Chromaticity(triplet.First, triplet.Second);
@@ -42,7 +45,7 @@ public class ChromaticityTests
         var illuminant = TestUtils.Illuminants[illuminantName];
         var observer = TestUtils.Observers[observerName];
         
-        var chromaticityWhitePoint = new Chromaticity(x, y).ToWhitePoint(1.0);
+        var chromaticityWhitePoint = new WhitePoint(x, y);
         var illuminantWhitePoint = illuminant.GetWhitePoint(observer);
         
         const double tolerance = 0.125; // XYZ in approx. range [0, 100], and don't know the reliability of wikipedia values 

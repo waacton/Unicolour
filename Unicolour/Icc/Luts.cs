@@ -115,7 +115,7 @@ internal class Luts
         const int outputTableEntriesM = 256;
         
         // bytes 48 - 57+(256*i)
-        var inputCurves = new List<Curve>();
+        List<Curve> inputCurves = [];
         for (var i = 0; i < inputChannelsI; i++)
         {
             var array = stream.ReadArray(NumberTypes.ReadUInt8, inputTableEntriesN);
@@ -128,7 +128,7 @@ internal class Luts
         var clut = new Clut(NumberTypes.From8BitPrecision(clutValues), inputChannelsI, clutGridPointsG, outputChannelsO);
         
         // bytes 47+(256*i)+(2*g*o) - end
-        var outputCurves = new List<Curve>();
+        List<Curve> outputCurves = [];
         for (var i = 0; i < outputChannelsO; i++)
         {
             var array = stream.ReadArray(NumberTypes.ReadUInt8, outputTableEntriesM);
@@ -146,7 +146,7 @@ internal class Luts
         var outputTableEntriesM = stream.ReadUInt16();  // bytes 50 - 51
 
         // bytes 52 - 51+(2*n*i)
-        var inputCurves = new List<Curve>();
+        List<Curve> inputCurves = [];
         for (var i = 0; i < inputChannelsI; i++)
         {
             var array = stream.ReadArray(NumberTypes.ReadUInt16, inputTableEntriesN);
@@ -159,7 +159,7 @@ internal class Luts
         var clut = new Clut(NumberTypes.From16BitPrecision(clutValues), inputChannelsI, clutGridPointsG, outputChannelsO);
         
         // bytes 52+(2*n*i)+(2*g^i*o) - end
-        var outputCurves = new List<Curve>();
+        List<Curve> outputCurves = [];
         for (var i = 0; i < outputChannelsO; i++)
         {
             var array = stream.ReadArray(NumberTypes.ReadUInt16, outputTableEntriesM);
@@ -175,7 +175,7 @@ internal class Luts
     {
         if (offset == 0) return null;
 
-        var curves = new List<Curve>();
+        List<Curve> curves = [];
         stream.Seek(offset, SeekOrigin.Begin);
         for (var i = 0; i < count; i++)
         {

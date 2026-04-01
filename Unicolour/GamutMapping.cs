@@ -32,15 +32,15 @@ internal static class GamutMapping
         var alpha = colour.Alpha.A;
         var lchab = colour.Lchab;
 
-        if (lchab.UseAsNaN)
+        if (lchab.Limitation == Limitation.NaN)
         {
             return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
         }
         
-        var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config.Value).Lchab;
+        var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config.Value).Lchab.WithHueModulo();
         l = l.Clamp(PointerGamut.MinL, PointerGamut.MaxL);
 
-        var gamutBoundaryColour = lchab.UseAsGreyscale
+        var gamutBoundaryColour = lchab.Limitation == Limitation.Achromatic
             ? new Unicolour(PointerGamut.Config.Value, ColourSpace.Lab, l, 0, 0, alpha)
             : new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, PointerGamut.GetMaxC(l, h), h, alpha);
 
@@ -57,7 +57,7 @@ internal static class GamutMapping
         var config = colour.Configuration;
         var alpha = colour.Alpha.A;
         
-        if (colour.Xyy.UseAsNaN || colour.Xyz.UseAsNaN)
+        if (colour.Xyy.Limitation == Limitation.NaN || colour.Xyz.Limitation == Limitation.NaN)
         {
             return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
         }
@@ -70,12 +70,12 @@ internal static class GamutMapping
         var luminance = colour.Xyy.Luminance;
         if (luminance >= 1)
         {
-            intersect = MacAdamLimits.Config.Xyz.WhiteChromaticity;
+            intersect = MacAdamLimits.Config.Xyz.WhitePoint.Chromaticity;
         }
         else
         {
             var boundary = new Boundary(new(() => MacAdamLimits.Get(luminance)));
-            var intersects = boundary.GetIntersects(colour.Chromaticity, MacAdamLimits.Config.Xyz.WhiteChromaticity);
+            var intersects = boundary.GetIntersects(colour.Chromaticity, MacAdamLimits.Config.Xyz.WhitePoint.Chromaticity);
             if (!intersects.HasValue)
             {
                 return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
@@ -90,7 +90,7 @@ internal static class GamutMapping
 
     private static Unicolour RgbClipping(Unicolour colour)
     {
-        return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.ConstrainedTuple, colour.Alpha.A);
+        return new Unicolour(colour.Configuration, ColourSpace.Rgb, colour.Rgb.Clipped.Tuple, colour.Alpha.A);
     }
     
     /*
@@ -180,10 +180,19 @@ internal static class GamutMapping
         var (w, x, y) = colour.Wxy;
         x = x.Clamp(0.0, 1.0); // no point starting with purity outwith 0 - 100%
         y = y.Clamp(0.0, 1.0); // luminance also needs to be bound for a sensible result 
+        var step = x / 1000.0; // at most 1000 iterations from initial purity to 0
+        
         var current = new Unicolour(config, ColourSpace.Wxy, w, x, y, alpha);
         while (!current.IsInRgbGamut && x > 0)
         {
-            x -= 0.001; // at most 1000 iterations from purity of 1 to 0
+            x -= step;
+            
+            // if all other purity values are not in gamut, try with 0 purity
+            if (x < 0)
+            {
+                x = 0;
+            }
+            
             current = new Unicolour(config, ColourSpace.Wxy, w, x, y, alpha);
         }
         

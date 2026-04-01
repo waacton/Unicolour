@@ -11,19 +11,18 @@ public record Cam16 : ColourRepresentation
     public double B => Third;
     public Ucs Ucs { get; }
     public Model Model { get; }
+    
+    // presumably also when A == 0.0 && B == 0.0 but this is more convenient
+    protected override bool IsAchromatic => Model.Chroma <= 0;
+    
+    public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, Limitation.None) {}
 
-    // J lightness bounds not clear (and is different between Model and UCS)
-    // presumably also greyscale when A.Equals(0.0) && B.Equals(0.0)
-    internal override bool IsGreyscale => Model.Chroma <= 0;
-
-    public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, ColourHeritage.None) {}
-
-    internal Cam16(Model model, CamConfiguration camConfig, ColourHeritage heritage) : this(model.ToUcs(), camConfig, heritage)
+    internal Cam16(Model model, CamConfiguration camConfig, Limitation limitation) : this(model.ToUcs(), camConfig, limitation)
     {
         Model = model;
     }
 
-    internal Cam16(Ucs ucs, CamConfiguration camConfig, ColourHeritage heritage) : base(ucs.J, ucs.A, ucs.B, heritage)
+    internal Cam16(Ucs ucs, CamConfiguration camConfig, Limitation limitation) : base(ucs.J, ucs.A, ucs.B, limitation)
     {
         // Model will only be non-null if the constructor that takes Cam16Model is called (currently not possible from external code)
         Ucs = ucs;
@@ -63,7 +62,11 @@ public record Cam16 : ColourRepresentation
     
     private static ViewingConditions ViewingConditions(CamConfiguration camConfig)
     {
-        var (xw, yw, zw) = (camConfig.WhitePoint.X, camConfig.WhitePoint.Y, camConfig.WhitePoint.Z);
+        var (xw, yw, zw) = camConfig.WhitePoint;
+        xw *= 100;
+        yw *= 100;
+        zw *= 100;
+        
         var la = camConfig.AdaptingLuminance;
         var yb = camConfig.BackgroundLuminance;
         var c = camConfig.C;
@@ -97,13 +100,13 @@ public record Cam16 : ColourRepresentation
         return new ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
     
-    internal static Cam16 FromXyz(Xyz xyz, CamConfiguration camConfig, XyzConfiguration xyzConfig)
+    internal static Cam16 FromXyz(Xyz xyz, CamConfiguration camConfig, ChromaticAdaptor chromaticAdaptor)
     {
         var view = ViewingConditions(camConfig);
 
         // step 1
-        var xyzMatrix = Matrix.From(xyz.X, xyz.Y, xyz.Z);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, camConfig.WhitePoint, xyzConfig.AdaptationMatrix).Select(x => x * 100);
+        var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, camConfig.WhitePoint);
+        var xyzMatrix = Matrix.From(adaptedXyz).Select(x => x * 100);
         var rgb = M16.Multiply(xyzMatrix).ToTriplet();
 
         // step 2
@@ -122,7 +125,7 @@ public record Cam16 : ColourRepresentation
         var aMatrix = Matrix.From(ra, ga, ba);
         var components = ForwardStep4.Multiply(aMatrix);
         var (p2, a, b, u) = (components[0, 0], components[1, 0], components[2, 0], components[3, 0]);
-        var h = ToDegrees(Math.Atan2(b, a)).Modulo(360);
+        var h = ToDegrees(Math.Atan2(b, a)).WithHueModulo();
 
         // step 5
         var et = HueData.GetEccentricity(h);
@@ -142,10 +145,10 @@ public record Cam16 : ColourRepresentation
         var c = alpha * Math.Sqrt(j / 100.0);
         var m = c * Math.Pow(view.Fl, 0.25);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
-        return new Cam16(new Model(j, c, h, m, s, q), camConfig, ColourHeritage.From(xyz));
+        return new Cam16(new Model(j, c, h, m, s, q), camConfig, xyz.Limitation);
     }
     
-    internal static Xyz ToXyz(Cam16 cam, CamConfiguration camConfig, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Cam16 cam, CamConfiguration camConfig, ChromaticAdaptor chromaticAdaptor)
     {
         var view = ViewingConditions(camConfig);
         
@@ -185,8 +188,8 @@ public record Cam16 : ColourRepresentation
         var rgbMatrix = Matrix.From(rc / view.Dr, gc / view.Dg, bc / view.Db);
         
         // step 7
-        var xyzMatrix = M16.Inverse().Multiply(rgbMatrix);
-        xyzMatrix = Adaptation.WhitePoint(xyzMatrix, camConfig.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix).Select(x => x / 100.0);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(cam));
+        var xyzMatrix = M16.Inverse().Multiply(rgbMatrix).Select(x => x / 100.0);
+        var xyz = new Xyz(xyzMatrix.ToTriplet(), camConfig.WhitePoint, cam.Limitation);
+        return chromaticAdaptor.AdaptFrom(xyz);
     }
 }

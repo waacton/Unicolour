@@ -13,42 +13,42 @@ public class KnownOklabTests
     public void Red()
     {
         var red = StandardRgb.Red;
-        TestUtils.AssertTriplet<Oklab>(red, new(0.6279553606145516, 0.22486306106597398, 0.1258462985307351), Tolerance);
+        TestUtils.AssertColour(red, new Oklab(0.6279553606145516, 0.22486306106597398, 0.1258462985307351), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = StandardRgb.Green;
-        TestUtils.AssertTriplet<Oklab>(green, new(0.8664396115356694, -0.23388757418790818, 0.17949847989672985), Tolerance);
+        TestUtils.AssertColour(green, new Oklab(0.8664396115356694, -0.23388757418790818, 0.17949847989672985), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = StandardRgb.Blue;
-        TestUtils.AssertTriplet<Oklab>(blue, new(0.4520137183853429, -0.03245698416876397, -0.3115281476783751), Tolerance);
+        TestUtils.AssertColour(blue, new Oklab(0.4520137183853429, -0.03245698416876397, -0.3115281476783751), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = StandardRgb.Black;
-        TestUtils.AssertTriplet<Oklab>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(black, new Oklab(0.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertTriplet<Oklab>(white, new(1.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(white, new Oklab(1.0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Grey()
     {
         var grey = StandardRgb.Grey;
-        TestUtils.AssertTriplet<Oklab>(grey, new(0.5981807266228486, 4.842454215392422e-11, 2.2296533230825588e-8), Tolerance);
+        TestUtils.AssertColour(grey, new Oklab(0.5981807266228486, 4.842454215392422e-11, 2.2296533230825588e-8), Tolerance);
     }
     
     /*
@@ -88,7 +88,8 @@ public class KnownOklabTests
     private static void AssertFromXyzD65(ColourTriplet xyz, ColourTriplet expected)
     {
         var (x, y, z) = xyz;
-        var oklab = Oklab.FromXyz(new Xyz(x, y, z), XyzConfiguration.D65, RgbConfiguration.StandardRgb);
+        var xyzConfig = XyzConfiguration.D65;
+        var oklab = Oklab.FromXyz(new Xyz(x, y, z, xyzConfig.WhitePoint), xyzConfig.ChromaticAdaptor, RgbConfiguration.StandardRgb);
         AssertOklab(oklab, expected);
     }
 

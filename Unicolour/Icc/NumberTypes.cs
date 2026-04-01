@@ -61,13 +61,12 @@ internal static class NumberTypes
     {
         var buffer = new byte[count];
         var bytesRead = stream.Read(buffer, 0, count);
-        if (bytesRead < count) throw new InvalidDataException("Not enough bytes in stream");
-        return buffer;
+        return bytesRead < count ? throw new InvalidDataException("Not enough bytes in stream") : buffer;
     }
     
     internal static T[] ReadArray<T>(this Stream stream, Func<Stream, T> readNext, int count)
     {
-        var numbers = new List<T>();
+        List<T> numbers = [];
         while (numbers.Count < count)
         {
             var number = readNext(stream);

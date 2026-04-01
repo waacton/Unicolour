@@ -4,24 +4,22 @@ public partial record Munsell
 {
     // there are 10 letter bands, so each letter band represents 36° of 360° (R = 0-36°, YR = 36-72°, ..., RR = 324-360°)
     // there are 4 numbers in each letter band of 36°, so each number represents 9° of 36° (2.5 = 9°, 5 = 18°, 7.5 = 27°, 10 = 36°)
-    internal static readonly string[] Hues = { "R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP" };
+    internal static readonly string[] Hues = ["R", "YR", "Y", "GY", "G", "BG", "B", "PB", "P", "RP"];
     internal const double DegreesPerHueLetter = 36;
     internal const double DegreesPerHueNumber = 9;
     private const int ValueStep = 1;
     private const double LowValueStep = 0.2;
     private const int ChromaStep = 2;
     
-    internal static Bounds GetBounds(Munsell munsell)
+    internal static Bounds GetBounds(double h, double v, double c)
     {
-        var (h, v, c) = munsell.ConstrainedTriplet;
-        
         // these are the naive bounds, and will be adjusted if not available in the dataset
         // e.g. the chroma must exist for both hue/value/lowerChroma and hue/value/upperChroma to be used for interpolation
         //      if it doesn't, a different chroma that exists for both will be used
         var (lowerH, upperH) = ToIntervals(h, DegreesPerHueNumber);
         var (lowerV, upperV) = ToIntervals(v, v < 1.0 ? LowValueStep : ValueStep);
         var (lowerC, upperC) = ToIntervals(c, ChromaStep);
-        return new Bounds(lowerH.Modulo(360), upperH.Modulo(360), lowerV, upperV, lowerC, upperC);
+        return new Bounds(lowerH.WithHueModulo(), upperH.WithHueModulo(), lowerV, upperV, lowerC, upperC);
     }
     
     private static (double lower, double upper) ToIntervals(double number, double interval)

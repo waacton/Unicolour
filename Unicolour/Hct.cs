@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public record Hct : ColourRepresentation
 {
@@ -6,14 +8,14 @@ public record Hct : ColourRepresentation
     public double H => First;
     public double C => Second;
     public double T => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    internal override bool IsGreyscale => C <= 0.0 || T is <= 0.0 or >= 100.0;
+    
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsAchromatic => false;
+    
+    public Hct(double h, double c, double t) : this(h, c, t, Limitation.None) {}
+    internal Hct(double h, double c, double t, Limitation limitation) : base(h, c, t, limitation) {}
 
-    public Hct(double h, double c, double t) : this(h, c, t, ColourHeritage.None) {}
-    internal Hct(double h, double c, double t, ColourHeritage heritage) : base(h, c, t, heritage) {}
-
-    protected override string String => UseAsHued ? $"{H:F1}° {C:F2} {T:F2}" : $"—° {C:F2} {T:F2}";
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {C:F2} {T:F2}" : $"{NoHue}° {C:F2} {T:F2}";
     public override string ToString() => base.ToString();
     
     /*
@@ -28,29 +30,30 @@ public record Hct : ColourRepresentation
      */
     
     private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+    private static readonly ChromaticAdaptor HctChromaticAdaptor = new(HctWhitePoint, ChromaticAdaptation.Bradford);
 
-    internal static Cam16 Cam16Component(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct, XyzConfiguration.D65);
-    internal static Lab LabComponent(Xyz xyz) => Lab.FromXyz(xyz, XyzConfiguration.D65);
+    internal static Cam16 Cam16Component(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor);
+    internal static Lab LabComponent(Xyz xyz) => Lab.FromXyz(xyz);
     
-    internal static Hct FromXyz(Xyz xyz, XyzConfiguration xyzConfig)
+    internal static Hct FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor)
     {
-        var d65Xyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, HctWhitePoint, xyzConfig.AdaptationMatrix);
+        var d65Xyz = chromaticAdaptor.AdaptTo(xyz, HctWhitePoint);
         var cam16 = Cam16Component(d65Xyz);
         var lab = LabComponent(d65Xyz);
 
         var h = cam16.Model.H;
         var c = cam16.Model.C;
         var t = lab.L;
-        return new Hct(h, c, t, ColourHeritage.From(xyz));
+        return new Hct(h, c, t, xyz.Limitation);
     }
     
-    internal static Xyz ToXyz(Hct hct, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Hct hct, ChromaticAdaptor chromaticAdaptor)
     {
-        var targetY = Lab.ToXyz(new Lab(hct.T, 0, 0), XyzConfiguration.D65).Y;
+        var targetY = Lab.ToXyz(new Lab(hct.T, 0, 0), HctWhitePoint).Y;
         var result = FindBestJ(targetY, hct);
-        var d65Xyz = result.Converged ? result.Data.Xyz : new Xyz(double.NaN, double.NaN, double.NaN);
-        var (x, y, z) = Adaptation.WhitePoint(d65Xyz, HctWhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        return new Xyz(x, y, z, ColourHeritage.From(hct)) {  HctToXyzSearchResult = result };
+        var d65Xyz = result.Converged ? result.Data.Xyz : new Xyz(double.NaN, double.NaN, double.NaN, HctWhitePoint);
+        var (x, y, z) = chromaticAdaptor.AdaptFrom(d65Xyz);
+        return new Xyz(x, y, z, chromaticAdaptor.WhitePoint, hct.Limitation) { HctToXyzSearchResult = result };
     }
 
     // i'm sure some smart people have some fancy-pants algorithms to do this efficiently
@@ -90,11 +93,13 @@ public record Hct : ColourRepresentation
     
     private static HctToXyzSearchData GetStartingData(double targetY, Hct hct)
     {
-        var xzPairs = new List<(double, double)> { (0, 0), (0, 1), (1, 0), (1, 1) };
+        List<(double, double)> xzPairs = [(0, 0), (0, 1), (1, 0), (1, 1)];
         var best = InitialData;
+        
         foreach (var (x, z) in xzPairs)
         {
-            var j = Cam16.FromXyz(new Xyz(x, targetY, z), CamConfiguration.Hct, XyzConfiguration.D65).Model.J;
+            var xyz = new Xyz(x, targetY, z, HctWhitePoint);
+            var j = Cam16.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor).Model.J;
             var data = ProcessJ(targetY, j, hct);
             if (Math.Abs(data.DeltaY) < best.DeltaY)
             {
@@ -107,9 +112,10 @@ public record Hct : ColourRepresentation
 
     private static HctToXyzSearchData ProcessJ(double targetY, double j, Hct hct)
     {
-        var camModel = new Cam.Model(j, hct.C, hct.H, 0, 0, 0);
-        var cam16 = new Cam16(camModel, CamConfiguration.Hct, ColourHeritage.None);
-        var xyz = Cam16.ToXyz(cam16, CamConfiguration.Hct, XyzConfiguration.D65);
+        var (h, c, _) = hct;
+        var camModel = new Cam.Model(j, c, h, 0, 0, 0);
+        var cam16 = new Cam16(camModel, CamConfiguration.Hct, Limitation.None);
+        var xyz = Cam16.ToXyz(cam16, CamConfiguration.Hct, HctChromaticAdaptor);
         var deltaY = xyz.Y - targetY;
         return new HctToXyzSearchData(hct, j, cam16, xyz, targetY, deltaY);
     }

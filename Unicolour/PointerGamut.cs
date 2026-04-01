@@ -59,12 +59,11 @@ internal static class PointerGamut
             colour = colour.ConvertToConfiguration(config);
         }
         
-        if (colour.Lchab.UseAsNaN) return false;
+        if (colour.Lchab.Limitation == Limitation.NaN) return false;
         
-        var (l, c, h) = colour.Lchab.ConstrainedTriplet;
-        
+        var (l, c, h) = colour.Lchab.WithHueModulo();
         if (l is < MinL or > MaxL) return false; // no data for lightness outwith this range
-        if (colour.Lchab.UseAsGreyscale) return true; // there is no chroma and hue is powerless; C == 0 and L is in range therefore within gamut
+        if (colour.Lchab.Limitation == Limitation.Achromatic) return true; // there is no chroma and hue is powerless; C == 0 and L is in range therefore within gamut
         
         var maxC = GetMaxC(l, h);
         return c <= maxC;

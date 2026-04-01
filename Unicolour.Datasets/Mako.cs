@@ -10,8 +10,8 @@ public class Mako : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Mako);
     
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.04503935, 0.01482344, 0.02092227),
         new(Config, ColourSpace.Rgb, 0.04933018, 0.01709292, 0.02535719),
         new(Config, ColourSpace.Rgb, 0.05356262, 0.01950702, 0.03018802),
@@ -268,5 +268,5 @@ public class Mako : Colourmap
         new(Config, ColourSpace.Rgb, 0.8564431, 0.95309792, 0.88414253),
         new(Config, ColourSpace.Rgb, 0.86429066, 0.95635719, 0.89067759),
         new(Config, ColourSpace.Rgb, 0.87218969, 0.95960708, 0.89725384)
-    };
+    ];
 }

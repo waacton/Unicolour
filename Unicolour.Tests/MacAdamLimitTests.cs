@@ -126,7 +126,7 @@ public class MacAdamLimitsTests
     {
         // limits at 100% luminance is the white point singularity
         // only the exact white point is inside limits
-        var colour = new Unicolour(TestUtils.D65Config.Xyz.WhiteChromaticity, 1);
+        var colour = new Unicolour(TestUtils.D65Config.Xyz.WhitePoint.Chromaticity, 1);
         Assert.That(colour.IsInMacAdamLimits, Is.True);
     }
     
@@ -161,7 +161,7 @@ public class MacAdamLimitsTests
     {
         // limits at 100% luminance is the white point singularity
         // only the exact white point is inside limits
-        var colour = new Unicolour(TestUtils.D65Config.Xyz.WhiteChromaticity, 1).ConvertToConfiguration(config);
+        var colour = new Unicolour(TestUtils.D65Config.Xyz.WhitePoint.Chromaticity, 1).ConvertToConfiguration(config);
         Assert.That(colour.IsInMacAdamLimits, Is.True);
     }
     
@@ -240,7 +240,7 @@ public class MacAdamLimitsTests
         
         var mapped = colour.MapToMacAdamLimits();
         Assert.That(mapped.IsInMacAdamLimits, Is.True);
-        Assert.That(mapped.Chromaticity, Is.EqualTo(MacAdamLimits.Config.Xyz.WhiteChromaticity));
+        Assert.That(mapped.Chromaticity, Is.EqualTo(MacAdamLimits.Config.Xyz.WhitePoint.Chromaticity));
     }
     
     [TestCase]
@@ -282,6 +282,6 @@ public class MacAdamLimitsTests
         // mapping should still return an in-gamut colour, with the exception of NaNs
         var original = new Unicolour(MacAdamLimits.Config, ColourSpace.Xyy, value, value, value);
         var gamutMapped = original.MapToMacAdamLimits();
-        Assert.That(gamutMapped.IsInMacAdamLimits, gamutMapped.Xyy.UseAsNaN ? Is.False : Is.True);
+        Assert.That(gamutMapped.IsInMacAdamLimits, gamutMapped.Xyy.Limitation == Limitation.NaN ? Is.False : Is.True);
     }
 }

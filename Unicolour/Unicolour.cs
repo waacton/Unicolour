@@ -97,15 +97,15 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
 
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
-            ? Channels.FromXyz(Xyz, Configuration.Icc, Configuration.Xyz)
+            ? Channels.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.Icc)
             : Channels.UncalibratedFromRgb(Rgb));
     
-    public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.ConstrainedHex;
-    public double RelativeLuminance => Xyz.UseAsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
-    public Chromaticity Chromaticity => Xyy.UseAsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
+    public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.Clipped.Hex;
+    public double RelativeLuminance => Xyz.Limitation == Limitation.NaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
+    public Chromaticity Chromaticity => Xyy.Limitation == Limitation.NaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
     public Temperature Temperature => Get(ref temperature, () => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
-    public double DominantWavelength => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.DominantWavelength;
-    public double ExcitationPurity => Wxy.UseAsNaN || Wxy.UseAsGreyscale ? double.NaN : Wxy.ExcitationPurity;
+    public double DominantWavelength => Wxy.Limitation is Limitation.NaN or Limitation.Achromatic ? double.NaN : Wxy.W;
+    public double ExcitationPurity => Wxy.Limitation is Limitation.NaN or Limitation.Achromatic ? double.NaN : Wxy.X;
     public bool IsInRgbGamut => Rgb.IsInGamut;
     public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
     public bool IsInMacAdamLimits => Get(ref isInMacAdamLimits, () => MacAdamLimits.IsInLimits(this));
@@ -126,7 +126,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         return (bool)backingField;
     }
     
-    internal Unicolour(Configuration config, ColourHeritage heritage,
+    internal Unicolour(Configuration config, Limitation limitation,
         ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0)
     {
         if (colourSpace == ColourSpace.Rgb255)
@@ -139,7 +139,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         Configuration = config;
         SourceColourSpace = colourSpace;
-        SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, heritage);
+        SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, limitation);
         Alpha = new Alpha(alpha);
     }
 
@@ -167,31 +167,36 @@ public partial class Unicolour : IEquatable<Unicolour>
         // need to preserver the result so downstream usage doesn't perform in-gamut check
         // since rounding errors during chromatic adaptation to C/2° will frequently result in false
         var mapped = GamutMapping.ToPointerGamut(this);
-        mapped.isInPointerGamut = !mapped.SourceRepresentation.UseAsNaN; 
+        mapped.isInPointerGamut = mapped.SourceRepresentation.Limitation != Limitation.NaN; 
         return mapped;
     }
 
     public Unicolour MapToMacAdamLimits()
     {
         var mapped = GamutMapping.ToMacAdamLimits(this);
-        mapped.isInMacAdamLimits = !mapped.SourceRepresentation.UseAsNaN; 
+        mapped.isInMacAdamLimits = mapped.SourceRepresentation.Limitation != Limitation.NaN; 
         return mapped;
     }
     
     public Unicolour ConvertToConfiguration(Configuration config)
     {
-        if (config == Configuration) return Clone();
-        var heritage = ColourHeritage.From(SourceRepresentation);
-        var (x, y, z) = Adaptation.WhitePoint(Xyz, Configuration.Xyz.WhitePoint, config.Xyz.WhitePoint, Configuration.Xyz.AdaptationMatrix);
-        return new Unicolour(config, heritage, ColourSpace.Xyz, x, y, z, Alpha.A);
+        if (config == Configuration)
+        {
+            return Clone();
+        }
+        
+        var chromaticAdaptor = Configuration.Xyz.ChromaticAdaptor;
+        var limitation = SourceRepresentation.Limitation;
+        var (x, y, z) = chromaticAdaptor.AdaptTo(Xyz, config.Xyz.WhitePoint);
+        return new Unicolour(config, limitation, ColourSpace.Xyz, x, y, z, Alpha.A);
     }
     
     internal Unicolour Clone()
     {
         var (first, second, third) = SourceRepresentation.Triplet;
-        var heritage = SourceRepresentation.Heritage;
+        var limitation = SourceRepresentation.LimitationBaseline;
         var alpha = Alpha.A;
-        return new Unicolour(Configuration, heritage, SourceColourSpace, first, second, third, alpha)
+        return new Unicolour(Configuration, limitation, SourceColourSpace, first, second, third, alpha)
         {
             isInPointerGamut = isInPointerGamut,
             isInMacAdamLimits = isInMacAdamLimits
@@ -200,7 +205,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public override string ToString()
     {
-        var parts = new List<string> { $"from {Source}", $"alpha {Alpha}" };
+        List<string> parts = [$"from {Source}", $"alpha {Alpha}"];
         if (Description != ColourDescription.NotApplicable.ToString())
         {
             parts.Add(Description);

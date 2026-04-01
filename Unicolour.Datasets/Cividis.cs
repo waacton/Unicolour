@@ -10,8 +10,8 @@ public class Cividis : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Cividis);
 
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0, 0.138068, 0.311105),
         new(Config, ColourSpace.Rgb, 0, 0.141013, 0.317579),
         new(Config, ColourSpace.Rgb, 0, 0.143951, 0.323982),
@@ -267,5 +267,5 @@ public class Cividis : Colourmap
         new(Config, ColourSpace.Rgb, 0.995249, 0.898384, 0.207561),
         new(Config, ColourSpace.Rgb, 0.995503, 0.903866, 0.21237),
         new(Config, ColourSpace.Rgb, 0.995737, 0.909344, 0.217772)
-    };
+    ];
 }

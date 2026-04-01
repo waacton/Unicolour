@@ -2,65 +2,61 @@
 
 public abstract record ColourRepresentation
 {
+    protected internal abstract int? HueIndex { get; }
+    internal bool HasHueComponent => HueIndex != null;
+    
     protected readonly double First;
     protected readonly double Second;
     protected readonly double Third;
-    protected internal abstract int? HueIndex { get; }
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     public (double, double, double) Tuple => (First, Second, Third);
-    internal ColourHeritage Heritage { get; }
-
-    protected virtual double ConstrainedFirst => First;
-    protected virtual double ConstrainedSecond => Second;
-    protected virtual double ConstrainedThird => Third;
-    public ColourTriplet ConstrainedTriplet => new(ConstrainedFirst, ConstrainedSecond, ConstrainedThird, HueIndex);
-    public (double, double, double) ConstrainedTuple => (ConstrainedFirst, ConstrainedSecond, ConstrainedThird);
     
-    internal bool IsNaN => double.IsNaN(First) || double.IsNaN(Second) || double.IsNaN(Third);
-    internal bool UseAsNaN => Heritage == ColourHeritage.NaN || IsNaN;
-
-    /*
-     * a representation may be non-greyscale according to its values
-     * but should be used as greyscale if it was generated from a representation that was greyscale
-     * e.g. RGB(1,1,1) is greyscale and converts to LAB(99.99999999999999, 0, -2.220446049250313E-14)
-     * LAB doesn't report as greyscale since B != 0 (and I don't want to make assumptions via precision-based tolerance comparison)
-     * but it should be considered greyscale since the source RGB representation definitely is
-     */
-    internal abstract bool IsGreyscale { get; }
-    internal bool UseAsGreyscale => Heritage == ColourHeritage.Greyscale || Heritage == ColourHeritage.GreyscaleAndHued || (!UseAsNaN && IsGreyscale);
+    protected abstract bool IsAchromatic { get; }
     
     /*
-     * a representation is considered "hued" when it has a hue component (e.g. HSL / LCH) and is not greyscale
-     * enabling differentiation between representations where:
-     * a) a hue value is meaningful ------------------------------ e.g. HSB(0,0,0) = red with no saturation or brightness
-     * b) a hue value is used as a fallback when there is no hue - e.g. RGB(0,0,0) -> HSB(0,0,0) = black with no red
-     * which is essential for proper mixing;
-     * [RGB(0,0,0) black -> RGB(0,0,255) blue] via HSB is [HSB(0,0,0) red with no colour -> HSB(240,1,1) blue with full colour]
-     * but the mixing should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
+     * limitation is used to enforce behaviour on downstream conversions, achromaticity in particular
+     * e.g. RGB 1 1 1 converts to LAB 99.999... 0 -2E-14
+     * - the original RGB values represent an achromatic colour (grey)
+     * - the result LAB values represent a chromatic colour, because B != 0
+     * - in reality, because LAB was calculated from achromatic RGB, it must inherit that achromaticity, even if the values suggest chromatic
+     * this is mostly useful to ensure correct interpolation and distinguishes between e.g.
+     * - A) HSB 0 0 0 from direct user input (red with no saturation or brightness)
+     * - B) HSB 0 0 0 from RGB 0 0 0 (achromatic black where the hue value is irrelevant and 0 is a fallback value)
+     * - mixing A with HSB 240 1 1 (blue) should traverse the hues between 0 (red) and 240 (blue)
+     * - mixing B with HSB 240 1 1 (blue) should ignore 0 (red) hue and use 240 (blue) hue for all interpolated colours
+     * so it's important to note that greyscale != achromatic
+     * a colour like HSB 180 0 0 looks grey but still has chroma information encoded (green hue)
+     * the achromatic limitation flags when chroma information has truly been lost, and cannot be recovered
      */
-    internal bool HasHueComponent => HueIndex != null;
-    internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueComponent;
+    internal Limitation LimitationBaseline { get; }
+    internal Limitation Limitation
+    {
+        get
+        {
+            if (LimitationBaseline == Limitation.NaN || Triplet.WithHueModulo().ToArray().Any(double.IsNaN)) return Limitation.NaN;
+            if (LimitationBaseline == Limitation.Achromatic || IsAchromatic) return Limitation.Achromatic;
+            return Limitation.None;
+        }
+    }
     
-    internal ColourRepresentation(double first, double second, double third, ColourHeritage heritage)
+    internal ColourRepresentation(double first, double second, double third, Limitation limitationBaseline)
     {
         First = first;
         Second = second;
         Third = third;
-        Heritage = heritage;
+        LimitationBaseline = limitationBaseline;
     }
-
-
     
-    public double[] ToArray() => new[] { First, Second, Third };
+    internal ColourTriplet WithHueModulo() => Triplet.WithHueModulo();
+    
+    public double[] ToArray() => [First, Second, Third];
     
     public void Deconstruct(out double first, out double second, out double third)
     {
-        first = First;
-        second = Second;
-        third = Third;
+        (first, second, third) = Tuple;
     }
     
     protected abstract string String { get; }
-    public override string ToString() => UseAsNaN ? $"NaN [{String}]" : String;
+    public override string ToString() => Limitation == Limitation.NaN ? $"NaN [{String}]" : String;
 }
 

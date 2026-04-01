@@ -165,8 +165,8 @@ public static class Css
 
     public static readonly Unicolour Transparent = new(Config, "#000000", alphaOverride: 0);
     
-    public static IEnumerable<Unicolour> All => new List<Unicolour>
-    {
+    public static IEnumerable<Unicolour> All =>
+    [
         AliceBlue, AntiqueWhite, Aqua, Aquamarine, Azure,
         Beige, Bisque, Black, BlanchedAlmond, Blue, BlueViolet, Brown, Burlywood,
         CadetBlue, Chartreuse, Chocolate, Coral, CornflowerBlue, Cornsilk, Crimson, Cyan,
@@ -187,7 +187,7 @@ public static class Css
         Violet,
         Wheat, White, WhiteSmoke,
         Yellow, YellowGreen
-    };
+    ];
     
     public static Unicolour? FromName(string name)
     {
@@ -195,7 +195,7 @@ public static class Css
         
         // first try to use the name as though it is the exact text used in the spec
         var lowercase = name.ToLower();
-        Lookup.TryGetValue(lowercase, out Unicolour? value);
+        Lookup.TryGetValue(lowercase, out var value);
         if (value != null)
         {
             return value;

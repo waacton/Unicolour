@@ -487,7 +487,7 @@ public static class RgbModels
     private static readonly WhitePoint D65 = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     private static readonly WhitePoint D50 = Illuminant.D50.GetWhitePoint(Observer.Degree2);
     private static readonly WhitePoint C = Illuminant.C.GetWhitePoint(Observer.Degree2);
-    private static readonly WhitePoint Aces = new Chromaticity(0.32168, 0.33767).ToWhitePoint();
+    private static readonly WhitePoint Aces = new(0.32168, 0.33767);
     
     private static class Rec470SystemNotM
     {

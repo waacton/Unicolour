@@ -28,7 +28,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Protanopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
@@ -44,7 +44,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
@@ -60,7 +60,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Tritanopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
     
@@ -76,7 +76,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.ConstrainedTriplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
 
@@ -85,7 +85,7 @@ public class VisionDeficiencyTests
     {
         var colour = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN);
         var simulatedColour = colour.Simulate(cvd);
-        Assert.That(simulatedColour.Rgb.IsNaN);
+        Assert.That(simulatedColour.Rgb.Limitation, Is.EqualTo(Limitation.NaN));
     }
     
     [Test]

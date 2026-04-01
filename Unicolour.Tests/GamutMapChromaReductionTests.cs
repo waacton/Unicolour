@@ -13,12 +13,12 @@ public class GamutMapChromaReductionTests
         const double tripletTolerance = 0.00005;
         var yellowDisplayP3 = new Unicolour(new Configuration(RgbConfiguration.DisplayP3), ColourSpace.Rgb, 1, 1, 0);
         var yellowStandardRgb = yellowDisplayP3.ConvertToConfiguration(new Configuration(RgbConfiguration.StandardRgb));
-        TestUtils.AssertTriplet<Rgb>(yellowDisplayP3, new(1.00000, 1.00000, 0.00000), tripletTolerance);
-        TestUtils.AssertTriplet<Rgb>(yellowStandardRgb, new(1.00000, 1.00000, -0.34630), tripletTolerance);
+        TestUtils.AssertColour(yellowDisplayP3, new Rgb(1.00000, 1.00000, 0.00000), tripletTolerance);
+        TestUtils.AssertColour(yellowStandardRgb, new Rgb(1.00000, 1.00000, -0.34630), tripletTolerance);
         
         // different because Unicolour doesn't limit Oklab / Oklch to sRGB
-        TestUtils.AssertTriplet<Oklch>(yellowStandardRgb, new(0.96476, 0.24503, 110.23), tripletTolerance);
-        TestUtils.AssertTriplet<Oklch>(yellowDisplayP3, new(0.96798, 0.21101, 109.77), tripletTolerance);
+        TestUtils.AssertColour(yellowStandardRgb, new Oklch(0.96476, 0.24503, 110.23), tripletTolerance);
+        TestUtils.AssertColour(yellowDisplayP3, new Oklch(0.96798, 0.21101, 109.77), tripletTolerance);
 
         var gamutMappedDisplayP3 = yellowDisplayP3.MapToRgbGamut();
         Assert.That(gamutMappedDisplayP3, Is.EqualTo(yellowDisplayP3));
@@ -39,7 +39,7 @@ public class GamutMapChromaReductionTests
     {
         var white = new Unicolour(ColourSpace.Oklch, l, c, h);
         var gamutMapped = white.MapToRgbGamut();
-        TestUtils.AssertTriplet<Rgb>(gamutMapped, new(1, 1, 1), Tolerance);
+        TestUtils.AssertColour(gamutMapped, new Rgb(1, 1, 1), Tolerance);
     }
     
     [TestCase(0, 0, 0)]
@@ -48,7 +48,7 @@ public class GamutMapChromaReductionTests
     {
         var white = new Unicolour(ColourSpace.Oklch, l, c, h);
         var gamutMapped = white.MapToRgbGamut();
-        TestUtils.AssertTriplet<Rgb>(gamutMapped, new(0, 0, 0), Tolerance);
+        TestUtils.AssertColour(gamutMapped, new Rgb(0, 0, 0), Tolerance);
     }
 
     [TestCase]
@@ -81,7 +81,7 @@ public class GamutMapChromaReductionTests
         var original = new Unicolour(ColourSpace.Oklch, 0.5, -0.5, 180);
         var gamutMapped = original.MapToRgbGamut();
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.ConstrainedTriplet, Tolerance);
+        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Clipped.Triplet, Tolerance);
     }
 
     [TestCase(double.PositiveInfinity)]
@@ -98,7 +98,7 @@ public class GamutMapChromaReductionTests
         var original = new Unicolour(ColourSpace.Oklch, 0.5, 0.1, -180);
         var gamutMapped = original.MapToRgbGamut();
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.ConstrainedTriplet, 0.0001);
+        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Clipped.Triplet, 0.0001);
     }
     
     /* search result that is in gamut before being clipped is hard to come by */

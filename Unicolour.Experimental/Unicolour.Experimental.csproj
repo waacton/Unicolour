@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>Wacton.Unicolour.Experimental</AssemblyName>
         <RootNamespace>Wacton.Unicolour.Experimental</RootNamespace>
-        <LangVersion>10</LangVersion>
+        <LangVersion>default</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

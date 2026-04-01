@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
-public class HuedTests
+public class AchromaticFromHueTests
 {
     [Test]
     public void Hsb() => AssertUnicolour(new(ColourSpace.Hsb, 180, 0, 0), [ColourSpace.Hsl, ColourSpace.Hwb]);
@@ -61,22 +60,21 @@ public class HuedTests
     [Test]
     public void Munsell() => AssertUnicolour(new(ColourSpace.Munsell, 180, 0, 0), []);
 
-    private static void AssertUnicolour(Unicolour colour, List<ColourSpace> adjacentHuedSpaces)
+    private static void AssertUnicolour(Unicolour colour, ColourSpace[] adjacentHuedSpaces)
     {
-        var data = new ColourHeritageData(colour);
         var initial = colour.SourceRepresentation;
-        Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
-        Assert.That(initial.UseAsHued, Is.True);
-        Assert.That(initial.UseAsGreyscale, Is.True);
-        Assert.That(data.Heritages(adjacentHuedSpaces), Has.All.EqualTo(ColourHeritage.GreyscaleAndHued));
-        Assert.That(data.UseAsHued(adjacentHuedSpaces), Has.All.True);
-        Assert.That(data.UseAsGreyscale(adjacentHuedSpaces), Has.All.True);
-
-        // the first non-hued space to be converted to (e.g. RGB from HSB) will have hued heritage (since from HSB)
-        var otherSpaces = TestUtils.AllColourSpaces.Except(adjacentHuedSpaces.Concat([colour.SourceColourSpace])).ToList();
-        Assert.That(data.Heritages(otherSpaces), Has.One.EqualTo(ColourHeritage.GreyscaleAndHued));
-        Assert.That(data.Heritages(otherSpaces), Has.Exactly(otherSpaces.Count - 1).EqualTo(ColourHeritage.Greyscale));
-        Assert.That(data.UseAsHued(otherSpaces), Has.All.False);
-        Assert.That(data.UseAsGreyscale(otherSpaces), Has.All.True);
+        Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
+        Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: true), Has.All.EqualTo(Limitation.None));
+        Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: false), Has.All.EqualTo(Limitation.None));
+        
+        // hued-spaces and adjacent hued-spaces do not have achromatic limitation
+        // (e.g. hue 180 chroma 0 has a cyan hue, just the lack of chroma makes it ineffectual) 
+        // the first non-hued space to be converted to (e.g. RGB from HSB) will inherit no limitation, but report as achromatic
+        // (since the lack of a hue component means grey truly a colour with no known hue)
+        // and all subsequent downstream spaces will inherit that achromatic limitation
+        var otherSpaces = TestUtils.AllColourSpaces.Except(adjacentHuedSpaces.Concat([colour.SourceColourSpace])).ToArray();
+        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: true), Has.One.EqualTo(Limitation.None));
+        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: true), Has.Exactly(otherSpaces.Length - 1).EqualTo(Limitation.Achromatic));
+        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
     }
 }

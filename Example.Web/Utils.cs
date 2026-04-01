@@ -14,14 +14,14 @@ internal static class Utils
             return "transparent";
         }
 
-        var (r, g, b) = colour.Rgb.ConstrainedTriplet;
+        var (r, g, b) = colour.Rgb.Clipped;
         return $"rgb({r * 100}% {g * 100}% {b * 100}% / {alpha}%)";
     }
 
     internal static bool HasConversionError(Unicolour colour)
     {
-        // if the constrained hex has no value, RGB is invalid (likely a NaN during conversion)
-        return colour.Rgb.Byte255.ConstrainedHex == "-";
+        // if the clipped RGB has no hex value, RGB is invalid (likely a NaN during conversion)
+        return colour.Rgb.Byte255.Clipped.Hex == "-";
     }
 
     internal static string TextOnColourCssClass(Unicolour colour)
@@ -61,9 +61,9 @@ internal static class Utils
         { ColourSpace.Xyb, [new(-0.03, 0.03), new(0, 1.0), new(-0.4, 0.4)] },
         { ColourSpace.Lms, [new(0, 1), new(0, 1), new(0, 1)] },
         { ColourSpace.Ipt, [new(0, 1), new(-0.75, 0.75), new(-0.75, 0.75)] },
-        { ColourSpace.Ictcp, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
-        { ColourSpace.Jzazbz, [new(0, 1), new(-0.21, 0.21), new(-0.21, 0.21)] },
-        { ColourSpace.Jzczhz, [new(0, 1), new(0, 0.26), new(0, 360)] },
+        { ColourSpace.Ictcp, [new(0, 0.6), new(-0.3, 0.3), new(-0.3, 0.3)] },
+        { ColourSpace.Jzazbz, [new(0, 0.25), new(-0.2, 0.2), new(-0.2, 0.2)] },
+        { ColourSpace.Jzczhz, [new(0, 0.25), new(0, 0.2), new(0, 360)] },
         { ColourSpace.Oklab, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
         { ColourSpace.Oklch, [new(0, 1), new(0, 0.5), new(0, 360)] },
         { ColourSpace.Okhsv, [new(0, 360), new(0, 1), new(0, 1)] },
@@ -164,7 +164,7 @@ internal static class Utils
         { ArtistPaint.CobaltBlue, GetSinglePigmentColour(ArtistPaint.CobaltBlue) },
         { ArtistPaint.CeruleanBlueChromium, GetSinglePigmentColour(ArtistPaint.CeruleanBlueChromium) },
         { ArtistPaint.PhthaloGreenBlueShade, GetSinglePigmentColour(ArtistPaint.PhthaloGreenBlueShade) },
-        { ArtistPaint.PhthaloGreenYellowShade, GetSinglePigmentColour(ArtistPaint.PhthaloGreenYellowShade) },
+        { ArtistPaint.PhthaloGreenYellowShade, GetSinglePigmentColour(ArtistPaint.PhthaloGreenYellowShade) }
     };
     
     private static Unicolour GetSinglePigmentColour(Pigment pigment) => new Unicolour([pigment], [1]).MapToRgbGamut(GamutMap.RgbClipping);

@@ -12,7 +12,7 @@ public class KnownXyzTests
     public void Red(string illuminantName, double x, double y, double z)
     {
         var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Xyz>(red, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet(red.Xyz.Triplet, new(x, y, z), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.357576, 0.715152, 0.119192)]
@@ -20,7 +20,7 @@ public class KnownXyzTests
     public void Green(string illuminantName, double x, double y, double z)
     {
         var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Xyz>(green, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet(green.Xyz.Triplet, new(x, y, z), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.180437, 0.072175, 0.950304)]
@@ -28,7 +28,7 @@ public class KnownXyzTests
     public void Blue(string illuminantName, double x, double y, double z)
     {
         var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Xyz>(blue, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet(blue.Xyz.Triplet, new(x, y, z), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.0, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownXyzTests
     public void Black(string illuminantName, double x, double y, double z)
     {
         var black = StandardRgb.Black.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Xyz>(black, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet(black.Xyz.Triplet, new(x, y, z), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.950470, 1.000000, 1.088830)]
@@ -44,7 +44,7 @@ public class KnownXyzTests
     public void White(string illuminantName, double x, double y, double z)
     {
         var white = StandardRgb.White.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Xyz>(white, new(x, y, z), Tolerance);
+        TestUtils.AssertTriplet(white.Xyz.Triplet, new(x, y, z), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.312727, 0.329023)]

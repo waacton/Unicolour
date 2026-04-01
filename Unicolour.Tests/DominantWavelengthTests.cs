@@ -88,8 +88,7 @@ public class DominantWavelengthTests
     public void RgbGamut(Configuration configuration, double r, double g, double b, double expectedWavelength)
     {
         var colour = new Unicolour(configuration, ColourSpace.Rgb, r, g, b);
-        var hasLuminance = colour.Xyy.Luminance > 0;
-        Assert.That(colour.DominantWavelength, Is.EqualTo(hasLuminance ? expectedWavelength : double.NaN).Within(0.25));
+        Assert.That(colour.DominantWavelength, Is.EqualTo(expectedWavelength).Within(0.25));
     }
     
     private static readonly Dictionary<(Illuminant illuminant, Observer observer), Configuration> Configurations = new()

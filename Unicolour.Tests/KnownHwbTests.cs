@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -11,34 +12,41 @@ public class KnownHwbTests
     public void Red()
     {
         var red = StandardRgb.Red;
-        TestUtils.AssertTriplet<Hwb>(red, new(0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(red, new Hwb(0, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = StandardRgb.Green;
-        TestUtils.AssertTriplet<Hwb>(green, new(120, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(green, new Hwb(120, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = StandardRgb.Blue;
-        TestUtils.AssertTriplet<Hwb>(blue, new(240, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(blue, new Hwb(240, 0.0, 0.0), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = StandardRgb.Black;
-        TestUtils.AssertTriplet<Hwb>(black, new(0, 0.0, 1.0), Tolerance);
+        TestUtils.AssertColour(black, new Hwb(0, 0.0, 1.0), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertTriplet<Hwb>(white, new(0, 1.0, 0.0), Tolerance);
+        TestUtils.AssertColour(white, new Hwb(0, 1.0, 0.0), Tolerance);
+    }
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Hwb.ToString().Contains(NoHue));
     }
 }

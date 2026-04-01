@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -5,7 +7,9 @@ namespace Wacton.Unicolour.Tests;
 
 public class RoundtripChromaticityTests
 {
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Chromaticities))]
+    internal static List<Chromaticity> Chromaticities = new int[1000].Select(_ => Rng.Chromaticity()).ToList();
+    
+    [TestCaseSource(nameof(Chromaticities))]
     public void ViaTemperature(Chromaticity chromaticity)
     {
         var original = chromaticity;

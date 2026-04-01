@@ -101,7 +101,7 @@ public class KnownCmykTests
         Assert.That(actual[2], Is.EqualTo(expected[2]).Within(tolerance));
 
         var colour = Cmy.ToUnicolour(actual);
-        TestUtils.AssertTriplet<Rgb>(colour, original.Rgb.Triplet, tolerance);
+        TestUtils.AssertColour(colour, original.Rgb, tolerance);
     }
     
     private static void AssertCmyk(Unicolour colour, double[] expected, double tolerance = Tolerance)

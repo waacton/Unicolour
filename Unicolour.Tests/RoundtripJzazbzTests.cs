@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -6,12 +7,23 @@ namespace Wacton.Unicolour.Tests;
 public class RoundtripJzazbzTests
 {
     private const double Tolerance = 0.00000005;
+    private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
+    private static readonly DynamicRange DynamicRange = DynamicRange.Standard;
     
-    // cannot test roundtrip via XYZ as Jzazbz <-> XYZ is not 1:1, e.g.
-    // - when Jzazbz inputs produces negative XYZ values, which are clamped during XYZ -> Jzazbz
-    // - when Jzazbz negative inputs trigger a negative number to a fractional power, producing NaNs
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Jzazbz, 1500);
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.JzazbzTriplets))]
+    [TestCaseSource(nameof(Triplets))]
+    public void ViaXyz(ColourTriplet triplet)
+    {
+        var original = new Jzazbz(triplet.First, triplet.Second, triplet.Third);
+        var xyz = Jzazbz.ToXyz(original, XyzConfig.ChromaticAdaptor, DynamicRange);
+        var roundtrip = Jzazbz.FromXyz(xyz, XyzConfig.ChromaticAdaptor, DynamicRange);
+        
+        // Jzazbz -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
+        TestUtils.AssertTriplet(roundtrip.Triplet, xyz.Limitation == Limitation.NaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, Tolerance);
+    }
+    
+    [TestCaseSource(nameof(Triplets))]
     public void ViaJzczhz(ColourTriplet triplet)
     {
         var original = new Jzazbz(triplet.First, triplet.Second, triplet.Third);

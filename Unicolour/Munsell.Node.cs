@@ -29,8 +29,8 @@ public partial record Munsell
         private static string GetKey(double h, double v, int c) => $"{h}:{v}:{c}";
     }
 
-    private static Node[] GetNodes() => new Node[] 
-    {
+    private static Node[] GetNodes() =>
+    [
         new(2.5, "GY", 0.2, 2, 0.713, 1.414, 0.237),
         new(5, "GY", 0.2, 2, 0.449, 1.145, 0.237),
         new(7.5, "GY", 0.2, 2, 0.262, 0.837, 0.237),
@@ -5026,5 +5026,5 @@ public partial record Munsell
         new(7.5, "Y", 10, 18, 0.462, 0.515, 102.57),
         new(7.5, "Y", 10, 20, 0.467, 0.521, 102.57),
         new(7.5, "Y", 10, 22, 0.472, 0.528, 102.57)
-    };
+    ];
 }

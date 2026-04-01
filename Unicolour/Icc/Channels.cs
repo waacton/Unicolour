@@ -6,8 +6,16 @@ public record Channels(params double[] Values)
     public string ColourSpace { get; private set; } = "unknown";
     public string? Error { get; private set; } 
 
-    private ColourHeritage Heritage = ColourHeritage.None;
-    private bool UseAsNaN => Heritage == ColourHeritage.NaN || Values.Any(double.IsNaN);
+    private Limitation LimitationBaseline = Limitation.None;
+    private Limitation Limitation
+    {
+        get
+        {
+            // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
+            if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
+            return Limitation.None;
+        }
+    }
     
     /*
      * ICC channels are a transform of XYZ (in terms of Unicolour implementation)
@@ -16,7 +24,7 @@ public record Channels(params double[] Values)
      * (enjoy 100+ pages of dense technical details 🤪)
      */
     
-    internal static Channels FromXyz(Xyz xyz, IccConfiguration iccConfig, XyzConfiguration xyzConfig)
+    internal static Channels FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor, IccConfiguration iccConfig)
     {
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
@@ -25,7 +33,7 @@ public record Channels(params double[] Values)
         string? error = null;
         try
         {
-            channels = profile.FromXyz(xyz, xyzConfig, intent);
+            channels = profile.FromXyz(xyz, intent, chromaticAdaptor);
         }
         catch (Exception e)
         {
@@ -36,12 +44,12 @@ public record Channels(params double[] Values)
         return new Channels(channels)
         {
             ColourSpace = profile.Header.DataColourSpace,
-            Heritage = ColourHeritage.From(xyz),
+            LimitationBaseline = xyz.Limitation,
             Error = error
         };
     }
 
-    internal static Xyz ToXyz(Channels channels, IccConfiguration iccConfig, XyzConfiguration xyzConfig)
+    internal static Xyz ToXyz(Channels channels, ChromaticAdaptor chromaticAdaptor, IccConfiguration iccConfig)
     {
         var profile = iccConfig.Profile!;
         var intent = iccConfig.Intent;
@@ -50,11 +58,11 @@ public record Channels(params double[] Values)
         Xyz xyz;
         try
         {
-            xyz = profile.ToXyz(channels.Values, xyzConfig, intent);
+            xyz = profile.ToXyz(channels.Values, intent, chromaticAdaptor);
         }
         catch (Exception e)
         {
-            xyz = new Xyz(double.NaN, double.NaN, double.NaN);
+            xyz = new Xyz(double.NaN, double.NaN, double.NaN, chromaticAdaptor.WhitePoint);
             channels.Error = e.Message;
         }
 
@@ -71,15 +79,16 @@ public record Channels(params double[] Values)
 
     internal static Channels UncalibratedFromRgb(Rgb rgb)
     {
-        var (r, g, b) = rgb.ConstrainedTuple;
-        var black = 1 - new[] { r, g, b }.Max();
-        var c = black >= 1.0 ? 0 : (1 - r - black) / (1 - black);
-        var m = black >= 1.0 ? 0 : (1 - g - black) / (1 - black);
-        var y = black >= 1.0 ? 0 : (1 - b - black) / (1 - black);
+        var (r, g, b) = rgb;
+        var black = 1 - rgb.ToArray().Max();
+        var scale = 1 - black;
+        var c = scale == 0.0 ? 0 : (1 - r - black) / scale;
+        var m = scale == 0.0 ? 0 : (1 - g - black) / scale;
+        var y = scale == 0.0 ? 0 : (1 - b - black) / scale;
         return new Channels(c, m, y, black)
         {
             ColourSpace = UncalibratedCmyk,
-            Heritage = ColourHeritage.From(rgb)
+            LimitationBaseline = rgb.Limitation
         };
     }
 
@@ -89,16 +98,16 @@ public record Channels(params double[] Values)
         var cmyk = channels.Values;
         double Get(double[] array, int i) => i < array.Length ? array[i] : 0.0;
         var (c, m, y, black) = (Get(cmyk, 0), Get(cmyk, 1), Get(cmyk, 2), Get(cmyk, 3));
-        var r = 1 - Math.Min(1, c * (1 - black) + black);
-        var g = 1 - Math.Min(1, m * (1 - black) + black);
-        var b = 1 - Math.Min(1, y * (1 - black) + black);
+        var r = 1 - (c * (1 - black) + black);
+        var g = 1 - (m * (1 - black) + black);
+        var b = 1 - (y * (1 - black) + black);
         return new Rgb(r, g, b);
     }
     
     public override string ToString()
     {
         var values = $"{string.Join(" ", Values.Select(x => $"{x:F4}"))} {ColourSpace}";
-        return UseAsNaN ? $"NaN [{values}]" : values;
+        return Limitation == Limitation.NaN ? $"NaN [{values}]" : values;
     }
 
     public virtual bool Equals(Channels? other)

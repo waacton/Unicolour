@@ -19,8 +19,8 @@ public class DifferenceTests
     {
         for (var i = 0; i < 100; i++)
         {
-            var reference = RandomColours.UnicolourFrom(ColourSpace.Rgb);
-            var sample = RandomColours.UnicolourFrom(ColourSpace.Rgb);
+            var reference = Rng.Unicolour(ColourSpace.Rgb);
+            var sample = Rng.Unicolour(ColourSpace.Rgb);
             ReferenceSamplePairs.Add((reference, sample));
         }
     }

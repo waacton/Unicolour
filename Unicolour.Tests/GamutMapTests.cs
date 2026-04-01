@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -55,8 +54,8 @@ public class GamutMapTests
         Assert.That(gamutMapped.IsInRgbGamut, Is.True);
     }
     
-    private static ColourTriplet[] RandomInGamutValues = RandomColours.RgbTriplets.Take(100).ToArray();
-    private static ColourTriplet[] RandomOutGamutValues = RandomInGamutValues.Select(MakeOutOfGamut).ToArray();
+    private static readonly ColourTriplet[] RandomInGamutValues = Rng.Triplets(ColourSpace.Rgb, 100, GamutRange.Typical).ToArray();
+    private static readonly ColourTriplet[] RandomOutGamutValues = Rng.Triplets(ColourSpace.Rgb, 100, GamutRange.Outside).ToArray();
     
     [Test, Combinatorial]
     public void RandomGamutInside(
@@ -66,7 +65,7 @@ public class GamutMapTests
         var original = new Unicolour(ColourSpace.Rgb, triplet.Tuple);
         var gamutMapped = original.MapToRgbGamut(gamutMap);
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        Assert.That(gamutMapped.Rgb.Triplet, Is.EqualTo(gamutMapped.Rgb.ConstrainedTriplet));
+        Assert.That(gamutMapped.Rgb.Triplet, Is.EqualTo(gamutMapped.Rgb.Clipped.Triplet));
         TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Triplet, 0);
     }
     
@@ -120,9 +119,6 @@ public class GamutMapTests
         // mapping should still return an in-gamut colour, with the exception of NaNs
         var original = new Unicolour(colourSpace, value, value, value);
         var gamutMapped = original.MapToRgbGamut(gamutMap);
-        Assert.That(gamutMapped.IsInRgbGamut, gamutMapped.Rgb.UseAsNaN ? Is.False : Is.True);
+        Assert.That(gamutMapped.IsInRgbGamut, gamutMapped.Rgb.Limitation == Limitation.NaN ? Is.False : Is.True);
     }
-    
-    private static ColourTriplet MakeOutOfGamut(ColourTriplet triplet) => new(MakeOutOfGamut(triplet.First), MakeOutOfGamut(triplet.Second), MakeOutOfGamut(triplet.Third));
-    private static double MakeOutOfGamut(double x) => Math.Sign(x) * (Math.Abs(x) + 1);
 }

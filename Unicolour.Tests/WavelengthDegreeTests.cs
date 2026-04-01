@@ -18,8 +18,8 @@ public class WavelengthDegreeTests
     {
         for (var i = 0; i < 1000; i++)
         {
-            Wavelengths.Add(TestUtils.RandomDouble() >= 0.5 ? TestUtils.RandomDouble(360, 700) : TestUtils.RandomDouble(-566, -493.5));
-            Degrees.Add(TestUtils.RandomDouble(0, 360));
+            Wavelengths.Add(Rng.Bool() ? Rng.Between(360, 700) : Rng.Between(-566, -493.5));
+            Degrees.Add(Rng.Between(0, 360));
         }
         
         Wavelengths.Add(double.NaN);
@@ -29,16 +29,16 @@ public class WavelengthDegreeTests
     [TestCaseSource(nameof(Wavelengths))]
     public void WavelengthToDegree(double wavelength)
     {
-        var degree = Wxy.WavelengthToDegree(wavelength, XyzConfig);
-        var roundtrip = Wxy.DegreeToWavelength(degree, XyzConfig);
+        var degree = Wxy.WavelengthToDegree(wavelength, XyzConfig.SpectralBoundary);
+        var roundtrip = Wxy.DegreeToWavelength(degree, XyzConfig.SpectralBoundary);
         Assert.That(roundtrip, Is.EqualTo(wavelength).Within(Tolerance));
     }
     
     [TestCaseSource(nameof(Degrees))]
     public void DegreeToWavelength(double degree)
     {
-        var wavelength = Wxy.DegreeToWavelength(degree, XyzConfig);
-        var roundtrip = Wxy.WavelengthToDegree(wavelength, XyzConfig);
+        var wavelength = Wxy.DegreeToWavelength(degree, XyzConfig.SpectralBoundary);
+        var roundtrip = Wxy.WavelengthToDegree(wavelength, XyzConfig.SpectralBoundary);
         Assert.That(roundtrip, Is.EqualTo(degree).Within(Tolerance));
     }
 }

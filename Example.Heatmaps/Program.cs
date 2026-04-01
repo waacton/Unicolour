@@ -36,14 +36,14 @@ void Generate(string filename)
 
     AddLabel(originalImage, "Original", white);
 
-    var outputImages = new List<Image>
-    {
+    List<Image> outputImages =
+    [
         originalImage,
         GetHeatmap(Colourmaps.Cubehelix, "Cubehelix"),
         GetHeatmap(Colourmaps.Mako, "Mako"),
         GetHeatmap(Colourmaps.Turbo, "Turbo"),
         GetHeatmap(Colourmaps.Icefire, "Icefire")
-    };
+    ];
 
     var result = new Image<Rgba32>(originalImage.Width * outputImages.Count, originalImage.Height);
     for (var i = 0; i < outputImages.Count; i++)
@@ -63,7 +63,7 @@ void Generate(string filename)
     {
         var mappedColours = normalisedLuminances.Select(colourmap.Map);
         var mappedPixels = mappedColours.Select(AsRgba32).ToArray();
-        var heatmap = Image.LoadPixelData<Rgba32>(mappedPixels, originalImage.Width, originalImage.Height);
+        var heatmap = Image.LoadPixelData(mappedPixels, originalImage.Width, originalImage.Height);
 
         var darkestColour = colourmap.Map(0);
         var labelColour = darkestColour.Contrast(white) > darkestColour.Contrast(black) ? white : black;

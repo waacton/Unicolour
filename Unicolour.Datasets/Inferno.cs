@@ -10,8 +10,8 @@ public class Inferno : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Inferno);
 
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.001462, 0.000466, 0.013866),
         new(Config, ColourSpace.Rgb, 0.002267, 0.00127, 0.01857),
         new(Config, ColourSpace.Rgb, 0.003299, 0.002249, 0.024239),
@@ -268,5 +268,5 @@ public class Inferno : Colourmap
         new(Config, ColourSpace.Rgb, 0.976511, 0.989753, 0.61676),
         new(Config, ColourSpace.Rgb, 0.982257, 0.994109, 0.631017),
         new(Config, ColourSpace.Rgb, 0.988362, 0.998364, 0.644924)
-    };
+    ];
 }

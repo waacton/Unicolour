@@ -23,7 +23,7 @@ public class CamConfiguration
     
     internal static double LuxToLuminance(double lux) => lux / Math.PI / 5.0;
     private const double DefaultHctLightness = 50; // just for HCT, use specific XYZ configuration
-    private static double DefaultHctY() => Lab.ToXyz(new Lab(DefaultHctLightness, 0, 0), XyzConfiguration.D65).Y;
+    private static double DefaultHctY() => Lab.ToXyz(new Lab(DefaultHctLightness, 0, 0), XyzConfiguration.D65.WhitePoint).Y;
     
     public WhitePoint WhitePoint { get; }
     public double AdaptingLuminance { get; } // [L_A] Luminance of adapting field (brightness of the room where the colour is being viewed)

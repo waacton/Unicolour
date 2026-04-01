@@ -321,7 +321,7 @@ void ConfigManual()
         toLinear: value => Math.Pow(value, 2.19921875)
     );
 
-    var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
+    var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, ChromaticAdaptation.VonKries);
 
     var config = new Configuration(rgbConfig, xyzConfig);
     var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);

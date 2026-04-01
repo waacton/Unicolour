@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public record Wxy : ColourRepresentation
 {
@@ -7,16 +9,13 @@ public record Wxy : ColourRepresentation
     public double X => Second;
     public double Y => Third;
     
-    public double DominantWavelength => W;
-    public double ExcitationPurity => X;
-    public double Luminance => Y;
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsAchromatic => false;
     
-    internal override bool IsGreyscale => ExcitationPurity <= 0.0 || Luminance <= 0.0;
-    
-    public Wxy(double w, double x, double y) : this(w, x, y, ColourHeritage.None) {}
-    internal Wxy(double w, double x, double y, ColourHeritage heritage) : base(w, x, y, heritage) { }
-    
-    protected override string String => UseAsHued ? $"{W:F1}nm {X * 100:F1}% {Y:F4}%" : $"—nm {X * 100:F1}% {Y:F4}%";
+    public Wxy(double w, double x, double y) : this(w, x, y, Limitation.None) {}
+    internal Wxy(double w, double x, double y, Limitation limitation) : base(w, x, y, limitation) { }
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{W:F1}nm {X * 100:F1}% {Y:F4}%" : $"{NoHue}nm {X * 100:F1}% {Y:F4}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -25,43 +24,36 @@ public record Wxy : ColourRepresentation
      * Reverse: n/a - my own concoction
      */
     
-    internal static Wxy FromXyy(Xyy xyy, XyzConfiguration xyzConfig)
+    internal static Wxy FromXyy(Xyy xyy, SpectralBoundary spectralBoundary)
     {
         var chromaticity = xyy.Chromaticity;
         var luminance = xyy.Luminance;
         
-        var result = xyy.UseAsNaN || xyy.UseAsGreyscale
+        var result = xyy.Limitation is Limitation.NaN or Limitation.Achromatic
             ? null
-            : xyzConfig.SpectralBoundary.GetWavelengthAndPurity(chromaticity);
+            : spectralBoundary.GetWavelengthAndPurity(chromaticity);
 
-        var w = result?.dominantWavelength ?? SpectralBoundary.MinWavelength;
-        var x = result?.excitationPurity ?? 0;
+        var w = result?.wavelength ?? SpectralBoundary.MinWavelength;
+        var x = result?.purity ?? 0;
         var y = luminance;
-        return new Wxy(w, x, y, ColourHeritage.From(xyy));
+        return new Wxy(w, x, y, xyy.Limitation);
     }
     
-    internal static Xyy ToXyy(Wxy wxy, XyzConfiguration xyzConfig)
+    internal static Xyy ToXyy(Wxy wxy, SpectralBoundary spectralBoundary)
     {
         var (wavelength, purity, luminance) = wxy;
         
-        Chromaticity chromaticity;
-        if (wxy.UseAsNaN)
+        var chromaticity = wxy.Limitation switch
         {
-            chromaticity = new(double.NaN, double.NaN);
-        }
-        else if (wxy.UseAsGreyscale)
-        {
-            chromaticity = xyzConfig.WhiteChromaticity;
-        }
-        else
-        {
-            chromaticity = xyzConfig.SpectralBoundary.GetChromaticity(wavelength, purity);
-        }
+            Limitation.NaN => new Chromaticity(double.NaN, double.NaN),
+            Limitation.Achromatic => spectralBoundary.WhitePoint.Chromaticity,
+            _ => spectralBoundary.GetChromaticity(wavelength, purity)
+        };
 
-        return new Xyy(chromaticity.X, chromaticity.Y, luminance, ColourHeritage.From(wxy));
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance, spectralBoundary.WhitePoint, wxy.Limitation);
     }
     
-    internal static double WavelengthToDegree(double wavelength, XyzConfiguration xyzConfig)
+    internal static double WavelengthToDegree(double wavelength, SpectralBoundary spectralBoundary)
     {
         if (double.IsNaN(wavelength)) return double.NaN;
 
@@ -75,7 +67,7 @@ public record Wxy : ColourRepresentation
         }
         else
         {
-            var (min, max) = (xyzConfig.SpectralBoundary.MinNegativeWavelength, xyzConfig.SpectralBoundary.MaxNegativeWavelength);
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
             var clamped = wavelength.Clamp(min, max);
             var normalised = 1 - (clamped - min) / (max - min);
             degree = 180 + normalised * 180;
@@ -84,7 +76,7 @@ public record Wxy : ColourRepresentation
         return degree;
     } 
     
-    internal static double DegreeToWavelength(double degree, XyzConfiguration xyzConfig)
+    internal static double DegreeToWavelength(double degree, SpectralBoundary spectralBoundary)
     {
         if (double.IsNaN(degree)) return double.NaN;
 
@@ -97,7 +89,7 @@ public record Wxy : ColourRepresentation
         }
         else
         {
-            var (min, max) = (xyzConfig.SpectralBoundary.MinNegativeWavelength, xyzConfig.SpectralBoundary.MaxNegativeWavelength);
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
             var normalised = 1 - (degree - 180) / 180.0;
             wavelength = normalised * (max - min) + min;
         }

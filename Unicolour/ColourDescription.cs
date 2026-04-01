@@ -36,20 +36,21 @@ internal record ColourDescription(string description)
     internal static readonly ColourDescription Magenta = new(nameof(Magenta)); 
     internal static readonly ColourDescription Rose = new(nameof(Rose));
 
-    internal static readonly List<ColourDescription> Lightnesses = new() { Shadow, Dark, Pure, Light, Pale };
-    internal static readonly List<ColourDescription> Saturations = new() { Faint, Weak, Mild, Strong, Vibrant };
-    internal static readonly List<ColourDescription> Hues = new() { Red, Orange, Yellow, Chartreuse, Green, Mint, Cyan, Azure, Blue, Violet, Magenta, Rose };
-    internal static readonly List<ColourDescription> Greyscales = new() { Black, Grey, White };
+    internal static readonly List<ColourDescription> Lightnesses = [Shadow, Dark, Pure, Light, Pale];
+    internal static readonly List<ColourDescription> Saturations = [Faint, Weak, Mild, Strong, Vibrant];
+    internal static readonly List<ColourDescription> Hues = [Red, Orange, Yellow, Chartreuse, Green, Mint, Cyan, Azure, Blue, Violet, Magenta, Rose];
+    internal static readonly List<ColourDescription> Greyscales = [Black, Grey, White];
     
     internal static IEnumerable<ColourDescription> Get(Hsl hsl)
     {
-        if (hsl.UseAsNaN) return new List<ColourDescription> { NotApplicable };
+        if (hsl.Limitation == Limitation.NaN) return [NotApplicable];
 
-        var (h, s, l) = hsl.ConstrainedTriplet;
+        var (h, s, l) = hsl.WithHueModulo();
+        
         switch (l)
         {
-            case <= 0: return new List<ColourDescription> { Black };
-            case >= 1: return new List<ColourDescription> { White };
+            case <= 0: return [Black];
+            case >= 1: return [White];
         }
 
         var lightness = l switch
@@ -60,8 +61,11 @@ internal record ColourDescription(string description)
             < 0.80 => Light,
             _ => Pale
         };
-
-        if (hsl.UseAsGreyscale) return new List<ColourDescription> { lightness, Grey };
+        
+         // could be argued that HSL (180, 0, 0.5) should actually say "faint cyan" or "colourless cyan" instead of "grey"
+         // but "grey" is compatible with existing behaviour, and is what most users would expect when seeing a colour that APPEARS achromatic
+        var isGrey = hsl.Limitation == Limitation.Achromatic || s <= 0;
+        if (isGrey) return [lightness, Grey];
 
         var strength = s switch
         {
@@ -89,7 +93,7 @@ internal record ColourDescription(string description)
             _ => Red
         };
 
-        return new List<ColourDescription> { lightness, strength, hue };
+        return [lightness, strength, hue];
     }
     
     public override string ToString() => description.ToLower();

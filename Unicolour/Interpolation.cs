@@ -12,11 +12,11 @@ internal static class Interpolation
         var endAlpha = end.Alpha;
 
         Func<double, double> mapToDegree = colourSpace == ColourSpace.Wxy
-            ? value => Wxy.WavelengthToDegree(value, config.Xyz)
+            ? value => Wxy.WavelengthToDegree(value, config.Xyz.SpectralBoundary)
             : value => value;
         
         Func<double, double> mapFromDegree = colourSpace == ColourSpace.Wxy
-            ? value => Wxy.DegreeToWavelength(value, config.Xyz)
+            ? value => Wxy.DegreeToWavelength(value, config.Xyz.SpectralBoundary)
             : value => value;
 
         var (startTriplet, endTriplet) = GetTripletsToInterpolate(
@@ -25,17 +25,16 @@ internal static class Interpolation
             hueSpan, premultiplyAlpha, mapToDegree);
         
         var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithDegreeMap(mapFromDegree);
-        var alpha = Linear(startColour.Alpha.ConstrainedA, endColour.Alpha.ConstrainedA, distance);
+        var alpha = Linear(startColour.Alpha.Clipped.A, endColour.Alpha.Clipped.A, distance);
         
         if (premultiplyAlpha)
         {
             triplet = triplet.WithUnpremultipliedAlpha(alpha);
         }
         
-        var heritage = ColourHeritage.From(startRepresentation, endRepresentation);
+        var limitation = InterpolateLimitation(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
-        
-        return new Unicolour(config, heritage, colourSpace, first, second, third, alpha);
+        return new Unicolour(config, limitation, colourSpace, first, second, third, alpha);
     }
     
     internal static IEnumerable<Unicolour> Palette(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, int count, HueSpan hueSpan, bool premultiplyAlpha)
@@ -43,7 +42,7 @@ internal static class Interpolation
         count = Math.Max(count, 0);
         var (start, end, _) = AdjustConfig(startColour, endColour); // saves doing this N times via Mix() if configs are different
         
-        var palette = new List<Unicolour>();
+        List<Unicolour> palette = [];
         for (var i = 0; i < count; i++)
         {
             var distance = count == 1 ? 0.5 : i / (double)(count - 1);
@@ -84,8 +83,8 @@ internal static class Interpolation
         
         if (premultiplyAlpha)
         {
-            startTriplet = startTriplet.WithPremultipliedAlpha(start.alpha.ConstrainedA);
-            endTriplet = endTriplet.WithPremultipliedAlpha(end.alpha.ConstrainedA);
+            startTriplet = startTriplet.WithPremultipliedAlpha(start.alpha.Clipped.A);
+            endTriplet = endTriplet.WithPremultipliedAlpha(end.alpha.Clipped.A);
         }
 
         return (startTriplet, endTriplet);
@@ -98,13 +97,24 @@ internal static class Interpolation
         var startTriplet = startRepresentation.Triplet.WithDegreeMap(mapToDegree).WithHueModulo(allow360: true);
         var endTriplet = endRepresentation.Triplet.WithDegreeMap(mapToDegree).WithHueModulo(allow360: true);
 
-        var startHasHue = startRepresentation.UseAsHued;
-        var endHasHue = endRepresentation.UseAsHued;
-        var ignoreHue = !startHasHue && !endHasHue;
-        
-        // don't change hue if one colour is greyscale (e.g. black n/a° to green 120° should always stay at hue 120°)
-        var startHue = ignoreHue || startHasHue ? startTriplet.HueValue() : endTriplet.HueValue();
-        var endHue = ignoreHue || endHasHue ? endTriplet.HueValue() : startTriplet.HueValue();
+        var startAchromatic = startRepresentation.Limitation == Limitation.Achromatic;
+        var endAchromatic = endRepresentation.Limitation == Limitation.Achromatic;
+
+        double startHue, endHue;
+        if (startAchromatic ^ endAchromatic)
+        {
+            // if only one colour is achromatic, use only the hue of the chromatic colour
+            // e.g. black n/a° to green 120° should always stay at hue 120°
+            startHue = startAchromatic ? endTriplet.HueValue() : startTriplet.HueValue();
+            endHue = endAchromatic ? startTriplet.HueValue() : endTriplet.HueValue();
+        }
+        else
+        {
+            // if both colours are chromatic, interpolate between hues as normal
+            // if both colours are achromatic, there is no 'correct' hue, so interpolate between the powerless hue values
+            startHue = startTriplet.HueValue();
+            endHue = endTriplet.HueValue();
+        }
         
         (startHue, endHue) = Hue.Unwrap(startHue, endHue, hueSpan);
         var adjustedStartHue = startTriplet.WithHueOverride(startHue);
@@ -124,5 +134,19 @@ internal static class Interpolation
     {
         var difference = endValue - startValue;
         return startValue + difference * distance;
+    }
+    
+    internal static Limitation InterpolateLimitation(ColourRepresentation colour1, ColourRepresentation colour2)
+    {
+        var first = colour1.Limitation;
+        var second = colour2.Limitation;
+
+        var eitherNaN = first == Limitation.NaN || second == Limitation.NaN;
+        if (eitherNaN) return Limitation.NaN;
+        
+        var bothAchromatic = first == Limitation.Achromatic && second == Limitation.Achromatic;
+        if (bothAchromatic) return Limitation.Achromatic;
+        
+        return Limitation.None;
     }
 }

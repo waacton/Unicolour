@@ -97,6 +97,6 @@ public class MixGreyscaleWxyTests
         TestUtils.AssertTriplet(actualWithDegree, expected, TestUtils.MixTolerance);
     }
     
-    private static double ToWavelength(double wavelength) => Wxy.DegreeToWavelength(wavelength, XyzConfiguration.D65);
-    private static double ToDegree(double wavelength) => Wxy.WavelengthToDegree(wavelength, XyzConfiguration.D65);
+    private static double ToWavelength(double wavelength) => Wxy.DegreeToWavelength(wavelength, XyzConfiguration.D65.SpectralBoundary);
+    private static double ToDegree(double wavelength) => Wxy.WavelengthToDegree(wavelength, XyzConfiguration.D65.SpectralBoundary);
 }

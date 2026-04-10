@@ -10,6 +10,7 @@ public record Ypbpr : ColourRepresentation
     protected override bool IsAchromatic => Pb == 0.0 && Pr == 0.0;
     
     public Ypbpr(double y, double pb, double pr) : this(y, pb, pr, Limitation.None) {}
+    public Ypbpr(double y) : this(y, 0, 0, Limitation.Achromatic) {}
     internal Ypbpr(double y, double pb, double pr, Limitation limitation) : base(y, pb, pr, limitation) {}
     
     protected override string String => $"{Y:F3} {Pb:+0.000;-0.000;0.000} {Pr:+0.000;-0.000;0.000}";

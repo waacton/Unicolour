@@ -10,6 +10,7 @@ public record Ydbdr : ColourRepresentation
     protected override bool IsAchromatic => Db == 0.0 && Dr == 0.0;
     
     public Ydbdr(double y, double db, double dr) : this(y, db, dr, Limitation.None) {}
+    public Ydbdr(double y) : this(y, 0, 0, Limitation.Achromatic) {}
     internal Ydbdr(double y, double db, double dr, Limitation limitation) : base(y, db, dr, limitation) {}
     
     protected override string String => $"{Y:F3} {Db:+0.000;-0.000;0.000} {Dr:+0.000;-0.000;0.000}";

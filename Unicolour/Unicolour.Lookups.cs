@@ -50,9 +50,7 @@ public partial class Unicolour
         };
     }
     
-    private static ColourRepresentation CreateRepresentation(
-        ColourSpace colourSpace, double first, double second, double third, 
-        Configuration config, Limitation limitation)
+    private static ColourRepresentation CreateRepresentation(ColourSpace colourSpace, double first, double second, double third, Configuration config, Limitation limitation)
     {
         return colourSpace switch
         {
@@ -95,6 +93,53 @@ public partial class Unicolour
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, limitation),
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
+            _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
+        };
+    }
+    
+    private static ColourRepresentation CreateRepresentation(ColourSpace colourSpace, double grey, Configuration config)
+    {
+        return colourSpace switch
+        {
+            ColourSpace.Rgb => new Rgb(grey),
+            ColourSpace.RgbLinear => new RgbLinear(grey),
+            ColourSpace.Hsb => new Hsb(grey),
+            ColourSpace.Hsl => new Hsl(grey),
+            ColourSpace.Hwb => new Hwb(grey),
+            ColourSpace.Hsi => new Hsi(grey),
+            ColourSpace.Xyz => new Xyz(grey, config.Xyz.WhitePoint),
+            ColourSpace.Xyy => new Xyy(grey, config.Xyz.WhitePoint),
+            ColourSpace.Wxy => new Wxy(grey),
+            ColourSpace.Lab => new Lab(grey),
+            ColourSpace.Lchab => new Lchab(grey),
+            ColourSpace.Luv => new Luv(grey),
+            ColourSpace.Lchuv => new Lchuv(grey),
+            ColourSpace.Hsluv => new Hsluv(grey),
+            ColourSpace.Hpluv => new Hpluv(grey),
+            ColourSpace.Ypbpr => new Ypbpr(grey),
+            ColourSpace.Ycbcr => new Ycbcr(grey),
+            ColourSpace.Ycgco => new Ycgco(grey),
+            ColourSpace.Yuv => new Yuv(grey),
+            ColourSpace.Yiq => new Yiq(grey),
+            ColourSpace.Ydbdr => new Ydbdr(grey),
+            ColourSpace.Tsl => new Tsl(grey),
+            ColourSpace.Xyb => new Xyb(grey),
+            ColourSpace.Lms => new Lms(grey),
+            ColourSpace.Ipt => new Ipt(grey),
+            ColourSpace.Ictcp => new Ictcp(grey),
+            ColourSpace.Jzazbz => new Jzazbz(grey),
+            ColourSpace.Jzczhz => new Jzczhz(grey),
+            ColourSpace.Oklab => new Oklab(grey),
+            ColourSpace.Oklch => new Oklch(grey),
+            ColourSpace.Okhsv => new Okhsv(grey),
+            ColourSpace.Okhsl => new Okhsl(grey),
+            ColourSpace.Okhwb => new Okhwb(grey),
+            ColourSpace.Oklrab => new Oklrab(grey),
+            ColourSpace.Oklrch => new Oklrch(grey),
+            ColourSpace.Cam02 => new Cam02(grey, config.Cam),
+            ColourSpace.Cam16 => new Cam16(grey, config.Cam),
+            ColourSpace.Hct => new Hct(grey),
+            ColourSpace.Munsell => new Munsell(grey),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }

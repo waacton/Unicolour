@@ -26,8 +26,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbStandardXyzD65, 0, 1, 1, 491.4).SetName("sRGB, D65, Cyan"),
         new TestCaseData(RgbStandardXyzD65, 1, 0, 1, -549.1).SetName("sRGB, D65, Magenta"),
         new TestCaseData(RgbStandardXyzD65, 1, 1, 0, 570.5).SetName("sRGB, D65, Yellow"),
-        new TestCaseData(RgbStandardXyzD65, 1, 1, 1, double.NaN).SetName("sRGB, D65, White"),
-        new TestCaseData(RgbStandardXyzD65, 0, 0, 0, double.NaN).SetName("sRGB, D65, Black"),
 
         new TestCaseData(RgbStandardXyzE, 1, 0, 0, 612.1).SetName("sRGB, E, Red"),
         new TestCaseData(RgbStandardXyzE, 0, 1, 0, 552.6).SetName("sRGB, E, Green"),
@@ -35,8 +33,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbStandardXyzE, 0, 1, 1, 491.8).SetName("sRGB, E, Cyan"),
         new TestCaseData(RgbStandardXyzE, 1, 0, 1, -552.6).SetName("sRGB, E, Magenta"),
         new TestCaseData(RgbStandardXyzE, 1, 1, 0, 573.2).SetName("sRGB, E, Yellow"),
-        new TestCaseData(RgbStandardXyzE, 1, 1, 1, double.NaN).SetName("sRGB, E, White"),
-        new TestCaseData(RgbStandardXyzE, 0, 0, 0, double.NaN).SetName("sRGB, E, Black"),
 
         new TestCaseData(RgbA98XyzD65, 1, 0, 0, 611.4).SetName("A98, D65, Red"),
         new TestCaseData(RgbA98XyzD65, 0, 1, 0, 534.7).SetName("A98, D65, Green"),
@@ -44,8 +40,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbA98XyzD65, 0, 1, 1, 491.4).SetName("A98, D65, Cyan"),
         new TestCaseData(RgbA98XyzD65, 1, 0, 1, -534.7).SetName("A98, D65, Magenta"),
         new TestCaseData(RgbA98XyzD65, 1, 1, 0, 570.5).SetName("A98, D65, Yellow"),
-        new TestCaseData(RgbA98XyzD65, 1, 1, 1, double.NaN).SetName("A98, D65, White"),
-        new TestCaseData(RgbA98XyzD65, 0, 0, 0, double.NaN).SetName("A98, D65, Black"),
 
         new TestCaseData(RgbA98XyzD50, 1, 0, 0, 611.8).SetName("A98, D50, Red"),
         new TestCaseData(RgbA98XyzD50, 0, 1, 0, 536.9).SetName("A98, D50, Green"),
@@ -53,8 +47,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbA98XyzD50, 0, 1, 1, 493.9).SetName("A98, D50, Cyan"),
         new TestCaseData(RgbA98XyzD50, 1, 0, 1, -536.9).SetName("A98, D50, Magenta"),
         new TestCaseData(RgbA98XyzD50, 1, 1, 0, 572.5).SetName("A98, D50, Yellow"),
-        new TestCaseData(RgbA98XyzD50, 1, 1, 1, double.NaN).SetName("A98, D50, White"),
-        new TestCaseData(RgbA98XyzD50, 0, 0, 0, double.NaN).SetName("A98, D50, Black"),
 
         new TestCaseData(RgbProPhotoXyzE, 1, 0, 0, -493.8).SetName("ProPhoto, E, Red"),
         new TestCaseData(RgbProPhotoXyzE, 0, 1, 0, 534.1).SetName("ProPhoto, E, Green"),
@@ -62,8 +54,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbProPhotoXyzE, 0, 1, 1, 493.8).SetName("ProPhoto, E, Cyan"),
         new TestCaseData(RgbProPhotoXyzE, 1, 0, 1, -534.1).SetName("ProPhoto, E, Magenta"),
         new TestCaseData(RgbProPhotoXyzE, 1, 1, 0, 576.1).SetName("ProPhoto, E, Yellow"),
-        new TestCaseData(RgbProPhotoXyzE, 1, 1, 1, double.NaN).SetName("ProPhoto, E, White"),
-        new TestCaseData(RgbProPhotoXyzE, 0, 0, 0, double.NaN).SetName("ProPhoto, E, Black"),
 
         new TestCaseData(RgbProPhotoXyzA, 1, 0, 0, 638.7).SetName("ProPhoto, A, Red"),
         new TestCaseData(RgbProPhotoXyzA, 0, 1, 0, 540.3).SetName("ProPhoto, A, Green"),
@@ -71,8 +61,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbProPhotoXyzA, 0, 1, 1, 503.2).SetName("ProPhoto, A, Cyan"),
         new TestCaseData(RgbProPhotoXyzA, 1, 0, 1, -540.3).SetName("ProPhoto, A, Magenta"),
         new TestCaseData(RgbProPhotoXyzA, 1, 1, 0, 582.7).SetName("ProPhoto, A, Yellow"),
-        new TestCaseData(RgbProPhotoXyzA, 1, 1, 1, double.NaN).SetName("ProPhoto, A, White"),
-        new TestCaseData(RgbProPhotoXyzA, 0, 0, 0, double.NaN).SetName("ProPhoto, A, Black"),
 
         new TestCaseData(RgbProPhotoXyzD75, 1, 0, 0, -492.3).SetName("ProPhoto, D75, Red"),
         new TestCaseData(RgbProPhotoXyzD75, 0, 1, 0, 530.2).SetName("ProPhoto, D75, Green"),
@@ -80,8 +68,6 @@ public class DominantWavelengthTests
         new TestCaseData(RgbProPhotoXyzD75, 0, 1, 1, 492.3).SetName("ProPhoto, D75, Cyan"),
         new TestCaseData(RgbProPhotoXyzD75, 1, 0, 1, -530.2).SetName("ProPhoto, D75, Magenta"),
         new TestCaseData(RgbProPhotoXyzD75, 1, 1, 0, 572.7).SetName("ProPhoto, D75, Yellow"),
-        new TestCaseData(RgbProPhotoXyzD75, 1, 1, 1, double.NaN).SetName("ProPhoto, D75, White"),
-        new TestCaseData(RgbProPhotoXyzD75, 0, 0, 0, double.NaN).SetName("ProPhoto, D75, Black")
     ];
     
     [TestCaseSource(nameof(RgbTestData))]

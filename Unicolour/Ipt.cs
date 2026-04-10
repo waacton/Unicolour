@@ -10,6 +10,7 @@ public record Ipt : ColourRepresentation
     protected override bool IsAchromatic => P == 0.0 && T == 0.0;
     
     public Ipt(double i, double p, double t) : this(i, p, t, Limitation.None) {}
+    public Ipt(double i) : this(i, 0, 0, Limitation.Achromatic) {}
     internal Ipt(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Ipt(double i, double p, double t, Limitation limitation) : base(i, p, t, limitation) {}
     

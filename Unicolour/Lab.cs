@@ -12,6 +12,7 @@ public record Lab : ColourRepresentation
     protected override bool IsAchromatic => A == 0.0 && B == 0.0;
     
     public Lab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
+    public Lab(double l) : this(l, 0, 0, Limitation.Achromatic) {}
     internal Lab(double l, double a, double b, Limitation limitation) : base(l, a, b, limitation) {}
     
     protected override string String => $"{L:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";

@@ -12,6 +12,7 @@ public record Oklab : ColourRepresentation
     protected override bool IsAchromatic => A == 0.0 && B == 0.0;
     
     public Oklab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
+    public Oklab(double l) : this(l, 0, 0, Limitation.Achromatic) {}
     internal Oklab(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Oklab(double l, double a, double b, Limitation limitation) : base(l, a, b, limitation) {}
     

@@ -13,6 +13,7 @@ public record Hpluv : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Hpluv(double h, double s, double l) : this(h, s, l, Limitation.None) {}
+    public Hpluv(double l) : this(0, 0, l, Limitation.Achromatic) {}
     internal Hpluv(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S:F1}% {L:F1}%" : $"{NoHue}° {S:F1}% {L:F1}%";
@@ -31,16 +32,26 @@ public record Hpluv : ColourRepresentation
     internal static Hpluv FromLchuv(Lchuv lchuv)
     {
         var (l, c, h) = lchuv.WithHueModulo();
-        var maxC = CalculateMaxChroma(l);
-        var s = lchuv.Limitation == Limitation.Achromatic || double.IsNaN(maxC) ? 0 : c / maxC * 100;
+        var s = l switch
+        {
+            > 99.9999999 => 0,
+            < 0.00000001 => 0,
+            _ => c / CalculateMaxChroma(l) * 100
+        };
+        
         return new Hpluv(h, s, l, lchuv.Limitation);
     }
     
     internal static Lchuv ToLchuv(Hpluv hpluv)
     {
         var (h, s, l) = hpluv.WithHueModulo();
-        var maxC = CalculateMaxChroma(l);
-        var c = double.IsNaN(maxC) || s == 0 ? 0 : maxC / 100 * s;
+        var c = l switch
+        {
+            > 99.9999999 => 0,
+            < 0.00000001 => 0,
+            _ => s == 0 ? 0 : CalculateMaxChroma(l) / 100 * s
+        };
+        
         return new Lchuv(l, c, h, hpluv.Limitation);
     }
     

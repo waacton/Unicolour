@@ -12,21 +12,28 @@ public abstract record ColourRepresentation
     public (double, double, double) Tuple => (First, Second, Third);
     
     protected abstract bool IsAchromatic { get; }
+    internal bool IsNaN => Limitation == Limitation.NaN;
     
     /*
-     * limitation is used to enforce behaviour on downstream conversions, achromaticity in particular
-     * e.g. RGB 1 1 1 converts to LAB 99.999... 0 -2E-14
-     * - the original RGB values represent an achromatic colour (grey)
-     * - the result LAB values represent a chromatic colour, because B != 0
-     * - in reality, because LAB was calculated from achromatic RGB, it must inherit that achromaticity, even if the values suggest chromatic
-     * this is mostly useful to ensure correct interpolation and distinguishes between e.g.
-     * - A) HSB 0 0 0 from direct user input (red with no saturation or brightness)
-     * - B) HSB 0 0 0 from RGB 0 0 0 (achromatic black where the hue value is irrelevant and 0 is a fallback value)
-     * - mixing A with HSB 240 1 1 (blue) should traverse the hues between 0 (red) and 240 (blue)
-     * - mixing B with HSB 240 1 1 (blue) should ignore 0 (red) hue and use 240 (blue) hue for all interpolated colours
-     * so it's important to note that greyscale != achromatic
-     * a colour like HSB 180 0 0 looks grey but still has chroma information encoded (green hue)
-     * the achromatic limitation flags when chroma information has truly been lost, and cannot be recovered
+     * ℹ️
+     * limitation is NOT intended for use outside of interpolation and unit tests
+     * conversions should make decisions based on the actual values, not based on propagated limitations
+     * colour spaces such as CAM02, CAM16, HCT seem to have a different perception of what achromatic colour is
+     * (i.e. xyY white point chromaticity is converted to a CAM that has non-negligible chroma, and CAM-UCS of 0 chroma is not mapped to white point chromaticity)
+     * so while it is used to make hue-handling decisions during interpolation, it should not be used to bypass conversion formula
+     * ℹ️
+     * ----------
+     * limitation is used to maintain consistent behaviour of downstream representations
+     * e.g. if double.NaN is somehow turned into a 0 during conversion, still want NaN-checks to return true
+     * e.g. RGB 0 0 0 is achromatic but HSB 0 0 0 is not (it has a specific hue value of 0 = red)
+     *      a colour defined using RGB 0 0 0 and interpolated through HSB should ignore the hue value (source colour is achromatic)
+     *      a colour defined using HSB 0 0 0 and interpolated through HSB should include the hue value (source colour is grey but has an explicit hue of 0)
+     * e.g. RGB 1 1 1 is achromatic and LUV 100 0 0 is achromatic
+     *      but the conversion formula gives RGB 1 1 1 --> LUV 99.99999999999999, -7.216449660063516E-14, 0
+     *      and while -7E-14 is small, it is not zero, so LUV itself will not report achromatic limitation
+     *      in order to interpolate through LCHUV correctly, the original achromatic limitation has to be passed from RGB -> RGB-Linear -> XYZ -> LUV -> LCHUV
+     * ----------     
+     * 💡 greyscale != achromatic · achromatic limitation flags when chroma information has truly been lost, and cannot be recovered
      */
     internal Limitation LimitationBaseline { get; }
     internal Limitation Limitation
@@ -57,6 +64,6 @@ public abstract record ColourRepresentation
     }
     
     protected abstract string String { get; }
-    public override string ToString() => Limitation == Limitation.NaN ? $"NaN [{String}]" : String;
+    public override string ToString() => IsNaN ? $"NaN [{String}]" : String;
 }
 

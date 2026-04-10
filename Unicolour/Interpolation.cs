@@ -34,7 +34,7 @@ internal static class Interpolation
         
         var limitation = InterpolateLimitation(startRepresentation, endRepresentation);
         var (first, second, third) = triplet;
-        return new Unicolour(config, limitation, colourSpace, first, second, third, alpha);
+        return new Unicolour(config, colourSpace, first, second, third, alpha, limitation);
     }
     
     internal static IEnumerable<Unicolour> Palette(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, int count, HueSpan hueSpan, bool premultiplyAlpha)
@@ -135,8 +135,8 @@ internal static class Interpolation
         var difference = endValue - startValue;
         return startValue + difference * distance;
     }
-    
-    internal static Limitation InterpolateLimitation(ColourRepresentation colour1, ColourRepresentation colour2)
+
+    private static Limitation InterpolateLimitation(ColourRepresentation colour1, ColourRepresentation colour2)
     {
         var first = colour1.Limitation;
         var second = colour2.Limitation;

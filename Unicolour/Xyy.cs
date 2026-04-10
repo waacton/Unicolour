@@ -9,8 +9,9 @@ public record Xyy : ColourRepresentation
     internal WhitePoint WhitePoint { get; }
     protected override bool IsAchromatic => Chromaticity == WhitePoint.Chromaticity;
 
-    public Xyy(double x, double y, double upperY, WhitePoint whitePoint) : this(x, y, upperY, whitePoint, Limitation.None) {}
-    internal Xyy(double x, double y, double upperY, WhitePoint whitePoint, Limitation limitation) : base(x, y, upperY, limitation)
+    public Xyy(double x, double y, double luminance, WhitePoint whitePoint) : this(x, y, luminance, whitePoint, Limitation.None) {}
+    public Xyy(double luminance, WhitePoint whitePoint) : this(whitePoint.Chromaticity.X, whitePoint.Chromaticity.Y, luminance, whitePoint, Limitation.Achromatic) {}
+    internal Xyy(double x, double y, double luminance, WhitePoint whitePoint, Limitation limitation) : base(x, y, luminance, limitation)
     {
         WhitePoint = whitePoint;
     }
@@ -53,11 +54,11 @@ public record Xyy : ColourRepresentation
     // only intended for use to define actual white points (which themselves are the context!)
     internal static (double x, double y, double z) ToXyz(Chromaticity chromaticity, double luminance)
     {
-        // X and Z become a vertical asymptote when chromaticty.Y == 0, so neither positive or negative infinity are suitable
+        // X and Z become a vertical asymptote when chromaticity.Y == 0, so neither positive or negative infinity are suitable
         var useFallback = chromaticity.Y == 0.0;
         if (useFallback)
         {
-            return (double.NaN, luminance, double.NaN);
+            return (0, luminance, 0);
         }
         
         var factor = luminance / chromaticity.Y;

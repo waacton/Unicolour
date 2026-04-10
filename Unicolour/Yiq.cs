@@ -12,6 +12,7 @@ public record Yiq : ColourRepresentation
     protected override bool IsAchromatic => I == 0.0 && Q == 0.0;
     
     public Yiq(double y, double i, double q) : this(y, i, q, Limitation.None) {}
+    public Yiq(double y) : this(y, 0, 0, Limitation.Achromatic) {}
     internal Yiq(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Yiq(double y, double i, double q, Limitation limitation) : base(y, i, q, limitation) {}
     

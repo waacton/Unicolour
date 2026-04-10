@@ -52,9 +52,14 @@ public class MixGreyscaleMunsellTests
     [Test]
     public void GreyscaleBothRgbColours()
     {
-        var black = new Unicolour(ColourSpace.RgbLinear, 0.0, 0.0, 0.0);
-        var white = new Unicolour(ColourSpace.RgbLinear, 1.0, 1.0, 1.0);
-        var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+        // avoids rounding error of using D65 white point, where sample chromaticity is not perfectly equal to reference white chromaticity
+        // the only difference is the munsell hue does not default to 0, which is fine but makes this test harder to predict
+        var whitePoint = new WhitePoint(0.5, 0.5);
+        var config = new Configuration(xyzConfig: new(whitePoint));
+        
+        var black = new Unicolour(config, ColourSpace.RgbLinear, 0, 0, 0.0);
+        var white = new Unicolour(config, ColourSpace.RgbLinear, 1, 1, 1.0);
+        var grey = new Unicolour(config, ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
 
         var blackToWhite = black.Mix(white, ColourSpace.Munsell, premultiplyAlpha: false);
         var blackToGrey = black.Mix(grey, ColourSpace.Munsell, premultiplyAlpha: false);
@@ -93,10 +98,6 @@ public class MixGreyscaleMunsellTests
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        var actualWithDegree = actual.WithDegreeMap(ToDegree).WithHueModulo();
-        TestUtils.AssertTriplet(actualWithDegree, expected, TestUtils.MixTolerance);
+        TestUtils.AssertTriplet(actual, expected, TestUtils.MixTolerance);
     }
-    
-    private static double ToWavelength(double wavelength) => wavelength;
-    private static double ToDegree(double wavelength) => wavelength;
 }

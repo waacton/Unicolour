@@ -183,9 +183,9 @@ public class EqualityTests
             AssertEqual(colour1.Xyz.HctToXyzSearchResult, colour2.Xyz.HctToXyzSearchResult);
         }
         
-        if (colour1.Munsell.XyyToMunsellSearchResult != null)
+        if (colour1.Munsell.XyyToHvcSearchResult != null)
         {
-            AssertEqual(colour1.Munsell.XyyToMunsellSearchResult, colour2.Munsell.XyyToMunsellSearchResult);
+            AssertEqual(colour1.Munsell.XyyToHvcSearchResult, colour2.Munsell.XyyToHvcSearchResult);
         }
 
         AssertConfigurationEqual(colour1.Configuration, colour2.Configuration);

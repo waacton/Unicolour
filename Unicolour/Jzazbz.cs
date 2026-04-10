@@ -10,6 +10,7 @@ public record Jzazbz : ColourRepresentation
     protected override bool IsAchromatic => A == 0.0 && B == 0.0;
     
     public Jzazbz(double j, double a, double b) : this(j, a, b, Limitation.None) {}
+    public Jzazbz(double j) : this(j, 0, 0, Limitation.Achromatic) {}
     internal Jzazbz(double j, double a, double b, Limitation limitation) : base(j, a, b, limitation) {}
     
     protected override string String => $"{J:F3} {A:+0.000;-0.000;0.000} {B:+0.000;-0.000;0.000}";

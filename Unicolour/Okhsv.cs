@@ -12,8 +12,9 @@ public record Okhsv : ColourRepresentation
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
     protected override bool IsAchromatic => false;
     
-    public Okhsv(double h, double s, double v) : this(h, s, v, Limitation.None) { }
-    internal Okhsv(double h, double s, double v, Limitation limitation) : base(h, s, v, limitation) { }
+    public Okhsv(double h, double s, double v) : this(h, s, v, Limitation.None) {}
+    public Okhsv(double v) : this(0, 0, v, Limitation.Achromatic) {}
+    internal Okhsv(double h, double s, double v, Limitation limitation) : base(h, s, v, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {V * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {V * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -32,7 +33,7 @@ public record Okhsv : ColourRepresentation
     {
         var (l, a, b) = oklab;
         
-        if (oklab.Limitation == Limitation.Achromatic)
+        if (a == 0.0 && b == 0.0)
         {
             // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
             // which is when Oklab has no chroma information, so fall back to 0 saturation

@@ -39,8 +39,8 @@ public class KnownMunsellTests
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
     // CIE Y for illuminant C is ~0.975x MgO Y
     private const double MgoScale = 0.975;
-    
     private static readonly MunsellTestData[] XyyData = Munsell.Node.LookupCache.Values.Select(node => new MunsellTestData(node)).ToArray();
+    
     [TestCaseSource(nameof(XyyData))]
     public void KnownXyy(MunsellTestData data)
     {
@@ -120,7 +120,19 @@ public class KnownMunsellTests
     public void StandardRgbToMunsell(Munsell expectedMunsell, Rgb255 rgb)
     {
         var colour = new Unicolour(RgbDataConfig, ColourSpace.Rgb255, rgb.Tuple);
-        TestUtils.AssertColour(colour, expectedMunsell, 0.25);
+        
+        // achromatic values are not guaranteed to fall back to a default hue
+        // but V and C should be predictable, and the string representation should be aware of the achromatic limitation
+        if (rgb.Limitation == Limitation.Achromatic)
+        {
+            TestUtils.AssertColour(colour, new Munsell(colour.Munsell.H, expectedMunsell.V, expectedMunsell.C), 0.25);
+            Assert.That(colour.Munsell.ToString().StartsWith("N "));
+        }
+        else
+        {
+            TestUtils.AssertColour(colour, expectedMunsell, 0.25);
+            Assert.That(!colour.Munsell.ToString().StartsWith("N "));
+        }
     }
     
     [Test]
@@ -333,7 +345,7 @@ public class KnownMunsellTests
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         var polar = Polar(WhiteC, xyy.Chromaticity);
-        Assert.DoesNotThrow(() => Munsell.ModifyHue(munsell, polar.angle));
+        Assert.DoesNotThrow(() => Munsell.ModifyHue(munsell.H, munsell.V, munsell.C, polar.angle));
     }
 
     [Test] // no delta from exact polar radius match could result in divide-by-zero
@@ -342,14 +354,14 @@ public class KnownMunsellTests
         var munsell = new Munsell(10, "G", 4, 6);
         var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         var polar = Polar(WhiteC, xyy.Chromaticity);
-        Assert.DoesNotThrow(() => Munsell.ModifyChroma(munsell, polar.radius));
+        Assert.DoesNotThrow(() => Munsell.ModifyChroma(munsell.H, munsell.V, munsell.C, polar.radius));
     }
         
     [Test] // cannot converge, exits early instead of being stuck in loop
     public void ConvergeHueTooManyIterations() 
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        Munsell.ModifyHue(munsell, double.NaN);
+        Munsell.ModifyHue(munsell.H, munsell.V, munsell.C, double.NaN);
         Assert.Pass();
     }
     
@@ -357,7 +369,7 @@ public class KnownMunsellTests
     public void ConvergeChromaTooManyIterations()
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        Munsell.ModifyChroma(munsell, double.NaN);
+        Munsell.ModifyChroma(munsell.H, munsell.V, munsell.C, double.NaN);
         Assert.Pass();
     }
     
@@ -370,7 +382,13 @@ public class KnownMunsellTests
     {
         var xyy = new Xyy(0.4, 0.4, luminance, XyzConfigC.WhitePoint);
         var munsell = Munsell.FromXyy(xyy, XyzConfigC.ChromaticAdaptor);
-        Assert.That(munsell.Limitation == Limitation.Achromatic);
+        
+        // XYY is technically not the white point, so Munsell should not have an imposed limitation
+        // however, since there is no chroma data, the Munsell values are the exact white point
+        // (this manifests as the string representation "5R 0/0" instead of "N 0/" - it would be "N 0/" if using Xyy(0.3101, 0.3161) the actual C white point)
+        Assert.That(munsell.Limitation == Limitation.None);
+        TestUtils.AssertTriplet(munsell.Triplet, new(0, munsell.V, 0), 0);
+        Assert.That(munsell.ToString(), Is.EqualTo("5R 0/0").Or.EqualTo("5R -0/0"));
     }
 
     [Test]

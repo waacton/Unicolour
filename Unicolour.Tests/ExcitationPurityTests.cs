@@ -10,15 +10,14 @@ public class ExcitationPurityTests
     public void RgbGamut([Values(0, 255)] int r, [Values(0, 255)] int g, [Values(0, 255)] int b)
     {
         var colour = new Unicolour(ColourSpace.Rgb255, r, g, b);
-        var greyscale = r == g && g == b;
-        Assert.That(colour.ExcitationPurity, greyscale ? Is.NaN : Is.LessThan(1.0));
+        Assert.That(colour.ExcitationPurity, Is.LessThan(1.0));
     }
 
     [Test]
     public void Greyscale([Range(0, 1, 0.1)] double value)
     {
         var colour = new Unicolour(ColourSpace.Rgb, value, value, value);
-        Assert.That(colour.ExcitationPurity, Is.NaN);
+        Assert.That(colour.ExcitationPurity, Is.Zero.Within(1e-15));
     }
     
     private static readonly Dictionary<(Illuminant illuminant, Observer observer), Configuration> Configurations = new()

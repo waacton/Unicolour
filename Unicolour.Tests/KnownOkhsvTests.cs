@@ -41,14 +41,14 @@ public class KnownOkhsvTests
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertColour(white, new Okhsv(0, 0, 1.000000027003774), Tolerance);
+        TestUtils.AssertColour(white, new Okhsv(0.2496543419330623 * 360, 0, 1.000000027003774), Tolerance);
     }
     
     [Test]
     public void Grey()
     {
         var grey = StandardRgb.Grey;
-        TestUtils.AssertColour(grey, new Okhsv(0, 0, 0.5337598416065157), Tolerance);
+        TestUtils.AssertColour(grey, new Okhsv(0.24965434119047608 * 360, 0, 0.5337598416065157), Tolerance);
     }
     
     [Test]

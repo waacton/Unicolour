@@ -13,6 +13,7 @@ public record Okhsl : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Okhsl(double h, double s, double l) : this(h, s, l, Limitation.None) {}
+    public Okhsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
     internal Okhsl(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";
@@ -32,7 +33,7 @@ public record Okhsl : ColourRepresentation
     {
         var (l, a, b) = oklab;
         
-        if (oklab.Limitation == Limitation.Achromatic)
+        if (a == 0.0 && b == 0.0)
         {
             // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
             // which is when Oklab has no chroma information, so fall back to 0 saturation

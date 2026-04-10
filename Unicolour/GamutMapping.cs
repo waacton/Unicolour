@@ -32,7 +32,7 @@ internal static class GamutMapping
         var alpha = colour.Alpha.A;
         var lchab = colour.Lchab;
 
-        if (lchab.Limitation == Limitation.NaN)
+        if (lchab.IsNaN)
         {
             return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
         }
@@ -40,7 +40,7 @@ internal static class GamutMapping
         var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config.Value).Lchab.WithHueModulo();
         l = l.Clamp(PointerGamut.MinL, PointerGamut.MaxL);
 
-        var gamutBoundaryColour = lchab.Limitation == Limitation.Achromatic
+        var gamutBoundaryColour = lchab.C <= 0
             ? new Unicolour(PointerGamut.Config.Value, ColourSpace.Lab, l, 0, 0, alpha)
             : new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, PointerGamut.GetMaxC(l, h), h, alpha);
 
@@ -57,7 +57,7 @@ internal static class GamutMapping
         var config = colour.Configuration;
         var alpha = colour.Alpha.A;
         
-        if (colour.Xyy.Limitation == Limitation.NaN || colour.Xyz.Limitation == Limitation.NaN)
+        if (colour.Xyy.IsNaN || colour.Xyz.IsNaN)
         {
             return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
         }

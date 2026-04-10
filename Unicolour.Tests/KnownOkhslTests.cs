@@ -41,14 +41,14 @@ public class KnownOkhslTests
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertColour(white, new Okhsl(0, 0, 0.9999999923961898), Tolerance);
+        TestUtils.AssertColour(white, new Okhsl(0.2496543419330623 * 360, 0.5582831888483675, 0.9999999923961898), Tolerance);
     }
     
     [Test]
     public void Grey()
     {
         var grey = StandardRgb.Grey;
-        TestUtils.AssertColour(grey, new Okhsl(0, 0, 0.5337598228073358), Tolerance);
+        TestUtils.AssertColour(grey, new Okhsl(0.24965434119047608 * 360, 1.1616558204531687e-7, 0.5337598228073358), Tolerance);
     }
     
     [Test]

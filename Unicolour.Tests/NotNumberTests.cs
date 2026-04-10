@@ -167,6 +167,7 @@ public class NotNumberTests
         
         Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
         Assert.That(initial.Limitation, Is.EqualTo(Limitation.NaN));
+        Assert.That(initial.IsNaN, Is.True);
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(colour.Hex, Is.EqualTo("-"));
         Assert.That(colour.Rgb.Byte255.Hex, Is.EqualTo("-"));
@@ -177,6 +178,7 @@ public class NotNumberTests
         Assert.That(colour.Description, Is.EqualTo("-"));
         Assert.That(colour.Temperature.Cct, Is.NaN);
         Assert.That(colour.Temperature.Duv, Is.NaN);
+        Assert.That(colour.Icc.IsNaN, Is.True);
         Assert.That(colour.Icc.ToString().StartsWith("NaN"));
         
         var downstreamSpaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToArray();

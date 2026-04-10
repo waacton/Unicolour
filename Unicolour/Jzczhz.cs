@@ -13,6 +13,7 @@ public record Jzczhz : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Jzczhz(double j, double c, double h) : this(j, c, h, Limitation.None) {}
+    public Jzczhz(double j) : this(j, 0, 0, Limitation.Achromatic) {}
     internal Jzczhz(double j, double c, double h, Limitation limitation) : base(j, c, h, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{J:F3} {C:F3} {H:F1}°" : $"{J:F3} {C:F3} {NoHue}°";

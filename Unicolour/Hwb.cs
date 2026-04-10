@@ -13,6 +13,7 @@ public record Hwb : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Hwb(double h, double w, double b) : this(h, w, b, Limitation.None) {}
+    public Hwb(double w) : this(0, w, 1 - w, Limitation.Achromatic) {}
     internal Hwb(double h, double w, double b, Limitation limitation) : base(h, w, b, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"{NoHue}° {W * 100:F1}% {B * 100:F1}%";

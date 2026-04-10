@@ -10,6 +10,7 @@ public record Yuv : ColourRepresentation
     protected override bool IsAchromatic => U == 0.0 && V == 0.0;
     
     public Yuv(double y, double u, double v) : this(y, u, v, Limitation.None) {}
+    public Yuv(double y) : this(y, 0, 0, Limitation.Achromatic) {}
     internal Yuv(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Yuv(double y, double u, double v, Limitation limitation) : base(y, u, v, limitation) {}
     

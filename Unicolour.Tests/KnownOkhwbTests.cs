@@ -40,14 +40,14 @@ public class KnownOkhwbTests
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertColour(white, new Okhwb(0, 0.999999924, -0.000000027), Tolerance);
+        TestUtils.AssertColour(white, new Okhwb(0.2496543419330623 * 360, 0.999999924, -0.000000027), Tolerance);
     }
     
     [Test]
     public void Grey()
     {
         var grey = StandardRgb.Grey;
-        TestUtils.AssertColour(grey, new Okhwb(0, 0.533759786, 0.466240158), Tolerance);
+        TestUtils.AssertColour(grey, new Okhwb(0.24965434119047608 * 360, 0.533759786, 0.466240158), Tolerance);
     }
     
     [Test]

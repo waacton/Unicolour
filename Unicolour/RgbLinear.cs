@@ -10,6 +10,7 @@ public record RgbLinear : ColourRepresentation
     protected override bool IsAchromatic => R == G && G == B;
     
     public RgbLinear(double r, double g, double b) : this(r, g, b, Limitation.None) {}
+    public RgbLinear(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}
     internal RgbLinear(double r, double g, double b, Limitation limitation) : base(r, g, b, limitation) {}
     
     protected override string String => $"{R:F2} {G:F2} {B:F2}";

@@ -13,6 +13,7 @@ public record Hsl : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Hsl(double h, double s, double l) : this(h, s, l, Limitation.None) {}
+    public Hsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
     internal Hsl(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";

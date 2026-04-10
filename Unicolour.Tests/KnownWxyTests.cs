@@ -60,7 +60,8 @@ public class KnownWxyTests
     [Test]
     public void White()
     {
-        var white = StandardRgb.White;
+        var (x, y) = Configuration.Default.Xyz.WhitePoint;
+        var white = new Unicolour(ColourSpace.Xyy, x, y, 1.0);
         TestUtils.AssertColour(white, new Wxy(360.0, 0.0, 1.0), Tolerance);
     }
     

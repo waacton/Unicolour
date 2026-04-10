@@ -13,6 +13,7 @@ public record Hsi : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Hsi(double h, double s, double i) : this(h, s, i, Limitation.None) {}
+    public Hsi(double i) : this(0, 0, i, Limitation.Achromatic) {}
     internal Hsi(double h, double s, double i, Limitation limitation) : base(h, s, i, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {I * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {I * 100:F1}%";

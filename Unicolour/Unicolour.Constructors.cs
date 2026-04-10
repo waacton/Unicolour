@@ -31,10 +31,16 @@ public partial class Unicolour
     }
 
     public Unicolour(Configuration config, ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0) :
-        this(config, Limitation.None, colourSpace, first, second, third, alpha)
+        this(config, colourSpace, first, second, third, alpha, Limitation.None)
     {
     }
-
+    
+    /* construction from grey value */
+    public Unicolour(ColourSpace colourSpace, double grey, double alpha = 1.0) :
+        this(Configuration.Default, colourSpace, grey, alpha)
+    {
+    }
+    
     /* construction from hex representation */
     public Unicolour(string hex) : 
         this(Configuration.Default, hex)

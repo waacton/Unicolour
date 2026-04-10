@@ -16,6 +16,14 @@ public class RoundtripHpluvTests
         var original = new Hpluv(triplet.First, triplet.Second, triplet.Third);
         var lchuv = Hpluv.ToLchuv(original);
         var roundtrip = Hpluv.FromLchuv(lchuv);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        
+        if (original.L is > 99.9999999 or < 0.00000001)
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, original.L, HueIndex: 0), Tolerance);
+        }
+        else
+        {
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        }
     }
 }

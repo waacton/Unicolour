@@ -132,7 +132,7 @@ internal static class MacAdamLimits
             colour = colour.ConvertToConfiguration(Config);
         }
         
-        if (colour.Xyy.Limitation == Limitation.NaN || colour.Xyz.Limitation == Limitation.NaN) return false;
+        if (colour.Xyy.IsNaN || colour.Xyz.IsNaN) return false;
 
         var (x, y, luminance) = colour.Xyy;
         if (luminance >= 1)

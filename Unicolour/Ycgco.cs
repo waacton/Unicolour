@@ -10,6 +10,7 @@ public record Ycgco : ColourRepresentation
     protected override bool IsAchromatic => Cg == 0.0 && Co == 0.0;
     
     public Ycgco(double y, double cg, double co) : this(y, cg, co, Limitation.None) {}
+    public Ycgco(double y) : this(y, 0, 0, Limitation.Achromatic) {}
     internal Ycgco(double y, double cg, double co, Limitation limitation) : base(y, cg, co, limitation) {}
     
     protected override string String => $"{Y:F3} {Cg:+0.000;-0.000;0.000} {Co:+0.000;-0.000;0.000}";

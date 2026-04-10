@@ -24,6 +24,12 @@ public class InvalidColourSpaceTests
     }
     
     [Test]
+    public void InvalidGreyConstructor()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => _ = new Unicolour(BadColourSpace, 0));
+    }
+    
+    [Test]
     public void InvalidUnicolourProperty()
     {
         const string fieldName = "SourceColourSpace";

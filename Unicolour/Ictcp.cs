@@ -10,6 +10,7 @@ public record Ictcp : ColourRepresentation
     protected override bool IsAchromatic => Ct == 0.0 && Cp == 0.0;
     
     public Ictcp(double i, double ct, double cp) : this(i, ct, cp, Limitation.None) {}
+    public Ictcp(double i) : this(i, 0, 0, Limitation.Achromatic) {}
     internal Ictcp(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Ictcp(double i, double ct, double cp, Limitation limitation) : base(i, ct, cp, limitation) {}
 

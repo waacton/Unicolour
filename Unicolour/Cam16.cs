@@ -12,11 +12,11 @@ public record Cam16 : ColourRepresentation
     public Ucs Ucs { get; }
     public Model Model { get; }
     
-    // presumably also when A == 0.0 && B == 0.0 but this is more convenient
     protected override bool IsAchromatic => Model.Chroma <= 0;
     
     public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, Limitation.None) {}
-
+    public Cam16(double j, CamConfiguration camConfig) : this(new Ucs(j, 0, 0), camConfig, Limitation.Achromatic) {}
+    
     internal Cam16(Model model, CamConfiguration camConfig, Limitation limitation) : this(model.ToUcs(), camConfig, limitation)
     {
         Model = model;

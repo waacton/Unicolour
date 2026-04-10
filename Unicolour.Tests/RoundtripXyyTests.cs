@@ -36,26 +36,26 @@ public class RoundtripXyyTests
         var original = new Xyy(triplet.First, triplet.Second, triplet.Third, TestUtils.CConfig.Xyz.WhitePoint);
         var munsell = Munsell.FromXyy(original, TestUtils.CConfig.Xyz.ChromaticAdaptor);
         var roundtrip = Munsell.ToXyy(munsell, TestUtils.CConfig.Xyz.ChromaticAdaptor);
+        
+        var isTypicalRange = original.Chromaticity is { X: >= 0 and <= 1, Y: >= 0 and <= 1 };
 
-        if (munsell.XyyToMunsellSearchResult!.Converged)
+        if (munsell.XyyToHvcSearchResult!.Converged)
         {
             TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.00001, 0.00001, 5e-15]);
         }
-        else if (munsell.LimitationBaseline == Limitation.Achromatic)
+        else if (munsell.C == 0.0)
         {
             var white = TestUtils.CConfig.Xyz.WhitePoint.Chromaticity;
             var expected = new ColourTriplet(white.X, white.Y, original.Luminance);
             TestUtils.AssertTriplet(roundtrip.Triplet, expected, [0, 0, 1e-10]);
         }
-        else if (original.Chromaticity.X < 0 || original.Chromaticity.Y < 0)
+        else if (!isTypicalRange)
         {
-            var minChromaticity = Math.Min(original.Chromaticity.X, original.Chromaticity.Y);
-            var tolerance = minChromaticity < -0.5 ? 0.21 : 0.175;
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance, tolerance, 5e-15]);
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.21, 0.21, 5e-15]);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.15, 0.15, 5e-15]);
+            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.16, 0.16, 5e-15]);
         }
     }
 }

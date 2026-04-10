@@ -4,7 +4,7 @@ namespace Wacton.Unicolour;
 
 internal record Segment(Chromaticity Start, Chromaticity End)
 {
-    internal Segment((double x, double y) start, (double x, double y) end) : this(new Chromaticity(start.x, start.y), new Chromaticity(end.x, end.y)) { }
+    internal Segment((double x, double y) start, (double x, double y) end) : this(new Chromaticity(start.x, start.y), new Chromaticity(end.x, end.y)) {}
     
     internal Chromaticity Start { get; } = Start;
     internal Chromaticity End { get; } = End;

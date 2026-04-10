@@ -10,6 +10,7 @@ public record Lms : ColourRepresentation
     protected override bool IsAchromatic => L == M && M == S;
     
     public Lms(double l, double m, double s) : this(l, m, s, Limitation.None) {}
+    public Lms(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}
     internal Lms(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
     internal Lms(double l, double m, double s, Limitation limitation) : base(l, m, s, limitation) {}
 

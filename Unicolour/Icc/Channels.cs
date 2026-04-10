@@ -4,15 +4,17 @@ public record Channels(params double[] Values)
 {
     public double[] Values { get; } = Values;
     public string ColourSpace { get; private set; } = "unknown";
-    public string? Error { get; private set; } 
+    public string? Error { get; private set; }
 
+    internal bool IsNaN => Limitation == Limitation.NaN;
+    
     private Limitation LimitationBaseline = Limitation.None;
     private Limitation Limitation
     {
         get
         {
-            // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
             if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
+            if (LimitationBaseline == Limitation.Achromatic) return Limitation.Achromatic; // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
             return Limitation.None;
         }
     }
@@ -107,7 +109,7 @@ public record Channels(params double[] Values)
     public override string ToString()
     {
         var values = $"{string.Join(" ", Values.Select(x => $"{x:F4}"))} {ColourSpace}";
-        return Limitation == Limitation.NaN ? $"NaN [{values}]" : values;
+        return IsNaN ? $"NaN [{values}]" : values;
     }
 
     public virtual bool Equals(Channels? other)

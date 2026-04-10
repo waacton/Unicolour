@@ -13,9 +13,9 @@ public partial record Munsell : ColourRepresentation
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
     protected override bool IsAchromatic => false;
     
-    public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) { }
-    public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) { }
-    internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, limitation) { }
+    public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) {}
+    public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) {}
+    internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, limitation) {}
 
     public (double number, string letter) HueNotation => ToMunsell(H);
     protected override string String => Limitation != Limitation.Achromatic ? $"{HueNotation.number:0.##}{HueNotation.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
@@ -38,9 +38,9 @@ public partial record Munsell : ColourRepresentation
     
     internal static Munsell FromXyy(Xyy xyy, ChromaticAdaptor chromaticAdaptor)
     {
-        if (xyy.Limitation == Limitation.Achromatic)
+        if (xyy.Chromaticity == xyy.WhitePoint.Chromaticity)
         {
-            return new Munsell(0, GetValue(xyy.Luminance), 0, xyy.Limitation) { XyyToMunsellSearchResult = null };
+            return new Munsell(0, GetValue(xyy.Luminance), 0, xyy.Limitation) { XyyToHvcSearchResult = null };
         }
         
         Xyy adaptedXyy;
@@ -55,13 +55,21 @@ public partial record Munsell : ColourRepresentation
             adaptedXyy = xyy;
         }
 
-        return FindMunsell(adaptedXyy);
+        var searchResult = FindHvc(adaptedXyy);
+        var (h, v, c) = (searchResult.H, searchResult.V, searchResult.C);
+        return new Munsell(h, v, c, xyy.Limitation) { XyyToHvcSearchResult = searchResult };
     }
-    
+
     internal static Xyy ToXyy(Munsell munsell, ChromaticAdaptor chromaticAdaptor)
     {
         var (h, v, c) = munsell.WithHueModulo();
-        var chromaticity = munsell.Limitation == Limitation.Achromatic ? MunsellWhitePoint.Chromaticity : GetChromaticity(h, v, c);
+        var (chromaticity, luminance) = ToXyy(h, v, c, chromaticAdaptor);
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance, chromaticAdaptor.WhitePoint, munsell.Limitation);
+    }
+    
+    private static (Chromaticity chromaticity, double luminance) ToXyy(double h, double v, double c, ChromaticAdaptor chromaticAdaptor)
+    {
+        var chromaticity = c == 0.0 ? MunsellWhitePoint.Chromaticity : GetChromaticity(h, v, c);
         var adaptedXyy = new Xyy(chromaticity.X, chromaticity.Y, GetLuminance(v), MunsellWhitePoint);
         
         Xyy xyy;
@@ -76,8 +84,7 @@ public partial record Munsell : ColourRepresentation
             xyy = adaptedXyy;
         }
 
-        var (x, y, luminance) = xyy;
-        return new Xyy(x, y, luminance, chromaticAdaptor.WhitePoint, munsell.Limitation);
+        return (xyy.Chromaticity, xyy.Luminance);
     }
     
     /*
@@ -128,13 +135,13 @@ public partial record Munsell : ColourRepresentation
         return y / 100.0 * sign;
     }
     
-    private static Munsell FindMunsell(Xyy xyy)
+    private static XyyToHvcSearchResult FindHvc(Xyy xyy)
     {
         var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy)));
         var target = Polar(MunsellWhitePoint.Chromaticity, xyy.Chromaticity);
-        if (lch.Limitation == Limitation.NaN || double.IsInfinity(target.radius))
+        if (lch.IsNaN || double.IsInfinity(target.radius))
         {
-            return new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN, Limitation.NaN) { XyyToMunsellSearchResult = new XyyToMunsellSearchResult(double.NaN, false) };
+            return new XyyToHvcSearchResult(double.NaN, GetValue(xyy.Luminance), double.NaN, Delta: double.NaN, Converged: false);
         }
 
         double initialH;
@@ -155,9 +162,9 @@ public partial record Munsell : ColourRepresentation
             initialC = lch.C / 5.5;
         }
         
-        var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
+        var (h, v, c) = (initialH, GetValue(xyy.Luminance), initialC);
         var iterations = 0;
-        var closestResult = new XyyToMunsellSearchResult(double.MaxValue, false);
+        var closestResult = new XyyToHvcSearchResult(h, v, c, Delta: double.MaxValue, Converged: false);
         var converged = false;
 
         const double convergenceThreshold = 0.00001;
@@ -165,24 +172,21 @@ public partial record Munsell : ColourRepresentation
         
         while (!converged && iterations < maxIterations)
         {
-            munsell = ModifyHue(munsell, target.angle);
-            munsell = ModifyChroma(munsell, target.radius);
-            var delta = Distance(xyy.Chromaticity, ToXyy(munsell, MunsellXyzConfig.ChromaticAdaptor).Chromaticity);
+            h = ModifyHue(h, v, c, target.angle);
+            c = ModifyChroma(h, v, c, target.radius);
+            var (chromaticity, _) = ToXyy(h, v, c, MunsellXyzConfig.ChromaticAdaptor);
+            var delta = Distance(xyy.Chromaticity, chromaticity);
             converged = delta <= convergenceThreshold;
             iterations++;
             
-            var result = new XyyToMunsellSearchResult(delta, converged);
+            var result = new XyyToHvcSearchResult(h, v, c, delta, converged);
             if (result.Delta < closestResult.Delta || double.IsNaN(closestResult.Delta))
             {
                 closestResult = result;
             }
         }
-
-        // using the found Munsell limitation instead of the upstream Xyy limitation is a little unusual
-        // but if the found Munsell has converged to the white point, and any information about hue has been discarded
-        // (so Munsell will have been instantiated with `new Munsell(v)` - a greyscale-only value - and limitation set to achromatic) 
-        var (h, v, c) = munsell;
-        return new Munsell(h, v, c, munsell.Limitation) { XyyToMunsellSearchResult = closestResult };
+        
+        return closestResult;
     }
     
     private static Chromaticity GetChromaticity(double h, double v, double c)
@@ -359,11 +363,14 @@ public partial record Munsell : ColourRepresentation
     }
     
     // only for potential debugging or diagnostics
-    internal XyyToMunsellSearchResult? XyyToMunsellSearchResult;
+    internal XyyToHvcSearchResult? XyyToHvcSearchResult;
 }
 
-internal record XyyToMunsellSearchResult(double Delta, bool Converged)
+internal record XyyToHvcSearchResult(double H, double V, double C, double Delta, bool Converged)
 {
+    internal double H { get; } = H;
+    internal double V { get; } = V;
+    internal double C { get; } = C;
     internal double Delta { get; } = Delta;
     internal bool Converged { get; } = Converged;
     public override string ToString() => $"Delta:{Delta} · Converged:{Converged}";

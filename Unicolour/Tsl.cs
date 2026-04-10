@@ -13,6 +13,7 @@ public record Tsl : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Tsl(double t, double s, double l) : this(t, s, l, Limitation.None) {}
+    public Tsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
     internal Tsl(double t, double s, double l, Limitation limitation) : base(t, s, l, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{T:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";

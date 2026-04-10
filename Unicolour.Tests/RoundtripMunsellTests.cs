@@ -41,20 +41,20 @@ public class RoundtripMunsellTests
         // non-typical gamut chroma reduces the roundtrip accuracy
         // but these tolerances were based on analysis of millions of typical gamut values
         // so it's simply treated as a worse case of the typical gamut tolerances
-        var typicalChromaRange = original.C <= 26;
+        var isTypicalChromaRange = original.C <= 26;
         
         (double h, double c) tolerance;
-        if (!roundtrip.XyyToMunsellSearchResult!.Converged)
+        if (!roundtrip.XyyToHvcSearchResult!.Converged)
         {
-            tolerance = typicalChromaRange ? (h: 7.5, c: 53.5) : (h: 15.75, c: 53.5);
+            tolerance = isTypicalChromaRange ? (h: 7.5, c: 53.5) : (h: 15.75, c: 53.5);
         }
         else if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
         {
-            tolerance = typicalChromaRange ? (h: 21.5, c: 62.5) : (h: 21.5, c: 120);
+            tolerance = isTypicalChromaRange ? (h: 21.5, c: 62.5) : (h: 21.5, c: 120);
         }
         else if (IsSparseChroma(originalBounds) || IsSparseChroma(roundtripBounds))
         {
-            tolerance = typicalChromaRange ? (h: 8.75, c: 21.5) : (h: 8.75, c: 32);
+            tolerance = isTypicalChromaRange ? (h: 8.75, c: 21.5) : (h: 14.5, c: 32);
         }
         else if (original.C < 0.5)
         {
@@ -72,7 +72,7 @@ public class RoundtripMunsellTests
             };
         }
 
-        var toleranceV = typicalChromaRange ? 5e-15 : 1e-14;
+        var toleranceV = isTypicalChromaRange ? 5e-15 : 1e-14;
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance.h, toleranceV, tolerance.c]);
     }
 

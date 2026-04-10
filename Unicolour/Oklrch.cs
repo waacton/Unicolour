@@ -13,6 +13,7 @@ public record Oklrch : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Oklrch(double l, double c, double h) : this(l, c, h, Limitation.None) {}
+    public Oklrch(double l) : this(l, 0, 0, Limitation.Achromatic) {}
     internal Oklrch(double l, double c, double h, Limitation limitation) : base(l, c, h, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{L:F2} {C:F2} {H:F1}°" : $"{L:F2} {C:F2} {NoHue}°";

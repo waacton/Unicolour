@@ -13,6 +13,7 @@ public record Hct : ColourRepresentation
     protected override bool IsAchromatic => false;
     
     public Hct(double h, double c, double t) : this(h, c, t, Limitation.None) {}
+    public Hct(double t) : this(0, 0, t, Limitation.Achromatic) {}
     internal Hct(double h, double c, double t, Limitation limitation) : base(h, c, t, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {C:F2} {T:F2}" : $"{NoHue}° {C:F2} {T:F2}";

@@ -10,6 +10,7 @@ public record Ycbcr : ColourRepresentation
     protected override bool IsAchromatic => Cb == 128.0 && Cr == 128.0;
     
     public Ycbcr(double y, double cb, double cr) : this(y, cb, cr, Limitation.None) {}
+    public Ycbcr(double y) : this(y, 128, 128, Limitation.Achromatic) {}
     internal Ycbcr(double y, double cb, double cr, Limitation limitation) : base(y, cb, cr, limitation) {}
 
     protected override string String => $"{Y:F0} {Cb:0} {Cr:0}";

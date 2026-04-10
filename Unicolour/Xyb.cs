@@ -12,6 +12,7 @@ public record Xyb : ColourRepresentation
     protected override bool IsAchromatic => X == 0.0 && B == 0.0;
     
     public Xyb(double x, double y, double b) : this(x, y, b, Limitation.None) {}
+    public Xyb(double y) : this(0, y, 0, Limitation.Achromatic) {}
     internal Xyb(double x, double y, double b, Limitation limitation) : base(x, y, b, limitation) {}
 
     protected override string String => $"{X:+0.000;-0.000;0.000} {Y:F3} {B:+0.000;-0.000;0.000}";

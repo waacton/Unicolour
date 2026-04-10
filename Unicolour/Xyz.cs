@@ -16,15 +16,16 @@ public record Xyz : ColourRepresentation
             {
                 return X == 0.0 && Z == 0.0;
             }
-
+            
             var yFactor = WhitePoint.Y / Y;
             var scaledX = X * yFactor;
             var scaledZ = Z * yFactor;
             return scaledX == WhitePoint.X && scaledZ == WhitePoint.Z;
         }
     }
-    
+
     public Xyz(double x, double y, double z, WhitePoint whitePoint) : this(x, y, z, whitePoint, Limitation.None) {}
+    public Xyz(double luminance, WhitePoint whitePoint) : this(whitePoint.X * luminance, luminance, whitePoint.Z * luminance, whitePoint, Limitation.Achromatic) {}
     internal Xyz(ColourTriplet triplet, WhitePoint whitePoint, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, whitePoint, limitation) {}
     internal Xyz(double x, double y, double z, WhitePoint whitePoint, Limitation limitation) : base(x, y, z, limitation)
     {

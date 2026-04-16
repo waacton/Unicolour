@@ -31,7 +31,6 @@ public static class Hue
             _ => throw new ArgumentOutOfRangeException(nameof(hueSpan), hueSpan, null)
         };
     }
-    
         
     public static double FromMunsell(double hueNumber, string hueLetter)
     {
@@ -83,5 +82,51 @@ public static class Hue
         var min = Math.Min(start, end);
         var max = Math.Max(start, end);
         return h >= min && h <= max;
+    }
+    
+    public static double FromWavelength(double wavelength, XyzConfiguration xyzConfig)
+    {
+        if (double.IsNaN(wavelength)) return double.NaN;
+
+        double degree;
+        if (wavelength >= 0)
+        {
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
+            var clamped = wavelength.Clamp(min, max);
+            var normalised = (clamped - min) / (max - min);
+            degree = normalised * 180;
+        }
+        else
+        {
+            var spectralBoundary = xyzConfig.SpectralBoundary;
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
+            var clamped = wavelength.Clamp(min, max);
+            var normalised = 1 - (clamped - min) / (max - min);
+            degree = 180 + normalised * 180;
+        }
+
+        return degree;
+    } 
+    
+    public static double ToWavelength(double degrees, XyzConfiguration xyzConfig)
+    {
+        if (double.IsNaN(degrees)) return double.NaN;
+
+        double wavelength;
+        if (degrees <= 180)
+        {
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
+            var normalised = degrees / 180.0;
+            wavelength = normalised * (max - min) + min;
+        }
+        else
+        {
+            var spectralBoundary = xyzConfig.SpectralBoundary;
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
+            var normalised = 1 - (degrees - 180) / 180.0;
+            wavelength = normalised * (max - min) + min;
+        }
+
+        return wavelength;
     }
 }

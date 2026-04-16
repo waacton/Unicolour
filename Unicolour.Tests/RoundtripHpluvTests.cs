@@ -19,7 +19,8 @@ public class RoundtripHpluvTests
         
         if (original.L is > 99.9999999 or < 0.00000001)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, original.L, HueIndex: 0), Tolerance);
+            var expectedL = original.L > 99.9999999 ? 100 : 0;
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, expectedL, HueIndex: 0), Tolerance);
         }
         else
         {

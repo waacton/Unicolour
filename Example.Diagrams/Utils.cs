@@ -6,6 +6,8 @@ namespace Wacton.Unicolour.Example.Diagrams;
 
 internal static class Utils
 {
+    private const string OutputDirectory = "../../../../Unicolour.Readme/docs/";
+    
     internal static Plot GetEmptyPlot((double min, double max) rangeX, (double min, double max) rangeY, double majorTickInterval)
     {
         var plot = new Plot();
@@ -14,16 +16,20 @@ internal static class Utils
         plot.Axes.Left.TickGenerator = GetTickGenerator(rangeY.min, rangeY.max, majorTickInterval);
         return plot;
     }
-    
+
+    private static List<Unicolour>? spectralLocus;
     internal static List<Unicolour> GetSpectralLocus()
     {
+        if (spectralLocus != null) return spectralLocus;
+        
         List<Unicolour> data = [];
         for (var nm = 360; nm < 700; nm++)
         {
             data.Add(new Unicolour(new Spd(start: nm, interval: 1, 1.0)));
         }
 
-        return data;
+        spectralLocus = data;
+        return spectralLocus;
     }
 
     internal static List<Unicolour> GetRgbGamut()
@@ -34,19 +40,26 @@ internal static class Utils
         return [r, g, b];
     }
     
+    private static List<Unicolour>? blackbodyLocus;
     internal static List<Unicolour> GetBlackbodyLocus()
     {
+        if (blackbodyLocus != null) return blackbodyLocus;
+        
         List<Unicolour> data = [];
         for (var cct = 500; cct < 20000; cct += 100)
         {
             data.Add(new Unicolour(new Temperature(cct)));
         }
 
-        return data;
+        blackbodyLocus = data;
+        return blackbodyLocus;
     }
     
+    private static List<(Unicolour start, Unicolour end)>? isotherms;
     internal static List<(Unicolour start, Unicolour end)> GetIsotherms()
     {
+        if (isotherms != null) return isotherms;
+        
         List<(Unicolour start, Unicolour end)> data = [];
         for (var cct = 2000; cct < 10000; cct += 1000)
         {
@@ -55,11 +68,15 @@ internal static class Utils
             data.Add((upper, lower));
         }
 
+        isotherms = data;
         return data;
     }
 
+    private static List<Marker>? xyFillMarkers;
     internal static List<Marker> GetXyFillMarkers((double min, double max) rangeX, (double min, double max) rangeY, double increment)
     {
+        if (xyFillMarkers != null) return xyFillMarkers;
+        
         List<Marker> data = [];
         for (var x = rangeX.min; x < rangeX.max; x += increment)
         {
@@ -83,11 +100,15 @@ internal static class Utils
             }
         }
         
+        xyFillMarkers = data;
         return data;
     }
     
+    private static List<Marker>? uvFillMarkers;
     internal static List<Marker> GetUvFillMarkers((double min, double max) rangeU, (double min, double max) rangeV, double increment)
     {
+        if (uvFillMarkers != null) return uvFillMarkers;
+        
         List<Marker> data = [];
         for (var u = rangeU.min; u < rangeU.max; u += increment)
         {
@@ -111,6 +132,7 @@ internal static class Utils
             }
         }
 
+        uvFillMarkers = data;
         return data;
     }
     
@@ -168,4 +190,6 @@ internal static class Utils
     private static bool IsEffectivelyZero(double x) => Math.Abs(x) < 5e-14;
     
     private static double Clamp(double value, double min, double max) => value < min ? min : value > max ? max : value;
+    
+    internal static string GetOutputPath(string filename) => Path.Combine(OutputDirectory, filename);
 }

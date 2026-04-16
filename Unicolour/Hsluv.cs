@@ -32,11 +32,11 @@ public record Hsluv : ColourRepresentation
     internal static Hsluv FromLchuv(Lchuv lchuv)
     {
         var (l, c, h) = lchuv.WithHueModulo();
-        var s = l switch
+        (var s, l) = l switch
         {
-            > 99.9999999 => 0,
-            < 0.00000001 => 0,
-            _ => c / CalculateMaxChroma(l, h) * 100
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (c / CalculateMaxChroma(l, h) * 100, l)
         };
         
         return new Hsluv(h, s, l, lchuv.Limitation);
@@ -45,11 +45,11 @@ public record Hsluv : ColourRepresentation
     internal static Lchuv ToLchuv(Hsluv hsluv)
     {
         var (h, s, l) = hsluv.WithHueModulo();
-        var c = l switch
+        (var c, l) = l switch
         {
-            > 99.9999999 => 0,
-            < 0.00000001 => 0,
-            _ => s == 0 ? 0 : CalculateMaxChroma(l, h) / 100 * s
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (s == 0 ? 0 : CalculateMaxChroma(l, h) / 100 * s, l)
         };
         
         return new Lchuv(l, c, h, hsluv.Limitation);

@@ -28,15 +28,15 @@ public record Hpluv : ColourRepresentation
      * this colour space is potentially defined relative to sRGB, but Unicolour does not currently enforce sRGB
      * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
-        
+    
     internal static Hpluv FromLchuv(Lchuv lchuv)
     {
         var (l, c, h) = lchuv.WithHueModulo();
-        var s = l switch
+        (var s, l) = l switch
         {
-            > 99.9999999 => 0,
-            < 0.00000001 => 0,
-            _ => c / CalculateMaxChroma(l) * 100
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (c / CalculateMaxChroma(l) * 100, l)
         };
         
         return new Hpluv(h, s, l, lchuv.Limitation);
@@ -45,11 +45,11 @@ public record Hpluv : ColourRepresentation
     internal static Lchuv ToLchuv(Hpluv hpluv)
     {
         var (h, s, l) = hpluv.WithHueModulo();
-        var c = l switch
+        (var c, l) = l switch
         {
-            > 99.9999999 => 0,
-            < 0.00000001 => 0,
-            _ => s == 0 ? 0 : CalculateMaxChroma(l) / 100 * s
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (s == 0 ? 0 : CalculateMaxChroma(l) / 100 * s, l)
         };
         
         return new Lchuv(l, c, h, hpluv.Limitation);

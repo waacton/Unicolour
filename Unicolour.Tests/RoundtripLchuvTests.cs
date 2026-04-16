@@ -36,7 +36,8 @@ public class RoundtripLchuvTests
         
         if (original.L is > 99.9999999 or < 0.00000001)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.L, 0, original.H, HueIndex: 2), Tolerance);
+            var expectedL = original.L > 99.9999999 ? 100 : 0;
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(expectedL, 0, original.H, HueIndex: 2), Tolerance);
         }
         else
         {
@@ -53,7 +54,8 @@ public class RoundtripLchuvTests
         
         if (original.L is > 99.9999999 or < 0.00000001)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.L, 0, original.H, HueIndex: 2), Tolerance);
+            var expectedL = original.L > 99.9999999 ? 100 : 0;
+            TestUtils.AssertTriplet(roundtrip.Triplet, new(expectedL, 0, original.H, HueIndex: 2), Tolerance);
         }
         else
         {

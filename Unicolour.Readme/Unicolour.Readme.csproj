@@ -62,6 +62,18 @@
         <None Update="docs\gradient-spectraljs-palette.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="docs\gradient-wheel-pigment.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-wheel-hue.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-harmonies-pigment.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\gradient-harmonies-hue.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Update="docs\diagram-xy-chromaticity-rgb.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -71,13 +83,19 @@
         <None Update="docs\diagram-xy-macadam-limits.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="docs\diagram-spectral-locus.png">
+        <None Update="docs\diagram-xy-spectral-locus.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\diagram-uv-chromaticity-rgb.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\diagram-uv-chromaticity-blackbody.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\diagram-uv-macadam-limits.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\diagram-uv-spectral-locus.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\console-info.png">
@@ -88,9 +106,6 @@
         </None>
         <None Update="docs\heatmaps-sun.png">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="docs\not-by-ai.png">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="docs\unity-spaces.gif">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -136,6 +151,12 @@
         </None>
         <None Update="docs\wxy-colour-space.md">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\kleurwiel-colour-joy.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\not-by-ai.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

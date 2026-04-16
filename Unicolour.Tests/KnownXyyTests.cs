@@ -69,7 +69,7 @@ public class KnownXyyTests
     
     [TestCase(0.5, 0.00000000001, 50000000000, 49999999999)]
     [TestCase(0.5, -0.00000000001, -50000000000, -50000000001)]
-    [TestCase(0.5, 0, 0, 0)]
+    [TestCase(0.5, 0, double.NaN, double.NaN)]
     public void ChromaticityY(double chromaticityX, double chromaticityY, double expectedX, double expectedZ)
     {
         var (x, y, z) = new Unicolour(ColourSpace.Xyy, chromaticityX, chromaticityY, 1).Xyz;

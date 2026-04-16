@@ -47,48 +47,4 @@ public record Wxy : ColourRepresentation
         
         return new Xyy(x, y, luminance, spectralBoundary.WhitePoint, wxy.Limitation);
     }
-    
-    internal static double WavelengthToDegree(double wavelength, SpectralBoundary spectralBoundary)
-    {
-        if (double.IsNaN(wavelength)) return double.NaN;
-
-        double degree;
-        if (wavelength >= 0)
-        {
-            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
-            var clamped = wavelength.Clamp(min, max);
-            var normalised = (clamped - min) / (max - min);
-            degree = normalised * 180;
-        }
-        else
-        {
-            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
-            var clamped = wavelength.Clamp(min, max);
-            var normalised = 1 - (clamped - min) / (max - min);
-            degree = 180 + normalised * 180;
-        }
-
-        return degree;
-    } 
-    
-    internal static double DegreeToWavelength(double degree, SpectralBoundary spectralBoundary)
-    {
-        if (double.IsNaN(degree)) return double.NaN;
-
-        double wavelength;
-        if (degree <= 180)
-        {
-            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
-            var normalised = degree / 180.0;
-            wavelength = normalised * (max - min) + min;
-        }
-        else
-        {
-            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
-            var normalised = 1 - (degree - 180) / 180.0;
-            wavelength = normalised * (max - min) + min;
-        }
-
-        return wavelength;
-    }
 }

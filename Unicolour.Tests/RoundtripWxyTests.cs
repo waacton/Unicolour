@@ -40,7 +40,7 @@ public class RoundtripWxyTests
         else
         {
             var tolerance = Tolerance * 2;
-            TestUtils.AssertTriplet(MapToDegrees(actual), MapToDegrees(expected), tolerance);
+            TestUtils.AssertTriplet(MapToHue(actual), MapToHue(expected), tolerance);
         }
     }
     
@@ -66,8 +66,8 @@ public class RoundtripWxyTests
         else
         {
             var tolerance = Tolerance * 2;
-            TestUtils.AssertTriplet(MapToDegrees(roundtrip), MapToDegrees(expectedDominant), tolerance);
-            TestUtils.AssertTriplet(MapToDegrees(original), MapToDegrees(expectedComplement), [0.75, tolerance, tolerance]);
+            TestUtils.AssertTriplet(MapToHue(roundtrip), MapToHue(expectedDominant), tolerance);
+            TestUtils.AssertTriplet(MapToHue(original), MapToHue(expectedComplement), [0.75, tolerance, tolerance]);
         }
     }
 
@@ -78,8 +78,8 @@ public class RoundtripWxyTests
         return isOnSpectralLocus || isOnLineOfPurples;
     }
 
-    private static ColourTriplet MapToDegrees(Wxy wxy)
+    private static ColourTriplet MapToHue(Wxy wxy)
     {
-        return wxy.Triplet.WithDegreeMap(w => Wxy.WavelengthToDegree(w, XyzConfig.SpectralBoundary));
+        return wxy.Triplet.WithHueMap(w => Hue.FromWavelength(w, XyzConfig));
     }
 }

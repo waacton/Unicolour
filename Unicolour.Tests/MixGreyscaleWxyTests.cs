@@ -98,10 +98,10 @@ public class MixGreyscaleWxyTests
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        var actualWithDegree = actual.WithDegreeMap(ToDegree).WithHueModulo();
+        var actualWithDegree = actual.WithHueMap(FromWavelength).WithHueModulo();
         TestUtils.AssertTriplet(actualWithDegree, expected, TestUtils.MixTolerance);
     }
     
-    private static double ToWavelength(double wavelength) => Wxy.DegreeToWavelength(wavelength, XyzConfiguration.D65.SpectralBoundary);
-    private static double ToDegree(double wavelength) => Wxy.WavelengthToDegree(wavelength, XyzConfiguration.D65.SpectralBoundary);
+    private static double ToWavelength(double wavelength) => Hue.ToWavelength(wavelength, XyzConfiguration.D65);
+    private static double FromWavelength(double wavelength) => Hue.FromWavelength(wavelength, XyzConfiguration.D65);
 }

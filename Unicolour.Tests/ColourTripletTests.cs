@@ -84,7 +84,7 @@ public class ColourTripletTests
         TestUtils.AssertTriplet(hueOverrideTriplet, expectedTriplet, 0.00000000001);
     }
     
-    private static readonly TestCaseData[] DegreeMapTestData =
+    private static readonly TestCaseData[] HueMapTestData =
     [
         new(new ColourTriplet(7.7, 8.8, 9.9, null), new Func<double, double>(x => x - 6.6), new ColourTriplet(7.7, 8.8, 9.9, null)),
         new(new ColourTriplet(7.7, 8.8, 9.9, 0), new Func<double, double>(x => x - 6.6), new ColourTriplet(1.1, 8.8, 9.9, 0)),
@@ -96,18 +96,18 @@ public class ColourTripletTests
         new(new ColourTriplet(7.7, 8.8, 9.9, 2), new Func<double, double>(x => x * 10), new ColourTriplet(7.7, 8.8, 99.0, 2))
     ];
     
-    [TestCaseSource(nameof(DegreeMapTestData))]
-    public void DegreeMap(ColourTriplet triplet, Func<double, double> degreeMap, ColourTriplet expectedTriplet)
+    [TestCaseSource(nameof(HueMapTestData))]
+    public void HueMap(ColourTriplet triplet, Func<double, double> hueMap, ColourTriplet expectedTriplet)
     {
         if (triplet.HueIndex is 1)
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() => triplet.WithDegreeMap(degreeMap));
+            Assert.Throws<ArgumentOutOfRangeException>(() => triplet.WithHueMap(hueMap));
             return;
         }
 
-        ColourTriplet degreeMapTriplet = null!;
-        Assert.DoesNotThrow(() => degreeMapTriplet = triplet.WithDegreeMap(degreeMap));
-        TestUtils.AssertTriplet(degreeMapTriplet, expectedTriplet, 0.00000000001);
+        ColourTriplet mappedTriplet = null!;
+        Assert.DoesNotThrow(() => mappedTriplet = triplet.WithHueMap(hueMap));
+        TestUtils.AssertTriplet(mappedTriplet, expectedTriplet, 0.00000000001);
     }
     
     private static readonly TestCaseData[] ModuloHueTestData =

@@ -55,10 +55,12 @@ public record Xyy : ColourRepresentation
     internal static (double x, double y, double z) ToXyz(Chromaticity chromaticity, double luminance)
     {
         // X and Z become a vertical asymptote when chromaticity.Y == 0, so neither positive or negative infinity are suitable
+        // implementations typically fall back to (0, 0, 0) black but that seems misleading
+        // this approach preserves the luminance while making it clear that chromaticity.Y of 0 is not a valid value (despite it being a valid coordinate)
         var useFallback = chromaticity.Y == 0.0;
         if (useFallback)
         {
-            return (0, luminance, 0);
+            return (double.NaN, luminance, double.NaN);
         }
         
         var factor = luminance / chromaticity.Y;

@@ -53,7 +53,9 @@ void ProcessDocsReadme(string readmePath)
         ("https://play.unity.com/en/games/6826f61f-3806-4155-b824-7866b1edaed7/3d-colour-space-visualisation-unicolour-demo", Guid.NewGuid().ToString()),
         ("Unicolour", Guid.NewGuid().ToString()),
         ("unicolour", Guid.NewGuid().ToString()),
-        ("ColourSpace", Guid.NewGuid().ToString())
+        ("ColourSpace", Guid.NewGuid().ToString()),
+        ("Colour Joy", Guid.NewGuid().ToString()),
+        ("colour-joy", Guid.NewGuid().ToString())
     };
 
     var guidText = guidSubstitutes.Aggregate(textForDocs, (current, substitute) => current.Replace(substitute.original, substitute.guid));
@@ -173,8 +175,14 @@ void FeatureConvert()
         Unicolour pink = new("ff1493");
         var hex = pink.Hex; // #FF1493
     }
-
+    
     void Tip2()
+    {
+        Unicolour grey = new(ColourSpace.Rgb, 0.5);
+        var hex = grey.Hex; // #808080
+    }
+
+    void Tip3()
     {
         Unicolour pink = new(ColourSpace.Munsell, Hue.FromMunsell(6.1, "RP"), 5.5, 19.5);
         Console.WriteLine(pink.Munsell); // 6.1RP 5.5/19.5
@@ -188,6 +196,16 @@ void FeatureMix()
     var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing); 
     var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
     var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
+    
+    var yellow = new Unicolour(ColourSpace.Hsb, 60, 1, 1);
+
+    // hue moves 50% from 60° to 240° = 150°
+    var blackWithBlueHue = new Unicolour(ColourSpace.Hsb, 240, 0, 0);
+    var darkGreen = yellow.Mix(blackWithBlueHue, ColourSpace.Hsb);
+
+    // hue stays at 60°
+    var blackWithNoHue = new Unicolour(ColourSpace.Hsb, grey: 0);
+    var darkYellow = yellow.Mix(blackWithNoHue, ColourSpace.Hsb);
 }
 
 void FeatureBlend()
@@ -321,7 +339,7 @@ void ConfigManual()
         toLinear: value => Math.Pow(value, 2.19921875)
     );
 
-    var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
+    var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, ChromaticAdaptation.VonKries);
 
     var config = new Configuration(rgbConfig, xyzConfig);
     var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);
@@ -351,6 +369,29 @@ void Datasets()
     var green = Xkcd.NastyGreen;
     var mapped = Colourmaps.Viridis.Map(0.5);
     var palette = Colourmaps.Turbo.Palette(10);
+}
+
+void ExperimentalHarmony()
+{
+    var usePigments = false;
+    
+    /* populate pigment k and s with measurement data */
+    var quinaRed = new Pigment(380, 1, k: [], s: []);
+    var bismuthYellow = new Pigment(380, 1, k: [], s: []);
+    var ceruleanBlue = new Pigment(380, 1, k: [], s: []);
+    var titaniumWhite = new Pigment(380, 1, k: [], s: []);
+    var boneBlack = new Pigment(380, 1, k: [], s: []);
+
+    var colourWheel = usePigments 
+        ? ColourWheel.From(quinaRed, bismuthYellow, ceruleanBlue, titaniumWhite, boneBlack)
+        : ColourWheel.From(ColourSpace.Oklch, reference: new Unicolour("ff0000"));
+    
+    var orange = colourWheel.Pure(hue: 60);
+    var lightGreen = colourWheel.Tint(hue: 180, weight: 1);
+    var darkPurple = colourWheel.Shade(hue: 300, weight: 1);
+    var greyRed = colourWheel.Tone(hue: 0, weight: 1);
+
+    var orangePalette = colourWheel.Harmony(hue: 60, Harmony.Analogous);
 }
 
 void ExperimentalPigmentGenerator()

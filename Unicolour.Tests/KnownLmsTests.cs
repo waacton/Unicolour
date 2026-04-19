@@ -13,7 +13,7 @@ public class KnownLmsTests
     public void Black(string illuminantName)
     {
         var black = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Lms>(black, new(0.0, 0.0, 0.0), Tolerance);
+        TestUtils.AssertColour(black, new Lms(0.0, 0.0, 0.0), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65))]
@@ -21,9 +21,9 @@ public class KnownLmsTests
     [TestCase(nameof(Illuminant.E))]
     public void White(string illuminantName)
     {
-        var whiteChromaticity = TestUtils.Illuminants[illuminantName].GetWhitePoint(Observer.Degree2).ToChromaticity();
-        var white = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), whiteChromaticity);
-        TestUtils.AssertTriplet<Lms>(white, new(1.0, 1.0, 1.0), Tolerance); // white is always normalised as [1, 1, 1] regardless of XYZ illuminant
+        var whitePoint = TestUtils.Illuminants[illuminantName].GetWhitePoint(Observer.Degree2);
+        var white = new Unicolour(ConfigUtils.GetConfigWithStandardRgb(illuminantName), whitePoint.Chromaticity);
+        TestUtils.AssertColour(white, new Lms(1.0, 1.0, 1.0), Tolerance); // white is always normalised as [1, 1, 1] regardless of XYZ illuminant
     }
     
     [TestCase(nameof(Illuminant.D65))]
@@ -33,7 +33,7 @@ public class KnownLmsTests
     {
         var grey = StandardRgb.Grey.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         var luminance = grey.RelativeLuminance;
-        TestUtils.AssertTriplet<Lms>(grey, new(luminance, luminance, luminance), Tolerance);
+        TestUtils.AssertColour(grey, new Lms(luminance, luminance, luminance), Tolerance);
     }
     
     /*
@@ -68,7 +68,7 @@ public class KnownLmsTests
     [TestCase(nameof(Illuminant.E))]
     public void Blue(string illuminantName)
     {
-        var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));;
+        var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
         var lms = blue.Lms;
         Assert.That(lms.S, Is.GreaterThan(lms.M));
         Assert.That(lms.M, Is.GreaterThan(lms.L));

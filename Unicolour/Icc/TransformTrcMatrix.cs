@@ -6,15 +6,15 @@ internal class TransformTrcMatrix : Transform
     private readonly Lazy<List<Curve>> bCurvesInverse;
     private readonly Lazy<Matrices> matrices;
     private readonly Lazy<Matrices> matricesInverse;
-    private readonly List<Curve> mCurves = new() { TableCurve.Identity, TableCurve.Identity, TableCurve.Identity };
+    private readonly List<Curve> mCurves = [TableCurve.Identity, TableCurve.Identity, TableCurve.Identity];
     
     internal TransformTrcMatrix(Header header, Tags tags) 
         : base(header, tags, hasPerceptualHandling: false)
     {
-        bCurves = new Lazy<List<Curve>>(() => new List<Curve> { tags.RedTrc.Value!, tags.GreenTrc.Value!, tags.BlueTrc.Value! });
+        bCurves = new Lazy<List<Curve>>(() => [tags.RedTrc.Value!, tags.GreenTrc.Value!, tags.BlueTrc.Value!]);
         matrices = new Lazy<Matrices>(() => new Matrices(Multiply: GetMatrix(), Offset: Matrices.ZeroOffset));
 
-        bCurvesInverse = new Lazy<List<Curve>>(() => new List<Curve> { tags.RedTrc.Value!.Inverse(), tags.GreenTrc.Value!.Inverse(), tags.BlueTrc.Value!.Inverse() });
+        bCurvesInverse = new Lazy<List<Curve>>(() => [tags.RedTrc.Value!.Inverse(), tags.GreenTrc.Value!.Inverse(), tags.BlueTrc.Value!.Inverse()]);
         matricesInverse = new Lazy<Matrices>(() => new Matrices(Multiply: GetMatrix().Inverse(), Offset: Matrices.ZeroOffset));
     }
     

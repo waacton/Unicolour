@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,7 +9,9 @@ public class RoundtripHexTests
 {
     private static readonly RgbConfiguration RgbConfig = RgbConfiguration.StandardRgb;
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HexStrings))]
+    internal static List<string> HexStrings = new int[1000].Select(_ => Rng.Hex()).ToList();
+    
+    [TestCaseSource(nameof(HexStrings))]
     public void ViaRgbLinear(string hex) => AssertViaRgbLinear(hex);
     
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
@@ -22,7 +26,7 @@ public class RoundtripHexTests
         AssertRoundtrip(hex, original, roundtrip);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.HexStrings))]
+    [TestCaseSource(nameof(HexStrings))]
     public void ViaHsb(string hex) => AssertViaHsb(hex);
     
     [TestCaseSource(typeof(NamedColours), nameof(NamedColours.All))]
@@ -41,8 +45,8 @@ public class RoundtripHexTests
     {
         // trim then insert ensures all hex start with #
         var standardisedHex = hex.Trim('#').Insert(0, "#")[..7].ToUpper();
-        Assert.That(original.Byte255.ConstrainedHex, Is.EqualTo(standardisedHex));
-        Assert.That(roundtrip.Byte255.ConstrainedHex, Is.EqualTo(standardisedHex));
-        Assert.That(original.Byte255.ConstrainedHex, Is.EqualTo(roundtrip.Byte255.ConstrainedHex));
+        Assert.That(original.Byte255.Hex, Is.EqualTo(standardisedHex));
+        Assert.That(roundtrip.Byte255.Hex, Is.EqualTo(standardisedHex));
+        Assert.That(original.Byte255.Hex, Is.EqualTo(roundtrip.Byte255.Hex));
     }
 }

@@ -6,17 +6,13 @@ public record Yuv : ColourRepresentation
     public double Y => First;
     public double U => Second;
     public double V => Third;
-    public double ConstrainedY => ConstrainedFirst;
-    public double ConstrainedU => ConstrainedSecond;
-    public double ConstrainedV => ConstrainedThird;
-    protected override double ConstrainedFirst => Y.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => U.Clamp(-UMax, UMax);
-    protected override double ConstrainedThird => V.Clamp(-VMax, VMax);
-    internal override bool IsGreyscale => U.Equals(0.0) && V.Equals(0.0); // Y = 0 does not imply black; Y = 1 does not imply white
-
-    public Yuv(double y, double u, double v) : this(y, u, v, ColourHeritage.None) {}
-    internal Yuv(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
-    internal Yuv(double y, double u, double v, ColourHeritage heritage) : base(y, u, v, heritage) {}
+    
+    protected override bool IsTripletAchromatic => U == 0.0 && V == 0.0;
+    
+    public Yuv(double y, double u, double v) : this(y, u, v, Limitation.None) {}
+    public Yuv(double y) : this(y, 0, 0, Limitation.Achromatic) {}
+    internal Yuv(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
+    internal Yuv(double y, double u, double v, Limitation limitation) : base(y, u, v, limitation) {}
     
     protected override string String => $"{Y:F3} {U:+0.000;-0.000;0.000} {V:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -40,7 +36,7 @@ public record Yuv : ColourRepresentation
         var y = Wr * r + Wg * g + Wb * b;
         var u = UMax * ((b - y) / (1 - Wb));
         var v = VMax * ((r - y) / (1 - Wr));
-        return new Yuv(y, u, v, ColourHeritage.From(rgb));
+        return new Yuv(y, u, v, rgb.Limitation);
     }
     
     internal static Rgb ToRgb(Yuv yuv)
@@ -49,6 +45,6 @@ public record Yuv : ColourRepresentation
         var r = v * ((1 - Wr) / VMax) + y;
         var b = u * ((1 - Wb) / UMax) + y;
         var g = (y - Wr * r - Wb * b) / Wg;
-        return new Rgb(r, g, b, ColourHeritage.From(yuv));
+        return new Rgb(r, g, b, yuv.Limitation);
     }
 }

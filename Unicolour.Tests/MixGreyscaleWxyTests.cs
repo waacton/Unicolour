@@ -52,9 +52,14 @@ public class MixGreyscaleWxyTests
     [Test]
     public void GreyscaleBothRgbColours()
     {
-        var black = new Unicolour(ColourSpace.RgbLinear, 0.0, 0.0, 0.0);
-        var white = new Unicolour(ColourSpace.RgbLinear, 1.0, 1.0, 1.0);
-        var grey = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
+        // avoids rounding error of using D65 white point, where sample chromaticity is not perfectly equal to reference white chromaticity
+        // the only difference is the wavelength does not default to 360 nm, which is fine but makes this test harder to predict
+        var whitePoint = new WhitePoint(0.5, 0.5);
+        var config = new Configuration(xyzConfig: new(whitePoint));
+        
+        var black = new Unicolour(config, ColourSpace.RgbLinear, 0.0, 0.0, 0.0);
+        var white = new Unicolour(config, ColourSpace.RgbLinear, 1.0, 1.0, 1.0);
+        var grey = new Unicolour(config, ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
 
         var blackToWhite = black.Mix(white, ColourSpace.Wxy, premultiplyAlpha: false);
         var blackToGrey = black.Mix(grey, ColourSpace.Wxy, premultiplyAlpha: false);
@@ -93,10 +98,10 @@ public class MixGreyscaleWxyTests
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)
     {
-        var actualWithDegree = actual.WithDegreeMap(ToDegree).WithHueModulo();
+        var actualWithDegree = actual.WithHueMap(FromWavelength).WithHueModulo();
         TestUtils.AssertTriplet(actualWithDegree, expected, TestUtils.MixTolerance);
     }
     
-    private static double ToWavelength(double wavelength) => Wxy.DegreeToWavelength(wavelength, XyzConfiguration.D65);
-    private static double ToDegree(double wavelength) => Wxy.WavelengthToDegree(wavelength, XyzConfiguration.D65);
+    private static double ToWavelength(double wavelength) => Hue.ToWavelength(wavelength, XyzConfiguration.D65);
+    private static double FromWavelength(double wavelength) => Hue.FromWavelength(wavelength, XyzConfiguration.D65);
 }

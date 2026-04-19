@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -7,17 +8,19 @@ public class RoundtripLuvTests
 {
     private const double Tolerance = 0.00000001;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Luv, 1500);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LuvTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaXyz(ColourTriplet triplet)
     {
         var original = new Luv(triplet.First, triplet.Second, triplet.Third);
-        var xyz = Luv.ToXyz(original, XyzConfig);
-        var roundtrip = Luv.FromXyz(xyz, XyzConfig);
+        var xyz = Luv.ToXyz(original, XyzConfig.WhitePoint);
+        var roundtrip = Luv.FromXyz(xyz);
         TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
     }
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.LuvTriplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaLchuv(ColourTriplet triplet)
     {
         var original = new Luv(triplet.First, triplet.Second, triplet.Third);

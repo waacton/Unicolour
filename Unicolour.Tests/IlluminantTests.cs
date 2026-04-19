@@ -45,7 +45,7 @@ public class IlluminantTests
         Assert.That(spdWhitePoint.Z, Is.EqualTo(predefinedWhitePoint.Z).Within(illuminant == Illuminant.E ? 0.05 : 0.0125));
         
         var config = new Configuration(xyzConfig: new XyzConfiguration(illuminant, observer));
-        var fromSpdWhite = new Unicolour(config, ColourSpace.Xyz, spdWhitePoint.AsXyzMatrix().ToTriplet().Tuple);
+        var fromSpdWhite = new Unicolour(config, ColourSpace.Xyz, spdWhitePoint.Triplet.Tuple);
         var fromRgbWhite = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
         Assert.That(fromSpdWhite.Chromaticity.X, Is.EqualTo(fromRgbWhite.Chromaticity.X).Within(0.00005));
         Assert.That(fromSpdWhite.Chromaticity.Y, Is.EqualTo(fromRgbWhite.Chromaticity.Y).Within(0.00005));
@@ -66,7 +66,7 @@ public class IlluminantTests
     [TestCaseSource(nameof(CustomWhitePointTestData))]
     public void CustomWhitePoint(Observer observer)
     {
-        var expectedWhitePoint = new WhitePoint(50, 50, 50);
+        var expectedWhitePoint = new WhitePoint(0.5, 0.5, 0.5);
         var illuminant = new Illuminant(expectedWhitePoint);
         
         // regardless of the observer, the white point should always be the same as provided
@@ -76,6 +76,6 @@ public class IlluminantTests
         var xyzConfig = new XyzConfiguration(illuminant, observer);
         var config = new Configuration(xyzConfig: xyzConfig);
         var colour = new Unicolour(config, "#FFFFFF");
-        TestUtils.AssertTriplet<Xyz>(colour, new(0.5, 0.5, 0.5), 0.00000000001);
+        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(0.5, 0.5, 0.5), 0.00000000001);
     }
 }

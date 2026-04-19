@@ -12,8 +12,9 @@ public class KnownCam02Tests
     [Test] // matching values from https://github.com/igd-geo/pcolor/blob/master/de.fhg.igd.pcolor.test/src/de/fhg/igd/pcolor/test/CAMWorkedExample.java#L54
     public void Cyan200La()
     {
-        var xyz = new Xyz(0.1931, 0.2393, 0.1014);
-        var camConfig = new CamConfiguration(new WhitePoint(98.88, 90, 32.03), 200, 18, Surround.Average);
+        var whitePoint = new WhitePoint(0.9888, 0.90, 0.3203);
+        var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
+        var camConfig = new CamConfiguration(whitePoint, 200, 18, Surround.Average);
 
         var expectedModel = new Model(
             J: 48.0314,
@@ -34,8 +35,9 @@ public class KnownCam02Tests
     [Test] // matching values from https://github.com/igd-geo/pcolor/blob/master/de.fhg.igd.pcolor.test/src/de/fhg/igd/pcolor/test/CAMWorkedExample.java#L76
     public void Cyan20La()
     {
-        var xyz = new Xyz(0.1931, 0.2393, 0.1014);
-        var camConfig = new CamConfiguration(new WhitePoint(98.88, 90, 32.03), 20, 18, Surround.Average);
+        var whitePoint = new WhitePoint(0.9888, 0.90, 0.3203);
+        var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
+        var camConfig = new CamConfiguration(whitePoint, 20, 18, Surround.Average);
         
         var expectedModel = new Model(
             J: 47.6856,
@@ -56,8 +58,9 @@ public class KnownCam02Tests
     [Test] // matching values from https://github.com/colour-science/colour#34colour-appearance-models---colourappearance & https://github.com/colour-science/colour#3126cam02-lcd-cam02-scd-and-cam02-ucs-colourspaces---luo-cui-and-li-2006
     public void Red()
     {
-        var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952);
-        var camConfig = new CamConfiguration(new WhitePoint(95.05, 100.00, 108.88), 318.31, 20, Surround.Average);
+        var whitePoint = new WhitePoint(0.9505, 1.0000, 1.0888);
+        var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952, whitePoint);
+        var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
         var expectedModel = new Model(
             J: 34.434525727858997,
@@ -84,11 +87,12 @@ public class KnownCam02Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
-        var (x, y, z) = camConfig.WhitePoint.AsXyzMatrix().ToTriplet();
-        var xyz = new Xyz(x, y, z);
-        var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, xyzConfig);
+        var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
+        var (x, y, z) = whitePoint;
+        var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
+        var xyz = new Xyz(x, y, z, whitePoint);
+        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
         
         AssertModelDouble(cam02.Model.J, 100);
         AssertModelDouble(cam02.Ucs.J, 100);
@@ -104,8 +108,9 @@ public class KnownCam02Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
-        var xyz = new Xyz(0, 0, 0);
+        var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
+        var xyz = new Xyz(0, 0, 0, whitePoint);
         var expectedModel = new Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Ucs(0, 0, 0);
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
@@ -113,8 +118,8 @@ public class KnownCam02Tests
     
     private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs)
     {
-        var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, xyzConfig);
+        var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
+        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
         AssertModel(cam02.Model, expectedModel);
         AssertUcs(cam02, expectedUcs);
     }

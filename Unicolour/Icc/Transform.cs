@@ -2,9 +2,9 @@
 
 internal abstract class Transform
 {
-    protected static readonly double[] RefWhite = { 0.9642, 1.0000, 0.8249 };
-    private static readonly double[] RefBlack = { 0.00336, 0.0034731, 0.00287 };
-    internal static readonly XyzConfiguration XyzD50 = new(WhitePoint.FromXyz(new Xyz(RefWhite[0], RefWhite[1], RefWhite[2])), "ICC XYZ D50");
+    protected static readonly double[] RefWhite = [0.9642, 1.0000, 0.8249];
+    private static readonly double[] RefBlack = [0.00336, 0.0034731, 0.00287];
+    internal static readonly XyzConfiguration XyzD50 = new(new WhitePoint(RefWhite[0], RefWhite[1], RefWhite[2]), "ICC XYZ D50");
 
     private readonly Header header;
     protected readonly Tags tags;
@@ -190,7 +190,7 @@ internal abstract class Transform
         var l = iccLab[0] * 100;
         var a = iccLab[1] * (127 + 128) - 128;
         var b = iccLab[2] * (127 + 128) - 128;
-        return new[] { l, a, b };
+        return [l, a, b];
     }
 
     internal static double[] LabToIccLab(double[] lab)
@@ -198,7 +198,7 @@ internal abstract class Transform
         var l = lab[0] / 100.0;
         var a = (lab[1] + 128) / (127 + 128);
         var b = (lab[2] + 128) / (127 + 128);
-        return new[] { l, a, b };
+        return [l, a, b];
     }
     
     internal static double[] IccLab2ToIccLab4(double[] iccLab2) => iccLab2.Select(x => x * 65535.0 / 65280.0).ToArray();
@@ -210,8 +210,8 @@ internal abstract class Transform
     private static double XyzToIccXyz(double value) => value * 32768.0 / 65535.0;
     private static double IccXyzToXyz(double value) => value * 65535.0 / 32768.0;
     
-    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50).ToArray();
-    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2]), XyzD50).ToArray();
+    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50.WhitePoint).ToArray();
+    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2], XyzD50.WhitePoint)).ToArray();
 
     private static double[] NegativeClip(double[] xyz) => xyz.Select(NegativeClip).ToArray();
     private static double NegativeClip(double value) => Math.Max(value, 0);

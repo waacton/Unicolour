@@ -7,7 +7,7 @@ namespace Wacton.Unicolour.Tests;
 public class ConfigureIctcpTests
 {
     private static readonly WhitePoint D65WhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
-    private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X / 100.0, D65WhitePoint.Y / 100.0, D65WhitePoint.Z / 100.0);
+    private static readonly ColourTriplet XyzWhite = new(D65WhitePoint.X, D65WhitePoint.Y, D65WhitePoint.Z);
 
     // Linear Rec2020 RGB as used in https://github.com/colour-science/colour#31224ictcp-colour-encoding
     private static readonly ColourTriplet TestLinearRgb = new(0.45620519, 0.03081071, 0.04091952);
@@ -23,10 +23,10 @@ public class ConfigureIctcpTests
         var blue = new Unicolour(Config100, ColourSpace.Xyz, HungBerns.BlueRef.Xyz.Tuple);
         var white = new Unicolour(Config100, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config100, ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Ictcp>(red, new(0.396807697, -0.135943598, 0.234295237), 0.000000001);
-        TestUtils.AssertTriplet<Ictcp>(blue, new(0.323484554, 0.235351529, -0.130337248), 0.000000001);
-        TestUtils.AssertTriplet<Ictcp>(white, new(0.50808, 0, 0), 0.0005); // InverseEOTF(100) ~= 0.50808
-        TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(red, new Ictcp(0.396807697, -0.135943598, 0.234295237), 0.000000001);
+        TestUtils.AssertColour(blue, new Ictcp(0.323484554, 0.235351529, -0.130337248), 0.000000001);
+        TestUtils.AssertColour(white, new Ictcp(0.50808, 0, 0), 0.0005); // InverseEOTF(100) ~= 0.50808
+        TestUtils.AssertColour(black, new Ictcp(0, 0, 0), 0.0005);
     }
     
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour#31224ictcp-colour-encoding)  
@@ -37,8 +37,8 @@ public class ConfigureIctcpTests
         
         var white = new Unicolour(Config1, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config1, ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Ictcp>(white, new(0.14995, 0, 0), 0.0005); // InverseEOTF(1) ~= 0.14995
-        TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(white, new Ictcp(0.14995, 0, 0), 0.0005); // InverseEOTF(1) ~= 0.14995
+        TestUtils.AssertColour(black, new Ictcp(0, 0, 0), 0.0005);
     }
 
     [Test] // matches the behaviour of javascript-based "color.js" (https://github.com/LeaVerou/color.js / https://colorjs.io/apps/picker)  
@@ -49,8 +49,8 @@ public class ConfigureIctcpTests
         
         var white = new Unicolour(Config203, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config203, ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Ictcp>(white, new(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
-        TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(white, new Ictcp(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
+        TestUtils.AssertColour(black, new Ictcp(0, 0, 0), 0.0005);
     }
     
     [Test] // default config is HDR (203 white luminance), should be same as above
@@ -58,8 +58,8 @@ public class ConfigureIctcpTests
     {
         var white = new Unicolour(ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(ColourSpace.Xyz, 0, 0, 0);
-        TestUtils.AssertTriplet<Ictcp>(white, new(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
-        TestUtils.AssertTriplet<Ictcp>(black, new(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(white, new Ictcp(0.58069, 0, 0), 0.0005); // InverseEOTF(203) ~= 0.5807
+        TestUtils.AssertColour(black, new Ictcp(0, 0, 0), 0.0005);
     }
 
     [Test]
@@ -70,8 +70,8 @@ public class ConfigureIctcpTests
         var convertedTo203 = convertedTo1.ConvertToConfiguration(Config203);
         var convertedTo100 = convertedTo203.ConvertToConfiguration(Config100);
         
-        TestUtils.AssertTriplet<Ictcp>(convertedTo1, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo203, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
+        TestUtils.AssertColour(convertedTo1, new Ictcp(0.07351364, 0.00475253, 0.09351596), 0.00001);
+        TestUtils.AssertColour(convertedTo203, new Ictcp(0.39224991, -0.0001166, 0.28389029), 0.0001);
         TestUtils.AssertTriplet(convertedTo100.Ictcp.Triplet, initial100.Ictcp.Triplet, 0.0005);
     }
     
@@ -83,10 +83,10 @@ public class ConfigureIctcpTests
         var convertedTo203 = convertedTo1.ConvertToConfiguration(Config203);
         var convertedTo100 = convertedTo203.ConvertToConfiguration(Config100);
         
-        TestUtils.AssertTriplet<Ictcp>(initial100, new(0.50808, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo1, new(0.14995, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo203, new(0.58069, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo100, new(0.50808, 0, 0), 0.0005);
+        TestUtils.AssertColour(initial100, new Ictcp(0.50808, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo1, new Ictcp(0.14995, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo203, new Ictcp(0.58069, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo100, new Ictcp(0.50808, 0, 0), 0.0005);
     }
 
     [Test]
@@ -97,9 +97,9 @@ public class ConfigureIctcpTests
         var convertedTo203 = convertedTo1.ConvertToConfiguration(Config203);
         var convertedTo100 = convertedTo203.ConvertToConfiguration(Config100);
         
-        TestUtils.AssertTriplet<Ictcp>(initial100, new(0, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo1, new(0, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo203, new(0, 0, 0), 0.0005);
-        TestUtils.AssertTriplet<Ictcp>(convertedTo100, new(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(initial100, new Ictcp(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo1, new Ictcp(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo203, new Ictcp(0, 0, 0), 0.0005);
+        TestUtils.AssertColour(convertedTo100, new Ictcp(0, 0, 0), 0.0005);
     }
 }

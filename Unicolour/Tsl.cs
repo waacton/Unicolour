@@ -1,3 +1,5 @@
+using static Wacton.Unicolour.Utils;
+
 namespace Wacton.Unicolour;
 
 public record Tsl : ColourRepresentation
@@ -6,18 +8,15 @@ public record Tsl : ColourRepresentation
     public double T => First;
     public double S => Second;
     public double L => Third;
-    public double ConstrainedT => ConstrainedFirst;
-    public double ConstrainedS => ConstrainedSecond;
-    public double ConstrainedL => ConstrainedThird;
-    protected override double ConstrainedFirst => T.Modulo(360.0);
-    protected override double ConstrainedSecond => S.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => L.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => S <= 0.0 || L <= 0.0;
-
-    public Tsl(double t, double s, double l) : this(t, s, l, ColourHeritage.None) {}
-    internal Tsl(double t, double s, double l, ColourHeritage heritage) : base(t, s, l, heritage) {}
     
-    protected override string String => UseAsHued ? $"{T:F1}° {S * 100:F1}% {L * 100:F1}%" : $"—° {S * 100:F1}% {L * 100:F1}%";
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Tsl(double t, double s, double l) : this(t, s, l, Limitation.None) {}
+    public Tsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
+    internal Tsl(double t, double s, double l, Limitation limitation) : base(t, s, l, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{T:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -88,17 +87,26 @@ public record Tsl : ColourRepresentation
         var kg = ybrConfig.Kg;
                 
         var (r, g, b) = rgb;
-
-        var sum = r + g + b;
-        var rChromaticity = r / sum;
-        var gChromaticity = g / sum;
+        var achromatic = r == g && g == b;
         
-        var rPrime = rChromaticity - 1 / 3.0;
-        var gPrime = gChromaticity - 1 / 3.0;
-        var tangent = rPrime / gPrime;
+        double rPrime, gPrime;
+        if (achromatic)
+        {
+            rPrime = 0;
+            gPrime = 0;
+        }
+        else
+        {
+            var sum = r + g + b;
+            var rChromaticity = r / sum;
+            var gChromaticity = g / sum;
+            rPrime = rChromaticity - 1 / 3.0;
+            gPrime = gChromaticity - 1 / 3.0;
+        }
 
         const double tAzure = 0.0;
         const double tOrange = 0.5;
+        var tangent = rPrime / gPrime;
         var t = double.IsNaN(gPrime) ? tAzure : gPrime switch
         {
             > 0 => Math.Atan(tangent) / (2 * Math.PI) + 0.25,
@@ -106,12 +114,14 @@ public record Tsl : ColourRepresentation
             _ => rPrime <= 0 ? tAzure : tOrange
         };
 
+        t *= 360;
+
         var s = double.IsNaN(gPrime) 
             ? 0.0 
             : Math.Pow(9.0 / 5.0 * (Math.Pow(rPrime, 2) + Math.Pow(gPrime, 2)), 0.5);
         
         var l = kr * r + kg * g + kb * b;
-        return new Tsl(t * 360, s, l, ColourHeritage.From(rgb));
+        return new Tsl(t, s, l, rgb.Limitation);
     }
     
     internal static Rgb ToRgb(Tsl tsl, YbrConfiguration ybrConfig)
@@ -120,9 +130,10 @@ public record Tsl : ColourRepresentation
         var kb = ybrConfig.Kb;
         var kg = ybrConfig.Kg;
         
-        var t = tsl.ConstrainedT / 360.0;
-        var (_, s, l) = tsl;
-
+        var (t, s, l) = tsl.WithHueModulo();
+        t /= 360.0;
+        s = Math.Max(s, 0); // RGB only represents non-negative chroma (unclear what negative chroma would even mean)
+        
         const double infinityTangent = 16331239353195370; // Math.Tan(Math.PI / 2)
         double tangent;
         bool gPrimeNegation;
@@ -154,12 +165,20 @@ public record Tsl : ColourRepresentation
         gPrime = gPrimeNegation ? -gPrime : gPrime;
         var rPrime = gPrime * tangent;
         
-        var rChromaticity = rPrime + 1 / 3.0;
-        var gChromaticity = gPrime + 1 / 3.0;
-        var bChromaticity = 1 - rChromaticity - gChromaticity;
-        var sum = l / (kr * rChromaticity + kg * gChromaticity + kb * bChromaticity);
-        var (r, g, b) = (rChromaticity * sum, gChromaticity * sum, bChromaticity * sum);
+        double r, g, b;
+        if (gPrime == 0.0) // rPrime will also be 0
+        {
+            (r, g, b) = (l, l, l);
+        }
+        else
+        {
+            var rChromaticity = rPrime + 1 / 3.0;
+            var gChromaticity = gPrime + 1 / 3.0;
+            var bChromaticity = 1 - rChromaticity - gChromaticity;
+            var sum = l / (kr * rChromaticity + kg * gChromaticity + kb * bChromaticity);
+            (r, g, b) = (rChromaticity * sum, gChromaticity * sum, bChromaticity * sum);
+        }
         
-        return new Rgb(r, g, b, ColourHeritage.From(tsl));
+        return new Rgb(r, g, b, tsl.Limitation);
     }
 }

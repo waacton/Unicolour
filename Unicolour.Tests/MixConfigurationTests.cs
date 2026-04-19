@@ -54,7 +54,7 @@ public class MixConfigurationTests
 
         // unicolour 2 should be converted back to config 1, therefore interpolating halfway between original values
         var mixed = colour1.Mix(colour2, ColourSpace.Rgb, premultiplyAlpha: false);
-        TestUtils.AssertTriplet<Rgb>(mixed, new(0.5, 0.5, 0.5), 0.00000000005);
+        TestUtils.AssertColour(mixed, new Rgb(0.5, 0.5, 0.5), 0.00000000005);
         Assert.That(mixed.Alpha.A, Is.EqualTo(0.5));
     }
 

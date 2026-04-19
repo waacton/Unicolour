@@ -6,14 +6,31 @@ public record Xyz : ColourRepresentation
     public double X => First;
     public double Y => Second;
     public double Z => Third;
-    
-    // no clear luminance upper-bound; usually Y >= 1 is max luminance
-    // but since custom white points can be provided, don't want to make the assumption
-    internal override bool IsGreyscale => Y <= 0;
 
-    public Xyz(double x, double y, double z) : this(x, y, z, ColourHeritage.None) {}
-    internal Xyz(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
-    internal Xyz(double x, double y, double z, ColourHeritage heritage) : base(x, y, z, heritage) {}
+    internal WhitePoint WhitePoint { get; }
+    protected override bool IsTripletAchromatic
+    {
+        get
+        {
+            if (Y == 0.0)
+            {
+                return X == 0.0 && Z == 0.0;
+            }
+            
+            var yFactor = WhitePoint.Y / Y;
+            var scaledX = X * yFactor;
+            var scaledZ = Z * yFactor;
+            return scaledX == WhitePoint.X && scaledZ == WhitePoint.Z;
+        }
+    }
+
+    public Xyz(double x, double y, double z, WhitePoint whitePoint) : this(x, y, z, whitePoint, Limitation.None) {}
+    public Xyz(double luminance, WhitePoint whitePoint) : this(whitePoint.X * luminance, luminance, whitePoint.Z * luminance, whitePoint, Limitation.Achromatic) {}
+    internal Xyz(ColourTriplet triplet, WhitePoint whitePoint, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, whitePoint, limitation) {}
+    internal Xyz(double x, double y, double z, WhitePoint whitePoint, Limitation limitation) : base(x, y, z, limitation)
+    {
+        WhitePoint = whitePoint;
+    }
     
     protected override string String => $"{X:F4} {Y:F4} {Z:F4}";
     public override string ToString() => base.ToString();
@@ -30,10 +47,9 @@ public record Xyz : ColourRepresentation
      *          - although potentially https://doi.org/10.1111/cgf.12676 calculates one good SPD (roundtrip conversion obviously not possible)
      * ----------
      * SPD white point calculation uses 360 nm - 780 nm range
-     * following ASTM standard practice https://doi.org/10.1520/E0308-18 (7.1.2) for 1 nm or 5 nm intervals
+     * following ASTM standard practice https://doi.org/10.1520/E0308-18 (7.1.2) for 1 nm or 5 nm intervals [TODO: check if different in E308-22]
      * including approximation of integration using summation and limiting to range 360 - 780 nm
      * (10 nm and 20 nm intervals require different procedures, see 7.3.2.1, 7.3.3.1 - using tables and specific interpolation)
-     * TODO: check if different in E308-22
      * intervals other than 1 nm or 5 nm will work but the SPD will report as not valid
      * ----------
      * note that SPD coefficients can cover a wider range than 360 nm - 780 nm
@@ -47,7 +63,15 @@ public record Xyz : ColourRepresentation
     internal const int WavelengthCount = EndWavelength - StartWavelength + 1;
     private static readonly int[] TargetWavelengths = Enumerable.Range(StartWavelength, WavelengthCount).ToArray();
 
-    internal static Xyz FromSpd(Spd spd, Observer observer)
+    internal static Xyz FromSpd(Spd spd, Observer observer, WhitePoint whitePoint)
+    {
+        var (x, y, z) = FromSpd(spd, observer);
+        return new Xyz(x, y, z, whitePoint);
+    }
+    
+    // this is separated out to allow Spd -> Xyz conversion without white point context
+    // only intended for use to define actual white points (which themselves are the context!)
+    internal static (double x, double y, double z) FromSpd(Spd spd, Observer observer)
     {
         var (wavelengths, delta) = GetWavelengths(spd);
         var absoluteX = GetAbsolute(spd, observer.ColourMatchX, wavelengths, delta);
@@ -56,10 +80,10 @@ public record Xyz : ColourRepresentation
         var x = absoluteX / absoluteY;
         var y = absoluteY / absoluteY;
         var z = absoluteZ / absoluteY;
-        return new Xyz(x, y, z);
+        return (x, y, z);
     }
     
-    internal static Xyz FromSpd(Spd spd, Observer observer, SpectralCoefficients reflectance)
+    internal static Xyz FromSpd(Spd spd, Observer observer, SpectralCoefficients reflectance, WhitePoint whitePoint)
     {
         var (wavelengths, delta) = GetWavelengths(spd);
         var absoluteX = GetAbsoluteUsingReflectance(spd, observer.ColourMatchX, reflectance, wavelengths, delta);
@@ -69,7 +93,7 @@ public record Xyz : ColourRepresentation
         var x = absoluteX / perfectReflectanceY;
         var y = absoluteY / perfectReflectanceY;
         var z = absoluteZ / perfectReflectanceY;
-        return new Xyz(x, y, z);
+        return new Xyz(x, y, z, whitePoint);
     }
 
     private static (int[] wavelengths, int delta) GetWavelengths(Spd spd)

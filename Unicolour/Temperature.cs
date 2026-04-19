@@ -107,7 +107,7 @@ public record Temperature(double Cct, double Duv = 0.0)
     private static (List<Distance> planckianTable, int m) GetPlanckianTable(List<Coordinate> coordinates, Chromaticity chromaticity)
     {
         var (ux, vx) = chromaticity.Uv;
-        var planckianTable = new List<Distance>();
+        List<Distance> planckianTable = [];
         var minDistance = double.NaN;
         var m = 0;
 

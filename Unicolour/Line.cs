@@ -2,7 +2,7 @@ namespace Wacton.Unicolour;
 
 internal record Line(double Slope, double Intercept)
 {
-    internal Line((double slope, double intercept) tuple) : this(tuple.slope, tuple.intercept) { }
+    internal Line((double slope, double intercept) tuple) : this(tuple.slope, tuple.intercept) {}
     
     internal double Slope { get; } = Slope;
     internal double Intercept { get; } = Intercept;

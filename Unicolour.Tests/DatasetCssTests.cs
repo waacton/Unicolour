@@ -10,7 +10,7 @@ namespace Wacton.Unicolour.Tests;
 public class DatasetCssTests
 {
     // https://www.w3.org/TR/css-color-4/#named-colors
-    private static readonly Dictionary<string, ColourTriplet> Rgb255Lookup = new()
+    private static readonly Dictionary<string, Rgb255> Rgb255Lookup = new()
     {
         { "aliceblue", new(240, 248, 255) },
         { "antiquewhite", new(250, 235, 215) },
@@ -320,13 +320,13 @@ public class DatasetCssTests
     public void Rgb255(string name, Unicolour colour)
     {
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(colour, expected, 0);
+        TestUtils.AssertColour(colour, expected, 0);
     }
 
     [Test]
     public void Transparent()
     {
-        TestUtils.AssertTriplet<Rgb255>(Css.Transparent, new(0, 0, 0), 0);
+        TestUtils.AssertColour(Css.Transparent, new Rgb255(0, 0, 0), 0);
         Assert.That(Css.Transparent.Alpha.A, Is.EqualTo(0));
     }
     
@@ -374,18 +374,18 @@ public class DatasetCssTests
         Assert.That(colour, Is.Not.Null);
         
         var expected = Rgb255Lookup[name];
-        TestUtils.AssertTriplet<Rgb255>(colour!, expected, 0);
+        TestUtils.AssertColour(colour!, expected, 0);
     }
 
-    private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
-    private static string AddWhitespaceAndUppercase(string text)
+    private static readonly List<string> NamesWithSpaces = Names.Select(AddWhitespaceAndChangeCasing).ToList();
+    private static string AddWhitespaceAndChangeCasing(string text)
     {
         var multicase = string.Concat(text.Select((x, i) => i % 2 == 0 ? char.ToLower(x) : char.ToUpper(x)));
         return multicase.Insert(multicase.Length, "\n").Insert(multicase.Length - 1, " ").Insert(0, "\t").Insert(2, " ");
     }
     
     [Test]
-    public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
+    public void NameWithWhitespaceAndCasing([ValueSource(nameof(NamesWithSpaces))] string name)
     {
         var colour = FromName(name);
         Assert.That(colour, Is.Not.Null);

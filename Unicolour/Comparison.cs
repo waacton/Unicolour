@@ -108,8 +108,8 @@ internal static class Comparison
         var c1Prime = Math.Sqrt(Power2(a1Prime) + Power2(b1));
         var c2Prime = Math.Sqrt(Power2(a2Prime) + Power2(b2));
         var avgCPrime = (c1Prime + c2Prime) / 2.0;
-        var h1Prime = ToDegrees(Math.Atan2(b1, a1Prime)).Modulo(360);
-        var h2Prime = ToDegrees(Math.Atan2(b2, a2Prime)).Modulo(360);
+        var h1Prime = ToDegrees(Math.Atan2(b1, a1Prime)).WithHueModulo();
+        var h2Prime = ToDegrees(Math.Atan2(b2, a2Prime)).WithHueModulo();
         
         var hPrimeDelta = Math.Abs(h1Prime - h2Prime) switch
         {
@@ -141,7 +141,7 @@ internal static class Comparison
         const int kc = 1;
         const int kh = 1;
 
-        var sl = 1 + (0.015 * Power2(avgL - 50)) / Math.Sqrt(20 + Power2(avgL - 50));
+        var sl = 1 + 0.015 * Power2(avgL - 50) / Math.Sqrt(20 + Power2(avgL - 50));
         var sc = 1 + 0.045 * avgCPrime;
         var sh = 1 + 0.015 * avgCPrime * t;
 
@@ -165,7 +165,7 @@ internal static class Comparison
     {
         var (l1, a1, b1) = reference.Lab;
         var (l2, a2, b2) = sample.Lab;
-        var (_, c1, h1) = reference.Lchab.ConstrainedTriplet;
+        var (_, c1, h1) = reference.Lchab.WithHueModulo();
         var (_, c2, _) = sample.Lchab;
         
         var lDelta = l1 - l2;

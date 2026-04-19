@@ -12,7 +12,7 @@ public class KnownLuvTests
     public void Red(string illuminantName, double l, double u, double v)
     {
         var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Luv>(red, new(l, u, v), Tolerance);
+        TestUtils.AssertColour(red, new Luv(l, u, v), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 87.7347, -83.0776, 107.3985)]
@@ -20,7 +20,7 @@ public class KnownLuvTests
     public void Green(string illuminantName, double l, double u, double v)
     {
         var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Luv>(green, new(l, u, v), Tolerance);
+        TestUtils.AssertColour(green, new Luv(l, u, v), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 32.2970, -9.4054, -130.3423)]
@@ -28,7 +28,7 @@ public class KnownLuvTests
     public void Blue(string illuminantName, double l, double u, double v)
     {
         var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Luv>(blue, new(l, u, v), Tolerance);
+        TestUtils.AssertColour(blue, new Luv(l, u, v), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.0, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownLuvTests
     public void Black(string illuminantName, double l, double u, double v)
     {
         var black = StandardRgb.Black.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Luv>(black, new(l, u, v), Tolerance);
+        TestUtils.AssertColour(black, new Luv(l, u, v), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 100.0000, 0.0, 0.0)]
@@ -44,6 +44,6 @@ public class KnownLuvTests
     public void White(string illuminantName, double l, double u, double v)
     {
         var white = StandardRgb.White.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Luv>(white, new(l, u, v), Tolerance);
+        TestUtils.AssertColour(white, new Luv(l, u, v), Tolerance);
     }
 }

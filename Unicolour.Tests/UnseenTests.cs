@@ -33,7 +33,7 @@ public class UnseenTests
     {
         Assert.That(colour.Hex, Is.EqualTo(Unicolour.UnseenName));
         Assert.That(colour.Description, Is.EqualTo(Unicolour.UnseenDescription));
-        TestUtils.AssertTriplet<Rgb>(colour, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertColour(colour, new Rgb(double.NaN, double.NaN, double.NaN), 0);
         Assert.That(colour.Alpha.A, Is.EqualTo(0.0));
     }
 }

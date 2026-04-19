@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public record Hsluv : ColourRepresentation
 {
@@ -6,18 +8,15 @@ public record Hsluv : ColourRepresentation
     public double H => First;
     public double S => Second;
     public double L => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedS => ConstrainedSecond;
-    public double ConstrainedL => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => S.Clamp(0.0, 100.0);
-    protected override double ConstrainedThird => L.Clamp(0.0, 100.0);
-    internal override bool IsGreyscale => S <= 0.0 || L is <= 0.0 or >= 100.0;
-
-    public Hsluv(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
-    internal Hsluv(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
     
-    protected override string String => UseAsHued ? $"{H:F1}° {S:F1}% {L:F1}%" : $"—° {S:F1}% {L:F1}%";
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Hsluv(double h, double s, double l) : this(h, s, l, Limitation.None) {}
+    public Hsluv(double l) : this(0, 0, l, Limitation.Achromatic) {}
+    internal Hsluv(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S:F1}% {L:F1}%" : $"{NoHue}° {S:F1}% {L:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,57 +31,28 @@ public record Hsluv : ColourRepresentation
     
     internal static Hsluv FromLchuv(Lchuv lchuv)
     {
-        var (lStar, c, h) = lchuv.ConstrainedTriplet;
-        
-        double s, l;
-        switch (lStar)
+        var (l, c, h) = lchuv.WithHueModulo();
+        (var s, l) = l switch
         {
-            case > 99.9999999:
-                s = 0.0;
-                l = 100.0;
-                break;
-            case < 0.00000001:
-                s = 0.0;
-                l = 0.0;
-                break;
-            default:
-            {
-                var maxC = CalculateMaxChroma(lStar, h);
-                s = c / maxC * 100;
-                l = lStar;
-                break;
-            }
-        }
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (c / CalculateMaxChroma(l, h) * 100, l)
+        };
         
-        return new Hsluv(h, s, l, ColourHeritage.From(lchuv));
+        return new Hsluv(h, s, l, lchuv.Limitation);
     }
     
     internal static Lchuv ToLchuv(Hsluv hsluv)
     {
-        var (_, s, l) = hsluv;
-        var h = hsluv.ConstrainedH;
-
-        double lStar, c;
-        switch (l)
+        var (h, s, l) = hsluv.WithHueModulo();
+        (var c, l) = l switch
         {
-            case > 99.9999999:
-                lStar = 100.0;
-                c = 0.0;
-                break;
-            case < 0.00000001:
-                lStar = 0.0;
-                c = 0.0;
-                break;
-            default:
-            {
-                var maxC = CalculateMaxChroma(l, h);
-                c = maxC / 100 * s;
-                lStar = l;
-                break;
-            }
-        }
+            > 99.9999999 => (0, 100),
+            < 0.00000001 => (0, 0),
+            _ => (s == 0 ? 0 : CalculateMaxChroma(l, h) / 100 * s, l)
+        };
         
-        return new Lchuv(lStar, c, h, ColourHeritage.From(hsluv));
+        return new Lchuv(l, c, h, hsluv.Limitation);
     }
 
     private static double CalculateMaxChroma(double lightness, double hue)
@@ -119,10 +89,10 @@ public record Hsluv : ColourRepresentation
             var intercept0 = s2 * l / s3;
             var slope1 = s1 / (s3 + 126452);
             var intercept1 = (s2 - 769860) * l / (s3 + 126452);
-            return new[] { new Line(slope0, intercept0), new Line(slope1, intercept1) };
+            return [new Line(slope0, intercept0), new Line(slope1, intercept1)];
         }
 
-        var lines = new List<Line>();
+        List<Line> lines = [];
         lines.AddRange(CalculateLines(matrixR));
         lines.AddRange(CalculateLines(matrixG));
         lines.AddRange(CalculateLines(matrixB));

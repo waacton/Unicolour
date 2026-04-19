@@ -7,13 +7,11 @@ public record Jzazbz : ColourRepresentation
     public double A => Second;
     public double B => Third;
     
-    // based on the figures from the paper, greyscale behaviour is the same as LAB
-    // i.e. non-lightness axes are zero
-    // but no clear lightness upper-bound
-    internal override bool IsGreyscale => J <= 0.0 || (A.Equals(0.0) && B.Equals(0.0));
+    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
     
-    public Jzazbz(double j, double a, double b) : this(j, a, b, ColourHeritage.None) {}
-    internal Jzazbz(double j, double a, double b, ColourHeritage heritage) : base(j, a, b, heritage) {}
+    public Jzazbz(double j, double a, double b) : this(j, a, b, Limitation.None) {}
+    public Jzazbz(double j) : this(j, 0, 0, Limitation.Achromatic) {}
+    internal Jzazbz(double j, double a, double b, Limitation limitation) : base(j, a, b, limitation) {}
     
     protected override string String => $"{J:F3} {A:+0.000;-0.000;0.000} {B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -49,10 +47,10 @@ public record Jzazbz : ColourRepresentation
         { +0.199076, +1.096799, -1.295875 }
     });
     
-    internal static Jzazbz FromXyz(Xyz xyz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
+    internal static Jzazbz FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor, DynamicRange dynamicRange)
     {
-        var xyzMatrix = Matrix.From(xyz);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
+        var d65Xyz = chromaticAdaptor.AdaptTo(xyz, D65WhitePoint);
+        var d65Matrix = Matrix.From(d65Xyz);
         var (x65, y65, z65) = d65Matrix.ToTriplet();
         
         var x65Prime = b * x65 - (b - 1) * z65;
@@ -64,10 +62,10 @@ public record Jzazbz : ColourRepresentation
 
         var (iz, az, bz) = izazbzMatrix.ToTriplet();
         var jz = (1 + d) * iz / (1 + d * iz) - d0;
-        return new Jzazbz(jz, az, bz, ColourHeritage.From(xyz));
+        return new Jzazbz(jz, az, bz, xyz.Limitation);
     }
     
-    internal static Xyz ToXyz(Jzazbz jzazbz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
+    internal static Xyz ToXyz(Jzazbz jzazbz, ChromaticAdaptor chromaticAdaptor, DynamicRange dynamicRange)
     {
         var (jz, az, bz) = jzazbz;
         var iz = (jz + d0) / (1 + d - d * (jz + d0));
@@ -81,7 +79,7 @@ public record Jzazbz : ColourRepresentation
         var y65 = (y65Prime + (g - 1) * x65) / g;
         var z65 = z65Prime;
         var d65Matrix = Matrix.From(x65, y65, z65);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(jzazbz));
+        var d65Xyz = new Xyz(d65Matrix.ToTriplet(), D65WhitePoint, jzazbz.Limitation);
+        return chromaticAdaptor.AdaptFrom(d65Xyz);
     }
 }

@@ -21,7 +21,7 @@ public class ConfigureIccTests
         var sourceCmyk = new double[sourceDeviceChannels];
         for (var i = 0; i < sourceDeviceChannels; i++)
         {
-            sourceCmyk[i] = TestUtils.RandomDouble();
+            sourceCmyk[i] = Rng.Between(0, 1);
         }
 
         var sourceUnicolour = new Unicolour(sourceConfig, new Channels(sourceCmyk));

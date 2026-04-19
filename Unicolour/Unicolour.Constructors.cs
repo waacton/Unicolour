@@ -31,10 +31,16 @@ public partial class Unicolour
     }
 
     public Unicolour(Configuration config, ColourSpace colourSpace, double first, double second, double third, double alpha = 1.0) :
-        this(config, ColourHeritage.None, colourSpace, first, second, third, alpha)
+        this(config, colourSpace, first, second, third, alpha, Limitation.None)
     {
     }
-
+    
+    /* construction from grey value */
+    public Unicolour(ColourSpace colourSpace, double grey, double alpha = 1.0) :
+        this(Configuration.Default, colourSpace, grey, alpha)
+    {
+    }
+    
     /* construction from hex representation */
     public Unicolour(string hex) : 
         this(Configuration.Default, hex)
@@ -106,15 +112,15 @@ public partial class Unicolour
     }
     
     public Unicolour(Configuration config, Spd spd) : 
-        this(config, ColourSpace.Xyz, SpdToXyzTuple(spd, config.Xyz.Observer))
+        this(config, ColourSpace.Xyz, SpdToXyzTuple(spd, config.Xyz))
     {
         source = $"{nameof(Spd)} {spd}";
     }
     
-    private static (double x, double y, double z, double alpha) SpdToXyzTuple(Spd spd, Observer observer)
+    private static (double x, double y, double z, double alpha) SpdToXyzTuple(Spd spd, XyzConfiguration xyzConfig)
     {
-        var xyz = Xyz.FromSpd(spd, observer);
-        return (xyz.X, xyz.Y, xyz.Z, 1.0);
+        var (x, y, z) = Xyz.FromSpd(spd, xyzConfig.Observer, xyzConfig.WhitePoint);
+        return (x, y, z, 1.0);
     }
     
     /* construction from pigments */
@@ -149,12 +155,10 @@ public partial class Unicolour
 
         var illuminantSpd = xyzConfigWithSpd.Illuminant!.Spd!;
         var observer = xyzConfigWithSpd.Observer;
-        var xyz = Xyz.FromSpd(illuminantSpd, observer, reflectance);
-        if (xyzConfigWithSpd != xyzConfig)
-        {
-            xyz = Adaptation.WhitePoint(xyz, xyzConfigWithSpd.WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        }
+        var whitePoint = xyzConfigWithSpd.WhitePoint;
+        var xyz = Xyz.FromSpd(illuminantSpd, observer, reflectance, whitePoint);
         
+        xyz = xyzConfig.ChromaticAdaptor.AdaptFrom(xyz);
         return (xyz.X, xyz.Y, xyz.Z, 1.0);
     }
     
@@ -165,16 +169,16 @@ public partial class Unicolour
     }
     
     public Unicolour(Configuration config, Channels channels, double alpha = 1.0) : 
-        this(config, config.Icc.ConnectingSpace, IccToTuple(channels, config.Icc, config.Xyz), alpha)
+        this(config, config.Icc.ConnectingSpace, IccToTuple(channels, config.Icc, config.Xyz.ChromaticAdaptor), alpha)
     {
         icc = channels;
         source = $"{nameof(Icc)} {channels}";
     }
     
-    private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, XyzConfiguration xyzConfig)
+    private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, ChromaticAdaptor chromaticAdaptor)
     {
         ColourRepresentation connectingSpaceRepresentation = iccConfig.HasSupportedProfile
-            ? Channels.ToXyz(channels, iccConfig, xyzConfig)
+            ? Channels.ToXyz(channels, chromaticAdaptor, iccConfig)
             : Channels.UncalibratedToRgb(channels);
         
         return connectingSpaceRepresentation.Tuple;

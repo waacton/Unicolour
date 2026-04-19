@@ -8,12 +8,14 @@ public record Oklab : ColourRepresentation
     public double L => First;
     public double A => Second;
     public double B => Third;
-    internal override bool IsGreyscale => L is <= 0.0 or >= 1.0 || (A.Equals(0.0) && B.Equals(0.0));
-
-    public Oklab(double l, double a, double b) : this(l, a, b, ColourHeritage.None) {}
-    internal Oklab(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
-    internal Oklab(double l, double a, double b, ColourHeritage heritage) : base(l, a, b, heritage) {}
-
+    
+    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
+    
+    public Oklab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
+    public Oklab(double l) : this(l, 0, 0, Limitation.Achromatic) {}
+    internal Oklab(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
+    internal Oklab(double l, double a, double b, Limitation limitation) : base(l, a, b, limitation) {}
+    
     protected override string String => $"{L:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
     
@@ -75,25 +77,25 @@ public record Oklab : ColourRepresentation
         { +0.0259040371, +0.7827717662, -0.8086757660 }
     });
     
-    internal static Oklab FromXyz(Xyz xyz, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Oklab FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
-        var xyzMatrix = Matrix.From(xyz);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
+        var d65Xyz = chromaticAdaptor.AdaptTo(xyz, D65WhitePoint);
+        var d65Matrix = Matrix.From(d65Xyz);
         var m1 = GetM1(rgbConfig.RgbToXyzMatrix);
         var lmsMatrix = m1.Multiply(d65Matrix);
         var lmsNonLinearMatrix = lmsMatrix.Select(CubeRoot);
         var labMatrix = M2.Multiply(lmsNonLinearMatrix);
-        return new Oklab(labMatrix.ToTriplet(), ColourHeritage.From(xyz));
+        return new Oklab(labMatrix.ToTriplet(), xyz.Limitation);
     }
     
-    internal static Xyz ToXyz(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Xyz ToXyz(Oklab oklab, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
         var labMatrix = Matrix.From(oklab);
         var lmsNonLinearMatrix = M2.Inverse().Multiply(labMatrix);
         var lmsMatrix = lmsNonLinearMatrix.Select(x => Math.Pow(x, 3));
         var m1 = GetM1(rgbConfig.RgbToXyzMatrix);
         var d65Matrix = m1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(oklab));
+        var d65Xyz = new Xyz(d65Matrix.ToTriplet(), D65WhitePoint, oklab.Limitation);
+        return chromaticAdaptor.AdaptFrom(d65Xyz);
     }
 }

@@ -40,7 +40,7 @@ public abstract class Colourmap
     {
         count = Math.Max(count, 0);
         
-        var palette = new List<Unicolour>();
+        List<Unicolour> palette = [];
         for (var i = 0; i < count; i++)
         {
             var x = count == 1 ? 0.5 : i / (double)(count - 1);

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -6,14 +8,17 @@ namespace Wacton.Unicolour.Tests;
 public class RoundtripYcbcrTests
 {
     private const double Tolerance = 0.0000000005;
-
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.YcbcrTriplets))]
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Ycbcr, 1500);
+    internal static readonly List<ColourTriplet> TripletsSubset = Triplets.Take(300).ToList();
+    
+    [TestCaseSource(nameof(Triplets))]
     public void ViaYpbpr(ColourTriplet triplet) => AssertViaYpbpr(triplet, YbrConfiguration.Rec601);
     
     // testing YCbCr ↔ YPbPr with all configurations to ensure roundtrip of digital range mapping
     [Test, Combinatorial]
     public void ViaYpbprDifferentConfig(
-        [ValueSource(typeof(RandomColours), nameof(RandomColours.YcbcrTripletsSubset))] ColourTriplet triplet,
+        [ValueSource(nameof(TripletsSubset))] ColourTriplet triplet,
         [ValueSource(typeof(TestUtils), nameof(TestUtils.NonDefaultYbrConfigs))] YbrConfiguration ybrConfig) 
         => AssertViaYpbpr(triplet, ybrConfig);
     

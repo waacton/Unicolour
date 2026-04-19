@@ -43,8 +43,8 @@ public class DatasetMacbethTests
     public void Xyy(Unicolour colour, double expectedX, double expectedY, double expectedLuminance)
     {
         var colourIlluminantC = colour.ConvertToConfiguration(ConfigIlluminantC);
-        var expectedXyy = new Xyy(expectedX, expectedY, expectedLuminance / 100.0);
-        TestUtils.AssertTriplet<Xyy>(colourIlluminantC, expectedXyy.Triplet, 0.02);
+        var expectedXyy = new Xyy(expectedX, expectedY, expectedLuminance / 100.0, ConfigIlluminantC.Xyz.WhitePoint);
+        TestUtils.AssertColour(colourIlluminantC, expectedXyy, 0.02);
     }
     
     [Test]

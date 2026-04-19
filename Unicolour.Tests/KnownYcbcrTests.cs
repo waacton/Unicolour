@@ -11,34 +11,34 @@ public class KnownYcbcrTests
     public void Red()
     {
         var red = StandardRgb.Red;
-        TestUtils.AssertTriplet<Ycbcr>(red, new(81.481, 90.20316, 240), Tolerance);
+        TestUtils.AssertColour(red, new Ycbcr(81.481, 90.20316, 240), Tolerance);
     }
     
     [Test]
     public void Green()
     {
         var green = StandardRgb.Green;
-        TestUtils.AssertTriplet<Ycbcr>(green, new(144.553, 53.79684, 34.21398), Tolerance);
+        TestUtils.AssertColour(green, new Ycbcr(144.553, 53.79684, 34.21398), Tolerance);
     }
     
     [Test]
     public void Blue()
     {
         var blue = StandardRgb.Blue;
-        TestUtils.AssertTriplet<Ycbcr>(blue, new(40.966, 240, 109.78602), Tolerance);
+        TestUtils.AssertColour(blue, new Ycbcr(40.966, 240, 109.78602), Tolerance);
     }
     
     [Test]
     public void Black()
     {
         var black = StandardRgb.Black;
-        TestUtils.AssertTriplet<Ycbcr>(black, new(16, 128, 128), Tolerance);
+        TestUtils.AssertColour(black, new Ycbcr(16, 128, 128), Tolerance);
     }
     
     [Test]
     public void White()
     {
         var white = StandardRgb.White;
-        TestUtils.AssertTriplet<Ycbcr>(white, new(235, 128, 128), Tolerance);
+        TestUtils.AssertColour(white, new Ycbcr(235, 128, 128), Tolerance);
     }
 }

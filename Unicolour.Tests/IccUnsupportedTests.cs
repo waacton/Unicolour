@@ -25,7 +25,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -51,7 +51,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
             Assert.That(iccConfig.Error!.StartsWith(ErrorNotFound, StringComparison.CurrentCultureIgnoreCase));
@@ -79,7 +79,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
             Assert.That(iccConfig.Error!.Contains(ErrorNotEnoughBytes, StringComparison.CurrentCultureIgnoreCase));
@@ -107,7 +107,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
             Assert.That(iccConfig.Error!.Contains(ErrorNotParsed, StringComparison.CurrentCultureIgnoreCase));
@@ -135,7 +135,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
@@ -163,7 +163,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
@@ -191,7 +191,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
@@ -219,7 +219,7 @@ public abstract class IccUnsupportedTests
             var expected = Channels.UncalibratedToRgb(channels);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
             Assert.That(iccConfig.Error!.Contains(ErrorNotCorrectSignature, StringComparison.CurrentCultureIgnoreCase));
@@ -240,19 +240,19 @@ public abstract class IccUnsupportedTests
         }
     }
     
-    internal static void AssertNotValidTagSignature(IccConfiguration iccConfig, Header header, Source source)
+    internal static void AssertNotValidTagSignature(IccConfiguration iccConfig, Header header, Source source, string argumentName)
     {
         if (source == Source.FromChannels)
         {
             var expected = new Rgb(double.NaN, double.NaN, double.NaN);
             var config = new Configuration(iccConfig: iccConfig);
             var colour = new Unicolour(config, channels);
-            TestUtils.AssertTriplet<Rgb>(colour, expected.Triplet, 0);
+            TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
             Assert.That(iccConfig.Error, Is.Null);
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Signatures.Cmyk));
-            Assert.That(colour.Icc.Error!.Contains(nameof(ArgumentOutOfRangeException)));
+            Assert.That(colour.Icc.Error!.Contains(argumentName));
         }
         else
         {
@@ -264,7 +264,7 @@ public abstract class IccUnsupportedTests
             Assert.That(iccConfig.Error, Is.Null);
             Assert.That(colour.Icc.Values, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Signatures.Cmyk));
-            Assert.That(colour.Icc.Error!.Contains(nameof(ArgumentOutOfRangeException)));
+            Assert.That(colour.Icc.Error!.Contains(argumentName));
         }
     }
 

@@ -2,65 +2,70 @@
 
 public abstract record ColourRepresentation
 {
+    protected internal abstract int? HueIndex { get; }
+    internal bool HasHueComponent => HueIndex != null;
+    
     protected readonly double First;
     protected readonly double Second;
     protected readonly double Third;
-    protected internal abstract int? HueIndex { get; }
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     public (double, double, double) Tuple => (First, Second, Third);
-    internal ColourHeritage Heritage { get; }
-
-    protected virtual double ConstrainedFirst => First;
-    protected virtual double ConstrainedSecond => Second;
-    protected virtual double ConstrainedThird => Third;
-    public ColourTriplet ConstrainedTriplet => new(ConstrainedFirst, ConstrainedSecond, ConstrainedThird, HueIndex);
-    public (double, double, double) ConstrainedTuple => (ConstrainedFirst, ConstrainedSecond, ConstrainedThird);
     
-    internal bool IsNaN => double.IsNaN(First) || double.IsNaN(Second) || double.IsNaN(Third);
-    internal bool UseAsNaN => Heritage == ColourHeritage.NaN || IsNaN;
-
-    /*
-     * a representation may be non-greyscale according to its values
-     * but should be used as greyscale if it was generated from a representation that was greyscale
-     * e.g. RGB(1,1,1) is greyscale and converts to LAB(99.99999999999999, 0, -2.220446049250313E-14)
-     * LAB doesn't report as greyscale since B != 0 (and I don't want to make assumptions via precision-based tolerance comparison)
-     * but it should be considered greyscale since the source RGB representation definitely is
-     */
-    internal abstract bool IsGreyscale { get; }
-    internal bool UseAsGreyscale => Heritage == ColourHeritage.Greyscale || Heritage == ColourHeritage.GreyscaleAndHued || (!UseAsNaN && IsGreyscale);
+    protected abstract bool IsTripletAchromatic { get; }
     
     /*
-     * a representation is considered "hued" when it has a hue component (e.g. HSL / LCH) and is not greyscale
-     * enabling differentiation between representations where:
-     * a) a hue value is meaningful ------------------------------ e.g. HSB(0,0,0) = red with no saturation or brightness
-     * b) a hue value is used as a fallback when there is no hue - e.g. RGB(0,0,0) -> HSB(0,0,0) = black with no red
-     * which is essential for proper mixing;
-     * [RGB(0,0,0) black -> RGB(0,0,255) blue] via HSB is [HSB(0,0,0) red with no colour -> HSB(240,1,1) blue with full colour]
-     * but the mixing should only start at the red hue if the value 0 was provided by the user (FromHsb instead of FromRgb)
+     * ℹ️
+     * limitation is NOT intended for use outside of interpolation and unit tests
+     * conversions should make decisions based on the actual values, not based on propagated limitations
+     * colour spaces such as CAM02, CAM16, HCT seem to have a different perception of what achromatic colour is
+     * (i.e. xyY white point chromaticity is converted to a CAM that has non-negligible chroma, and CAM-UCS of 0 chroma is not mapped to white point chromaticity)
+     * so while it is used to make hue-handling decisions during interpolation, it should not be used to bypass conversion formula
+     * ℹ️
+     * ----------
+     * limitation is used to maintain consistent behaviour of downstream representations
+     * e.g. if double.NaN is somehow turned into a 0 during conversion, still want NaN-checks to return true
+     * e.g. RGB 0 0 0 is achromatic but HSB 0 0 0 is not (it has a specific hue value of 0 = red)
+     *      a colour defined using RGB 0 0 0 and interpolated through HSB should ignore the hue value (source colour is achromatic)
+     *      a colour defined using HSB 0 0 0 and interpolated through HSB should include the hue value (source colour is grey but has an explicit hue of 0)
+     * e.g. RGB 1 1 1 is achromatic and LUV 100 0 0 is achromatic
+     *      but the conversion formula gives RGB 1 1 1 --> LUV 99.99999999999999, -7.216449660063516E-14, 0
+     *      and while -7E-14 is small, it is not zero, so LUV itself will not report achromatic limitation
+     *      in order to interpolate through LCHUV correctly, the original achromatic limitation has to be passed from RGB -> RGB-Linear -> XYZ -> LUV -> LCHUV
+     * ----------     
+     * 💡 greyscale != achromatic · achromatic limitation flags when chroma information has truly been lost, and cannot be recovered
      */
-    internal bool HasHueComponent => HueIndex != null;
-    internal bool UseAsHued => (Heritage == ColourHeritage.None || Heritage == ColourHeritage.Hued || Heritage == ColourHeritage.GreyscaleAndHued) && !UseAsNaN && HasHueComponent;
+    internal bool IsAchromatic => Limitation == Limitation.Achromatic;
+    internal bool IsNaN => Limitation == Limitation.NaN;
     
-    internal ColourRepresentation(double first, double second, double third, ColourHeritage heritage)
+    internal Limitation LimitationBaseline { get; }
+    internal Limitation Limitation
+    {
+        get
+        {
+            if (LimitationBaseline == Limitation.NaN || Triplet.WithHueModulo().ToArray().Any(double.IsNaN)) return Limitation.NaN;
+            if (LimitationBaseline == Limitation.Achromatic || IsTripletAchromatic) return Limitation.Achromatic;
+            return Limitation.None;
+        }
+    }
+    
+    internal ColourRepresentation(double first, double second, double third, Limitation limitationBaseline)
     {
         First = first;
         Second = second;
         Third = third;
-        Heritage = heritage;
+        LimitationBaseline = limitationBaseline;
     }
-
-
     
-    public double[] ToArray() => new[] { First, Second, Third };
+    internal ColourTriplet WithHueModulo() => Triplet.WithHueModulo();
+    
+    public double[] ToArray() => [First, Second, Third];
     
     public void Deconstruct(out double first, out double second, out double third)
     {
-        first = First;
-        second = Second;
-        third = Third;
+        (first, second, third) = Tuple;
     }
     
     protected abstract string String { get; }
-    public override string ToString() => UseAsNaN ? $"NaN [{String}]" : String;
+    public override string ToString() => IsNaN ? $"NaN [{String}]" : String;
 }
 

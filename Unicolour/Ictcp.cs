@@ -7,12 +7,12 @@ public record Ictcp : ColourRepresentation
     public double Ct => Second;
     public double Cp => Third;
     
-    // no clear lightness upper-bound
-    internal override bool IsGreyscale => I <= 0.0 || (Ct.Equals(0.0) && Cp.Equals(0.0));
+    protected override bool IsTripletAchromatic => Ct == 0.0 && Cp == 0.0;
     
-    public Ictcp(double i, double ct, double cp) : this(i, ct, cp, ColourHeritage.None) {}
-    internal Ictcp(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
-    internal Ictcp(double i, double ct, double cp, ColourHeritage heritage) : base(i, ct, cp, heritage) {}
+    public Ictcp(double i, double ct, double cp) : this(i, ct, cp, Limitation.None) {}
+    public Ictcp(double i) : this(i, 0, 0, Limitation.Achromatic) {}
+    internal Ictcp(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
+    internal Ictcp(double i, double ct, double cp, Limitation limitation) : base(i, ct, cp, limitation) {}
 
     protected override string String => $"{I:F2} {Ct:+0.00;-0.00;0.00} {Cp:+0.00;-0.00;0.00}";
     public override string ToString() => base.ToString();
@@ -41,23 +41,23 @@ public record Ictcp : ColourRepresentation
         { 17933, -17390, -543 }
     }).Scale(1 / 4096.0);
     
-    internal static Ictcp FromXyz(Xyz xyz, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
+    internal static Ictcp FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor, DynamicRange dynamicRange)
     {
-        var xyzMatrix = Matrix.From(xyz);
-        var d65Matrix = Adaptation.WhitePoint(xyzMatrix, xyzConfig.WhitePoint, D65WhitePoint, xyzConfig.AdaptationMatrix);
+        var d65Xyz = chromaticAdaptor.AdaptTo(xyz, D65WhitePoint);
+        var d65Matrix = Matrix.From(d65Xyz);
         var lmsMatrix = M1.Multiply(d65Matrix);
         var lmsPrimeMatrix = lmsMatrix.Select(value => Pq.Smpte.InverseEotf(value, dynamicRange.WhiteLuminance));
         var ictcpMatrix = M2.Multiply(lmsPrimeMatrix);
-        return new Ictcp(ictcpMatrix.ToTriplet(), ColourHeritage.From(xyz));
+        return new Ictcp(ictcpMatrix.ToTriplet(), xyz.Limitation);
     }
-
-    internal static Xyz ToXyz(Ictcp ictcp, XyzConfiguration xyzConfig, DynamicRange dynamicRange)
+    
+    internal static Xyz ToXyz(Ictcp ictcp, ChromaticAdaptor chromaticAdaptor, DynamicRange dynamicRange)
     {
         var ictcpMatrix = Matrix.From(ictcp);
         var lmsPrimeMatrix = M2.Inverse().Multiply(ictcpMatrix);
         var lmsMatrix = lmsPrimeMatrix.Select(value => Pq.Smpte.Eotf(value, dynamicRange.WhiteLuminance));
         var d65Matrix = M1.Inverse().Multiply(lmsMatrix);
-        var xyzMatrix = Adaptation.WhitePoint(d65Matrix, D65WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-        return new Xyz(xyzMatrix.ToTriplet(), ColourHeritage.From(ictcp));
+        var d65Xyz = new Xyz(d65Matrix.ToTriplet(), D65WhitePoint, ictcp.Limitation);
+        return chromaticAdaptor.AdaptFrom(d65Xyz);
     }
 }

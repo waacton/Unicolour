@@ -4,18 +4,18 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <AssemblyName>Local.Unicolour.Experimental</AssemblyName> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
         <RootNamespace>Local.Unicolour.Experimental</RootNamespace> <!-- changed in benchmark branch to avoid conflict with NuGet package -->
-        <LangVersion>10</LangVersion>
+        <LangVersion>default</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
+        <Version>2.0.0</Version>
         <Authors>William Acton</Authors>
         <Description>Experimental additions to 🌈 Wacton.Unicolour</Description>
         <Copyright>William Acton</Copyright>
         <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
         <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <PackageTags>unicolour colour color pigments pigment-mixing pigment-generation kubelka-munk reflectance reflectance-curves spectral.js paints paint-mixing</PackageTags>
-        <PackageReleaseNotes>Support Unicolour v6</PackageReleaseNotes>
+        <PackageTags>unicolour colour color pigments pigment-mixing paints paint-mixing kubelka-munk colour-wheel color-wheel colour-harmony color-harmony reflectance pigment-generation reflectance-curves spectral.js</PackageTags>
+        <PackageReleaseNotes>Add colour wheel and colour harmonies</PackageReleaseNotes>
         <PackageIcon>Resources\Unicolour.Experimental.png</PackageIcon>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageReadmeFile>README_UnicolourExperimental_nuget.md</PackageReadmeFile>

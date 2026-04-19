@@ -1,23 +1,43 @@
 ﻿namespace Wacton.Unicolour;
 
-public record WhitePoint(double X, double Y, double Z)
+public record WhitePoint
 {
-    public double X { get; } = X;
-    public double Y { get; } = Y;
-    public double Z { get; } = Z;
+    public double X { get; }
+    public double Y { get; }
+    public double Z { get; }
+    public ColourTriplet Triplet => new(X, Y, Z);
+    public Chromaticity Chromaticity { get; }
 
-    public static WhitePoint FromXyz(Xyz xyz) => new(xyz.X * 100, xyz.Y * 100, xyz.Z * 100);
+    internal static WhitePoint FromAstm(double x, double y, double z) => new(x / 100, y / 100, z / 100);
     
-    internal Matrix AsXyzMatrix() => Matrix.From(X, Y, Z).Select(x => x / 100.0);
-
-    public Chromaticity ToChromaticity()
+    public WhitePoint(double x, double y, double z)
     {
-        var x = X / 100.0;
-        var y = Y / 100.0;
-        var z = Z / 100.0;
-        var normalisation = x + y + z;
-        return new(x / normalisation, y / normalisation);
+        X = x;
+        Y = y;
+        Z = z;
+
+        // usually when converting Xyz -> Xyy, the fallback value is the contextual white point
+        // (e.g. X, Y, Z = 0 which implies black, convert to D65 white with 0 luminance)
+        // however, this IS the white point definition, and a white point of X, Y, Z = 0 does not make sense - so use NaN as fallback
+        var fallback = new Chromaticity(double.NaN, double.NaN);
+        (Chromaticity, _) = Xyy.FromXyz(X, Y, Z, fallback);
     }
     
-    public override string ToString() => $"({X}, {Y}, {Z})";
+    public WhitePoint(double x, double y)
+    {
+        Chromaticity = new(x, y);
+        (X, Y, Z) = Xyy.ToXyz(Chromaticity, 1.0);
+    }
+    
+    public void Deconstruct(out double x, out double y, out double z)
+    {
+        (x, y, z) = (X, Y, Z);
+    }
+    
+    public void Deconstruct(out double x, out double y)
+    {
+        (x, y) = (Chromaticity.X, Chromaticity.Y);
+    }
+
+    public override string ToString() => $"({X:F4}, {Y:F4}, {Z:F4}) · {Chromaticity}";
 }

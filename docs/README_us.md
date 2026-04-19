@@ -3,8 +3,9 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/237,251/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/293,323/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+![AI generated](https://badgen.net/static/ai%20generated/0%20%25%20✨/8800ff/)
 
 Unicolour is the most comprehensive .NET library for working with color:
 - Color space conversion
@@ -151,6 +152,12 @@ var (l, c, h) = color.Oklch;
 > Unicolour pink = new("ff1493");
 > var hex = pink.Hex; // #FF1493
 > ```
+> 
+> Achromatic colors can be constructed with a single value:
+> ```c#
+> Unicolour gray = new(ColourSpace.Rgb, 0.5);
+> var hex = gray.Hex; // #808080
+> ```
 
 | Color&nbsp;space                                                                       | Enum                    | Property       |
 |-----------------------------------------------------------------------------------------|-------------------------|----------------|
@@ -218,6 +225,19 @@ var blue = new Unicolour(ColourSpace.Hsb, 240, 1.0, 1.0, alpha: 1.0);
 var magenta = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Decreasing);
 var green = red.Mix(blue, ColourSpace.Hsl, 0.5, HueSpan.Increasing);
 var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
+```
+
+The hue of colors created from a single achromatic value are ignored.
+```c#
+var yellow = new Unicolour(ColourSpace.Hsb, 60, 1, 1);
+
+// hue moves 50% from 60° to 240° = 150°
+var blackWithBlueHue = new Unicolour(ColourSpace.Hsb, 240, 0, 0);
+var darkGreen = yellow.Mix(blackWithBlueHue, ColourSpace.Hsb);
+
+// hue stays at 60°
+var blackWithNoHue = new Unicolour(ColourSpace.Hsb, grey: 0);
+var darkYellow = yellow.Mix(blackWithNoHue, ColourSpace.Hsb);
 ```
 
 | Hue&nbsp;span                  | Enum                 |
@@ -682,9 +702,14 @@ can be seen in the [Example.Gradients](https://github.com/waacton/Unicolour/tree
 |-------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
 | _Mixes of two-constant pigments to titanium white from [Unicolour.Datasets](#-datasets)_                    | _Palettes of two-constant pigments to titanium white from [Unicolour.Datasets](#-datasets)_                        |
 
-| ![Mixes of single-constant pigments emulating Spectral.js, created with Unicolour](gradient-spectraljs-mix.png) | ![Palettes of single-constant pigments emulating Spectral.js, created with Unicolour](gradient-spectraljs-palette.png) |
-|----------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| _Mixes of single-constant pigments emulating Spectral.js from [Unicolour.Experimental](#-experimental)_              | _Palettes of single-constant pigments emulating Spectral.js from [Unicolour.Experimental](#-experimental)_                  |
+| ![Color wheel based on RYB pigments, created with Unicolour](gradient-wheel-pigment.png)                                                                                 | ![Color wheel based on hue, created with Unicolour](gradient-wheel-hue.png)                                                                                     |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Color wheel based on RYB pigments from [Unicolour.Experimental](#-experimental) (see also: my grandmother's patented [Colour Joy kleurwiel](kleurwiel-colour-joy.png))_ | _Color wheel based on hue from [Unicolour.Experimental](#-experimental) (see also: my grandmother's patented [Colour Joy kleurwiel](kleurwiel-colour-joy.png))_ |
+
+| ![Color harmonies based on RYB pigments, created with Unicolour](gradient-harmonies-pigment.png)  | ![Color harmonies based on hue, created with Unicolour](gradient-harmonies-hue.png) |
+|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| _Color harmonies based on RYB pigments from [Unicolour.Experimental](#-experimental)_                  | _Color harmonies based on hue from [Unicolour.Experimental](#-experimental)_             |
+
 
 ### Heatmaps
 Example code to create heatmaps of luminance using 📷 [SixLabors.ImageSharp](https://github.com/SixLabors/ImageSharp) with images from 🚀 [NASA](https://www.nasa.gov/)
@@ -702,29 +727,21 @@ can be seen in the [Example.Heatmaps](https://github.com/waacton/Unicolour/tree/
 Example code to create diagrams of color data using 📈 [ScottPlot](https://github.com/scottplot/scottplot)
 can be seen in the [Example.Diagrams](https://github.com/waacton/Unicolour/tree/main/Example.Diagrams/Program.cs) project.
 
-| ![CIE xy chromaticity diagram with sRGB gamut, created with Unicolour](diagram-xy-chromaticity-rgb.png) |
-|--------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with sRGB gamut_                                                                |
+| ![CIE xy chromaticity diagram with sRGB gamut, created with Unicolour](diagram-xy-chromaticity-rgb.png) | ![CIE 1960 color space with sRGB gamut, created with Unicolour](diagram-uv-chromaticity-rgb.png) |
+|--------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with sRGB gamut_                                                                | _CIE 1960 color space with sRGB gamut_                                                                |
 
-| ![CIE xy chromaticity diagram with Planckian or blackbody locus, created with Unicolour](diagram-xy-chromaticity-blackbody.png) |
-|--------------------------------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      |
+| ![CIE xy chromaticity diagram with Planckian or blackbody locus, created with Unicolour](diagram-xy-chromaticity-blackbody.png) | ![CIE 1960 color space with Planckian or blackbody locus, created with Unicolour](diagram-uv-chromaticity-blackbody.png) |
+|--------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with Planckian or blackbody locus_                                                                      | _CIE 1960 color space with Planckian or blackbody locus_                                                                      |
 
-| ![CIE xy chromaticity diagram with MacAdam limits, created with Unicolour](diagram-xy-macadam-limits.png) |
-|----------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with MacAdam limits_                                                              |                                              
+| ![CIE xy chromaticity diagram with MacAdam limits, created with Unicolour](diagram-xy-macadam-limits.png) | ![CIE 1960 color space with MacAdam limits, created with Unicolour](diagram-uv-macadam-limits.png) |
+|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with MacAdam limits_                                                              | _CIE 1960 color space with MacAdam limits_                                                              |                                              
 
-| ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](diagram-spectral-locus.png) |
-|---------------------------------------------------------------------------------------------------------------------------------------|
-| _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                           |
-
-| ![CIE 1960 color space with Planckian or blackbody locus, created with Unicolour](diagram-uv-chromaticity-blackbody.png) |
-|--------------------------------------------------------------------------------------------------------------------------------|
-| _CIE 1960 color space with Planckian or blackbody locus_                                                                      |
-
-| ![CIE 1960 color space with MacAdam limits, created with Unicolour](diagram-uv-macadam-limits.png) |
-|----------------------------------------------------------------------------------------------------------|
-| _CIE 1960 color space with MacAdam limits_                                                              |
+| ![CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals, created with Unicolour](diagram-xy-spectral-locus.png) | ![CIE 1960 color space with spectral locus plotted at 1 nm intervals, created with Unicolour](diagram-uv-spectral-locus.png) |
+|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| _CIE xy chromaticity diagram with spectral locus plotted at 1 nm intervals_                                                              | _CIE 1960 color space with spectral locus plotted at 1 nm intervals_                                                              |
 
 ### Console
 Example code to create a colorful console application using ⌨️ [Spectre.Console](https://github.com/spectreconsole/spectre.console)
@@ -763,6 +780,7 @@ Some color datasets have been compiled for convenience in the [Unicolour.Dataset
 
 Commonly used sets of colors:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colors
+- [ISCC-NBS](https://en.wikipedia.org/wiki/ISCC%E2%80%93NBS_system) color centroids
 - [xkcd](https://xkcd.com/color/rgb/) color survey results
 - [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) color rendition chart
 - [Nord](https://www.nordtheme.com/) theme colors
@@ -818,7 +836,43 @@ dotnet add package Wacton.Unicolour.Experimental
 using Wacton.Unicolour.Experimental;
 ```
 
-### Generate pigments
+### Generate color harmonies
+Traditionally, harmonious color combinations are based on their relationship within a color wheel.
+A color wheel can be generated using [pigments](#model-pigment-and-paint-colors) or a hued color space.
+```c#
+/* populate pigment k and s with measurement data */
+var quinaRed = new Pigment(380, 1, k: [], s: []);
+var bismuthYellow = new Pigment(380, 1, k: [], s: []);
+var ceruleanBlue = new Pigment(380, 1, k: [], s: []);
+var titaniumWhite = new Pigment(380, 1, k: [], s: []);
+var boneBlack = new Pigment(380, 1, k: [], s: []);
+
+var colorWheel = usePigments 
+    ? ColourWheel.From(quinaRed, bismuthYellow, ceruleanBlue, titaniumWhite, boneBlack)
+    : ColourWheel.From(ColourSpace.Oklch, reference: new Unicolour("ff0000"));
+
+var orange = colorWheel.Pure(hue: 60);
+var lightGreen = colorWheel.Tint(hue: 180, weight: 1);
+var darkPurple = colorWheel.Shade(hue: 300, weight: 1);
+var greyRed = colorWheel.Tone(hue: 0, weight: 1);
+
+var orangePalette = colorWheel.Harmony(hue: 60, Harmony.Analogous);
+```
+
+| Color&nbsp;harmony                           | Enum                         |
+|-----------------------------------------------|------------------------------|
+| Monochromatic&nbsp;(tint)                     | `Harmony.MonochromaticTint`  |
+| Monochromatic&nbsp;(shade)                    | `Harmony.MonochromaticShade` |
+| Monochromatic&nbsp;(tone)                     | `Harmony.MonochromaticTone`  |
+| Monochromatic&nbsp;(tint&nbsp;and&nbsp;shade) | `Harmony.Monochromatic`      |
+| Analogous                                     | `Harmony.Analogous`          |
+| Complementary                                 | `Harmony.Complementary`      |
+| Split-complementary                           | `Harmony.SplitComplementary` |
+| Triadic&nbsp                                  | `Harmony.Triadic`            |
+| Tetradic&nbsp;(rectangle)                     | `Harmony.TetradicRectangle`  |
+| Tetradic&nbsp;(square)                        | `Harmony.TetradicSquare`     |
+
+### Approximate pigments
 A reflectance curve can be generated for any color, approximating a single-constant pigment.
 This enables Kubelka-Munk pigment mixing without taking reflectance measurements.
 Note that, similar to metamerism, there are infinitely many reflectance curves that can generate a single color; this will find just one.
@@ -842,6 +896,8 @@ var palette = SpectralJs.Palette(blue, yellow, 9);
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2026 William Acton.
+
+[![Not by AI](not-by-ai.png)](https://notbyai.fyi/)
 
 Also available in [British](README.md) 🇬🇧.

@@ -165,8 +165,8 @@ public static class Css
 
     public static readonly Unicolour Transparent = new(Config, "#000000", alphaOverride: 0);
     
-    public static IEnumerable<Unicolour> All => new List<Unicolour>
-    {
+    public static IEnumerable<Unicolour> All =>
+    [
         AliceBlue, AntiqueWhite, Aqua, Aquamarine, Azure,
         Beige, Bisque, Black, BlanchedAlmond, Blue, BlueViolet, Brown, Burlywood,
         CadetBlue, Chartreuse, Chocolate, Coral, CornflowerBlue, Cornsilk, Crimson, Cyan,
@@ -187,25 +187,9 @@ public static class Css
         Violet,
         Wheat, White, WhiteSmoke,
         Yellow, YellowGreen
-    };
+    ];
     
-    public static Unicolour? FromName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name)) return null;
-        
-        // first try to use the name as though it is the exact text used in the spec
-        var lowercase = name.ToLower();
-        Lookup.TryGetValue(lowercase, out Unicolour? value);
-        if (value != null)
-        {
-            return value;
-        }
-
-        // if that doesn't match, sanitise the name to remove all whitespace (including line separators)
-        var sanitisedName = string.Concat(lowercase.Where(x => !char.IsWhiteSpace(x)));
-        var potentialKeys = Lookup.Keys.Where(x => x == sanitisedName).ToList();
-        return potentialKeys.Any() ? Lookup[potentialKeys.First()] : null;
-    }
+    public static Unicolour? FromName(string name) => Utils.FromName(name, Lookup);
     
     private static readonly Dictionary<string, Unicolour> Lookup = new()
     {

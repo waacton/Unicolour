@@ -8,14 +8,15 @@ public record Lchab : ColourRepresentation
     public double L => First;
     public double C => Second;
     public double H => Third;
-    public double ConstrainedH => ConstrainedThird;
-    protected override double ConstrainedThird => H.Modulo(360.0);
-    internal override bool IsGreyscale => L is <= 0.0 or >= 100.0 || C <= 0.0;
     
-    public Lchab(double l, double c, double h) : this(l, c, h, ColourHeritage.None) {}
-    internal Lchab(double l, double c, double h, ColourHeritage heritage) : base(l, c, h, heritage) {}
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
     
-    protected override string String => UseAsHued ? $"{L:F2} {C:F2} {H:F1}°" : $"{L:F2} {C:F2} —°";
+    public Lchab(double l, double c, double h) : this(l, c, h, Limitation.None) {}
+    public Lchab(double l) : this(l, 0, 0, Limitation.Achromatic) {}
+    internal Lchab(double l, double c, double h, Limitation limitation) : base(l, c, h, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{L:F2} {C:F2} {H:F1}°" : $"{L:F2} {C:F2} {NoHue}°";
     public override string ToString() => base.ToString();
     
     /*
@@ -26,13 +27,13 @@ public record Lchab : ColourRepresentation
     
     internal static Lchab FromLab(Lab lab)
     {
-        var (l, c, h) = ToLchTriplet(lab.L, lab.A, lab.B);
-        return new Lchab(l, c, h, ColourHeritage.From(lab));
+        var (l, c, h) = ToLchTriplet(lab.Triplet);
+        return new Lchab(l, c, h, lab.Limitation);
     }
     
     internal static Lab ToLab(Lchab lchab)
     {
-        var (l, a, b) = FromLchTriplet(lchab.ConstrainedTriplet);
-        return new Lab(l, a, b, ColourHeritage.From(lchab));
+        var (l, a, b) = FromLchTriplet(lchab.Triplet);
+        return new Lab(l, a, b, lchab.Limitation);
     }
 }

@@ -9,31 +9,38 @@ namespace Wacton.Unicolour.Tests;
 
 public class KnownMunsellTests
 {
-    private static readonly XyzConfiguration XyzConfig = TestUtils.CConfig.Xyz;
-    private static readonly Chromaticity WhiteChromaticity = XyzConfig.WhiteChromaticity;
+    private static readonly XyzConfiguration XyzConfigC = TestUtils.CConfig.Xyz;
+    private static readonly Chromaticity WhiteC = XyzConfigC.WhitePoint.Chromaticity;
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Munsell.ToString().StartsWith("N "));
+    }
     
     private static readonly TestCaseData[] AstmData =
     [
-        new(new Xyy(0.2395, 0.2905, 59.53 / 100), new Munsell(3.9, "B", 8.11, 6.6)),
-        new(new Xyy(0.2437, 0.3240, 21.98 / 100), new Munsell(5.6, "BG", 5.30, 5.3)),
-        new(new Xyy(0.4183, 0.3790, 72.22 / 100), new Munsell(5.4, "YR", 8.78, 7.6)),
-        new(new Xyy(0.4690, 0.4953, 50.30 / 100), new Munsell(5.6, "Y", 7.56, 13.7)),
-        new(new Xyy(0.5000, 0.4540, 46.02 / 100), new Munsell(10, "YR", 7.2, 13.5))
+        new(new Xyy(0.2395, 0.2905, 59.53 / 100, XyzConfigC.WhitePoint), new Munsell(3.9, "B", 8.11, 6.6)),
+        new(new Xyy(0.2437, 0.3240, 21.98 / 100, XyzConfigC.WhitePoint), new Munsell(5.6, "BG", 5.30, 5.3)),
+        new(new Xyy(0.4183, 0.3790, 72.22 / 100, XyzConfigC.WhitePoint), new Munsell(5.4, "YR", 8.78, 7.6)),
+        new(new Xyy(0.4690, 0.4953, 50.30 / 100, XyzConfigC.WhitePoint), new Munsell(5.6, "Y", 7.56, 13.7)),
+        new(new Xyy(0.5000, 0.4540, 46.02 / 100, XyzConfigC.WhitePoint), new Munsell(10, "YR", 7.2, 13.5))
     ];
 
     [TestCaseSource(nameof(AstmData))]
     public void Astm(Xyy xyy, Munsell expected)
     {
         // ASTM approach is to convert graphically, less accurate than the implemented algorithm
-        var munsell = Munsell.FromXyy(xyy, XyzConfig);
+        var munsell = Munsell.FromXyy(xyy, XyzConfigC.ChromaticAdaptor);
         TestUtils.AssertTriplet(munsell.Triplet, expected.Triplet, [0.5, 0.1, 0.1]);
     }
     
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
     // CIE Y for illuminant C is ~0.975x MgO Y
     private const double MgoScale = 0.975;
+    private static readonly MunsellTestData[] XyyData = Munsell.Node.LookupCache.Values.Select(node => new MunsellTestData(node)).ToArray();
     
-    private static MunsellTestData[] XyyData = Munsell.Node.LookupCache.Values.Select(node => new MunsellTestData(node)).ToArray();
     [TestCaseSource(nameof(XyyData))]
     public void KnownXyy(MunsellTestData data)
     {
@@ -45,13 +52,13 @@ public class KnownMunsellTests
         // scale Ymgo to get the intended expected luminance Y for CIE illuminant C 
         var expectedLuminance = data.LuminanceMgo / 100 * MgoScale;
         
-        var actual = Munsell.ToXyy(munsell, XyzConfig);
+        var actual = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         Assert.That(actual.Chromaticity.X, Is.EqualTo(data.X).Within(1e-16));
         Assert.That(actual.Chromaticity.Y, Is.EqualTo(data.Y).Within(1e-16));
         Assert.That(actual.Luminance, Is.EqualTo(expectedLuminance).Within(0.00025));
     }
     
-    private static readonly Configuration RgbDataConfig = new(xyzConfig: new XyzConfiguration(Illuminant.D65, Observer.Degree2, Cam02.MCAT02.Data));
+    private static readonly Configuration RgbDataConfig = new(xyzConfig: new XyzConfiguration(Illuminant.D65, Observer.Degree2, new ChromaticAdaptation(Cam02.MCAT02.Data)));
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
     
     [TestCaseSource(nameof(RgbData))]
@@ -59,7 +66,7 @@ public class KnownMunsellTests
     {
         var expectedRgb = data.RgbMgo!.Value;
         var munsell = new Munsell(data.HueNumber, data.HueLetter, data.Value, data.Chroma);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
 
         /*
          * to the best of my knowledge, the sRGB data for "real" colours provided by RIT aren't quite right
@@ -70,14 +77,15 @@ public class KnownMunsellTests
          *    - without this, error increases to < 0.0112 (2.856 in Byte255 format)
          */
         var colourIncorrectY = new Unicolour(RgbDataConfig, ColourSpace.Munsell, munsell.Tuple);
-        var actualRgbIncorrectY = colourIncorrectY.Rgb.ConstrainedTriplet;
+        var actualRgbIncorrectY = colourIncorrectY.Rgb.Clipped.Triplet;
         TestUtils.AssertTriplet(actualRgbIncorrectY, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.0112);
         
-        xyy = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / MgoScale);
+        xyy = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / MgoScale, XyzConfigC.WhitePoint);
         var xyzC = Xyy.ToXyz(xyy);
-        var xyzD65 = Adaptation.WhitePoint(xyzC, Illuminant.C.GetWhitePoint(Observer.Degree2), Illuminant.D65.GetWhitePoint(Observer.Degree2), Cam02.MCAT02);
+        var chromaticAdaptorCiecat02 = new ChromaticAdaptor(Illuminant.D65.GetWhitePoint(Observer.Degree2), new ChromaticAdaptation(Cam02.MCAT02.Data));
+        var xyzD65 = chromaticAdaptorCiecat02.AdaptFrom(xyzC);
         var colour = new Unicolour(ColourSpace.Xyz, xyzD65.Tuple);
-        var actualRgb = colour.Rgb.ConstrainedTriplet;
+        var actualRgb = colour.Rgb.Clipped.Triplet;
         TestUtils.AssertTriplet(actualRgb, new(expectedRgb.r, expectedRgb.g, expectedRgb.b), 0.01035); // tolerance of 2.63925 in byte255 format
     }
     
@@ -105,14 +113,26 @@ public class KnownMunsellTests
     public void StandardRgbFromMunsell(Munsell munsell, Rgb255 expectedRgb)
     {
         var colour = new Unicolour(RgbDataConfig, ColourSpace.Munsell, munsell.Tuple);
-        TestUtils.AssertTriplet<Rgb255>(colour, expectedRgb.Triplet, 2);
+        TestUtils.AssertColour(colour, expectedRgb, 2);
     } 
     
     [TestCaseSource(nameof(StandardRgbData))]
     public void StandardRgbToMunsell(Munsell expectedMunsell, Rgb255 rgb)
     {
         var colour = new Unicolour(RgbDataConfig, ColourSpace.Rgb255, rgb.Tuple);
-        TestUtils.AssertTriplet<Munsell>(colour, expectedMunsell.Triplet, 0.25);
+        
+        // achromatic values are not guaranteed to fall back to a default hue
+        // but V and C should be predictable, and the string representation should be aware of the achromatic limitation
+        if (rgb.Limitation == Limitation.Achromatic)
+        {
+            TestUtils.AssertColour(colour, new Munsell(colour.Munsell.H, expectedMunsell.V, expectedMunsell.C), 0.25);
+            Assert.That(colour.Munsell.ToString().StartsWith("N "));
+        }
+        else
+        {
+            TestUtils.AssertColour(colour, expectedMunsell, 0.25);
+            Assert.That(!colour.Munsell.ToString().StartsWith("N "));
+        }
     }
     
     [Test]
@@ -120,14 +140,14 @@ public class KnownMunsellTests
     {
         // first entry of Table 2 in ASTM https://doi.org/10.1520/D1535-14R18
         var munsell = new Munsell(2.5, "R", 9, 6);
-        var expected = new Xyy(0.3665, 0.3183, 76.70 / 100.0);
-        var actual = Munsell.ToXyy(munsell, XyzConfig);
+        var expected = new Xyy(0.3665, 0.3183, 76.70 / 100.0, XyzConfigC.WhitePoint);
+        var actual = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         Assert.That(actual.Luminance, Is.EqualTo(expected.Luminance).Within(0.00005));
         
         // same node from raw data contains different value for Y, because it is relative to MgO white
-        var expectedMgo = new Xyy(0.3665, 0.3183, 78.66 / 100.0);
+        var expectedMgo = new Xyy(0.3665, 0.3183, 78.66 / 100.0, XyzConfigC.WhitePoint);
         var rawMgo = XyyData.Single(data => data.Notation == munsell.ToString());
-        var actualMgo = new Xyy(rawMgo.X, rawMgo.Y, rawMgo.LuminanceMgo / 100.0);
+        var actualMgo = new Xyy(rawMgo.X, rawMgo.Y, rawMgo.LuminanceMgo / 100.0, XyzConfigC.WhitePoint);
         Assert.That(actualMgo, Is.EqualTo(expectedMgo));
         Assert.That(actualMgo.Luminance, Is.GreaterThan(expected.Luminance));
         Assert.That(actualMgo.Luminance * MgoScale, Is.EqualTo(expected.Luminance).Within(0.0001));
@@ -182,7 +202,7 @@ public class KnownMunsellTests
         var data = new TestCaseData[1000];
         for (var i = 0; i < data.Length; i++)
         {
-            var v = TestUtils.RandomDouble(0, 10);
+            var v = Rng.Between(0, 10);
             var y = Munsell.GetLuminance(v);
             data[i] = new TestCaseData(v, y);
         }
@@ -200,7 +220,7 @@ public class KnownMunsellTests
     private static readonly TestCaseData[] LuminanceData =
     [
         new(0, new ColourTriplet(0, 0, 0)),
-        new(-0.5, new ColourTriplet(0, 0, 0)),
+        new(-0.5, new ColourTriplet(0, Munsell.GetValue(-0.5), 0)),
         new(double.PositiveInfinity, new ColourTriplet(double.NaN, double.NaN, double.NaN)),
         new(double.NaN, new ColourTriplet(double.NaN, double.NaN, double.NaN))
     ];
@@ -208,8 +228,8 @@ public class KnownMunsellTests
     [TestCaseSource(nameof(LuminanceData))]
     public void Luminance(double luminance, ColourTriplet expected)
     {
-        var xyy = new Xyy(0.4, 0.4, luminance);
-        var munsell = Munsell.FromXyy(xyy, XyzConfig);
+        var xyy = new Xyy(0.4, 0.4, luminance, XyzConfigC.WhitePoint);
+        var munsell = Munsell.FromXyy(xyy, XyzConfigC.ChromaticAdaptor);
         TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
     }
     
@@ -220,8 +240,8 @@ public class KnownMunsellTests
     [TestCase(double.NaN, double.NaN)]
     public void Chromaticity(double x, double y)
     {
-        var xyy = new Xyy(x, y, 0.5);
-        var munsell = Munsell.FromXyy(xyy, XyzConfig);
+        var xyy = new Xyy(x, y, 0.5, XyzConfigC.WhitePoint);
+        var munsell = Munsell.FromXyy(xyy, XyzConfigC.ChromaticAdaptor);
         var expected = new ColourTriplet(double.NaN, Munsell.GetValue(0.5), double.NaN);
         TestUtils.AssertTriplet(munsell.Triplet, expected, 0);
     }
@@ -232,8 +252,8 @@ public class KnownMunsellTests
     public void HueFromNotation(double hueNumber, string hueLetter)
     {
         var munsell = new Munsell(hueNumber, hueLetter, 5, 10);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var expected = new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, Munsell.GetLuminance(5));
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
+        var expected = new ColourTriplet(WhiteC.X, WhiteC.Y, Munsell.GetLuminance(5));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
     }
     
@@ -243,8 +263,8 @@ public class KnownMunsellTests
     public void HueFromDegrees(double hueDegrees)
     {
         var munsell = new Munsell(hueDegrees, 5, 10);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var expected = new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, Munsell.GetLuminance(5));
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
+        var expected = new ColourTriplet(WhiteC.X, WhiteC.Y, Munsell.GetLuminance(5));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
         Assert.That(munsell.HueNotation, Is.EqualTo((double.NaN, string.Empty)));
     }
@@ -274,10 +294,10 @@ public class KnownMunsellTests
     
     private static readonly TestCaseData[] ValueData =
     [
-        new(0, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, 0)),
-        new(-5, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, 0)),
-        new(11, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, Munsell.GetLuminance(11))),
-        new(double.PositiveInfinity, new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, double.NaN)), // no luminance without V
+        new(0, new ColourTriplet(WhiteC.X, WhiteC.Y, 0)),
+        new(-5, new ColourTriplet(WhiteC.X, WhiteC.Y, Munsell.GetLuminance(-5))),
+        new(11, new ColourTriplet(WhiteC.X, WhiteC.Y, Munsell.GetLuminance(11))),
+        new(double.PositiveInfinity, new ColourTriplet(WhiteC.X, WhiteC.Y, double.NaN)), // no luminance without V
         new(double.NaN, new ColourTriplet(double.NaN, double.NaN, double.NaN)) // no luminance without V
     ];
 
@@ -285,7 +305,7 @@ public class KnownMunsellTests
     public void Value(double value, ColourTriplet expected)
     {
         var munsell = new Munsell(10, "G", value, 5);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
     }
 
@@ -293,20 +313,20 @@ public class KnownMunsellTests
     public void ValueOnly([Values(-5, -0.0000000001, 0, 0.0000000001, 5, 9, 10, 11)] double value)
     {
         var munsell = new Munsell(10, "G", value, 0);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
 
         var munsellValueOnly = new Munsell(value);
-        var xyyValueOnly = Munsell.ToXyy(munsellValueOnly, XyzConfig);
+        var xyyValueOnly = Munsell.ToXyy(munsellValueOnly, XyzConfigC.ChromaticAdaptor);
         
-        var expected = new ColourTriplet(WhiteChromaticity.X, WhiteChromaticity.Y, Munsell.GetLuminance(value));
+        var expected = new ColourTriplet(WhiteC.X, WhiteC.Y, Munsell.GetLuminance(value));
         TestUtils.AssertTriplet(xyy.Triplet, expected, 0);
         TestUtils.AssertTriplet(xyyValueOnly.Triplet, expected, 0);
     }
     
     private static readonly TestCaseData[] ChromaData =
     [
-        new(0, WhiteChromaticity),
-        new(-5, WhiteChromaticity),
+        new(0, WhiteC),
+        new(-5, WhiteC),
         new(double.PositiveInfinity, new Chromaticity(double.PositiveInfinity, double.NegativeInfinity)),
         new(double.NaN, new Chromaticity(double.NaN, double.NaN))
     ];
@@ -315,7 +335,7 @@ public class KnownMunsellTests
     public void Chroma(double chroma, Chromaticity expected)
     {
         var munsell = new Munsell(2.5, "R", 5, chroma);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyy.Triplet, new ColourTriplet(expected.X, expected.Y, Munsell.GetLuminance(5)), 0);
     }
     
@@ -323,25 +343,25 @@ public class KnownMunsellTests
     public void ConvergeHueToExactPolarAngle()
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var polar = Polar(WhiteChromaticity, xyy.Chromaticity);
-        Assert.DoesNotThrow(() => Munsell.ModifyHue(munsell, polar.angle));
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
+        var polar = Polar(WhiteC, xyy.Chromaticity);
+        Assert.DoesNotThrow(() => Munsell.ModifyHue(munsell.H, munsell.V, munsell.C, polar.angle));
     }
 
     [Test] // no delta from exact polar radius match could result in divide-by-zero
     public void ConvergeChromaToExactPolarRadius()
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        var xyy = Munsell.ToXyy(munsell, XyzConfig);
-        var polar = Polar(WhiteChromaticity, xyy.Chromaticity);
-        Assert.DoesNotThrow(() => Munsell.ModifyChroma(munsell, polar.radius));
+        var xyy = Munsell.ToXyy(munsell, XyzConfigC.ChromaticAdaptor);
+        var polar = Polar(WhiteC, xyy.Chromaticity);
+        Assert.DoesNotThrow(() => Munsell.ModifyChroma(munsell.H, munsell.V, munsell.C, polar.radius));
     }
         
     [Test] // cannot converge, exits early instead of being stuck in loop
     public void ConvergeHueTooManyIterations() 
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        Munsell.ModifyHue(munsell, double.NaN);
+        Munsell.ModifyHue(munsell.H, munsell.V, munsell.C, double.NaN);
         Assert.Pass();
     }
     
@@ -349,7 +369,7 @@ public class KnownMunsellTests
     public void ConvergeChromaTooManyIterations()
     {
         var munsell = new Munsell(10, "G", 4, 6);
-        Munsell.ModifyChroma(munsell, double.NaN);
+        Munsell.ModifyChroma(munsell.H, munsell.V, munsell.C, double.NaN);
         Assert.Pass();
     }
     
@@ -358,11 +378,17 @@ public class KnownMunsellTests
     [TestCase(0.0000000000000000001)] 
     [TestCase(double.Epsilon)] 
     [TestCase(-double.Epsilon)] 
-    public void ConvergeToWhitePoint(double luminance)
+    public void ConvergeToWhite(double luminance)
     {
-        var xyy = new Xyy(0.4, 0.4, luminance);
-        var munsell = Munsell.FromXyy(xyy, XyzConfig);
-        Assert.That(munsell.IsGreyscale);
+        var xyy = new Xyy(0.4, 0.4, luminance, XyzConfigC.WhitePoint);
+        var munsell = Munsell.FromXyy(xyy, XyzConfigC.ChromaticAdaptor);
+        
+        // XYY is technically not the white point, so Munsell should not have an imposed limitation
+        // however, since there is no chroma data, the Munsell values are the exact white point
+        // (this manifests as the string representation "5R 0/0" instead of "N 0/" - it would be "N 0/" if using Xyy(0.3101, 0.3161) the actual C white point)
+        Assert.That(munsell.Limitation == Limitation.None);
+        TestUtils.AssertTriplet(munsell.Triplet, new(0, munsell.V, 0), 0);
+        Assert.That(munsell.ToString(), Is.EqualTo("5R 0/0").Or.EqualTo("5R -0/0"));
     }
 
     [Test]
@@ -372,8 +398,8 @@ public class KnownMunsellTests
         var colourC = new Unicolour(configC, ColourSpace.Munsell, FromMunsell(2.5, "R"), 9, 6);
         var colourD65 = new Unicolour(ColourSpace.Munsell, FromMunsell(2.5, "R"), 9, 6);
         
-        TestUtils.AssertTriplet<Xyy>(colourC, new(0.3665, 0.3183, 0.7670), 0.00005);
-        TestUtils.AssertTriplet<Xyy>(colourD65, new(0.3700, 0.3293, 0.7658), 0.00005);
+        TestUtils.AssertColour(colourC, new Xyy(0.3665, 0.3183, 0.7670, colourC.Configuration.Xyz.WhitePoint), 0.00005);
+        TestUtils.AssertColour(colourD65, new Xyy(0.3700, 0.3293, 0.7658, colourD65.Configuration.Xyz.WhitePoint), 0.00005);
     }
     
     [Test]
@@ -383,8 +409,8 @@ public class KnownMunsellTests
         var colourC = new Unicolour(configC, ColourSpace.Xyy, 0.3665, 0.3183, 0.7670);
         var colourD65 = new Unicolour(ColourSpace.Xyy, 0.3700, 0.3293, 0.7658);
         
-        TestUtils.AssertTriplet<Munsell>(colourC, new(FromMunsell(2.5, "R"), 9, 6), 0.0005);
-        TestUtils.AssertTriplet<Munsell>(colourD65, new(FromMunsell(2.5, "R"), 9, 6), 0.005);
+        TestUtils.AssertColour(colourC, new Munsell(FromMunsell(2.5, "R"), 9, 6), 0.0005);
+        TestUtils.AssertColour(colourD65, new Munsell(FromMunsell(2.5, "R"), 9, 6), 0.005);
     }
 
     [TestCase(160, 200, 159, false)]
@@ -413,7 +439,7 @@ public class KnownMunsellTests
 
     private static TestCaseData[] GetRadialData()
     {
-        var data = new List<(int v, int c, (double h1, string h2) h, bool isRadial)>();
+        List<(int v, int c, (double h1, string h2) h, bool isRadial)> data = [];
         data.Add(new(0, 5, ToMunsell(0), false));
         
         data.Add(new(1, 1, ToMunsell(0), false));
@@ -563,7 +589,7 @@ public class KnownMunsellTests
                 (v, c, Offset(startDegrees, backward), false)
             ];
             
-            (double h1, string h2) Offset(double hue, double degrees) => ToMunsell((hue + degrees).Modulo(360));
+            (double h1, string h2) Offset(double hue, double degrees) => ToMunsell((hue + degrees).WithHueModulo());
         }
     }
 }

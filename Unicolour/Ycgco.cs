@@ -6,16 +6,12 @@ public record Ycgco : ColourRepresentation
     public double Y => First;
     public double Cg => Second;
     public double Co => Third;
-    public double ConstrainedY => ConstrainedFirst;
-    public double ConstrainedCg => ConstrainedSecond;
-    public double ConstrainedCo => ConstrainedThird;
-    protected override double ConstrainedFirst => Y.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => Cg.Clamp(-0.5, 0.5);
-    protected override double ConstrainedThird => Co.Clamp(-0.5, 0.5);
-    internal override bool IsGreyscale => Cg.Equals(0.0) && Co.Equals(0.0); // Y = 0 does not imply black; Y = 1 does not imply white
-
-    public Ycgco(double y, double cg, double co) : this(y, cg, co, ColourHeritage.None) {}
-    internal Ycgco(double y, double cg, double co, ColourHeritage heritage) : base(y, cg, co, heritage) {}
+    
+    protected override bool IsTripletAchromatic => Cg == 0.0 && Co == 0.0;
+    
+    public Ycgco(double y, double cg, double co) : this(y, cg, co, Limitation.None) {}
+    public Ycgco(double y) : this(y, 0, 0, Limitation.Achromatic) {}
+    internal Ycgco(double y, double cg, double co, Limitation limitation) : base(y, cg, co, limitation) {}
     
     protected override string String => $"{Y:F3} {Cg:+0.000;-0.000;0.000} {Co:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -32,7 +28,7 @@ public record Ycgco : ColourRepresentation
         var y = 0.25 * r + 0.5 * g + 0.25 * b;
         var cg = -0.25 * r + 0.5 * g - 0.25 * b;
         var co = 0.5 * r - 0.5 * b;
-        return new Ycgco(y, cg, co, ColourHeritage.From(rgb));
+        return new Ycgco(y, cg, co, rgb.Limitation);
     }
     
     internal static Rgb ToRgb(Ycgco ycgco)
@@ -41,6 +37,6 @@ public record Ycgco : ColourRepresentation
         var r = y + co - cg;
         var g = y + cg;
         var b = y - co - cg;
-        return new Rgb(r, g, b, ColourHeritage.From(ycgco));
+        return new Rgb(r, g, b, ycgco.Limitation);
     }
 }

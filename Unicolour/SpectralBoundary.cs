@@ -5,20 +5,21 @@ namespace Wacton.Unicolour;
 // using 1 nm segments since that is the granularity of the standard observer CMFs
 internal class SpectralBoundary : Boundary
 {
-    private readonly Chromaticity whiteChromaticity;
+    private Segment lineOfPurples => segments.Value.Last();
+    
     private readonly Lazy<double> minNegativeWavelength;
     private readonly Lazy<double> maxNegativeWavelength;
     
     internal const int MinWavelength = 360;
     internal const int MaxWavelength = 700;
     
-    private Segment lineOfPurples => segments.Value.Last();
+    internal WhitePoint WhitePoint { get; }
     internal double MinNegativeWavelength => minNegativeWavelength.Value;
     internal double MaxNegativeWavelength => maxNegativeWavelength.Value;
     
-    internal SpectralBoundary(Observer observer, Chromaticity white) : base(GetPoints(observer, white))
+    internal SpectralBoundary(Observer observer, WhitePoint whitePoint) : base(GetPoints(observer, whitePoint))
     {
-        whiteChromaticity = white;
+        WhitePoint = whitePoint;
         
         minNegativeWavelength = new Lazy<double>(() =>
         {
@@ -35,7 +36,7 @@ internal class SpectralBoundary : Boundary
         });
     }
     
-    internal (Intersect near, Intersect far)? GetIntersects(Chromaticity sample) => GetIntersects(sample, whiteChromaticity);
+    internal (Intersect near, Intersect far)? GetIntersects(Chromaticity sample) => GetIntersects(sample, WhitePoint.Chromaticity);
     
     // if an intersect lies simultaneously on spectral locus AND line of purples, always prefer spectral locus
     protected override (Intersect[] nearIntersects, Intersect[] farIntersects) FilterIntersects(Intersect[] nearIntersects, Intersect[] farIntersects)
@@ -51,7 +52,7 @@ internal class SpectralBoundary : Boundary
         return (nearIntersects, farIntersects);
     }
     
-    internal (double dominantWavelength, double excitationPurity)? GetWavelengthAndPurity(Chromaticity sample)
+    internal (double wavelength, double purity)? GetWavelengthAndPurity(Chromaticity sample, bool forDominant = true)
     {
         var intersects = GetIntersects(sample);
         if (!intersects.HasValue) return null;
@@ -63,9 +64,12 @@ internal class SpectralBoundary : Boundary
         var dominant = far.DistanceFromSample < far.DistanceFromReference ? far : near;
         var complementary = dominant == near ? far : near;
 
-        var dominantWavelength = dominant.Segment == lineOfPurples ? -GetWavelength(complementary) : GetWavelength(dominant);
-        var excitationPurity = Distance(sample, whiteChromaticity) / dominant.DistanceFromReference;
-        return (dominantWavelength, excitationPurity);
+        var primary = forDominant ? dominant : complementary;
+        var secondary = forDominant ? complementary : dominant;
+        
+        var wavelength = primary.Segment == lineOfPurples ? -GetWavelength(secondary) : GetWavelength(primary);
+        var purity = Distance(sample, WhitePoint.Chromaticity) / primary.DistanceFromReference;
+        return (wavelength, purity);
     }
     
     internal Chromaticity GetChromaticity(double dominantWavelength, double purity)
@@ -87,13 +91,13 @@ internal class SpectralBoundary : Boundary
         var useLineOfPurples = dominantWavelength < 0;
         if (useLineOfPurples)
         {
-            var intersect = new Intersect(lineOfPurples, pureChromaticity, whiteChromaticity);
+            var intersect = new Intersect(lineOfPurples, pureChromaticity, WhitePoint.Chromaticity);
             pureChromaticity = intersect.Point;
         }
 
         return new(
-            Interpolation.Linear(whiteChromaticity.X, pureChromaticity.X, purity),
-            Interpolation.Linear(whiteChromaticity.Y, pureChromaticity.Y, purity)
+            Interpolation.Linear(WhitePoint.Chromaticity.X, pureChromaticity.X, purity),
+            Interpolation.Linear(WhitePoint.Chromaticity.Y, pureChromaticity.Y, purity)
         );
     }
     
@@ -117,14 +121,14 @@ internal class SpectralBoundary : Boundary
         };
     }
     
-    private static Lazy<Chromaticity[]> GetPoints(Observer observer, Chromaticity white)
+    private static Lazy<Chromaticity[]> GetPoints(Observer observer, WhitePoint whitePoint)
     {
         return new Lazy<Chromaticity[]>(() =>
         {
-            var points = new List<Chromaticity>();
+            List<Chromaticity> points = [];
             for (var wavelength = MinWavelength; wavelength <= MaxWavelength; wavelength++)
             {
-                var point = GetChromaticity(wavelength, observer, white);
+                var point = GetChromaticity(wavelength, observer, whitePoint);
                 points.Add(point);
             }
 
@@ -132,10 +136,10 @@ internal class SpectralBoundary : Boundary
         });
     }
     
-    private static Chromaticity GetChromaticity(int wavelength, Observer observer, Chromaticity white)
+    private static Chromaticity GetChromaticity(int wavelength, Observer observer, WhitePoint whitePoint)
     {
-        var xyz = Xyz.FromSpd(Spd.Monochromatic(wavelength), observer);
-        var xyy = Xyy.FromXyz(xyz, white);
+        var xyz = Xyz.FromSpd(Spd.Monochromatic(wavelength), observer, whitePoint);
+        var xyy = Xyy.FromXyz(xyz);
         var chromaticity = xyy.Chromaticity;
         return chromaticity;
     }

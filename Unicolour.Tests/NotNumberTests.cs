@@ -24,7 +24,6 @@ public class NotNumberTests
         new(TestUtils.DefaultFogra39Config, 0, double.NaN, double.NaN),
         new(TestUtils.DefaultFogra39Config, double.NaN, double.NaN, double.NaN)
     ];
-
     
     [TestCaseSource(nameof(TestData))]
     public void Rgb(Configuration config, double r, double g, double b) => AssertUnicolour(new(config, ColourSpace.Rgb, r, g, b));
@@ -155,32 +154,23 @@ public class NotNumberTests
     public void IsNumberButUseAsNotNumber(Configuration config, double l, double u, double v)
     {
         var colour = new Unicolour(ColourSpace.Luv, l, u, v);
-        Assert.That(colour.Luv.IsNaN, Is.True);
-        Assert.That(colour.Xyz.IsNaN, Is.False);
-        Assert.That(colour.Rgb.IsNaN, Is.False);
-        Assert.That(colour.Hsb.IsNaN, Is.False);
-        Assert.That(colour.Hsl.IsNaN, Is.False);
-        
-        Assert.That(colour.Luv.UseAsNaN, Is.True);
-        Assert.That(colour.Xyz.UseAsNaN, Is.True);
-        Assert.That(colour.Rgb.UseAsNaN, Is.True);
-        Assert.That(colour.Hsb.UseAsNaN, Is.True);
-        Assert.That(colour.Hsl.UseAsNaN, Is.True);
+        Assert.That(colour.Luv.Limitation, Is.EqualTo(Limitation.NaN));
+        Assert.That(colour.Xyz.Limitation, Is.EqualTo(Limitation.NaN));
+        Assert.That(colour.Rgb.Limitation, Is.EqualTo(Limitation.NaN));
+        Assert.That(colour.Hsb.Limitation, Is.EqualTo(Limitation.NaN));
+        Assert.That(colour.Hsl.Limitation, Is.EqualTo(Limitation.NaN));
     }
 
     private static void AssertUnicolour(Unicolour colour)
     {
-        var data = new ColourHeritageData(colour);
         var initial = colour.SourceRepresentation;
         
-        Assert.That(initial.Heritage, Is.EqualTo(ColourHeritage.None));
+        Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
+        Assert.That(initial.Limitation, Is.EqualTo(Limitation.NaN));
         Assert.That(initial.IsNaN, Is.True);
-        Assert.That(initial.UseAsNaN, Is.True);
-        Assert.That(initial.UseAsGreyscale, Is.False);
-        Assert.That(initial.UseAsHued, Is.False);
         Assert.That(initial.ToString().StartsWith("NaN"));
         Assert.That(colour.Hex, Is.EqualTo("-"));
-        Assert.That(colour.Rgb.Byte255.ConstrainedHex, Is.EqualTo("-"));
+        Assert.That(colour.Rgb.Byte255.Hex, Is.EqualTo("-"));
         Assert.That(colour.Chromaticity.Xy, Is.EqualTo((double.NaN, double.NaN)));
         Assert.That(colour.Chromaticity.Uv, Is.EqualTo((double.NaN, double.NaN)));
         Assert.That(colour.IsInRgbGamut, Is.False);
@@ -188,12 +178,11 @@ public class NotNumberTests
         Assert.That(colour.Description, Is.EqualTo("-"));
         Assert.That(colour.Temperature.Cct, Is.NaN);
         Assert.That(colour.Temperature.Duv, Is.NaN);
+        Assert.That(colour.Icc.IsNaN, Is.True);
         Assert.That(colour.Icc.ToString().StartsWith("NaN"));
-
-        var spaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToList();
-        Assert.That(data.Heritages(spaces), Has.All.EqualTo(ColourHeritage.NaN));
-        Assert.That(data.UseAsNaN(spaces), Has.All.True);
-        Assert.That(data.UseAsGreyscale(spaces), Has.All.False);
-        Assert.That(data.UseAsHued(spaces), Has.All.False);
+        
+        var downstreamSpaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToArray();
+        Assert.That(TestUtils.Limitations(colour, TestUtils.AllColourSpaces, baselines: false), Has.All.EqualTo(Limitation.NaN));
+        Assert.That(TestUtils.Limitations(colour, downstreamSpaces, baselines: true), Has.All.EqualTo(Limitation.NaN));
     }
 }

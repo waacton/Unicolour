@@ -10,8 +10,8 @@ public class Vlag : Colourmap
     public override Unicolour Map(double x) => InterpolateColourTable(Lookup, x);
     public override string ToString() => nameof(Vlag);
     
-    public static readonly IEnumerable<Unicolour> Lookup = new Unicolour[]
-    {
+    public static readonly IEnumerable<Unicolour> Lookup =
+    [
         new(Config, ColourSpace.Rgb, 0.13850039, 0.41331206, 0.74052025),
         new(Config, ColourSpace.Rgb, 0.15077609, 0.41762684, 0.73970427),
         new(Config, ColourSpace.Rgb, 0.16235219, 0.4219191, 0.7389667),
@@ -268,5 +268,5 @@ public class Vlag : Colourmap
         new(Config, ColourSpace.Rgb, 0.66693423, 0.22859879, 0.24124404),
         new(Config, ColourSpace.Rgb, 0.6638441, 0.22201742, 0.2359961),
         new(Config, ColourSpace.Rgb, 0.66080672, 0.21526712, 0.23069468)
-    };
+    ];
 }

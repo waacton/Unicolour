@@ -31,7 +31,6 @@ public static class Hue
             _ => throw new ArgumentOutOfRangeException(nameof(hueSpan), hueSpan, null)
         };
     }
-    
         
     public static double FromMunsell(double hueNumber, string hueLetter)
     {
@@ -46,7 +45,7 @@ public static class Hue
         var distance = hueNumber / 10.0;
         var baseDegrees = Interpolation.Linear(minDegrees, maxDegrees, distance);
         var degrees = baseDegrees - 2 * Munsell.DegreesPerHueNumber; // shifts degrees so 5R is 0 instead of 0R / 10RP
-        return degrees.Modulo(360);
+        return degrees.WithHueModulo();
     }
 
     public static (double number, string letter) ToMunsell(double degrees)
@@ -54,7 +53,7 @@ public static class Hue
         if (double.IsNaN(degrees) || double.IsInfinity(degrees)) return (double.NaN, string.Empty);
 
         var baseDegrees = degrees + 2 * Munsell.DegreesPerHueNumber; // shifts degrees so 0R is 0 instead of 5R
-        baseDegrees = baseDegrees.Modulo(360);
+        baseDegrees = baseDegrees.WithHueModulo();
         var bandLocation = baseDegrees / Munsell.DegreesPerHueLetter;
         var bandIndex = (int)Math.Truncate(bandLocation);
         var hueLetter = Munsell.Hues[bandIndex];
@@ -83,5 +82,51 @@ public static class Hue
         var min = Math.Min(start, end);
         var max = Math.Max(start, end);
         return h >= min && h <= max;
+    }
+    
+    public static double FromWavelength(double wavelength, XyzConfiguration xyzConfig)
+    {
+        if (double.IsNaN(wavelength)) return double.NaN;
+
+        double degree;
+        if (wavelength >= 0)
+        {
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
+            var clamped = wavelength.Clamp(min, max);
+            var normalised = (clamped - min) / (max - min);
+            degree = normalised * 180;
+        }
+        else
+        {
+            var spectralBoundary = xyzConfig.SpectralBoundary;
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
+            var clamped = wavelength.Clamp(min, max);
+            var normalised = 1 - (clamped - min) / (max - min);
+            degree = 180 + normalised * 180;
+        }
+
+        return degree;
+    } 
+    
+    public static double ToWavelength(double degrees, XyzConfiguration xyzConfig)
+    {
+        if (double.IsNaN(degrees)) return double.NaN;
+
+        double wavelength;
+        if (degrees <= 180)
+        {
+            var (min, max) = (SpectralBoundary.MinWavelength, SpectralBoundary.MaxWavelength);
+            var normalised = degrees / 180.0;
+            wavelength = normalised * (max - min) + min;
+        }
+        else
+        {
+            var spectralBoundary = xyzConfig.SpectralBoundary;
+            var (min, max) = (spectralBoundary.MinNegativeWavelength, spectralBoundary.MaxNegativeWavelength);
+            var normalised = 1 - (degrees - 180) / 180.0;
+            wavelength = normalised * (max - min) + min;
+        }
+
+        return wavelength;
     }
 }

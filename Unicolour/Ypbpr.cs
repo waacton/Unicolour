@@ -6,16 +6,12 @@ public record Ypbpr : ColourRepresentation
     public double Y => First;
     public double Pb => Second;
     public double Pr => Third;
-    public double ConstrainedY => ConstrainedFirst;
-    public double ConstrainedPb => ConstrainedSecond;
-    public double ConstrainedPr => ConstrainedThird;
-    protected override double ConstrainedFirst => Y.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => Pb.Clamp(-0.5, 0.5);
-    protected override double ConstrainedThird => Pr.Clamp(-0.5, 0.5);
-    internal override bool IsGreyscale => Pb.Equals(0.0) && Pr.Equals(0.0); // Y = 0 does not imply black; Y = 1 does not imply white
-
-    public Ypbpr(double y, double pb, double pr) : this(y, pb, pr, ColourHeritage.None) {}
-    internal Ypbpr(double y, double pb, double pr, ColourHeritage heritage) : base(y, pb, pr, heritage) {}
+    
+    protected override bool IsTripletAchromatic => Pb == 0.0 && Pr == 0.0;
+    
+    public Ypbpr(double y, double pb, double pr) : this(y, pb, pr, Limitation.None) {}
+    public Ypbpr(double y) : this(y, 0, 0, Limitation.Achromatic) {}
+    internal Ypbpr(double y, double pb, double pr, Limitation limitation) : base(y, pb, pr, limitation) {}
     
     protected override string String => $"{Y:F3} {Pb:+0.000;-0.000;0.000} {Pr:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -36,7 +32,7 @@ public record Ypbpr : ColourRepresentation
         var y = kr * r + kg * g + kb * b;
         var pb = 0.5 * ((b - y) / (1 - kb));
         var pr = 0.5 * ((r - y) / (1 - kr));
-        return new Ypbpr(y, pb, pr, ColourHeritage.From(rgb));
+        return new Ypbpr(y, pb, pr, rgb.Limitation);
     }
     
     internal static Rgb ToRgb(Ypbpr ypbpr, YbrConfiguration ybrConfig)
@@ -49,6 +45,6 @@ public record Ypbpr : ColourRepresentation
         var r = pr * ((1 - kr) / 0.5) + y;
         var b = pb * ((1 - kb) / 0.5) + y;
         var g = (y - kr * r - kb * b) / kg;
-        return new Rgb(r, g, b, ColourHeritage.From(ypbpr));
+        return new Rgb(r, g, b, ypbpr.Limitation);
     }
 }

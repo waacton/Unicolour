@@ -6,18 +6,17 @@ public record Rgb255 : ColourRepresentation
     public int R => (int)First;
     public int G => (int)Second;
     public int B => (int)Third;
-    public int ConstrainedR => (int)ConstrainedFirst;
-    public int ConstrainedG => (int)ConstrainedSecond;
-    public int ConstrainedB => (int)ConstrainedThird;
-    protected override double ConstrainedFirst => R.Clamp(0, 255);
-    protected override double ConstrainedSecond => G.Clamp(0, 255);
-    protected override double ConstrainedThird => B.Clamp(0, 255);
-    internal override bool IsGreyscale => ConstrainedR.Equals(ConstrainedG) && ConstrainedG.Equals(ConstrainedB);
     
-    public string ConstrainedHex => UseAsNaN ? "-" : $"#{ConstrainedR:X2}{ConstrainedG:X2}{ConstrainedB:X2}";
+    protected override bool IsTripletAchromatic => R == G && G == B;
+    
+    public Rgb255 Clipped => new(R.Clamp(0, 255), G.Clamp(0, 255), B.Clamp(0, 255), Limitation);
+    
+    internal bool IsInGamut => !IsNaN && Triplet == Clipped.Triplet;
+    public string Hex => !IsInGamut ? "-" : $"#{R:X2}{G:X2}{B:X2}";
 
-    public Rgb255(double r, double g, double b) : this(r, g, b, ColourHeritage.None) {}
-    internal Rgb255(double r, double g, double b, ColourHeritage heritage) : base(r, g, b, heritage) {}
+    public Rgb255(double r, double g, double b) : this(r, g, b, Limitation.None) {}
+    public Rgb255(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}
+    internal Rgb255(double r, double g, double b, Limitation limitation) : base(r, g, b, limitation) {}
     
     protected override string String => $"{R} {G} {B}";
     public override string ToString() => base.ToString();

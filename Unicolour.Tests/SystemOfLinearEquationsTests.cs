@@ -28,7 +28,7 @@ public class SystemOfLinearEquationsTests
         LuDecompositionTestData.Add(new TestCaseData(new[,] { { 0.0, 1.0, 2 }, { 0.0, 0.0, 3 }, { 0.0, 0.0, 0 } }).SetName("zero lower triangle"));
         LuDecompositionTestData.Add(new TestCaseData(new[,] { { double.PositiveInfinity, double.NegativeInfinity, double.PositiveInfinity }, { double.NegativeInfinity, double.PositiveInfinity, double.NegativeInfinity }, { double.PositiveInfinity, double.NegativeInfinity, double.PositiveInfinity } }).SetName("infinity"));
         LuDecompositionTestData.Add(new TestCaseData(new[,] { { double.NaN, double.NaN, double.NaN }, { double.NaN, double.NaN, double.NaN }, { double.NaN, double.NaN, double.NaN } }).SetName("not number"));
-        LuDecompositionTestData.Add(new TestCaseData(new[,] { { TestUtils.RandomDouble(), TestUtils.RandomDouble(), TestUtils.RandomDouble() }, { TestUtils.RandomDouble(), TestUtils.RandomDouble(), TestUtils.RandomDouble() }, { TestUtils.RandomDouble(), TestUtils.RandomDouble(), TestUtils.RandomDouble() } }).SetName("random"));
+        LuDecompositionTestData.Add(new TestCaseData(new[,] { { Rng.Between(0, 1), Rng.Between(0, 1), Rng.Between(0, 1) }, { Rng.Between(0, 1), Rng.Between(0, 1), Rng.Between(0, 1) }, { Rng.Between(0, 1), Rng.Between(0, 1), Rng.Between(0, 1) } }).SetName("random"));
 
         int[] matrixOrders = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
         foreach (var order in matrixOrders)
@@ -36,7 +36,7 @@ public class SystemOfLinearEquationsTests
             for (var i = 0; i < 10; i++)
             {
                 var a = RandomMatrix(order);
-                var b = new double[order].Select(_ => TestUtils.RandomDouble()).ToArray();
+                var b = new double[order].Select(_ => Rng.Between(0, 1)).ToArray();
                 SolveTestData.Add(new TestCaseData(a, b).SetName($"{order}x{order} {i}"));
             }
         }
@@ -52,7 +52,7 @@ public class SystemOfLinearEquationsTests
             {
                 for (var col = 0; col < order; col++)
                 {
-                    data[row, col] = TestUtils.RandomDouble();
+                    data[row, col] = Rng.Between(0, 1);
                 }
             }
 

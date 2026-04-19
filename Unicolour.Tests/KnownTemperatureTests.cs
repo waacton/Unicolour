@@ -34,7 +34,7 @@ public class KnownTemperatureTests
     public void DisplayP3()
     {
         var colour = new Unicolour(new Configuration(rgbConfig: RgbConfiguration.DisplayP3), 1200);
-        TestUtils.AssertTriplet<Rgb>(colour, new(1.6804, 0.62798, 0.05495), 0.005);
+        TestUtils.AssertColour(colour, new Rgb(1.6804, 0.62798, 0.05495), 0.005);
     }
     
     [Test] // matches the behaviour of python-based "colour-science/colour" (https://github.com/colour-science/colour/blob/d7d79c745b15b97e7e5b8ccf50e3f676c762c770/colour/temperature/ohno2013.py#L144)  
@@ -64,7 +64,7 @@ public class KnownTemperatureTests
     {
         var illuminant = TestUtils.Illuminants[illuminantName];
         var whitePoint = illuminant.GetWhitePoint(Observer.Degree2);
-        var colour = new Unicolour(ColourSpace.Xyz, whitePoint.AsXyzMatrix().ToTriplet().Tuple);
+        var colour = new Unicolour(ColourSpace.Xyz, whitePoint.Triplet.Tuple);
         var temperature = colour.Temperature;
         Assert.That(temperature.Cct, Is.EqualTo(kelvins).Within(1.5), temperature.ToString);
     }
@@ -110,8 +110,8 @@ public class KnownTemperatureTests
         var temperatureD65 = new Temperature(6500 * 1.4388 / 1.4380, 0.0032);
         
         var colour = new Unicolour(Configuration.Default, temperatureD65, luminance);
-        TestUtils.AssertTriplet<Xyy>(colour, new(0.3127, 0.3290, luminance), 0.00005);
-        TestUtils.AssertTriplet<RgbLinear>(colour, new(luminance, luminance, luminance), 0.0005);
+        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.3127, 0.3290, luminance), 0.00005);
+        TestUtils.AssertTriplet(colour.RgbLinear.Triplet, new(luminance, luminance, luminance), 0.0005);
         Assert.That(colour.Xyy.Luminance, Is.EqualTo(luminance));
         Assert.That(colour.Temperature, Is.EqualTo(temperatureD65));
     }

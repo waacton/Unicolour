@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public record Hwb : ColourRepresentation
 {
@@ -6,18 +8,15 @@ public record Hwb : ColourRepresentation
     public double H => First;
     public double W => Second;
     public double B => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedW => ConstrainedSecond;
-    public double ConstrainedB => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => W.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => ConstrainedW + ConstrainedB >= 1.0;
-
-    public Hwb(double h, double w, double b) : this(h, w, b, ColourHeritage.None) {}
-    internal Hwb(double h, double w, double b, ColourHeritage heritage) : base(h, w, b, heritage) {}
     
-    protected override string String => UseAsHued ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"—° {W * 100:F1}% {B * 100:F1}%";
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Hwb(double h, double w, double b) : this(h, w, b, Limitation.None) {}
+    public Hwb(double w) : this(0, w, 1 - w, Limitation.Achromatic) {}
+    internal Hwb(double h, double w, double b, Limitation limitation) : base(h, w, b, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"{NoHue}° {W * 100:F1}% {B * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -28,19 +27,18 @@ public record Hwb : ColourRepresentation
     
     internal static Hwb FromHsb(Hsb hsb)
     {
-        var (h, s, v) = hsb.ConstrainedTriplet;
+        var (h, s, v) = hsb.WithHueModulo();
         var w = (1 - s) * v;
         var b = 1 - v;
-        return new Hwb(h, w, b, ColourHeritage.From(hsb));
+        return new Hwb(h, w, b, hsb.Limitation);
     }
     
     internal static Hsb ToHsb(Hwb hwb)
     {
-        var (h, w, b) = hwb.ConstrainedTriplet;
+        var (h, w, b) = hwb.WithHueModulo();
 
-        double v;
-        double s;
-        if (hwb.IsGreyscale)
+        double v, s;
+        if (w + b > 1.0)
         {
             v = w / (w + b);
             s = 0;
@@ -51,6 +49,6 @@ public record Hwb : ColourRepresentation
             s = v == 0.0 ? 0 : 1 - w / v;
         }
         
-        return new Hsb(h, s, v, ColourHeritage.From(hwb));
+        return new Hsb(h, s, v, hwb.Limitation);
     }
 }

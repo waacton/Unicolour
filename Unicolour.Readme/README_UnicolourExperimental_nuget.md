@@ -16,7 +16,46 @@ dotnet add package Wacton.Unicolour.Experimental
 using Wacton.Unicolour.Experimental;
 ```
 
-### Generate pigments
+### Generate colour harmonies
+Traditionally, harmonious colour combinations are based on their relationship within a colour wheel.
+A colour wheel can be generated using [pigments](https://github.com/waacton/Unicolour#model-pigment-and-paint-colours) or a hued colour space.
+```cs
+/* populate pigment k and s with measurement data */
+var quinaRed = new Pigment(380, 1, k: [], s: []);
+var bismuthYellow = new Pigment(380, 1, k: [], s: []);
+var ceruleanBlue = new Pigment(380, 1, k: [], s: []);
+var titaniumWhite = new Pigment(380, 1, k: [], s: []);
+var boneBlack = new Pigment(380, 1, k: [], s: []);
+
+var colourWheel = usePigments 
+    ? ColourWheel.From(quinaRed, bismuthYellow, ceruleanBlue, titaniumWhite, boneBlack)
+    : ColourWheel.From(ColourSpace.Oklch, reference: new Unicolour("ff0000"));
+
+var orange = colourWheel.Pure(hue: 60);
+var lightGreen = colourWheel.Tint(hue: 180, weight: 1);
+var darkPurple = colourWheel.Shade(hue: 300, weight: 1);
+var greyRed = colourWheel.Tone(hue: 0, weight: 1);
+
+var orangePalette = colourWheel.Harmony(hue: 60, Harmony.Analogous);
+```
+
+| Colour&nbsp;harmony                           | Enum                         |
+|-----------------------------------------------|------------------------------|
+| Monochromatic&nbsp;(tint)                     | `Harmony.MonochromaticTint`  |
+| Monochromatic&nbsp;(shade)                    | `Harmony.MonochromaticShade` |
+| Monochromatic&nbsp;(tone)                     | `Harmony.MonochromaticTone`  |
+| Monochromatic&nbsp;(tint&nbsp;and&nbsp;shade) | `Harmony.Monochromatic`      |
+| Analogous                                     | `Harmony.Analogous`          |
+| Complementary                                 | `Harmony.Complementary`      |
+| Split-complementary                           | `Harmony.SplitComplementary` |
+| Triadic                                       | `Harmony.Triadic`            |
+| Tetradic&nbsp;(rectangle)                     | `Harmony.TetradicRectangle`  |
+| Tetradic&nbsp;(square)                        | `Harmony.TetradicSquare`     |
+
+### Approximate pigments
+A reflectance curve can be generated for any colour, approximating a single-constant pigment.
+This enables Kubelka-Munk pigment mixing without taking reflectance measurements.
+Note that, similar to metamerism, there are infinitely many reflectance curves that can generate a single colour; this will find just one.
 A reflectance curve can be generated for any colour, approximating a single-constant pigment.
 This enables Kubelka-Munk pigment mixing without taking reflectance measurements.
 Note that, similar to metamerism, there are infinitely many reflectance curves that can generate a single colour; this will find just one.
@@ -40,4 +79,6 @@ var palette = SpectralJs.Palette(blue, yellow, 9);
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2026 William Acton.
+
+[![Not by AI](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/not-by-ai.png)](https://notbyai.fyi/)

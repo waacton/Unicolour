@@ -17,28 +17,44 @@ public class RoundtripMunsellTests
      *     e.g. for 10Y 4/ the max measured chroma is 12, so 10Y 4/24 returns max chroma scale of 2x
      */
     
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.MunsellTriplets))]
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Munsell, 1500);
+    
+    [TestCaseSource(nameof(Triplets))]
     public void ViaXyy(ColourTriplet triplet)
     {
         var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
-        var xyy = Munsell.ToXyy(original, TestUtils.CConfig.Xyz);
-        var roundtrip = Munsell.FromXyy(xyy, TestUtils.CConfig.Xyz);
+        var xyy = Munsell.ToXyy(original, TestUtils.CConfig.Xyz.ChromaticAdaptor);
+        var roundtrip = Munsell.FromXyy(xyy, TestUtils.CConfig.Xyz.ChromaticAdaptor);
+        
+        // when munsell uses values that are outwith the known dataset
+        // the chromaticity search falls back to white, the only known chromaticity for that data point
+        if (xyy.Limitation == Limitation.Achromatic)
+        {
+            var expected = new ColourTriplet(0, original.V, 0, HueIndex: 0);
+            TestUtils.AssertTriplet(roundtrip.Triplet, expected, 0.0075);
+            return;
+        }
+        
+        var originalBounds = Munsell.GetBounds(original.H, original.V, original.C);
+        var roundtripBounds = Munsell.GetBounds(roundtrip.H, roundtrip.V, roundtrip.C);
 
-        var originalBounds = Munsell.GetBounds(original);
-        var roundtripBounds = Munsell.GetBounds(roundtrip);
+        // non-typical gamut chroma reduces the roundtrip accuracy
+        // but these tolerances were based on analysis of millions of typical gamut values
+        // so it's simply treated as a worse case of the typical gamut tolerances
+        var isTypicalChromaRange = original.C <= 26;
         
         (double h, double c) tolerance;
-        if (!roundtrip.XyyToMunsellSearchResult!.Converged)
+        if (!roundtrip.XyyToHvcSearchResult!.Converged)
         {
-            tolerance = (h: 7.5, c: 53.5);
+            tolerance = isTypicalChromaRange ? (h: 7.5, c: 53.5) : (h: 15.75, c: 53.5);
         }
         else if (xyy.Chromaticity.X is < 0 or > 1 || xyy.Chromaticity.Y is < 0 or > 1)
         {
-            tolerance = (h: 21.5, c: 62.5);
+            tolerance = isTypicalChromaRange ? (h: 21.5, c: 62.5) : (h: 21.5, c: 120);
         }
         else if (IsSparseChroma(originalBounds) || IsSparseChroma(roundtripBounds))
         {
-            tolerance = (h: 8.75, c: 21.5);
+            tolerance = isTypicalChromaRange ? (h: 8.75, c: 21.5) : (h: 14.5, c: 32);
         }
         else if (original.C < 0.5)
         {
@@ -49,13 +65,15 @@ public class RoundtripMunsellTests
             var maxChromaScale = Math.Max(ChromaLimitScale(originalBounds), ChromaLimitScale(roundtripBounds));
             tolerance = maxChromaScale switch
             {
+                >= 3 => (h: 6.5, c: 23), // only seen in non-typical gamut range
                 >= 1.25 => (h: 6.5, c: 11),
                 >= 1 => (h: 1.725, c: 2.1),
                 _ => (h: 0.45, c: 0.0035)
             };
         }
-        
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance.h, 5e-15, tolerance.c]);
+
+        var toleranceV = isTypicalChromaRange ? 5e-15 : 1e-14;
+        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance.h, toleranceV, tolerance.c]);
     }
 
     /*
@@ -69,17 +87,17 @@ public class RoundtripMunsellTests
     [Test]
     public void ViaXyyAverage()
     {
-        var triplets = RandomColours.MunsellTriplets;
+        var triplets = Rng.Triplets(ColourSpace.Munsell, 1000, GamutRange.Typical);
 
-        var hDeltas = new List<double>();
-        var vDeltas = new List<double>();
-        var cDeltas = new List<double>();
+        List<double> hDeltas = [];
+        List<double> vDeltas = [];
+        List<double> cDeltas = [];
         
         foreach (var triplet in triplets)
         {
             var original = new Munsell(triplet.First, triplet.Second, triplet.Third);
-            var xyy = Munsell.ToXyy(original, TestUtils.CConfig.Xyz);
-            var roundtrip = Munsell.FromXyy(xyy, TestUtils.CConfig.Xyz);
+            var xyy = Munsell.ToXyy(original, TestUtils.CConfig.Xyz.ChromaticAdaptor);
+            var roundtrip = Munsell.FromXyy(xyy, TestUtils.CConfig.Xyz.ChromaticAdaptor);
 
             var hues = Hue.Unwrap(original.H, roundtrip.H);
             hDeltas.Add(Math.Abs(hues.start - hues.end));
@@ -94,26 +112,26 @@ public class RoundtripMunsellTests
     
     private static bool IsSparseChroma(Munsell.Bounds bounds)
     {
-        var chromaRanges = new[]
-        {
+        (int min, int max)[] chromaRanges =
+        [
             Munsell.Bounds.GetChromaRange(bounds.LowerH, bounds.LowerV),
             Munsell.Bounds.GetChromaRange(bounds.UpperH, bounds.LowerV),
             Munsell.Bounds.GetChromaRange(bounds.LowerH, bounds.UpperV),
             Munsell.Bounds.GetChromaRange(bounds.UpperH, bounds.UpperV)
-        };
+        ];
 
         return chromaRanges.Any(x => x == (0, 0));
     }
 
     private static double ChromaLimitScale(Munsell.Bounds bounds)
     {
-        var chromaRanges = new[]
-        {
+        (int min, int max)[] chromaRanges =
+        [
             Munsell.Bounds.GetChromaRange(bounds.LowerH, bounds.LowerV),
             Munsell.Bounds.GetChromaRange(bounds.UpperH, bounds.LowerV),
             Munsell.Bounds.GetChromaRange(bounds.LowerH, bounds.UpperV),
             Munsell.Bounds.GetChromaRange(bounds.UpperH, bounds.UpperV)
-        };
+        ];
         
         var chromaLimit = chromaRanges.Select(x => x.max).Min();
         return chromaLimit == 0.0 ? 0.0 : bounds.UpperC / chromaLimit;

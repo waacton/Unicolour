@@ -8,7 +8,7 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
     public (double, double, double) Tuple => (First, Second, Third);
     public int? HueIndex { get; } = HueIndex;
 
-    public double[] ToArray() => new[] { First, Second, Third };
+    public double[] ToArray() => [First, Second, Third];
     
     internal double HueValue()
     {
@@ -30,12 +30,12 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
         };
     }
     
-    internal ColourTriplet WithDegreeMap(Func<double, double> degreeMap)
+    internal ColourTriplet WithHueMap(Func<double, double> hueMap)
     {
         return HueIndex switch
         {
-            0 => new(degreeMap(First), Second, Third, HueIndex),
-            2 => new(First, Second, degreeMap(Third), HueIndex),
+            0 => new(hueMap(First), Second, Third, HueIndex),
+            2 => new(First, Second, hueMap(Third), HueIndex),
             null => new(First, Second, Third, HueIndex),
             _ => throw new ArgumentOutOfRangeException()
         };
@@ -82,9 +82,7 @@ public record ColourTriplet(double First, double Second, double Third, int? HueI
     // need a custom deconstruct to ignore the nullable hue index
     public void Deconstruct(out double first, out double second, out double third)
     {
-        first = First;
-        second = Second;
-        third = Third;
+        (first, second, third) = Tuple;
     }
     
     public override string ToString() => Tuple.ToString();

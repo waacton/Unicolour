@@ -6,18 +6,15 @@ public record Okhwb : ColourRepresentation
     public double H => First;
     public double W => Second;
     public double B => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedW => ConstrainedSecond;
-    public double ConstrainedB => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => W.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => B.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => ConstrainedW + ConstrainedB >= 1.0;
-
-    public Okhwb(double h, double w, double b) : this(h, w, b, ColourHeritage.None) {}
-    internal Okhwb(double h, double w, double b, ColourHeritage heritage) : base(h, w, b, heritage) {}
     
-    protected override string String => UseAsHued ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"—° {W * 100:F1}% {B * 100:F1}%";
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Okhwb(double h, double w, double b) : this(h, w, b, Limitation.None) {}
+    public Okhwb(double w) : this(0, w, 1 - w, Limitation.Achromatic) {}
+    internal Okhwb(double h, double w, double b, Limitation limitation) : base(h, w, b, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {W * 100:F1}% {B * 100:F1}%" : $"{Utils.NoHue}° {W * 100:F1}% {B * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,19 +29,18 @@ public record Okhwb : ColourRepresentation
     
     internal static Okhwb FromOkhsv(Okhsv okhsv)
     {
-        var (h, s, v) = okhsv.ConstrainedTriplet;
+        var (h, s, v) = okhsv.WithHueModulo();
         var w = (1 - s) * v;
         var b = 1 - v;
-        return new Okhwb(h, w, b, ColourHeritage.From(okhsv));
+        return new Okhwb(h, w, b, okhsv.Limitation);
     }
     
     internal static Okhsv ToOkhsv(Okhwb okhwb)
     {
-        var (h, w, b) = okhwb.ConstrainedTriplet;
+        var (h, w, b) = okhwb.WithHueModulo();
 
-        double v;
-        double s;
-        if (okhwb.IsGreyscale)
+        double v, s;
+        if (w + b > 1.0)
         {
             v = w / (w + b);
             s = 0;
@@ -55,6 +51,6 @@ public record Okhwb : ColourRepresentation
             s = v == 0.0 ? 0 : 1 - w / v;
         }
         
-        return new Okhsv(h, s, v, ColourHeritage.From(okhwb));
+        return new Okhsv(h, s, v, okhwb.Limitation);
     }
 }

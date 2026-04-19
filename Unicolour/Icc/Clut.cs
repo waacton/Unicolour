@@ -111,7 +111,7 @@ internal class Clut
     {
         var totalVectors = Power(@base, n);
 
-        var vectors = new List<int[]>();
+        List<int[]> vectors = [];
         for (var i = 0; i < totalVectors; i++)
         {
             var vector = new int[n];

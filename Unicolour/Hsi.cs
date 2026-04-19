@@ -1,4 +1,6 @@
-﻿namespace Wacton.Unicolour;
+﻿using static Wacton.Unicolour.Utils;
+
+namespace Wacton.Unicolour;
 
 public record Hsi : ColourRepresentation
 {
@@ -6,18 +8,15 @@ public record Hsi : ColourRepresentation
     public double H => First;
     public double S => Second;
     public double I => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedS => ConstrainedSecond;
-    public double ConstrainedI => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => S.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => I.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => S <= 0.0 || I <= 0.0;
+    
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Hsi(double h, double s, double i) : this(h, s, i, Limitation.None) {}
+    public Hsi(double i) : this(0, 0, i, Limitation.Achromatic) {}
+    internal Hsi(double h, double s, double i, Limitation limitation) : base(h, s, i, limitation) {}
 
-    public Hsi(double h, double s, double i) : this(h, s, i, ColourHeritage.None) {}
-    internal Hsi(double h, double s, double i, ColourHeritage heritage) : base(h, s, i, heritage) {}
-
-    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {I * 100:F1}%" : $"—° {S * 100:F1}% {I * 100:F1}%";
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {I * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {I * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -28,25 +27,23 @@ public record Hsi : ColourRepresentation
     
     internal static Hsi FromRgb(Rgb rgb)
     {
-        // avoid constrained values because HSI can easily be out of RGB gamut
         var (r, g, b) = rgb;
-        var components = new[] { r, g, b };
+        var components = rgb.ToArray();
         var xMin = components.Min();
 
-        var h = Hsb.GetHue(r, g, b);
+        var h = Hsb.GetHue(r, g, b).WithHueModulo();
         var i = (r + g + b) / 3.0;
         var s = i == 0.0 ? 0 : 1 - xMin / i;
-        return new Hsi(h.Modulo(360.0), s, i, ColourHeritage.From(rgb));
+        return new Hsi(h, s, i, rgb.Limitation);
     }
     
     internal static Rgb ToRgb(Hsi hsi)
     {
-        // avoid constrained values because HSI can easily be out of RGB gamut
-        var (_, s, i) = hsi;
-        var h = hsi.ConstrainedH;
+        var (h, s, i) = hsi.WithHueModulo();
         var hPrime = h / 60;
         var z = 1 - Math.Abs(hPrime % 2 - 1);
         var chroma = 3 * i * s / (1 + z);
+        chroma = Math.Max(chroma, 0); // RGB only represents non-negative chroma (unclear what negative chroma would even mean)
         var x = chroma * z;
 
         var (r1, g1, b1) = hPrime switch
@@ -62,6 +59,6 @@ public record Hsi : ColourRepresentation
 
         var m = i * (1 - s);
         var (r, g, b) = (r1 + m, g1 + m, b1 + m);
-        return new Rgb(r, g, b, ColourHeritage.From(hsi));
+        return new Rgb(r, g, b, hsi.Limitation);
     }
 }

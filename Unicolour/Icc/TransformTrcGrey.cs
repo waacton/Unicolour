@@ -11,8 +11,8 @@ internal class TransformTrcGrey : Transform
     internal TransformTrcGrey(Header header, Tags tags) 
         : base(header, tags, hasPerceptualHandling: false)
     {
-        bCurves = new Lazy<List<Curve>>(() => new List<Curve> { tags.GreyTrc.Value! });
-        bCurvesInverse = new Lazy<List<Curve>>(() => new List<Curve> { tags.GreyTrc.Value!.Inverse() });
+        bCurves = new Lazy<List<Curve>>(() => [tags.GreyTrc.Value!]);
+        bCurvesInverse = new Lazy<List<Curve>>(() => [tags.GreyTrc.Value!.Inverse()]);
     }
     
     internal override double[] ToXyz(double[] deviceValues, Intent intent)
@@ -52,7 +52,7 @@ internal class TransformTrcGrey : Transform
             grey = xyz[1] / RefWhite[1]; // Y is the luminance
         }
         
-        var pcsValues = new[] { grey };
+        double[] pcsValues = [grey];
         return ToDevice(pcsValues);
     }
     

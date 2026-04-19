@@ -8,17 +8,13 @@ public record Yiq : ColourRepresentation
     public double Y => First;
     public double I => Second;
     public double Q => Third;
-    public double ConstrainedY => ConstrainedFirst;
-    public double ConstrainedI => ConstrainedSecond;
-    public double ConstrainedQ => ConstrainedThird;
-    protected override double ConstrainedFirst => Y.Clamp(0.0, 1.0);
-    protected override double ConstrainedSecond => I.Clamp(-IMax, IMax);
-    protected override double ConstrainedThird => Q.Clamp(QMin, -QMin);
-    internal override bool IsGreyscale => I.Equals(0.0) && Q.Equals(0.0); // Y = 0 does not imply black; Y = 1 does not imply white
-
-    public Yiq(double y, double i, double q) : this(y, i, q, ColourHeritage.None) {}
-    internal Yiq(ColourTriplet triplet, ColourHeritage heritage) : this(triplet.First, triplet.Second, triplet.Third, heritage) {}
-    internal Yiq(double y, double i, double q, ColourHeritage heritage) : base(y, i, q, heritage) {}
+    
+    protected override bool IsTripletAchromatic => I == 0.0 && Q == 0.0;
+    
+    public Yiq(double y, double i, double q) : this(y, i, q, Limitation.None) {}
+    public Yiq(double y) : this(y, 0, 0, Limitation.Achromatic) {}
+    internal Yiq(ColourTriplet triplet, Limitation limitation) : this(triplet.First, triplet.Second, triplet.Third, limitation) {}
+    internal Yiq(double y, double i, double q, Limitation limitation) : base(y, i, q, limitation) {}
     
     protected override string String => $"{Y:F3} {I:+0.000;-0.000;0.000} {Q:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
@@ -54,7 +50,7 @@ public record Yiq : ColourRepresentation
         // q = -0.5227...G + 0.3112...B + 0.2115...R;
         var yuvMatrix = Matrix.From(yuv);
         var yiqMatrix = Rotation.Multiply(yuvMatrix);
-        return new Yiq(yiqMatrix.ToTriplet(), ColourHeritage.From(yuv));
+        return new Yiq(yiqMatrix.ToTriplet(), yuv.Limitation);
     }
     
     internal static Yuv ToYuv(Yiq yiq)
@@ -63,6 +59,6 @@ public record Yiq : ColourRepresentation
         // (the inverse of a rotation is its transpose, and the transpose of a symmetric matrix is itself)
         var yiqMatrix = Matrix.From(yiq);
         var yuvMatrix = Rotation.Multiply(yiqMatrix);
-        return new Yuv(yuvMatrix.ToTriplet(), ColourHeritage.From(yiq));
+        return new Yuv(yuvMatrix.ToTriplet(), yiq.Limitation);
     }
 }

@@ -9,18 +9,16 @@ public partial record Munsell : ColourRepresentation
     public double H => First;
     public double V => Second;
     public double C => Third;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => Math.Max(V, 0);
-    protected override double ConstrainedThird => Math.Max(C, 0);
-    internal override bool IsGreyscale => V <= 0.0 || C <= 0.0;
-
-    public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c, ColourHeritage.None) { }
-    public Munsell(double v) : this(0, v, 0, ColourHeritage.Greyscale) { }
-    internal Munsell(double h, double v, double c) : this(h, v, c, ColourHeritage.None) { }
-    internal Munsell(double h, double v, double c, ColourHeritage heritage) : base(h, v, c, heritage) { }
     
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
+    
+    public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) {}
+    public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) {}
+    internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, limitation) {}
+
     public (double number, string letter) HueNotation => ToMunsell(H);
-    protected override string String => UseAsHued ? $"{HueNotation.number:0.##}{HueNotation.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
+    protected override string String => Limitation != Limitation.Achromatic ? $"{HueNotation.number:0.##}{HueNotation.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
     public override string ToString() => base.ToString();
     
     /*
@@ -35,60 +33,58 @@ public partial record Munsell : ColourRepresentation
      *   vs 5P 10/50 --> XYZ 0.0000  0.0000 0.0000 --> XYY 0.3101 0.3161 0.0000
      */
     
-    private static readonly XyzConfiguration XyzConfigC = new(Illuminant.C, Observer.Degree2);
-    private static WhitePoint WhitePoint => XyzConfigC.WhitePoint;
-    private static Chromaticity WhiteChromaticity => XyzConfigC.WhiteChromaticity;
+    private static readonly XyzConfiguration MunsellXyzConfig = new(Illuminant.C, Observer.Degree2);
+    private static WhitePoint MunsellWhitePoint => MunsellXyzConfig.WhitePoint;
     
-    internal static Munsell FromXyy(Xyy xyy, XyzConfiguration xyzConfig)
+    internal static Munsell FromXyy(Xyy xyy, ChromaticAdaptor chromaticAdaptor)
     {
+        if (xyy.Chromaticity == xyy.WhitePoint.Chromaticity)
+        {
+            return new Munsell(0, GetValue(xyy.Luminance), 0, xyy.Limitation) { XyyToHvcSearchResult = null };
+        }
+        
         Xyy adaptedXyy;
-        if (xyzConfig.WhitePoint != WhitePoint)
+        if (xyy.WhitePoint != MunsellWhitePoint)
         {
             var xyz = Xyy.ToXyz(xyy);
-            var adaptedXyz = Adaptation.WhitePoint(xyz, xyzConfig.WhitePoint, WhitePoint, xyzConfig.AdaptationMatrix);
-            adaptedXyy = Xyy.FromXyz(adaptedXyz, WhiteChromaticity);
+            var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, MunsellWhitePoint);
+            adaptedXyy = Xyy.FromXyz(adaptedXyz);
         }
         else
         {
             adaptedXyy = xyy;
         }
 
-        double h, v, c;
-        XyyToMunsellSearchResult? searchResult = null;
-        if (xyy.UseAsGreyscale)
-        {
-            (h, v, c) = (0, GetValue(xyy.Luminance), 0);
-        }
-        else
-        {
-            ((h, v, c), searchResult) = FindMunsell(adaptedXyy);
-        }
+        var searchResult = FindHvc(adaptedXyy);
+        var (h, v, c) = (searchResult.H, searchResult.V, searchResult.C);
+        return new Munsell(h, v, c, xyy.Limitation) { XyyToHvcSearchResult = searchResult };
+    }
 
-        return new Munsell(h, v, c, ColourHeritage.From(xyy)) { XyyToMunsellSearchResult = searchResult };
+    internal static Xyy ToXyy(Munsell munsell, ChromaticAdaptor chromaticAdaptor)
+    {
+        var (h, v, c) = munsell.WithHueModulo();
+        var (chromaticity, luminance) = ToXyy(h, v, c, chromaticAdaptor);
+        return new Xyy(chromaticity.X, chromaticity.Y, luminance, chromaticAdaptor.WhitePoint, munsell.Limitation);
     }
     
-    internal static Xyy ToXyy(Munsell munsell, XyzConfiguration xyzConfig)
+    private static (Chromaticity chromaticity, double luminance) ToXyy(double h, double v, double c, ChromaticAdaptor chromaticAdaptor)
     {
-        var (h, v, c) = munsell.ConstrainedTriplet;
-        var bounds = GetBounds(munsell);
-
-        var chromaticity = munsell.UseAsGreyscale ? WhiteChromaticity : GetChromaticity(h, v, c, bounds);
-        var adaptedXyy = new Xyy(chromaticity.X, chromaticity.Y, GetLuminance(v));
+        var chromaticity = c == 0.0 ? MunsellWhitePoint.Chromaticity : GetChromaticity(h, v, c);
+        var adaptedXyy = new Xyy(chromaticity.X, chromaticity.Y, GetLuminance(v), MunsellWhitePoint);
         
         Xyy xyy;
-        if (xyzConfig.WhitePoint != WhitePoint)
+        if (chromaticAdaptor.WhitePoint != MunsellWhitePoint) 
         {
             var adaptedXyz = Xyy.ToXyz(adaptedXyy);
-            var xyz = Adaptation.WhitePoint(adaptedXyz, WhitePoint, xyzConfig.WhitePoint, xyzConfig.AdaptationMatrix);
-            xyy = Xyy.FromXyz(xyz, WhiteChromaticity);
+            var xyz = chromaticAdaptor.AdaptFrom(adaptedXyz);
+            xyy = Xyy.FromXyz(xyz);
         }
         else
         {
             xyy = adaptedXyy;
         }
 
-        var (x, y, luminance) = xyy;
-        return new Xyy(x, y, luminance, ColourHeritage.From(munsell));
+        return (xyy.Chromaticity, xyy.Luminance);
     }
     
     /*
@@ -99,10 +95,12 @@ public partial record Munsell : ColourRepresentation
      * and this process can be repeated for this new max error for even greater accuracy
      * though at a depth of 3 iterations the max error is 5e-15, and further iteration yields no improvement
      */
-    internal static readonly double[] IterationDepthError = { 0.0035, 0.000005, 0.00000000005, 0.000000000000005 };
+    internal static readonly double[] IterationDepthError = [0.0035, 0.000005, 0.00000000005, 0.000000000000005];
     internal static double GetValue(double y, int iterationDepth = 3)
     {
-        if (y <= 0) return 0;
+        if (double.IsNaN(y)) return double.NaN;
+        var sign = Math.Sign(y);
+        y = Math.Abs(y);
 
         if (iterationDepth == 0)
         {
@@ -124,23 +122,26 @@ public partial record Munsell : ColourRepresentation
         var yLower = GetLuminance(vLower);
         var yUpper = GetLuminance(vUpper);
         var distance = (y - yLower) / (yUpper - yLower);
-        return Interpolation.Linear(vLower, vUpper, distance);
+        return Interpolation.Linear(vLower, vUpper, distance) * sign;
     }
     
     internal static double GetLuminance(double v)
     {
-        if (v <= 0) return 0;
+        if (double.IsNaN(v)) return double.NaN;
+        var sign = Math.Sign(v);
+        v = Math.Abs(v);
+        
         var y = 1.1914 * v - 0.22533 * Math.Pow(v, 2) + 0.23352 * Math.Pow(v, 3) - 0.020484 * Math.Pow(v, 4) + 0.00081939 * Math.Pow(v, 5);
-        return y / 100.0;
+        return y / 100.0 * sign;
     }
     
-    private static (Munsell munsell, XyyToMunsellSearchResult searchResult) FindMunsell(Xyy xyy)
+    private static XyyToHvcSearchResult FindHvc(Xyy xyy)
     {
-        var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy), XyzConfigC));
-        var target = Polar(WhiteChromaticity, xyy.Chromaticity);
+        var lch = Lchab.FromLab(Lab.FromXyz(Xyy.ToXyz(xyy)));
+        var target = Polar(MunsellWhitePoint.Chromaticity, xyy.Chromaticity);
         if (lch.IsNaN || double.IsInfinity(target.radius))
         {
-            return (new Munsell(double.NaN, GetValue(xyy.Luminance), double.NaN), new XyyToMunsellSearchResult(double.NaN, false));
+            return new XyyToHvcSearchResult(double.NaN, GetValue(xyy.Luminance), double.NaN, Delta: double.NaN, Converged: false);
         }
 
         double initialH;
@@ -161,9 +162,9 @@ public partial record Munsell : ColourRepresentation
             initialC = lch.C / 5.5;
         }
         
-        var munsell = new Munsell(initialH, GetValue(xyy.Luminance), initialC);
+        var (h, v, c) = (initialH, GetValue(xyy.Luminance), initialC);
         var iterations = 0;
-        var closestResult = new XyyToMunsellSearchResult(double.MaxValue, false);
+        var closestResult = new XyyToHvcSearchResult(h, v, c, Delta: double.MaxValue, Converged: false);
         var converged = false;
 
         const double convergenceThreshold = 0.00001;
@@ -171,24 +172,29 @@ public partial record Munsell : ColourRepresentation
         
         while (!converged && iterations < maxIterations)
         {
-            munsell = ModifyHue(munsell, target.angle);
-            munsell = ModifyChroma(munsell, target.radius);
-            var delta = Distance(xyy.Chromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
+            h = ModifyHue(h, v, c, target.angle);
+            c = ModifyChroma(h, v, c, target.radius);
+            var (chromaticity, _) = ToXyy(h, v, c, MunsellXyzConfig.ChromaticAdaptor);
+            var delta = Distance(xyy.Chromaticity, chromaticity);
             converged = delta <= convergenceThreshold;
             iterations++;
             
-            var result = new XyyToMunsellSearchResult(delta, converged);
+            var result = new XyyToHvcSearchResult(h, v, c, delta, converged);
             if (result.Delta < closestResult.Delta || double.IsNaN(closestResult.Delta))
             {
                 closestResult = result;
             }
         }
-
-        return (munsell, closestResult);
+        
+        return closestResult;
     }
     
-    private static Chromaticity GetChromaticity(double h, double v, double c, Bounds bounds)
+    private static Chromaticity GetChromaticity(double h, double v, double c)
     {
+        v = Math.Max(v, 0);
+        c = Math.Max(c, 0);
+        var bounds = GetBounds(h, v, c);
+        
         var (lowerV, upperV) = (bounds.LowerV, bounds.UpperV);
         if (lowerV == upperV)
         {
@@ -209,7 +215,7 @@ public partial record Munsell : ColourRepresentation
     
     private static Chromaticity GetChromaticityForV(double nodeV, double c, double h, Bounds bounds, bool isLowerV)
     {
-        if (nodeV == 0) return WhiteChromaticity;
+        if (nodeV == 0) return MunsellWhitePoint.Chromaticity;
         
         var (lowerC, upperC) = isLowerV ? bounds.BoundC.forLowerV : bounds.BoundC.forUpperV;
         if (lowerC == upperC)
@@ -227,7 +233,7 @@ public partial record Munsell : ColourRepresentation
     
     private static Chromaticity GetChromaticityForVC(double nodeV, double nodeC, double h, Bounds bounds)
     {
-        if (nodeC == 0) return WhiteChromaticity;
+        if (nodeC == 0) return MunsellWhitePoint.Chromaticity;
         
         var (lowerH, upperH) = (bounds.LowerH, bounds.UpperH);
         var unwrappedH = Unwrap(lowerH, h);
@@ -250,8 +256,8 @@ public partial record Munsell : ColourRepresentation
             return lowerChromaticity;
         }
 
-        var lowerPolar = Polar(WhiteChromaticity, lowerChromaticity);
-        var upperPolar = Polar(WhiteChromaticity, upperChromaticity);
+        var lowerPolar = Polar(MunsellWhitePoint.Chromaticity, lowerChromaticity);
+        var upperPolar = Polar(MunsellWhitePoint.Chromaticity, upperChromaticity);
         (lowerPolar.angle, upperPolar.angle) = Unwrap(lowerPolar.angle, upperPolar.angle);
         var angle = Interpolation.Linear(lowerPolar.angle, upperPolar.angle, hueDistance);
         var angleDistance = (angle - lowerPolar.angle) / (upperPolar.angle - lowerPolar.angle);
@@ -264,8 +270,8 @@ public partial record Munsell : ColourRepresentation
         if (useRadialInterpolation)
         {
             var r = Interpolation.Linear(lowerPolar.radius, upperPolar.radius, angleDistance);
-            var x = WhiteChromaticity.X + r * Math.Cos(ToRadians(angle));
-            var y = WhiteChromaticity.Y + r * Math.Sin(ToRadians(angle));
+            var x = MunsellWhitePoint.Chromaticity.X + r * Math.Cos(ToRadians(angle));
+            var y = MunsellWhitePoint.Chromaticity.Y + r * Math.Sin(ToRadians(angle));
             return new(x, y);
         }
         else
@@ -357,11 +363,14 @@ public partial record Munsell : ColourRepresentation
     }
     
     // only for potential debugging or diagnostics
-    internal XyyToMunsellSearchResult? XyyToMunsellSearchResult;
+    internal XyyToHvcSearchResult? XyyToHvcSearchResult;
 }
 
-internal record XyyToMunsellSearchResult(double Delta, bool Converged)
+internal record XyyToHvcSearchResult(double H, double V, double C, double Delta, bool Converged)
 {
+    internal double H { get; } = H;
+    internal double V { get; } = V;
+    internal double C { get; } = C;
     internal double Delta { get; } = Delta;
     internal bool Converged { get; } = Converged;
     public override string ToString() => $"Delta:{Delta} · Converged:{Converged}";

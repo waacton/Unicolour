@@ -58,15 +58,15 @@ public class IccConversionTests
         var actual = testColour.Profile.Transform.ToXyz(deviceValues, intent);
         if (pcs == Signatures.Lab)
         {
-            var xyz = new Xyz(actual[0], actual[1], actual[2]);
-            actual = Lab.FromXyz(xyz, Transform.XyzD50).ToArray();
+            var xyz = new Xyz(actual[0], actual[1], actual[2], Transform.XyzD50.WhitePoint);
+            actual = Lab.FromXyz(xyz).ToArray();
         }
         
         var tolerance = pcs switch
         {
             Signatures.Lab => 0.0001,
             Signatures.Xyz => 0.00000075,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(testColour), testColour, pcs)
         };
         
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
@@ -82,8 +82,8 @@ public class IccConversionTests
         
         var (first, second, third) = (testColour.Input[0], testColour.Input[1], testColour.Input[2]);
         var xyz = pcs == Signatures.Lab
-            ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50)
-            : new Xyz(first, second, third);
+            ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50.WhitePoint)
+            : new Xyz(first, second, third, Transform.XyzD50.WhitePoint);
         
         var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
         var tolerance = device switch
@@ -92,7 +92,7 @@ public class IccConversionTests
             Signatures.Clr7 => 0.00000175,
             Signatures.Rgb => 0.000015,
             Signatures.Grey => 0.000005,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(testColour), testColour, device)
         };
         
         Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
@@ -159,8 +159,8 @@ public class IccConversionTests
     {
         const string DataSource = "ICC";
         var profile = iccFile.GetProfile();
-        var toPcsTestData = new List<TestCaseData>();
-        var toDeviceTestData = new List<TestCaseData>();
+        List<TestCaseData> toPcsTestData = [];
+        List<TestCaseData> toDeviceTestData = [];
 
         foreach (var intent in Intents)
         {
@@ -199,7 +199,7 @@ public class IccConversionTests
         var lines = File.ReadAllLines(csvFile);
         double[] ArrayFromString(string value) => value.Split(",").Select(double.Parse).ToArray();
         
-        var data = new List<IccTestColour>();
+        List<IccTestColour> data = [];
         foreach (var line in lines)
         {
             var split = line.Split(",-->,").ToList();
@@ -213,8 +213,8 @@ public class IccConversionTests
     
     private static List<TestCaseData> GenerateDeviceToUnicolourTestData()
     {
-        var testCases = new List<TestCaseData>();
-        var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
+        List<TestCaseData> testCases = [];
+        IccFile[] iccFiles = [IccFile.Fogra39, IccFile.Fogra55];
         foreach (var iccFile in iccFiles)
         {
             foreach (var intent in Intents)
@@ -235,8 +235,8 @@ public class IccConversionTests
     
     private static List<TestCaseData> GenerateUnicolourToDeviceTestData()
     {
-        var testCases = new List<TestCaseData>();
-        var iccFiles = new[] { IccFile.Fogra39, IccFile.Fogra55 };
+        List<TestCaseData> testCases = [];
+        IccFile[] iccFiles = [IccFile.Fogra39, IccFile.Fogra55];
         foreach (var iccFile in iccFiles)
         {
             foreach (var intent in Intents)

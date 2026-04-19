@@ -11,8 +11,9 @@ public class KnownCam16Tests
     [Test] // matching values from https://github.com/colour-science/colour#34colour-appearance-models---colourappearance & https://github.com/colour-science/colour#3127cam16-lcd-cam16-scd-and-cam16-ucs-colourspaces---li-et-al-2017
     public void Red()
     {
-        var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952);
-        var camConfig = new CamConfiguration(new WhitePoint(95.05, 100.00, 108.88), 318.31, 20, Surround.Average);
+        var whitePoint = new WhitePoint(0.9505, 1.0000, 1.0888);
+        var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952, whitePoint);
+        var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
         var expectedModel = new Model(
             J: 33.880368498111686,
@@ -34,8 +35,9 @@ public class KnownCam16Tests
     [Test] // matching values from https://observablehq.com/@jrus/cam16
     public void Blue()
     {
-        var xyz = new Xyz(0.23446234045762356, 0.23897966766938545, 0.6049634765734733);
-        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), 40, 20, Surround.Average);
+        var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        var xyz = new Xyz(0.23446234045762356, 0.23897966766938545, 0.6049634765734733, whitePoint);
+        var camConfig = new CamConfiguration(whitePoint, 40, 20, Surround.Average);
         
         var expectedModel = new Model(
             J: 45.54426472036036,
@@ -63,11 +65,12 @@ public class KnownCam16Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
-        var (x, y, z) = camConfig.WhitePoint.AsXyzMatrix().ToTriplet();
-        var xyz = new Xyz(x, y, z);
-        var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
-        var cam16 = Cam16.FromXyz(xyz, camConfig, xyzConfig);
+        var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
+        var (x, y, z) = whitePoint;
+        var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
+        var xyz = new Xyz(x, y, z, whitePoint);
+        var cam16 = Cam16.FromXyz(xyz, camConfig, chromaticAdaptor);
         
         AssertModelDouble(cam16.Model.J, 100);
         AssertModelDouble(cam16.Ucs.J, 100);
@@ -85,8 +88,9 @@ public class KnownCam16Tests
         [Values(1, 5, 20, 50, 100)] double background,
         [Values(Surround.Dark, Surround.Dim, Surround.Average)] Surround surround)
     {
-        var camConfig = new CamConfiguration(Illuminant.D65.GetWhitePoint(Observer.Degree2), CamConfiguration.LuxToLuminance(lux), background, surround);
-        var xyz = new Xyz(0, 0, 0);
+        var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
+        var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
+        var xyz = new Xyz(0, 0, 0, whitePoint);
         var expectedModel = new Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Ucs(0, 0, 0);
         const string expectedHueComposition = "20B80R";
@@ -95,8 +99,8 @@ public class KnownCam16Tests
     
     private static void AssertCam16(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs, string expectedHueComposition)
     {
-        var xyzConfig = new XyzConfiguration(camConfig.WhitePoint);
-        var cam16 = Cam16.FromXyz(xyz, camConfig, xyzConfig);
+        var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
+        var cam16 = Cam16.FromXyz(xyz, camConfig, chromaticAdaptor);
         AssertModel(cam16.Model, expectedModel, expectedHueComposition);
         AssertUcs(cam16, expectedUcs);
     }

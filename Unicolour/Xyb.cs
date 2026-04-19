@@ -9,11 +9,12 @@ public record Xyb : ColourRepresentation
     public double Y => Second;
     public double B => Third;
     
-    internal override bool IsGreyscale => Y <= 0.0 || (X.Equals(0.0) && B.Equals(0.0));
-
-    public Xyb(double x, double y, double b) : this(x, y, b, ColourHeritage.None) {}
-    internal Xyb(double x, double y, double b, ColourHeritage heritage) : base(x, y, b, heritage) {}
+    protected override bool IsTripletAchromatic => X == 0.0 && B == 0.0;
     
+    public Xyb(double x, double y, double b) : this(x, y, b, Limitation.None) {}
+    public Xyb(double y) : this(0, y, 0, Limitation.Achromatic) {}
+    internal Xyb(double x, double y, double b, Limitation limitation) : base(x, y, b, limitation) {}
+
     protected override string String => $"{X:+0.000;-0.000;0.000} {Y:F3} {B:+0.000;-0.000;0.000}";
     public override string ToString() => base.ToString();
     
@@ -63,7 +64,7 @@ public record Xyb : ColourRepresentation
         var xybMatrix = LmsToXybMatrix.Multiply(lmsGammaMatrix);
         var (x, y, b) = xybMatrix.ToTriplet();
         b -= y;
-        return new Xyb(x, y, b, ColourHeritage.From(rgb));
+        return new Xyb(x, y, b, rgb.Limitation);
     }
     
     internal static RgbLinear ToRgbLinear(Xyb xyb)
@@ -75,6 +76,6 @@ public record Xyb : ColourRepresentation
         var lmsMixMatrix = lmsGammaMatrix.Select(gamma => Math.Pow(gamma + CubeRootBias, 3));
         var rgbMatrix = RgbToLmsMatrix.Inverse().Multiply(lmsMixMatrix.Select(mix => mix - Bias));
         var (red, green, blue) = rgbMatrix.ToTriplet();
-        return new RgbLinear(red, green, blue, ColourHeritage.From(xyb));
+        return new RgbLinear(red, green, blue, xyb.Limitation);
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -8,15 +9,18 @@ public class RoundtripCam02Tests
     private const double Tolerance = 0.00005;
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     private static readonly CamConfiguration CamConfig = CamConfiguration.StandardRgb;
+    
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Cam02, 1500);
 
-    [TestCaseSource(typeof(RandomColours), nameof(RandomColours.Cam02Triplets))]
+    [TestCaseSource(nameof(Triplets))]
     public void ViaXyz(ColourTriplet triplet)
     {
-        // CAM <-> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Cam02(triplet.First, triplet.Second, triplet.Third, CamConfig);
-        var xyz = Cam02.ToXyz(original, CamConfig, XyzConfig);
-        var roundtrip = Cam02.FromXyz(xyz, CamConfig, XyzConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.IsNaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
+        var xyz = Cam02.ToXyz(original, CamConfig, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Cam02.FromXyz(xyz, CamConfig, XyzConfig.ChromaticAdaptor);
+        
+        // CAM <-> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
+        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
     }
     
     // when NaNs occur during CAM <-> XYZ conversion

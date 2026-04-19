@@ -21,10 +21,10 @@ internal static class Blending
         var config = source.Configuration;
         backdrop = backdrop.ConvertToConfiguration(config);
 
-        var cs = source.Rgb.ConstrainedTriplet;
-        var cb = backdrop.Rgb.ConstrainedTriplet;
-        var @as = source.Alpha.ConstrainedA;
-        var ab = backdrop.Alpha.ConstrainedA;
+        var cs = source.Rgb.Clipped.Triplet;
+        var cb = backdrop.Rgb.Clipped.Triplet;
+        var @as = source.Alpha.Clipped.A;
+        var ab = backdrop.Alpha.Clipped.A;
 
         var blend = BlendColour(cb.ToArray(), cs.ToArray(), blendMode, config.Ybr);
         var co = CompositeAlpha(cb, ab, cs, @as, blend);

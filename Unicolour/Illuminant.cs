@@ -20,7 +20,7 @@ public class Illuminant
      * ⚠️ NOTE: some other colour libraries have chosen the four-digit chromaticity values to represent white points, i.e. D65 = 0.3127, 0.3290
      * since no one can agree on white points (see also https://ninedegreesbelow.com/photography/well-behaved-profiles-quest.html#white-point-values)
      * so if there was a desire to align even more closely with other libraries, instead of ASTM standards
-     * would need to be make these non-static and configurable: { (D65, Observer.Degree2), new Chromaticity(0.3127, 0.3290).ToWhitePoint() }
+     * would need to be make these non-static and configurable: { (D65, Observer.Degree2), new WhitePoint(0.3127, 0.3290) }
      * ----------
      * more likely: users can just create custom XYZ and RGB configs using desired chromaticity-based white point
      * might want to consider allowing configuration of D65 illuminant used by other spaces (e.g. Ictcp, Jzazbz, Oklab, Hct)
@@ -29,27 +29,27 @@ public class Illuminant
      */
     private static readonly Dictionary<(Illuminant, Observer), WhitePoint> WhitePoints = new()
     {
-        { (A, Observer.Degree2), new(109.850, 100.000, 35.585) },
-        { (C, Observer.Degree2), new(98.074, 100.000, 118.232) },
-        { (D50, Observer.Degree2), new(96.422, 100.000, 82.521) },
-        { (D55, Observer.Degree2), new(95.682, 100.000, 92.149) },
-        { (D65, Observer.Degree2), new(95.047, 100.000, 108.883) },
-        { (D75, Observer.Degree2), new(94.972, 100.000, 122.638) },
-        { (E, Observer.Degree2), new(100.000, 100.000, 100.000) },
-        { (F2, Observer.Degree2), new(99.186, 100.000, 67.393) },
-        { (F7, Observer.Degree2), new(95.041, 100.000, 108.747) },
-        { (F11, Observer.Degree2), new(100.962, 100.000, 64.350) },
+        { (A, Observer.Degree2), WhitePoint.FromAstm(109.850, 100.000, 35.585) },
+        { (C, Observer.Degree2), WhitePoint.FromAstm(98.074, 100.000, 118.232) },
+        { (D50, Observer.Degree2), WhitePoint.FromAstm(96.422, 100.000, 82.521) },
+        { (D55, Observer.Degree2), WhitePoint.FromAstm(95.682, 100.000, 92.149) },
+        { (D65, Observer.Degree2), WhitePoint.FromAstm(95.047, 100.000, 108.883) },
+        { (D75, Observer.Degree2), WhitePoint.FromAstm(94.972, 100.000, 122.638) },
+        { (E, Observer.Degree2), WhitePoint.FromAstm(100.000, 100.000, 100.000) },
+        { (F2, Observer.Degree2), WhitePoint.FromAstm(99.186, 100.000, 67.393) },
+        { (F7, Observer.Degree2), WhitePoint.FromAstm(95.041, 100.000, 108.747) },
+        { (F11, Observer.Degree2), WhitePoint.FromAstm(100.962, 100.000, 64.350) },
         
-        { (A, Observer.Degree10), new(111.144, 100.000, 35.200) },
-        { (C, Observer.Degree10), new(97.285, 100.000, 116.145) },
-        { (D50, Observer.Degree10), new(96.720, 100.000, 81.427) },
-        { (D55, Observer.Degree10), new(95.799, 100.000, 90.926) },
-        { (D65, Observer.Degree10), new(94.811, 100.000, 107.304) },
-        { (D75, Observer.Degree10), new(94.416, 100.000, 120.641) },
-        { (E, Observer.Degree10), new(100.000, 100.000, 100.000) },
-        { (F2, Observer.Degree10), new(103.279, 100.000, 69.027) },
-        { (F7, Observer.Degree10), new(95.792, 100.000, 107.686) },
-        { (F11, Observer.Degree10), new(103.863, 100.000, 65.607) }
+        { (A, Observer.Degree10), WhitePoint.FromAstm(111.144, 100.000, 35.200) },
+        { (C, Observer.Degree10), WhitePoint.FromAstm(97.285, 100.000, 116.145) },
+        { (D50, Observer.Degree10), WhitePoint.FromAstm(96.720, 100.000, 81.427) },
+        { (D55, Observer.Degree10), WhitePoint.FromAstm(95.799, 100.000, 90.926) },
+        { (D65, Observer.Degree10), WhitePoint.FromAstm(94.811, 100.000, 107.304) },
+        { (D75, Observer.Degree10), WhitePoint.FromAstm(94.416, 100.000, 120.641) },
+        { (E, Observer.Degree10), WhitePoint.FromAstm(100.000, 100.000, 100.000) },
+        { (F2, Observer.Degree10), WhitePoint.FromAstm(103.279, 100.000, 69.027) },
+        { (F7, Observer.Degree10), WhitePoint.FromAstm(95.792, 100.000, 107.686) },
+        { (F11, Observer.Degree10), WhitePoint.FromAstm(103.863, 100.000, 65.607) }
     };
     
     public string Name { get; }
@@ -82,8 +82,8 @@ public class Illuminant
         }
         
         // if either illuminant or observer is not predefined, white point needs to be calculated
-        var xyz = Xyz.FromSpd(Spd!, observer);
-        return WhitePoint.FromXyz(xyz);
+        var (x, y, z) = Xyz.FromSpd(Spd!, observer);
+        return new WhitePoint(x, y, z);
     }
     
     public override string ToString() => Name;

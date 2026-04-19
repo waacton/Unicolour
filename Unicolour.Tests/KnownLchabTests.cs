@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -12,7 +13,7 @@ public class KnownLchabTests
     public void Red(string illuminantName, double l, double c, double h)
     {
         var red = StandardRgb.Red.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchab>(red, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(red, new Lchab(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 87.7347, 119.7759, 136.0160)]
@@ -20,7 +21,7 @@ public class KnownLchabTests
     public void Green(string illuminantName, double l, double c, double h)
     {
         var green = StandardRgb.Green.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchab>(green, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(green, new Lchab(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 32.2970, 133.8076, 306.2849)]
@@ -28,7 +29,7 @@ public class KnownLchabTests
     public void Blue(string illuminantName, double l, double c, double h)
     {
         var blue = StandardRgb.Blue.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchab>(blue, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(blue, new Lchab(l, c, h), Tolerance);
     }
     
     [TestCase(nameof(Illuminant.D65), 0.0, 0.0, 0.0)]
@@ -36,14 +37,21 @@ public class KnownLchabTests
     public void Black(string illuminantName, double l, double c, double h)
     {
         var black = StandardRgb.Black.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchab>(black, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(black, new Lchab(l, c, h), Tolerance);
     }
     
-    [TestCase(nameof(Illuminant.D65), 100.0000, 0.0, 270.0)]
+    [TestCase(nameof(Illuminant.D65), 100.0000, 0.0, 0.0)]
     [TestCase(nameof(Illuminant.D50), 100.0000, 0.0, 0.0)]
     public void White(string illuminantName, double l, double c, double h)
     {
         var white = StandardRgb.White.ConvertToConfiguration(ConfigUtils.GetConfigWithStandardRgb(illuminantName));
-        TestUtils.AssertTriplet<Lchab>(white, new(l, c, h), Tolerance);
+        TestUtils.AssertColour(white, new Lchab(l, c, h), Tolerance);
+    }
+    
+    [Test]
+    public void Achromatic()
+    {
+        var grey = StandardRgb.Grey;
+        Assert.That(grey.Lchab.ToString().Contains(NoHue));
     }
 }

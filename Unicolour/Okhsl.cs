@@ -8,18 +8,15 @@ public record Okhsl : ColourRepresentation
     public double H => First;
     public double S => Second;
     public double L => Third;
-    public double ConstrainedH => ConstrainedFirst;
-    public double ConstrainedS => ConstrainedSecond;
-    public double ConstrainedL => ConstrainedThird;
-    protected override double ConstrainedFirst => H.Modulo(360.0);
-    protected override double ConstrainedSecond => S.Clamp(0.0, 1.0);
-    protected override double ConstrainedThird => L.Clamp(0.0, 1.0);
-    internal override bool IsGreyscale => S <= 0.0 || L is <= 0.0 or >= 1.0;
     
-    public Okhsl(double h, double s, double l) : this(h, s, l, ColourHeritage.None) {}
-    internal Okhsl(double h, double s, double l, ColourHeritage heritage) : base(h, s, l, heritage) {}
+    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
+    protected override bool IsTripletAchromatic => false;
     
-    protected override string String => UseAsHued ? $"{H:F1}° {S * 100:F1}% {L * 100:F1}%" : $"—° {S * 100:F1}% {L * 100:F1}%";
+    public Okhsl(double h, double s, double l) : this(h, s, l, Limitation.None) {}
+    public Okhsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
+    internal Okhsl(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
+
+    protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";
     public override string ToString() => base.ToString();
     
     /*
@@ -32,30 +29,31 @@ public record Okhsl : ColourRepresentation
      * (using other RGB configs may lead to unexpected results, though it may be desirable to explore non-sRGB behaviour)
      */
     
-    internal static Okhsl FromOklab(Oklab oklab, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Okhsl FromOklab(Oklab oklab, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
         var (l, a, b) = oklab;
-        var (_, c, h) = ToLchTriplet(oklab.L, oklab.A, oklab.B);
+        
+        if (a == 0.0 && b == 0.0)
+        {
+            // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
+            // which is when Oklab has no chroma information, so fall back to 0 saturation
+            // and set V to match Lr of OKLrCH from https://bottosson.github.io/misc/colorpicker/ (see also "a new lightness estimate" https://bottosson.github.io/posts/colorpicker/#summary)
+            // which appears to be just Toe(l) (https://github.com/bottosson/bottosson.github.io/blob/f6f08b7fde9436be1f20f66cebbc739d660898fd/misc/colorpicker/main.js#L134)
+            return new Okhsl(0, 0, Okhsv.Toe(l), oklab.Limitation);
+        }
+        
+        var (_, c, h) = ToLchTriplet(oklab.Triplet);
         var aPrime = a / c;
         var bPrime = b / c;
         
         var lightness = Okhsv.Toe(l);
-        var (c0, cMid, cMax) = GetCs(l, aPrime, bPrime, xyzConfig, rgbConfig);
+        var (c0, cMid, cMax) = GetCs(l, aPrime, bPrime, chromaticAdaptor, rgbConfig);
         
         const double mid = 0.8;
         const double midInv = 1.25;
         
         double s;
-        if (oklab.IsGreyscale)
-        {
-            // minor deviation from original algorithm, which doesn't provide guidance on handling edge cases that result in NaN
-            // which is when L <= 0 || L >= 1 || C == 0, i.e. greyscale 
-            // when greyscale assume no S, since greyscale has no saturation
-            // and want lightness to match Lr of OKLrCH from https://bottosson.github.io/misc/colorpicker/ (see also "a new lightness estimate" https://bottosson.github.io/posts/colorpicker/#summary)
-            // (which it always does)
-            s = 0.0;
-        }
-        else if (c < cMid)
+        if (c < cMid)
         {
             var k1 = mid * c0;
             var k2 = 1 - k1 / cMid;
@@ -73,63 +71,56 @@ public record Okhsl : ColourRepresentation
             s = mid + (1 - mid) * t;
         }
         
-        return new Okhsl(h.Modulo(360.0), s, lightness, ColourHeritage.From(oklab));
+        return new Okhsl(h, s, lightness, oklab.Limitation);
     }
 
-    internal static Oklab ToOklab(Okhsl okhsl, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    internal static Oklab ToOklab(Okhsl okhsl, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
-        var (h, s, lightness) = okhsl;
-        double l, a, b;
-        if (lightness >= 1.0)
+        var (h, s, lightness) = okhsl.WithHueModulo();
+        
+        if (lightness is 0.0 or 1.0)
         {
-            (l, a, b) = (1, 0, 0);
+            return new Oklab(lightness, 0, 0, okhsl.Limitation);
         }
-        else if (lightness <= 0.0)
+        
+        var l = Okhsv.ToeInverse(lightness);
+
+        var (_, aPrime, bPrime) = FromLchTriplet(new(double.NaN, 1, h));
+        var (c0, cMid, cMax) = GetCs(l, aPrime, bPrime, chromaticAdaptor, rgbConfig);
+        
+        const double mid = 0.8;
+        const double midInv = 1.25;
+
+        double c;
+        if (s < mid)
         {
-            (l, a, b) = (0, 0, 0);
+            var t = midInv * s;
+            
+            var k1 = mid * c0;
+            var k2 = 1 - k1 / cMid;
+            
+            c = t * k1 / (1 - k2 * t);
         }
         else
         {
-            var (_, aPrime, bPrime) = FromLchTriplet(new(double.NaN, 1, h));
-            l = Okhsv.ToeInverse(lightness);
+            var t = (s - mid) / (1 - mid);
             
-            var (c0, cMid, cMax) = GetCs(l, aPrime, bPrime, xyzConfig, rgbConfig);
+            var k0 = cMid;
+            var k1 = (1 - mid) * cMid * cMid * midInv * midInv / c0;
+            var k2 = 1 - k1 / (cMax - cMid);
             
-            const double mid = 0.8;
-            const double midInv = 1.25;
-            
-            double c, t, k0, k1, k2;
-            
-            if (s < mid)
-            {
-                t = midInv * s;
-                
-                k1 = mid * c0;
-                k2 = 1 - k1 / cMid;
-                
-                c = t * k1 / (1 - k2 * t);
-            }
-            else
-            {
-                t = (s - mid) / (1 - mid);
-                
-                k0 = cMid;
-                k1 = (1 - mid) * cMid * cMid * midInv * midInv / c0;
-                k2 = 1 - k1 / (cMax - cMid);
-                
-                c = k0 + t * k1 / (1 - k2 * t);
-            }
-            
-            a = c * aPrime;
-            b = c * bPrime;
+            c = k0 + t * k1 / (1 - k2 * t);
         }
         
-        return new Oklab(l, a, b, ColourHeritage.From(okhsl));
+        var a = c * aPrime;
+        var b = c * bPrime;
+        
+        return new Oklab(l, a, b, okhsl.Limitation);
     }
 
-    private static (double c0, double cMid, double cMax) GetCs(double l, double aPrime, double bPrime, XyzConfiguration xyzConfig, RgbConfiguration rgbConfig)
+    private static (double c0, double cMid, double cMax) GetCs(double l, double aPrime, double bPrime, ChromaticAdaptor chromaticAdaptor, RgbConfiguration rgbConfig)
     {
-        var cusp = Okhsv.FindCusp(aPrime, bPrime, xyzConfig, rgbConfig);
+        var cusp = Okhsv.FindCusp(aPrime, bPrime, chromaticAdaptor, rgbConfig);
         var cMax = FindGamutIntersection(aPrime, bPrime, l, 1, l, cusp);
         var (sMax, tMax) = (cusp.S, cusp.T);
         var k = cMax / Math.Min(l * sMax, (1 - l) * tMax);

@@ -79,7 +79,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
         var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not valid lut");
-        AssertNotValidTagSignature(iccConfig, profile.Header, source);
+        AssertNotValidTagSignature(iccConfig, profile.Header, source, "lutSignature");
     }
     
     [TestCase(Source.FromChannels)]
@@ -92,7 +92,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
         var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not valid curve");
-        AssertNotValidTagSignature(iccConfig, profile.Header, source);
+        AssertNotValidTagSignature(iccConfig, profile.Header, source, "curveSignature");
     }
     
     [TestCase(nameof(IccFile.Fogra39), new[] { 0.8, 0.6, 0.4, 0.2, 1.0 }, new[] { 0.8, 0.6, 0.4, 0.2 })]

@@ -5,14 +5,13 @@ namespace Wacton.Unicolour;
 public partial record Munsell
 {
     // note: "angle" in this method refers to polar coordinates of (x, y), not to the hue degrees
-    internal static Munsell ModifyHue(Munsell munsell, double targetAngle)
+    internal static double ModifyHue(double h, double v, double c, double targetAngle)
     {
-        var (_, v, c) = munsell;
         Adjustment start = null!;
-        Adjustment end = new(munsell, targetAngle, isTargetAngle: true);
+        Adjustment end = new(h, v, c, targetAngle, isTargetAngle: true);
         if (end.IsWhitePoint)
         {
-            return new Munsell(v);
+            return 0;
         }
         
         var hueStep = end.Unwrapped.target - end.Unwrapped.angle;
@@ -23,7 +22,7 @@ public partial record Munsell
         while (!converged && count < maxIterations)
         {
             start = end;
-            end = new(new(start.Munsell.H + hueStep, v, c), targetAngle, isTargetAngle: true);
+            end = new(start.H + hueStep, v, c, targetAngle, isTargetAngle: true);
             converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
             count++;
         }
@@ -32,19 +31,17 @@ public partial record Munsell
         var totalDistance = endAngle - startAngle; // extremely rare but end can be directly on target
         var distance = totalDistance == 0 ? 0 : (start.Unwrapped.target - start.Unwrapped.angle) / totalDistance;
         
-        var (startHue, endHue) = Hue.Unwrap(start.Munsell.H, end.Munsell.H);
-        var h = Interpolation.Linear(startHue, endHue, distance).Modulo(360);
-        return new Munsell(h, v, c);
+        var (startHue, endHue) = Hue.Unwrap(start.H, end.H);
+        return Interpolation.Linear(startHue, endHue, distance).WithHueModulo();
     }
     
-    internal static Munsell ModifyChroma(Munsell munsell, double targetRadius)
+    internal static double ModifyChroma(double h, double v, double c, double targetRadius)
     {
-        var (h, v, _) = munsell;
         Adjustment start = null!;
-        Adjustment end = new(munsell, targetRadius, isTargetAngle: false);
+        Adjustment end = new(h, v, c, targetRadius, isTargetAngle: false);
         if (end.IsWhitePoint)
         {
-            return new Munsell(v);
+            return 0;
         }
         
         var chromaFactor = end.Target / end.Radius;
@@ -55,20 +52,20 @@ public partial record Munsell
         while (!converged && count < maxIterations)
         {
             start = end;
-            end = new(new(h, v, start.Munsell.C * chromaFactor), targetRadius, isTargetAngle: false);
+            end = new(h, v, start.C * chromaFactor, targetRadius, isTargetAngle: false);
             converged = start.IsBelowTarget && end.IsAboveTarget || start.IsAboveTarget && end.IsBelowTarget;
             count++;
         }
         
         var totalDistance = end.Radius - start.Radius; // extremely rare but end can be directly on target
         var distance = totalDistance == 0 ? 0 : (start.Target - start.Radius) / totalDistance;
-        var c = Interpolation.Linear(start.Munsell.C, end.Munsell.C, distance);
-        return new Munsell(h, v, c);
+        return Interpolation.Linear(start.C, end.C, distance);
     }
     
     private record Adjustment
     {
-        internal Munsell Munsell { get; }
+        internal double H { get; }
+        internal double C { get; }
         internal double Angle { get; }
         internal double Radius { get; }
         internal bool IsWhitePoint => Radius == 0.0;
@@ -78,10 +75,12 @@ public partial record Munsell
         internal bool IsBelowTarget => IsTargetAngle ? Unwrapped.angle <= Unwrapped.target : Radius <= Target;
         internal bool IsAboveTarget => IsTargetAngle ? Unwrapped.angle >= Unwrapped.target : Radius >= Target;
         
-        internal Adjustment(Munsell munsell, double target, bool isTargetAngle)
+        internal Adjustment(double h, double v, double c, double target, bool isTargetAngle)
         {
-            Munsell = munsell;
-            (Radius, Angle) = Polar(WhiteChromaticity, ToXyy(munsell, XyzConfigC).Chromaticity);
+            H = h;
+            C = c;
+            var (chromaticity, _) = ToXyy(h, v, c, MunsellXyzConfig.ChromaticAdaptor);
+            (Radius, Angle) = Polar(MunsellWhitePoint.Chromaticity, chromaticity);
             Target = target;
             IsTargetAngle = isTargetAngle;
             Unwrapped = Hue.Unwrap(Angle, Target); 

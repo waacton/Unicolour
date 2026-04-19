@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
@@ -10,10 +10,11 @@
         <RootNamespace>Wacton.Unicolour.Example.Gradients</RootNamespace>
         <Authors>William Acton</Authors>
         <Product>Wacton.Unicolour.Example.Gradients</Product>
+        <LangVersion>default</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
     </ItemGroup>
 

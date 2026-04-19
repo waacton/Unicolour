@@ -7,6 +7,7 @@ Some colour datasets have been compiled for convenience in the [Unicolour.Datase
 
 Commonly used sets of colours:
 - [CSS specification](https://www.w3.org/TR/css-color-4/#named-colors) named colours
+- [ISCC-NBS](https://en.wikipedia.org/wiki/ISCC%E2%80%93NBS_system) colour centroids
 - [xkcd](https://xkcd.com/color/rgb/) colour survey results
 - [Macbeth ColorChecker](https://en.wikipedia.org/wiki/ColorChecker) colour rendition chart
 - [Nord](https://www.nordtheme.com/) theme colours
@@ -50,4 +51,6 @@ var palette = Colourmaps.Turbo.Palette(10);
 
 ---
 
-[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2025 William Acton.
+[Wacton.Unicolour](https://github.com/waacton/Unicolour) is licensed under the [MIT License](https://choosealicense.com/licenses/mit/), copyright © 2022-2026 William Acton.
+
+[![Not by AI](https://raw.githubusercontent.com/waacton/Unicolour/main/docs/not-by-ai.png)](https://notbyai.fyi/)

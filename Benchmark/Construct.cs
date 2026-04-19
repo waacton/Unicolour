@@ -12,7 +12,6 @@ using BenchmarkDotNet.Jobs;
 namespace Benchmark;
 
 [SimpleJob(RuntimeMoniker.Net472)]
-[SimpleJob(RuntimeMoniker.Net80)]
 [SimpleJob(RuntimeMoniker.Net10_0)]
 [Config(typeof(Config))]
 public class Construct

@@ -9,7 +9,7 @@ public record Lab : ColourRepresentation
     public double A => Second;
     public double B => Third;
     
-    protected override bool IsAchromatic => A == 0.0 && B == 0.0;
+    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
     
     public Lab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
     public Lab(double l) : this(l, 0, 0, Limitation.Achromatic) {}

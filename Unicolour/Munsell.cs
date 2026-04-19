@@ -11,7 +11,7 @@ public partial record Munsell : ColourRepresentation
     public double C => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) {}
     public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) {}

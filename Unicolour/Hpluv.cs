@@ -10,7 +10,7 @@ public record Hpluv : ColourRepresentation
     public double L => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Hpluv(double h, double s, double l) : this(h, s, l, Limitation.None) {}
     public Hpluv(double l) : this(0, 0, l, Limitation.Achromatic) {}

@@ -7,7 +7,7 @@ public record Ipt : ColourRepresentation
     public double P => Second;
     public double T => Third;
     
-    protected override bool IsAchromatic => P == 0.0 && T == 0.0;
+    protected override bool IsTripletAchromatic => P == 0.0 && T == 0.0;
     
     public Ipt(double i, double p, double t) : this(i, p, t, Limitation.None) {}
     public Ipt(double i) : this(i, 0, 0, Limitation.Achromatic) {}

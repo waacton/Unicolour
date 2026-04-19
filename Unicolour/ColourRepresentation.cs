@@ -11,8 +11,7 @@ public abstract record ColourRepresentation
     public ColourTriplet Triplet => new(First, Second, Third, HueIndex);
     public (double, double, double) Tuple => (First, Second, Third);
     
-    protected abstract bool IsAchromatic { get; }
-    internal bool IsNaN => Limitation == Limitation.NaN;
+    protected abstract bool IsTripletAchromatic { get; }
     
     /*
      * ℹ️
@@ -35,13 +34,16 @@ public abstract record ColourRepresentation
      * ----------     
      * 💡 greyscale != achromatic · achromatic limitation flags when chroma information has truly been lost, and cannot be recovered
      */
+    internal bool IsAchromatic => Limitation == Limitation.Achromatic;
+    internal bool IsNaN => Limitation == Limitation.NaN;
+    
     internal Limitation LimitationBaseline { get; }
     internal Limitation Limitation
     {
         get
         {
             if (LimitationBaseline == Limitation.NaN || Triplet.WithHueModulo().ToArray().Any(double.IsNaN)) return Limitation.NaN;
-            if (LimitationBaseline == Limitation.Achromatic || IsAchromatic) return Limitation.Achromatic;
+            if (LimitationBaseline == Limitation.Achromatic || IsTripletAchromatic) return Limitation.Achromatic;
             return Limitation.None;
         }
     }

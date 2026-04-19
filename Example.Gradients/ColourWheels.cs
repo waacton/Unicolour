@@ -9,7 +9,7 @@ public static class ColourWheels
 {
     private const int Segments = 12;
     private const int ArcDistance = 360 / Segments;
-    private const int ArcThickness = 64;
+    private const int ArcThickness = 48;
     private const int ImageSize = ArcThickness * 10;
     private const int ImageCentre = ImageSize / 2;
     private const int InnerRadius = ImageCentre / 2 - 16;

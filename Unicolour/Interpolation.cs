@@ -97,16 +97,13 @@ internal static class Interpolation
         var startTriplet = startRepresentation.Triplet.WithHueMap(mapToHue).WithHueModulo(allow360: true);
         var endTriplet = endRepresentation.Triplet.WithHueMap(mapToHue).WithHueModulo(allow360: true);
 
-        var startAchromatic = startRepresentation.Limitation == Limitation.Achromatic;
-        var endAchromatic = endRepresentation.Limitation == Limitation.Achromatic;
-
         double startHue, endHue;
-        if (startAchromatic ^ endAchromatic)
+        if (startRepresentation.IsAchromatic ^ endRepresentation.IsAchromatic)
         {
             // if only one colour is achromatic, use only the hue of the chromatic colour
             // e.g. black n/a° to green 120° should always stay at hue 120°
-            startHue = startAchromatic ? endTriplet.HueValue() : startTriplet.HueValue();
-            endHue = endAchromatic ? startTriplet.HueValue() : endTriplet.HueValue();
+            startHue = startRepresentation.IsAchromatic ? endTriplet.HueValue() : startTriplet.HueValue();
+            endHue = endRepresentation.IsAchromatic ? startTriplet.HueValue() : endTriplet.HueValue();
         }
         else
         {

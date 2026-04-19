@@ -10,7 +10,7 @@ public record Hsi : ColourRepresentation
     public double I => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Hsi(double h, double s, double i) : this(h, s, i, Limitation.None) {}
     public Hsi(double i) : this(0, 0, i, Limitation.Achromatic) {}

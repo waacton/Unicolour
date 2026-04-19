@@ -7,7 +7,7 @@ public record Xyy : ColourRepresentation
     public double Luminance => Third;
     
     internal WhitePoint WhitePoint { get; }
-    protected override bool IsAchromatic => Chromaticity == WhitePoint.Chromaticity;
+    protected override bool IsTripletAchromatic => Chromaticity == WhitePoint.Chromaticity;
 
     public Xyy(double x, double y, double luminance, WhitePoint whitePoint) : this(x, y, luminance, whitePoint, Limitation.None) {}
     public Xyy(double luminance, WhitePoint whitePoint) : this(whitePoint.Chromaticity.X, whitePoint.Chromaticity.Y, luminance, whitePoint, Limitation.Achromatic) {}

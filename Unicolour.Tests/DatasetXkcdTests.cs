@@ -1941,15 +1941,15 @@ public class DatasetXkcdTests
         Assert.That(colour!.Hex, Is.EqualTo(expected));
     }
 
-    private static readonly List<string> TransformedNames = Names.Select(AddWhitespaceAndUppercase).ToList();
-    private static string AddWhitespaceAndUppercase(string text)
+    private static readonly List<string> NamesWithSpaces = Names.Select(AddWhitespaceAndChangeCasing).ToList();
+    private static string AddWhitespaceAndChangeCasing(string text)
     {
         var multicase = string.Concat(text.Select((x, i) => i % 2 == 0 ? char.ToLower(x) : char.ToUpper(x)));
         return multicase.Insert(multicase.Length, "\n").Insert(multicase.Length - 1, " ").Insert(0, "\t").Insert(2, " ");
     }
     
     [Test]
-    public void NameWithWhitespaceAndCasing([ValueSource(nameof(TransformedNames))] string name)
+    public void NameWithWhitespaceAndCasing([ValueSource(nameof(NamesWithSpaces))] string name)
     {
         var colour = FromName(name);
         Assert.That(colour, Is.Not.Null);

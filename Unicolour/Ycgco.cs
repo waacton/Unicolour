@@ -7,7 +7,7 @@ public record Ycgco : ColourRepresentation
     public double Cg => Second;
     public double Co => Third;
     
-    protected override bool IsAchromatic => Cg == 0.0 && Co == 0.0;
+    protected override bool IsTripletAchromatic => Cg == 0.0 && Co == 0.0;
     
     public Ycgco(double y, double cg, double co) : this(y, cg, co, Limitation.None) {}
     public Ycgco(double y) : this(y, 0, 0, Limitation.Achromatic) {}

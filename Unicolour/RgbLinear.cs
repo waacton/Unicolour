@@ -7,7 +7,7 @@ public record RgbLinear : ColourRepresentation
     public double G => Second;
     public double B => Third;
     
-    protected override bool IsAchromatic => R == G && G == B;
+    protected override bool IsTripletAchromatic => R == G && G == B;
     
     public RgbLinear(double r, double g, double b) : this(r, g, b, Limitation.None) {}
     public RgbLinear(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}

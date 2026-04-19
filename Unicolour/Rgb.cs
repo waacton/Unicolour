@@ -7,7 +7,7 @@ public record Rgb : ColourRepresentation
     public double G => Second;
     public double B => Third;
     
-    protected override bool IsAchromatic => R == G && G == B;
+    protected override bool IsTripletAchromatic => R == G && G == B;
     
     public Rgb Clipped => new(R.Clamp(0.0, 1.0), G.Clamp(0.0, 1.0), B.Clamp(0.0, 1.0), Limitation);
     

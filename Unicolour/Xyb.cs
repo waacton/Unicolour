@@ -9,7 +9,7 @@ public record Xyb : ColourRepresentation
     public double Y => Second;
     public double B => Third;
     
-    protected override bool IsAchromatic => X == 0.0 && B == 0.0;
+    protected override bool IsTripletAchromatic => X == 0.0 && B == 0.0;
     
     public Xyb(double x, double y, double b) : this(x, y, b, Limitation.None) {}
     public Xyb(double y) : this(0, y, 0, Limitation.Achromatic) {}

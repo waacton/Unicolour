@@ -829,7 +829,7 @@ using Wacton.Unicolour.Experimental;
 ### Generate colour harmonies
 Traditionally, harmonious colour combinations are based on their relationship within a colour wheel.
 A colour wheel can be generated using [pigments](https://github.com/waacton/Unicolour#model-pigment-and-paint-colours) or a hued colour space.
-```c#
+```cs
 /* populate pigment k and s with measurement data */
 var quinaRed = new Pigment(380, 1, k: [], s: []);
 var bismuthYellow = new Pigment(380, 1, k: [], s: []);
@@ -858,7 +858,7 @@ var orangePalette = colourWheel.Harmony(hue: 60, Harmony.Analogous);
 | Analogous                                     | `Harmony.Analogous`          |
 | Complementary                                 | `Harmony.Complementary`      |
 | Split-complementary                           | `Harmony.SplitComplementary` |
-| Triadic&nbsp                                  | `Harmony.Triadic`            |
+| Triadic                                       | `Harmony.Triadic`            |
 | Tetradic&nbsp;(rectangle)                     | `Harmony.TetradicRectangle`  |
 | Tetradic&nbsp;(square)                        | `Harmony.TetradicSquare`     |
 

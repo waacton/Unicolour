@@ -8,7 +8,7 @@ public record Xyz : ColourRepresentation
     public double Z => Third;
 
     internal WhitePoint WhitePoint { get; }
-    protected override bool IsAchromatic
+    protected override bool IsTripletAchromatic
     {
         get
         {

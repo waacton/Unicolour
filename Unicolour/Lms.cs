@@ -7,7 +7,7 @@ public record Lms : ColourRepresentation
     public double M => Second;
     public double S => Third;
     
-    protected override bool IsAchromatic => L == M && M == S;
+    protected override bool IsTripletAchromatic => L == M && M == S;
     
     public Lms(double l, double m, double s) : this(l, m, s, Limitation.None) {}
     public Lms(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}

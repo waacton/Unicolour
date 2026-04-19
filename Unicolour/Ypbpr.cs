@@ -7,7 +7,7 @@ public record Ypbpr : ColourRepresentation
     public double Pb => Second;
     public double Pr => Third;
     
-    protected override bool IsAchromatic => Pb == 0.0 && Pr == 0.0;
+    protected override bool IsTripletAchromatic => Pb == 0.0 && Pr == 0.0;
     
     public Ypbpr(double y, double pb, double pr) : this(y, pb, pr, Limitation.None) {}
     public Ypbpr(double y) : this(y, 0, 0, Limitation.Achromatic) {}

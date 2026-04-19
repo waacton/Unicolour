@@ -10,7 +10,7 @@ public record Hct : ColourRepresentation
     public double T => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Hct(double h, double c, double t) : this(h, c, t, Limitation.None) {}
     public Hct(double t) : this(0, 0, t, Limitation.Achromatic) {}

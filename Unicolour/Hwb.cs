@@ -10,7 +10,7 @@ public record Hwb : ColourRepresentation
     public double B => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Hwb(double h, double w, double b) : this(h, w, b, Limitation.None) {}
     public Hwb(double w) : this(0, w, 1 - w, Limitation.Achromatic) {}

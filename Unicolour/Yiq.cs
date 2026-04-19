@@ -9,7 +9,7 @@ public record Yiq : ColourRepresentation
     public double I => Second;
     public double Q => Third;
     
-    protected override bool IsAchromatic => I == 0.0 && Q == 0.0;
+    protected override bool IsTripletAchromatic => I == 0.0 && Q == 0.0;
     
     public Yiq(double y, double i, double q) : this(y, i, q, Limitation.None) {}
     public Yiq(double y) : this(y, 0, 0, Limitation.Achromatic) {}

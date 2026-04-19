@@ -12,7 +12,7 @@ public record Cam02 : ColourRepresentation
     public Ucs Ucs { get; }
     public Model Model { get; }
     
-    protected override bool IsAchromatic => Model.Chroma <= 0;
+    protected override bool IsTripletAchromatic => Model.Chroma <= 0;
     
     public Cam02(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, Limitation.None) {}
     public Cam02(double j, CamConfiguration camConfig) : this(new Ucs(j, 0, 0), camConfig, Limitation.Achromatic) {}

@@ -9,7 +9,7 @@ public record Luv : ColourRepresentation
     public double U => Second;
     public double V => Third;
     
-    protected override bool IsAchromatic => U == 0.0 && V == 0.0;
+    protected override bool IsTripletAchromatic => U == 0.0 && V == 0.0;
     
     public Luv(double l, double u, double v) : this(l, u, v, Limitation.None) {}
     public Luv(double l) : this(l, 0, 0, Limitation.Achromatic) {}

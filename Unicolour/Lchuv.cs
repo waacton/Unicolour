@@ -10,7 +10,7 @@ public record Lchuv : ColourRepresentation
     public double H => Third;
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsAchromatic => false;
+    protected override bool IsTripletAchromatic => false;
     
     public Lchuv(double l, double c, double h) : this(l, c, h, Limitation.None) {}
     public Lchuv(double l) : this(l, 0, 0, Limitation.Achromatic) {}

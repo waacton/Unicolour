@@ -64,7 +64,7 @@ internal record ColourDescription(string description)
         
          // could be argued that HSL (180, 0, 0.5) should actually say "faint cyan" or "colourless cyan" instead of "grey"
          // but "grey" is compatible with existing behaviour, and is what most users would expect when seeing a colour that APPEARS achromatic
-        if (hsl.Limitation == Limitation.Achromatic || s <= 0) return [lightness, Grey];
+        if (hsl.IsAchromatic || s <= 0) return [lightness, Grey];
 
         var strength = s switch
         {

@@ -7,7 +7,7 @@ public record Ictcp : ColourRepresentation
     public double Ct => Second;
     public double Cp => Third;
     
-    protected override bool IsAchromatic => Ct == 0.0 && Cp == 0.0;
+    protected override bool IsTripletAchromatic => Ct == 0.0 && Cp == 0.0;
     
     public Ictcp(double i, double ct, double cp) : this(i, ct, cp, Limitation.None) {}
     public Ictcp(double i) : this(i, 0, 0, Limitation.Achromatic) {}

@@ -7,7 +7,7 @@ public record Jzazbz : ColourRepresentation
     public double A => Second;
     public double B => Third;
     
-    protected override bool IsAchromatic => A == 0.0 && B == 0.0;
+    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
     
     public Jzazbz(double j, double a, double b) : this(j, a, b, Limitation.None) {}
     public Jzazbz(double j) : this(j, 0, 0, Limitation.Achromatic) {}

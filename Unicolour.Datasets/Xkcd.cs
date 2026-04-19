@@ -983,30 +983,7 @@ public static class Xkcd
         Yellow, Yellow_Green, YellowBrown, Yellowgreen, YellowGreen, Yellowish, YellowishBrown, YellowishGreen, YellowishOrange, YellowishTan, YellowOchre, YellowOrange, YellowTan, YellowyBrown, YellowyGreen
     ];
 
-    public static Unicolour? FromName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name)) return null;
-        
-        // first try to use the name as though it is the exact text used in the spec
-        var lowercase = name.ToLower();
-        Lookup.TryGetValue(lowercase, out var value);
-        if (value != null)
-        {
-            return value;
-        }
-
-        // if that doesn't match, sanitise both name and keys to find potential matches
-        // by removing all whitespace (including line separators) and any punctuation that appears in the keys
-        var sanitisedName = Sanitise(lowercase);
-        var potentialKeys = Lookup.Keys.Where(x => Sanitise(x) == sanitisedName).ToList();
-        return potentialKeys.Any() ? Lookup[potentialKeys.First()] : null;
-
-        string Sanitise(string text)
-        {
-            var noWhitespace = string.Concat(text.Where(x => !char.IsWhiteSpace(x)));
-            return noWhitespace.Replace("/", string.Empty).Replace("'", string.Empty);
-        }
-    }
+    public static Unicolour? FromName(string name) => Utils.FromName(name, Lookup);
     
     private static readonly Dictionary<string, Unicolour> Lookup = new()
     {

@@ -7,7 +7,7 @@ public record Rgb255 : ColourRepresentation
     public int G => (int)Second;
     public int B => (int)Third;
     
-    protected override bool IsAchromatic => R == G && G == B;
+    protected override bool IsTripletAchromatic => R == G && G == B;
     
     public Rgb255 Clipped => new(R.Clamp(0, 255), G.Clamp(0, 255), B.Clamp(0, 255), Limitation);
     

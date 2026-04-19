@@ -7,7 +7,7 @@ public record Yuv : ColourRepresentation
     public double U => Second;
     public double V => Third;
     
-    protected override bool IsAchromatic => U == 0.0 && V == 0.0;
+    protected override bool IsTripletAchromatic => U == 0.0 && V == 0.0;
     
     public Yuv(double y, double u, double v) : this(y, u, v, Limitation.None) {}
     public Yuv(double y) : this(y, 0, 0, Limitation.Achromatic) {}

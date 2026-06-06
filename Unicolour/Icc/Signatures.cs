@@ -8,6 +8,7 @@ internal static class Signatures
     internal const string Clr7 = "7CLR";
     internal const string Rgb = "RGB ";
     internal const string Grey = "GRAY";
+    internal const string Ycbr = "YCbr";
     
     internal const string Lab = "Lab ";
     internal const string Xyz = "XYZ ";

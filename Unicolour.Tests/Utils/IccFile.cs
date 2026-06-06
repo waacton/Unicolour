@@ -26,6 +26,8 @@ public record IccFile(string Id, string Name)
     internal static readonly IccFile CxHue45Abstract = new(nameof(CxHue45Abstract), "CX_Hue+45_abst");         // v2 LAB -> LAB,  abst, lut16 [A2B only, no B2A]
     internal static readonly IccFile HackCxCmykKtrc = new(nameof(HackCxCmykKtrc), "Hack_(CX_CMYK_ktrc_only)"); // v2 GRAY -> LAB, prtr, TRC grey ℹ️ hacked variant of CxCmykProof ℹ️
     
+    internal static readonly IccFile DToBBToDAllIntents = new(nameof(DToBBToDAllIntents), "dtob-btod-all-intents"); // TODO
+    
     internal string Path => System.IO.Path.Combine(DataFolderName, $"{Name}.icc");
     
     private static readonly Dictionary<IccFile, Profile> ProfileCache = new();

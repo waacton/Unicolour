@@ -11,6 +11,73 @@ namespace Wacton.Unicolour.Tests;
 public class IccProfileTests
 {
     [Test]
+    public void DToBBToDAllIntents()
+    {
+        var iccFile = IccFile.DToBBToDAllIntents;
+        var profile = iccFile.GetProfile();
+        var header = profile.Header;
+        var tags = profile.Tags;
+        
+        Assert.That(profile.Length, Is.EqualTo(header.ProfileSize));
+        
+        Assert.That(header.ProfileSize, Is.EqualTo(2596));
+        Assert.That(header.PreferredCmmType, Is.EqualTo(Signatures.Null));
+        Assert.That(header.ProfileVersion, Is.EqualTo(new Version(5, 0, 0)));
+        Assert.That(header.ProfileClass, Is.EqualTo(Signatures.Display));
+        Assert.That(header.DataColourSpace, Is.EqualTo(Signatures.Rgb));
+        Assert.That(header.Pcs, Is.EqualTo(Signatures.Xyz));
+        Assert.That(header.DateTime, Is.EqualTo(new DateTime(2024, 01, 01, 00, 00, 00)));
+        Assert.That(header.ProfileFileSignature, Is.EqualTo(Signatures.Profile));
+        Assert.That(header.PrimaryPlatform, Is.EqualTo("APPL"));
+        Assert.That(header.ProfileFlags, Is.EqualTo([DataTypes.NotEmbedded, DataTypes.Independent]));
+        Assert.That(header.DeviceManufacturer, Is.EqualTo(Signatures.Null));
+        Assert.That(header.DeviceModel, Is.EqualTo(Signatures.Null));
+        Assert.That(header.DeviceAttributes, Is.EqualTo([DataTypes.Reflective, DataTypes.Glossy, DataTypes.Positive, DataTypes.Colour]));
+        Assert.That(header.Intent, Is.EqualTo(Intent.Perceptual));
+        Assert.That(header.PcsIlluminant, Is.EqualTo((0.96419, 1.00000, 0.82489)).Within(0.000005));
+        Assert.That(header.ProfileCreator, Is.EqualTo("test"));
+        Assert.That(header.ProfileId, Is.EqualTo(HexToBytes("00000000-00000000-00000000-00000000")));
+        
+        Assert.That(tags.Count, Is.EqualTo(17));
+        AssertTag(tags[0], "desc", 336, 72);
+        AssertTag(tags[1], "cprt", 408, 76);
+        AssertTag(tags[2], Signatures.MediaWhitePoint, 484, 20);
+        AssertTag(tags[3], Signatures.RedMatrixColumn, 504, 20);
+        AssertTag(tags[4], Signatures.GreenMatrixColumn, 524, 20);
+        AssertTag(tags[5], Signatures.BlueMatrixColumn, 544, 20);
+        AssertTag(tags[6], Signatures.RedTrc, 564, 16);
+        AssertTag(tags[7], Signatures.GreenTrc, 580, 16);
+        AssertTag(tags[8], Signatures.BlueTrc, 596, 16);
+        AssertTag(tags[9], Signatures.DToB0, 612, 248);
+        AssertTag(tags[10], Signatures.BToD0, 860, 248);
+        AssertTag(tags[11], Signatures.DToB1, 1108, 248);
+        AssertTag(tags[12], Signatures.BToD1, 1356, 248);
+        AssertTag(tags[13], Signatures.DToB2, 1604, 248);
+        AssertTag(tags[14], Signatures.BToD2, 1852, 248);
+        AssertTag(tags[15], Signatures.DToB3, 2100, 248);
+        AssertTag(tags[16], Signatures.BToD3, 2348, 248);
+
+        Assert.That(tags.AToB0.Value, Is.Null);
+        Assert.That(tags.AToB1.Value, Is.Null);
+        Assert.That(tags.AToB2.Value, Is.Null);
+        Assert.That(tags.BToA0.Value, Is.Null);
+        Assert.That(tags.BToA1.Value, Is.Null);
+        Assert.That(tags.BToA2.Value, Is.Null);
+
+        // TODO: test
+        var dtob = tags.DToB0.Value;
+        
+        Assert.That(tags.RedMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.41240, 0.21259, 0.01929)).Within(0.000005));
+        Assert.That(tags.GreenMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.35759, 0.71519, 0.11919)).Within(0.000005));
+        Assert.That(tags.BlueMatrixColumn.Value!.ToTuple(), Is.EqualTo((0.18050, 0.07219, 0.95049)).Within(0.000005));
+        Assert.That(tags.RedTrc.Value!.ToString(), Is.EqualTo("Parametric curve: gamma 2.19921875"));
+        Assert.That(tags.GreenTrc.Value!.ToString(), Is.EqualTo("Parametric curve: gamma 2.19921875"));
+        Assert.That(tags.BlueTrc.Value!.ToString(), Is.EqualTo("Parametric curve: gamma 2.19921875"));
+        Assert.That(tags.GreyTrc.Value, Is.Null);
+        Assert.That(tags.MediaWhite.Value!.ToTuple(), Is.EqualTo((0.96419, 1.00000, 0.82489)).Within(0.000005));
+    }
+    
+    [Test]
     public void Fogra39()
     {
         var iccFile = IccFile.Fogra39;

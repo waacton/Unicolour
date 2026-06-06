@@ -111,6 +111,13 @@ internal static class DataTypes
     // {
     //     return new [] { tuple.x, tuple.y, tuple.z };
     // }
+
+    internal static (int offset, int size) ReadPositionNumber(this Stream stream)
+    {
+        var offset = stream.ReadUInt32();
+        var size = stream.ReadUInt32();
+        return ((int)offset, (int)size);
+    }
 }
 
 // the ICC specification distinguishes between "XyzNumber" and "XyzType"

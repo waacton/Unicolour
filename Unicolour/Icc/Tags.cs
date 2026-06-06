@@ -8,6 +8,9 @@ public class Tags : List<Tag>
     internal Lazy<Luts?> BToA0 { get; }
     internal Lazy<Luts?> BToA1 { get; }
     internal Lazy<Luts?> BToA2 { get; }
+    
+    // TODO:
+    internal Lazy<Mpe[]?> DToB0 { get; }
 
     internal Lazy<XyzType?> RedMatrixColumn { get; }
     internal Lazy<XyzType?> GreenMatrixColumn { get; }
@@ -49,6 +52,10 @@ public class Tags : List<Tag>
         BToA0 = new Lazy<Luts?>(() => Read(Signatures.BToA0, Luts.BToAFromStream));
         BToA1 = new Lazy<Luts?>(() => Read(Signatures.BToA1, Luts.BToAFromStream));
         BToA2 = new Lazy<Luts?>(() => Read(Signatures.BToA2, Luts.BToAFromStream));
+        
+        // TODO:
+        DToB0 = new Lazy<Mpe[]?>(() => Read(Signatures.DToB0, Mpet.DToBFromStream));
+        
         RedMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.RedMatrixColumn, DataTypes.ReadXyzType ));
         GreenMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.GreenMatrixColumn, DataTypes.ReadXyzType));
         BlueMatrixColumn = new Lazy<XyzType?>(() => Read(Signatures.BlueMatrixColumn, DataTypes.ReadXyzType));

@@ -36,8 +36,8 @@ internal class Luts
     internal static Luts BToAFromStream(Stream stream) => FromStream(stream, isDeviceToPcs: false);
     private static Luts FromStream(Stream stream, bool isDeviceToPcs)
     {
-        var lutSignature = stream.ReadSignature(); // bytes 0 - 3
-        stream.Seek(-4, SeekOrigin.Current);    // revert the stream, allowing LUT reading to be better encapsulated
+        var lutSignature = stream.ReadSignature();  // bytes 0 - 3
+        stream.Seek(-4, SeekOrigin.Current);        // revert the stream, allowing LUT reading to be better encapsulated
         return lutSignature switch
         {
             Signatures.MultiFunctionTable1Byte => ReadTables(stream, isDeviceToPcs, is8Bit: true),

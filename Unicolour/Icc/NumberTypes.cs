@@ -56,6 +56,14 @@ internal static class NumberTypes
         var fraction = (double)((bytes[2] << 8) | bytes[3]) / 65536.0;
         return integer + fraction;
     }
+
+    // same as Microsoft's BitConverter, except no endianness check needed as ReadUInt32() is always a known byte order
+    // https://github.com/microsoft/referencesource/blob/ec9fa9ae770d522a5b5f0607898044b7478574a3/mscorlib/system/bitconverter.cs#L321
+    internal static unsafe double ReadFloat(this Stream stream)
+    {
+        var val = (int)stream.ReadUInt32();
+        return *(float*)&val;
+    }
     
     internal static byte[] ReadBytes(this Stream stream, int count)
     {

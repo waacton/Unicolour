@@ -28,9 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-    </ItemGroup>
-
-    <ItemGroup>
       <None Update="Data\Cubehelix-custom">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
@@ -494,5 +491,11 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\ICC\dtob-btod-all-intents.icc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

@@ -8,7 +8,7 @@ internal abstract record Curve
     internal static Curve FromStream(Stream stream)
     {
         var curveSignature = stream.ReadSignature(); // bytes 0 - 3
-        stream.Seek(-4, SeekOrigin.Current);    // revert the stream, allowing curve reading to be better encapsulated
+        stream.Seek(-4, SeekOrigin.Current);         // revert the stream, allowing curve reading to be better encapsulated
         return curveSignature switch
         {
             Signatures.Curve => ReadCurve(stream),

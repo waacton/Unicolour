@@ -1,53 +1,61 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <AssemblyName>Wacton.Unicolour.Experimental</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Experimental</RootNamespace>
-        <LangVersion>default</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>2.0.0</Version>
-        <Authors>William Acton</Authors>
-        <Description>Experimental additions to 🌈 Wacton.Unicolour</Description>
-        <Copyright>William Acton</Copyright>
-        <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <PackageTags>unicolour colour color pigments pigment-mixing paints paint-mixing kubelka-munk colour-wheel color-wheel colour-harmony color-harmony reflectance pigment-generation reflectance-curves spectral.js</PackageTags>
-        <PackageReleaseNotes>Add colour wheel and colour harmonies</PackageReleaseNotes>
-        <PackageIcon>Resources\Unicolour.Experimental.png</PackageIcon>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <PackageReadmeFile>README_UnicolourExperimental_nuget.md</PackageReadmeFile>
-        <PackageOutputPath>..\nuget</PackageOutputPath>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Wacton.Unicolour.Experimental</AssemblyName>
+    <RootNamespace>Wacton.Unicolour.Experimental</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Update="Resources\Unicolour.Experimental.png">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>3.0.0</Version>
+    <Authors>William Acton</Authors>
+    <Description>Experimental additions to 🌈 Wacton.Unicolour</Description>
+    <Copyright>William Acton</Copyright>
+    <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
+    <PackageTags>unicolour colour color pigments pigment-mixing paints paint-mixing kubelka-munk colour-wheel color-wheel colour-harmony color-harmony reflectance pigment-generation reflectance-curves spectral.js</PackageTags>
+    <PackageReleaseNotes>Use strong naming</PackageReleaseNotes>
+    <PackageIcon>Resources\Unicolour.Experimental.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README_UnicolourExperimental_nuget.md</PackageReadmeFile>
+    <PackageOutputPath>..\nuget</PackageOutputPath>
+  </PropertyGroup>
 
-        <None Include="..\LICENSE">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../Unicolour.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 
-        <None Include="..\Unicolour.Readme\README_UnicolourExperimental_nuget.md">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+  <ItemGroup>
+    <None Update="Resources\Unicolour.Experimental.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
-    </ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
 
-    <!-- enables test module to access internal classes and methods -->
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>Wacton.Unicolour.Tests</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
+    <None Include="..\Unicolour.Readme\README_UnicolourExperimental_nuget.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+  </ItemGroup>
+
+  <!-- enables test module to access internal classes and methods; public key necessary due to strong naming -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Wacton.Unicolour.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001005129fa4dfc0c9714de1756a89d7e17cdf7921019029d9c0678cea0b36f4e7b71814f3003f85603ef60543a37eb04e82d0881a555be7e5774557151f2dc5f3a0dc859027e24bcb5793a7b27d14ba46062f45e4c905c61ac860d3605d25d3da1f243858e796c7abf867f087a9194f4da48633765594faea5f62d7867bff24875c6</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
 </Project>

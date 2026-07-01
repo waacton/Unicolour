@@ -1,78 +1,86 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <AssemblyName>Wacton.Unicolour</AssemblyName>
-        <RootNamespace>Wacton.Unicolour</RootNamespace>
-        <LangVersion>default</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>7.0.0</Version>
-        <Authors>William Acton</Authors>
-        <Description>🌈 Colour / Color conversion, interpolation, and comparison for .NET</Description>
-        <Copyright>William Acton</Copyright>
-        <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
-        <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB LMS IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb Oklrab Oklrch CAM02 CAM16 HCT munsell HVC ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing colour-blending color-blending color-palette colour-palette comparison colour-comparison color-comparison contrast luminance delta-e deltaE chromaticity colourimetry colorimetry display-p3 rec-2020 rec-2100 rec-2100-pq rec-2100-hlg rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM HDR chromatic-adaptation gamut-map gamut-mapping pointers-gamut macadam-limits temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia protanomaly deuteranopia deuteranomaly tritanopia tritanomaly blue-cone-monochromacy achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour pigments pigment-mixing paints paint-mixing kubelka-munk</PackageTags>
-        <PackageReleaseNotes>Improve chromatic preservation and add achromatic constructors</PackageReleaseNotes>
-        <PackageIcon>Resources\Unicolour.png</PackageIcon>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
-        <PackageReadmeFile>README_Unicolour_nuget.md</PackageReadmeFile>
-        <PackageOutputPath>..\nuget</PackageOutputPath>
-    </PropertyGroup>
-    
-    <ItemGroup>
-        <None Update="Resources\Unicolour.png">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Wacton.Unicolour</AssemblyName>
+    <RootNamespace>Wacton.Unicolour</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-        <None Include="..\LICENSE">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>8.0.0</Version>
+    <Authors>William Acton</Authors>
+    <Description>🌈 Colour / Color conversion, interpolation, and comparison for .NET</Description>
+    <Copyright>William Acton</Copyright>
+    <PackageProjectUrl>https://github.com/waacton/Unicolour</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/waacton/Unicolour</RepositoryUrl>
+    <PackageTags>colour color RGB HSB HSV HSL HWB HSI XYZ xyY WXY LAB LUV LCH LCHab LCHuv HSLuv HPLuv YPbPr YCbCr YCgCo YUV YIQ YDbDr TSL XYB LMS IPT ICtCp JzAzBz JzCzHz Oklab Oklch Okhsv Okhsl Okhwb Oklrab Oklrch CAM02 CAM16 HCT munsell HVC ICC icc-profile CMYK CMYKOGV converter colour-converter colour-conversion color-converter color-conversion colour-space colour-spaces color-space color-spaces interpolation colour-interpolation color-interpolation colour-mixing color-mixing colour-blending color-blending color-palette colour-palette comparison colour-comparison color-comparison contrast luminance delta-e deltaE chromaticity colourimetry colorimetry display-p3 rec-2020 rec-2100 rec-2100-pq rec-2100-hlg rec-601 rec-709 A98 ProPhoto ACES ACEScg ACEScct ACEScc xvYCC PAL NTSC SECAM HDR chromatic-adaptation gamut-map gamut-mapping pointers-gamut macadam-limits temperature cct duv cvd colour-vision-deficiency color-vision-deficiency colour-blindness color-blindness protanopia protanomaly deuteranopia deuteranomaly tritanopia tritanomaly blue-cone-monochromacy achromatopsia spd dominant-wavelength excitation-purity imaginary-color imaginary-colour pigments pigment-mixing paints paint-mixing kubelka-munk</PackageTags>
+    <PackageReleaseNotes>Use strong naming</PackageReleaseNotes>
+    <PackageIcon>Resources\Unicolour.png</PackageIcon>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReadmeFile>README_Unicolour_nuget.md</PackageReadmeFile>
+    <PackageOutputPath>..\nuget</PackageOutputPath>
+  </PropertyGroup>
 
-        <None Include="..\Unicolour.Readme\README_Unicolour_nuget.md">
-            <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
-        </None>
-    </ItemGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../Unicolour.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
 
-    <!-- enables test module to access internal classes and methods -->
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
-        </AssemblyAttribute>
+  <ItemGroup>
+    <None Update="Resources\Unicolour.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
 
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>$(AssemblyName).Datasets</_Parameter1>
-        </AssemblyAttribute>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
 
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-            <_Parameter1>$(AssemblyName).Experimental</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
+    <None Include="..\Unicolour.Readme\README_Unicolour_nuget.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="Unicolour.Constructors.cs">
-            <DependentUpon>Unicolour.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Unicolour.Lookups.cs">
-            <DependentUpon>Unicolour.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Unicolour.Unseen.cs">
-            <DependentUpon>Unicolour.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Munsell.Adjustment.cs">
-          <DependentUpon>Munsell.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Munsell.Bounds.cs">
-          <DependentUpon>Munsell.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Munsell.Node.cs">
-          <DependentUpon>Munsell.cs</DependentUpon>
-        </Compile>
-    </ItemGroup>
+  <!-- enables test module to access internal classes and methods; public key necessary due to strong naming -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Tests, PublicKey=00240000048000009400000006020000002400005253413100040000010001005129fa4dfc0c9714de1756a89d7e17cdf7921019029d9c0678cea0b36f4e7b71814f3003f85603ef60543a37eb04e82d0881a555be7e5774557151f2dc5f3a0dc859027e24bcb5793a7b27d14ba46062f45e4c905c61ac860d3605d25d3da1f243858e796c7abf867f087a9194f4da48633765594faea5f62d7867bff24875c6</_Parameter1>
+    </AssemblyAttribute>
+
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Datasets, PublicKey=00240000048000009400000006020000002400005253413100040000010001005129fa4dfc0c9714de1756a89d7e17cdf7921019029d9c0678cea0b36f4e7b71814f3003f85603ef60543a37eb04e82d0881a555be7e5774557151f2dc5f3a0dc859027e24bcb5793a7b27d14ba46062f45e4c905c61ac860d3605d25d3da1f243858e796c7abf867f087a9194f4da48633765594faea5f62d7867bff24875c6</_Parameter1>
+    </AssemblyAttribute>
+
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Experimental, PublicKey=00240000048000009400000006020000002400005253413100040000010001005129fa4dfc0c9714de1756a89d7e17cdf7921019029d9c0678cea0b36f4e7b71814f3003f85603ef60543a37eb04e82d0881a555be7e5774557151f2dc5f3a0dc859027e24bcb5793a7b27d14ba46062f45e4c905c61ac860d3605d25d3da1f243858e796c7abf867f087a9194f4da48633765594faea5f62d7867bff24875c6</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Unicolour.Constructors.cs">
+      <DependentUpon>Unicolour.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Unicolour.Lookups.cs">
+      <DependentUpon>Unicolour.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Unicolour.Unseen.cs">
+      <DependentUpon>Unicolour.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Munsell.Adjustment.cs">
+      <DependentUpon>Munsell.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Munsell.Bounds.cs">
+      <DependentUpon>Munsell.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Munsell.Node.cs">
+      <DependentUpon>Munsell.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
 </Project>

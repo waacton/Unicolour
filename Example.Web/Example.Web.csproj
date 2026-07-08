@@ -1,24 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <AssemblyName>Wacton.Unicolour.Example.Web</AssemblyName>
-        <RootNamespace>Wacton.Unicolour.Example.Web</RootNamespace>
-        <LangVersion>default</LangVersion>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Wacton.Unicolour.Example.Web</AssemblyName>
+    <RootNamespace>Wacton.Unicolour.Example.Web</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.201" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.DotNet.HotReload.WebAssembly.Browser" Version="10.0.201" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Unicolour.Datasets\Unicolour.Datasets.csproj" />
-      <ProjectReference Include="..\Unicolour.Experimental\Unicolour.Experimental.csproj" />
-      <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Unicolour.Datasets\Unicolour.Datasets.csproj" />
+    <ProjectReference Include="..\Unicolour.Experimental\Unicolour.Experimental.csproj" />
+    <ProjectReference Include="..\Unicolour\Unicolour.csproj" />
+  </ItemGroup>
 
 </Project>

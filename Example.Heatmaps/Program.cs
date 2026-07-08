@@ -62,7 +62,7 @@ void Generate(string filename)
     Image<Rgba32> GetHeatmap(Colourmap colourmap, string name)
     {
         var mappedColours = normalisedLuminances.Select(colourmap.Map);
-        var mappedPixels = mappedColours.Select(AsRgba32).ToArray();
+        var mappedPixels = mappedColours.Select(ToPixel).ToArray();
         var heatmap = Image.LoadPixelData(mappedPixels, originalImage.Width, originalImage.Height);
 
         var darkestColour = colourmap.Map(0);
@@ -83,14 +83,18 @@ void AddLabel(Image image, string text, Unicolour colour)
         Origin = new Vector2(image.Width / 2.0f, image.Height - fontSize)
     };
     
-    image.Mutate(context => context.DrawText(textOptions, text, AsColor(colour)));
+    
+    image.Mutate(context => context.Paint(canvas => canvas.DrawText(textOptions, text, ToBrush(colour), pen: null)));
 }
 
-Rgba32 AsRgba32(Unicolour colour)
+Rgba32 ToPixel(Unicolour colour)
 {
     var (r255, g255, b255) = colour.Rgb.Byte255;
     var a255 = colour.Alpha.A255;
-    return new((byte)r255, (byte)g255, (byte)b255, (byte)a255);
+    return new Rgba32((byte)r255, (byte)g255, (byte)b255, (byte)a255);
 }
 
-Color AsColor(Unicolour colour) => new(AsRgba32(colour));
+SolidBrush ToBrush(Unicolour colour)
+{
+    return new SolidBrush(Color.FromPixel(ToPixel(colour)));
+}

@@ -94,6 +94,8 @@ internal static class GamutMapping
     }
     
     /*
+     * TODO: this likely needs updating to DeltaE.OK2, need to review latest CSS spec
+     * 
      * adapted from https://www.w3.org/TR/css-color-4/#css-gamut-mapping & https://www.w3.org/TR/css-color-4/#binsearch
      * the pseudocode doesn't appear to handle the edge case scenario where:
      * a) origin colour OKLCH chroma < epsilon

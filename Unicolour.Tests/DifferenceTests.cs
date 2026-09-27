@@ -178,18 +178,34 @@ public class DifferenceTests
     }
     
     [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 1.000000)]
-    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.519797)]
-    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 0.673409)]
-    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 0.537117)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.519813)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 0.673372)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 0.537090)]
     [TestCase(nameof(StandardRgb.White), nameof(StandardRgb.Black), 1.000000)]
-    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.519797)]
-    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 0.673409)]
-    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.537117)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.519813)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 0.673372)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.537090)]
     public void Ok(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
         var sample = StandardRgb.Lookup[sampleName];
         var delta = reference.Difference(sample, DeltaE.Ok);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
+    }
+    
+    [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 1.000000)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.954043)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 1.139506)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 1.030046)]
+    [TestCase(nameof(StandardRgb.White), nameof(StandardRgb.Black), 1.000000)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.954043)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 1.139506)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 1.030046)]
+    public void Ok2(string referenceName, string sampleName, double expectedDelta)
+    {
+        var reference = StandardRgb.Lookup[referenceName];
+        var sample = StandardRgb.Lookup[sampleName];
+        var delta = reference.Difference(sample, DeltaE.Ok2);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -227,7 +243,7 @@ public class DifferenceTests
     
     [Test, Combinatorial]
     public void RandomSymmetric(
-        [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
+        [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Ok2, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
         [ValueSource(nameof(ReferenceSamplePairs))] (Unicolour reference, Unicolour sample) pair)
     {
         var reference = pair.reference;
@@ -254,6 +270,7 @@ public class DifferenceTests
     [TestCase(DeltaE.Z, ColourSpace.Jzczhz)]
     [TestCase(DeltaE.Hyab, ColourSpace.Lab)]
     [TestCase(DeltaE.Ok, ColourSpace.Oklab)]
+    [TestCase(DeltaE.Ok2, ColourSpace.Oklab)]
     [TestCase(DeltaE.Cam02, ColourSpace.Cam02)]
     [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)

@@ -39,6 +39,7 @@ internal static class Comparison
             DeltaE.Z => DeltaEz(reference, sample),
             DeltaE.Hyab => DeltaEHyab(reference, sample),
             DeltaE.Ok => DeltaEOk(reference, sample),
+            DeltaE.Ok2 => DeltaEOk2(reference, sample),
             DeltaE.Cam02 => DeltaECam02(reference, sample),
             DeltaE.Cam16 => DeltaECam16(reference, sample),
             _ => throw new ArgumentOutOfRangeException(nameof(deltaE), deltaE, null)
@@ -229,6 +230,16 @@ internal static class Comparison
         var (l1, a1, b1) = reference.Oklab;
         var (l2, a2, b2) = sample.Oklab;
         return Math.Sqrt(SquaredDiff(l1, l2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
+    }
+    
+    // https://www.w3.org/TR/css-color-4/#color-difference-OK2
+    private static double DeltaEOk2(Unicolour reference, Unicolour sample)
+    {
+        var (l1, a1, b1) = reference.Oklab;
+        var (l2, a2, b2) = sample.Oklab;
+        var aDelta = 2 * (a1 - a2);
+        var bDelta = 2 * (b1 - b2);
+        return Math.Sqrt(SquaredDiff(l1, l2) + Math.Pow(aDelta, 2) + Math.Pow(bDelta, 2));
     }
     
     // https://doi.org/10.1007/978-1-4419-6190-7_2

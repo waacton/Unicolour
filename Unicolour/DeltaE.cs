@@ -12,6 +12,7 @@ public enum DeltaE
     Z,
     Hyab,
     Ok,
+    Ok2,
     Cam02,
     Cam16
 }

@@ -24,9 +24,7 @@ public static class XyChromaticity
         spectralLocusScatter.LineWidth = 1;
         spectralLocusScatter.MarkerStyle = MarkerStyle.None;
     
-        var firstCoordinate = new Coordinates(spectralLocus.First().Chromaticity.X, spectralLocus.First().Chromaticity.Y);
-        var lastCoordinate = new Coordinates(spectralLocus.Last().Chromaticity.X, spectralLocus.Last().Chromaticity.Y);
-        var lineOfPurples = plot.Add.Line(firstCoordinate, lastCoordinate);
+        var lineOfPurples = plot.Add.Line(spectralCoordinates.Last(), spectralCoordinates.First());
         lineOfPurples.Color = new Color(255, 0, 255);
         lineOfPurples.LineWidth = 1;
         lineOfPurples.MarkerStyle = MarkerStyle.None;

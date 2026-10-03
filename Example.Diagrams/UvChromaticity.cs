@@ -24,9 +24,7 @@ public static class UvChromaticity
         spectralLocusScatter.LineWidth = 1;
         spectralLocusScatter.MarkerStyle = MarkerStyle.None;
     
-        var firstCoordinate = new Coordinates(spectralLocus.First().Chromaticity.U, spectralLocus.First().Chromaticity.V);
-        var lastCoordinate = new Coordinates(spectralLocus.Last().Chromaticity.U, spectralLocus.Last().Chromaticity.V);
-        var lineOfPurples = plot.Add.Line(firstCoordinate, lastCoordinate);
+        var lineOfPurples = plot.Add.Line(spectralCoordinates.Last(), spectralCoordinates.First());
         lineOfPurples.Color = new Color(255, 0, 255);
         lineOfPurples.LineWidth = 1;
         lineOfPurples.MarkerStyle = MarkerStyle.None;

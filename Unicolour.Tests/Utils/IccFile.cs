@@ -28,16 +28,17 @@ public record IccFile(string Id, string Name)
     
     internal string Path => System.IO.Path.Combine(DataFolderName, $"{Name}.icc");
     
-    private static readonly Dictionary<IccFile, Profile> ProfileCache = new();
-    internal Profile GetProfile()
+    private static readonly Dictionary<string, Profile> ProfileCache = new();
+    internal Profile GetProfile(string? name = null)
     {
-        if (ProfileCache.TryGetValue(this, out var cachedProfile))
+        var key = name ?? Path;
+        if (ProfileCache.TryGetValue(key, out var cachedProfile))
         {
             return cachedProfile;
         }
         
-        var profile = new Profile(Path);
-        ProfileCache[this] = profile;
+        var profile = new Profile(Path, name);
+        ProfileCache[key] = profile;
         return profile;
     }
 

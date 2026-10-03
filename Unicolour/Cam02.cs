@@ -19,14 +19,13 @@ public record Cam02 : ColourRepresentation
     
     internal Cam02(Model model, CamConfiguration camConfig, Limitation limitation) : this(model.ToUcs(), camConfig, limitation)
     {
-        Model = model;
+        Model = model; // overwrites the ucs.ToModel() in the general constructor with the actual model
     }
 
     internal Cam02(Ucs ucs, CamConfiguration camConfig, Limitation limitation) : base(ucs.J, ucs.A, ucs.B, limitation)
     {
-        // Model will only be non-null if the constructor that takes Model is called (currently not possible from external code)
         Ucs = ucs;
-        Model ??= ucs.ToModel(ViewingConditions(camConfig)); 
+        Model = ucs.ToModel(ViewingConditions(camConfig)); 
     }
 
     protected override string String => $"{J:F2} {A:+0.00;-0.00;0.00} {B:+0.00;-0.00;0.00}";

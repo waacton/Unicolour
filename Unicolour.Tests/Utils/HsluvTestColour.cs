@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace Wacton.Unicolour.Tests.Utils;
 
@@ -14,30 +13,27 @@ internal static class HsluvTestColour
     static HsluvTestColour()
     {
         var snapshotText = File.ReadAllText(Path.Combine("Data", "HSLuv-snapshot-rev4.json"));
-        var snapshotJson = JObject.Parse(snapshotText);
+        var snapshotJson = JsonDocument.Parse(snapshotText).RootElement;
         
-        foreach (var (hex, jsonData) in snapshotJson)
+        foreach (var colourElement in snapshotJson.EnumerateObject())
         {
-            if (jsonData == null) throw new Exception();
             All.Add(new TestColour
             {
-                Hex = hex,
-                Rgb = ParseJson(jsonData, "rgb"),
-                Xyz = ParseJson(jsonData, "xyz"),
-                Luv = ParseJson(jsonData, "luv"),
-                Lchuv = ParseJson(jsonData, "lch"),
-                Hsluv = ParseJson(jsonData, "hsluv"),
-                Hpluv = ParseJson(jsonData, "hpluv")
+                Hex = colourElement.Name,
+                Rgb = ParseTriplet(colourElement, "rgb"),
+                Xyz = ParseTriplet(colourElement, "xyz"),
+                Luv = ParseTriplet(colourElement, "luv"),
+                Lchuv = ParseTriplet(colourElement, "lch"),
+                Hsluv = ParseTriplet(colourElement, "hsluv"),
+                Hpluv = ParseTriplet(colourElement, "hpluv")
             });
         }
     }
     
-    private static ColourTriplet ParseJson(JToken jToken, string lookup)
+    private static ColourTriplet ParseTriplet(JsonProperty colourProperty, string colourSpaceText)
     {
-        var jArray = (jToken[lookup] as JArray)!;
-        var first = double.Parse(jArray[0].ToString());
-        var second = double.Parse(jArray[1].ToString());
-        var third = double.Parse(jArray[2].ToString());
-        return new ColourTriplet(first, second, third);
+        var colourSpaceElement = colourProperty.Value.GetProperty(colourSpaceText);
+        var array = JsonSerializer.Deserialize<double[]>(colourSpaceElement.GetRawText())!;
+        return new ColourTriplet(array[0], array[1], array[2]);
     }
 }

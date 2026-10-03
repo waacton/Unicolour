@@ -245,8 +245,9 @@ public class PigmentTests
         AssertReflectance(pigments, concentrations, expected: null, expectedXyzNaN: true);
     }
 
-    private static readonly Configuration ConfigWithIlluminantSpd = TestUtils.D50Config; // contains D50 SPD (as well as precalculated D65 white point)
-    private static readonly Configuration ConfigWithoutIlluminantSpd = new(xyzConfig: new(new WhitePoint(0.96422, 1.00000, 0.82521))); // D50 white point only
+    private static readonly Configuration ConfigWithIlluminantAndSpd = TestUtils.D50Config; // contains D50 SPD (as well as precalculated D65 white point)
+    private static readonly Configuration ConfigWithIlluminantNoSpd = new(xyzConfig: new(new Illuminant(new WhitePoint(0.96422, 1.00000, 0.82521)), Observer.Degree2)); // D50 white point only
+    private static readonly Configuration ConfigWithoutIlluminant = new(xyzConfig: new(new WhitePoint(0.96422, 1.00000, 0.82521))); // D50 white point only
     
     private static void AssertReflectance(Pigment[] pigments, double[] concentrations, double[]? expected, bool expectedXyzNaN)
     {
@@ -264,11 +265,15 @@ public class PigmentTests
             }
         }
         
-        var colourFromIlluminantSpd = new Unicolour(ConfigWithIlluminantSpd, pigments, concentrations); // will calculate XYZ using D50 SPD directly
-        var colourFromWhitePoint = new Unicolour(ConfigWithoutIlluminantSpd, pigments, concentrations); // will calculate XYZ using default D65 SPD, and then adapt white point
+        var colourFromIlluminantSpd = new Unicolour(ConfigWithIlluminantAndSpd, pigments, concentrations); // will calculate XYZ using D50 SPD directly
+        var colourFromIlluminantNoSpd = new Unicolour(ConfigWithIlluminantNoSpd, pigments, concentrations); // will calculate XYZ using default D65 SPD, and then adapt white point
+        var colourFromWhitePoint = new Unicolour(ConfigWithoutIlluminant, pigments, concentrations); // will calculate XYZ using default D65 SPD, and then adapt white point
         Assert.That(colourFromIlluminantSpd.Xyz.X, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromIlluminantSpd.Xyz.Y, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromIlluminantSpd.Xyz.Z, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
+        Assert.That(colourFromIlluminantNoSpd.Xyz.X, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
+        Assert.That(colourFromIlluminantNoSpd.Xyz.Y, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
+        Assert.That(colourFromIlluminantNoSpd.Xyz.Z, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromWhitePoint.Xyz.X, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromWhitePoint.Xyz.Y, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromWhitePoint.Xyz.Z, expectedXyzNaN ? Is.NaN : Is.Not.NaN);

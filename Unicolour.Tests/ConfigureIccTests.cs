@@ -60,9 +60,13 @@ public class ConfigureIccTests
         var profile = iccFile.GetProfile();
         var fromProfile = new IccConfiguration(profile, intent, "from profile").Profile!;
 
+        var profileCustomName = iccFile.GetProfile("test-custom-name");
+        var fromProfileCustomName = new IccConfiguration(profileCustomName, intent, "from profile custom name").Profile!;
+
         AssertConfig(fromPath, fromBytes);
         AssertConfig(fromPath, fromStream);
         AssertConfig(fromPath, fromProfile);
+        AssertConfig(fromPath, fromProfileCustomName);
     }
 
     private static void AssertConfig(Profile profile1, Profile profile2)

@@ -17,12 +17,12 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 200, 18, Surround.Average);
 
         var expectedModel = new Model(
-            J: 48.0314,
-            C: 38.7789,
-            H: 191.0452,
-            M: 38.7789,
-            S: 46.0177,
-            Q: 183.1240);
+            j: 48.0314,
+            c: 38.7789,
+            h: 191.0452,
+            m: 38.7789,
+            s: 46.0177,
+            q: 183.1240);
         
         var expectedUcs = new Ucs(
             J: 61.1077,
@@ -40,12 +40,12 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 20, 18, Surround.Average);
         
         var expectedModel = new Model(
-            J: 47.6856,
-            C: 36.0527,
-            H: 185.3445,
-            M: 29.7580,
-            S: 51.1275,
-            Q: 113.8401);
+            j: 47.6856,
+            c: 36.0527,
+            h: 185.3445,
+            m: 29.7580,
+            s: 51.1275,
+            q: 113.8401);
         
         var expectedUcs = new Ucs(
             J: 60.7779,
@@ -63,12 +63,12 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
         var expectedModel = new Model(
-            J: 34.434525727858997,
-            C: 67.365010921125943,
-            H: 22.279164147957065,
-            M: 70.024939419291414,
-            S: 62.81485585332716,
-            Q: 177.47124941102123);
+            j: 34.434525727858997,
+            c: 67.365010921125943,
+            h: 22.279164147957065,
+            m: 70.024939419291414,
+            s: 62.81485585332716,
+            q: 177.47124941102123);
         
         var expectedUcs = new Ucs(
             J: 47.16899898,

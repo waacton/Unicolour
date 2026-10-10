@@ -40,6 +40,13 @@ public enum ColourSpace
     Oklrch,
     Cam02,
     Cam16,
+    Cam99Jmh,
+    Cam99Jch,
+    Cam99Jsh,
+    Cam99Qmh,
+    Cam99Qch,
+    Cam99Qsh,
+    Cam99Ucs,
     Hct,
     Munsell
 }

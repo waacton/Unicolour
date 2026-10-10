@@ -2,17 +2,131 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public static class Cam
+public record Cam
 {
-    public record Model(double J, double C, double H, double M, double S, double Q)
+    // TODO: delete, replace with merging of colour representation and colour triplet?
+    public record JMH : ColourRepresentation
     {
-        public double J { get; } = J;
-        public double C { get; } = C;
-        public double H { get; } = H;
-        public string Hc { get; } = HueData.GetHueComposition(H); // technically not in CAM02 but 🤷
-        public double M { get; } = M;
-        public double S { get; } = S;
-        public double Q { get; } = Q;
+        protected internal override int? HueIndex => 2;
+        public double J => First;
+        public double M => Second;
+        public double H => Third;
+        
+        protected override bool IsTripletAchromatic => M <= 0;
+        
+        public JMH(double j, double m, double h) : this(j, m, h, Limitation.None) {}
+        public JMH(double j) : this(j, 0, 0, Limitation.Achromatic) {}
+        internal JMH(double j, double m, double h, Limitation limitation) : base(j, m, h, limitation) {}
+
+        protected override string String => Limitation != Limitation.Achromatic ? $"{J:F2} {M:F2} {H:F1}°" : $"{J:F2} {M:F2} {NoHue}°";
+        public override string ToString() => base.ToString();
+    }
+
+    public enum Correlates
+    {
+        Jmh,
+        Jch,
+        Jsh,
+        Qmh,
+        Qch,
+        Qsh
+    }
+
+    private Model? model;
+    private JMH? jmh;
+    private ColourTriplet? jch;
+    private ColourTriplet? jsh;
+    private ColourTriplet? qmh;
+    private ColourTriplet? qch;
+    private ColourTriplet? qsh;
+
+    public Model BackingModel => model ??= GetModel();
+    
+    // TODO: return to more generic triplet types if possible
+    public JMH Jmh => jmh ??= correlates == Correlates.Jmh ? new JMH(sourceTriplet.First, sourceTriplet.Second, sourceTriplet.Third) : new(BackingModel.J, BackingModel.M, BackingModel.H);
+    public ColourTriplet Jch => jch ??= correlates == Correlates.Jch ? sourceTriplet : new(BackingModel.J, BackingModel.C, BackingModel.H, HueIndex: 2);
+    public ColourTriplet Jsh => jsh ??= correlates == Correlates.Jsh ? sourceTriplet : new(BackingModel.J, BackingModel.S, BackingModel.H, HueIndex: 2);
+    public ColourTriplet Qmh => qmh ??= correlates == Correlates.Qmh ? sourceTriplet : new(BackingModel.Q, BackingModel.M, BackingModel.H, HueIndex: 2);
+    public ColourTriplet Qch => qch ??= correlates == Correlates.Qch ? sourceTriplet : new(BackingModel.Q, BackingModel.C, BackingModel.H, HueIndex: 2);
+    public ColourTriplet Qsh => qsh ??= correlates == Correlates.Qsh ? sourceTriplet : new(BackingModel.Q, BackingModel.S, BackingModel.H, HueIndex: 2);
+    
+    private Correlates correlates;
+    private ColourTriplet sourceTriplet;
+    private ViewingConditions viewingConditions;
+    internal Limitation limitation;
+
+    internal Cam(Correlates correlates, ColourTriplet colourTriplet, ViewingConditions viewingConditions, Limitation limitation)
+    {
+        this.correlates = correlates;
+        this.sourceTriplet = colourTriplet;
+        this.viewingConditions = viewingConditions;
+        this.limitation = limitation;
+    }
+
+    internal Model GetModel()
+    {
+        double j, c, h, m, s, q;
+        var view = viewingConditions;
+        
+        switch (correlates)
+        {
+            case Correlates.Jmh:
+                (j, m, h) = Jmh;
+                q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+                c = m / Math.Pow(view.Fl, 0.25);
+                s = 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Correlates.Jch:
+                (j, c, h) = Jch;
+                q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+                m = c * Math.Pow(view.Fl, 0.25);
+                s = 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Correlates.Jsh:
+                (j, s, h) = Jsh;
+                q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+                m = c * Math.Pow(view.Fl, 0.25);
+                break;
+            case Correlates.Qmh:
+                (q, m, h) = Qmh;
+                j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+                c = m / Math.Pow(view.Fl, 0.25);
+                s = 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Correlates.Qch:
+                (q, c, h) = Qch;
+                j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+                m = c * Math.Pow(view.Fl, 0.25);
+                s = Math.Sqrt(c / (q / Math.Pow(view.Fl, 0.25))) * 100;
+                break;
+            case Correlates.Qsh:
+                (q, s, h) = Qsh;
+                j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+                m = c * Math.Pow(view.Fl, 0.25);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+        return new Model(j, c, h, m, s, q);
+    }
+    
+    // TODO: try to reuse these kind of things?
+    private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+    private static double J(double q, ViewingConditions view) => Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+    
+    
+    public record Model : ColourBase
+    {
+        public double J => Values[0];
+        public double C => Values[1];
+        public double H => Values[2];
+        public string Hc { get; } // technically not in CAM02 but 🤷
+        public double M => Values[3];
+        public double S => Values[4];
+        public double Q => Values[5];
 
         public double Lightness => J;
         public double Chroma => C;
@@ -22,6 +136,17 @@ public static class Cam
         public double Saturation => S;
         public double Brightness => Q;
 
+        protected override bool IsTripletAchromatic => Chroma <= 0;
+        
+        
+        // TODO: constructors for each of the correlates above; CamCorrelates enum?
+        
+        internal Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}
+        internal Model(double j, double c, double h, double m, double s, double q, Limitation limitation) : base([j, c, h, m, s, q], limitation)
+        {
+            Hc = HueData.GetHueComposition(h);
+        }
+
         internal Ucs ToUcs()
         {
             var j = 1.7 * J / (1 + 0.007 * J);
@@ -29,6 +154,8 @@ public static class Cam
             (j, var a, var b) = FromLchTriplet(new(j, m, H));
             return new Ucs(j, a, b);
         }
+
+        public override string ToString() => $"{J:F2} {C:F2} {H:F1} ({Hc}) {M:F2} {S:F2} {Q:F2}";
     }
 
     /*

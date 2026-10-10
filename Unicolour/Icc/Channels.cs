@@ -1,23 +1,16 @@
 ﻿namespace Wacton.Unicolour.Icc;
 
-public record Channels(params double[] Values)
+public record Channels : ColourBase
 {
-    public double[] Values { get; } = Values;
     public string ColourSpace { get; private set; } = "unknown";
     public string? Error { get; private set; }
-
-    internal bool IsNaN => Limitation == Limitation.NaN;
     
-    private Limitation LimitationBaseline = Limitation.None;
-    private Limitation Limitation
-    {
-        get
-        {
-            if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
-            if (LimitationBaseline == Limitation.Achromatic) return Limitation.Achromatic; // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
-            return Limitation.None;
-        }
-    }
+    // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
+    // TODO: should all values 0 = achromatic (i.e. no ink on the white?) - if so, needs attaching to ToXyz()
+    protected override bool IsTripletAchromatic => false;
+    
+    public Channels(params double[] values) : this(values, Limitation.None) {}
+    internal Channels(double[] values, Limitation limitationBaseline) : base(values, limitationBaseline) {}
     
     /*
      * ICC channels are a transform of XYZ (in terms of Unicolour implementation)
@@ -43,10 +36,9 @@ public record Channels(params double[] Values)
             error = e.Message;
         }
 
-        return new Channels(channels)
+        return new Channels(channels, xyz.Limitation)
         {
             ColourSpace = profile.Header.DataColourSpace,
-            LimitationBaseline = xyz.Limitation,
             Error = error
         };
     }
@@ -87,10 +79,9 @@ public record Channels(params double[] Values)
         var c = scale == 0.0 ? 0 : (1 - r - black) / scale;
         var m = scale == 0.0 ? 0 : (1 - g - black) / scale;
         var y = scale == 0.0 ? 0 : (1 - b - black) / scale;
-        return new Channels(c, m, y, black)
+        return new Channels([c, m, y, black], rgb.Limitation)
         {
-            ColourSpace = UncalibratedCmyk,
-            LimitationBaseline = rgb.Limitation
+            ColourSpace = UncalibratedCmyk
         };
     }
 
@@ -118,7 +109,7 @@ public record Channels(params double[] Values)
         if (ReferenceEquals(this, other)) return true;
         return Values.SequenceEqual(other.Values) && ColourSpace == other.ColourSpace;
     }
-
+    
     public override int GetHashCode()
     {
         unchecked

@@ -46,6 +46,9 @@ public partial class Unicolour
             ColourSpace.Cam16 => Cam16,
             ColourSpace.Hct => Hct,
             ColourSpace.Munsell => Munsell,
+            
+            ColourSpace.Cam99Ucs => Cam99Ucs,
+            ColourSpace.Cam99Jmh => Cam99.Jmh,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -93,6 +96,9 @@ public partial class Unicolour
             ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, limitation),
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
+            
+            ColourSpace.Cam99Ucs => new Cam99Ucs(first, second, third, limitation),
+            ColourSpace.Cam99Jmh => new Cam99(Cam.Correlates.Jmh, new(first, second, third), config.Cam, limitation).Jmh,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -140,6 +146,8 @@ public partial class Unicolour
             ColourSpace.Cam16 => new Cam16(grey, config.Cam),
             ColourSpace.Hct => new Hct(grey),
             ColourSpace.Munsell => new Munsell(grey),
+            
+            // TODO: handle greyscale CAM
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }
@@ -285,6 +293,9 @@ public partial class Unicolour
             ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Munsell => Xyy.ToXyz(Xyy),
+            
+            ColourSpace.Cam99Ucs => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Jmh => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -594,6 +605,27 @@ public partial class Unicolour
         {
             ColourSpace.Munsell => (Munsell)SourceRepresentation,
             _ => Munsell.FromXyy(Xyy, Configuration.Xyz.ChromaticAdaptor)
+        };
+    }
+    
+    // TODO: review
+    
+    private Cam99 EvaluateCam99()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Cam99Jmh => new Cam99(Cam.Correlates.Jmh, ((Cam.JMH)SourceRepresentation).Triplet, Configuration.Cam), // TODO: store source triplets more generically?
+            ColourSpace.Cam99Ucs => Cam99Ucs.ToCam99(Cam99Ucs, Configuration.Cam),
+            _ => Cam99.FromXyz(Xyz, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor)
+        };
+    }
+    
+    private Cam99Ucs EvaluateCam99Ucs()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Cam99Ucs => (Cam99Ucs)SourceRepresentation,
+            _ => Cam99Ucs.FromCam99(Cam99)
         };
     }
 }

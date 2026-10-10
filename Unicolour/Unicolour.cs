@@ -44,6 +44,9 @@ public partial class Unicolour : IEquatable<Unicolour>
     private Hct? hct;
     private Munsell? munsell;
     private Channels? icc;
+
+    private Cam99? cam99;
+    private Cam99Ucs? cam99Ucs;
     
     private Temperature? temperature;
     private bool? isInPointerGamut;
@@ -55,7 +58,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Configuration Configuration { get; }
     internal readonly ColourSpace SourceColourSpace;
     internal readonly ColourRepresentation SourceRepresentation;
-
+    
     public Rgb Rgb => Get(ref rgb, EvaluateRgb);
     public RgbLinear RgbLinear => Get(ref rgbLinear, EvaluateRgbLinear);
     public Hsb Hsb => Get(ref hsb, EvaluateHsb);
@@ -95,7 +98,11 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
     public Hct Hct => Get(ref hct, EvaluateHct);
     public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
-
+    
+    public Cam99 Cam99 => Get(ref cam99, EvaluateCam99);
+    public Cam99Ucs Cam99Ucs => Get(ref cam99Ucs, EvaluateCam99Ucs);
+    
+    
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.Icc)
             : Channels.UncalibratedFromRgb(Rgb));

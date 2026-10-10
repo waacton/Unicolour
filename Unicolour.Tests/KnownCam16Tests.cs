@@ -16,12 +16,12 @@ public class KnownCam16Tests
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
         var expectedModel = new Model(
-            J: 33.880368498111686,
-            C: 69.444353357408033,
-            H: 19.510887327451748,
-            M: 72.18638534116765,
-            S: 64.03612114840314,
-            Q: 176.03752758512178);
+            j: 33.880368498111686,
+            c: 69.444353357408033,
+            h: 19.510887327451748,
+            m: 72.18638534116765,
+            s: 64.03612114840314,
+            q: 176.03752758512178);
         
         var expectedUcs = new Ucs(
             J: 46.55542238,
@@ -40,12 +40,12 @@ public class KnownCam16Tests
         var camConfig = new CamConfiguration(whitePoint, 40, 20, Surround.Average);
         
         var expectedModel = new Model(
-            J: 45.54426472036036,
-            C: 45.070010482937676,
-            H: 259.225345298129,
-            M: 39.41306078701033,
-            S: 54.44320314132591,
-            Q: 132.96974182692048);
+            j: 45.54426472036036,
+            c: 45.070010482937676,
+            h: 259.225345298129,
+            m: 39.41306078701033,
+            s: 54.44320314132591,
+            q: 132.96974182692048);
 
         var expectedUcs = new Ucs(
             J: 58.70842551410342,

@@ -26,7 +26,8 @@ public static class ColourSpaces
         ColourSpace.Oklab, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrab, ColourSpace.Oklrch,
         ColourSpace.Cam02, ColourSpace.Cam16,
         ColourSpace.Hct,
-        ColourSpace.Munsell
+        ColourSpace.Munsell,
+        ColourSpace.Cam99Jch, ColourSpace.Cam99Jmh, ColourSpace.Cam99Jsh, ColourSpace.Cam99Qch, ColourSpace.Cam99Qmh, ColourSpace.Cam99Qsh, ColourSpace.Cam99Ucs
     ];
     
     public static void PurpleToOrange()

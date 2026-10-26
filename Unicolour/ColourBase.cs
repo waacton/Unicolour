@@ -3,7 +3,8 @@
 public abstract record ColourBase
 {
     public readonly double[] Values;
-    
+    public double this[int index] => Values[index];
+
     protected abstract bool IsTripletAchromatic { get; } // TODO: rename
     
     internal bool IsAchromatic => Limitation == Limitation.Achromatic;

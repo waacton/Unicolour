@@ -4,61 +4,70 @@ namespace Wacton.Unicolour;
 
 public record Cam
 {
-    // TODO: delete, replace with merging of colour representation and colour triplet?
-    public record JMH : ColourRepresentation
+    private enum Correlates
     {
-        protected internal override int? HueIndex => 2;
-        public double J => First;
-        public double M => Second;
-        public double H => Third;
-        
-        protected override bool IsTripletAchromatic => M <= 0;
-        
-        public JMH(double j, double m, double h) : this(j, m, h, Limitation.None) {}
-        public JMH(double j) : this(j, 0, 0, Limitation.Achromatic) {}
-        internal JMH(double j, double m, double h, Limitation limitation) : base(j, m, h, limitation) {}
-
-        protected override string String => Limitation != Limitation.Achromatic ? $"{J:F2} {M:F2} {H:F1}°" : $"{J:F2} {M:F2} {NoHue}°";
-        public override string ToString() => base.ToString();
-    }
-
-    public enum Correlates
-    {
-        Jmh,
         Jch,
+        Jmh,
         Jsh,
-        Qmh,
         Qch,
+        Qmh,
         Qsh
     }
 
-    private Model? model;
-    private JMH? jmh;
-    private ColourTriplet? jch;
-    private ColourTriplet? jsh;
-    private ColourTriplet? qmh;
-    private ColourTriplet? qch;
-    private ColourTriplet? qsh;
+    public Model? model;
+    private Cam99.JCH? jch;
+    private Cam99.JMH? jmh;
+    private Cam99.JSH? jsh;
+    private Cam99.QCH? qch;
+    private Cam99.QMH? qmh;
+    private Cam99.QSH? qsh;
 
     public Model BackingModel => model ??= GetModel();
     
-    // TODO: return to more generic triplet types if possible
-    public JMH Jmh => jmh ??= correlates == Correlates.Jmh ? new JMH(sourceTriplet.First, sourceTriplet.Second, sourceTriplet.Third) : new(BackingModel.J, BackingModel.M, BackingModel.H);
-    public ColourTriplet Jch => jch ??= correlates == Correlates.Jch ? sourceTriplet : new(BackingModel.J, BackingModel.C, BackingModel.H, HueIndex: 2);
-    public ColourTriplet Jsh => jsh ??= correlates == Correlates.Jsh ? sourceTriplet : new(BackingModel.J, BackingModel.S, BackingModel.H, HueIndex: 2);
-    public ColourTriplet Qmh => qmh ??= correlates == Correlates.Qmh ? sourceTriplet : new(BackingModel.Q, BackingModel.M, BackingModel.H, HueIndex: 2);
-    public ColourTriplet Qch => qch ??= correlates == Correlates.Qch ? sourceTriplet : new(BackingModel.Q, BackingModel.C, BackingModel.H, HueIndex: 2);
-    public ColourTriplet Qsh => qsh ??= correlates == Correlates.Qsh ? sourceTriplet : new(BackingModel.Q, BackingModel.S, BackingModel.H, HueIndex: 2);
+    public Cam99.JCH Jch => jch ??= new Cam99.JCH(BackingModel.J, BackingModel.C, BackingModel.H);
+    public Cam99.JMH Jmh => jmh ??= new Cam99.JMH(BackingModel.J, BackingModel.M, BackingModel.H);
+    public Cam99.JSH Jsh => jsh ??= new Cam99.JSH(BackingModel.J, BackingModel.S, BackingModel.H);
+    public Cam99.QCH Qch => qch ??= new Cam99.QCH(BackingModel.Q, BackingModel.C, BackingModel.H);
+    public Cam99.QMH Qmh => qmh ??= new Cam99.QMH(BackingModel.Q, BackingModel.M, BackingModel.H);
+    public Cam99.QSH Qsh => qsh ??= new Cam99.QSH(BackingModel.Q, BackingModel.S, BackingModel.H);
     
-    private Correlates correlates;
-    private ColourTriplet sourceTriplet;
-    private ViewingConditions viewingConditions;
+    private readonly Correlates correlates;
+    private readonly ViewingConditions viewingConditions;
     internal Limitation limitation;
 
-    internal Cam(Correlates correlates, ColourTriplet colourTriplet, ViewingConditions viewingConditions, Limitation limitation)
+    internal Cam(Cam99.JCH jch, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jch, viewingConditions, limitation)
+    {
+        this.jch = jch;
+    }
+    
+    internal Cam(Cam99.JMH jmh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jmh, viewingConditions, limitation)
+    {
+        this.jmh = jmh;
+    }
+    
+    internal Cam(Cam99.JSH jsh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jsh, viewingConditions, limitation)
+    {
+        this.jsh = jsh;
+    }
+    
+    internal Cam(Cam99.QCH qch, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qch, viewingConditions, limitation)
+    {
+        this.qch = qch;
+    }
+    
+    internal Cam(Cam99.QMH qmh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qmh, viewingConditions, limitation)
+    {
+        this.qmh = qmh;
+    }
+    
+    internal Cam(Cam99.QSH qsh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qsh, viewingConditions, limitation)
+    {
+        this.qsh = qsh;
+    }
+    
+    private Cam(Correlates correlates, ViewingConditions viewingConditions, Limitation limitation)
     {
         this.correlates = correlates;
-        this.sourceTriplet = colourTriplet;
         this.viewingConditions = viewingConditions;
         this.limitation = limitation;
     }
@@ -70,17 +79,17 @@ public record Cam
         
         switch (correlates)
         {
-            case Correlates.Jmh:
-                (j, m, h) = Jmh;
-                q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
-                c = m / Math.Pow(view.Fl, 0.25);
-                s = 100 * Math.Pow(m / q, 0.5);
-                break;
             case Correlates.Jch:
                 (j, c, h) = Jch;
                 q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
                 m = c * Math.Pow(view.Fl, 0.25);
-                s = 100 * Math.Pow(m / q, 0.5);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Correlates.Jmh:
+                (j, m, h) = Jmh;
+                q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+                c = m / Math.Pow(view.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
                 break;
             case Correlates.Jsh:
                 (j, s, h) = Jsh;
@@ -88,17 +97,17 @@ public record Cam
                 c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
                 m = c * Math.Pow(view.Fl, 0.25);
                 break;
-            case Correlates.Qmh:
-                (q, m, h) = Qmh;
-                j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
-                c = m / Math.Pow(view.Fl, 0.25);
-                s = 100 * Math.Pow(m / q, 0.5);
-                break;
             case Correlates.Qch:
                 (q, c, h) = Qch;
                 j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
                 m = c * Math.Pow(view.Fl, 0.25);
-                s = Math.Sqrt(c / (q / Math.Pow(view.Fl, 0.25))) * 100;
+                s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(view.Fl, 0.25))) * 100;
+                break;
+            case Correlates.Qmh:
+                (q, m, h) = Qmh;
+                j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+                c = m / Math.Pow(view.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
                 break;
             case Correlates.Qsh:
                 (q, s, h) = Qsh;

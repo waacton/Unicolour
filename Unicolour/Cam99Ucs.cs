@@ -30,7 +30,7 @@ public record Cam99Ucs : ColourRepresentation
         j = 1.7 * j / (1 + 0.007 * j);
         m = Math.Log(1 + 0.0228 * m) / 0.0228;
         (j, var a, var b) = FromLchTriplet(new(j, m, h));
-        return new Cam99Ucs(j, a, b);
+        return new Cam99Ucs(j, a, b, cam99.Jmh.Limitation);
     }
     
     internal static Cam99 ToCam99(Cam99Ucs ucs, CamConfiguration camConfig)
@@ -40,6 +40,6 @@ public record Cam99Ucs : ColourRepresentation
         (j, var m, var h) = ToLchTriplet(new(j, a, b));
         m = (Math.Exp(0.0228 * m) - 1) / 0.0228;
         var view = Cam99.ViewingConditions(camConfig);
-        return new Cam99(Cam.Correlates.Jmh, new(j, m, h), view, ucs.Limitation);
+        return new Cam99(new Cam99.JMH(j, m, h, ucs.Limitation), view, ucs.Limitation);
     }
 }

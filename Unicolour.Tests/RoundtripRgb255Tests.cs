@@ -150,7 +150,7 @@ public class RoundtripRgb255Tests
         var roundtrip = Channels.UncalibratedToRgb(cmyk);
 
         // pure 1.0 black only happens if max RGB channel was 0.0, losing chroma information for the roundtrip
-        if (cmyk.Values[3] == 1.0)  
+        if (cmyk[3] == 1.0)  
         {
             TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
         }

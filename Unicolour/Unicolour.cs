@@ -102,7 +102,6 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam99 Cam99 => Get(ref cam99, EvaluateCam99);
     public Cam99Ucs Cam99Ucs => Get(ref cam99Ucs, EvaluateCam99Ucs);
     
-    
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.Icc)
             : Channels.UncalibratedFromRgb(Rgb));

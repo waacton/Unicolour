@@ -54,50 +54,53 @@ public record Cam99
         {
             case Cam99Jch:
                 (j, c, h) = Jch;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                m = c * Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                q = Q(j);
+                m = M(c);
+                s = S(m, q);
                 break;
             case Cam99Jmh:
                 (j, m, h) = Jmh;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                c = m / Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                q = Q(j);
+                c = C(m);
+                s = S(m, q);
                 break;
             case Cam99Jsh:
                 (j, s, h) = Jsh;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
-                m = c * Math.Pow(View.Fl, 0.25);
+                q = Q(j);
+                c = C(s, q);
+                m = M(c);
                 break;
             case Cam99Qch:
                 (q, c, h) = Qch;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                m = c * Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(View.Fl, 0.25))) * 100;
+                j = J(q);
+                m = M(c);
+                s = S(m, q);
                 break;
             case Cam99Qmh:
                 (q, m, h) = Qmh;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                c = m / Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                j = J(q);
+                c = C(m);
+                s = S(m, q);
                 break;
             case Cam99Qsh:
                 (q, s, h) = Qsh;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
-                m = c * Math.Pow(View.Fl, 0.25);
+                j = J(q);
+                c = C(s, q);
+                m = M(c);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-        
+
         return new Model(j, c, h, m, s, q, source.Limitation);
     }
     
-    // TODO: try to reuse these kind of things?
     private double Q(double j) => 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
     private double J(double q) => Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+    private double M(double c) => c * Math.Pow(View.Fl, 0.25);
+    private double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+    private double C(double m) => m / Math.Pow(View.Fl, 0.25);
+    private double C(double s, double q) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {

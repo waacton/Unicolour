@@ -304,13 +304,13 @@ public partial class Unicolour
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             
-            ColourSpace.Cam99Jch => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Jmh => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Jsh => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Qch => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Qmh => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Qsh => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam99Ucs => Cam99.ToXyz(Cam99, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Jch => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Jmh => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Jsh => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Qch => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Qmh => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Qsh => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam99Ucs => Cam99.ToXyz(Cam99, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -627,20 +627,14 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            // ColourSpace.Cam99Jch => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            // ColourSpace.Cam99Jmh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            // ColourSpace.Cam99Jsh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            // ColourSpace.Cam99Qch => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            // ColourSpace.Cam99Qmh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            // ColourSpace.Cam99Qsh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
-            ColourSpace.Cam99Jch => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Jmh => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Jsh => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qch => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qmh => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qsh => new Cam99(SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Ucs => Cam99Ucs.ToCam99(Cam99Ucs, Configuration.Cam),
-            _ => Cam99.FromXyz(Xyz, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor)
+            ColourSpace.Cam99Jch => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Jmh => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Jsh => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Qch => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Qmh => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Qsh => new Cam99(SourceRepresentation, Configuration.Cam.View99),
+            ColourSpace.Cam99Ucs => Cam99Ucs.ToCam99(Cam99Ucs, Configuration.Cam.View99),
+            _ => Cam99.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View99, Configuration.Xyz.ChromaticAdaptor)
         };
     }
     

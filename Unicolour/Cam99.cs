@@ -3,34 +3,39 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public partial record Cam99 : Cam
+public partial record Cam99
 {
-    // TODO: remove limitation from top level CAM? each sub representation also has it...
-    // internal Cam99(double j, double c, double h, double m, double s, double q, ViewingConditions viewingConditions, Limitation limitation) : base(j, c, h, m, s, q, viewingConditions, limitation) {}
-    internal Cam99(Cam.Model model, ViewingConditions viewingConditions) : base(model, viewingConditions) {}
-    internal Cam99(ColourRepresentation source, CamConfiguration camConfiguration) : base(source, ViewingConditions(camConfiguration)) {}
-    internal Cam99(ColourRepresentation source, ViewingConditions viewingConditions) : base(source, viewingConditions) {}
+    private readonly ColourRepresentation? source;
     
-    // public Cam99(Cam.Correlates correlates, double first, double second, double third, CamConfiguration camConfig) : this(correlates, first, second, third, ViewingConditions(camConfig), Limitation.None) {}
-    // internal Cam99(Cam.Correlates correlates, double first, double second, double third, ViewingConditions viewingConditions, Limitation limitation) : base(correlates, first, second, third, viewingConditions, limitation) {}
+    public Model? model;
+    private Cam99.JCH? jch;
+    private Cam99.JMH? jmh;
+    private Cam99.JSH? jsh;
+    private Cam99.QCH? qch;
+    private Cam99.QMH? qmh;
+    private Cam99.QSH? qsh;
     
-    // public Cam99(Cam99.JCH jch, CamConfiguration camConfig) : this(jch, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.JCH jch, ViewingConditions viewingConditions) : base(jch, viewingConditions) {}
-    //
-    // public Cam99(Cam99.JMH jmh, CamConfiguration camConfig) : this(jmh, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.JMH jmh, ViewingConditions viewingConditions) : base(jmh, viewingConditions) {}
-    //
-    // public Cam99(Cam99.JSH jsh, CamConfiguration camConfig) : this(jsh, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.JSH jsh, ViewingConditions viewingConditions) : base(jsh, viewingConditions) {}
-    //
-    // public Cam99(Cam99.QCH qch, CamConfiguration camConfig) : this(qch, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.QCH qch, ViewingConditions viewingConditions) : base(qch, viewingConditions) {}
-    //
-    // public Cam99(Cam99.QMH qmh, CamConfiguration camConfig) : this(qmh, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.QMH qmh, ViewingConditions viewingConditions) : base(qmh, viewingConditions) {}
-    //
-    // public Cam99(Cam99.QSH qsh, CamConfiguration camConfig) : this(qsh, ViewingConditions(camConfig)) {}
-    // internal Cam99(Cam99.QSH qsh, ViewingConditions viewingConditions) : base(qsh, viewingConditions) {}
+    public Model BackingModel => model ??= GetModel();
+    public Cam99.JCH Jch => jch ??= source as Cam99.JCH ?? new Cam99.JCH(BackingModel.J, BackingModel.C, BackingModel.H, BackingModel.Limitation);
+    public Cam99.JMH Jmh => jmh ??= source as Cam99.JMH ?? new Cam99.JMH(BackingModel.J, BackingModel.M, BackingModel.H, BackingModel.Limitation);
+    public Cam99.JSH Jsh => jsh ??= source as Cam99.JSH ?? new Cam99.JSH(BackingModel.J, BackingModel.S, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QCH Qch => qch ??= source as Cam99.QCH ?? new Cam99.QCH(BackingModel.Q, BackingModel.C, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QMH Qmh => qmh ??= source as Cam99.QMH ?? new Cam99.QMH(BackingModel.Q, BackingModel.M, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QSH Qsh => qsh ??= source as Cam99.QSH ?? new Cam99.QSH(BackingModel.Q, BackingModel.S, BackingModel.H, BackingModel.Limitation);
+    internal ViewingConditions View { get; }
+    
+    internal Cam99(ColourRepresentation source, ViewingConditions viewingConditions)
+    {
+        this.source = source;
+        View = viewingConditions;
+    }
+    
+    internal Cam99(Model model, ViewingConditions viewingConditions)
+    {
+        Console.WriteLine($">>> INITIALISING FULL MODEL FROM XYZ CONVERSION ({model})");
+        this.model = model;
+        View = viewingConditions;
+    }
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {
@@ -61,12 +66,10 @@ public partial record Cam99 : Cam
         { 460, -220, -6300 }
     }).Scale(1 / 1403.0);
     
-    internal static Cam99 FromXyz(Xyz xyz, CamConfiguration camConfig, ChromaticAdaptor chromaticAdaptor)
+    internal static Cam99 FromXyz(Xyz xyz, WhitePoint whitePoint, ViewingConditions view, ChromaticAdaptor chromaticAdaptor)
     {
-        var view = ViewingConditions(camConfig);
-
         // step 1
-        var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, camConfig.WhitePoint);
+        var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, whitePoint);
         var xyzMatrix = Matrix.From(adaptedXyz).Select(x => x * 100);
         var rgb = MCAT02.Multiply(xyzMatrix).ToTriplet();
 
@@ -110,15 +113,13 @@ public partial record Cam99 : Cam
         var m = c * Math.Pow(view.Fl, 0.25);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
 
-        // return new Cam99(new Cam99.JCH(j, c, h, xyz.Limitation), view);
-        // return new Cam99(j, c, h, m, s, q, view, xyz.Limitation);
         return new Cam99(new Cam.Model(j, c, h, m, s, q, xyz.Limitation), view);
     }
     
-    internal static Xyz ToXyz(Cam99 cam, CamConfiguration camConfig, ChromaticAdaptor chromaticAdaptor)
+    internal static Xyz ToXyz(Cam99 cam, WhitePoint whitePoint, ChromaticAdaptor chromaticAdaptor)
     {
-        var view = ViewingConditions(camConfig);
-
+        var view = cam.View;
+        
         var (j, c, h) = cam.Jch;
         
         // step 1
@@ -156,22 +157,16 @@ public partial record Cam99 : Cam
         
         // step 7
         var xyzMatrix = MCAT02.Inverse().Multiply(rgbMatrix).Select(x => x / 100.0);
-        var xyz = new Xyz(xyzMatrix.ToTriplet(), camConfig.WhitePoint, cam.Jch.Limitation); // TODO: think carefully about where limitation comes from in CAM
+        var xyz = new Xyz(xyzMatrix.ToTriplet(), whitePoint, cam.Jch.Limitation); // TODO: think carefully about where limitation comes from in CAM
         return chromaticAdaptor.AdaptFrom(xyz);
     }
     
-    internal static ViewingConditions ViewingConditions(CamConfiguration camConfig)
+    internal static ViewingConditions ViewingConditions(WhitePoint whitePoint, double la, double yb, double c, double f, double nc)
     {
-        var (xw, yw, zw) = camConfig.WhitePoint;
+        var (xw, yw, zw) = whitePoint;
         xw *= 100;
         yw *= 100;
         zw *= 100;
-        
-        var la = camConfig.AdaptingLuminance;
-        var yb = camConfig.BackgroundLuminance;
-        var c = camConfig.C;
-        var f = camConfig.F;
-        var nc = camConfig.Nc;
             
         // step 0
         var xyzWhitePointMatrix = Matrix.From(xw, yw, zw);
@@ -202,4 +197,59 @@ public partial record Cam99 : Cam
         var aw = (2 * raw + gaw + baw / 20.0 - 0.305) * nbb;
         return new ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
+    
+    internal Model GetModel()
+    {
+        Console.WriteLine($">>> INITIALISING MODEL FROM {source.GetType()} ({source})");
+        double j, c, h, m, s, q;
+
+        // steps 8 - 10 (from XYZ)
+        switch (source)
+        {
+            case Cam99.JCH:
+                (j, c, h) = Jch;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                m = c * Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99.JMH:
+                (j, m, h) = Jmh;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                c = m / Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99.JSH:
+                (j, s, h) = Jsh;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
+                m = c * Math.Pow(View.Fl, 0.25);
+                break;
+            case Cam99.QCH:
+                (q, c, h) = Qch;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                m = c * Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(View.Fl, 0.25))) * 100;
+                break;
+            case Cam99.QMH:
+                (q, m, h) = Qmh;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                c = m / Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99.QSH:
+                (q, s, h) = Qsh;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
+                m = c * Math.Pow(View.Fl, 0.25);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+        return new Model(j, c, h, m, s, q, source.Limitation);
+    }
+    
+    // TODO: try to reuse these kind of things?
+    private double Q(double j) => 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+    private double J(double q) => Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
 }

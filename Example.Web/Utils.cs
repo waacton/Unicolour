@@ -74,7 +74,15 @@ internal static class Utils
         { ColourSpace.Cam02, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Cam16, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
-        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
+        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] },
+        
+        { ColourSpace.Cam99Jch, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Jmh, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Jsh, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Qch, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Qmh, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Qsh, [new(0, 100), new(0, 100), new(0, 360)] },
+        { ColourSpace.Cam99Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
     };
 
     internal static readonly Dictionary<ColourSpace, string[]> SpaceToAxes = new()
@@ -118,7 +126,15 @@ internal static class Utils
         { ColourSpace.Cam02, ["J", "A", "B"] },
         { ColourSpace.Cam16, ["J", "A", "B"] },
         { ColourSpace.Hct, ["H", "C", "T"] },
-        { ColourSpace.Munsell, ["H", "V", "C"] }
+        { ColourSpace.Munsell, ["H", "V", "C"] },
+        
+        { ColourSpace.Cam99Jch, ["J", "C", "H"] },
+        { ColourSpace.Cam99Jmh, ["J", "M", "H"] },
+        { ColourSpace.Cam99Jsh, ["J", "S", "H"] },
+        { ColourSpace.Cam99Qch, ["Q", "C", "H"] },
+        { ColourSpace.Cam99Qmh, ["Q", "M", "H"] },
+        { ColourSpace.Cam99Qsh, ["Q", "S", "H"] },
+        { ColourSpace.Cam99Ucs, ["J", "A", "B"] }
     };
 
     internal static readonly Dictionary<Pigment, string> PigmentToName = new()

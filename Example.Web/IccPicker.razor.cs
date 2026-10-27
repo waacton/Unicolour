@@ -57,7 +57,7 @@ public partial class IccPicker : ComponentBase
         
         for (var i = 0; i < axes.Length; i++)
         {
-            var value = State.Colour.Icc.Values[i];
+            var value = State.Colour.Icc[i];
             var slider = new GradientColourSlider
             {
                 Value = value,

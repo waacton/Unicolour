@@ -627,12 +627,18 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam99Jch => new Cam99((Cam99.JCH)SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Jmh => new Cam99((Cam99.JMH)SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Jsh => new Cam99((Cam99.JSH)SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qch => new Cam99((Cam99.QCH)SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qmh => new Cam99((Cam99.QMH)SourceRepresentation, Configuration.Cam),
-            ColourSpace.Cam99Qsh => new Cam99((Cam99.QSH)SourceRepresentation, Configuration.Cam),
+            // ColourSpace.Cam99Jch => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            // ColourSpace.Cam99Jmh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            // ColourSpace.Cam99Jsh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            // ColourSpace.Cam99Qch => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            // ColourSpace.Cam99Qmh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            // ColourSpace.Cam99Qsh => new Cam99(Cam.Correlates.Jch, SourceRepresentation[0], SourceRepresentation[1], SourceRepresentation[2], Configuration.Cam),
+            ColourSpace.Cam99Jch => new Cam99(SourceRepresentation, Configuration.Cam),
+            ColourSpace.Cam99Jmh => new Cam99(SourceRepresentation, Configuration.Cam),
+            ColourSpace.Cam99Jsh => new Cam99(SourceRepresentation, Configuration.Cam),
+            ColourSpace.Cam99Qch => new Cam99(SourceRepresentation, Configuration.Cam),
+            ColourSpace.Cam99Qmh => new Cam99(SourceRepresentation, Configuration.Cam),
+            ColourSpace.Cam99Qsh => new Cam99(SourceRepresentation, Configuration.Cam),
             ColourSpace.Cam99Ucs => Cam99Ucs.ToCam99(Cam99Ucs, Configuration.Cam),
             _ => Cam99.FromXyz(Xyz, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor)
         };

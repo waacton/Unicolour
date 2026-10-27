@@ -4,16 +4,9 @@ namespace Wacton.Unicolour;
 
 public record Cam
 {
-    private enum Correlates
-    {
-        Jch,
-        Jmh,
-        Jsh,
-        Qch,
-        Qmh,
-        Qsh
-    }
-
+    private readonly ColourRepresentation source;
+    private readonly ViewingConditions viewingConditions; // TODO: only calculate once?
+    
     public Model? model;
     private Cam99.JCH? jch;
     private Cam99.JMH? jmh;
@@ -23,93 +16,139 @@ public record Cam
     private Cam99.QSH? qsh;
 
     public Model BackingModel => model ??= GetModel();
-    
-    public Cam99.JCH Jch => jch ??= new Cam99.JCH(BackingModel.J, BackingModel.C, BackingModel.H);
-    public Cam99.JMH Jmh => jmh ??= new Cam99.JMH(BackingModel.J, BackingModel.M, BackingModel.H);
-    public Cam99.JSH Jsh => jsh ??= new Cam99.JSH(BackingModel.J, BackingModel.S, BackingModel.H);
-    public Cam99.QCH Qch => qch ??= new Cam99.QCH(BackingModel.Q, BackingModel.C, BackingModel.H);
-    public Cam99.QMH Qmh => qmh ??= new Cam99.QMH(BackingModel.Q, BackingModel.M, BackingModel.H);
-    public Cam99.QSH Qsh => qsh ??= new Cam99.QSH(BackingModel.Q, BackingModel.S, BackingModel.H);
-    
-    private readonly Correlates correlates;
-    private readonly ViewingConditions viewingConditions;
-    internal Limitation limitation;
+    public Cam99.JCH Jch => jch ??= source as Cam99.JCH ?? new Cam99.JCH(BackingModel.J, BackingModel.C, BackingModel.H, BackingModel.Limitation);
+    public Cam99.JMH Jmh => jmh ??= source as Cam99.JMH ?? new Cam99.JMH(BackingModel.J, BackingModel.M, BackingModel.H, BackingModel.Limitation);
+    public Cam99.JSH Jsh => jsh ??= source as Cam99.JSH ?? new Cam99.JSH(BackingModel.J, BackingModel.S, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QCH Qch => qch ??= source as Cam99.QCH ?? new Cam99.QCH(BackingModel.Q, BackingModel.C, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QMH Qmh => qmh ??= source as Cam99.QMH ?? new Cam99.QMH(BackingModel.Q, BackingModel.M, BackingModel.H, BackingModel.Limitation);
+    public Cam99.QSH Qsh => qsh ??= source as Cam99.QSH ?? new Cam99.QSH(BackingModel.Q, BackingModel.S, BackingModel.H, BackingModel.Limitation);
 
-    internal Cam(Cam99.JCH jch, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jch, viewingConditions, limitation)
+    internal Cam(ColourRepresentation source, ViewingConditions viewingConditions)
     {
-        this.jch = jch;
-    }
-    
-    internal Cam(Cam99.JMH jmh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jmh, viewingConditions, limitation)
-    {
-        this.jmh = jmh;
-    }
-    
-    internal Cam(Cam99.JSH jsh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Jsh, viewingConditions, limitation)
-    {
-        this.jsh = jsh;
-    }
-    
-    internal Cam(Cam99.QCH qch, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qch, viewingConditions, limitation)
-    {
-        this.qch = qch;
-    }
-    
-    internal Cam(Cam99.QMH qmh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qmh, viewingConditions, limitation)
-    {
-        this.qmh = qmh;
-    }
-    
-    internal Cam(Cam99.QSH qsh, ViewingConditions viewingConditions, Limitation limitation) : this(Correlates.Qsh, viewingConditions, limitation)
-    {
-        this.qsh = qsh;
-    }
-    
-    private Cam(Correlates correlates, ViewingConditions viewingConditions, Limitation limitation)
-    {
-        this.correlates = correlates;
         this.viewingConditions = viewingConditions;
-        this.limitation = limitation;
+        this.source = source;
     }
+    
+    internal Cam(Model model, ViewingConditions viewingConditions)
+    {
+        this.viewingConditions = viewingConditions;
+        this.model = model;
+    }
+
+    // internal Cam(double j, double c, double h, double m, double s, double q, ViewingConditions viewingConditions, Limitation limitation)
+    // {
+    //     this.viewingConditions = viewingConditions;
+    //     jch = new Cam99.JCH(j, c, h, limitation);
+    //     jmh = new Cam99.JMH(j, m, h, limitation);
+    //     jsh = new Cam99.JSH(j, s, h, limitation);
+    //     qch = new Cam99.QCH(q, c, h, limitation);
+    //     qmh = new Cam99.QMH(q, m, h, limitation);
+    //     qsh = new Cam99.QSH(q, s, h, limitation);
+    // }
+    
+    // internal Cam(Correlates correlates, double first, double second, double third, ViewingConditions viewingConditions, Limitation limitation)
+    // {
+    //     this.viewingConditions = viewingConditions;
+    //
+    //     switch (correlates)
+    //     {
+    //         case Correlates.Jch:
+    //             jch = new Cam99.JCH(first, second, third, limitation);
+    //             break;
+    //         case Correlates.Jmh:
+    //             jmh = new Cam99.JMH(first, second, third, limitation);
+    //             break;
+    //         case Correlates.Jsh:
+    //             jsh = new Cam99.JSH(first, second, third, limitation);
+    //             break;
+    //         case Correlates.Qch:
+    //             qch = new Cam99.QCH(first, second, third, limitation);
+    //             break;
+    //         case Correlates.Qmh:
+    //             qmh = new Cam99.QMH(first, second, third, limitation);
+    //             break;
+    //         case Correlates.Qsh:
+    //             qsh = new Cam99.QSH(first, second, third, limitation);
+    //             break;
+    //         default:
+    //             throw new ArgumentOutOfRangeException(nameof(correlates), correlates, null);
+    //     }
+    // }
+
+    // internal Cam(Cam99.JCH jch, ViewingConditions viewingConditions) : this(Correlates.Jch, viewingConditions)
+    // {
+    //     this.jch = jch;
+    // }
+    //
+    // internal Cam(Cam99.JMH jmh, ViewingConditions viewingConditions) : this(Correlates.Jmh, viewingConditions)
+    // {
+    //     this.jmh = jmh;
+    // }
+    //
+    // internal Cam(Cam99.JSH jsh, ViewingConditions viewingConditions) : this(Correlates.Jsh, viewingConditions)
+    // {
+    //     this.jsh = jsh;
+    // }
+    //
+    // internal Cam(Cam99.QCH qch, ViewingConditions viewingConditions) : this(Correlates.Qch, viewingConditions)
+    // {
+    //     this.qch = qch;
+    // }
+    //
+    // internal Cam(Cam99.QMH qmh, ViewingConditions viewingConditions) : this(Correlates.Qmh, viewingConditions)
+    // {
+    //     this.qmh = qmh;
+    // }
+    //
+    // internal Cam(Cam99.QSH qsh, ViewingConditions viewingConditions) : this(Correlates.Qsh, viewingConditions)
+    // {
+    //     this.qsh = qsh;
+    // }
+    
+    // private Cam(Correlates correlates, ViewingConditions viewingConditions)
+    // {
+    //     this.correlates = correlates;
+    //     this.viewingConditions = viewingConditions;
+    // }
 
     internal Model GetModel()
     {
         double j, c, h, m, s, q;
         var view = viewingConditions;
-        
-        switch (correlates)
+
+        switch (source)
         {
-            case Correlates.Jch:
+            case Cam99.JCH:
                 (j, c, h) = Jch;
                 q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
                 m = c * Math.Pow(view.Fl, 0.25);
                 s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
                 break;
-            case Correlates.Jmh:
+            case Cam99.JMH:
                 (j, m, h) = Jmh;
                 q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
                 c = m / Math.Pow(view.Fl, 0.25);
                 s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
                 break;
-            case Correlates.Jsh:
+            case Cam99.JSH:
                 (j, s, h) = Jsh;
                 q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
                 c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
                 m = c * Math.Pow(view.Fl, 0.25);
                 break;
-            case Correlates.Qch:
+            case Cam99.QCH:
                 (q, c, h) = Qch;
                 j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
                 m = c * Math.Pow(view.Fl, 0.25);
                 s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(view.Fl, 0.25))) * 100;
                 break;
-            case Correlates.Qmh:
+            case Cam99.QMH:
                 (q, m, h) = Qmh;
                 j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
                 c = m / Math.Pow(view.Fl, 0.25);
                 s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
                 break;
-            case Correlates.Qsh:
+            case Cam99.QSH:
                 (q, s, h) = Qsh;
                 j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
                 c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
@@ -119,13 +158,64 @@ public record Cam
                 throw new ArgumentOutOfRangeException();
         }
         
-        return new Model(j, c, h, m, s, q);
+        // switch (correlates)
+        // {
+        //     case Correlates.Jch:
+        //         (j, c, h) = Jch;
+        //         q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+        //         m = c * Math.Pow(view.Fl, 0.25);
+        //         s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+        //         break;
+        //     case Correlates.Jmh:
+        //         (j, m, h) = Jmh;
+        //         q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+        //         c = m / Math.Pow(view.Fl, 0.25);
+        //         s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+        //         break;
+        //     case Correlates.Jsh:
+        //         (j, s, h) = Jsh;
+        //         q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+        //         c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+        //         m = c * Math.Pow(view.Fl, 0.25);
+        //         break;
+        //     case Correlates.Qch:
+        //         (q, c, h) = Qch;
+        //         j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+        //         m = c * Math.Pow(view.Fl, 0.25);
+        //         s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(view.Fl, 0.25))) * 100;
+        //         break;
+        //     case Correlates.Qmh:
+        //         (q, m, h) = Qmh;
+        //         j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+        //         c = m / Math.Pow(view.Fl, 0.25);
+        //         s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+        //         break;
+        //     case Correlates.Qsh:
+        //         (q, s, h) = Qsh;
+        //         j = Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
+        //         c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+        //         m = c * Math.Pow(view.Fl, 0.25);
+        //         break;
+        //     default:
+        //         throw new ArgumentOutOfRangeException();
+        // }
+        
+        return new Model(j, c, h, m, s, q, source.Limitation);
     }
     
     // TODO: try to reuse these kind of things?
     private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
     private static double J(double q, ViewingConditions view) => Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
     
+    // public enum Correlates
+    // {
+    //     Jch,
+    //     Jmh,
+    //     Jsh,
+    //     Qch,
+    //     Qmh,
+    //     Qsh
+    // }
     
     public record Model : ColourBase
     {
@@ -146,9 +236,6 @@ public record Cam
         public double Brightness => Q;
 
         protected override bool IsTripletAchromatic => Chroma <= 0;
-        
-        
-        // TODO: constructors for each of the correlates above; CamCorrelates enum?
         
         internal Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}
         internal Model(double j, double c, double h, double m, double s, double q, Limitation limitation) : base([j, c, h, m, s, q], limitation)

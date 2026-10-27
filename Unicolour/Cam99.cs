@@ -6,23 +6,31 @@ namespace Wacton.Unicolour;
 public partial record Cam99 : Cam
 {
     // TODO: remove limitation from top level CAM? each sub representation also has it...
-    public Cam99(Cam99.JCH jch, CamConfiguration camConfig) : this(jch, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.JCH jch, ViewingConditions viewingConditions, Limitation limitation) : base(jch, viewingConditions, limitation) {}
+    // internal Cam99(double j, double c, double h, double m, double s, double q, ViewingConditions viewingConditions, Limitation limitation) : base(j, c, h, m, s, q, viewingConditions, limitation) {}
+    internal Cam99(Cam.Model model, ViewingConditions viewingConditions) : base(model, viewingConditions) {}
+    internal Cam99(ColourRepresentation source, CamConfiguration camConfiguration) : base(source, ViewingConditions(camConfiguration)) {}
+    internal Cam99(ColourRepresentation source, ViewingConditions viewingConditions) : base(source, viewingConditions) {}
     
-    public Cam99(Cam99.JMH jmh, CamConfiguration camConfig) : this(jmh, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.JMH jmh, ViewingConditions viewingConditions, Limitation limitation) : base(jmh, viewingConditions, limitation) {}
+    // public Cam99(Cam.Correlates correlates, double first, double second, double third, CamConfiguration camConfig) : this(correlates, first, second, third, ViewingConditions(camConfig), Limitation.None) {}
+    // internal Cam99(Cam.Correlates correlates, double first, double second, double third, ViewingConditions viewingConditions, Limitation limitation) : base(correlates, first, second, third, viewingConditions, limitation) {}
     
-    public Cam99(Cam99.JSH jsh, CamConfiguration camConfig) : this(jsh, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.JSH jsh, ViewingConditions viewingConditions, Limitation limitation) : base(jsh, viewingConditions, limitation) {}
-    
-    public Cam99(Cam99.QCH qch, CamConfiguration camConfig) : this(qch, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.QCH qch, ViewingConditions viewingConditions, Limitation limitation) : base(qch, viewingConditions, limitation) {}
-    
-    public Cam99(Cam99.QMH qmh, CamConfiguration camConfig) : this(qmh, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.QMH qmh, ViewingConditions viewingConditions, Limitation limitation) : base(qmh, viewingConditions, limitation) {}
-    
-    public Cam99(Cam99.QSH qsh, CamConfiguration camConfig) : this(qsh, ViewingConditions(camConfig), Limitation.None) {}
-    internal Cam99(Cam99.QSH qsh, ViewingConditions viewingConditions, Limitation limitation) : base(qsh, viewingConditions, limitation) {}
+    // public Cam99(Cam99.JCH jch, CamConfiguration camConfig) : this(jch, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.JCH jch, ViewingConditions viewingConditions) : base(jch, viewingConditions) {}
+    //
+    // public Cam99(Cam99.JMH jmh, CamConfiguration camConfig) : this(jmh, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.JMH jmh, ViewingConditions viewingConditions) : base(jmh, viewingConditions) {}
+    //
+    // public Cam99(Cam99.JSH jsh, CamConfiguration camConfig) : this(jsh, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.JSH jsh, ViewingConditions viewingConditions) : base(jsh, viewingConditions) {}
+    //
+    // public Cam99(Cam99.QCH qch, CamConfiguration camConfig) : this(qch, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.QCH qch, ViewingConditions viewingConditions) : base(qch, viewingConditions) {}
+    //
+    // public Cam99(Cam99.QMH qmh, CamConfiguration camConfig) : this(qmh, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.QMH qmh, ViewingConditions viewingConditions) : base(qmh, viewingConditions) {}
+    //
+    // public Cam99(Cam99.QSH qsh, CamConfiguration camConfig) : this(qsh, ViewingConditions(camConfig)) {}
+    // internal Cam99(Cam99.QSH qsh, ViewingConditions viewingConditions) : base(qsh, viewingConditions) {}
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {
@@ -93,19 +101,18 @@ public partial record Cam99 : Cam
         var j = 100 * Math.Pow(achromatic / view.Aw, view.C * view.Z);
 
         // step 9
-        // var q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+        var q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
 
         // step 10
         var t = 50000 / 13.0 * view.Nc * view.Ncb * et * Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2)) / (u + 0.305);
         var alpha = Math.Pow(t, 0.9) * Math.Pow(1.64 - Math.Pow(0.29, view.N), 0.73);
         var c = alpha * Math.Sqrt(j / 100.0);
-        // var m = c * Math.Pow(view.Fl, 0.25);
-        // var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
+        var m = c * Math.Pow(view.Fl, 0.25);
+        var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
 
-        return new Cam99(new Cam99.JCH(j, c, h, xyz.Limitation), view, xyz.Limitation);
-        
-        // TODO: have constructor that accepts full model like this, which builds all sub-representations?
-        // return new Cam99(j, c, h, m, s, q, xyz.Limitation);
+        // return new Cam99(new Cam99.JCH(j, c, h, xyz.Limitation), view);
+        // return new Cam99(j, c, h, m, s, q, view, xyz.Limitation);
+        return new Cam99(new Cam.Model(j, c, h, m, s, q, xyz.Limitation), view);
     }
     
     internal static Xyz ToXyz(Cam99 cam, CamConfiguration camConfig, ChromaticAdaptor chromaticAdaptor)

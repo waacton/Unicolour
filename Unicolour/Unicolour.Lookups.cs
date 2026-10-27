@@ -47,12 +47,12 @@ public partial class Unicolour
             ColourSpace.Hct => Hct,
             ColourSpace.Munsell => Munsell,
             
-            ColourSpace.Cam99Jch => Cam99.Jch,
-            ColourSpace.Cam99Jmh => Cam99.Jmh,
-            ColourSpace.Cam99Jsh => Cam99.Jsh,
-            ColourSpace.Cam99Qch => Cam99.Qch,
-            ColourSpace.Cam99Qmh => Cam99.Qmh,
-            ColourSpace.Cam99Qsh => Cam99.Qsh,
+            ColourSpace.Cam99Jch => Cam99Jch,
+            ColourSpace.Cam99Jmh => Cam99Jmh,
+            ColourSpace.Cam99Jsh => Cam99Jsh,
+            ColourSpace.Cam99Qch => Cam99Qch,
+            ColourSpace.Cam99Qmh => Cam99Qmh,
+            ColourSpace.Cam99Qsh => Cam99Qsh,
             ColourSpace.Cam99Ucs => Cam99Ucs,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
@@ -102,12 +102,12 @@ public partial class Unicolour
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
             
-            ColourSpace.Cam99Jch => new Cam99.JCH(first, second, third, limitation),
-            ColourSpace.Cam99Jmh => new Cam99.JMH(first, second, third, limitation),
-            ColourSpace.Cam99Jsh => new Cam99.JSH(first, second, third, limitation),
-            ColourSpace.Cam99Qch => new Cam99.QCH(first, second, third, limitation),
-            ColourSpace.Cam99Qmh => new Cam99.QMH(first, second, third, limitation),
-            ColourSpace.Cam99Qsh => new Cam99.QSH(first, second, third, limitation),
+            ColourSpace.Cam99Jch => new Cam99Jch(first, second, third, limitation),
+            ColourSpace.Cam99Jmh => new Cam99Jmh(first, second, third, limitation),
+            ColourSpace.Cam99Jsh => new Cam99Jsh(first, second, third, limitation),
+            ColourSpace.Cam99Qch => new Cam99Qch(first, second, third, limitation),
+            ColourSpace.Cam99Qmh => new Cam99Qmh(first, second, third, limitation),
+            ColourSpace.Cam99Qsh => new Cam99Qsh(first, second, third, limitation),
             ColourSpace.Cam99Ucs => new Cam99Ucs(first, second, third, limitation),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };

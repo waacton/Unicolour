@@ -60,6 +60,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     internal readonly ColourRepresentation SourceRepresentation;
     
     public Rgb Rgb => Get(ref rgb, EvaluateRgb);
+    public Rgb255 Rgb255 => Rgb.Byte255;
     public RgbLinear RgbLinear => Get(ref rgbLinear, EvaluateRgbLinear);
     public Hsb Hsb => Get(ref hsb, EvaluateHsb);
     public Hsl Hsl => Get(ref hsl, EvaluateHsl);
@@ -100,6 +101,12 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
     
     public Cam99 Cam99 => Get(ref cam99, EvaluateCam99);
+    public Cam99Jch Cam99Jch => Cam99.Jch;
+    public Cam99Jmh Cam99Jmh => Cam99.Jmh;
+    public Cam99Jsh Cam99Jsh => Cam99.Jsh;
+    public Cam99Qch Cam99Qch => Cam99.Qch;
+    public Cam99Qmh Cam99Qmh => Cam99.Qmh;
+    public Cam99Qsh Cam99Qsh => Cam99.Qsh;
     public Cam99Ucs Cam99Ucs => Get(ref cam99Ucs, EvaluateCam99Ucs);
     
     public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile

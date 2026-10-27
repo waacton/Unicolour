@@ -1,34 +1,35 @@
 ﻿using static Wacton.Unicolour.Cam;
 using static Wacton.Unicolour.Utils;
+using Jch = Wacton.Unicolour.Cam99Jch;
+using Jmh = Wacton.Unicolour.Cam99Jmh;
+using Jsh = Wacton.Unicolour.Cam99Jsh;
+using Qch = Wacton.Unicolour.Cam99Qch;
+using Qmh = Wacton.Unicolour.Cam99Qmh;
+using Qsh = Wacton.Unicolour.Cam99Qsh;
 
 namespace Wacton.Unicolour;
 
-public partial record Cam99
+public record Cam99
 {
     private readonly ColourRepresentation? source;
     
     public Model? model;
-    private Cam99.JCH? jch;
-    private Cam99.JMH? jmh;
-    private Cam99.JSH? jsh;
-    private Cam99.QCH? qch;
-    private Cam99.QMH? qmh;
-    private Cam99.QSH? qsh;
+    private Jch? jch;
+    private Jmh? jmh;
+    private Jsh? jsh;
+    private Qch? qch;
+    private Qmh? qmh;
+    private Qsh? qsh;
     
-    public Model BackingModel => model ??= GetModel();
-    public Cam99.JCH Jch => jch ??= source as Cam99.JCH ?? new Cam99.JCH(BackingModel.J, BackingModel.C, BackingModel.H, BackingModel.Limitation);
-    public Cam99.JMH Jmh => jmh ??= source as Cam99.JMH ?? new Cam99.JMH(BackingModel.J, BackingModel.M, BackingModel.H, BackingModel.Limitation);
-    public Cam99.JSH Jsh => jsh ??= source as Cam99.JSH ?? new Cam99.JSH(BackingModel.J, BackingModel.S, BackingModel.H, BackingModel.Limitation);
-    public Cam99.QCH Qch => qch ??= source as Cam99.QCH ?? new Cam99.QCH(BackingModel.Q, BackingModel.C, BackingModel.H, BackingModel.Limitation);
-    public Cam99.QMH Qmh => qmh ??= source as Cam99.QMH ?? new Cam99.QMH(BackingModel.Q, BackingModel.M, BackingModel.H, BackingModel.Limitation);
-    public Cam99.QSH Qsh => qsh ??= source as Cam99.QSH ?? new Cam99.QSH(BackingModel.Q, BackingModel.S, BackingModel.H, BackingModel.Limitation);
+    public Model Model => model ??= GetModel();
+    public Jch Jch => jch ??= source as Jch ?? new Jch(Model.J, Model.C, Model.H, Model.Limitation);
+    public Jmh Jmh => jmh ??= source as Jmh ?? new Jmh(Model.J, Model.M, Model.H, Model.Limitation);
+    public Jsh Jsh => jsh ??= source as Jsh ?? new Jsh(Model.J, Model.S, Model.H, Model.Limitation);
+    public Qch Qch => qch ??= source as Qch ?? new Qch(Model.Q, Model.C, Model.H, Model.Limitation);
+    public Qmh Qmh => qmh ??= source as Qmh ?? new Qmh(Model.Q, Model.M, Model.H, Model.Limitation);
+    public Qsh Qsh => qsh ??= source as Qsh ?? new Qsh(Model.Q, Model.S, Model.H, Model.Limitation);
     internal ViewingConditions View { get; }
     
-    internal Cam99(ColourRepresentation source, ViewingConditions viewingConditions)
-    {
-        this.source = source;
-        View = viewingConditions;
-    }
     
     internal Cam99(Model model, ViewingConditions viewingConditions)
     {
@@ -36,6 +37,67 @@ public partial record Cam99
         this.model = model;
         View = viewingConditions;
     }
+    
+    internal Cam99(ColourRepresentation source, ViewingConditions viewingConditions)
+    {
+        this.source = source;
+        View = viewingConditions;
+    }
+    
+    private Model GetModel()
+    {
+        Console.WriteLine($">>> INITIALISING MODEL FROM {source.GetType()} ({source})");
+        double j, c, h, m, s, q;
+
+        // steps 8 - 10 (from XYZ)
+        switch (source)
+        {
+            case Cam99Jch:
+                (j, c, h) = Jch;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                m = c * Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99Jmh:
+                (j, m, h) = Jmh;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                c = m / Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99Jsh:
+                (j, s, h) = Jsh;
+                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
+                m = c * Math.Pow(View.Fl, 0.25);
+                break;
+            case Cam99Qch:
+                (q, c, h) = Qch;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                m = c * Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(View.Fl, 0.25))) * 100;
+                break;
+            case Cam99Qmh:
+                (q, m, h) = Qmh;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                c = m / Math.Pow(View.Fl, 0.25);
+                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+                break;
+            case Cam99Qsh:
+                (q, s, h) = Qsh;
+                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
+                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
+                m = c * Math.Pow(View.Fl, 0.25);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+        return new Model(j, c, h, m, s, q, source.Limitation);
+    }
+    
+    // TODO: try to reuse these kind of things?
+    private double Q(double j) => 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
+    private double J(double q) => Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {
@@ -113,7 +175,7 @@ public partial record Cam99
         var m = c * Math.Pow(view.Fl, 0.25);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
 
-        return new Cam99(new Cam.Model(j, c, h, m, s, q, xyz.Limitation), view);
+        return new Cam99(new Model(j, c, h, m, s, q, xyz.Limitation), view);
     }
     
     internal static Xyz ToXyz(Cam99 cam, WhitePoint whitePoint, ChromaticAdaptor chromaticAdaptor)
@@ -197,59 +259,4 @@ public partial record Cam99
         var aw = (2 * raw + gaw + baw / 20.0 - 0.305) * nbb;
         return new ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
-    
-    internal Model GetModel()
-    {
-        Console.WriteLine($">>> INITIALISING MODEL FROM {source.GetType()} ({source})");
-        double j, c, h, m, s, q;
-
-        // steps 8 - 10 (from XYZ)
-        switch (source)
-        {
-            case Cam99.JCH:
-                (j, c, h) = Jch;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                m = c * Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
-                break;
-            case Cam99.JMH:
-                (j, m, h) = Jmh;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                c = m / Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
-                break;
-            case Cam99.JSH:
-                (j, s, h) = Jsh;
-                q = 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
-                m = c * Math.Pow(View.Fl, 0.25);
-                break;
-            case Cam99.QCH:
-                (q, c, h) = Qch;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                m = c * Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : Math.Sqrt(c / (q / Math.Pow(View.Fl, 0.25))) * 100;
-                break;
-            case Cam99.QMH:
-                (q, m, h) = Qmh;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                c = m / Math.Pow(View.Fl, 0.25);
-                s = q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
-                break;
-            case Cam99.QSH:
-                (q, s, h) = Qsh;
-                j = Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
-                c = Math.Pow(s / 100.0, 2) * (q / Math.Pow(View.Fl, 0.25));
-                m = c * Math.Pow(View.Fl, 0.25);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        
-        return new Model(j, c, h, m, s, q, source.Limitation);
-    }
-    
-    // TODO: try to reuse these kind of things?
-    private double Q(double j) => 4 / View.C * Math.Pow(j / 100.0, 0.5) * (View.Aw + 4) * Math.Pow(View.Fl, 0.25);
-    private double J(double q) => Math.Pow(q / Math.Pow(View.Fl, 0.25) / (View.Aw + 4) / (4 / View.C), 1 / 0.5) * 100;
 }

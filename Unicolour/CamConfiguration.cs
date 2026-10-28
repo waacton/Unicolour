@@ -55,8 +55,8 @@ public class CamConfiguration
         _ => throw new ArgumentOutOfRangeException()
     };
     
-    private readonly Lazy<Cam.ViewingConditions> view99;
-    internal Cam.ViewingConditions View99 => view99.Value;
+    private readonly Lazy<Cam.ViewingConditions> view02;
+    internal Cam.ViewingConditions View02 => view02.Value;
 
     public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround, string name = Utils.Unnamed)
     {
@@ -64,7 +64,7 @@ public class CamConfiguration
         AdaptingLuminance = adaptingLuminance;
         BackgroundLuminance = backgroundLuminance;
         Surround = surround;
-        view99 = new Lazy<Cam.ViewingConditions>(() => Cam99.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc));
+        view02 = new Lazy<Cam.ViewingConditions>(() => Cam02.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc));
         Name = name;
     }
 

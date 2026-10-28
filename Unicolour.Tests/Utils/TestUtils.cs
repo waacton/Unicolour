@@ -241,10 +241,12 @@ internal static class TestUtils
     {
         if (object1 == null || object2 == null)
         {
+            Console.WriteLine("something null");
             Assert.That(object1, Is.EqualTo(object2));
             return;
         }
         
+        Console.WriteLine("nothing null");
         Assert.That(object1, Is.EqualTo(object2));
         Assert.That(object1.Equals(object2));
         Assert.That(object1.GetHashCode(), Is.EqualTo(object2.GetHashCode()));
@@ -303,7 +305,13 @@ internal static class TestUtils
         { typeof(Okhwb), ColourSpace.Okhwb },
         { typeof(Oklrab), ColourSpace.Oklrab },
         { typeof(Oklrch), ColourSpace.Oklrch },
-        { typeof(Cam02), ColourSpace.Cam02 },
+        { typeof(Cam02Jch), ColourSpace.Cam02Jch },
+        { typeof(Cam02Jmh), ColourSpace.Cam02Jmh },
+        { typeof(Cam02Jsh), ColourSpace.Cam02Jsh },
+        { typeof(Cam02Qch), ColourSpace.Cam02Qch },
+        { typeof(Cam02Qmh), ColourSpace.Cam02Qmh },
+        { typeof(Cam02Qsh), ColourSpace.Cam02Qsh },
+        { typeof(Cam02Ucs), ColourSpace.Cam02Ucs },
         { typeof(Cam16), ColourSpace.Cam16 },
         { typeof(Hct), ColourSpace.Hct },
         { typeof(Munsell), ColourSpace.Munsell }

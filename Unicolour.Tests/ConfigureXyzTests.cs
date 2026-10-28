@@ -266,7 +266,7 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     
-    [Test]
+    [Test] // TODO: non-UCS spaces?
     public void Cam02WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
@@ -275,12 +275,13 @@ public class ConfigureXyzTests
         }
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
-        var initialCam = new Cam02(62.86, 40.81, -1.18, initialCamConfig);
-        var expectedXyz = Cam02.ToXyz(initialCam, initialCamConfig, XyzConfiguration.D65.ChromaticAdaptor);
+        var initialCamUcs = new Cam02Ucs(62.86, 40.81, -1.18);
+        var initialCam = Cam02Ucs.ToCam02(initialCamUcs, initialCamConfig.View02);
+        var expectedXyz = Cam02.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
-        var cam = Cam02.FromXyz(expectedXyz, camConfig, XyzConfiguration.D65.ChromaticAdaptor);
-        var xyz = Cam02.ToXyz(cam, camConfig, XyzConfiguration.D65.ChromaticAdaptor);
+        var cam = Cam02.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View02, XyzConfiguration.D65.ChromaticAdaptor);
+        var xyz = Cam02.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyz.Triplet, expectedXyz.Triplet, 0.00000000001);
     }
     

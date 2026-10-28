@@ -10,14 +10,16 @@ public class RoundtripCam02Tests
     private static readonly XyzConfiguration XyzConfig = XyzConfiguration.D65;
     private static readonly CamConfiguration CamConfig = CamConfiguration.StandardRgb;
     
-    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Cam02, 1500);
-
-    [TestCaseSource(nameof(Triplets))]
+    internal static readonly List<ColourTriplet> Triplets = Rng.Triplets(ColourSpace.Cam02Ucs, 1500);
+    
+    [TestCaseSource(nameof(Triplets))] // TODO: this becomes 2 separate roundtrip tests
     public void ViaXyz(ColourTriplet triplet)
     {
-        var original = new Cam02(triplet.First, triplet.Second, triplet.Third, CamConfig);
-        var xyz = Cam02.ToXyz(original, CamConfig, XyzConfig.ChromaticAdaptor);
-        var roundtrip = Cam02.FromXyz(xyz, CamConfig, XyzConfig.ChromaticAdaptor);
+        var original = new Cam02Ucs(triplet.First, triplet.Second, triplet.Third);
+        var cam = Cam02Ucs.ToCam02(original, CamConfig.View02);
+        var xyz = Cam02.ToXyz(cam, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
+        var roundCam = Cam02.FromXyz(xyz, CamConfig.WhitePoint, CamConfig.View02, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Cam02Ucs.FromCam02(roundCam);
         
         // CAM <-> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);

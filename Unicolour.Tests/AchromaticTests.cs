@@ -460,7 +460,7 @@ public class AchromaticTests
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b), expected);
+    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Ucs, j, a, b), expected); // TODO: other CAM spaces
     
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
@@ -507,7 +507,10 @@ public class AchromaticTests
     
     private static readonly ColourSpace[] NaNProducingSpaces =
     [
-        ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16, ColourSpace.Hct
+        ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, 
+        ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh, ColourSpace.Cam02Ucs,
+        ColourSpace.Cam16, 
+        ColourSpace.Hct
     ];
     
     private static void AssertAchromatic(Unicolour colour)

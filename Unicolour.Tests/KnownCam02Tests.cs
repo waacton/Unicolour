@@ -92,11 +92,11 @@ public class KnownCam02Tests
         var (x, y, z) = whitePoint;
         var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
         var xyz = new Xyz(x, y, z, whitePoint);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
+        var cam02 = Cam02.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Cam02Ucs.FromCam02(cam02);
         
         AssertModelDouble(cam02.Model.J, 100);
-        AssertModelDouble(cam02.Ucs.J, 100);
-        AssertModelDouble(cam02.J, 100);
+        AssertModelDouble(cam02Ucs.J, 100);
     }
     
     // when XYZ input is all zero, i.e. fully black
@@ -119,9 +119,10 @@ public class KnownCam02Tests
     private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
+        var cam02 = Cam02.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Cam02Ucs.FromCam02(cam02);
         AssertModel(cam02.Model, expectedModel);
-        AssertUcs(cam02, expectedUcs);
+        AssertUcs(cam02Ucs, expectedUcs);
     }
     
     private static void AssertModel(Model actual, Model expected)
@@ -148,12 +149,8 @@ public class KnownCam02Tests
         AssertModelDouble(actual.Brightness, expected.Q);
     }
     
-    private static void AssertUcs(Cam02 actual, Ucs expected)
+    private static void AssertUcs(Cam02Ucs actual, Ucs expected)
     {
-        AssertUcsDouble(actual.Ucs.J, expected.J);
-        AssertUcsDouble(actual.Ucs.A, expected.A);
-        AssertUcsDouble(actual.Ucs.B, expected.B);
-        
         AssertUcsDouble(actual.J, expected.J);
         AssertUcsDouble(actual.A, expected.A);
         AssertUcsDouble(actual.B, expected.B);

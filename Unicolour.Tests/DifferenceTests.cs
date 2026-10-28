@@ -284,7 +284,7 @@ public class DifferenceTests
     [TestCase(DeltaE.Hyab, ColourSpace.Lab)]
     [TestCase(DeltaE.Ok, ColourSpace.Oklab)]
     [TestCase(DeltaE.Ok2, ColourSpace.Oklab)]
-    [TestCase(DeltaE.Cam02, ColourSpace.Cam02)]
+    [TestCase(DeltaE.Cam02, ColourSpace.Cam02Ucs)]
     [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)
     {

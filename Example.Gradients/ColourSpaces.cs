@@ -24,10 +24,10 @@ public static class ColourSpaces
         ColourSpace.Tsl, ColourSpace.Xyb,
         ColourSpace.Lms, ColourSpace.Ipt, ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz,
         ColourSpace.Oklab, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrab, ColourSpace.Oklrch,
-        ColourSpace.Cam02, ColourSpace.Cam16,
+        ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh, ColourSpace.Cam02Ucs,
+        ColourSpace.Cam16,
         ColourSpace.Hct,
-        ColourSpace.Munsell,
-        ColourSpace.Cam99Jch, ColourSpace.Cam99Jmh, ColourSpace.Cam99Jsh, ColourSpace.Cam99Qch, ColourSpace.Cam99Qmh, ColourSpace.Cam99Qsh, ColourSpace.Cam99Ucs
+        ColourSpace.Munsell
     ];
     
     public static void PurpleToOrange()

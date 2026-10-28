@@ -125,7 +125,7 @@ public class EqualityTests
     private static void AssertUnicoloursEqual(Unicolour colour1, Unicolour colour2)
     {
         AssertEqual(colour1.Alpha, colour2.Alpha);
-        AssertEqual(colour1.Cam02, colour2.Cam02);
+        AssertEqual(colour1.Cam02, colour2.Cam02); // TODO: this fails equality check... unless something like .Model is called first to create backing field :/
         AssertEqual(colour1.Cam16, colour2.Cam16);
         AssertEqual(colour1.Chromaticity, colour2.Chromaticity);
         AssertEqual(colour1.Description, colour2.Description);
@@ -163,7 +163,7 @@ public class EqualityTests
         AssertEqual(colour1.Oklrch, colour2.Oklrch);
         AssertEqual(colour1.RelativeLuminance, colour2.RelativeLuminance);
         AssertEqual(colour1.Rgb, colour2.Rgb);
-        AssertEqual(colour1.Rgb.Byte255, colour2.Rgb.Byte255);
+        AssertEqual(colour1.Rgb255, colour2.Rgb255);
         AssertEqual(colour1.RgbLinear, colour2.RgbLinear);
         AssertEqual(colour1.Temperature, colour2.Temperature);
         AssertEqual(colour1.Tsl, colour2.Tsl);
@@ -218,6 +218,7 @@ public class EqualityTests
         AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
         AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);
         AssertEqual(config1.Cam.Surround, config2.Cam.Surround);
+        AssertEqual(config1.Cam.View02, config2.Cam.View02);
         AssertEqual(config1.DynamicRange.WhiteLuminance, config2.DynamicRange.WhiteLuminance);
         AssertEqual(config1.DynamicRange.MaxLuminance, config2.DynamicRange.MaxLuminance);
         AssertEqual(config1.DynamicRange.MinLuminance, config2.DynamicRange.MinLuminance);

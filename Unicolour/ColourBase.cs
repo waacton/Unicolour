@@ -47,4 +47,24 @@ public abstract record ColourBase
         Values = values;
         LimitationBaseline = limitationBaseline;
     }
+    
+    // arrays use reference equality so needs overriding to check only values 
+    public virtual bool Equals(ColourBase? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Values.SequenceEqual(other.Values) && LimitationBaseline == other.LimitationBaseline;
+        // return Values.SequenceEqual(other.Values) && IsTripletAchromatic == other.IsTripletAchromatic && LimitationBaseline == other.LimitationBaseline;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = Values.Aggregate(0, (current, value) => (current * 397) ^ value.GetHashCode());
+            // hashCode = (hashCode * 397) ^ IsTripletAchromatic.GetHashCode();
+            hashCode = (hashCode * 397) ^ (int)LimitationBaseline;
+            return hashCode;
+        }
+    }
 }

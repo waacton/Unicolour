@@ -4,140 +4,78 @@ namespace Wacton.Unicolour;
 
 public partial class Unicolour : IEquatable<Unicolour>
 {
-    private Rgb? rgb;
-    private RgbLinear? rgbLinear;
-    private Hsb? hsb;
-    private Hsl? hsl;
-    private Hwb? hwb;
-    private Hsi? hsi;
-    private Xyz? xyz;
-    private Xyy? xyy;
-    private Wxy? wxy;
-    private Lab? lab;
-    private Lchab? lchab;
-    private Luv? luv;
-    private Lchuv? lchuv;
-    private Hsluv? hsluv;
-    private Hpluv? hpluv;
-    private Ypbpr? ypbpr;
-    private Ycbcr? ycbcr;
-    private Ycgco? ycgco;
-    private Yuv? yuv;
-    private Yiq? yiq;
-    private Ydbdr? ydbdr;
-    private Tsl? tsl;
-    private Xyb? xyb;
-    private Lms? lms;
-    private Ipt? ipt;
-    private Ictcp? ictcp;
-    private Jzazbz? jzazbz;
-    private Jzczhz? jzczhz;
-    private Oklab? oklab;
-    private Oklch? oklch;
-    private Okhsv? okhsv;
-    private Okhsl? okhsl;
-    private Okhwb? okhwb;
-    private Oklrab? oklrab;
-    private Oklrch? oklrch;
-    private Cam02? cam02;
-    private Cam16? cam16;
-    private Hct? hct;
-    private Munsell? munsell;
-    private Channels? icc;
-
-    private Cam99? cam99;
-    private Cam99Ucs? cam99Ucs;
-    
-    private Temperature? temperature;
-    private bool? isInPointerGamut;
-    private bool? isInMacAdamLimits;
-    private bool? isImaginary;
-    private string? description;
-    private string? source;
-    
     public Configuration Configuration { get; }
     internal readonly ColourSpace SourceColourSpace;
     internal readonly ColourRepresentation SourceRepresentation;
     
-    public Rgb Rgb => Get(ref rgb, EvaluateRgb);
+    public Rgb Rgb => field ??= EvaluateRgb();
     public Rgb255 Rgb255 => Rgb.Byte255;
-    public RgbLinear RgbLinear => Get(ref rgbLinear, EvaluateRgbLinear);
-    public Hsb Hsb => Get(ref hsb, EvaluateHsb);
-    public Hsl Hsl => Get(ref hsl, EvaluateHsl);
-    public Hwb Hwb => Get(ref hwb, EvaluateHwb);
-    public Hsi Hsi => Get(ref hsi, EvaluateHsi);
-    public Xyz Xyz => Get(ref xyz, EvaluateXyz);
-    public Xyy Xyy => Get(ref xyy, EvaluateXyy);
-    public Wxy Wxy => Get(ref wxy, EvaluateWxy);
-    public Lab Lab => Get(ref lab, EvaluateLab);
-    public Lchab Lchab => Get(ref lchab, EvaluateLchab);
-    public Luv Luv => Get(ref luv, EvaluateLuv);
-    public Lchuv Lchuv => Get(ref lchuv, EvaluateLchuv);
-    public Hsluv Hsluv => Get(ref hsluv, EvaluateHsluv);
-    public Hpluv Hpluv => Get(ref hpluv, EvaluateHpluv);
-    public Ypbpr Ypbpr => Get(ref ypbpr, EvaluateYpbpr);
-    public Ycbcr Ycbcr => Get(ref ycbcr, EvaluateYcbcr);
-    public Ycgco Ycgco => Get(ref ycgco, EvaluateYcgco);
-    public Yuv Yuv => Get(ref yuv, EvaluateYuv);
-    public Yiq Yiq => Get(ref yiq, EvaluateYiq);
-    public Ydbdr Ydbdr => Get(ref ydbdr, EvaluateYdbdr);
-    public Tsl Tsl => Get(ref tsl, EvaluateTsl);
-    public Xyb Xyb => Get(ref xyb, EvaluateXyb);
-    public Lms Lms => Get(ref lms, EvaluateLms);
-    public Ipt Ipt => Get(ref ipt, EvaluateIpt);
-    public Ictcp Ictcp => Get(ref ictcp, EvaluateIctcp);
-    public Jzazbz Jzazbz => Get(ref jzazbz, EvaluateJzazbz);
-    public Jzczhz Jzczhz => Get(ref jzczhz, EvaluateJzczhz);
-    public Oklab Oklab => Get(ref oklab, EvaluateOklab);
-    public Oklch Oklch => Get(ref oklch, EvaluateOklch);
-    public Okhsv Okhsv => Get(ref okhsv, EvaluateOkhsv);
-    public Okhsl Okhsl => Get(ref okhsl, EvaluateOkhsl);
-    public Okhwb Okhwb => Get(ref okhwb, EvaluateOkhwb);
-    public Oklrab Oklrab => Get(ref oklrab, EvaluateOklrab);
-    public Oklrch Oklrch => Get(ref oklrch, EvaluateOklrch);
-    public Cam02 Cam02 => Get(ref cam02, EvaluateCam02);
-    public Cam16 Cam16 => Get(ref cam16, EvaluateCam16);
-    public Hct Hct => Get(ref hct, EvaluateHct);
-    public Munsell Munsell => Get(ref munsell, EvaluateMunsell);
+    public RgbLinear RgbLinear => field ??= EvaluateRgbLinear();
+    public Hsb Hsb => field ??= EvaluateHsb();
+    public Hsl Hsl => field ??= EvaluateHsl();
+    public Hwb Hwb => field ??= EvaluateHwb();
+    public Hsi Hsi => field ??= EvaluateHsi();
+    public Xyz Xyz => field ??= EvaluateXyz();
+    public Xyy Xyy => field ??= EvaluateXyy();
+    public Wxy Wxy => field ??= EvaluateWxy();
+    public Lab Lab => field ??= EvaluateLab();
+    public Lchab Lchab => field ??= EvaluateLchab();
+    public Luv Luv => field ??= EvaluateLuv();
+    public Lchuv Lchuv => field ??= EvaluateLchuv();
+    public Hsluv Hsluv => field ??= EvaluateHsluv();
+    public Hpluv Hpluv => field ??= EvaluateHpluv();
+    public Ypbpr Ypbpr => field ??= EvaluateYpbpr();
+    public Ycbcr Ycbcr => field ??= EvaluateYcbcr();
+    public Ycgco Ycgco => field ??= EvaluateYcgco();
+    public Yuv Yuv => field ??= EvaluateYuv();
+    public Yiq Yiq => field ??= EvaluateYiq();
+    public Ydbdr Ydbdr => field ??= EvaluateYdbdr();
+    public Tsl Tsl => field ??= EvaluateTsl();
+    public Xyb Xyb => field ??= EvaluateXyb();
+    public Lms Lms => field ??= EvaluateLms();
+    public Ipt Ipt => field ??= EvaluateIpt();
+    public Ictcp Ictcp => field ??= EvaluateIctcp();
+    public Jzazbz Jzazbz => field ??= EvaluateJzazbz();
+    public Jzczhz Jzczhz => field ??= EvaluateJzczhz();
+    public Oklab Oklab => field ??= EvaluateOklab();
+    public Oklch Oklch => field ??= EvaluateOklch();
+    public Okhsv Okhsv => field ??= EvaluateOkhsv();
+    public Okhsl Okhsl => field ??= EvaluateOkhsl();
+    public Okhwb Okhwb => field ??= EvaluateOkhwb();
+    public Oklrab Oklrab => field ??= EvaluateOklrab();
+    public Oklrch Oklrch => field ??= EvaluateOklrch();
+    public Cam02 Cam02 => field ??= EvaluateCam02();
+    public Cam02Jch Cam02Jch => Cam02.Jch;
+    public Cam02Jmh Cam02Jmh => Cam02.Jmh;
+    public Cam02Jsh Cam02Jsh => Cam02.Jsh;
+    public Cam02Qch Cam02Qch => Cam02.Qch;
+    public Cam02Qmh Cam02Qmh => Cam02.Qmh;
+    public Cam02Qsh Cam02Qsh => Cam02.Qsh;
+    public Cam02Ucs Cam02Ucs => field ??= EvaluateCam02Ucs();
+    public Cam16 Cam16 => field ??= EvaluateCam16();
+    public Hct Hct => field ??= EvaluateHct();
+    public Munsell Munsell => field ??= EvaluateMunsell();
     
-    public Cam99 Cam99 => Get(ref cam99, EvaluateCam99);
-    public Cam99Jch Cam99Jch => Cam99.Jch;
-    public Cam99Jmh Cam99Jmh => Cam99.Jmh;
-    public Cam99Jsh Cam99Jsh => Cam99.Jsh;
-    public Cam99Qch Cam99Qch => Cam99.Qch;
-    public Cam99Qmh Cam99Qmh => Cam99.Qmh;
-    public Cam99Qsh Cam99Qsh => Cam99.Qsh;
-    public Cam99Ucs Cam99Ucs => Get(ref cam99Ucs, EvaluateCam99Ucs);
-    
-    public Channels Icc => Get(ref icc, () => Configuration.Icc.HasSupportedProfile
+    public Channels Icc => field ??= Configuration.Icc.HasSupportedProfile
             ? Channels.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.Icc)
-            : Channels.UncalibratedFromRgb(Rgb));
+            : Channels.UncalibratedFromRgb(Rgb);
     
     public string Hex => isUnseen ? UnseenName : !IsInRgbGamut ? "-" : Rgb.Byte255.Clipped.Hex;
     public double RelativeLuminance => Xyz.IsNaN ? double.NaN : Xyz.Y; // will meet https://www.w3.org/TR/WCAG21/#dfn-relative-luminance when sRGB (middle row of RGB -> XYZ matrix)
     public Chromaticity Chromaticity => Xyy.IsNaN ? new Chromaticity(double.NaN, double.NaN) : Xyy.Chromaticity;
-    public Temperature Temperature => Get(ref temperature, () => Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian));
+    public Temperature Temperature => field ??= Temperature.FromChromaticity(Chromaticity, Configuration.Xyz.Planckian);
     public double DominantWavelength => Wxy.IsNaN ? double.NaN : Wxy.W;
     public double ExcitationPurity => Wxy.IsNaN ? double.NaN : Wxy.X;
+    
+    private bool? isInPointerGamut = null, isInMacAdamLimits = null, isImaginary = null; // want only the backing field to be nullable, `field` keyword does not support this
     public bool IsInRgbGamut => Rgb.IsInGamut;
-    public bool IsInPointerGamut => Get(ref isInPointerGamut, () => PointerGamut.IsInGamut(this));
-    public bool IsInMacAdamLimits => Get(ref isInMacAdamLimits, () => MacAdamLimits.IsInLimits(this));
-    public bool IsImaginary => Get(ref isImaginary, () => !Configuration.Xyz.SpectralBoundary.Contains(Chromaticity));
-    public string Description => Get(ref description, () => isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl)));
+    public bool IsInPointerGamut => isInPointerGamut ??= PointerGamut.IsInGamut(this);
+    public bool IsInMacAdamLimits => isInMacAdamLimits ??= MacAdamLimits.IsInLimits(this);
+    public bool IsImaginary => isImaginary ??= !Configuration.Xyz.SpectralBoundary.Contains(Chromaticity);
+    
+    public string Description => field ??=isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Alpha Alpha { get; }
-    private string Source => Get(ref source, () => $"{SourceColourSpace} {SourceRepresentation}");
-    
-    private static T Get<T>(ref T? backingField, Func<T> evaluate) where T : class
-    {
-        backingField ??= evaluate();
-        return backingField;
-    }
-    
-    private static bool Get(ref bool? backingField, Func<bool> evaluate)
-    {
-        backingField ??= evaluate();
-        return (bool)backingField;
-    }
+    private string Source => field ??= $"{SourceColourSpace} {SourceRepresentation}";
     
     internal Unicolour(Configuration config, ColourSpace colourSpace, double first, double second, double third, double alpha, Limitation limitation)
     {
@@ -244,6 +182,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
+        var spaceequals = ColourSpaceEquals(other);
+        var alpaequals = Alpha.Equals(other.Alpha);
         return ColourSpaceEquals(other) && Alpha.Equals(other.Alpha);
     }
 
@@ -256,7 +196,8 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     private bool ColourSpaceEquals(Unicolour other)
     {
-        return SourceRepresentation.Equals(other.SourceRepresentation);
+        var equal = SourceRepresentation.Equals(other.SourceRepresentation);
+        return equal;
     }
 
     public override int GetHashCode()

@@ -41,7 +41,13 @@ internal class Gamut
     private static readonly Gamut Okhwb = new(new Range(0, 360), new Range(0, 1), new Range(0, 1));
     private static readonly Gamut Oklrab = new(new Range(0, 1), new Range(-0.5, 0.5), new Range(-0.5, 0.5));
     private static readonly Gamut Oklrch = new(new Range(0, 1), new Range(0, 0.5), new Range(0, 360));
-    private static readonly Gamut Cam02 = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
+    private static readonly Gamut Cam02Jch = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Jmh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Jsh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Qch = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Qmh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Qsh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam02Ucs = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
     private static readonly Gamut Cam16 = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
     private static readonly Gamut Hct = new(new Range(0, 360), new Range(0, 120), new Range(0, 100));
     private static readonly Gamut Munsell = new(new Range(0, 360), new Range(0, 10), new Range(0, 26));
@@ -105,7 +111,13 @@ internal class Gamut
         { ColourSpace.Okhwb, Okhwb },
         { ColourSpace.Oklrab, Oklrab },
         { ColourSpace.Oklrch, Oklrch },
-        { ColourSpace.Cam02, Cam02 },
+        { ColourSpace.Cam02Jch, Cam02Jch },
+        { ColourSpace.Cam02Jmh, Cam02Jmh },
+        { ColourSpace.Cam02Jsh, Cam02Jsh },
+        { ColourSpace.Cam02Qch, Cam02Qch },
+        { ColourSpace.Cam02Qmh, Cam02Qmh },
+        { ColourSpace.Cam02Qsh, Cam02Qsh },
+        { ColourSpace.Cam02Ucs, Cam02Ucs },
         { ColourSpace.Cam16, Cam16 },
         { ColourSpace.Hct, Hct },
         { ColourSpace.Munsell, Munsell }

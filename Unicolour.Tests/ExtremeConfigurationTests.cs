@@ -85,7 +85,7 @@ public class ExtremeConfigurationTests
         TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.106, 0.107, 0.005));
     }
     
-    [Test, Combinatorial]
+    [Test, Combinatorial] // TODO: non-UCS spaces?
     public void Cam02(
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whitePoint, 
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double adaptingLuminance,
@@ -93,7 +93,7 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfig: camConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02, 62.86, 40.81, -1.18));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Ucs, 62.86, 40.81, -1.18));
     }
     
     [Test, Combinatorial]

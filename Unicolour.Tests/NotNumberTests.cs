@@ -134,7 +134,7 @@ public class NotNumberTests
     public void Oklrch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklrch, l, c, h));
     
     [TestCaseSource(nameof(TestData))]
-    public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02, j, a, b));
+    public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02Ucs, j, a, b)); // TODO: non-UCS spaces
     
     [TestCaseSource(nameof(TestData))]
     public void Cam16(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16, j, a, b));

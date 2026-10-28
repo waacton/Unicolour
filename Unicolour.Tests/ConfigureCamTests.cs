@@ -6,17 +6,19 @@ namespace Wacton.Unicolour.Tests;
 
 public class ConfigureCamTests
 {
-    [Test]
+    [Test] // TODO: non-UCS spaces?
     public void XyzWhitePointRoundTripViaCam02([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
         var initialXyz = new Xyz(0.4676, 0.2387, 0.2974, initialXyzConfig.WhitePoint);
-        var expectedCam = Cam02.FromXyz(initialXyz, CamConfiguration.StandardRgb, initialXyzConfig.ChromaticAdaptor);
+        var expectedCam = Cam02.FromXyz(initialXyz, CamConfiguration.StandardRgb.WhitePoint, CamConfiguration.StandardRgb.View02, initialXyzConfig.ChromaticAdaptor);
+        var expectedCamUcs = Cam02Ucs.FromCam02(expectedCam);
 
         var xyzConfig = new XyzConfiguration(xyzIlluminant, Observer.Degree2);
-        var xyz = Cam02.ToXyz(expectedCam, CamConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
-        var cam = Cam02.FromXyz(xyz, CamConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(cam.Triplet, expectedCam.Triplet, 0.00000000001);
+        var xyz = Cam02.ToXyz(expectedCam, CamConfiguration.StandardRgb.WhitePoint, xyzConfig.ChromaticAdaptor);
+        var cam = Cam02.FromXyz(xyz, CamConfiguration.StandardRgb.WhitePoint, CamConfiguration.StandardRgb.View02, xyzConfig.ChromaticAdaptor);
+        var camUcs = Cam02Ucs.FromCam02(cam);
+        TestUtils.AssertTriplet(camUcs.Triplet, expectedCamUcs.Triplet, 0.00000000001);
     }
     
     [Test]

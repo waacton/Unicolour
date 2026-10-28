@@ -55,13 +55,13 @@ public partial class Unicolour
     public Unicolour(Configuration config, string hex) : 
         this(config, ColourSpace.Rgb, Parse(hex))
     {
-        source = $"{nameof(Hex)} {hex}";
+        Source = $"{nameof(Hex)} {hex}";
     }
 
     public Unicolour(Configuration config, string hex, double alphaOverride) :
         this(config, ColourSpace.Rgb, Parse(hex) with { a = alphaOverride })
     {
-        source = $"{nameof(Hex)} {hex}";
+        Source = $"{nameof(Hex)} {hex}";
     }
     
     /* construction from chromaticity */
@@ -73,7 +73,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Chromaticity chromaticity, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance)
     {
-        source = $"{nameof(Chromaticity)} {chromaticity}";
+        Source = $"{nameof(Chromaticity)} {chromaticity}";
     }
 
     /* construction from temperature */
@@ -95,8 +95,8 @@ public partial class Unicolour
     public Unicolour(Configuration config, Temperature temperature, double luminance = 1.0) :
         this(config, ColourSpace.Xyy, TemperatureToXyyTuple(temperature, config.Xyz.Observer, luminance))
     {
-        this.temperature = temperature;
-        source = $"{nameof(Temperature)} {temperature}";
+        Temperature = temperature;
+        Source = $"{nameof(Temperature)} {temperature}";
     }
 
     private static (double x, double y, double upperY, double alpha) TemperatureToXyyTuple(Temperature temperature, Observer observer, double luminance)
@@ -114,7 +114,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Spd spd) : 
         this(config, ColourSpace.Xyz, SpdToXyzTuple(spd, config.Xyz))
     {
-        source = $"{nameof(Spd)} {spd}";
+        Source = $"{nameof(Spd)} {spd}";
     }
     
     private static (double x, double y, double z, double alpha) SpdToXyzTuple(Spd spd, XyzConfiguration xyzConfig)
@@ -132,7 +132,7 @@ public partial class Unicolour
     public Unicolour(Configuration config, Pigment[] pigments, double[] weights) :
         this(config, ColourSpace.Xyz, PigmentsToXyzTuple(pigments, weights, config.Xyz))
     {
-        source = $"{nameof(Pigment)} [{string.Join(", ", pigments.Select(x => x.ToString()))}] [{string.Join(", ", weights)}]";
+        Source = $"{nameof(Pigment)} [{string.Join(", ", pigments.Select(x => x.ToString()))}] [{string.Join(", ", weights)}]";
     }
     
     private static (double x, double y, double z, double alpha) PigmentsToXyzTuple(Pigment[] pigments, double[] weights, XyzConfiguration xyzConfig)
@@ -171,8 +171,8 @@ public partial class Unicolour
     public Unicolour(Configuration config, Channels channels, double alpha = 1.0) : 
         this(config, config.Icc.ConnectingSpace, IccToTuple(channels, config.Icc, config.Xyz.ChromaticAdaptor), alpha)
     {
-        icc = channels;
-        source = $"{nameof(Icc)} {channels}";
+        Icc = channels;
+        Source = $"{nameof(Icc)} {channels}";
     }
     
     private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, ChromaticAdaptor chromaticAdaptor)

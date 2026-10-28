@@ -121,7 +121,7 @@ public class GreyTests
         new TestCaseData(new Okhwb(0.75), new Okhwb(0, 0.75, 0.25)).SetName(nameof(Okhwb)),
         new TestCaseData(new Oklrab(0.75), new Oklrab(0.75, 0, 0)).SetName(nameof(Oklrab)),
         new TestCaseData(new Oklrch(0.75), new Oklrch(0.75, 0, 0)).SetName(nameof(Oklrch)),
-        new TestCaseData(new Cam02(75, CamConfiguration.StandardRgb), new Cam02(75, 0, 0, CamConfiguration.StandardRgb)).SetName(nameof(Cam02)),
+        new TestCaseData(new Cam02Ucs(75), new Cam02Ucs(75, 0, 0)).SetName(nameof(Cam02Ucs)), // TODO: non-UCS spaces
         new TestCaseData(new Cam16(75, CamConfiguration.StandardRgb), new Cam16(75, 0, 0, CamConfiguration.StandardRgb)).SetName(nameof(Cam16)),
         new TestCaseData(new Hct(75), new Hct(0, 0, 75)).SetName(nameof(Hct)),
         new TestCaseData(new Munsell(7.5), new Munsell(0, 7.5, 0)).SetName(nameof(Munsell))

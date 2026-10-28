@@ -246,8 +246,8 @@ internal static class Comparison
     // currently only support UCS, not LCD or SCD - no need to handle ΔJ / kl since kl = 1
     private static double DeltaECam02(Unicolour reference, Unicolour sample)
     {
-        var (j1, a1, b1) = reference.Cam02;
-        var (j2, a2, b2) = sample.Cam02;
+        var (j1, a1, b1) = reference.Cam02Ucs;
+        var (j2, a2, b2) = sample.Cam02Ucs;
         return Math.Sqrt(SquaredDiff(j1, j2) + SquaredDiff(a1, a2) + SquaredDiff(b1, b2));
     }
     

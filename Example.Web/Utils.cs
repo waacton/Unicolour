@@ -71,18 +71,16 @@ internal static class Utils
         { ColourSpace.Okhwb, [new(0, 360), new(0, 1), new(0, 1)] },
         { ColourSpace.Oklrab, [new(0, 1), new(-0.5, 0.5), new(-0.5, 0.5)] },
         { ColourSpace.Oklrch, [new(0, 1), new(0, 0.5), new(0, 360)] },
-        { ColourSpace.Cam02, [new(0, 100), new(-50, 50), new(-50, 50)] },
+        { ColourSpace.Cam02Jch, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Jmh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Jsh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Qch, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Qmh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Qsh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam02Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Cam16, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
-        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] },
-        
-        { ColourSpace.Cam99Jch, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Jmh, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Jsh, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Qch, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Qmh, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Qsh, [new(0, 100), new(0, 100), new(0, 360)] },
-        { ColourSpace.Cam99Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
+        { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
     };
 
     internal static readonly Dictionary<ColourSpace, string[]> SpaceToAxes = new()
@@ -123,18 +121,16 @@ internal static class Utils
         { ColourSpace.Okhwb, ["H", "W", "B"] },
         { ColourSpace.Oklrab, ["L", "A", "B"] },
         { ColourSpace.Oklrch, ["L", "C", "H"] },
-        { ColourSpace.Cam02, ["J", "A", "B"] },
+        { ColourSpace.Cam02Jch, ["J", "C", "H"] },
+        { ColourSpace.Cam02Jmh, ["J", "M", "H"] },
+        { ColourSpace.Cam02Jsh, ["J", "S", "H"] },
+        { ColourSpace.Cam02Qch, ["Q", "C", "H"] },
+        { ColourSpace.Cam02Qmh, ["Q", "M", "H"] },
+        { ColourSpace.Cam02Qsh, ["Q", "S", "H"] },
+        { ColourSpace.Cam02Ucs, ["J", "A", "B"] },
         { ColourSpace.Cam16, ["J", "A", "B"] },
         { ColourSpace.Hct, ["H", "C", "T"] },
-        { ColourSpace.Munsell, ["H", "V", "C"] },
-        
-        { ColourSpace.Cam99Jch, ["J", "C", "H"] },
-        { ColourSpace.Cam99Jmh, ["J", "M", "H"] },
-        { ColourSpace.Cam99Jsh, ["J", "S", "H"] },
-        { ColourSpace.Cam99Qch, ["Q", "C", "H"] },
-        { ColourSpace.Cam99Qmh, ["Q", "M", "H"] },
-        { ColourSpace.Cam99Qsh, ["Q", "S", "H"] },
-        { ColourSpace.Cam99Ucs, ["J", "A", "B"] }
+        { ColourSpace.Munsell, ["H", "V", "C"] }
     };
 
     internal static readonly Dictionary<Pigment, string> PigmentToName = new()

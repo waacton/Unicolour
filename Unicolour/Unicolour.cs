@@ -182,8 +182,6 @@ public partial class Unicolour : IEquatable<Unicolour>
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        var spaceequals = ColourSpaceEquals(other);
-        var alpaequals = Alpha.Equals(other.Alpha);
         return ColourSpaceEquals(other) && Alpha.Equals(other.Alpha);
     }
 
@@ -195,9 +193,8 @@ public partial class Unicolour : IEquatable<Unicolour>
     }
 
     private bool ColourSpaceEquals(Unicolour other)
-    {
-        var equal = SourceRepresentation.Equals(other.SourceRepresentation);
-        return equal;
+    { 
+        return SourceRepresentation.Equals(other.SourceRepresentation);
     }
 
     public override int GetHashCode()

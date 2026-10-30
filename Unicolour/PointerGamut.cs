@@ -2,8 +2,8 @@
 
 internal static class PointerGamut
 {
-    internal static readonly Lazy<Configuration> Config = new(() => new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2)));
-    private static readonly Lazy<Dictionary<(double l, double h), double>> Vertices = new(() => new()
+    internal static Configuration Config => field ??= new(xyzConfig: new XyzConfiguration(Illuminant.C, Observer.Degree2));
+    private static Dictionary<(double l, double h), double> Vertices => field ??= new()
     {
         { (15, 0), 10 }, { (20, 0), 30 }, { (25, 0), 43 }, { (30, 0), 56 }, { (35, 0), 68 }, { (40, 0), 77 }, { (45, 0), 79 }, { (50, 0), 77 }, { (55, 0), 72 }, { (60, 0), 65 }, { (65, 0), 57 }, { (70, 0), 50 }, { (75, 0), 40 }, { (80, 0), 30 }, { (85, 0), 19 }, { (90, 0), 8 },
         { (15, 10), 15 }, { (20, 10), 30 }, { (25, 10), 45 }, { (30, 10), 56 }, { (35, 10), 64 }, { (40, 10), 70 }, { (45, 10), 73 }, { (50, 10), 73 }, { (55, 10), 71 }, { (60, 10), 65 }, { (65, 10), 57 }, { (70, 10), 48 }, { (75, 10), 39 }, { (80, 10), 30 }, { (85, 10), 18 }, { (90, 10), 7 },
@@ -42,7 +42,7 @@ internal static class PointerGamut
         { (15, 340), 26 }, { (20, 340), 49 }, { (25, 340), 63 }, { (30, 340), 73 }, { (35, 340), 82 }, { (40, 340), 87 }, { (45, 340), 87 }, { (50, 340), 83 }, { (55, 340), 78 }, { (60, 340), 71 }, { (65, 340), 62 }, { (70, 340), 51 }, { (75, 340), 40 }, { (80, 340), 28 }, { (85, 340), 18 }, { (90, 340), 4 },
         { (15, 350), 15 }, { (20, 350), 37 }, { (25, 350), 52 }, { (30, 350), 65 }, { (35, 350), 73 }, { (40, 350), 79 }, { (45, 350), 82 }, { (50, 350), 84 }, { (55, 350), 79 }, { (60, 350), 73 }, { (65, 350), 63 }, { (70, 350), 53 }, { (75, 350), 40 }, { (80, 350), 30 }, { (85, 350), 17 }, { (90, 350), 6 },
         { (15, 360), 10 }, { (20, 360), 30 }, { (25, 360), 43 }, { (30, 360), 56 }, { (35, 360), 68 }, { (40, 360), 77 }, { (45, 360), 79 }, { (50, 360), 77 }, { (55, 360), 72 }, { (60, 360), 65 }, { (65, 360), 57 }, { (70, 360), 50 }, { (75, 360), 40 }, { (80, 360), 30 }, { (85, 360), 19 }, { (90, 360), 8 }
-    });
+    };
 
     // could use these to more succinctly define the chroma values as a 2D array, but for now I like the explicitness of the Vertices dictionary
     internal const double MinL = 15;
@@ -52,11 +52,10 @@ internal static class PointerGamut
     
     internal static bool IsInGamut(Unicolour colour)
     {
-        var config = Config.Value;
-        if (colour.Configuration.Xyz.Illuminant != config.Xyz.Illuminant 
-            || colour.Configuration.Xyz.Observer != config.Xyz.Observer)
+        if (colour.Configuration.Xyz.Illuminant != Config.Xyz.Illuminant 
+            || colour.Configuration.Xyz.Observer != Config.Xyz.Observer)
         {
-            colour = colour.ConvertToConfiguration(config);
+            colour = colour.ConvertToConfiguration(Config);
         }
         
         if (colour.Lchab.IsNaN) return false;
@@ -76,22 +75,20 @@ internal static class PointerGamut
     {
         l = l.Clamp(MinL, MaxL);
         
-        var vertices = Vertices.Value;
-        
-        var ls = vertices.Keys.Select(x => x.l).Distinct().OrderBy(x => x).ToList();
+        var ls = Vertices.Keys.Select(x => x.l).Distinct().OrderBy(x => x).ToList();
         var nextL = ls.First(x => x >= l);
         var prevL = ls.Last(x => x <= l);
         var lDistance = (l - prevL) / DeltaL;
 
-        var hs = vertices.Keys.Select(x => x.h).Distinct().OrderBy(x => x).ToList();
+        var hs = Vertices.Keys.Select(x => x.h).Distinct().OrderBy(x => x).ToList();
         var nextH = hs.First(x => x >= h);
         var prevH = hs.Last(x => x <= h);
         var hDistance = (h - prevH) / DeltaH;
         
-        var c00 = vertices[(prevL, prevH)];
-        var c01 = vertices[(prevL, nextH)];
-        var c10 = vertices[(nextL, prevH)];
-        var c11 = vertices[(nextL, nextH)];
+        var c00 = Vertices[(prevL, prevH)];
+        var c01 = Vertices[(prevL, nextH)];
+        var c10 = Vertices[(nextL, prevH)];
+        var c11 = Vertices[(nextL, nextH)];
 
         var c0 = Interpolation.Linear(c00, c01, hDistance);
         var c1 = Interpolation.Linear(c10, c11, hDistance);

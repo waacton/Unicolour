@@ -85,35 +85,35 @@ public class PointerGamutTests
     [Test]
     public void BelowMinL([Values(14.9999999999, 1, 0, -0.0000000001, double.Epsilon, double.MinValue, double.NegativeInfinity)] double l)
     {
-        var colour = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, 50, 180);
+        var colour = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, l, 50, 180);
         Assert.That(colour.IsInPointerGamut, Is.False);
     }
     
     [Test]
     public void AboveMaxL([Values(90.0000000001, 100, double.MaxValue, double.PositiveInfinity)] double l)
     {
-        var colour = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, 50, 180);
+        var colour = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, l, 50, 180);
         Assert.That(colour.IsInPointerGamut, Is.False);
     }
 
     [Test]
     public void NotNumberL()
     {
-        var colour = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, double.NaN, 50, 180);
+        var colour = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, double.NaN, 50, 180);
         Assert.That(colour.IsInPointerGamut, Is.False);
     }
     
     [Test]
     public void NotNumberC()
     {
-        var colour = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, 50, double.NaN, 180);
+        var colour = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, 50, double.NaN, 180);
         Assert.That(colour.IsInPointerGamut, Is.False);
     }
     
     [Test]
     public void NotNumberH()
     {
-        var colour = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, 50, 50, double.NaN);
+        var colour = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, 50, 50, double.NaN);
         Assert.That(colour.IsInPointerGamut, Is.False);
     }
 
@@ -150,7 +150,7 @@ public class PointerGamutTests
     {
         // if extreme values are being used for the colour space in which mapping takes place
         // mapping should still return an in-gamut colour, with the exception of NaNs
-        var original = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, value, value, value);
+        var original = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, value, value, value);
         var gamutMapped = original.MapToPointerGamut();
         Assert.That(gamutMapped.IsInPointerGamut, gamutMapped.Lchab.Limitation == Limitation.NaN ? Is.False : Is.True);
     }
@@ -160,11 +160,11 @@ public class PointerGamutTests
         var maxC = PointerGamut.GetMaxC(l, h);
         Assert.That(maxC, Is.EqualTo(expectedC));
 
-        var colourInGamut = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, maxC, h);
+        var colourInGamut = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, l, maxC, h);
         Assert.That(colourInGamut.IsInPointerGamut, Is.True);
 
         var beyondMaxC = maxC + 0.00000000001;
-        var colourOutOfGamut = new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, beyondMaxC, h);
+        var colourOutOfGamut = new Unicolour(PointerGamut.Config, ColourSpace.Lchab, l, beyondMaxC, h);
         Assert.That(colourOutOfGamut.IsInPointerGamut, Is.False); 
     }
 }

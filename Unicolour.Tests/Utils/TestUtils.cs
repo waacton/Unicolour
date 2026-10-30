@@ -241,12 +241,10 @@ internal static class TestUtils
     {
         if (object1 == null || object2 == null)
         {
-            Console.WriteLine("something null");
             Assert.That(object1, Is.EqualTo(object2));
             return;
         }
         
-        Console.WriteLine("nothing null");
         Assert.That(object1, Is.EqualTo(object2));
         Assert.That(object1.Equals(object2));
         Assert.That(object1.GetHashCode(), Is.EqualTo(object2.GetHashCode()));

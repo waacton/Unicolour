@@ -253,4 +253,19 @@ public record Cam02
         var aw = (2 * raw + gaw + baw / 20.0 - 0.305) * nbb;
         return new ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
+    
+    // unlikely for the CAM wrapper to be tested for equivalence
+    // but the lazy-loaded field-backed properties cause complexity for the record
+    // so explicitly check compare the actual model for equality
+    public virtual bool Equals(Cam02? other)
+    {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Model.Equals(other.Model);
+    }
+    
+    public override int GetHashCode()
+    {
+        return Model.GetHashCode();
+    }
 }

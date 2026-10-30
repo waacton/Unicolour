@@ -125,7 +125,14 @@ public class EqualityTests
     private static void AssertUnicoloursEqual(Unicolour colour1, Unicolour colour2)
     {
         AssertEqual(colour1.Alpha, colour2.Alpha);
-        AssertEqual(colour1.Cam02, colour2.Cam02); // TODO: this fails equality check... unless something like .Model is called first to create backing field :/
+        AssertEqual(colour1.Cam02, colour2.Cam02);
+        AssertEqual(colour1.Cam02Jmh, colour2.Cam02Jmh);
+        AssertEqual(colour1.Cam02Jch, colour2.Cam02Jch);
+        AssertEqual(colour1.Cam02Jsh, colour2.Cam02Jsh);
+        AssertEqual(colour1.Cam02Qmh, colour2.Cam02Qmh);
+        AssertEqual(colour1.Cam02Qch, colour2.Cam02Qch);
+        AssertEqual(colour1.Cam02Qsh, colour2.Cam02Qsh);
+        AssertEqual(colour1.Cam02Ucs, colour2.Cam02Ucs);
         AssertEqual(colour1.Cam16, colour2.Cam16);
         AssertEqual(colour1.Chromaticity, colour2.Chromaticity);
         AssertEqual(colour1.Description, colour2.Description);
@@ -177,7 +184,7 @@ public class EqualityTests
         AssertEqual(colour1.Yiq, colour2.Yiq);
         AssertEqual(colour1.Ypbpr, colour2.Ypbpr);
         AssertEqual(colour1.Yuv, colour2.Yuv);
-
+        
         if (colour1.Xyz.HctToXyzSearchResult != null)
         {
             AssertEqual(colour1.Xyz.HctToXyzSearchResult, colour2.Xyz.HctToXyzSearchResult);
@@ -187,7 +194,7 @@ public class EqualityTests
         {
             AssertEqual(colour1.Munsell.XyyToHvcSearchResult, colour2.Munsell.XyyToHvcSearchResult);
         }
-
+        
         AssertConfigurationEqual(colour1.Configuration, colour2.Configuration);
         AssertEqual(colour1, colour2);
     }
@@ -202,6 +209,7 @@ public class EqualityTests
         AssertEqual(config1.Rgb.WhitePoint, config2.Rgb.WhitePoint);
         AssertEqual(config1.Rgb.FromLinear, config2.Rgb.FromLinear);
         AssertEqual(config1.Rgb.ToLinear, config2.Rgb.ToLinear);
+        AssertEqual(config1.Xyz, config2.Xyz);
         AssertEqual(config1.Xyz.WhitePoint, config2.Xyz.WhitePoint);
         AssertEqual(config1.Xyz.Illuminant, config2.Xyz.Illuminant);
         AssertEqual(config1.Xyz.Observer, config2.Xyz.Observer);
@@ -209,19 +217,23 @@ public class EqualityTests
         AssertEqual(config1.Xyz.ChromaticAdaptor, config2.Xyz.ChromaticAdaptor);
         AssertEqual(config1.Xyz.SpectralBoundary, config2.Xyz.SpectralBoundary);
         AssertEqual(config1.Xyz.Planckian, config2.Xyz.Planckian);
+        AssertEqual(config1.Ybr, config2.Ybr);
         AssertEqual(config1.Ybr.Kr, config2.Ybr.Kr);
         AssertEqual(config1.Ybr.Kg, config2.Ybr.Kg);
         AssertEqual(config1.Ybr.Kb, config2.Ybr.Kb);
         AssertEqual(config1.Ybr.RangeY, config2.Ybr.RangeY);
         AssertEqual(config1.Ybr.RangeC, config2.Ybr.RangeC);
+        AssertEqual(config1.Cam, config2.Cam);
         AssertEqual(config1.Cam.WhitePoint, config2.Cam.WhitePoint);
         AssertEqual(config1.Cam.AdaptingLuminance, config2.Cam.AdaptingLuminance);
         AssertEqual(config1.Cam.BackgroundLuminance, config2.Cam.BackgroundLuminance);
         AssertEqual(config1.Cam.Surround, config2.Cam.Surround);
         AssertEqual(config1.Cam.View02, config2.Cam.View02);
+        AssertEqual(config1.DynamicRange, config2.DynamicRange);
         AssertEqual(config1.DynamicRange.WhiteLuminance, config2.DynamicRange.WhiteLuminance);
         AssertEqual(config1.DynamicRange.MaxLuminance, config2.DynamicRange.MaxLuminance);
         AssertEqual(config1.DynamicRange.MinLuminance, config2.DynamicRange.MinLuminance);
+        AssertEqual(config1.Icc, config2.Icc);
         AssertEqual(config1.Icc.Profile, config2.Icc.Profile);
         AssertEqual(config1.Icc.Intent, config2.Icc.Intent);
         AssertEqual(config1.Icc.Error, config2.Icc.Error);

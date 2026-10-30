@@ -38,8 +38,6 @@ public enum ColourSpace
     Okhwb,
     Oklrab,
     Oklrch,
-    // Cam02,
-    Cam16,
     Cam02Jmh,
     Cam02Jch,
     Cam02Jsh,
@@ -47,6 +45,7 @@ public enum ColourSpace
     Cam02Qch,
     Cam02Qsh,
     Cam02Ucs,
+    Cam16,
     Hct,
     Munsell
 }

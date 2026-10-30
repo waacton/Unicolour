@@ -5,7 +5,7 @@ internal static class MacAdamLimits
     internal static readonly Configuration Config = Configuration.Default;
 
     // https://doi.org/10.2307/1420820 Table II(3.7) - D65 values
-    private static readonly Lazy<Dictionary<double, Chromaticity[]>> Limits = new(() =>
+    private static Dictionary<double, Chromaticity[]> Limits => field ??=
         new Dictionary<double, Chromaticity[]>
         {
             {
@@ -118,11 +118,10 @@ internal static class MacAdamLimits
                     new(0.3148, 0.3195), new(0.3103, 0.3214), new(0.3006, 0.3259), new(0.2900, 0.3308)
                 ]
             }
-        }
-    );
+        };
 
-    private static readonly Lazy<Chromaticity[]> LimitsMin = new(LimitsAtZero);
-    private static readonly Lazy<Chromaticity[]> LimitsMax = new(() => Enumerable.Range(0, 24).Select(_ => Config.Xyz.WhitePoint.Chromaticity).ToArray()); // every limit point converges to white
+    private static Chromaticity[] LimitsMin => field ??= LimitsAtZero();
+    private static Chromaticity[] LimitsMax => field ??= Enumerable.Range(0, 24).Select(_ => Config.Xyz.WhitePoint.Chromaticity).ToArray(); // every limit point converges to white
 
     internal static bool IsInLimits(Unicolour colour)
     {
@@ -152,9 +151,9 @@ internal static class MacAdamLimits
         y = y.Clamp(0, 1) * 100;
         return y switch
         {
-            0 => LimitsMin.Value,
-            100 => LimitsMax.Value,
-            _ => Limits.Value.TryGetValue(y, out var limits) ? limits : GetInterpolated(y)
+            0 => LimitsMin,
+            100 => LimitsMax,
+            _ => Limits.TryGetValue(y, out var limits) ? limits : GetInterpolated(y)
         };
     }
 
@@ -184,9 +183,9 @@ internal static class MacAdamLimits
         {
             return knownY switch
             {
-                0 => LimitsMin.Value,
-                100 => LimitsMax.Value,
-                _ => Limits.Value[knownY]
+                0 => LimitsMin,
+                100 => LimitsMax,
+                _ => Limits[knownY]
             };
         }
     }
@@ -199,7 +198,7 @@ internal static class MacAdamLimits
         for (var i = 0; i < 24; i++) 
         {
             // uses each pair of 20 -> 10 macadam points to extrapolate the spectral boundary intersect
-            var intersects = spectralBoundary.GetIntersects(sample: Limits.Value[10][i], reference: Limits.Value[20][i]);
+            var intersects = spectralBoundary.GetIntersects(sample: Limits[10][i], reference: Limits[20][i]);
             zeroPoints.Add(intersects!.Value.near.Point);
         }
         

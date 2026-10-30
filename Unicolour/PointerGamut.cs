@@ -73,6 +73,8 @@ internal static class PointerGamut
     // while needing to make CLUT generic enough to handle cyclical hue and non-square grid points
     internal static double GetMaxC(double l, double h)
     {
+        if (double.IsNaN(h)) return double.NaN;
+        
         l = l.Clamp(MinL, MaxL);
         
         var ls = Vertices.Keys.Select(x => x.l).Distinct().OrderBy(x => x).ToList();

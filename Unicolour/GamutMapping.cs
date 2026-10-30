@@ -31,11 +31,6 @@ internal static class GamutMapping
         var config = colour.Configuration;
         var alpha = colour.Alpha.A;
         var lchab = colour.Lchab;
-
-        if (lchab.IsNaN)
-        {
-            return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
-        }
         
         var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config).Lchab.WithHueModulo();
         l = l.Clamp(PointerGamut.MinL, PointerGamut.MaxL);

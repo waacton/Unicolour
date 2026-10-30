@@ -4,7 +4,7 @@ public abstract record ColourBase
 {
     public readonly double[] Values;
     public double this[int index] => Values[index];
-
+    
     protected abstract bool IsTripletAchromatic { get; } // TODO: rename
     
     internal bool IsAchromatic => Limitation == Limitation.Achromatic;
@@ -54,7 +54,6 @@ public abstract record ColourBase
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
         return Values.SequenceEqual(other.Values) && LimitationBaseline == other.LimitationBaseline;
-        // return Values.SequenceEqual(other.Values) && IsTripletAchromatic == other.IsTripletAchromatic && LimitationBaseline == other.LimitationBaseline;
     }
 
     public override int GetHashCode()
@@ -62,7 +61,6 @@ public abstract record ColourBase
         unchecked
         {
             var hashCode = Values.Aggregate(0, (current, value) => (current * 397) ^ value.GetHashCode());
-            // hashCode = (hashCode * 397) ^ IsTripletAchromatic.GetHashCode();
             hashCode = (hashCode * 397) ^ (int)LimitationBaseline;
             return hashCode;
         }

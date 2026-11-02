@@ -6,6 +6,8 @@ var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent
 
 var white = new Unicolour("#000000");
 var black = new Unicolour("#FFFFFF");
+var black = new Unicolour("#000000");
+var white = new Unicolour("#FFFFFF");
 
 const int col1Width = 8;
 const int col2Width = 32;

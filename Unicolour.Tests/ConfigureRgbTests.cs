@@ -538,6 +538,6 @@ public class ConfigureRgbTests
         var xyzConfig = new XyzConfiguration(xyzIlluminant, Observer.Degree2);
         var xyz = RgbLinear.ToXyz(expectedRgb, RgbConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
         var rgb = RgbLinear.FromXyz(xyz, RgbConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(rgb.Triplet, expectedRgb.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(rgb, expectedRgb, 0.00000000001);
     }
 }

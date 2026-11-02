@@ -76,6 +76,6 @@ public class IlluminantTests
         var xyzConfig = new XyzConfiguration(illuminant, observer);
         var config = new Configuration(xyzConfig: xyzConfig);
         var colour = new Unicolour(config, "#FFFFFF");
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(0.5, 0.5, 0.5), 0.00000000001);
+        TestUtils.AssertTriplet(colour.Xyz, new(0.5, 0.5, 0.5), 0.00000000001);
     }
 }

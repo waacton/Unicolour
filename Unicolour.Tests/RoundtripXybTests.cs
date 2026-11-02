@@ -16,6 +16,6 @@ public class RoundtripXybTests
         var original = new Xyb(triplet.First, triplet.Second, triplet.Third);
         var rgbLinear = Xyb.ToRgbLinear(original);
         var roundtrip = Xyb.FromRgbLinear(rgbLinear);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

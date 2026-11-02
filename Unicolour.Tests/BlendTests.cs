@@ -237,7 +237,7 @@ public class BlendTests
         // blending is performed in source RGB config
         var blueRec2020 = blue.ConvertToConfiguration(rec2020);
         var expected = pinkRec2020.Blend(blueRec2020, BlendMode.HardLight);
-        TestUtils.AssertTriplet(blended.Rgb.Triplet, expected.Rgb.Triplet, 1e-15);
+        TestUtils.AssertTriplet(blended.Rgb, expected.Rgb, 1e-15);
     }
     
     [Test]
@@ -249,7 +249,7 @@ public class BlendTests
 
         // blending is performed in source RGB config
         var expected = pink.Blend(blue, BlendMode.HardLight);
-        TestUtils.AssertTriplet(blended.Rgb.Triplet, expected.Rgb.Triplet, 1e-15);
+        TestUtils.AssertTriplet(blended.Rgb, expected.Rgb, 1e-15);
     }
     
     [Test]
@@ -258,7 +258,7 @@ public class BlendTests
         var pinkNoAlpha = new Unicolour(ColourSpace.Rgb, pink.Rgb.Tuple, 0);
         var blueNoAlpha = new Unicolour(ColourSpace.Rgb, blue.Rgb.Tuple, 0);
         var blended = pinkNoAlpha.Blend(blueNoAlpha, BlendMode.Normal);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(new ColourTriplet(0, 0, 0)));
+        Assert.That(blended.Rgb, Is.EqualTo(new Rgb(0, 0, 0)));
         Assert.That(blended.Alpha.A, Is.EqualTo(0.0));
     }
     
@@ -268,7 +268,7 @@ public class BlendTests
         var pinkBadAlpha = new Unicolour(ColourSpace.Rgb, pink.Rgb.Tuple, 1.5);
         var blended = pinkBadAlpha.Blend(blue, BlendMode.HardLight);
         var expected = pink.Blend(blue, BlendMode.HardLight);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(expected.Rgb.Triplet));
+        Assert.That(blended.Rgb, Is.EqualTo(expected.Rgb));
         Assert.That(blended.Alpha.A, Is.EqualTo(expected.Alpha.A));
     }
     
@@ -278,7 +278,7 @@ public class BlendTests
         var pinkBadAlpha = new Unicolour(ColourSpace.Rgb, pink.Rgb.Tuple, -0.5);
         var blended = pinkBadAlpha.Blend(blue, BlendMode.HardLight);
         var expected = new Unicolour(ColourSpace.Rgb, pink.Rgb.Tuple, 0).Blend(blue, BlendMode.HardLight);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(expected.Rgb.Triplet));
+        Assert.That(blended.Rgb, Is.EqualTo(expected.Rgb));
         Assert.That(blended.Alpha.A, Is.EqualTo(expected.Alpha.A));
     }
     
@@ -287,7 +287,7 @@ public class BlendTests
     {
         var nan = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN, double.NaN);
         var blended = nan.Blend(blueAlpha, BlendMode.Normal);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(new ColourTriplet(double.NaN, double.NaN, double.NaN)));
+        Assert.That(blended.Rgb, Is.EqualTo(new Rgb(double.NaN, double.NaN, double.NaN)));
         Assert.That(blended.Alpha.A, Is.EqualTo(blueAlpha.Alpha.A)); // alpha NaN is handled as 0; alpha compositing 0.0 with 0.75 = 0.75
     }
     
@@ -296,7 +296,7 @@ public class BlendTests
     {
         var nan = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN, double.NaN);
         var blended = pinkAlpha.Blend(nan, BlendMode.Normal);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(new ColourTriplet(double.NaN, double.NaN, double.NaN)));
+        Assert.That(blended.Rgb, Is.EqualTo(new Rgb(double.NaN, double.NaN, double.NaN)));
         Assert.That(blended.Alpha.A, Is.EqualTo(pinkAlpha.Alpha.A)); // alpha NaN is handled as 0; alpha compositing 0.6 with 0.0 = 0.6
     }
     
@@ -305,7 +305,7 @@ public class BlendTests
     {
         var nan = new Unicolour(ColourSpace.Rgb, double.NaN, double.NaN, double.NaN, double.NaN);
         var blended = nan.Blend(nan, BlendMode.Normal);
-        Assert.That(blended.Rgb.Triplet, Is.EqualTo(new ColourTriplet(double.NaN, double.NaN, double.NaN)));
+        Assert.That(blended.Rgb, Is.EqualTo(new Rgb(double.NaN, double.NaN, double.NaN)));
         Assert.That(blended.Alpha.A, Is.EqualTo(0.0)); // alpha NaN is handled as 0; alpha compositing 0.0 with 0.0 = 0.0
     }
     
@@ -313,7 +313,7 @@ public class BlendTests
     {
         var blended = source.Blend(backdrop, blendMode);
         var expected = new Unicolour(expectedHex, expectedAlpha);
-        TestUtils.AssertTriplet(blended.Rgb.Triplet, expected.Rgb.Triplet, 0.025);
+        TestUtils.AssertTriplet(blended.Rgb, expected.Rgb, 0.025);
         Assert.That(blended.Alpha.A, Is.EqualTo(expectedAlpha).Within(0.01));
     }
 }

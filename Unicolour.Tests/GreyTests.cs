@@ -7,6 +7,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class GreyTests
 {
+    // TODO: CAM02 spaces
     private static readonly Dictionary<ColourSpace, ColourSpace[]> AdjacentHueSpaces = new()
     {
         { ColourSpace.Hsb, [ColourSpace.Hsl, ColourSpace.Hwb] },
@@ -53,7 +54,7 @@ public class GreyTests
         var colour = new Unicolour(colourSpace, first, second, third);
         var adjacentHuedSpaces = AdjacentHueSpaces[colourSpace];
         
-        var initial = colour.SourceRepresentation;
+        var initial = colour.SourceTriplet;
         Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
         Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: true), Has.All.EqualTo(Limitation.None));
         Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: false), Has.All.EqualTo(Limitation.None));
@@ -77,7 +78,7 @@ public class GreyTests
         // when a hue-based colour is created with a single value, it represents grey level and there is no chroma information - at this point it is truly achromatic
         var colour = new Unicolour(Config, colourSpace, 0);
         
-        var initial = colour.SourceRepresentation;
+        var initial = colour.SourceTriplet;
         Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.Achromatic));
         Assert.That(TestUtils.Limitations(colour, TestUtils.AllColourSpaces, baselines: true), Has.All.EqualTo(Limitation.Achromatic));
         Assert.That(TestUtils.Limitations(colour, TestUtils.AllColourSpaces, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
@@ -128,7 +129,7 @@ public class GreyTests
     ];
 
     [TestCaseSource(nameof(GreyData))]
-    public void AchromaticConstructor(ColourRepresentation achromatic, ColourRepresentation grey)
+    public void AchromaticConstructor(ColourTriplet achromatic, ColourTriplet grey)
     {
         Assert.That(achromatic.LimitationBaseline, Is.EqualTo(Limitation.Achromatic));
         Assert.That(grey.LimitationBaseline, Is.EqualTo(Limitation.None));
@@ -136,7 +137,6 @@ public class GreyTests
         Assert.That(achromatic.Limitation, Is.EqualTo(Limitation.Achromatic));
         Assert.That(grey.Limitation, Is.EqualTo(grey.HasHueComponent ? Limitation.None : Limitation.Achromatic));
         
-        Assert.That(achromatic, Is.Not.EqualTo(grey));
-        Assert.That(achromatic.Triplet, Is.EqualTo(grey.Triplet));
+        Assert.That(achromatic.Tuple, Is.EqualTo(grey.Tuple));
     }
 }

@@ -19,7 +19,7 @@ public class RoundtripYpbprTests
         var original = new Ypbpr(triplet.First, triplet.Second, triplet.Third);
         var rgb = Ypbpr.ToRgb(original, YbrConfig);
         var roundtrip = Ypbpr.FromRgb(rgb, YbrConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     // testing YPbPr ↔ YCbCr with all configurations to ensure roundtrip of digital range mapping
@@ -37,6 +37,6 @@ public class RoundtripYpbprTests
         var original = new Ypbpr(triplet.First, triplet.Second, triplet.Third);
         var ycbcr = Ycbcr.FromYpbpr(original, ybrConfig);
         var roundtrip = Ycbcr.ToYpbpr(ycbcr, ybrConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

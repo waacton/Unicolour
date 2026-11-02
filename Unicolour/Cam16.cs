@@ -3,16 +3,15 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public record Cam16 : ColourRepresentation
+public record Cam16 : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double J => First;
-    public double A => Second;
-    public double B => Third;
+    public double J => this[0];
+    public double A => this[1];
+    public double B => this[2];
     public Ucs Ucs { get; }
     public Model Model { get; }
     
-    protected override bool IsTripletAchromatic => Model.Chroma <= 0;
+    protected override bool HasAchromaticValues => Model.Chroma <= 0;
     
     public Cam16(double j, double a, double b, CamConfiguration camConfig) : this(new Ucs(j, a, b), camConfig, Limitation.None) {}
     public Cam16(double j, CamConfiguration camConfig) : this(new Ucs(j, 0, 0), camConfig, Limitation.Achromatic) {}
@@ -22,7 +21,7 @@ public record Cam16 : ColourRepresentation
         Model = model; // overwrites the ucs.ToModel() in the general constructor with the actual model
     }
 
-    internal Cam16(Ucs ucs, CamConfiguration camConfig, Limitation limitation) : base(ucs.J, ucs.A, ucs.B, limitation)
+    internal Cam16(Ucs ucs, CamConfiguration camConfig, Limitation limitation) : base(ucs.J, ucs.A, ucs.B, null, limitation)
     {
         Ucs = ucs;
         Model = ucs.ToModel(ViewingConditions(camConfig)); 

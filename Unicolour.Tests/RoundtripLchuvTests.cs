@@ -19,11 +19,11 @@ public class RoundtripLchuvTests
         
         if (original.C < 0)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.L, 0, 0, HueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(original.L, 0, 0, hueIndex: 2), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -37,11 +37,11 @@ public class RoundtripLchuvTests
         if (original.L is > 99.9999999 or < 0.00000001)
         {
             var expectedL = original.L > 99.9999999 ? 100 : 0;
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(expectedL, 0, original.H, HueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(expectedL, 0, original.H, hueIndex: 2), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -55,11 +55,11 @@ public class RoundtripLchuvTests
         if (original.L is > 99.9999999 or < 0.00000001)
         {
             var expectedL = original.L > 99.9999999 ? 100 : 0;
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(expectedL, 0, original.H, HueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(expectedL, 0, original.H, hueIndex: 2), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

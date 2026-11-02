@@ -492,10 +492,10 @@ public class AchromaticTests
     private static void AssertUnicolour(Unicolour colour, bool expectAchromatic)
     {
         var expectedLimitation = expectAchromatic ? Limitation.Achromatic : Limitation.None;
-        Assert.That(colour.SourceRepresentation.LimitationBaseline, Is.EqualTo(Limitation.None));
-        Assert.That(colour.SourceRepresentation.Limitation, Is.EqualTo(expectedLimitation));
+        Assert.That(colour.SourceTriplet.LimitationBaseline, Is.EqualTo(Limitation.None));
+        Assert.That(colour.SourceTriplet.Limitation, Is.EqualTo(expectedLimitation));
 
-        if (colour.SourceRepresentation.Limitation == Limitation.Achromatic)
+        if (colour.SourceTriplet.Limitation == Limitation.Achromatic)
         {
             AssertAchromatic(colour);
         }

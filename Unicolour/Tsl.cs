@@ -2,19 +2,18 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public record Tsl : ColourRepresentation
+public record Tsl : ColourTriplet
 {
-    protected internal override int? HueIndex => 0; 
-    public double T => First;
-    public double S => Second;
-    public double L => Third;
+    public double T => this[0];
+    public double S => this[1];
+    public double L => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Tsl(double t, double s, double l) : this(t, s, l, Limitation.None) {}
     public Tsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
-    internal Tsl(double t, double s, double l, Limitation limitation) : base(t, s, l, limitation) {}
+    internal Tsl(double t, double s, double l, Limitation limitation) : base(t, s, l, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{T:F1}° {S * 100:F1}% {L * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {L * 100:F1}%";
     public override string ToString() => base.ToString();

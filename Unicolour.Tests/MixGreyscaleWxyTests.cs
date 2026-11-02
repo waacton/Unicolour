@@ -22,10 +22,10 @@ public class MixGreyscaleWxyTests
         var fromWxyWhite = wxyWhite.Mix(green, ColourSpace.Wxy, premultiplyAlpha: false);
         
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromRgbBlack.Wxy.Triplet, new(120, 0.5, 0.5));
-        AssertTriplet(fromRgbWhite.Wxy.Triplet, new(120, 0.5, 1));
-        AssertTriplet(fromWxyBlack.Wxy.Triplet, new(150, 1, 0.5));
-        AssertTriplet(fromWxyWhite.Wxy.Triplet, new(150, 0.5, 1));
+        AssertTriplet(fromRgbBlack.Wxy, new(120, 0.5, 0.5));
+        AssertTriplet(fromRgbWhite.Wxy, new(120, 0.5, 1));
+        AssertTriplet(fromWxyBlack.Wxy, new(150, 1, 0.5));
+        AssertTriplet(fromWxyWhite.Wxy, new(150, 0.5, 1));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleWxyTests
         var toWxyWhite = blue.Mix(wxyWhite, ColourSpace.Wxy, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toRgbBlack.Wxy.Triplet, new(240, 0.5, 0.5));
-        AssertTriplet(toRgbWhite.Wxy.Triplet, new(240, 0.5, 1));
-        AssertTriplet(toWxyBlack.Wxy.Triplet, new(210, 1, 0.5));
-        AssertTriplet(toWxyWhite.Wxy.Triplet, new(210, 0.5, 1));
+        AssertTriplet(toRgbBlack.Wxy, new(240, 0.5, 0.5));
+        AssertTriplet(toRgbWhite.Wxy, new(240, 0.5, 1));
+        AssertTriplet(toWxyBlack.Wxy, new(210, 1, 0.5));
+        AssertTriplet(toWxyWhite.Wxy, new(210, 0.5, 1));
     }
     
     [Test]
@@ -65,14 +65,14 @@ public class MixGreyscaleWxyTests
         var blackToGrey = black.Mix(grey, ColourSpace.Wxy, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Wxy, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.RgbLinear.Triplet, new(0.5, 0.5, 0.5));
-        AssertTriplet(blackToGrey.RgbLinear.Triplet, new(0.25, 0.25, 0.25));
-        AssertTriplet(whiteToGrey.RgbLinear.Triplet, new(0.75, 0.75, 0.75));
+        AssertTriplet(blackToWhite.RgbLinear, new(0.5, 0.5, 0.5));
+        AssertTriplet(blackToGrey.RgbLinear, new(0.25, 0.25, 0.25));
+        AssertTriplet(whiteToGrey.RgbLinear, new(0.75, 0.75, 0.75));
         
         // colours created from RGB therefore hue does not change
-        AssertTriplet(blackToWhite.Wxy.Triplet, new(0, 0, 0.5));
-        AssertTriplet(blackToGrey.Wxy.Triplet, new(0, 0, 0.25));
-        AssertTriplet(whiteToGrey.Wxy.Triplet, new(0, 0, 0.75));
+        AssertTriplet(blackToWhite.Wxy, new(0, 0, 0.5));
+        AssertTriplet(blackToGrey.Wxy, new(0, 0, 0.25));
+        AssertTriplet(whiteToGrey.Wxy, new(0, 0, 0.75));
     }
     
     [Test]
@@ -86,14 +86,14 @@ public class MixGreyscaleWxyTests
         var blackToGrey = black.Mix(grey, ColourSpace.Wxy, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Wxy, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.RgbLinear.Triplet, new(0.5, 0.5, 0.5));
-        AssertTriplet(blackToGrey.RgbLinear.Triplet, new(0.25, 0.25, 0.25));
-        AssertTriplet(whiteToGrey.RgbLinear.Triplet, new(0.75, 0.75, 0.75));
+        AssertTriplet(blackToWhite.RgbLinear, new(0.5, 0.5, 0.5));
+        AssertTriplet(blackToGrey.RgbLinear, new(0.25, 0.25, 0.25));
+        AssertTriplet(whiteToGrey.RgbLinear, new(0.75, 0.75, 0.75));
         
         // colours created from WXY therefore hue changes
-        AssertTriplet(blackToWhite.Wxy.Triplet, new(330, 0, 0.5));
-        AssertTriplet(blackToGrey.Wxy.Triplet, new(50, 0, 0.25));
-        AssertTriplet(whiteToGrey.Wxy.Triplet, new(20, 0, 0.75));
+        AssertTriplet(blackToWhite.Wxy, new(330, 0, 0.5));
+        AssertTriplet(blackToGrey.Wxy, new(50, 0, 0.25));
+        AssertTriplet(whiteToGrey.Wxy, new(20, 0, 0.75));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

@@ -25,7 +25,7 @@ public class RoundtripRgbLinearTests
         var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
         var xyz = RgbLinear.ToXyz(original, RgbConfig, XyzConfig.ChromaticAdaptor);
         var roundtrip = RgbLinear.FromXyz(xyz, RgbConfig, XyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -75,7 +75,7 @@ public class RoundtripRgbLinearTests
             return;
         }
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -84,13 +84,13 @@ public class RoundtripRgbLinearTests
         var original = new RgbLinear(triplet.First, triplet.Second, triplet.Third);
         var xyb = Xyb.FromRgbLinear(original);
         var roundtrip = Xyb.ToRgbLinear(xyb);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     private static void AssertClippedRoundtrip(RgbLinear original, RgbLinear roundtrip, double lower, double upper)
     {
         var clampedOriginal = new RgbLinear(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
-        TestUtils.AssertTriplet(roundtrip.Triplet, clampedOriginal.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, clampedOriginal, Tolerance);
     }
     
     private static void AssertPqRoundtrip(RgbLinear original, RgbLinear roundtrip)
@@ -101,7 +101,7 @@ public class RoundtripRgbLinearTests
             GetExpected(roundtrip.B, original.B)
         );
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, expected, Tolerance);
         return;
 
         double GetExpected(double actualValue, double originalValue)
@@ -125,7 +125,7 @@ public class RoundtripRgbLinearTests
             GetExpected(original.B)
         );
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, expected, Tolerance);
         return;
 
         double GetExpected(double originalValue)

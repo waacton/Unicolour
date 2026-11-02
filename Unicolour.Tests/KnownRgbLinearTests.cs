@@ -20,7 +20,7 @@ public class KnownRgbLinearTests
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
         var red = new Unicolour(config, ColourSpace.RgbLinear, linear, 0, 0);
-        TestUtils.AssertTriplet(red.Rgb.Triplet, new(nonlinear, 0, 0), Tolerance);
+        TestUtils.AssertTriplet(red.Rgb, new(nonlinear, 0, 0), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.0, 0.0)]
@@ -36,7 +36,7 @@ public class KnownRgbLinearTests
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
         var green = new Unicolour(config, ColourSpace.RgbLinear, 0, linear, 0);
-        TestUtils.AssertTriplet(green.Rgb.Triplet, new(0, nonlinear, 0), Tolerance);
+        TestUtils.AssertTriplet(green.Rgb, new(0, nonlinear, 0), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.0, 0.0)]
@@ -52,7 +52,7 @@ public class KnownRgbLinearTests
     {
         var config = ConfigUtils.GetConfigWithXyzD65(rgbType);
         var blue = new Unicolour(config, ColourSpace.RgbLinear, 0, 0, linear);
-        TestUtils.AssertTriplet(blue.Rgb.Triplet, new(0, 0, nonlinear), Tolerance);
+        TestUtils.AssertTriplet(blue.Rgb, new(0, 0, nonlinear), Tolerance);
     }
     
     [TestCase(ConfigUtils.RgbType.Standard, 0.3127, 0.3290)]

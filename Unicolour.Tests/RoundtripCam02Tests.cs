@@ -22,7 +22,7 @@ public class RoundtripCam02Tests
         var roundtrip = Cam02Ucs.FromCam02(roundCam);
         
         // CAM <-> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
-        TestUtils.AssertTriplet(roundtrip.Triplet, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip.Triplet) : original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip) : original, Tolerance);
     }
     
     // when NaNs occur during CAM <-> XYZ conversion

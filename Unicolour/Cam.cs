@@ -6,13 +6,13 @@ public static class Cam
 {
     public record Model : ColourBase
     {
-        public double J => Values[0];
-        public double C => Values[1];
-        public double H => Values[2];
+        public double J => this[0];
+        public double C => this[1];
+        public double H => this[2];
         public string Hc { get; } // technically not in CAM02 but 🤷
-        public double M => Values[3];
-        public double S => Values[4];
-        public double Q => Values[5];
+        public double M => this[3];
+        public double S => this[4];
+        public double Q => this[5];
 
         public double Lightness => J;
         public double Chroma => C;
@@ -22,7 +22,7 @@ public static class Cam
         public double Saturation => S;
         public double Brightness => Q;
 
-        protected override bool IsTripletAchromatic => Chroma <= 0;
+        protected override bool HasAchromaticValues => Chroma <= 0;
         
         // TODO: should be able to delete this when reworked?
         internal Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}

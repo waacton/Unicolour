@@ -163,7 +163,7 @@ public class NotNumberTests
 
     private static void AssertUnicolour(Unicolour colour)
     {
-        var initial = colour.SourceRepresentation;
+        var initial = colour.SourceTriplet;
         
         Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
         Assert.That(initial.Limitation, Is.EqualTo(Limitation.NaN));

@@ -2,7 +2,7 @@
 
 public partial class Unicolour
 {
-    public ColourRepresentation GetRepresentation(ColourSpace colourSpace)
+    public ColourTriplet GetTriplet(ColourSpace colourSpace)
     {
         return colourSpace switch
         {
@@ -56,7 +56,7 @@ public partial class Unicolour
         };
     }
     
-    private static ColourRepresentation CreateRepresentation(ColourSpace colourSpace, double first, double second, double third, Configuration config, Limitation limitation)
+    private static ColourTriplet CreateTriplet(ColourSpace colourSpace, double first, double second, double third, Configuration config, Limitation limitation)
     {
         return colourSpace switch
         {
@@ -109,7 +109,7 @@ public partial class Unicolour
         };
     }
     
-    private static ColourRepresentation CreateRepresentation(ColourSpace colourSpace, double grey, Configuration config)
+    private static ColourTriplet CreateTriplet(ColourSpace colourSpace, double grey, Configuration config)
     {
         return colourSpace switch
         {
@@ -186,7 +186,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Rgb => (Rgb)SourceRepresentation,
+            ColourSpace.Rgb => (Rgb)SourceTriplet,
             ColourSpace.Hsb => Hsb.ToRgb(Hsb),
             ColourSpace.Hsl => Hsb.ToRgb(Hsb),
             ColourSpace.Hwb => Hsb.ToRgb(Hsb),
@@ -206,7 +206,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.RgbLinear => (RgbLinear)SourceRepresentation,
+            ColourSpace.RgbLinear => (RgbLinear)SourceTriplet,
             ColourSpace.Rgb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
             ColourSpace.Hsb => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
             ColourSpace.Hsl => Rgb.ToRgbLinear(Rgb, Configuration.Rgb, Configuration.DynamicRange),
@@ -228,7 +228,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hsb => (Hsb)SourceRepresentation,
+            ColourSpace.Hsb => (Hsb)SourceTriplet,
             ColourSpace.Hsl => Hsl.ToHsb(Hsl),
             ColourSpace.Hwb => Hwb.ToHsb(Hwb),
             _ => Hsb.FromRgb(Rgb)
@@ -239,7 +239,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hsl => (Hsl)SourceRepresentation,
+            ColourSpace.Hsl => (Hsl)SourceTriplet,
             _ => Hsl.FromHsb(Hsb)
         };
     }
@@ -248,7 +248,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hwb => (Hwb)SourceRepresentation,
+            ColourSpace.Hwb => (Hwb)SourceTriplet,
             _ => Hwb.FromHsb(Hsb)
         };
     }
@@ -257,7 +257,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hsi => (Hsi)SourceRepresentation,
+            ColourSpace.Hsi => (Hsi)SourceTriplet,
             _ => Hsi.FromRgb(Rgb)
         };
     }
@@ -266,7 +266,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Xyz => (Xyz)SourceRepresentation,
+            ColourSpace.Xyz => (Xyz)SourceTriplet,
             ColourSpace.Rgb => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.RgbLinear => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Hsb => RgbLinear.ToXyz(RgbLinear, Configuration.Rgb, Configuration.Xyz.ChromaticAdaptor),
@@ -319,7 +319,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Xyy => (Xyy)SourceRepresentation,
+            ColourSpace.Xyy => (Xyy)SourceTriplet,
             ColourSpace.Wxy => Wxy.ToXyy(Wxy, Configuration.Xyz.SpectralBoundary),
             ColourSpace.Munsell => Munsell.ToXyy(Munsell, Configuration.Xyz.ChromaticAdaptor),
             _ => Xyy.FromXyz(Xyz)
@@ -330,7 +330,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Wxy => (Wxy)SourceRepresentation,
+            ColourSpace.Wxy => (Wxy)SourceTriplet,
             _ => Wxy.FromXyy(Xyy, Configuration.Xyz.SpectralBoundary)
         };
     }
@@ -339,7 +339,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Lab => (Lab)SourceRepresentation,
+            ColourSpace.Lab => (Lab)SourceTriplet,
             ColourSpace.Lchab => Lchab.ToLab(Lchab),
             _ => Lab.FromXyz(Xyz)
         };
@@ -349,7 +349,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Lchab => (Lchab)SourceRepresentation,
+            ColourSpace.Lchab => (Lchab)SourceTriplet,
             _ => Lchab.FromLab(Lab)
         };
     }
@@ -358,7 +358,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Luv => (Luv)SourceRepresentation,
+            ColourSpace.Luv => (Luv)SourceTriplet,
             ColourSpace.Lchuv => Lchuv.ToLuv(Lchuv),
             ColourSpace.Hsluv => Lchuv.ToLuv(Lchuv),
             ColourSpace.Hpluv => Lchuv.ToLuv(Lchuv),
@@ -370,7 +370,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Lchuv => (Lchuv)SourceRepresentation,
+            ColourSpace.Lchuv => (Lchuv)SourceTriplet,
             ColourSpace.Hsluv => Hsluv.ToLchuv(Hsluv),
             ColourSpace.Hpluv => Hpluv.ToLchuv(Hpluv),
             _ => Lchuv.FromLuv(Luv)
@@ -381,7 +381,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hsluv => (Hsluv)SourceRepresentation,
+            ColourSpace.Hsluv => (Hsluv)SourceTriplet,
             _ => Hsluv.FromLchuv(Lchuv)
         };
     }
@@ -390,7 +390,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hpluv => (Hpluv)SourceRepresentation,
+            ColourSpace.Hpluv => (Hpluv)SourceTriplet,
             _ => Hpluv.FromLchuv(Lchuv)
         };
     }
@@ -399,7 +399,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ypbpr => (Ypbpr)SourceRepresentation,
+            ColourSpace.Ypbpr => (Ypbpr)SourceTriplet,
             ColourSpace.Ycbcr => Ycbcr.ToYpbpr(Ycbcr, Configuration.Ybr),
             _ => Ypbpr.FromRgb(Rgb, Configuration.Ybr)
         };
@@ -409,7 +409,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ycbcr => (Ycbcr)SourceRepresentation,
+            ColourSpace.Ycbcr => (Ycbcr)SourceTriplet,
             _ => Ycbcr.FromYpbpr(Ypbpr, Configuration.Ybr)
         };
     }
@@ -418,7 +418,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ycgco => (Ycgco)SourceRepresentation,
+            ColourSpace.Ycgco => (Ycgco)SourceTriplet,
             _ => Ycgco.FromRgb(Rgb)
         };
     }
@@ -427,7 +427,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Yuv => (Yuv)SourceRepresentation,
+            ColourSpace.Yuv => (Yuv)SourceTriplet,
             ColourSpace.Yiq => Yiq.ToYuv(Yiq),
             ColourSpace.Ydbdr => Ydbdr.ToYuv(Ydbdr),
             _ => Yuv.FromRgb(Rgb)
@@ -438,7 +438,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Yiq => (Yiq)SourceRepresentation,
+            ColourSpace.Yiq => (Yiq)SourceTriplet,
             _ => Yiq.FromYuv(Yuv)
         };
     }
@@ -447,7 +447,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ydbdr => (Ydbdr)SourceRepresentation,
+            ColourSpace.Ydbdr => (Ydbdr)SourceTriplet,
             _ => Ydbdr.FromYuv(Yuv)
         };
     }
@@ -456,7 +456,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Tsl => (Tsl)SourceRepresentation,
+            ColourSpace.Tsl => (Tsl)SourceTriplet,
             _ => Tsl.FromRgb(Rgb, Configuration.Ybr)
         };
     }
@@ -465,7 +465,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Xyb => (Xyb)SourceRepresentation,
+            ColourSpace.Xyb => (Xyb)SourceTriplet,
             _ => Xyb.FromRgbLinear(RgbLinear)
         };
     }
@@ -474,7 +474,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Lms => (Lms)SourceRepresentation,
+            ColourSpace.Lms => (Lms)SourceTriplet,
             _ => Lms.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -483,7 +483,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ipt => (Ipt)SourceRepresentation,
+            ColourSpace.Ipt => (Ipt)SourceTriplet,
             _ => Ipt.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -492,7 +492,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Ictcp => (Ictcp)SourceRepresentation,
+            ColourSpace.Ictcp => (Ictcp)SourceTriplet,
             _ => Ictcp.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.DynamicRange)
         };
     }
@@ -501,7 +501,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Jzazbz => (Jzazbz)SourceRepresentation,
+            ColourSpace.Jzazbz => (Jzazbz)SourceTriplet,
             ColourSpace.Jzczhz => Jzczhz.ToJzazbz(Jzczhz),
             _ => Jzazbz.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor, Configuration.DynamicRange)
         };
@@ -511,7 +511,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Jzczhz => (Jzczhz)SourceRepresentation,
+            ColourSpace.Jzczhz => (Jzczhz)SourceTriplet,
             _ => Jzczhz.FromJzazbz(Jzazbz)
         };
     }
@@ -520,7 +520,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Oklab => (Oklab)SourceRepresentation,
+            ColourSpace.Oklab => (Oklab)SourceTriplet,
             ColourSpace.Oklch => Oklch.ToOklab(Oklch),
             ColourSpace.Okhsv => Okhsv.ToOklab(Okhsv, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb),
             ColourSpace.Okhsl => Okhsl.ToOklab(Okhsl, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb),
@@ -535,7 +535,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Oklch => (Oklch)SourceRepresentation,
+            ColourSpace.Oklch => (Oklch)SourceTriplet,
             _ => Oklch.FromOklab(Oklab)
         };
     }
@@ -544,7 +544,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Okhsv => (Okhsv)SourceRepresentation,
+            ColourSpace.Okhsv => (Okhsv)SourceTriplet,
             ColourSpace.Okhwb => Okhwb.ToOkhsv(Okhwb),
             _ => Okhsv.FromOklab(Oklab, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb)
         };
@@ -554,7 +554,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Okhsl => (Okhsl)SourceRepresentation,
+            ColourSpace.Okhsl => (Okhsl)SourceTriplet,
             _ => Okhsl.FromOklab(Oklab, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb)
         };
     }
@@ -563,7 +563,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Okhwb => (Okhwb)SourceRepresentation,
+            ColourSpace.Okhwb => (Okhwb)SourceTriplet,
             _ => Okhwb.FromOkhsv(Okhsv)
         };
     }
@@ -572,7 +572,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Oklrab => (Oklrab)SourceRepresentation,
+            ColourSpace.Oklrab => (Oklrab)SourceTriplet,
             ColourSpace.Oklrch => Oklrch.ToOklrab(Oklrch),
             _ => Oklrab.FromOklab(Oklab)
         };
@@ -582,7 +582,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Oklrch => (Oklrch)SourceRepresentation,
+            ColourSpace.Oklrch => (Oklrch)SourceTriplet,
             _ => Oklrch.FromOklrab(Oklrab)
         };
     }
@@ -591,12 +591,12 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam02Jch => new Cam02(SourceRepresentation, Configuration.Cam.View02),
-            ColourSpace.Cam02Jmh => new Cam02(SourceRepresentation, Configuration.Cam.View02),
-            ColourSpace.Cam02Jsh => new Cam02(SourceRepresentation, Configuration.Cam.View02),
-            ColourSpace.Cam02Qch => new Cam02(SourceRepresentation, Configuration.Cam.View02),
-            ColourSpace.Cam02Qmh => new Cam02(SourceRepresentation, Configuration.Cam.View02),
-            ColourSpace.Cam02Qsh => new Cam02(SourceRepresentation, Configuration.Cam.View02),
+            ColourSpace.Cam02Jch => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jmh => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jsh => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qch => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qmh => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qsh => new Cam02(SourceTriplet, Configuration.Cam.View02),
             ColourSpace.Cam02Ucs => Cam02Ucs.ToCam02(Cam02Ucs, Configuration.Cam.View02),
             _ => Cam02.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View02, Configuration.Xyz.ChromaticAdaptor)
         };
@@ -606,7 +606,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam02Ucs => (Cam02Ucs)SourceRepresentation,
+            ColourSpace.Cam02Ucs => (Cam02Ucs)SourceTriplet,
             _ => Cam02Ucs.FromCam02(Cam02)
         };
     }
@@ -615,7 +615,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam16 => (Cam16)SourceRepresentation,
+            ColourSpace.Cam16 => (Cam16)SourceTriplet,
             _ => Cam16.FromXyz(Xyz, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -624,7 +624,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Hct => (Hct)SourceRepresentation,
+            ColourSpace.Hct => (Hct)SourceTriplet,
             _ => Hct.FromXyz(Xyz, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -633,7 +633,7 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Munsell => (Munsell)SourceRepresentation,
+            ColourSpace.Munsell => (Munsell)SourceTriplet,
             _ => Munsell.FromXyy(Xyy, Configuration.Xyz.ChromaticAdaptor)
         };
     }

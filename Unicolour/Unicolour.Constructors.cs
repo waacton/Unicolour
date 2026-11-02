@@ -177,10 +177,10 @@ public partial class Unicolour
     
     private static (double x, double y, double z) IccToTuple(Channels channels, IccConfiguration iccConfig, ChromaticAdaptor chromaticAdaptor)
     {
-        ColourRepresentation connectingSpaceRepresentation = iccConfig.HasSupportedProfile
+        ColourTriplet connectingSpaceTriplet = iccConfig.HasSupportedProfile
             ? Channels.ToXyz(channels, chromaticAdaptor, iccConfig)
             : Channels.UncalibratedToRgb(channels);
         
-        return connectingSpaceRepresentation.Tuple;
+        return connectingSpaceTriplet.Tuple;
     }
 }

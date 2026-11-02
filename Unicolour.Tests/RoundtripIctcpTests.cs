@@ -21,18 +21,18 @@ public class RoundtripIctcpTests
         var xyz = Ictcp.ToXyz(original, XyzConfig.ChromaticAdaptor, DynamicRange);
         var roundtrip = Ictcp.FromXyz(xyz, XyzConfig.ChromaticAdaptor, DynamicRange);
 
-        var maxXyz = xyz.Triplet.ToArray().Max(Math.Abs);
+        var maxXyz = xyz.ToArray().Max(Math.Abs);
         if (roundtrip.Limitation == Limitation.NaN)
         {
             Assert.That(maxXyz, Is.EqualTo(double.NaN).Or.GreaterThanOrEqualTo(1000000000000000));
         }
-        else if (TestUtils.MaxDiff(roundtrip.Triplet, original.Triplet) > Tolerance)
+        else if (TestUtils.MaxDiff(roundtrip, original) > Tolerance)
         {
             Assert.That(maxXyz, Is.GreaterThanOrEqualTo(100000));
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

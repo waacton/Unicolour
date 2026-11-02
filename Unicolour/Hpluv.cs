@@ -2,19 +2,18 @@
 
 namespace Wacton.Unicolour;
 
-public record Hpluv : ColourRepresentation
+public record Hpluv : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double H => First;
-    public double S => Second;
-    public double L => Third;
+    public double H => this[0];
+    public double S => this[1];
+    public double L => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Hpluv(double h, double s, double l) : this(h, s, l, Limitation.None) {}
     public Hpluv(double l) : this(0, 0, l, Limitation.Achromatic) {}
-    internal Hpluv(double h, double s, double l, Limitation limitation) : base(h, s, l, limitation) {}
+    internal Hpluv(double h, double s, double l, Limitation limitation) : base(h, s, l, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S:F1}% {L:F1}%" : $"{NoHue}° {S:F1}% {L:F1}%";
     public override string ToString() => base.ToString();

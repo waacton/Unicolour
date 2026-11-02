@@ -6,7 +6,7 @@ public partial class Unicolour : IEquatable<Unicolour>
 {
     public Configuration Configuration { get; }
     internal readonly ColourSpace SourceColourSpace;
-    internal readonly ColourRepresentation SourceRepresentation;
+    internal readonly ColourTriplet SourceTriplet;
     
     public Rgb Rgb => field ??= EvaluateRgb();
     public Rgb255 Rgb255 => Rgb.Byte255;
@@ -75,7 +75,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     
     public string Description => field ??=isUnseen ? UnseenDescription : string.Join(" ", ColourDescription.Get(Hsl));
     public Alpha Alpha { get; }
-    private string Source => field ??= $"{SourceColourSpace} {SourceRepresentation}";
+    private string Source => field ??= $"{SourceColourSpace} {SourceTriplet}";
     
     internal Unicolour(Configuration config, ColourSpace colourSpace, double first, double second, double third, double alpha, Limitation limitation)
     {
@@ -89,7 +89,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         Configuration = config;
         SourceColourSpace = colourSpace;
-        SourceRepresentation = CreateRepresentation(colourSpace, first, second, third, config, limitation);
+        SourceTriplet = CreateTriplet(colourSpace, first, second, third, config, limitation);
         Alpha = new Alpha(alpha);
     }
     
@@ -103,7 +103,7 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         Configuration = config;
         SourceColourSpace = colourSpace;
-        SourceRepresentation = CreateRepresentation(colourSpace, grey, config);
+        SourceTriplet = CreateTriplet(colourSpace, grey, config);
         Alpha = new Alpha(alpha);
     }
 
@@ -131,14 +131,14 @@ public partial class Unicolour : IEquatable<Unicolour>
         // need to preserve the result so downstream usage doesn't perform in-gamut check
         // since rounding errors during chromatic adaptation to C/2° will frequently result in false
         var mapped = GamutMapping.ToPointerGamut(this);
-        mapped.isInPointerGamut = !mapped.SourceRepresentation.IsNaN; 
+        mapped.isInPointerGamut = !mapped.SourceTriplet.IsNaN; 
         return mapped;
     }
 
     public Unicolour MapToMacAdamLimits()
     {
         var mapped = GamutMapping.ToMacAdamLimits(this);
-        mapped.isInMacAdamLimits = !mapped.SourceRepresentation.IsNaN; 
+        mapped.isInMacAdamLimits = !mapped.SourceTriplet.IsNaN; 
         return mapped;
     }
     
@@ -151,15 +151,15 @@ public partial class Unicolour : IEquatable<Unicolour>
         
         var chromaticAdaptor = Configuration.Xyz.ChromaticAdaptor;
         var (x, y, z) = chromaticAdaptor.AdaptTo(Xyz, config.Xyz.WhitePoint);
-        var limitation = SourceRepresentation.Limitation;
+        var limitation = SourceTriplet.Limitation;
         return new Unicolour(config, ColourSpace.Xyz, x, y, z, Alpha.A, limitation);
     }
     
     internal Unicolour Clone()
     {
-        var (first, second, third) = SourceRepresentation.Triplet;
+        var (first, second, third) = SourceTriplet;
         var alpha = Alpha.A;
-        var limitation = SourceRepresentation.LimitationBaseline;
+        var limitation = SourceTriplet.LimitationBaseline;
         return new Unicolour(Configuration, SourceColourSpace, first, second, third, alpha, limitation)
         {
             isInPointerGamut = isInPointerGamut,
@@ -194,14 +194,14 @@ public partial class Unicolour : IEquatable<Unicolour>
 
     private bool ColourSpaceEquals(Unicolour other)
     { 
-        return SourceRepresentation.Equals(other.SourceRepresentation);
+        return SourceTriplet.Equals(other.SourceTriplet);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            return (SourceRepresentation.GetHashCode() * 397) ^ Alpha.GetHashCode();
+            return (SourceTriplet.GetHashCode() * 397) ^ Alpha.GetHashCode();
         }
     }
 }

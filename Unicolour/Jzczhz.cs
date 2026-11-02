@@ -2,19 +2,18 @@
 
 namespace Wacton.Unicolour;
 
-public record Jzczhz : ColourRepresentation
+public record Jzczhz : ColourTriplet
 {
-    protected internal override int? HueIndex => 2;
-    public double J => First;
-    public double C => Second;
-    public double H => Third;
+    public double J => this[0];
+    public double C => this[1];
+    public double H => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Jzczhz(double j, double c, double h) : this(j, c, h, Limitation.None) {}
     public Jzczhz(double j) : this(j, 0, 0, Limitation.Achromatic) {}
-    internal Jzczhz(double j, double c, double h, Limitation limitation) : base(j, c, h, limitation) {}
+    internal Jzczhz(double j, double c, double h, Limitation limitation) : base(j, c, h, 2, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{J:F3} {C:F3} {H:F1}°" : $"{J:F3} {C:F3} {NoHue}°";
     public override string ToString() => base.ToString();
@@ -27,13 +26,13 @@ public record Jzczhz : ColourRepresentation
     
     internal static Jzczhz FromJzazbz(Jzazbz jzazbz)
     {
-        var (jz, cz, hz) = ToLchTriplet(jzazbz.Triplet);
+        var (jz, cz, hz) = ToLchTriplet(jzazbz);
         return new Jzczhz(jz, cz, hz, jzazbz.Limitation);
     }
     
     internal static Jzazbz ToJzazbz(Jzczhz jzczhz)
     {
-        var (jz, az, bz) = FromLchTriplet(jzczhz.Triplet);
+        var (jz, az, bz) = FromLchTriplet(jzczhz);
         return new Jzazbz(jz, az, bz, jzczhz.Limitation);
     }
 }

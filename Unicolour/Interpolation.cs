@@ -6,9 +6,9 @@ internal static class Interpolation
     {
         var (start, end, config) = AdjustConfig(startColour, endColour);
         
-        var startRepresentation = start.GetRepresentation(colourSpace);
+        var startRepresentation = start.GetTriplet(colourSpace);
         var startAlpha = start.Alpha;
-        var endRepresentation = end.GetRepresentation(colourSpace);
+        var endRepresentation = end.GetTriplet(colourSpace);
         var endAlpha = end.Alpha;
 
         Func<double, double> mapToHue = colourSpace == ColourSpace.Wxy
@@ -61,8 +61,8 @@ internal static class Interpolation
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
-        (ColourRepresentation representation, Alpha alpha) start, 
-        (ColourRepresentation representation, Alpha alpha) end,
+        (ColourTriplet triplet, Alpha alpha) start, 
+        (ColourTriplet triplet, Alpha alpha) end,
         HueSpan hueSpan, bool premultiplyAlpha, Func<double, double> mapToHue)
     {
         ColourTriplet startTriplet;
@@ -70,15 +70,15 @@ internal static class Interpolation
         
         // these can't give different answers since they use the same colour space
         // (except by reflection, in which case an error would be thrown when later trying to read the hue component)
-        var hasHueComponent = start.representation.HasHueComponent || end.representation.HasHueComponent;
+        var hasHueComponent = start.triplet.HasHueComponent || end.triplet.HasHueComponent;
         if (hasHueComponent)
         {
-            (startTriplet, endTriplet) = GetTripletsWithHue(start.representation, end.representation, hueSpan, mapToHue);
+            (startTriplet, endTriplet) = GetTripletsWithHue(start.triplet, end.triplet, hueSpan, mapToHue);
         }
         else
         {
-            startTriplet = start.representation.Triplet;
-            endTriplet = end.representation.Triplet;
+            startTriplet = start.triplet;
+            endTriplet = end.triplet;
         }
         
         if (premultiplyAlpha)
@@ -91,11 +91,11 @@ internal static class Interpolation
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(
-        ColourRepresentation startRepresentation, ColourRepresentation endRepresentation, 
+        ColourTriplet startRepresentation, ColourTriplet endRepresentation, 
         HueSpan hueSpan, Func<double, double> mapToHue)
     {
-        var startTriplet = startRepresentation.Triplet.WithHueMap(mapToHue).WithHueModulo(allow360: true);
-        var endTriplet = endRepresentation.Triplet.WithHueMap(mapToHue).WithHueModulo(allow360: true);
+        var startTriplet = startRepresentation.WithHueMap(mapToHue).WithHueModulo(allow360: true);
+        var endTriplet = endRepresentation.WithHueMap(mapToHue).WithHueModulo(allow360: true);
 
         double startHue, endHue;
         if (startRepresentation.IsAchromatic ^ endRepresentation.IsAchromatic)
@@ -124,7 +124,13 @@ internal static class Interpolation
         var first = Linear(start.First, end.First, distance);
         var second = Linear(start.Second, end.Second, distance);
         var third = Linear(start.Third, end.Third, distance);
-        return new(first, second, third, start.HueIndex);
+
+        if (start.HasHueComponent)
+        {
+            return new(first, second, third, start.HueIndex!.Value);
+        }
+
+        return new(first, second, third);
     }
 
     internal static double Linear(double startValue, double endValue, double distance)
@@ -133,10 +139,16 @@ internal static class Interpolation
         return startValue + difference * distance;
     }
 
-    private static Limitation InterpolateLimitation(ColourRepresentation colour1, ColourRepresentation colour2)
+    private static Limitation InterpolateLimitation(ColourTriplet colour1, ColourTriplet colour2)
     {
         var first = colour1.Limitation;
         var second = colour2.Limitation;
+
+        // Limitation.Unknown only occurs when constructing ColourTriplet directly
+        // instead of derived classes like Rgb, Hsb, etc. which default to Limitation.None
+        // should not be possible so something has gone wrong if it happens
+        var eitherUnknown = first == Limitation.Unknown || second == Limitation.Unknown;
+        if (eitherUnknown) throw new InvalidOperationException("Limitation must be known for interpolation");
 
         var eitherNaN = first == Limitation.NaN || second == Limitation.NaN;
         if (eitherNaN) return Limitation.NaN;

@@ -2,19 +2,18 @@
 
 namespace Wacton.Unicolour;
 
-public record Hsb : ColourRepresentation
+public record Hsb : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double H => First;
-    public double S => Second;
-    public double B => Third;
+    public double H => this[0];
+    public double S => this[1];
+    public double B => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Hsb(double h, double s, double b) : this(h, s, b, Limitation.None) {}
     public Hsb(double b) : this(0, 0, b, Limitation.Achromatic) {}
-    internal Hsb(double h, double s, double b, Limitation limitation) : base(h, s, b, limitation) {}
+    internal Hsb(double h, double s, double b, Limitation limitation) : base(h, s, b, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {B * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {B * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -28,9 +27,8 @@ public record Hsb : ColourRepresentation
     internal static Hsb FromRgb(Rgb rgb)
     {
         var (r, g, b) = rgb;
-        var components = rgb.ToArray();
-        var xMax = components.Max();
-        var xMin = components.Min();
+        var xMax = rgb.Values.Max();
+        var xMin = rgb.Values.Min();
         var chroma = xMax - xMin;
 
         var h = GetHue(r, g, b).WithHueModulo();

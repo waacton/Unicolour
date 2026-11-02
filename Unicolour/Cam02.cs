@@ -11,7 +11,7 @@ namespace Wacton.Unicolour;
 
 public record Cam02
 {
-    private readonly ColourRepresentation? source;
+    private readonly ColourTriplet? source;
     private readonly ViewingConditions view;
     
     public Model Model => field ??= GetModel();
@@ -29,7 +29,7 @@ public record Cam02
         view = viewingConditions;
     }
     
-    internal Cam02(ColourRepresentation source, ViewingConditions viewingConditions)
+    internal Cam02(ColourTriplet source, ViewingConditions viewingConditions)
     {
         this.source = source;
         view = viewingConditions;

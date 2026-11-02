@@ -16,6 +16,6 @@ public class RoundtripYdbdrTests
         var original = new Ydbdr(triplet.First, triplet.Second, triplet.Third);
         var yuv = Ydbdr.ToYuv(original);
         var roundtrip = Ydbdr.FromYuv(yuv);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Oklrab : ColourRepresentation
+public record Oklrab : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double L => First;
-    public double A => Second;
-    public double B => Third;
+    public double L => this[0];
+    public double A => this[1];
+    public double B => this[2];
     
-    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
+    protected override bool HasAchromaticValues => A == 0.0 && B == 0.0;
     
     public Oklrab(double l, double a, double b) : this(l, a, b, Limitation.None) {}
     public Oklrab(double l) : this(l, 0, 0, Limitation.Achromatic) {}

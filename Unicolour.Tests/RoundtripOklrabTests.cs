@@ -20,13 +20,13 @@ public class RoundtripOklrabTests
         // OKLrAB <-> OKLAB is not robust when L is negative due to the Okhsv Toe functions
         // some instances of these out-of-gamut values do roundtrip
         // but this confirms that when they do not, it is related to these unusual values
-        if (TestUtils.MaxDiff(roundtrip.Triplet, original.Triplet) > Tolerance)
+        if (TestUtils.MaxDiff(roundtrip, original) > Tolerance)
         {
             Assert.That(original.L < 0);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -36,6 +36,6 @@ public class RoundtripOklrabTests
         var original = new Oklrab(triplet.First, triplet.Second, triplet.Third);
         var oklrch = Oklrch.FromOklrab(original);
         var roundtrip = Oklrch.ToOklrab(oklrch);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

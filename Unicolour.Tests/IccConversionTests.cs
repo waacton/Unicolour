@@ -58,7 +58,7 @@ public class IccConversionTests
         if (pcs == Signatures.Lab)
         {
             var xyz = new Xyz(actual[0], actual[1], actual[2], Transform.XyzD50.WhitePoint);
-            actual = Lab.FromXyz(xyz).ToArray();
+            actual = Lab.FromXyz(xyz).Values;
         }
         
         var tolerance = pcs switch
@@ -84,7 +84,7 @@ public class IccConversionTests
             ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50.WhitePoint)
             : new Xyz(first, second, third, Transform.XyzD50.WhitePoint);
         
-        var actual = testColour.Profile.Transform.FromXyz(xyz.ToArray(), intent);
+        var actual = testColour.Profile.Transform.FromXyz(xyz.Values, intent);
         var tolerance = device switch
         {
             Signatures.Cmyk => 0.00000175,
@@ -133,7 +133,7 @@ public class IccConversionTests
         
         // the XYZ values should be the same as calling the core ICC profile function
         var expectedXyzD50 = profile.Transform.ToXyz(deviceValues, intent);
-        Assert.That(colourD50.Xyz.ToArray(), Is.EqualTo(expectedXyzD50).Within(1e-15));
+        Assert.That(colourD50.Xyz.Values, Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
     [TestCaseSource(nameof(UnicolourD65ToDeviceTestData))]

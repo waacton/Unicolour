@@ -19,11 +19,11 @@ public class RoundtripJzczhzTests
         
         if (original.C < 0)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.J, 0, 0, HueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(original.J, 0, 0, hueIndex: 2), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

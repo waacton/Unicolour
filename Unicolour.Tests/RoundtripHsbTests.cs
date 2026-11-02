@@ -25,11 +25,11 @@ public class RoundtripHsbTests
         var negativeChroma = original.S < 0 ^ original.B < 0;
         if (negativeChroma)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, original.B, HueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(0, 0, original.B, hueIndex: 0), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -47,11 +47,11 @@ public class RoundtripHsbTests
         
         if (original.B == 0.0)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, original.B, HueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(original.H, 0, original.B, hueIndex: 0), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -71,11 +71,11 @@ public class RoundtripHsbTests
         if (greyness > 1.0)
         {
             var greyLevel = hwb.W / greyness;
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, greyLevel, HueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(original.H, 0, greyLevel, hueIndex: 0), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

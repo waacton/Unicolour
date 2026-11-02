@@ -49,7 +49,7 @@ public class EqualityTests
     public void EqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
-        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetRepresentation(colourSpace).Tuple, colour1.Alpha.A);
+        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetTriplet(colourSpace).Tuple, colour1.Alpha.A);
         AssertUnicoloursEqual(colour1, colour2);
     }
     
@@ -57,10 +57,25 @@ public class EqualityTests
     public void NotEqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
-        var difference = colourSpace == ColourSpace.Rgb255 ? 1 : 0.1;
-        var differentTuple = GetDifferent(colour1.GetRepresentation(colourSpace).Triplet, difference).Tuple;
+        var difference = colourSpace is ColourSpace.Rgb255 or ColourSpace.Ycbcr ? 1 : 0.1;
+        var differentTuple = GetDifferent(colour1.GetTriplet(colourSpace), difference).Tuple;
         var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, colour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(colour1, colour2, unicolour => unicolour.GetRepresentation(colourSpace).Triplet);
+        AssertUnicoloursNotEqual(colour1, colour2, unicolour => unicolour.GetTriplet(colourSpace));
+    }
+    
+    [Test]
+    public void DifferentCam02()
+    {
+        var camA = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camB = new Cam02(new Cam.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View02);
+        AssertNotEqual(camA, camB);
+    }
+    
+    [Test]
+    public void NullCam02()
+    {
+        var cam = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        Assert.That(cam.Equals(null), Is.False);
     }
 
     [Test]

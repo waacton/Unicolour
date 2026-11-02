@@ -22,10 +22,10 @@ public class MixGreyscaleOkhsvTests
         var fromOkhsvWhite = okhsvWhite.Mix(green, ColourSpace.Okhsv, premultiplyAlpha: false);
         
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromOklabBlack.Okhsv.Triplet, new(120, 0.5, 0.5));
-        AssertTriplet(fromOklabWhite.Okhsv.Triplet, new(120, 0.5, 1));
-        AssertTriplet(fromOkhsvBlack.Okhsv.Triplet, new(150, 1, 0.5));
-        AssertTriplet(fromOkhsvWhite.Okhsv.Triplet, new(150, 0.5, 1));
+        AssertTriplet(fromOklabBlack.Okhsv, new(120, 0.5, 0.5));
+        AssertTriplet(fromOklabWhite.Okhsv, new(120, 0.5, 1));
+        AssertTriplet(fromOkhsvBlack.Okhsv, new(150, 1, 0.5));
+        AssertTriplet(fromOkhsvWhite.Okhsv, new(150, 0.5, 1));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleOkhsvTests
         var toOkhsvWhite = blue.Mix(okhsvWhite, ColourSpace.Okhsv, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toOklabBlack.Okhsv.Triplet, new(240, 0.5, 0.5));
-        AssertTriplet(toOklabWhite.Okhsv.Triplet, new(240, 0.5, 1));
-        AssertTriplet(toOkhsvBlack.Okhsv.Triplet, new(210, 1, 0.5));
-        AssertTriplet(toOkhsvWhite.Okhsv.Triplet, new(210, 0.5, 1));
+        AssertTriplet(toOklabBlack.Okhsv, new(240, 0.5, 0.5));
+        AssertTriplet(toOklabWhite.Okhsv, new(240, 0.5, 1));
+        AssertTriplet(toOkhsvBlack.Okhsv, new(210, 1, 0.5));
+        AssertTriplet(toOkhsvWhite.Okhsv, new(210, 0.5, 1));
     }
     
     [Test]
@@ -61,15 +61,15 @@ public class MixGreyscaleOkhsvTests
         var whiteToGrey = white.Mix(grey, ColourSpace.Okhsv, premultiplyAlpha: false);
 
         double GetL(double first, double second) => Okhsv.ToeInverse((Okhsv.Toe(first) + Okhsv.Toe(second)) / 2.0);
-        AssertTriplet(blackToWhite.Oklab.Triplet, new(GetL(0, 1), 0, 0));
-        AssertTriplet(blackToGrey.Oklab.Triplet, new(GetL(0, 0.5), 0, 0));
-        AssertTriplet(whiteToGrey.Oklab.Triplet, new(GetL(0.5, 1), 0, 0));
+        AssertTriplet(blackToWhite.Oklab, new(GetL(0, 1), 0, 0));
+        AssertTriplet(blackToGrey.Oklab, new(GetL(0, 0.5), 0, 0));
+        AssertTriplet(whiteToGrey.Oklab, new(GetL(0.5, 1), 0, 0));
         
         // colours created from Oklab therefore hue does not change
         double GetV(double first, double second) => Okhsv.Toe(GetL(first, second));
-        AssertTriplet(blackToWhite.Okhsv.Triplet, new(0, 0, GetV(0, 1)));
-        AssertTriplet(blackToGrey.Okhsv.Triplet, new(0, 0, GetV(0, 0.5)));
-        AssertTriplet(whiteToGrey.Okhsv.Triplet, new(0, 0, GetV(0.5, 1)));
+        AssertTriplet(blackToWhite.Okhsv, new(0, 0, GetV(0, 1)));
+        AssertTriplet(blackToGrey.Okhsv, new(0, 0, GetV(0, 0.5)));
+        AssertTriplet(whiteToGrey.Okhsv, new(0, 0, GetV(0.5, 1)));
     }
     
     [Test]
@@ -83,14 +83,14 @@ public class MixGreyscaleOkhsvTests
         var blackToGrey = black.Mix(grey, ColourSpace.Okhsv, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Okhsv, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Oklab.Triplet, new(Okhsv.ToeInverse(0.5), 0, 0));
-        AssertTriplet(blackToGrey.Oklab.Triplet, new(Okhsv.ToeInverse(0.25), 0, 0));
-        AssertTriplet(whiteToGrey.Oklab.Triplet, new(Okhsv.ToeInverse(0.75), 0, 0));
+        AssertTriplet(blackToWhite.Oklab, new(Okhsv.ToeInverse(0.5), 0, 0));
+        AssertTriplet(blackToGrey.Oklab, new(Okhsv.ToeInverse(0.25), 0, 0));
+        AssertTriplet(whiteToGrey.Oklab, new(Okhsv.ToeInverse(0.75), 0, 0));
         
         // colours created from Okhsv therefore hue changes
-        AssertTriplet(blackToWhite.Okhsv.Triplet, new(330, 0, 0.5));
-        AssertTriplet(blackToGrey.Okhsv.Triplet, new(50, 0, 0.25));
-        AssertTriplet(whiteToGrey.Okhsv.Triplet, new(20, 0, 0.75));
+        AssertTriplet(blackToWhite.Okhsv, new(330, 0, 0.5));
+        AssertTriplet(blackToGrey.Okhsv, new(50, 0, 0.25));
+        AssertTriplet(whiteToGrey.Okhsv, new(20, 0, 0.75));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

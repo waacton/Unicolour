@@ -16,7 +16,7 @@ public class RoundtripYuvTests
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);
         var rgb = Yuv.ToRgb(original);
         var roundtrip = Yuv.FromRgb(rgb);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -25,7 +25,7 @@ public class RoundtripYuvTests
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);
         var yiq = Yiq.FromYuv(original);
         var roundtrip = Yiq.ToYuv(yiq);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -34,6 +34,6 @@ public class RoundtripYuvTests
         var original = new Yuv(triplet.First, triplet.Second, triplet.Third);
         var ydbdr = Ydbdr.FromYuv(original);
         var roundtrip = Ydbdr.ToYuv(ydbdr);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

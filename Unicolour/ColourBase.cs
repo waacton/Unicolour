@@ -2,10 +2,12 @@
 
 public abstract record ColourBase
 {
-    public readonly double[] Values;
+    // backing values array is internal and the public indexer is get only
+    // so external callers cannot set array content (and internal code is trusted to not do so)
+    internal double[] Values { get; }
     public double this[int index] => Values[index];
     
-    protected abstract bool IsTripletAchromatic { get; } // TODO: rename
+    protected abstract bool HasAchromaticValues { get; }
     
     internal bool IsAchromatic => Limitation == Limitation.Achromatic;
     internal bool IsNaN => Limitation == Limitation.NaN;
@@ -36,8 +38,9 @@ public abstract record ColourBase
     {
         get
         {
+            if (LimitationBaseline == Limitation.Unknown) return Limitation.Unknown;
             if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
-            if (LimitationBaseline == Limitation.Achromatic || IsTripletAchromatic) return Limitation.Achromatic;
+            if (LimitationBaseline == Limitation.Achromatic || HasAchromaticValues) return Limitation.Achromatic;
             return Limitation.None;
         }
     }
@@ -47,13 +50,16 @@ public abstract record ColourBase
         Values = values;
         LimitationBaseline = limitationBaseline;
     }
+
+    // create a copy of the backing array in case external code sets array contents
+    public double[] ToArray() => Utils.Copy(Values);
     
     // arrays use reference equality so needs overriding to check only values 
     public virtual bool Equals(ColourBase? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Values.SequenceEqual(other.Values) && LimitationBaseline == other.LimitationBaseline;
+        return Values.SequenceEqual(other.Values) && Limitation == other.Limitation;
     }
 
     public override int GetHashCode()
@@ -61,7 +67,7 @@ public abstract record ColourBase
         unchecked
         {
             var hashCode = Values.Aggregate(0, (current, value) => (current * 397) ^ value.GetHashCode());
-            hashCode = (hashCode * 397) ^ (int)LimitationBaseline;
+            hashCode = (hashCode * 397) ^ (int)Limitation;
             return hashCode;
         }
     }

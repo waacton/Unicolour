@@ -2,6 +2,7 @@
 
 internal enum Limitation
 {
+    Unknown,
     None,
     Achromatic,
     NaN

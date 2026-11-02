@@ -18,7 +18,7 @@ public class ConfigureCamTests
         var xyz = Cam02.ToXyz(expectedCam, CamConfiguration.StandardRgb.WhitePoint, xyzConfig.ChromaticAdaptor);
         var cam = Cam02.FromXyz(xyz, CamConfiguration.StandardRgb.WhitePoint, CamConfiguration.StandardRgb.View02, xyzConfig.ChromaticAdaptor);
         var camUcs = Cam02Ucs.FromCam02(cam);
-        TestUtils.AssertTriplet(camUcs.Triplet, expectedCamUcs.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(camUcs, expectedCamUcs, 0.00000000001);
     }
     
     [Test]
@@ -31,7 +31,7 @@ public class ConfigureCamTests
         var xyzConfig = new XyzConfiguration(xyzIlluminant, Observer.Degree2);
         var xyz = Cam16.ToXyz(expectedCam, CamConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
         var cam = Cam16.FromXyz(xyz, CamConfiguration.StandardRgb, xyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(cam.Triplet, expectedCam.Triplet, 0.00000000001);
+        TestUtils.AssertTriplet(cam, expectedCam, 0.00000000001);
     }
 
     [Test]

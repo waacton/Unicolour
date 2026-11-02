@@ -1,17 +1,16 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Xyy : ColourRepresentation
+public record Xyy : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public Chromaticity Chromaticity => new(First, Second);
-    public double Luminance => Third;
+    public Chromaticity Chromaticity => new(this[0], this[1]);
+    public double Luminance => this[2];
     
     internal WhitePoint WhitePoint { get; }
-    protected override bool IsTripletAchromatic => Chromaticity == WhitePoint.Chromaticity;
+    protected override bool HasAchromaticValues => Chromaticity == WhitePoint.Chromaticity;
 
     public Xyy(double x, double y, double luminance, WhitePoint whitePoint) : this(x, y, luminance, whitePoint, Limitation.None) {}
     public Xyy(double luminance, WhitePoint whitePoint) : this(whitePoint.Chromaticity.X, whitePoint.Chromaticity.Y, luminance, whitePoint, Limitation.Achromatic) {}
-    internal Xyy(double x, double y, double luminance, WhitePoint whitePoint, Limitation limitation) : base(x, y, luminance, limitation)
+    internal Xyy(double x, double y, double luminance, WhitePoint whitePoint, Limitation limitation) : base(x, y, luminance, null, limitation)
     {
         WhitePoint = whitePoint;
     }

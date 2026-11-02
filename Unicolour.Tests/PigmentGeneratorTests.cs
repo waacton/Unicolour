@@ -32,7 +32,7 @@ public class PigmentGeneratorTests
     {
         var pigment = PigmentGenerator.From(original);
         var roundtrip = new Unicolour([pigment], [1.0]);
-        TestUtils.AssertTriplet(roundtrip.Rgb.Triplet, original.Rgb.Triplet, 0.05);
+        TestUtils.AssertTriplet(roundtrip.Rgb, original.Rgb, 0.05);
     }
 
     [Test]
@@ -42,7 +42,7 @@ public class PigmentGeneratorTests
         Assert.That(pigment.R!.Coefficients, Is.All.NaN);
         
         var colour = new Unicolour([pigment], [1.0]);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
 
     [Test]
@@ -53,6 +53,6 @@ public class PigmentGeneratorTests
         Assert.That(pigment.R!.Coefficients, Is.All.NaN);
         
         var colour = new Unicolour([pigment], [1.0]);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
 }

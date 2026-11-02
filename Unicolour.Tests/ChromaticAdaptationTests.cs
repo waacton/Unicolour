@@ -223,7 +223,7 @@ public class ChromaticAdaptationTests
         var chromaticAdaptor = new ChromaticAdaptor(sourceWhitePoint, chromaticAdaptation);
         var originalXyz = new Xyz(0.5, 0.5, 0.5, sourceWhitePoint);
         var adaptedXyz = chromaticAdaptor.AdaptTo(originalXyz, targetWhitePoint);
-        TestUtils.AssertTriplet(adaptedXyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(adaptedXyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     private static void AssertTransformMatrix(Illuminant source, Illuminant target, ChromaticAdaptation chromaticAdaptation, double[,] expected)
@@ -342,6 +342,6 @@ public class ChromaticAdaptationTests
         var originalXyz = new Xyz(0.5, 0.5, 0.5, sourceWhitePoint);
         var adaptedXyz = actualChromaticAdaptor.AdaptTo(originalXyz, targetWhitePoint);
         var expectedXyz = expectedChromaticAdaptor.AdaptTo(originalXyz, targetWhitePoint);
-        TestUtils.AssertTriplet(adaptedXyz.Triplet, expectedXyz.Triplet, 0);
+        TestUtils.AssertTriplet(adaptedXyz, expectedXyz, 0);
     }
 }

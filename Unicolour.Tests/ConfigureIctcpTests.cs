@@ -33,7 +33,7 @@ public class ConfigureIctcpTests
     public void Rec2020RgbToIctcp1()
     {
         var colour = new Unicolour(Config1, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
-        TestUtils.AssertTriplet(colour.Ictcp.Triplet, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
+        TestUtils.AssertTriplet(colour.Ictcp, new(0.07351364, 0.00475253, 0.09351596), 0.00001);
         
         var white = new Unicolour(Config1, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config1, ColourSpace.Xyz, 0, 0, 0);
@@ -45,7 +45,7 @@ public class ConfigureIctcpTests
     public void Rec2020RgbToIctcp203()
     {
         var colour = new Unicolour(Config203, ColourSpace.RgbLinear, TestLinearRgb.Tuple);
-        TestUtils.AssertTriplet(colour.Ictcp.Triplet, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
+        TestUtils.AssertTriplet(colour.Ictcp, new(0.39224991, -0.0001166, 0.28389029), 0.0001);
         
         var white = new Unicolour(Config203, ColourSpace.Xyz, XyzWhite.Tuple);
         var black = new Unicolour(Config203, ColourSpace.Xyz, 0, 0, 0);
@@ -72,7 +72,7 @@ public class ConfigureIctcpTests
         
         TestUtils.AssertColour(convertedTo1, new Ictcp(0.07351364, 0.00475253, 0.09351596), 0.00001);
         TestUtils.AssertColour(convertedTo203, new Ictcp(0.39224991, -0.0001166, 0.28389029), 0.0001);
-        TestUtils.AssertTriplet(convertedTo100.Ictcp.Triplet, initial100.Ictcp.Triplet, 0.0005);
+        TestUtils.AssertTriplet(convertedTo100.Ictcp, initial100.Ictcp, 0.0005);
     }
     
     [Test]

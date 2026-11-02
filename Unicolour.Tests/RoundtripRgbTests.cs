@@ -58,7 +58,7 @@ public class RoundtripRgbTests
             return;
         }
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -72,7 +72,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var hsb = Hsb.FromRgb(original);
         var roundtrip = Hsb.ToRgb(hsb);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -81,7 +81,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var hsi = Hsi.FromRgb(original);
         var roundtrip = Hsi.ToRgb(hsi);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -90,7 +90,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var ypbpr = Ypbpr.FromRgb(original, YbrConfig);
         var roundtrip = Ypbpr.ToRgb(ypbpr, YbrConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -99,7 +99,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var ycgco = Ycgco.FromRgb(original);
         var roundtrip = Ycgco.ToRgb(ycgco);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -108,7 +108,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var yuv = Yuv.FromRgb(original);
         var roundtrip = Yuv.ToRgb(yuv);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -117,7 +117,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var tsl = Tsl.FromRgb(original, YbrConfig);
         var roundtrip = Tsl.ToRgb(tsl, YbrConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     // although RGB -> CMYK -> RGB results in same values, cannot guarantee roundtrip of CMYK -> RGB -> CMYK
@@ -128,7 +128,7 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var cmyk = Channels.UncalibratedFromRgb(original);
         var roundtrip = Channels.UncalibratedToRgb(cmyk);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     /*
@@ -142,13 +142,13 @@ public class RoundtripRgbTests
         var original = new Rgb(triplet.First, triplet.Second, triplet.Third);
         var cmy = Cmy.FromRgb(original);
         var roundtrip = Cmy.ToRgb(cmy);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     private static void AssertClippedRoundtrip(Rgb original, Rgb roundtrip, double lower, double upper)
     {
         var clampedOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
-        TestUtils.AssertTriplet(roundtrip.Triplet, clampedOriginal.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, clampedOriginal, Tolerance);
     }
     
     private static void AssertPqRoundtrip(Rgb original, Rgb roundtrip)
@@ -159,7 +159,7 @@ public class RoundtripRgbTests
             GetExpected(roundtrip.B, original.B)
         );
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, expected, Tolerance);
         return;
 
         double GetExpected(double actualValue, double originalValue)

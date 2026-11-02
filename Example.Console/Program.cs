@@ -54,7 +54,7 @@ static Table GetTable(Unicolour colour)
     table.AddColumn(new TableColumn("Value").Width(col2Width));
 
     table.AddRow("Hex", $"{colour.Hex}");
-    table.AddRow("Rgb 255", $"{colour.Rgb.Byte255}");
+    table.AddRow("Rgb 255", $"{colour.Rgb255}");
     table.AddRow("Rgb", $"{colour.Rgb}");
     table.AddRow("Rgb Lin.", $"{colour.RgbLinear}");
     table.AddRow("Hsl", $"{colour.Hsl}");
@@ -88,7 +88,13 @@ static Table GetTable(Unicolour colour)
     table.AddRow("Okhsv", $"{colour.Okhsv}");
     table.AddRow("Okhsl", $"{colour.Okhsl}");
     table.AddRow("Okhwb", $"{colour.Okhwb}");
-    table.AddRow("Cam02", $"{colour.Cam02}");
+    table.AddRow("Cam02Jch", $"{colour.Cam02Jch}");
+    table.AddRow("Cam02Jmh", $"{colour.Cam02Jmh}");
+    table.AddRow("Cam02Jsh", $"{colour.Cam02Jsh}");
+    table.AddRow("Cam02Qch", $"{colour.Cam02Qch}");
+    table.AddRow("Cam02Qmh", $"{colour.Cam02Qmh}");
+    table.AddRow("Cam02Qsh", $"{colour.Cam02Qsh}");
+    table.AddRow("Cam02Ucs", $"{colour.Cam02Ucs}");
     table.AddRow("Cam16", $"{colour.Cam16}");
     table.AddRow("Hct", $"{colour.Hct}");
     table.AddRow("Munsell", $"{colour.Munsell}");

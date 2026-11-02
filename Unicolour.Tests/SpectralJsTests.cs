@@ -97,28 +97,28 @@ public class SpectralJsTests
         var negative = new Unicolour(ColourSpace.RgbLinear, -0.5, -0.5, -0.5);
         var positive = new Unicolour(ColourSpace.RgbLinear, 0.5, 0.5, 0.5);
         var colour = SpectralJs.Mix([negative, positive], [0.5, 0.5]);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixNoConcentration()
     {
         var colour = SpectralJs.Mix([StandardRgb.Black, StandardRgb.White], [-0.5, 0.0]);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixEmptyPigments()
     {
         var colour = SpectralJs.Mix([], [1.0]);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
     public void MixEmptyConcentration()
     {
         var colour = SpectralJs.Mix([Red], []);
-        TestUtils.AssertTriplet(colour.Xyz.Triplet, new(double.NaN, double.NaN, double.NaN), 0);
+        TestUtils.AssertTriplet(colour.Xyz, new(double.NaN, double.NaN, double.NaN), 0);
     }
     
     [Test]
@@ -140,9 +140,9 @@ public class SpectralJsTests
     {
         var expected = new Unicolour(expectedHex);
 
-        var expectedRgb = expected.RgbLinear.ToArray();
-        var actualRgb = colour.RgbLinear.ToArray();
-        var rgbDifferences = expectedRgb.Zip(actualRgb, (a, b) => Math.Abs(a - b)).ToArray();
+        var expectedRgb = expected.RgbLinear;
+        var actualRgb = colour.RgbLinear;
+        var rgbDifferences = expectedRgb.Values.Zip(actualRgb.Values, (a, b) => Math.Abs(a - b)).ToArray();
         Assert.That(rgbDifferences.Max(), Is.LessThan(0.125));
         Assert.That(rgbDifferences.Sum(), Is.LessThan(0.175));
     }

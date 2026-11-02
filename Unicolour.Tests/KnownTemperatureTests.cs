@@ -110,8 +110,8 @@ public class KnownTemperatureTests
         var temperatureD65 = new Temperature(6500 * 1.4388 / 1.4380, 0.0032);
         
         var colour = new Unicolour(Configuration.Default, temperatureD65, luminance);
-        TestUtils.AssertTriplet(colour.Xyy.Triplet, new(0.3127, 0.3290, luminance), 0.00005);
-        TestUtils.AssertTriplet(colour.RgbLinear.Triplet, new(luminance, luminance, luminance), 0.0005);
+        TestUtils.AssertTriplet(colour.Xyy, new(0.3127, 0.3290, luminance), 0.00005);
+        TestUtils.AssertTriplet(colour.RgbLinear, new(luminance, luminance, luminance), 0.0005);
         Assert.That(colour.Xyy.Luminance, Is.EqualTo(luminance));
         Assert.That(colour.Temperature, Is.EqualTo(temperatureD65));
     }

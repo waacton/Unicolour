@@ -24,7 +24,7 @@ public class RoundtripHctTests
         if (!xyz.HctToXyzSearchResult!.Converged)
         {
             Assert.That(original.C < 0 || original.C > 88 || original.T < 12, Is.True);
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(double.NaN, double.NaN, double.NaN), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(double.NaN, double.NaN, double.NaN), Tolerance);
             return;
         }
     
@@ -40,6 +40,6 @@ public class RoundtripHctTests
             return;
         }
     
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

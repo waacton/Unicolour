@@ -75,8 +75,8 @@ public class LimitationTests
 
     private static void AssertSource<T>(Unicolour unicolour, Limitation limitation)
     {
-        Assert.That(unicolour.SourceRepresentation.GetType(), Is.EqualTo(typeof(T)));
-        Assert.That(unicolour.SourceRepresentation.LimitationBaseline, Is.EqualTo(limitation));
+        Assert.That(unicolour.SourceTriplet.GetType(), Is.EqualTo(typeof(T)));
+        Assert.That(unicolour.SourceTriplet.LimitationBaseline, Is.EqualTo(limitation));
     }
 
     private static Unicolour AssertClone(Unicolour colour)

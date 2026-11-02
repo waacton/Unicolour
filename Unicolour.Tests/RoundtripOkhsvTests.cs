@@ -22,13 +22,13 @@ public class RoundtripOkhsvTests
         // OKHSV <-> OKLAB is not robust when values are negative or too large
         // many instances of these out-of-gamut values do roundtrip
         // but this confirms that when they do not, it is related to these unusual values
-        if (TestUtils.MaxDiff(roundtrip.Triplet, original.Triplet) > Tolerance)
+        if (TestUtils.MaxDiff(roundtrip, original) > Tolerance)
         {
             Assert.That(original.S < 0 || original.V < 0 || original.S > 1.7 || original.V > 1.7);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
     
@@ -43,11 +43,11 @@ public class RoundtripOkhsvTests
         if (greyness > 1.0)
         {
             var greyLevel = okhwb.W / greyness;
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(original.H, 0, greyLevel, HueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(original.H, 0, greyLevel, hueIndex: 0), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

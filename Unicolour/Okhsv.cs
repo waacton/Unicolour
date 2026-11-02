@@ -2,19 +2,18 @@
 
 namespace Wacton.Unicolour;
 
-public record Okhsv : ColourRepresentation
+public record Okhsv : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double H => First;
-    public double S => Second;
-    public double V => Third;
+    public double H => this[0];
+    public double S => this[1];
+    public double V => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Okhsv(double h, double s, double v) : this(h, s, v, Limitation.None) {}
     public Okhsv(double v) : this(0, 0, v, Limitation.Achromatic) {}
-    internal Okhsv(double h, double s, double v, Limitation limitation) : base(h, s, v, limitation) {}
+    internal Okhsv(double h, double s, double v, Limitation limitation) : base(h, s, v, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {S * 100:F1}% {V * 100:F1}%" : $"{NoHue}° {S * 100:F1}% {V * 100:F1}%";
     public override string ToString() => base.ToString();
@@ -42,7 +41,7 @@ public record Okhsv : ColourRepresentation
             return new Okhsv(0, 0, Toe(l), oklab.Limitation);
         }
         
-        var (_, c, h) = ToLchTriplet(oklab.Triplet);
+        var (_, c, h) = ToLchTriplet(oklab);
         var aPrime = a / c;
         var bPrime = b / c;
 

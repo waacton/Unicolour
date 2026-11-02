@@ -22,10 +22,10 @@ public class MixGreyscaleMunsellTests
         var fromMunsellWhite = munsellWhite.Mix(green, ColourSpace.Munsell, premultiplyAlpha: false);
         
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromRgbBlack.Munsell.Triplet, new(120, 5, 10));
-        AssertTriplet(fromRgbWhite.Munsell.Triplet, new(120, 10, 10));
-        AssertTriplet(fromMunsellBlack.Munsell.Triplet, new(150, 5, 20));
-        AssertTriplet(fromMunsellWhite.Munsell.Triplet, new(150, 10, 10));
+        AssertTriplet(fromRgbBlack.Munsell, new(120, 5, 10));
+        AssertTriplet(fromRgbWhite.Munsell, new(120, 10, 10));
+        AssertTriplet(fromMunsellBlack.Munsell, new(150, 5, 20));
+        AssertTriplet(fromMunsellWhite.Munsell, new(150, 10, 10));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleMunsellTests
         var toMunsellWhite = blue.Mix(munsellWhite, ColourSpace.Munsell, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toRgbBlack.Munsell.Triplet, new(240, 5, 10));
-        AssertTriplet(toRgbWhite.Munsell.Triplet, new(240, 10, 10));
-        AssertTriplet(toMunsellBlack.Munsell.Triplet, new(210, 5, 20));
-        AssertTriplet(toMunsellWhite.Munsell.Triplet, new(210, 10, 10));
+        AssertTriplet(toRgbBlack.Munsell, new(240, 5, 10));
+        AssertTriplet(toRgbWhite.Munsell, new(240, 10, 10));
+        AssertTriplet(toMunsellBlack.Munsell, new(210, 5, 20));
+        AssertTriplet(toMunsellWhite.Munsell, new(210, 10, 10));
     }
     
     [Test]
@@ -65,14 +65,14 @@ public class MixGreyscaleMunsellTests
         var blackToGrey = black.Mix(grey, ColourSpace.Munsell, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Munsell, premultiplyAlpha: false);
 
-        AssertTriplet(blackToWhite.RgbLinear.Triplet, new(0.1927184375, 0.1927184375, 0.1927184375));
-        AssertTriplet(blackToGrey.RgbLinear.Triplet, new(0.1028100921, 0.1028100921, 0.1028100921));
-        AssertTriplet(whiteToGrey.RgbLinear.Triplet, new(0.719449643153, 0.719449643153, 0.719449643153));
+        AssertTriplet(blackToWhite.RgbLinear, new(0.1927184375, 0.1927184375, 0.1927184375));
+        AssertTriplet(blackToGrey.RgbLinear, new(0.1028100921, 0.1028100921, 0.1028100921));
+        AssertTriplet(whiteToGrey.RgbLinear, new(0.719449643153, 0.719449643153, 0.719449643153));
         
         // colours created from RGB therefore hue does not change
-        AssertTriplet(blackToWhite.Munsell.Triplet, new(0, 5, 0));
-        AssertTriplet(blackToGrey.Munsell.Triplet, new(0, 3.768860022566, 0));
-        AssertTriplet(whiteToGrey.Munsell.Triplet, new(0, 8.768860022566, 0));
+        AssertTriplet(blackToWhite.Munsell, new(0, 5, 0));
+        AssertTriplet(blackToGrey.Munsell, new(0, 3.768860022566, 0));
+        AssertTriplet(whiteToGrey.Munsell, new(0, 8.768860022566, 0));
     }
     
     [Test]
@@ -86,14 +86,14 @@ public class MixGreyscaleMunsellTests
         var blackToGrey = black.Mix(grey, ColourSpace.Munsell, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Munsell, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.RgbLinear.Triplet, new(0.1927184375, 0.1927184375, 0.1927184375));
-        AssertTriplet(blackToGrey.RgbLinear.Triplet, new(0.0449879980468, 0.0449879980468, 0.0449879980468));
-        AssertTriplet(whiteToGrey.RgbLinear.Triplet, new(0.4940879003906, 0.4940879003906, 0.4940879003906));
+        AssertTriplet(blackToWhite.RgbLinear, new(0.1927184375, 0.1927184375, 0.1927184375));
+        AssertTriplet(blackToGrey.RgbLinear, new(0.0449879980468, 0.0449879980468, 0.0449879980468));
+        AssertTriplet(whiteToGrey.RgbLinear, new(0.4940879003906, 0.4940879003906, 0.4940879003906));
         
         // colours created from WXY therefore hue changes
-        AssertTriplet(blackToWhite.Munsell.Triplet, new(330, 5, 0));
-        AssertTriplet(blackToGrey.Munsell.Triplet, new(50, 2.5, 0));
-        AssertTriplet(whiteToGrey.Munsell.Triplet, new(20, 7.5, 0));
+        AssertTriplet(blackToWhite.Munsell, new(330, 5, 0));
+        AssertTriplet(blackToGrey.Munsell, new(50, 2.5, 0));
+        AssertTriplet(whiteToGrey.Munsell, new(20, 7.5, 0));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

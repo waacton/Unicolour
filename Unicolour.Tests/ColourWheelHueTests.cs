@@ -64,7 +64,7 @@ public class ColourWheelHueTests
         var reference = StandardRgb.Red;
         var colourWheel = ColourWheel.From(colourSpace, reference);
         var colour = colourWheel.Pure(hue);
-        Assert.That(colour.GetRepresentation(colourSpace).IsNaN, Is.True);
+        Assert.That(colour.GetTriplet(colourSpace).IsNaN, Is.True);
     }
     
     [Test]
@@ -76,7 +76,7 @@ public class ColourWheelHueTests
         var colours = weights.Select(x => colourWheel.Tint(180, x)).ToArray();
         var deltas = colours.Select(x => x.Difference(StandardRgb.White, DeltaE.Ciede2000)).ToArray();
         
-        if (!colours[0].GetRepresentation(colourSpace).HasHueComponent)
+        if (!colours[0].GetTriplet(colourSpace).HasHueComponent)
         {
             Assert.That(deltas, Has.All.NaN);
             return;
@@ -96,7 +96,7 @@ public class ColourWheelHueTests
         var reference = StandardRgb.Red;
         var colourWheel = ColourWheel.From(colourSpace, reference);
         var colour = colourWheel.Tint(180, weight);
-        Assert.That(colour.GetRepresentation(colourSpace).IsNaN, Is.True);
+        Assert.That(colour.GetTriplet(colourSpace).IsNaN, Is.True);
     }
     
     [Test]
@@ -108,7 +108,7 @@ public class ColourWheelHueTests
         var colours = weights.Select(x => colourWheel.Shade(180, x)).ToArray();
         var deltas = colours.Select(x => x.Difference(StandardRgb.Black, DeltaE.Ciede2000)).ToArray();
         
-        if (!colours[0].GetRepresentation(colourSpace).HasHueComponent)
+        if (!colours[0].GetTriplet(colourSpace).HasHueComponent)
         {
             Assert.That(deltas, Has.All.NaN);
             return;
@@ -128,7 +128,7 @@ public class ColourWheelHueTests
         var reference = StandardRgb.Red;
         var colourWheel = ColourWheel.From(colourSpace, reference);
         var colour = colourWheel.Shade(180, weight);
-        Assert.That(colour.GetRepresentation(colourSpace).IsNaN, Is.True);
+        Assert.That(colour.GetTriplet(colourSpace).IsNaN, Is.True);
     }
     
     [Test]
@@ -140,7 +140,7 @@ public class ColourWheelHueTests
         var colours = weights.Select(x => colourWheel.Tone(180, x)).ToArray();
         var deltas = colours.Select(x => x.Difference(StandardRgb.White, DeltaE.Ciede2000)).ToArray();
         
-        if (!colours[0].GetRepresentation(colourSpace).HasHueComponent)
+        if (!colours[0].GetTriplet(colourSpace).HasHueComponent)
         {
             Assert.That(deltas, Has.All.NaN);
             return;
@@ -160,7 +160,7 @@ public class ColourWheelHueTests
         var reference = StandardRgb.Red;
         var colourWheel = ColourWheel.From(colourSpace, reference);
         var colour = colourWheel.Tone(180, weight);
-        Assert.That(colour.GetRepresentation(colourSpace).IsNaN, Is.True);
+        Assert.That(colour.GetTriplet(colourSpace).IsNaN, Is.True);
     }
     
     private static readonly Dictionary<Harmony, double[]> HarmonyOffsets = new()
@@ -192,14 +192,14 @@ public class ColourWheelHueTests
         var expectedColourSpace = colourSpace == ColourSpace.Rgb255 ? ColourSpace.Rgb : colourSpace;
         Assert.That(palette.Select(x => x.SourceColourSpace), Has.All.EqualTo(expectedColourSpace));
         
-        var representations = palette.Select(x => x.GetRepresentation(colourSpace)).ToArray();
-        if (!representations[0].HasHueComponent)
+        var triplets = palette.Select(x => x.GetTriplet(colourSpace)).ToArray();
+        if (!triplets[0].HasHueComponent)
         {
-            Assert.That(representations.Select(x => x.Triplet), Has.All.EqualTo(new ColourTriplet(double.NaN, double.NaN, double.NaN)));
+            Assert.That(triplets, Has.All.EqualTo(new ColourTriplet(double.NaN, double.NaN, double.NaN, Limitation.NaN)));
             return;
         }
         
-        var hues = representations.Select(x => x.ToArray()[x.HueIndex!.Value]).ToArray();
+        var hues = triplets.Select(x => x[x.HueIndex!.Value]).ToArray();
         if (colourSpace == ColourSpace.Wxy)
         {
             hues = hues.Select(x => FromWavelength(x, reference.Configuration.Xyz)).ToArray();

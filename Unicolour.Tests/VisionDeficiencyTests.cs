@@ -28,7 +28,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Protanopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
@@ -44,7 +44,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Deuteranopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
     
@@ -60,7 +60,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Tritanopia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 2);
     }
     
@@ -76,7 +76,7 @@ public class VisionDeficiencyTests
     {
         var colour = StandardRgb.Lookup[colourName];
         var simulatedColour = colour.Simulate(Cvd.Achromatopsia);
-        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped.Triplet;
+        var simulatedRgb = simulatedColour.Rgb.Byte255.Clipped;
         TestUtils.AssertTriplet(simulatedRgb, new(expectedR, expectedG, expectedB), 1);
     }
 
@@ -102,8 +102,8 @@ public class VisionDeficiencyTests
         var cvdD65FromD50 = cvdD50.ConvertToConfiguration(Configuration.Default);
 
         const double tolerance = 5e-15;
-        TestUtils.AssertTriplet(cvdD65.RgbLinear.Triplet, cvdD65FromD50.RgbLinear.Triplet, tolerance);
-        TestUtils.AssertTriplet(cvdD50.RgbLinear.Triplet, cvdD50FromD65.RgbLinear.Triplet, tolerance);
+        TestUtils.AssertTriplet(cvdD65.RgbLinear, cvdD65FromD50.RgbLinear, tolerance);
+        TestUtils.AssertTriplet(cvdD50.RgbLinear, cvdD50FromD65.RgbLinear, tolerance);
     }
 
     [Test]

@@ -210,8 +210,8 @@ internal abstract class Transform
     private static double XyzToIccXyz(double value) => value * 32768.0 / 65535.0;
     private static double IccXyzToXyz(double value) => value * 65535.0 / 32768.0;
     
-    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50.WhitePoint).ToArray();
-    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2], XyzD50.WhitePoint)).ToArray();
+    internal static double[] LabToXyz(double[] lab) => Lab.ToXyz(new Lab(lab[0], lab[1], lab[2]), XyzD50.WhitePoint).Values;
+    internal static double[] XyzToLab(double[] xyz) => Lab.FromXyz(new Xyz(xyz[0], xyz[1], xyz[2], XyzD50.WhitePoint)).Values;
 
     private static double[] NegativeClip(double[] xyz) => xyz.Select(NegativeClip).ToArray();
     private static double NegativeClip(double value) => Math.Max(value, 0);

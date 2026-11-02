@@ -2,14 +2,13 @@
 
 namespace Wacton.Unicolour;
 
-public record Cam02Ucs : ColourRepresentation
+public record Cam02Ucs : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double J => First;
-    public double A => Second;
-    public double B => Third;
+    public double J => this[0];
+    public double A => this[1];
+    public double B => this[2];
     
-    protected override bool IsTripletAchromatic => A == 0.0 && B == 0.0;
+    protected override bool HasAchromaticValues => A == 0.0 && B == 0.0;
     
     public Cam02Ucs(double j, double a, double b) : this(j, a, b, Limitation.None) {}
     public Cam02Ucs(double j) : this(j, 0, 0, Limitation.Achromatic) {}

@@ -299,6 +299,6 @@ public class PigmentTests
         Assert.That(colourFromWhitePoint.Xyz.X, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromWhitePoint.Xyz.Y, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
         Assert.That(colourFromWhitePoint.Xyz.Z, expectedXyzNaN ? Is.NaN : Is.Not.NaN);
-        TestUtils.AssertTriplet(colourFromWhitePoint.Xyz.Triplet, colourFromIlluminantSpd.Xyz.Triplet, 0.0075);
+        TestUtils.AssertTriplet(colourFromWhitePoint.Xyz, colourFromIlluminantSpd.Xyz, 0.0075);
     }
 }

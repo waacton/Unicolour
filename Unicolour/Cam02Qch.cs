@@ -2,18 +2,17 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public record Cam02Qch : ColourRepresentation
+public record Cam02Qch : ColourTriplet
 {
-    protected internal override int? HueIndex => 2;
-    public double Q => First;
-    public double C => Second;
-    public double H => Third;
+    public double Q => this[0];
+    public double C => this[1];
+    public double H => this[2];
     
-    protected override bool IsTripletAchromatic => C <= 0;
+    protected override bool HasAchromaticValues => C <= 0;
     
     public Cam02Qch(double q, double c, double h) : this(q, c, h, Limitation.None) {}
     public Cam02Qch(double q) : this(q, 0, 0, Limitation.Achromatic) {}
-    internal Cam02Qch(double q, double c, double h, Limitation limitation) : base(q, c, h, limitation) {}
+    internal Cam02Qch(double q, double c, double h, Limitation limitation) : base(q, c, h, 2, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{Q:F2} {C:F2} {H:F1}°" : $"{Q:F2} {C:F2} {NoHue}°";
     public override string ToString() => base.ToString();

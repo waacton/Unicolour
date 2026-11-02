@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record RgbLinear : ColourRepresentation
+public record RgbLinear : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double R => First;
-    public double G => Second;
-    public double B => Third;
+    public double R => this[0];
+    public double G => this[1];
+    public double B => this[2];
     
-    protected override bool IsTripletAchromatic => R == G && G == B;
+    protected override bool HasAchromaticValues => R == G && G == B;
     
     public RgbLinear(double r, double g, double b) : this(r, g, b, Limitation.None) {}
     public RgbLinear(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}

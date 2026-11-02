@@ -35,7 +35,7 @@ public class RoundtripWxyTests
         // so use their degree representation instead
         if (IsValidWavelength(expected.W))
         {
-            TestUtils.AssertTriplet(actual.Triplet, expected.Triplet, Tolerance);
+            TestUtils.AssertTriplet(actual, expected, Tolerance);
         }
         else
         {
@@ -60,8 +60,8 @@ public class RoundtripWxyTests
         // so use their degree representation instead
         if (IsValidWavelength(original.W))
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, expectedDominant.Triplet, Tolerance);
-            TestUtils.AssertTriplet(original.Triplet, expectedComplement.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, expectedDominant, Tolerance);
+            TestUtils.AssertTriplet(original, expectedComplement, Tolerance);
         }
         else
         {
@@ -80,6 +80,6 @@ public class RoundtripWxyTests
 
     private static ColourTriplet MapToHue(Wxy wxy)
     {
-        return wxy.Triplet.WithHueMap(w => Hue.FromWavelength(w, XyzConfig));
+        return wxy.WithHueMap(w => Hue.FromWavelength(w, XyzConfig));
     }
 }

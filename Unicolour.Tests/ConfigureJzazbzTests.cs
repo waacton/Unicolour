@@ -75,7 +75,7 @@ public class ConfigureJzazbzTests
         
         TestUtils.AssertColour(convertedTo1, new Jzazbz(0.00535048, 0.00924302, 0.00526007), 0.00001);
         TestUtils.AssertColour(convertedTo203, new Jzazbz(0.10287841, 0.08613415, 0.05873694), 0.0001);
-        TestUtils.AssertTriplet(convertedTo100.Jzazbz.Triplet, initial100.Jzazbz.Triplet, 0.0005);
+        TestUtils.AssertTriplet(convertedTo100.Jzazbz, initial100.Jzazbz, 0.0005);
     }
     
     [Test]

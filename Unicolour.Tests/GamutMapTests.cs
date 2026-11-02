@@ -30,7 +30,7 @@ public class GamutMapTests
         var gamutMapped = original.MapToRgbGamut(gamutMap);
         Assert.That(original.IsInRgbGamut, Is.True);
         Assert.That(gamutMapped.IsInRgbGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Triplet, 1e-16);
+        TestUtils.AssertTriplet(gamutMapped.Rgb, original.Rgb, 1e-16);
     }
     
     private static List<(double, double, double)> GamutOutsideValues =
@@ -65,8 +65,8 @@ public class GamutMapTests
         var original = new Unicolour(ColourSpace.Rgb, triplet.Tuple);
         var gamutMapped = original.MapToRgbGamut(gamutMap);
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        Assert.That(gamutMapped.Rgb.Triplet, Is.EqualTo(gamutMapped.Rgb.Clipped.Triplet));
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Triplet, 0);
+        Assert.That(gamutMapped.Rgb, Is.EqualTo(gamutMapped.Rgb.Clipped));
+        TestUtils.AssertTriplet(gamutMapped.Rgb, original.Rgb, 0);
     }
     
     [Test, Combinatorial]

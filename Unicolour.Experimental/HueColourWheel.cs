@@ -23,16 +23,16 @@ public class HueColourWheel : ColourWheel
     {
         hue = hue.WithHueModulo();
         
-        var representation = reference.GetRepresentation(colourSpace);
+        var triplet = reference.GetTriplet(colourSpace);
 
         (double, double, double) tuple;
-        if (!representation.HasHueComponent)
+        if (!triplet.HasHueComponent)
         {
             tuple = (double.NaN, double.NaN, double.NaN);
         }
         else if (colourSpace == ColourSpace.Wxy)
         {
-            tuple = representation.Triplet
+            tuple = triplet
                 .WithHueMap(h => Hue.FromWavelength(h, config.Xyz))
                 .WithHueOverride(hue)
                 .WithHueMap(h => Hue.ToWavelength(h, config.Xyz))
@@ -40,7 +40,7 @@ public class HueColourWheel : ColourWheel
         }
         else
         {
-            tuple = representation.Triplet.WithHueOverride(hue).Tuple;
+            tuple = triplet.WithHueOverride(hue).Tuple;
         }
         
         return new Unicolour(config, colourSpace, tuple, reference.Alpha.A);

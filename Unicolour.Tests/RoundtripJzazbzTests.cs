@@ -20,7 +20,7 @@ public class RoundtripJzazbzTests
         var roundtrip = Jzazbz.FromXyz(xyz, XyzConfig.ChromaticAdaptor, DynamicRange);
         
         // Jzazbz -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
-        TestUtils.AssertTriplet(roundtrip.Triplet, xyz.Limitation == Limitation.NaN ? new(double.NaN, double.NaN, double.NaN) : original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, xyz.Limitation == Limitation.NaN ? new(double.NaN, double.NaN, double.NaN) : original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -29,6 +29,6 @@ public class RoundtripJzazbzTests
         var original = new Jzazbz(triplet.First, triplet.Second, triplet.Third);
         var jzczhz = Jzczhz.FromJzazbz(original);
         var roundtrip = Jzczhz.ToJzazbz(jzczhz);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

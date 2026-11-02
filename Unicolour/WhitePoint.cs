@@ -1,5 +1,6 @@
 ﻿namespace Wacton.Unicolour;
 
+// TODO: derive from ColourTriplet?
 public record WhitePoint
 {
     public double X { get; }

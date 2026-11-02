@@ -67,7 +67,7 @@ public class RoundtripRgb255Tests
         
         if (hsb.B == 0)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(0, 0, 0), Tolerance);
         }
         else
         {
@@ -86,7 +86,7 @@ public class RoundtripRgb255Tests
         var zeroIntensity = original.R + original.G + original.B == 0;
         if (zeroIntensity)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(0, 0, 0), Tolerance);
         }
         else
         {
@@ -132,7 +132,7 @@ public class RoundtripRgb255Tests
         var zeroIntensity = original.R + original.G + original.B == 0;
         if (zeroIntensity)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(double.NaN, double.NaN, double.NaN), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(double.NaN, double.NaN, double.NaN), Tolerance);
         }
         else
         {
@@ -152,7 +152,7 @@ public class RoundtripRgb255Tests
         // pure 1.0 black only happens if max RGB channel was 0.0, losing chroma information for the roundtrip
         if (cmyk[3] == 1.0)  
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new(0, 0, 0), Tolerance);
         }
         else
         {
@@ -176,15 +176,15 @@ public class RoundtripRgb255Tests
 
     private static void AssertRoundtrip(ColourTriplet triplet, Rgb original, Rgb roundtrip)
     {
-        TestUtils.AssertTriplet(original.Byte255.Triplet, triplet, Tolerance);
-        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, triplet, Tolerance);
-        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, original.Byte255.Triplet, Tolerance);
+        TestUtils.AssertTriplet(original.Byte255, triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Byte255, triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Byte255, original.Byte255, Tolerance);
     }
     
     private static void AssertClippedRoundtrip(Rgb original, Rgb roundtrip, double lower, double upper)
     {
         var clampedOriginal = new Rgb(original.R.Clamp(lower, upper), original.G.Clamp(lower, upper), original.B.Clamp(lower, upper));
-        TestUtils.AssertTriplet(roundtrip.Byte255.Triplet, clampedOriginal.Byte255.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip.Byte255, clampedOriginal.Byte255, Tolerance);
     }
     
     private static void AssertPqRoundtrip(Rgb original, Rgb roundtrip)
@@ -195,7 +195,7 @@ public class RoundtripRgb255Tests
             GetExpected(roundtrip.B, original.B)
         );
         
-        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, expected, Tolerance);
         return;
 
         double GetExpected(double actualValue, double originalValue)

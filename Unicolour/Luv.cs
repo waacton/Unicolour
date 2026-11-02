@@ -2,14 +2,13 @@
 
 namespace Wacton.Unicolour;
 
-public record Luv : ColourRepresentation
+public record Luv : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double L => First;
-    public double U => Second;
-    public double V => Third;
+    public double L => this[0];
+    public double U => this[1];
+    public double V => this[2];
     
-    protected override bool IsTripletAchromatic => U == 0.0 && V == 0.0;
+    protected override bool HasAchromaticValues => U == 0.0 && V == 0.0;
     
     public Luv(double l, double u, double v) : this(l, u, v, Limitation.None) {}
     public Luv(double l) : this(l, 0, 0, Limitation.Achromatic) {}

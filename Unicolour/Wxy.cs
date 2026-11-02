@@ -2,19 +2,18 @@
 
 namespace Wacton.Unicolour;
 
-public record Wxy : ColourRepresentation
+public record Wxy : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double W => First;
-    public double X => Second;
-    public double Y => Third;
+    public double W => this[0];
+    public double X => this[1];
+    public double Y => this[2];
     
     // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    protected override bool HasAchromaticValues => false;
     
     public Wxy(double w, double x, double y) : this(w, x, y, Limitation.None) {}
     public Wxy(double y) : this(SpectralBoundary.MinWavelength, 0, y, Limitation.Achromatic) {}
-    internal Wxy(double w, double x, double y, Limitation limitation) : base(w, x, y, limitation) {}
+    internal Wxy(double w, double x, double y, Limitation limitation) : base(w, x, y, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{W:F1}nm {X * 100:F1}% {Y:F4}" : $"{NoHue}nm {X * 100:F1}% {Y:F4}";
     public override string ToString() => base.ToString();

@@ -30,8 +30,8 @@ public class RoundtripMunsellTests
         // the chromaticity search falls back to white, the only known chromaticity for that data point
         if (xyy.Limitation == Limitation.Achromatic)
         {
-            var expected = new ColourTriplet(0, original.V, 0, HueIndex: 0);
-            TestUtils.AssertTriplet(roundtrip.Triplet, expected, 0.0075);
+            var expected = new ColourTriplet(0, original.V, 0, hueIndex: 0);
+            TestUtils.AssertTriplet(roundtrip, expected, 0.0075);
             return;
         }
         
@@ -73,7 +73,7 @@ public class RoundtripMunsellTests
         }
 
         var toleranceV = isTypicalChromaRange ? 5e-15 : 1e-14;
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [tolerance.h, toleranceV, tolerance.c]);
+        TestUtils.AssertTriplet(roundtrip, original, [tolerance.h, toleranceV, tolerance.c]);
     }
 
     /*

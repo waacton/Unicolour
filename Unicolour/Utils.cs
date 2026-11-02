@@ -100,4 +100,6 @@ internal static class Utils
         var angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
         return (radius, ToDegrees(angle).WithHueModulo());
     }
+    
+    internal static double[] Copy(double[] array) => (double[])array.Clone();
 }

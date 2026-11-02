@@ -26,12 +26,12 @@ public class RoundtripOkhwbTests
         {
             var okhsvFromOriginal = Okhwb.ToOkhsv(original);
             var okhsvFromScaled = Okhwb.ToOkhsv(scaled);
-            TestUtils.AssertTriplet(okhsvFromOriginal.Triplet, okhsvFromScaled.Triplet, Tolerance);
+            TestUtils.AssertTriplet(okhsvFromOriginal, okhsvFromScaled, Tolerance);
         }
 
         var okhsv = Okhwb.ToOkhsv(original);
         var roundtrip = Okhwb.FromOkhsv(okhsv);
-        var expected = needsScaling ? scaled.Triplet : original.Triplet;
-        TestUtils.AssertTriplet(roundtrip.Triplet, expected, Tolerance);
+        var expected = needsScaling ? scaled : original;
+        TestUtils.AssertTriplet(roundtrip, expected, Tolerance);
     }
 }

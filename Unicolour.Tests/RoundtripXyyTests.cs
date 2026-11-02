@@ -18,7 +18,7 @@ public class RoundtripXyyTests
         var original = new Xyy(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
         var xyz = Xyy.ToXyz(original);
         var roundtrip = Xyy.FromXyz(xyz);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -27,7 +27,7 @@ public class RoundtripXyyTests
         var original = new Xyy(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
         var wxy = Wxy.FromXyy(original, XyzConfig.SpectralBoundary);
         var roundtrip = Wxy.ToXyy(wxy, XyzConfig.SpectralBoundary);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 
     [TestCaseSource(nameof(Triplets))]
@@ -41,21 +41,21 @@ public class RoundtripXyyTests
 
         if (munsell.XyyToHvcSearchResult!.Converged)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.00001, 0.00001, 5e-15]);
+            TestUtils.AssertTriplet(roundtrip, original, [0.00001, 0.00001, 5e-15]);
         }
         else if (munsell.C == 0.0)
         {
             var white = TestUtils.CConfig.Xyz.WhitePoint.Chromaticity;
             var expected = new ColourTriplet(white.X, white.Y, original.Luminance);
-            TestUtils.AssertTriplet(roundtrip.Triplet, expected, [0, 0, 1e-10]);
+            TestUtils.AssertTriplet(roundtrip, expected, [0, 0, 1e-10]);
         }
         else if (!isTypicalRange)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.21, 0.21, 5e-15]);
+            TestUtils.AssertTriplet(roundtrip, original, [0.21, 0.21, 5e-15]);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, [0.16, 0.16, 5e-15]);
+            TestUtils.AssertTriplet(roundtrip, original, [0.16, 0.16, 5e-15]);
         }
     }
 }

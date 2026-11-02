@@ -92,10 +92,10 @@ internal static class TestUtils
     
     internal static Limitation[] Limitations(Unicolour colour, ColourSpace[] colourSpaces, bool baselines)
     {
-        var colourRepresentations = colourSpaces.Select(colour.GetRepresentation);
+        var colourTriplets = colourSpaces.Select(colour.GetTriplet);
         return baselines
-            ? colourRepresentations.Select(x => x.LimitationBaseline).ToArray()
-            : colourRepresentations.Select(x => x.Limitation).ToArray();
+            ? colourTriplets.Select(x => x.LimitationBaseline).ToArray()
+            : colourTriplets.Select(x => x.Limitation).ToArray();
     }
         
     internal const double MixTolerance = 0.00000000005;
@@ -109,12 +109,12 @@ internal static class TestUtils
         return diffs.Max();
     }
     
-    internal static void AssertColour<T>(Unicolour colour, T expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertColour<T>(Unicolour colour, T expected, double tolerance) where T : ColourTriplet
     {
-        var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
-        var colourRepresentation = colour.GetRepresentation(colourSpace);
-        var tolerances = GetTolerances(tolerance, colourRepresentation.HueIndex);
-        AssertTriplet(colourRepresentation.Triplet, expected.Triplet, tolerances);
+        var colourSpace = TripletTypeToColourSpace[typeof(T)];
+        var colourTriplet = colour.GetTriplet(colourSpace);
+        var tolerances = GetTolerances(tolerance, colourTriplet.HueIndex);
+        AssertTriplet(colourTriplet, expected, tolerances);
     }
 
     internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
@@ -265,7 +265,7 @@ internal static class TestUtils
         Assert.That(object1.ToString(), Is.Not.EqualTo(object2.ToString()));
     }
     
-    private static readonly Dictionary<Type, ColourSpace> RepresentationTypeToColourSpace = new()
+    private static readonly Dictionary<Type, ColourSpace> TripletTypeToColourSpace = new()
     {
         { typeof(Rgb), ColourSpace.Rgb },
         { typeof(Rgb255), ColourSpace.Rgb255 },

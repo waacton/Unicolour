@@ -38,7 +38,7 @@ public abstract record ColourBase
     {
         get
         {
-            if (LimitationBaseline == Limitation.Unknown) return Limitation.Unknown;
+            if (LimitationBaseline == Limitation.Unset) return Limitation.Unset;
             if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
             if (LimitationBaseline == Limitation.Achromatic || HasAchromaticValues) return Limitation.Achromatic;
             return Limitation.None;

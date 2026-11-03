@@ -15,9 +15,9 @@ public record ColourTriplet : ColourBase
     // (i.e. a colour defined using all 3 coordinates of a hue-based system, by definition, has hue and chroma - even if it cannot be detected)
     protected override bool HasAchromaticValues => false;
 
-    internal ColourTriplet(double first, double second, double third, int hueIndex) : this(first, second, third, hueIndex, Limitation.Unknown) {}
+    internal ColourTriplet(double first, double second, double third, int hueIndex) : this(first, second, third, hueIndex, Limitation.Unset) {}
     internal ColourTriplet(double first, double second, double third, Limitation limitation) : this(first, second, third, null, limitation) {}
-    internal ColourTriplet(double first, double second, double third, int? hueIndex = null, Limitation limitation = Limitation.Unknown) : base([first, second, third], limitation)
+    internal ColourTriplet(double first, double second, double third, int? hueIndex = null, Limitation limitation = Limitation.Unset) : base([first, second, third], limitation)
     {
         HueIndex = hueIndex;
     }

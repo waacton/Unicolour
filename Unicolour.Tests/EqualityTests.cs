@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Wacton.Unicolour.Icc;
 using Wacton.Unicolour.Tests.Utils;
@@ -8,7 +9,7 @@ namespace Wacton.Unicolour.Tests;
 public class EqualityTests
 {
     [Test]
-    public void SameReference([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    public void UnicolourVsSameRef([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
         var colour2 = colour1;
@@ -16,7 +17,7 @@ public class EqualityTests
     }
     
     [Test]
-    public void SameReferenceNotNumber([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    public void UnicolourVsSameRefNotNumber([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, double.NaN, double.NaN, double.NaN);
         var colour2 = colour1;
@@ -24,29 +25,7 @@ public class EqualityTests
     }
     
     [Test]
-    public void DifferentType([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
-    {
-        var colour = Rng.Unicolour(colourSpace);
-        var notUnicolour = new object();
-        AssertNotEqual(colour, notUnicolour);
-    }
-    
-    [Test]
-    public void NullUnicolour([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
-    {
-        var colour = Rng.Unicolour(colourSpace);
-        Assert.That(colour.Equals(null), Is.False);
-    }
-    
-    [Test]
-    public void NullObject([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
-    {
-        var colour = Rng.Unicolour(colourSpace);
-        Assert.That(colour.Equals(null as object), Is.False);
-    }
-    
-    [Test]
-    public void EqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    public void UnicolourVsSameVal([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
         var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
         var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetTriplet(colourSpace).Tuple, colour1.Alpha.A);
@@ -54,17 +33,144 @@ public class EqualityTests
     }
     
     [Test]
-    public void NotEqualObjects([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    public void UnicolourVsWrongType([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
     {
-        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
-        var difference = colourSpace is ColourSpace.Rgb255 or ColourSpace.Ycbcr ? 1 : 0.1;
-        var differentTuple = GetDifferent(colour1.GetTriplet(colourSpace), difference).Tuple;
-        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, colour1.Alpha.A + 0.1);
-        AssertUnicoloursNotEqual(colour1, colour2, unicolour => unicolour.GetTriplet(colourSpace));
+        var colour = Rng.Unicolour(colourSpace);
+        var notUnicolour = new object();
+        AssertNotEqual(colour, notUnicolour);
     }
     
     [Test]
-    public void DifferentCam02()
+    public void UnicolourVsNullValue([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour = Rng.Unicolour(colourSpace);
+        Assert.That(colour.Equals(null), Is.False);
+    }
+    
+    [Test]
+    public void UnicolourVsNullObject([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour = Rng.Unicolour(colourSpace);
+        Assert.That(colour.Equals(null as object), Is.False);
+    }
+    
+    [Test]
+    public void UnicolourVsDifferentTriplet([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
+        var difference = colourSpace is ColourSpace.Rgb255 or ColourSpace.Ycbcr ? 3 : 0.1;
+        var differentTuple = GetDifferent(colour1.GetTriplet(colourSpace), difference).Tuple;
+        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, differentTuple, colour1.Alpha.A);
+        AssertNotEqual(colour1.GetTriplet(colourSpace), colour2.GetTriplet(colourSpace));
+        AssertEqual(colour1.Alpha, colour2.Alpha);
+        AssertEqual(colour1.Configuration, colour2.Configuration);
+        AssertNotEqual(colour1, colour2);
+    }
+    
+    [Test]
+    public void UnicolourVsDifferentAlpha([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
+        var colour2 = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, colour1.GetTriplet(colourSpace).Tuple, colour1.Alpha.A + 0.1);
+        AssertEqual(colour1.GetTriplet(colourSpace), colour2.GetTriplet(colourSpace));
+        AssertNotEqual(colour1.Alpha, colour2.Alpha);
+        AssertEqual(colour1.Configuration, colour2.Configuration);
+        AssertNotEqual(colour1, colour2);
+    }
+    
+    [Test]
+    public void UnicolourVsDifferentConfig([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour1 = Rng.Unicolour(colourSpace, TestUtils.DefaultFogra39Config);
+        var colour2 = new Unicolour(TestUtils.D65Config, colourSpace, colour1.GetTriplet(colourSpace).Tuple, colour1.Alpha.A);
+        AssertEqual(colour1.GetTriplet(colourSpace), colour2.GetTriplet(colourSpace));
+        AssertEqual(colour1.Alpha, colour2.Alpha);
+        AssertNotEqual(colour1.Configuration, colour2.Configuration);
+        AssertNotEqual(colour1, colour2, expectDifferentString: false); // configs are not shown in the string, and even if they were configs must be same reference to be considered equal
+    }
+    
+    [Test]
+    public void TripletVsDifferentDerivedType([ValueSource(typeof(TestUtils), nameof(TestUtils.AllColourSpaces))] ColourSpace colourSpace)
+    {
+        var colour = new Unicolour(TestUtils.DefaultFogra39Config, colourSpace, 0, 0, 0);
+        var otherSpaces = TestUtils.AllColourSpaces.Except([colourSpace]);
+        foreach (var otherSpace in otherSpaces)
+        {
+            var sourceTriplet = colour.GetTriplet(colourSpace);
+            var otherTriplet = colour.GetTriplet(otherSpace);
+            AssertNotEqual(sourceTriplet, otherTriplet, expectDifferentString: false); // e.g. Rgb(0, 0, 0) and RgbLinear(0, 0, 0) - not equal but same hash code (1252698706) and string ("0.00 0.00 0.00")
+        }
+    }
+
+    [Test]
+    public void ColourBaseVsSameRef()
+    {
+        ColourBase colourBase1 = new ColourTriplet(0.1, 0.2, 0.3);
+        var colourBase2 = colourBase1;
+        AssertEqual(colourBase1, colourBase2);
+        
+        /*
+         * an equality check on 2 abstract ColourBase objects that are the same reference never reaches the ColourBase.Equals() override
+         * because Equals() is invoked on derived records (e.g. ColourTriplet), which detect reference equality and return true, either because
+         * A) the record's compiler-generated Equals() performs a reference check
+         * B) the Rider-generated Equal() override performs a reference check (these are mostly kept unchanged from generated)
+         * so reflection is used to explicitly trigger ColourBase.Equals()
+         */
+        Assert.That(CallAbstractEqualsOverride(colourBase1, colourBase2), Is.True);
+    }
+    
+    private static bool CallAbstractEqualsOverride(ColourBase colourBase1, ColourBase colourBase2)
+    {
+        // cannot simply use methodInfo.Invoke() because that will also just invoke the Equals on the derived record
+        // instead, use a pointer to the ColourBase.Equals() method to create an instance of a Func<> delegate, which can indeed be invoked 🪄
+        // (arguably overkill to test something that currently can't be hit but ensures equality behaviour won't break in future)
+        var methodInfo = typeof(ColourBase).GetMethod("Equals", [typeof(ColourBase)])!;
+        var methodPointer = methodInfo.MethodHandle.GetFunctionPointer();
+        var colourBase1EqualsMethod = (Func<ColourBase?, bool>)Activator.CreateInstance(typeof(Func<ColourBase?, bool>), colourBase1, methodPointer)!;
+        return colourBase1EqualsMethod(colourBase2);
+    }
+    
+    [Test]
+    public void ColourBaseVsSameVal()
+    {
+        ColourBase tripletA = new ColourTriplet(0.1, 0.2, 0.3);
+        ColourBase tripletB = new ColourTriplet(0.1, 0.2, 0.3);
+        AssertEqual(tripletA, tripletB);
+    }
+    
+    [Test]
+    public void ColourBaseVsDifferent()
+    {
+        ColourBase tripletA = new ColourTriplet(0.1, 0.2, 0.3);
+        ColourBase tripletB = new ColourTriplet(0.3, 0.2, 0.1);
+        AssertNotEqual(tripletA, tripletB);
+    }
+    
+    [Test]
+    public void ColourBaseVsNull()
+    {
+        ColourBase triplet = new ColourTriplet(0.1, 0.2, 0.3);
+        Assert.That(triplet.Equals(null), Is.False);
+    }
+    
+    [Test]
+    public void Cam02VsSameRef()
+    {
+        var camA = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camB = camA;
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void Cam02VsSameVal()
+    {
+        var camA = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camB = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void Cam02VsDifferent()
     {
         var camA = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
         var camB = new Cam02(new Cam.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View02);
@@ -72,14 +178,30 @@ public class EqualityTests
     }
     
     [Test]
-    public void NullCam02()
+    public void Cam02VsNull()
     {
         var cam = new Cam02(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
         Assert.That(cam.Equals(null), Is.False);
     }
+    
+    [Test]
+    public void IccChannelsVsSameRef()
+    {
+        var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
+        var channels2 = channels1;
+        AssertEqual(channels1, channels2);
+    }
+    
+    [Test]
+    public void IccChannelsVsSameVal()
+    {
+        var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
+        var channels2 = new Channels(0.25, 0.5, 0.5, 0.75);
+        AssertEqual(channels1, channels2);
+    }
 
     [Test]
-    public void DifferentIccChannels()
+    public void IccChannelsVsDifferent()
     {
         var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
         var channels2 = new Channels(0.75, 0.5, 0.5, 0.25);
@@ -87,14 +209,33 @@ public class EqualityTests
     }
     
     [Test]
-    public void NullIccChannels()
+    public void IccChannelsVsNull()
     {
         var channels = new Channels(0.25, 0.5, 0.5, 0.75);
         Assert.That(channels.Equals(null), Is.False);
     }
     
     [Test]
-    public void DifferentConfigurationObjects()
+    public void ConfigVsSameRef()
+    {
+        var config1 = TestUtils.D65Config;
+        var config2 = config1;
+        AssertEqual(config1, config2);
+    }
+    
+    [Test]
+    public void ConfigVsSameVal()
+    {
+        // configs are considered too complex to attempt to test for equality by value
+        // and by only checking reference equality, Unicolour may attempt to convert between 2 configs of the same value
+        // but this is a conscious decision and far preferable to not converting between them when they should be
+        var config1 = TestUtils.D65Config;
+        var config2 = new Configuration(xyzConfig: XyzConfiguration.D65);
+        AssertNotEqual(config1, config2);
+    }
+    
+    [Test]
+    public void ConfigVsDifferent()
     {
         var iccConfigWithProfile = new IccConfiguration(IccFile.Fogra39.Path, Intent.Perceptual);
         var iccConfigWithoutProfile = new IccConfiguration(null);
@@ -127,6 +268,13 @@ public class EqualityTests
             AssertNotEqual(config1.DynamicRange, config2.DynamicRange);
             AssertNotEqual(config1.Icc, config2.Icc);
         }
+    }
+    
+    [Test]
+    public void ConfigVsNull()
+    {
+        var config = TestUtils.D65Config;
+        Assert.That(config.Equals(null), Is.False);
     }
 
     private static RgbConfiguration GetNew(RgbConfiguration config, string name) => new(config.ChromaticityR, config.ChromaticityG, config.ChromaticityB, config.WhitePoint, config.FromLinear, config.ToLinear, name);
@@ -254,13 +402,6 @@ public class EqualityTests
         AssertEqual(config1.Icc.Error, config2.Icc.Error);
     }
 
-    private static void AssertUnicoloursNotEqual(Unicolour colour1, Unicolour colour2, Func<Unicolour, ColourTriplet> getTriplet)
-    {
-        AssertNotEqual(getTriplet(colour1), getTriplet(colour2));
-        AssertNotEqual(colour1.Alpha, colour2.Alpha);
-        AssertNotEqual(colour1, colour2);
-    }
-
     private static void AssertEqual<T>(T object1, T object2) => TestUtils.AssertEqual(object1, object2);
-    private static void AssertNotEqual<T>(T object1, T object2) => TestUtils.AssertNotEqual(object1, object2);
+    private static void AssertNotEqual<T>(T object1, T object2, bool expectDifferentString = true) => TestUtils.AssertNotEqual(object1, object2, expectDifferentString);
 }

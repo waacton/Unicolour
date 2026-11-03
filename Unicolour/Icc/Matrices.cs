@@ -9,8 +9,8 @@ internal record Matrices(Matrix Multiply, Matrix Offset)
     
     internal double[] Apply(double[] inputs)
     {
-        var multiplied = Multiply.Multiply(Matrix.From(inputs[0], inputs[1], inputs[2])).ToTriplet().ToArray();
-        var offsetArray = Offset.ToTriplet().ToArray();
+        var multiplied = Multiply.Multiply(Matrix.From(inputs[0], inputs[1], inputs[2])).ToTriplet();
+        var offsetArray = Offset.ToTriplet();
 
         // NOTE: apparently should be clipped to 0 - 1 before used downstream
         // but can't find evidence of this in DemoIccMAX reference implementation

@@ -25,7 +25,7 @@ internal static class Interpolation
             hueSpan, premultiplyAlpha, mapToHue);
         
         var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithHueMap(mapFromHue);
-        var alpha = Linear(startColour.Alpha.Clipped.A, endColour.Alpha.Clipped.A, distance);
+        var alpha = Linear(startAlpha.Clipped.A, endAlpha.Clipped.A, distance);
         
         if (premultiplyAlpha)
         {
@@ -147,7 +147,7 @@ internal static class Interpolation
         // Limitation.Unknown only occurs when constructing ColourTriplet directly
         // instead of derived classes like Rgb, Hsb, etc. which default to Limitation.None
         // should not be possible so something has gone wrong if it happens
-        var eitherUnknown = first == Limitation.Unknown || second == Limitation.Unknown;
+        var eitherUnknown = first == Limitation.Unset || second == Limitation.Unset;
         if (eitherUnknown) throw new InvalidOperationException("Limitation must be known for interpolation");
 
         var eitherNaN = first == Limitation.NaN || second == Limitation.NaN;

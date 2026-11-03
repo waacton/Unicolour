@@ -21,7 +21,7 @@ public class RoundtripIctcpTests
         var xyz = Ictcp.ToXyz(original, XyzConfig.ChromaticAdaptor, DynamicRange);
         var roundtrip = Ictcp.FromXyz(xyz, XyzConfig.ChromaticAdaptor, DynamicRange);
 
-        var maxXyz = xyz.ToArray().Max(Math.Abs);
+        var maxXyz = xyz.Values.Max(Math.Abs);
         if (roundtrip.Limitation == Limitation.NaN)
         {
             Assert.That(maxXyz, Is.EqualTo(double.NaN).Or.GreaterThanOrEqualTo(1000000000000000));

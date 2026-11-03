@@ -177,31 +177,30 @@ public partial class Unicolour : IEquatable<Unicolour>
 
         return string.Join(" · ", parts);
     }
-
+    
     public bool Equals(Unicolour? other)
     {
-        if (ReferenceEquals(null, other)) return false;
+        if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return ColourSpaceEquals(other) && Alpha.Equals(other.Alpha);
+        return SourceTriplet.Equals(other.SourceTriplet) && Configuration.Equals(other.Configuration) && Alpha.Equals(other.Alpha);
     }
 
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
+        if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;
-        return obj.GetType() == GetType() && Equals((Unicolour) obj);
-    }
-
-    private bool ColourSpaceEquals(Unicolour other)
-    { 
-        return SourceTriplet.Equals(other.SourceTriplet);
+        if (obj.GetType() != GetType()) return false;
+        return Equals((Unicolour)obj);
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            return (SourceTriplet.GetHashCode() * 397) ^ Alpha.GetHashCode();
+            var hashCode = SourceTriplet.GetHashCode();
+            hashCode = (hashCode * 397) ^ Configuration.GetHashCode();
+            hashCode = (hashCode * 397) ^ Alpha.GetHashCode();
+            return hashCode;
         }
     }
 }

@@ -105,7 +105,7 @@ internal static class TestUtils
         actual = actual.WithHueModulo();
         expected = expected.WithHueModulo();
 
-        var diffs = actual.ToArray().Zip(expected.ToArray(), (a, b) => Math.Abs(a - b));
+        var diffs = actual.Values.Zip(expected.Values, (a, b) => Math.Abs(a - b));
         return diffs.Max();
     }
     
@@ -251,7 +251,7 @@ internal static class TestUtils
         Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
     }
 
-    internal static void AssertNotEqual<T>(T object1, T object2)
+    internal static void AssertNotEqual<T>(T object1, T object2, bool expectDifferentString = true)
     {
         if (object1 == null || object2 == null)
         {
@@ -261,6 +261,13 @@ internal static class TestUtils
         
         Assert.That(object1, Is.Not.EqualTo(object2));
         Assert.That(object1.Equals(object2), Is.False);
+
+        // it is reasonable for 2 objects to be different types but have the same hash code and string representation
+        // e.g. Rgb(0, 0, 0) and RgbLinear(0, 0, 0) - not equal but same hash code (1252698706) and string ("0.00 0.00 0.00")
+        // (this is allowed; equal objects must have equal hash codes, but unequal objects are not required to have different hash codes)
+        // if it becomes an issue, somehow affecting performance, can consider using incorporating EqualityContract.GetHashCode()
+        // but it's likely that trying to enforce uniqueness would be more costly than the extra Equals() calls triggered by hash collisions
+        if (!expectDifferentString) return;
         Assert.That(object1.GetHashCode(), Is.Not.EqualTo(object2.GetHashCode()));
         Assert.That(object1.ToString(), Is.Not.EqualTo(object2.ToString()));
     }

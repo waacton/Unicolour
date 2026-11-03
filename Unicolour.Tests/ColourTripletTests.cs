@@ -31,6 +31,12 @@ public class ColourTripletTests
     {
         var triplet = new ColourTriplet(first, second, third);
         var array = triplet.ToArray();
+        Assert.That(array[0], Is.EqualTo(triplet[0]));
+        Assert.That(array[1], Is.EqualTo(triplet[1]));
+        Assert.That(array[2], Is.EqualTo(triplet[2]));
+        Assert.That(array[0], Is.EqualTo(triplet.Values[0]));
+        Assert.That(array[1], Is.EqualTo(triplet.Values[1]));
+        Assert.That(array[2], Is.EqualTo(triplet.Values[2]));
         Assert.That(array[0], Is.EqualTo(first));
         Assert.That(array[1], Is.EqualTo(second));
         Assert.That(array[2], Is.EqualTo(third));

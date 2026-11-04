@@ -44,10 +44,10 @@ public class RoundtripCam02JmhTests
         switch (cam02.Model.M)
         {
             case < -43.859649122807014: // -1 / 0.0228, any smaller than this and the Math.Log in the UCS conversion will receive a negative and return NaN
-                TestUtils.AssertTriplet(roundtrip, new(original.J, double.NaN, double.NaN, hueIndex: 2), Tolerance);
+                TestUtils.AssertTriplet(roundtrip, new Cam02Jmh(original.J, double.NaN, double.NaN), Tolerance);
                 break;
             case < 0:
-                TestUtils.AssertTriplet(roundtrip, new(original.J, 0, 0, hueIndex: 2), Tolerance);
+                TestUtils.AssertTriplet(roundtrip, new Cam02Jmh(original.J, 0, 0), Tolerance);
                 break;
             default:
                 TestUtils.AssertTriplet(roundtrip, original, Tolerance);

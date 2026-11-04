@@ -134,7 +134,25 @@ public class NotNumberTests
     public void Oklrch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklrch, l, c, h));
     
     [TestCaseSource(nameof(TestData))]
-    public void Cam02(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02Ucs, j, a, b)); // TODO: non-UCS spaces
+    public void Cam02Jch(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jch, j, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Jmh(Configuration config, double j, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jmh, j, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Jsh(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jsh, j, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Qch(Configuration config, double q, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qch, q, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Qmh(Configuration config, double q, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qmh, q, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Qsh(Configuration config, double q, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qsh, q, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam02Ucs(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02Ucs, j, a, b));
     
     [TestCaseSource(nameof(TestData))]
     public void Cam16(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16, j, a, b));

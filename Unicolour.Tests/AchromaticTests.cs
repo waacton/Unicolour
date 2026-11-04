@@ -491,7 +491,7 @@ public class AchromaticTests
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Ucs, j, a, b), expected); // TODO: other CAM spaces
+    public void Cam02Ucs(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Ucs, j, a, b), expected);
     
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]

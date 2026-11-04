@@ -92,10 +92,15 @@ internal static class TestUtils
     
     internal static Limitation[] Limitations(Unicolour colour, ColourSpace[] colourSpaces, bool baselines)
     {
-        var colourTriplets = colourSpaces.Select(colour.GetTriplet);
-        return baselines
-            ? colourTriplets.Select(x => x.LimitationBaseline).ToArray()
-            : colourTriplets.Select(x => x.Limitation).ToArray();
+        var colourBases = colourSpaces.Select(ColourBase (x) => colour.GetTriplet(x)).ToList();
+        
+        // CAM spaces often go convert via the model, which also propagates limitation
+        if (colourSpaces.ContainsAny([ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh]))
+        {
+            colourBases.Add(colour.Cam02.Model);
+        }
+        
+        return colourBases.Select(x => baselines ? x.LimitationBaseline : x.Limitation).ToArray();
     }
         
     internal const double MixTolerance = 0.00000000005;

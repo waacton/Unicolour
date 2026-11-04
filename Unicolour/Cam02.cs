@@ -213,7 +213,7 @@ public record Cam02
         
         // step 7
         var xyzMatrix = MCAT02.Inverse().Multiply(rgbMatrix).Select(x => x / 100.0);
-        var xyz = new Xyz(xyzMatrix.ToTriplet(), whitePoint, cam.Jch.Limitation); // TODO: think carefully about where limitation comes from in CAM
+        var xyz = new Xyz(xyzMatrix.ToTriplet(), whitePoint, cam.Jch.Limitation);
         return chromaticAdaptor.AdaptFrom(xyz);
     }
     

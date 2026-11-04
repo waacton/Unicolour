@@ -8,7 +8,7 @@ public record Cam02Qsh : ColourTriplet
     public double S => this[1];
     public double H => this[2];
     
-    protected override bool HasAchromaticValues => S <= 0;
+    protected override bool HasAchromaticValues => false;
     
     public Cam02Qsh(double q, double s, double h) : this(q, s, h, Limitation.None) {}
     public Cam02Qsh(double q) : this(q, 0, 0, Limitation.Achromatic) {}

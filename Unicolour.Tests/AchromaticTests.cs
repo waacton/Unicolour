@@ -455,6 +455,37 @@ public class AchromaticTests
     [TestCase(0.99999999999, 0.25, 180.0, false)]
     public void Oklrch(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Oklrch, l, c, h), expected);
     
+    private static readonly TestCaseData[] Cam02Data =
+    [
+        new(50, 0.0, 180.0, false),
+        new(50, -0.00000000001, 180.0, false),
+        new(50, 0.00000000001, 180.0, false),
+        new(0.0, 60, 180.0, false), 
+        new(-0.00000000001, 60, 180.0, false),
+        new(0.00000000001, 60, 180.0, false),
+        new(100, 60, 180.0, false),
+        new(100.00000000001, 60, 180.0, false),
+        new(99.99999999999, 60, 180.0, false)
+    ];
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jch(double j, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jch, j, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jmh(double j, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jmh, j, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jsh(double j, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jsh, j, s, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qch(double q, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qch, q, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qmh(double q, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qmh, q, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qsh(double q, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qsh, q, s, h), expected);
+    
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]

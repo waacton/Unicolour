@@ -22,7 +22,7 @@ public static class Cam
         public double Saturation => S;
         public double Brightness => Q;
 
-        protected override bool HasAchromaticValues => Chroma <= 0;
+        protected override bool HasAchromaticValues => false;
         
         // TODO: should be able to delete this when reworked?
         internal Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}

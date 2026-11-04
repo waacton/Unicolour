@@ -158,8 +158,6 @@ public partial class Unicolour
             ColourSpace.Cam16 => new Cam16(grey, config.Cam),
             ColourSpace.Hct => new Hct(grey),
             ColourSpace.Munsell => new Munsell(grey),
-            
-            // TODO: handle greyscale CAM
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
         };
     }

@@ -8,9 +8,6 @@ public record Hwb : ColourTriplet
     public double W => this[1];
     public double B => this[2];
     
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool HasAchromaticValues => false;
-    
     public Hwb(double h, double w, double b) : this(h, w, b, Limitation.None) {}
     public Hwb(double w) : this(0, w, 1 - w, Limitation.Achromatic) {}
     internal Hwb(double h, double w, double b, Limitation limitation) : base(h, w, b, 0, limitation) {}

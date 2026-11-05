@@ -202,7 +202,7 @@ public class ConfigureXyzTests
         var convertedToF11 = convertedToF7.ConvertToConfiguration(Config(Illuminant.F11));
         var convertedToA = convertedToF11.ConvertToConfiguration(Config(Illuminant.A));
         
-        ColourTriplet WhitePointTriplet(Illuminant illuminant) => illuminant.GetWhitePoint(Observer.Degree2).Triplet;
+        ColourTriplet WhitePointTriplet(Illuminant illuminant) => illuminant.GetWhitePoint(Observer.Degree2);
         TestUtils.AssertTriplet(initialA.Xyz, WhitePointTriplet(Illuminant.A), XyzTolerance);
         TestUtils.AssertTriplet(convertedToC.Xyz, WhitePointTriplet(Illuminant.C), XyzTolerance);
         TestUtils.AssertTriplet(convertedToD50.Xyz, WhitePointTriplet(Illuminant.D50), XyzTolerance);
@@ -266,7 +266,7 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
     
-    [Test] // TODO: non-UCS spaces?
+    [Test]
     public void Cam02WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)

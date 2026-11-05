@@ -85,8 +85,8 @@ public static class PigmentGenerator
             var sechZ = z.Select(value => Math.Pow(Sech(value), 2) / 2.0);
             var rhoZ = z.Select(Rho);
 
-            var fUpper = D.Value.Multiply(z).Zip(Diag(sechZ).Multiply(A.Value).Multiply(lambda), (a, b) => a + b);
-            var fLower = A.Value.Transpose().Multiply(rhoZ).Zip(xyz, (a, b) => a - b);
+            var fUpper = D.Multiply(z).Zip(Diag(sechZ).Multiply(A).Multiply(lambda), (a, b) => a + b);
+            var fLower = A.Transpose().Multiply(rhoZ).Zip(xyz, (a, b) => a - b);
             return Concat(fUpper, fLower);
         }
     
@@ -96,9 +96,9 @@ public static class PigmentGenerator
             var sechZ = z.Select(value => Math.Pow(Sech(value), 2) / 2.0);
             var diagSechZ = Diag(sechZ);
 
-            var upperLeft = D.Value.Zip(Diag(Diag(sechTanhZ).Multiply(A.Value).Multiply(lambda).GetCol(0)), (a, b) => a - b);
-            var upperRight = diagSechZ.Multiply(A.Value);
-            var lowerLeft = A.Value.Transpose().Multiply(diagSechZ);
+            var upperLeft = D.Zip(Diag(Diag(sechTanhZ).Multiply(A).Multiply(lambda).GetCol(0)), (a, b) => a - b);
+            var upperRight = diagSechZ.Multiply(A);
+            var lowerLeft = A.Transpose().Multiply(diagSechZ);
             var lowerRight = new Matrix(new double[3, 3]); // all zeroes
             return Concat(upperLeft, upperRight, lowerLeft, lowerRight);
         }
@@ -106,7 +106,7 @@ public static class PigmentGenerator
         private static double Sech(double value) => 1 / Math.Cosh(value);
     }
     
-    private static readonly Lazy<Matrix> A = new(GetA);
+    private static Matrix A => field ??= GetA();
     private static Matrix GetA()
     {
         var a = new Matrix(new double[Wavelengths, 3]);
@@ -127,7 +127,7 @@ public static class PigmentGenerator
     }
     
     // tridiagonal
-    private static readonly Lazy<Matrix> D = new(GetD);
+    private static Matrix D => field ??= GetD();
     private static Matrix GetD()
     {
         var data = new double[Wavelengths, Wavelengths];

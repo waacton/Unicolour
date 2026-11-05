@@ -9,9 +9,6 @@ public partial record Munsell : ColourTriplet
     public double V => this[1];
     public double C => this[2];
     
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool HasAchromaticValues => false;
-    
     public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) {}
     public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) {}
     internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, 0, limitation) {}
@@ -238,8 +235,8 @@ public partial record Munsell : ColourTriplet
         var unwrappedH = Unwrap(lowerH, h);
         var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / DegreesPerHueNumber;
         
-        var lowerChromaticity = Node.Lookup(lowerH, nodeV, nodeC);
-        var upperChromaticity = Node.Lookup(upperH, nodeV, nodeC);
+        var lowerChromaticity = Node.LookupChromaticity(lowerH, nodeV, nodeC);
+        var upperChromaticity = Node.LookupChromaticity(upperH, nodeV, nodeC);
         
         // extension to algorithm to handle edge cases
         // and allow extrapolation in cases where only one of the hues has chroma data

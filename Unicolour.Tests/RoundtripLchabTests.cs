@@ -19,7 +19,7 @@ public class RoundtripLchabTests
 
         if (original.C < 0)
         {
-            TestUtils.AssertTriplet(roundtrip, new(original.L, 0, 0, hueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Lchab(original.L, 0, 0), Tolerance);
         }
         else
         {

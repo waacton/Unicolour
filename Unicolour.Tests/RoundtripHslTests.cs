@@ -24,7 +24,7 @@ public class RoundtripHslTests
         
         if (original.L is 0.0 or 1.0)
         {
-            TestUtils.AssertTriplet(roundtrip, new(original.H, 0, original.L, hueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Hsl(original.H, 0, original.L), Tolerance);
         }
         else
         {

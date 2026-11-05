@@ -8,9 +8,6 @@ public record Okhsl : ColourTriplet
     public double S => this[1];
     public double L => this[2];
     
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool HasAchromaticValues => false;
-    
     public Okhsl(double h, double s, double l) : this(h, s, l, Limitation.None) {}
     public Okhsl(double l) : this(0, 0, l, Limitation.Achromatic) {}
     internal Okhsl(double h, double s, double l, Limitation limitation) : base(h, s, l, 0, limitation) {}

@@ -33,9 +33,7 @@ public class RgbConfiguration
     public WhitePoint WhitePoint { get; }
     public Func<double, DynamicRange, double> FromLinear { get; }
     public Func<double, DynamicRange, double> ToLinear { get; }
-    
-    private readonly Lazy<Matrix> rgbToXyzMatrix;
-    internal Matrix RgbToXyzMatrix => rgbToXyzMatrix.Value;
+    internal Matrix RgbToXyzMatrix => field ??= GetRgbToXyzMatrix();
     
     public string Name { get; }
 
@@ -66,7 +64,6 @@ public class RgbConfiguration
         WhitePoint = whitePoint;
         FromLinear = fromLinear;
         ToLinear = toLinear;
-        rgbToXyzMatrix = new Lazy<Matrix>(GetRgbToXyzMatrix);
         Name = name;
     }
     
@@ -92,7 +89,7 @@ public class RgbConfiguration
             { zr, zg, zb }
         });
         
-        var xyzWhite = Matrix.From(WhitePoint.Triplet);
+        var xyzWhite = Matrix.From(WhitePoint);
         var (sr, sg, sb) = fromPrimaries.Inverse().Multiply(xyzWhite).ToTriplet();
 
         return new Matrix(new[,]

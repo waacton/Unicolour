@@ -19,7 +19,7 @@ public class RoundtripOklchTests
         
         if (original.C < 0)
         {
-            TestUtils.AssertTriplet(roundtrip, new(original.L, 0, 0, hueIndex: 2), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Oklch(original.L, 0, 0), Tolerance);
         }
         else
         {

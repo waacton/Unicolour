@@ -61,7 +61,7 @@ public record Temperature(double Cct, double Duv = 0.0)
 
     private static SearchResult? CascadeExpansionSearch(Chromaticity chromaticity, Planckian planckian)
     {
-        var coordinates = planckian.StandardRangeCoordinates.Value;
+        var coordinates = planckian.StandardRangeCoordinates;
         var isBoundaryCase = false;
         var iteration = 0;
         var stepPercentage = InitialStepPercentage;
@@ -82,8 +82,8 @@ public record Temperature(double Cct, double Duv = 0.0)
                 // CCT of coordinate is outwith the initial standard range 1,000 K - 20,000 K
                 // so restart the process with a range that is either below or above the standard range
                 coordinates = isLowerBoundary 
-                    ? planckian.BelowRangeCoordinates.Value 
-                    : planckian.AboveRangeCoordinates.Value;
+                    ? planckian.BelowRangeCoordinates 
+                    : planckian.AboveRangeCoordinates;
                 
                 isBoundaryCase = true;
                 continue;

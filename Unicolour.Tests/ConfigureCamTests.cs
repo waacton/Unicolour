@@ -6,7 +6,7 @@ namespace Wacton.Unicolour.Tests;
 
 public class ConfigureCamTests
 {
-    [Test] // TODO: non-UCS spaces?
+    [Test]
     public void XyzWhitePointRoundTripViaCam02([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);

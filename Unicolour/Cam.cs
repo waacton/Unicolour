@@ -22,6 +22,7 @@ public static class Cam
         public double Saturation => S;
         public double Brightness => Q;
 
+        // CAM by definition has hue component, so not treated as achromatic (hue is technically present, just cannot be detected due to lack of chroma)
         protected override bool HasAchromaticValues => false;
         
         // TODO: should be able to delete this when reworked?

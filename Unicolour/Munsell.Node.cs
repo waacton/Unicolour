@@ -6,8 +6,7 @@ public partial record Munsell
 {
     internal record Node(double HueNumber, string HueLetter, double Value, int Chroma, double X, double Y, double LuminanceMagnesiumOxide)
     {
-        private static readonly Lazy<Dictionary<string, Node>> lookupCache = new(() => GetNodes().ToDictionary(GetKey, x => x));
-        internal static Dictionary<string, Node> LookupCache => lookupCache.Value;
+        internal static Dictionary<string, Node> Lookup => field ??= GetNodes().ToDictionary(GetKey, x => x);
     
         internal readonly double HueNumber = HueNumber;
         internal readonly string HueLetter = HueLetter;
@@ -19,10 +18,10 @@ public partial record Munsell
         private Chromaticity Chromaticity => new(X, Y);
         internal readonly double LuminanceMagnesiumOxide = LuminanceMagnesiumOxide; // actual Y = 0.975 * Ymgo
         
-        internal static Chromaticity? Lookup(double h, double v, double c)
+        internal static Chromaticity? LookupChromaticity(double h, double v, double c)
         {
             var key = GetKey(h, v, (int)c);
-            return LookupCache.TryGetValue(key, out var node) ? node.Chromaticity : null;
+            return Lookup.TryGetValue(key, out var node) ? node.Chromaticity : null;
         }
 
         private static string GetKey(Node node) => GetKey(node.Hue, node.Value, node.Chroma);

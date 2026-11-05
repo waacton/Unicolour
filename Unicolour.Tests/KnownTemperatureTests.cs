@@ -64,7 +64,7 @@ public class KnownTemperatureTests
     {
         var illuminant = TestUtils.Illuminants[illuminantName];
         var whitePoint = illuminant.GetWhitePoint(Observer.Degree2);
-        var colour = new Unicolour(ColourSpace.Xyz, whitePoint.Triplet.Tuple);
+        var colour = new Unicolour(ColourSpace.Xyz, whitePoint.Tuple);
         var temperature = colour.Temperature;
         Assert.That(temperature.Cct, Is.EqualTo(kelvins).Within(1.5), temperature.ToString);
     }

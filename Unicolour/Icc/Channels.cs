@@ -5,8 +5,9 @@ public record Channels : ColourBase
     public string ColourSpace { get; private set; } = "unknown";
     public string? Error { get; private set; }
     
-    // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
-    // TODO: should all values 0 = achromatic (i.e. no ink on the white?) - if so, needs attaching to ToXyz()
+    // cannot infer achromatic from ICC channels alone, e.g.
+    // - FOGRA39 0.5 0.5 0.5 0.5 is not grey
+    // - an RGB space 0 0 0 would be achromatic, but a HLS space 0 0 0 would not be because one of those represents a hue value of 0 degrees
     protected override bool HasAchromaticValues => false;
     
     // create a copy of the backing array in case external code sets array contents

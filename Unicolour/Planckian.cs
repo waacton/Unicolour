@@ -4,16 +4,13 @@ internal class Planckian
 {
     internal const double InitialStepPercentage = 0.25;
     internal Observer Observer { get; }
-    internal Lazy<List<Coordinate>> StandardRangeCoordinates { get; }
-    internal Lazy<List<Coordinate>> BelowRangeCoordinates { get; }
-    internal Lazy<List<Coordinate>> AboveRangeCoordinates { get; }
+    internal List<Coordinate> StandardRangeCoordinates => field ??= Get(1000, 20000, InitialStepPercentage);
+    internal List<Coordinate> BelowRangeCoordinates => field ??= Get(500, 1000, InitialStepPercentage);
+    internal List<Coordinate> AboveRangeCoordinates => field ??= Get(20000, 1e9, InitialStepPercentage);
 
     internal Planckian(Observer observer)
     {
         Observer = observer;
-        StandardRangeCoordinates = new Lazy<List<Coordinate>>(() => Get(1000, 20000, InitialStepPercentage));
-        BelowRangeCoordinates = new Lazy<List<Coordinate>>(() => Get(500, 1000, InitialStepPercentage));
-        AboveRangeCoordinates = new Lazy<List<Coordinate>>(() => Get(20000, 1e9, InitialStepPercentage));
     }
     
     internal List<Coordinate> Get(double startCct, double endCct, double stepPercentage)

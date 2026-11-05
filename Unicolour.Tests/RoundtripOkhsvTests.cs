@@ -43,7 +43,7 @@ public class RoundtripOkhsvTests
         if (greyness > 1.0)
         {
             var greyLevel = okhwb.W / greyness;
-            TestUtils.AssertTriplet(roundtrip, new(original.H, 0, greyLevel, hueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Okhsv(original.H, 0, greyLevel), Tolerance);
         }
         else
         {

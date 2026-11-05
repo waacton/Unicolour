@@ -21,7 +21,7 @@ public class RoundtripHsiTests
         if (negativeChroma)
         {
             var greyLevel = rgb.R; // should be same as G and B
-            TestUtils.AssertTriplet(roundtrip, new(0, 0, greyLevel, hueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Hsi(0, 0, greyLevel), Tolerance);
         }
         else
         {

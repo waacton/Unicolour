@@ -74,7 +74,7 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
         var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.38, 0.12, 0.19));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.44, 0.13, 0.21));
     }
     
     [Test, Combinatorial]
@@ -82,10 +82,10 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
         var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.106, 0.107, 0.005));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.143, 0.127, 0.006));
     }
     
-    [Test, Combinatorial] // TODO: non-UCS spaces?
+    [Test, Combinatorial]
     public void Cam02(
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whitePoint, 
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double adaptingLuminance,
@@ -93,6 +93,12 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfig: camConfig);
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jmh, 49.89, 93.24, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jch, 49.89, 67.40, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jsh, 49.89, 87.83, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qmh, 87.37, 93.24, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qch, 87.37, 67.40, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qsh, 87.37, 87.83, 358.4));
         TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Ucs, 62.86, 40.81, -1.18));
     }
     

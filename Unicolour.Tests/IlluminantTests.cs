@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -45,7 +46,7 @@ public class IlluminantTests
         Assert.That(spdWhitePoint.Z, Is.EqualTo(predefinedWhitePoint.Z).Within(illuminant == Illuminant.E ? 0.05 : 0.0125));
         
         var config = new Configuration(xyzConfig: new XyzConfiguration(illuminant, observer));
-        var fromSpdWhite = new Unicolour(config, ColourSpace.Xyz, spdWhitePoint.Triplet.Tuple);
+        var fromSpdWhite = new Unicolour(config, ColourSpace.Xyz, spdWhitePoint.Tuple);
         var fromRgbWhite = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
         Assert.That(fromSpdWhite.Chromaticity.X, Is.EqualTo(fromRgbWhite.Chromaticity.X).Within(0.00005));
         Assert.That(fromSpdWhite.Chromaticity.Y, Is.EqualTo(fromRgbWhite.Chromaticity.Y).Within(0.00005));
@@ -68,14 +69,29 @@ public class IlluminantTests
     {
         var expectedWhitePoint = new WhitePoint(0.5, 0.5, 0.5);
         var illuminant = new Illuminant(expectedWhitePoint);
+        var actualWhitePoint = illuminant.GetWhitePoint(observer);
         
         // regardless of the observer, the white point should always be the same as provided
-        var actualWhitePoint = illuminant.GetWhitePoint(observer);
         Assert.That(actualWhitePoint, Is.EqualTo(expectedWhitePoint));
+        
+        // white point limitation is not achromatic because WhitePoint is left unset since white point isn't used as part of interpolation 
+        // achromatic property isn't exposed outwith the limitation check (which bypasses in this case) so using reflection to confirm
+        Assert.That(expectedWhitePoint.LimitationBaseline, Is.EqualTo(Limitation.Unset));
+        Assert.That(ReadHasAchromaticValuesProperty(expectedWhitePoint), Is.True);
+        
+        Assert.That(actualWhitePoint.LimitationBaseline, Is.EqualTo(Limitation.Unset));
+        Assert.That(ReadHasAchromaticValuesProperty(actualWhitePoint), Is.True);
 
         var xyzConfig = new XyzConfiguration(illuminant, observer);
         var config = new Configuration(xyzConfig: xyzConfig);
         var colour = new Unicolour(config, "#FFFFFF");
         TestUtils.AssertTriplet(colour.Xyz, new(0.5, 0.5, 0.5), 0.00000000001);
+    }
+    
+    private static bool ReadHasAchromaticValuesProperty(WhitePoint whitePoint)
+    {
+        // WhitePoint.HasAchromaticValues is a protected abstract property
+        var property = typeof(WhitePoint).GetProperty("HasAchromaticValues", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        return (bool)property.GetValue(whitePoint)!;
     }
 }

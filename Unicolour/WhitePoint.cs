@@ -1,22 +1,19 @@
 ﻿namespace Wacton.Unicolour;
 
-// TODO: derive from ColourTriplet?
-public record WhitePoint
+public record WhitePoint : ColourTriplet
 {
-    public double X { get; }
-    public double Y { get; }
-    public double Z { get; }
-    public ColourTriplet Triplet => new(X, Y, Z);
-    public Chromaticity Chromaticity { get; }
+    public double X => this[0];
+    public double Y => this[1];
+    public double Z => this[2];
+    public Chromaticity Chromaticity { get; } = null!;
 
+    // white point by definition is white...
+    protected override bool HasAchromaticValues => true;
+    
     internal static WhitePoint FromAstm(double x, double y, double z) => new(x / 100, y / 100, z / 100);
     
-    public WhitePoint(double x, double y, double z)
+    public WhitePoint(double x, double y, double z) : this(new ColourTriplet(x, y, z))
     {
-        X = x;
-        Y = y;
-        Z = z;
-
         // usually when converting Xyz -> Xyy, the fallback value is the contextual white point
         // (e.g. X, Y, Z = 0 which implies black, convert to D65 white with 0 luminance)
         // however, this IS the white point definition, and a white point of X, Y, Z = 0 does not make sense - so use NaN as fallback
@@ -24,11 +21,12 @@ public record WhitePoint
         (Chromaticity, _) = Xyy.FromXyz(X, Y, Z, fallback);
     }
     
-    public WhitePoint(double x, double y)
+    public WhitePoint(double x, double y) : this(Xyy.ToXyz(new Chromaticity(x, y), 1.0))
     {
         Chromaticity = new(x, y);
-        (X, Y, Z) = Xyy.ToXyz(Chromaticity, 1.0);
     }
+
+    private WhitePoint(ColourTriplet xyz) : base(xyz.First, xyz.Second, xyz.Third) {}
     
     public void Deconstruct(out double x, out double y, out double z)
     {

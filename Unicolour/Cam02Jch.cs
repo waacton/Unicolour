@@ -8,8 +8,6 @@ public record Cam02Jch : ColourTriplet
     public double C => this[1];
     public double H => this[2];
     
-    protected override bool HasAchromaticValues => false;
-    
     public Cam02Jch(double j, double c, double h) : this(j, c, h, Limitation.None) {}
     public Cam02Jch(double j) : this(j, 0, 0, Limitation.Achromatic) {}
     internal Cam02Jch(double j, double c, double h, Limitation limitation) : base(j, c, h, 2, limitation) {}

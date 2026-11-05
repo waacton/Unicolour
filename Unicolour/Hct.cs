@@ -8,9 +8,6 @@ public record Hct : ColourTriplet
     public double C => this[1];
     public double T => this[2];
     
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool HasAchromaticValues => false;
-    
     public Hct(double h, double c, double t) : this(h, c, t, Limitation.None) {}
     public Hct(double t) : this(0, 0, t, Limitation.Achromatic) {}
     internal Hct(double h, double c, double t, Limitation limitation) : base(h, c, t, 0, limitation) {}

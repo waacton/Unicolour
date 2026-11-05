@@ -39,7 +39,7 @@ public class KnownMunsellTests
     // raw Munsell luminance data is relative to reference white of smoked magnesium oxide (MgO)
     // CIE Y for illuminant C is ~0.975x MgO Y
     private const double MgoScale = 0.975;
-    private static readonly MunsellTestData[] XyyData = Munsell.Node.LookupCache.Values.Select(node => new MunsellTestData(node)).ToArray();
+    private static readonly MunsellTestData[] XyyData = Munsell.Node.Lookup.Values.Select(node => new MunsellTestData(node)).ToArray();
     
     [TestCaseSource(nameof(XyyData))]
     public void KnownXyy(MunsellTestData data)

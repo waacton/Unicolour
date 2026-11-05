@@ -8,9 +8,6 @@ public record Wxy : ColourTriplet
     public double X => this[1];
     public double Y => this[2];
     
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool HasAchromaticValues => false;
-    
     public Wxy(double w, double x, double y) : this(w, x, y, Limitation.None) {}
     public Wxy(double y) : this(SpectralBoundary.MinWavelength, 0, y, Limitation.Achromatic) {}
     internal Wxy(double w, double x, double y, Limitation limitation) : base(w, x, y, 0, limitation) {}

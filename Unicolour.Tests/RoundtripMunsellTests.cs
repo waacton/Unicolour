@@ -30,7 +30,7 @@ public class RoundtripMunsellTests
         // the chromaticity search falls back to white, the only known chromaticity for that data point
         if (xyy.Limitation == Limitation.Achromatic)
         {
-            var expected = new ColourTriplet(0, original.V, 0, hueIndex: 0);
+            var expected = new Munsell(0, original.V, 0);
             TestUtils.AssertTriplet(roundtrip, expected, 0.0075);
             return;
         }

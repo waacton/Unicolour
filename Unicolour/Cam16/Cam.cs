@@ -130,8 +130,8 @@ public record Cam
         var (rc, gc, bc) = (view.Dr * rgb.First, view.Dg * rgb.Second, view.Db * rgb.Third);
 
         // step 3
-        var (ra, ga, ba) = (A(rc), A(gc), A(bc));
-        double A(double input)
+        var (ra, ga, ba) = (RgbA(rc), RgbA(gc), RgbA(bc));
+        double RgbA(double input)
         {
             if (double.IsNaN(input)) return double.NaN;
             var power = Math.Pow(view.Fl * Math.Abs(input) / 100.0, 0.42);

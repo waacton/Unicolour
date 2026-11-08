@@ -140,8 +140,8 @@ public record Cam
         var (rPrime, gPrime, bPrime) = MHPE.Multiply(MCAT02.Inverse()).Multiply(cMatrix).ToTriplet();
 
         // step 4
-        var (ra, ga, ba) = (A(rPrime), A(gPrime), A(bPrime));
-        double A(double input)
+        var (ra, ga, ba) = (RgbA(rPrime), RgbA(gPrime), RgbA(bPrime));
+        double RgbA(double input)
         {
             if (double.IsNaN(input)) return double.NaN;
             var power = Math.Pow(view.Fl * Math.Abs(input) / 100.0, 0.42);

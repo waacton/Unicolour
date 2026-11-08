@@ -21,22 +21,22 @@ public record Cam02
     public Qmh Qmh => field ??= source as Qmh ?? new Qmh(Model.Q, Model.M, Model.H, Model.Limitation);
     public Qsh Qsh => field ??= source as Qsh ?? new Qsh(Model.Q, Model.S, Model.H, Model.Limitation);
     
-    internal Cam02(Cam02Model model, Cam02ViewingConditions Cam02ViewingConditions)
+    internal Cam02(Cam02Model model, Cam02ViewingConditions view)
     {
         Model = model;
-        view = Cam02ViewingConditions;
+        this.view = view;
     }
     
-    public Cam02(Jch jch, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)jch, Cam02ViewingConditions) {}
-    public Cam02(Jmh jmh, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)jmh, Cam02ViewingConditions) {}
-    public Cam02(Jsh jsh, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)jsh, Cam02ViewingConditions) {}
-    public Cam02(Qch qch, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)qch, Cam02ViewingConditions) {}
-    public Cam02(Qmh qmh, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)qmh, Cam02ViewingConditions) {}
-    public Cam02(Qsh qsh, Cam02ViewingConditions Cam02ViewingConditions) : this((ColourTriplet)qsh, Cam02ViewingConditions) {}
-    internal Cam02(ColourTriplet source, Cam02ViewingConditions Cam02ViewingConditions)
+    public Cam02(Jch jch, Cam02ViewingConditions view) : this((ColourTriplet)jch, view) {}
+    public Cam02(Jmh jmh, Cam02ViewingConditions view) : this((ColourTriplet)jmh, view) {}
+    public Cam02(Jsh jsh, Cam02ViewingConditions view) : this((ColourTriplet)jsh, view) {}
+    public Cam02(Qch qch, Cam02ViewingConditions view) : this((ColourTriplet)qch, view) {}
+    public Cam02(Qmh qmh, Cam02ViewingConditions view) : this((ColourTriplet)qmh, view) {}
+    public Cam02(Qsh qsh, Cam02ViewingConditions view) : this((ColourTriplet)qsh, view) {}
+    internal Cam02(ColourTriplet source, Cam02ViewingConditions view)
     {
         this.source = source;
-        view = Cam02ViewingConditions;
+        this.view = view;
     }
     
     private Cam02Model GetModel()

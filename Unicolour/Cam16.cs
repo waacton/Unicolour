@@ -21,22 +21,22 @@ public record Cam16
     public Qmh Qmh => field ??= source as Qmh ?? new Qmh(Model.Q, Model.M, Model.H, Model.Limitation);
     public Qsh Qsh => field ??= source as Qsh ?? new Qsh(Model.Q, Model.S, Model.H, Model.Limitation);
     
-    public Cam16(Cam16Model model, Cam16ViewingConditions Cam16ViewingConditions)
+    public Cam16(Cam16Model model, Cam16ViewingConditions view)
     {
         Model = model;
-        view = Cam16ViewingConditions;
+        this.view = view;
     }
     
-    public Cam16(Jch jch, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)jch, Cam16ViewingConditions) {}
-    public Cam16(Jmh jmh, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)jmh, Cam16ViewingConditions) {}
-    public Cam16(Jsh jsh, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)jsh, Cam16ViewingConditions) {}
-    public Cam16(Qch qch, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)qch, Cam16ViewingConditions) {}
-    public Cam16(Qmh qmh, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)qmh, Cam16ViewingConditions) {}
-    public Cam16(Qsh qsh, Cam16ViewingConditions Cam16ViewingConditions) : this((ColourTriplet)qsh, Cam16ViewingConditions) {}
-    internal Cam16(ColourTriplet source, Cam16ViewingConditions Cam16ViewingConditions)
+    public Cam16(Jch jch, Cam16ViewingConditions view) : this((ColourTriplet)jch, view) {}
+    public Cam16(Jmh jmh, Cam16ViewingConditions view) : this((ColourTriplet)jmh, view) {}
+    public Cam16(Jsh jsh, Cam16ViewingConditions view) : this((ColourTriplet)jsh, view) {}
+    public Cam16(Qch qch, Cam16ViewingConditions view) : this((ColourTriplet)qch, view) {}
+    public Cam16(Qmh qmh, Cam16ViewingConditions view) : this((ColourTriplet)qmh, view) {}
+    public Cam16(Qsh qsh, Cam16ViewingConditions view) : this((ColourTriplet)qsh, view) {}
+    internal Cam16(ColourTriplet source, Cam16ViewingConditions view)
     {
         this.source = source;
-        view = Cam16ViewingConditions;
+        this.view = view;
     }
     
     private Cam16Model GetModel()

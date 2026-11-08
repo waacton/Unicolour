@@ -32,42 +32,9 @@ public static class Cam
             Hc = HueData.GetHueComposition(h);
         }
 
-        internal Ucs ToUcs()
-        {
-            var j = 1.7 * J / (1 + 0.007 * J);
-            var m = Math.Log(1 + 0.0228 * M) / 0.0228;
-            (j, var a, var b) = FromLchTriplet(new(j, m, H));
-            return new Ucs(j, a, b);
-        }
-
         public override string ToString() => $"{J:F2} {C:F2} {H:F1} ({Hc}) {M:F2} {S:F2} {Q:F2}";
     }
 
-    /*
-     * NOTE: if ever want to support CAM02-LCD & CAM02-SCD (Large / Small Colour Difference)
-     * see Table 2.2 in "CIECAM02 and Its Recent Developments" (https://doi.org/10.1007/978-1-4419-6190-7_2)
-     * essentially a small tweak to how j / m / ΔE' are calculated
-     * but would need to consider how it affects the structure of Unicolour objects
-     */
-    public record Ucs(double J, double A, double B)
-    {
-        public double J { get; } = J;
-        public double A { get; } = A;
-        public double B { get; } = B;
-
-        internal Model ToModel(ViewingConditions view)
-        {
-            var j = J / (1.7 - 0.007 * J);
-            (j, var m, var h) = ToLchTriplet(new(j, A, B));
-            m = (Math.Exp(0.0228 * m) - 1) / 0.0228;
-
-            var q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
-            var c = m / Math.Pow(view.Fl, 0.25);
-            var s = 100 * Math.Pow(m / q, 0.5);
-            return new Model(j, c, h, m, s, q);
-        }
-    }
-    
     internal record ViewingConditions(
         double C, double Nc, double Dr, double Dg, double Db, 
         double Fl, double N, double Z, double Nbb, double Ncb, double Aw)

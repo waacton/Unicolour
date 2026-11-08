@@ -33,8 +33,8 @@ public class RoundtripHctTests
         // which presents as at least a NaN CAM16.Model.C, while LAB.L is calculated correctly 
         if (roundtrip.Limitation == Limitation.NaN)
         {
-            var cam16 = Hct.Cam16Component(xyz);
-            var lab = Hct.LabComponent(xyz);
+            var cam16 = Hct.GetCam16(xyz);
+            var lab = Lab.FromXyz(xyz);
             Assert.That(cam16.Model.C, Is.NaN);
             Assert.That(lab.L, Is.NaN.Or.EqualTo(original.T).Within(Tolerance));
             return;

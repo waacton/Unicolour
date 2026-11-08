@@ -21,6 +21,11 @@ public record Cam02Ucs : ColourTriplet
      * CAM-UCS is a transform of CAM 
      * Forward: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
      * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
+     *
+     * NOTE: if ever want to support CAM02-LCD & CAM02-SCD (Large / Small Colour Difference)
+     * see Table 2.2 in "CIECAM02 and Its Recent Developments" (https://doi.org/10.1007/978-1-4419-6190-7_2)
+     * essentially a small tweak to how j / m / ΔE' are calculated
+     * but would need to consider how it affects the structure of Unicolour objects
      */
     
     internal static Cam02Ucs FromCam02(Cam02 cam02)

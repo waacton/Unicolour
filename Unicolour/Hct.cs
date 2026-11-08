@@ -29,18 +29,17 @@ public record Hct : ColourTriplet
     private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     private static readonly ChromaticAdaptor HctChromaticAdaptor = new(HctWhitePoint, ChromaticAdaptation.Bradford);
 
-    internal static Cam16_OLD Cam16Component(Xyz xyz) => Cam16_OLD.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor);
-    internal static Lab LabComponent(Xyz xyz) => Lab.FromXyz(xyz);
+    internal static Cam16 GetCam16(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct.WhitePoint, CamConfiguration.Hct.View16, HctChromaticAdaptor);
     
     internal static Hct FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor)
     {
         var d65Xyz = chromaticAdaptor.AdaptTo(xyz, HctWhitePoint);
-        var cam16 = Cam16Component(d65Xyz);
-        var lab = LabComponent(d65Xyz);
+        var cam16Component = GetCam16(d65Xyz);
+        var labComponent = Lab.FromXyz(d65Xyz);
 
-        var h = cam16.Model.H;
-        var c = cam16.Model.C;
-        var t = lab.L;
+        var h = cam16Component.Model.H;
+        var c = cam16Component.Model.C;
+        var t = labComponent.L;
         return new Hct(h, c, t, xyz.Limitation);
     }
     
@@ -96,7 +95,7 @@ public record Hct : ColourTriplet
         foreach (var (x, z) in xzPairs)
         {
             var xyz = new Xyz(x, targetY, z, HctWhitePoint);
-            var j = Cam16_OLD.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor).Model.J;
+            var j = GetCam16(xyz).Model.J;
             var data = ProcessJ(targetY, j, hct);
             if (Math.Abs(data.DeltaY) < best.DeltaY)
             {
@@ -110,9 +109,8 @@ public record Hct : ColourTriplet
     private static HctToXyzSearchData ProcessJ(double targetY, double j, Hct hct)
     {
         var (h, c, _) = hct;
-        var camModel = new Cam.Model(j, c, h, 0, 0, 0);
-        var cam16 = new Cam16_OLD(camModel, CamConfiguration.Hct, Limitation.None);
-        var xyz = Cam16_OLD.ToXyz(cam16, CamConfiguration.Hct, HctChromaticAdaptor);
+        var cam16 = new Cam16(new Cam16Jch(j, c, h), CamConfiguration.Hct.View16);
+        var xyz = Cam16.ToXyz(cam16, CamConfiguration.Hct.WhitePoint, HctChromaticAdaptor);
         var deltaY = xyz.Y - targetY;
         return new HctToXyzSearchData(hct, j, cam16, xyz, targetY, deltaY);
     }
@@ -132,11 +130,11 @@ internal record HctToXyzSearchResult(HctToXyzSearchData Data, int Iterations, bo
     public override string ToString() => $"{Data} · Iterations:{Iterations} · Converged:{Converged}";
 }
 
-internal record HctToXyzSearchData(Hct Hct, double J, Cam16_OLD Cam16, Xyz Xyz, double TargetY, double DeltaY)
+internal record HctToXyzSearchData(Hct Hct, double J, Cam16 Cam16, Xyz Xyz, double TargetY, double DeltaY)
 {
     internal Hct Hct { get; } = Hct;
     internal double J { get; } = J;
-    internal Cam16_OLD Cam16 { get; } = Cam16;
+    internal Cam16 Cam16 { get; } = Cam16;
     internal Xyz Xyz { get; } = Xyz;
     internal double TargetY { get; } = TargetY;
     internal double DeltaY { get; } = DeltaY;

@@ -312,7 +312,7 @@ void FeatureIcc()
 void FeatureInvalid()
 {
     var bad1 = new Unicolour(ColourSpace.Oklab, double.NegativeInfinity, double.NaN, double.Epsilon);
-    var bad2 = new Unicolour(ColourSpace.Cam16, double.NaN, double.MaxValue, double.MinValue);
+    var bad2 = new Unicolour(ColourSpace.Cam16Ucs, double.NaN, double.MaxValue, double.MinValue);
     var bad3 = bad1.Mix(bad2, ColourSpace.Hct, amount: double.PositiveInfinity);
 }
 

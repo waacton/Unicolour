@@ -1,6 +1,6 @@
-namespace Wacton.Unicolour;
+namespace Wacton.Unicolour.Cam16;
 
-public record Cam16Model : ColourBase
+public record Model : ColourBase
 {
     public double J => this[0];
     public double C => this[1];
@@ -21,8 +21,8 @@ public record Cam16Model : ColourBase
     // CAM by definition has hue component, so not treated as achromatic (hue is technically present, just cannot be detected due to lack of chroma)
     protected override bool HasAchromaticValues => false;
 
-    public Cam16Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}
-    internal Cam16Model(double j, double c, double h, double m, double s, double q, Limitation limitation = Limitation.None) : base([j, c, h, m, s, q], limitation)
+    public Model(double j, double c, double h, double m, double s, double q) : this(j, c, h, m, s, q, Limitation.None) {}
+    internal Model(double j, double c, double h, double m, double s, double q, Limitation limitation = Limitation.None) : base([j, c, h, m, s, q], limitation)
     {
         Hc = Hue.Cam.GetHueComposition(h);
     }

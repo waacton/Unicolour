@@ -101,20 +101,20 @@ public partial class Unicolour
             ColourSpace.Okhwb => new Okhwb(first, second, third, limitation),
             ColourSpace.Oklrab => new Oklrab(first, second, third, limitation),
             ColourSpace.Oklrch => new Oklrch(first, second, third, limitation),
-            ColourSpace.Cam02Jch => new Cam02Jch(first, second, third, limitation),
-            ColourSpace.Cam02Jmh => new Cam02Jmh(first, second, third, limitation),
-            ColourSpace.Cam02Jsh => new Cam02Jsh(first, second, third, limitation),
-            ColourSpace.Cam02Qch => new Cam02Qch(first, second, third, limitation),
-            ColourSpace.Cam02Qmh => new Cam02Qmh(first, second, third, limitation),
-            ColourSpace.Cam02Qsh => new Cam02Qsh(first, second, third, limitation),
-            ColourSpace.Cam02Ucs => new Cam02Ucs(first, second, third, limitation),
-            ColourSpace.Cam16Jch => new Cam16Jch(first, second, third, limitation),
-            ColourSpace.Cam16Jmh => new Cam16Jmh(first, second, third, limitation),
-            ColourSpace.Cam16Jsh => new Cam16Jsh(first, second, third, limitation),
-            ColourSpace.Cam16Qch => new Cam16Qch(first, second, third, limitation),
-            ColourSpace.Cam16Qmh => new Cam16Qmh(first, second, third, limitation),
-            ColourSpace.Cam16Qsh => new Cam16Qsh(first, second, third, limitation),
-            ColourSpace.Cam16Ucs => new Cam16Ucs(first, second, third, limitation),
+            ColourSpace.Cam02Jch => new Cam02.Jch(first, second, third, limitation),
+            ColourSpace.Cam02Jmh => new Cam02.Jmh(first, second, third, limitation),
+            ColourSpace.Cam02Jsh => new Cam02.Jsh(first, second, third, limitation),
+            ColourSpace.Cam02Qch => new Cam02.Qch(first, second, third, limitation),
+            ColourSpace.Cam02Qmh => new Cam02.Qmh(first, second, third, limitation),
+            ColourSpace.Cam02Qsh => new Cam02.Qsh(first, second, third, limitation),
+            ColourSpace.Cam02Ucs => new Cam02.Ucs(first, second, third, limitation),
+            ColourSpace.Cam16Jch => new Cam16.Jch(first, second, third, limitation),
+            ColourSpace.Cam16Jmh => new Cam16.Jmh(first, second, third, limitation),
+            ColourSpace.Cam16Jsh => new Cam16.Jsh(first, second, third, limitation),
+            ColourSpace.Cam16Qch => new Cam16.Qch(first, second, third, limitation),
+            ColourSpace.Cam16Qmh => new Cam16.Qmh(first, second, third, limitation),
+            ColourSpace.Cam16Qsh => new Cam16.Qsh(first, second, third, limitation),
+            ColourSpace.Cam16Ucs => new Cam16.Ucs(first, second, third, limitation),
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -160,20 +160,20 @@ public partial class Unicolour
             ColourSpace.Okhwb => new Okhwb(grey),
             ColourSpace.Oklrab => new Oklrab(grey),
             ColourSpace.Oklrch => new Oklrch(grey),
-            ColourSpace.Cam02Jch => new Cam02Jch(grey),
-            ColourSpace.Cam02Jmh => new Cam02Jmh(grey),
-            ColourSpace.Cam02Jsh => new Cam02Jsh(grey),
-            ColourSpace.Cam02Qch => new Cam02Qch(grey),
-            ColourSpace.Cam02Qmh => new Cam02Qmh(grey),
-            ColourSpace.Cam02Qsh => new Cam02Qsh(grey),
-            ColourSpace.Cam02Ucs => new Cam02Ucs(grey),
-            ColourSpace.Cam16Jch => new Cam16Jch(grey),
-            ColourSpace.Cam16Jmh => new Cam16Jmh(grey),
-            ColourSpace.Cam16Jsh => new Cam16Jsh(grey),
-            ColourSpace.Cam16Qch => new Cam16Qch(grey),
-            ColourSpace.Cam16Qmh => new Cam16Qmh(grey),
-            ColourSpace.Cam16Qsh => new Cam16Qsh(grey),
-            ColourSpace.Cam16Ucs => new Cam16Ucs(grey),
+            ColourSpace.Cam02Jch => new Cam02.Jch(grey),
+            ColourSpace.Cam02Jmh => new Cam02.Jmh(grey),
+            ColourSpace.Cam02Jsh => new Cam02.Jsh(grey),
+            ColourSpace.Cam02Qch => new Cam02.Qch(grey),
+            ColourSpace.Cam02Qmh => new Cam02.Qmh(grey),
+            ColourSpace.Cam02Qsh => new Cam02.Qsh(grey),
+            ColourSpace.Cam02Ucs => new Cam02.Ucs(grey),
+            ColourSpace.Cam16Jch => new Cam16.Jch(grey),
+            ColourSpace.Cam16Jmh => new Cam16.Jmh(grey),
+            ColourSpace.Cam16Jsh => new Cam16.Jsh(grey),
+            ColourSpace.Cam16Qch => new Cam16.Qch(grey),
+            ColourSpace.Cam16Qmh => new Cam16.Qmh(grey),
+            ColourSpace.Cam16Qsh => new Cam16.Qsh(grey),
+            ColourSpace.Cam16Ucs => new Cam16.Ucs(grey),
             ColourSpace.Hct => new Hct(grey),
             ColourSpace.Munsell => new Munsell(grey),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -317,20 +317,20 @@ public partial class Unicolour
             ColourSpace.Okhwb => Oklab.ToXyz(Oklab, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb),
             ColourSpace.Oklrab => Oklab.ToXyz(Oklab, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb),
             ColourSpace.Oklrch => Oklab.ToXyz(Oklab, Configuration.Xyz.ChromaticAdaptor, Configuration.Rgb),
-            ColourSpace.Cam02Jch => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Jmh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Jsh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Qch => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Qmh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Qsh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam02Ucs => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Jch => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Jmh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Jsh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Qch => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Qmh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Qsh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16Ucs => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Jch => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Jmh => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Jsh => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Qch => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Qmh => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Qsh => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam02Ucs => Wacton.Unicolour.Cam02.Cam.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jch => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jmh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jsh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qch => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qmh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qsh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Ucs => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
@@ -609,51 +609,51 @@ public partial class Unicolour
         };
     }
     
-    private Cam02 EvaluateCam02()
+    private Cam02.Cam EvaluateCam02()
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam02Jch => new Cam02((Cam02Jch)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Jmh => new Cam02((Cam02Jmh)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Jsh => new Cam02((Cam02Jsh)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qch => new Cam02((Cam02Qch)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qmh => new Cam02((Cam02Qmh)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qsh => new Cam02((Cam02Qsh)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Ucs => Cam02Ucs.ToCam02(Cam02Ucs, Configuration.Cam.View02),
-            _ => Cam02.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View02, Configuration.Xyz.ChromaticAdaptor)
+            ColourSpace.Cam02Jch => new Cam02.Cam((Cam02.Jch)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jmh => new Cam02.Cam((Cam02.Jmh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jsh => new Cam02.Cam((Cam02.Jsh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qch => new Cam02.Cam((Cam02.Qch)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qmh => new Cam02.Cam((Cam02.Qmh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qsh => new Cam02.Cam((Cam02.Qsh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Ucs => Wacton.Unicolour.Cam02.Ucs.ToCam02(Cam02Ucs, Configuration.Cam.View02),
+            _ => Wacton.Unicolour.Cam02.Cam.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View02, Configuration.Xyz.ChromaticAdaptor)
         };
     }
     
-    private Cam02Ucs EvaluateCam02Ucs()
+    private Cam02.Ucs EvaluateCam02Ucs()
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam02Ucs => (Cam02Ucs)SourceTriplet,
-            _ => Cam02Ucs.FromCam02(Cam02)
+            ColourSpace.Cam02Ucs => (Cam02.Ucs)SourceTriplet,
+            _ => Wacton.Unicolour.Cam02.Ucs.FromCam02(Cam02)
         };
     }
     
-    private Cam16 EvaluateCam16()
+    private Cam16.Cam EvaluateCam16()
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam16Jch => new Cam16((Cam16Jch)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Jmh => new Cam16((Cam16Jmh)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Jsh => new Cam16((Cam16Jsh)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qch => new Cam16((Cam16Qch)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qmh => new Cam16((Cam16Qmh)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qsh => new Cam16((Cam16Qsh)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Ucs => Cam16Ucs.ToCam16(Cam16Ucs, Configuration.Cam.View16),
-            _ => Cam16.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View16, Configuration.Xyz.ChromaticAdaptor)
+            ColourSpace.Cam16Jch => new Cam16.Cam((Cam16.Jch)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jmh => new Cam16.Cam((Cam16.Jmh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jsh => new Cam16.Cam((Cam16.Jsh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qch => new Cam16.Cam((Cam16.Qch)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qmh => new Cam16.Cam((Cam16.Qmh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qsh => new Cam16.Cam((Cam16.Qsh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Ucs => Wacton.Unicolour.Cam16.Ucs.ToCam16(Cam16Ucs, Configuration.Cam.View16),
+            _ => Wacton.Unicolour.Cam16.Cam.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View16, Configuration.Xyz.ChromaticAdaptor)
         };
     }
     
-    private Cam16Ucs EvaluateCam16Ucs()
+    private Cam16.Ucs EvaluateCam16Ucs()
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam16Ucs => (Cam16Ucs)SourceTriplet,
-            _ => Cam16Ucs.FromCam16(Cam16)
+            ColourSpace.Cam16Ucs => (Cam16.Ucs)SourceTriplet,
+            _ => Wacton.Unicolour.Cam16.Ucs.FromCam16(Cam16)
         };
     }
     

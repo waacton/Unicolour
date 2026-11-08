@@ -156,7 +156,7 @@ public class EqualityTests
     [Test]
     public void Cam02VsSameRef()
     {
-        var camA = new Cam02(new Cam02Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camA = new Cam02.Cam(new Cam02.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
         var camB = camA;
         AssertEqual(camA, camB);
     }
@@ -164,30 +164,30 @@ public class EqualityTests
     [Test]
     public void Cam02VsSameVal()
     {
-        var camA = new Cam02(new Cam02Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
-        var camB = new Cam02(new Cam02Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camA = new Cam02.Cam(new Cam02.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camB = new Cam02.Cam(new Cam02.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
         AssertEqual(camA, camB);
     }
     
     [Test]
     public void Cam02VsDifferent()
     {
-        var camA = new Cam02(new Cam02Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
-        var camB = new Cam02(new Cam02Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camA = new Cam02.Cam(new Cam02.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var camB = new Cam02.Cam(new Cam02.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View02);
         AssertNotEqual(camA, camB);
     }
     
     [Test]
     public void Cam02VsNull()
     {
-        var cam = new Cam02(new Cam02Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
+        var cam = new Cam02.Cam(new Cam02.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View02);
         Assert.That(cam.Equals(null), Is.False);
     }
     
     [Test]
     public void Cam16VsSameRef()
     {
-        var camA = new Cam16(new Cam16Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camA = new Cam16.Cam(new Cam16.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
         var camB = camA;
         AssertEqual(camA, camB);
     }
@@ -195,23 +195,23 @@ public class EqualityTests
     [Test]
     public void Cam16VsSameVal()
     {
-        var camA = new Cam16(new Cam16Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
-        var camB = new Cam16(new Cam16Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camA = new Cam16.Cam(new Cam16.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camB = new Cam16.Cam(new Cam16.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
         AssertEqual(camA, camB);
     }
     
     [Test]
     public void Cam16VsDifferent()
     {
-        var camA = new Cam16(new Cam16Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
-        var camB = new Cam16(new Cam16Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camA = new Cam16.Cam(new Cam16.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camB = new Cam16.Cam(new Cam16.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View16);
         AssertNotEqual(camA, camB);
     }
     
     [Test]
     public void Cam16VsNull()
     {
-        var cam = new Cam16(new Cam16Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var cam = new Cam16.Cam(new Cam16.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
         Assert.That(cam.Equals(null), Is.False);
     }
     
@@ -320,7 +320,7 @@ public class EqualityTests
     {
         AssertEqual(colour1.Alpha, colour2.Alpha);
         AssertEqual(colour1.Cam02, colour2.Cam02);
-        AssertEqual(colour1.Cam02Jch, colour2.Cam02Jch);
+        AssertEqual(colour1.Cam16Jch, colour2.Cam16Jch);
         AssertEqual(colour1.Cam02Jmh, colour2.Cam02Jmh);
         AssertEqual(colour1.Cam02Jsh, colour2.Cam02Jsh);
         AssertEqual(colour1.Cam02Qch, colour2.Cam02Qch);

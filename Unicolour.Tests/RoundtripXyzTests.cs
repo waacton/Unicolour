@@ -101,8 +101,8 @@ public class RoundtripXyzTests
     {
         // CAM02 -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
-        var cam02 = Cam02.FromXyz(original, CamConfig.WhitePoint, CamConfig.View02, XyzConfig.ChromaticAdaptor);
-        var roundtrip = Cam02.ToXyz(cam02, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
+        var cam02 = Cam02.Cam.FromXyz(original, CamConfig.WhitePoint, CamConfig.View02, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Cam02.Cam.ToXyz(cam02, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
         TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, Tolerance);
     }
     
@@ -111,8 +111,8 @@ public class RoundtripXyzTests
     {
         // CAM16 -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
-        var cam16 = Cam16.FromXyz(original, CamConfig.WhitePoint, CamConfig.View16, XyzConfig.ChromaticAdaptor);
-        var roundtrip = Cam16.ToXyz(cam16, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
+        var cam16 = Cam16.Cam.FromXyz(original, CamConfig.WhitePoint, CamConfig.View16, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Cam16.Cam.ToXyz(cam16, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
         TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, Tolerance);
     }
     

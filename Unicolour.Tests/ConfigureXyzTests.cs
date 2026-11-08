@@ -275,13 +275,13 @@ public class ConfigureXyzTests
         }
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
-        var initialCamUcs = new Cam02Ucs(62.86, 40.81, -1.18);
-        var initialCam = Cam02Ucs.ToCam02(initialCamUcs, initialCamConfig.View02);
-        var expectedXyz = Cam02.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        var initialCamUcs = new Cam02.Ucs(62.86, 40.81, -1.18);
+        var initialCam = Cam02.Ucs.ToCam02(initialCamUcs, initialCamConfig.View02);
+        var expectedXyz = Cam02.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
-        var cam = Cam02.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View02, XyzConfiguration.D65.ChromaticAdaptor);
-        var xyz = Cam02.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        var cam = Cam02.Cam.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View02, XyzConfiguration.D65.ChromaticAdaptor);
+        var xyz = Cam02.Cam.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
     
@@ -294,13 +294,13 @@ public class ConfigureXyzTests
         }
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
-        var initialCamUcs = new Cam16Ucs(62.47, 42.60, -1.36);
-        var initialCam = Cam16Ucs.ToCam16(initialCamUcs, initialCamConfig.View16);
-        var expectedXyz = Cam16.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        var initialCamUcs = new Cam16.Ucs(62.47, 42.60, -1.36);
+        var initialCam = Cam16.Ucs.ToCam16(initialCamUcs, initialCamConfig.View16);
+        var expectedXyz = Cam16.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
-        var cam = Cam16.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View16, XyzConfiguration.D65.ChromaticAdaptor);
-        var xyz = Cam16.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        var cam = Cam16.Cam.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View16, XyzConfiguration.D65.ChromaticAdaptor);
+        var xyz = Cam16.Cam.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
 }

@@ -55,8 +55,8 @@ public class CamConfiguration
         _ => throw new ArgumentOutOfRangeException()
     };
     
-    internal Cam02ViewingConditions View02 => field ??= Cam02.View(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
-    internal Cam16ViewingConditions View16 => field ??= Cam16.View(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
+    internal Cam02.ViewingConditions View02 => field ??= new Cam02.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
+    internal Cam16.ViewingConditions View16 => field ??= new Cam16.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
 
     public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround, string name = Utils.Unnamed)
     {

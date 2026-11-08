@@ -1,16 +1,16 @@
 using static Wacton.Unicolour.Utils;
 
-namespace Wacton.Unicolour;
+namespace Wacton.Unicolour.Cam16;
 
-public record Cam16Qmh : ColourTriplet
+public record Qmh : ColourTriplet
 {
     public double Q => this[0];
     public double M => this[1];
     public double H => this[2];
     
-    public Cam16Qmh(double q, double m, double h) : this(q, m, h, Limitation.None) {}
-    public Cam16Qmh(double q) : this(q, 0, 0, Limitation.Achromatic) {}
-    internal Cam16Qmh(double q, double m, double h, Limitation limitation) : base(q, m, h, 2, limitation) {}
+    public Qmh(double q, double m, double h) : this(q, m, h, Limitation.None) {}
+    public Qmh(double q) : this(q, 0, 0, Limitation.Achromatic) {}
+    internal Qmh(double q, double m, double h, Limitation limitation) : base(q, m, h, 2, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{Q:F2} {M:F2} {H:F1}°" : $"{Q:F2} {M:F2} {NoHue}°";
     public override string ToString() => base.ToString();

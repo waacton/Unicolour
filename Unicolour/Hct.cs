@@ -1,4 +1,5 @@
-﻿using static Wacton.Unicolour.Utils;
+﻿using Wacton.Unicolour.Cam16;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
@@ -29,7 +30,7 @@ public record Hct : ColourTriplet
     private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     private static readonly ChromaticAdaptor HctChromaticAdaptor = new(HctWhitePoint, ChromaticAdaptation.Bradford);
 
-    internal static Cam16 GetCam16(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct.WhitePoint, CamConfiguration.Hct.View16, HctChromaticAdaptor);
+    internal static Cam GetCam16(Xyz xyz) => Cam.FromXyz(xyz, CamConfiguration.Hct.WhitePoint, CamConfiguration.Hct.View16, HctChromaticAdaptor);
     
     internal static Hct FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor)
     {
@@ -109,8 +110,8 @@ public record Hct : ColourTriplet
     private static HctToXyzSearchData ProcessJ(double targetY, double j, Hct hct)
     {
         var (h, c, _) = hct;
-        var cam16 = new Cam16(new Cam16Jch(j, c, h), CamConfiguration.Hct.View16);
-        var xyz = Cam16.ToXyz(cam16, CamConfiguration.Hct.WhitePoint, HctChromaticAdaptor);
+        var cam16 = new Cam(new Jch(j, c, h), CamConfiguration.Hct.View16);
+        var xyz = Cam.ToXyz(cam16, CamConfiguration.Hct.WhitePoint, HctChromaticAdaptor);
         var deltaY = xyz.Y - targetY;
         return new HctToXyzSearchData(hct, j, cam16, xyz, targetY, deltaY);
     }
@@ -130,11 +131,11 @@ internal record HctToXyzSearchResult(HctToXyzSearchData Data, int Iterations, bo
     public override string ToString() => $"{Data} · Iterations:{Iterations} · Converged:{Converged}";
 }
 
-internal record HctToXyzSearchData(Hct Hct, double J, Cam16 Cam16, Xyz Xyz, double TargetY, double DeltaY)
+internal record HctToXyzSearchData(Hct Hct, double J, Cam Cam16, Xyz Xyz, double TargetY, double DeltaY)
 {
     internal Hct Hct { get; } = Hct;
     internal double J { get; } = J;
-    internal Cam16 Cam16 { get; } = Cam16;
+    internal Cam Cam16 { get; } = Cam16;
     internal Xyz Xyz { get; } = Xyz;
     internal double TargetY { get; } = TargetY;
     internal double DeltaY { get; } = DeltaY;

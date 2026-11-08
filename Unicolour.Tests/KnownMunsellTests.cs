@@ -58,7 +58,7 @@ public class KnownMunsellTests
         Assert.That(actual.Luminance, Is.EqualTo(expectedLuminance).Within(0.00025));
     }
     
-    private static readonly Configuration RgbDataConfig = new(xyzConfig: new XyzConfiguration(Illuminant.D65, Observer.Degree2, new ChromaticAdaptation(Cam02.MCAT02.Data)));
+    private static readonly Configuration RgbDataConfig = new(xyzConfig: new XyzConfiguration(Illuminant.D65, Observer.Degree2, new ChromaticAdaptation(Cam02.Cam.MCAT02.Data)));
     private static MunsellTestData[] RgbData = XyyData.Where(data => data.HasRgbMgoData).ToArray();
     
     [TestCaseSource(nameof(RgbData))]
@@ -82,7 +82,7 @@ public class KnownMunsellTests
         
         xyy = new Xyy(xyy.Chromaticity.X, xyy.Chromaticity.Y, xyy.Luminance / MgoScale, XyzConfigC.WhitePoint);
         var xyzC = Xyy.ToXyz(xyy);
-        var chromaticAdaptorCiecat02 = new ChromaticAdaptor(Illuminant.D65.GetWhitePoint(Observer.Degree2), new ChromaticAdaptation(Cam02.MCAT02.Data));
+        var chromaticAdaptorCiecat02 = new ChromaticAdaptor(Illuminant.D65.GetWhitePoint(Observer.Degree2), new ChromaticAdaptation(Cam02.Cam.MCAT02.Data));
         var xyzD65 = chromaticAdaptorCiecat02.AdaptFrom(xyzC);
         var colour = new Unicolour(ColourSpace.Xyz, xyzD65.Tuple);
         var actualRgb = colour.Rgb.Clipped;

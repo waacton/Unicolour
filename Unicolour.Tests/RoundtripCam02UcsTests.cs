@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using Wacton.Unicolour.Cam02;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
@@ -14,9 +15,9 @@ public class RoundtripCam02UcsTests
     [TestCaseSource(nameof(Triplets))]
     public void ViaCam02(ColourTriplet triplet)
     {
-        var original = new Cam02Ucs(triplet.First, triplet.Second, triplet.Third);
-        var cam02 = Cam02Ucs.ToCam02(original, CamConfig.View02);
-        var roundtrip = Cam02Ucs.FromCam02(cam02);
+        var original = new Ucs(triplet.First, triplet.Second, triplet.Third);
+        var cam02 = Ucs.ToCam02(original, CamConfig.View02);
+        var roundtrip = Ucs.FromCam02(cam02);
         TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

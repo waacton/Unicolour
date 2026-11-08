@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Wacton.Unicolour.Cam02;
 using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
@@ -16,7 +17,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 200, 18, Surround.Average);
 
-        var expectedModel = new Cam02Model(
+        var expectedModel = new Model(
             j: 48.0314,
             c: 38.7789,
             h: 191.0452,
@@ -24,7 +25,7 @@ public class KnownCam02Tests
             s: 46.0177,
             q: 183.1240);
         
-        var expectedUcs = new Cam02Ucs(
+        var expectedUcs = new Ucs(
             j: 61.1077,
             a: -27.2696,
             b: -5.3230);
@@ -39,7 +40,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 20, 18, Surround.Average);
         
-        var expectedModel = new Cam02Model(
+        var expectedModel = new Model(
             j: 47.6856,
             c: 36.0527,
             h: 185.3445,
@@ -47,7 +48,7 @@ public class KnownCam02Tests
             s: 51.1275,
             q: 113.8401);
         
-        var expectedUcs = new Cam02Ucs(
+        var expectedUcs = new Ucs(
             j: 60.7779,
             a: -22.6157,
             b: -2.1157);
@@ -62,7 +63,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
-        var expectedModel = new Cam02Model(
+        var expectedModel = new Model(
             j: 34.434525727858997,
             c: 67.365010921125943,
             h: 22.279164147957065,
@@ -70,7 +71,7 @@ public class KnownCam02Tests
             s: 62.81485585332716,
             q: 177.47124941102123);
         
-        var expectedUcs = new Cam02Ucs(
+        var expectedUcs = new Ucs(
             j: 47.16899898,
             a: 38.72623785,
             b: 15.8663383);
@@ -92,8 +93,8 @@ public class KnownCam02Tests
         var (x, y, z) = whitePoint;
         var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
         var xyz = new Xyz(x, y, z, whitePoint);
-        var cam02 = Cam02.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
-        var cam02Ucs = Cam02Ucs.FromCam02(cam02);
+        var cam02 = Cam02.Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Ucs.FromCam02(cam02);
         
         AssertModel(cam02.Model.J, 100);
         AssertModel(cam02Ucs.J, 100);
@@ -111,70 +112,70 @@ public class KnownCam02Tests
         var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
         var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
         var xyz = new Xyz(0, 0, 0, whitePoint);
-        var expectedModel = new Cam02Model(0, 0, 0, 0, 0, 0);
-        var expectedUcs = new Cam02Ucs(0, 0, 0);
+        var expectedModel = new Model(0, 0, 0, 0, 0, 0);
+        var expectedUcs = new Ucs(0, 0, 0);
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
     
     [Test]
     public void NegativeReflectJ()
     {
-        var positive = Cam02.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View02);
+        var positive = Cam02.Cam.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.Cam.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(positive, Is.EqualTo(-negative));
     }
     
     [Test]
     public void NegativeReflectC1()
     {
-        var positive = Cam02.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View02);
+        var positive = Cam02.Cam.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.Cam.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(negative, Is.EqualTo(-positive));
     }
 
     [Test]
     public void NegativeReflectQ()
     {
-        var positive = Cam02.NegativeReflectQ(j: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectQ(j: -50, CamConfiguration.StandardRgb.View02);
+        var positive = Cam02.Cam.NegativeReflectQ(j: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.Cam.NegativeReflectQ(j: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(positive, Is.EqualTo(-negative));
     }
     
     [Test]
     public void NegativeReflectC2()
     {
-        var positive = Cam02.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View02);
+        var positive = Cam02.Cam.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.Cam.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View02);
         Assert.That(negative, Is.EqualTo(-positive));
         
-        var doubleNegative = Cam02.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View02);
+        var doubleNegative = Cam02.Cam.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
     [Test]
     public void NegativeReflectM()
     {
-        var positive = Cam02.NegativeReflectM(c: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectM(c: -50, CamConfiguration.StandardRgb.View02);
+        var positive = Cam02.Cam.NegativeReflectM(c: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.Cam.NegativeReflectM(c: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(negative, Is.EqualTo(-positive));
     }
     
     [Test]
     public void NegativeReflectS()
     {
-        var positive = Cam02.NegativeReflectS(m: 50, q: 50);
-        var negative = Cam02.NegativeReflectS(m: 50, q: -50);
+        var positive = Cam02.Cam.NegativeReflectS(m: 50, q: 50);
+        var negative = Cam02.Cam.NegativeReflectS(m: 50, q: -50);
         Assert.That(negative, Is.EqualTo(-positive));
         
-        var doubleNegative = Cam02.NegativeReflectS(m: -50, q: -50);
+        var doubleNegative = Cam02.Cam.NegativeReflectS(m: -50, q: -50);
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
-    private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Cam02Model expectedModel, Cam02Ucs expectedUcs)
+    private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
-        var cam02 = Cam02.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
-        var cam02Ucs = Cam02Ucs.FromCam02(cam02);
+        var cam02 = Cam02.Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Ucs.FromCam02(cam02);
         
         AssertModel(cam02.Model.Lightness, expectedModel.Lightness);
         AssertModel(cam02.Model.Chroma, expectedModel.Chroma);
@@ -200,12 +201,12 @@ public class KnownCam02Tests
         AssertModel(cam02.Model.Brightness, expectedModel.Q);
         Assert.That(cam02.Model.HueComposition, Is.EqualTo(expectedModel.Hc));
         
-        TestUtils.AssertTriplet(cam02.Jch, new Cam02Jch(expectedModel.J, expectedModel.C, expectedModel.H), ModelTolerance);
-        TestUtils.AssertTriplet(cam02.Jmh, new Cam02Jmh(expectedModel.J, expectedModel.M, expectedModel.H), ModelTolerance);
-        TestUtils.AssertTriplet(cam02.Jsh, new Cam02Jsh(expectedModel.J, expectedModel.S, expectedModel.H), ModelTolerance);
-        TestUtils.AssertTriplet(cam02.Qch, new Cam02Qch(expectedModel.Q, expectedModel.C, expectedModel.H), ModelTolerance);
-        TestUtils.AssertTriplet(cam02.Qmh, new Cam02Qmh(expectedModel.Q, expectedModel.M, expectedModel.H), ModelTolerance);
-        TestUtils.AssertTriplet(cam02.Qsh, new Cam02Qsh(expectedModel.Q, expectedModel.S, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Jch, new Jch(expectedModel.J, expectedModel.C, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Jmh, new Jmh(expectedModel.J, expectedModel.M, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Jsh, new Jsh(expectedModel.J, expectedModel.S, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qch, new Qch(expectedModel.Q, expectedModel.C, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qmh, new Qmh(expectedModel.Q, expectedModel.M, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qsh, new Qsh(expectedModel.Q, expectedModel.S, expectedModel.H), ModelTolerance);
         TestUtils.AssertTriplet(cam02Ucs, expectedUcs, UcsTolerance);
     }
     

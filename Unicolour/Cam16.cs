@@ -1,4 +1,6 @@
 ﻿using static Wacton.Unicolour.Utils;
+using Model = Wacton.Unicolour.Cam16Model;
+using View = Wacton.Unicolour.Cam16ViewingConditions;
 using Jch = Wacton.Unicolour.Cam16Jch;
 using Jmh = Wacton.Unicolour.Cam16Jmh;
 using Jsh = Wacton.Unicolour.Cam16Jsh;
@@ -11,9 +13,9 @@ namespace Wacton.Unicolour;
 public record Cam16
 {
     private readonly ColourTriplet? source;
-    private readonly Cam16ViewingConditions view;
+    private readonly View view;
     
-    public Cam16Model Model => field ??= GetModel();
+    public Model Model => field ??= GetModel();
     public Jch Jch => field ??= source as Jch ?? new Jch(Model.J, Model.C, Model.H, Model.Limitation);
     public Jmh Jmh => field ??= source as Jmh ?? new Jmh(Model.J, Model.M, Model.H, Model.Limitation);
     public Jsh Jsh => field ??= source as Jsh ?? new Jsh(Model.J, Model.S, Model.H, Model.Limitation);
@@ -21,25 +23,25 @@ public record Cam16
     public Qmh Qmh => field ??= source as Qmh ?? new Qmh(Model.Q, Model.M, Model.H, Model.Limitation);
     public Qsh Qsh => field ??= source as Qsh ?? new Qsh(Model.Q, Model.S, Model.H, Model.Limitation);
     
-    public Cam16(Cam16Model model, Cam16ViewingConditions view)
+    public Cam16(Model model, View view)
     {
         Model = model;
         this.view = view;
     }
     
-    public Cam16(Jch jch, Cam16ViewingConditions view) : this((ColourTriplet)jch, view) {}
-    public Cam16(Jmh jmh, Cam16ViewingConditions view) : this((ColourTriplet)jmh, view) {}
-    public Cam16(Jsh jsh, Cam16ViewingConditions view) : this((ColourTriplet)jsh, view) {}
-    public Cam16(Qch qch, Cam16ViewingConditions view) : this((ColourTriplet)qch, view) {}
-    public Cam16(Qmh qmh, Cam16ViewingConditions view) : this((ColourTriplet)qmh, view) {}
-    public Cam16(Qsh qsh, Cam16ViewingConditions view) : this((ColourTriplet)qsh, view) {}
-    internal Cam16(ColourTriplet source, Cam16ViewingConditions view)
+    public Cam16(Jch jch, View view) : this((ColourTriplet)jch, view) {}
+    public Cam16(Jmh jmh, View view) : this((ColourTriplet)jmh, view) {}
+    public Cam16(Jsh jsh, View view) : this((ColourTriplet)jsh, view) {}
+    public Cam16(Qch qch, View view) : this((ColourTriplet)qch, view) {}
+    public Cam16(Qmh qmh, View view) : this((ColourTriplet)qmh, view) {}
+    public Cam16(Qsh qsh, View view) : this((ColourTriplet)qsh, view) {}
+    internal Cam16(ColourTriplet source, View view)
     {
         this.source = source;
         this.view = view;
     }
     
-    private Cam16Model GetModel()
+    private Model GetModel()
     {
         double j, c, h, m, s, q;
         
@@ -86,21 +88,21 @@ public record Cam16
                 throw new ArgumentOutOfRangeException();
         }
 
-        return new Cam16Model(j, c, h, m, s, q, source.Limitation);
+        return new Model(j, c, h, m, s, q, source.Limitation);
     }
     
-    internal static double NegativeReflectJ(double q, Cam16ViewingConditions view) => double.IsNaN(q) ? double.NaN : Math.Sign(q) * J(Math.Abs(q), view);
-    internal static double NegativeReflectC(double m, Cam16ViewingConditions view) => double.IsNaN(m) ? double.NaN : Math.Sign(m) * C(Math.Abs(m), view);
-    internal static double NegativeReflectQ(double j, Cam16ViewingConditions view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
-    internal static double NegativeReflectC(double s, double q, Cam16ViewingConditions view) => double.IsNaN(s) || double.IsNaN(q) ? double.NaN : Math.Sign(s) * Math.Sign(q) * C(Math.Abs(s), Math.Abs(q), view);
-    internal static double NegativeReflectM(double c, Cam16ViewingConditions view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
+    internal static double NegativeReflectJ(double q, View view) => double.IsNaN(q) ? double.NaN : Math.Sign(q) * J(Math.Abs(q), view);
+    internal static double NegativeReflectC(double m, View view) => double.IsNaN(m) ? double.NaN : Math.Sign(m) * C(Math.Abs(m), view);
+    internal static double NegativeReflectQ(double j, View view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
+    internal static double NegativeReflectC(double s, double q, View view) => double.IsNaN(s) || double.IsNaN(q) ? double.NaN : Math.Sign(s) * Math.Sign(q) * C(Math.Abs(s), Math.Abs(q), view);
+    internal static double NegativeReflectM(double c, View view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
     internal static double NegativeReflectS(double m, double q) => double.IsNaN(m) || double.IsNaN(q) ? double.NaN : Math.Sign(m) * Math.Sign(q) * S(Math.Abs(m), Math.Abs(q));
     
-    private static double J(double q, Cam16ViewingConditions view) => 6.25 * Math.Pow(view.C * q / ((view.Aw + 4) * Math.Pow(view.Fl, 0.25)), 2);
-    private static double C(double m, Cam16ViewingConditions view) => m / Math.Pow(view.Fl, 0.25);
-    private static double Q(double j, Cam16ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
-    private static double C(double s, double q, Cam16ViewingConditions view) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
-    private static double M(double c, Cam16ViewingConditions view) => c * Math.Pow(view.Fl, 0.25);
+    private static double J(double q, View view) => 6.25 * Math.Pow(view.C * q / ((view.Aw + 4) * Math.Pow(view.Fl, 0.25)), 2);
+    private static double C(double m, View view) => m / Math.Pow(view.Fl, 0.25);
+    private static double Q(double j, View view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+    private static double C(double s, double q, View view) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+    private static double M(double c, View view) => c * Math.Pow(view.Fl, 0.25);
     private static double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
 
     private static readonly Matrix M16 = new(new[,]
@@ -125,7 +127,7 @@ public record Cam16
         { 460, -220, -6300 }
     }).Scale(1 / 1403.0);
     
-    internal static Cam16 FromXyz(Xyz xyz, WhitePoint whitePoint, Cam16ViewingConditions view, ChromaticAdaptor chromaticAdaptor)
+    internal static Cam16 FromXyz(Xyz xyz, WhitePoint whitePoint, View view, ChromaticAdaptor chromaticAdaptor)
     {
         // step 1
         var adaptedXyz = chromaticAdaptor.AdaptTo(xyz, whitePoint);
@@ -168,7 +170,7 @@ public record Cam16
         var c = alpha * Math.Sqrt(j / 100.0);
         var m = c * Math.Pow(view.Fl, 0.25);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
-        return new Cam16(new Cam16Model(j, c, h, m, s, q, xyz.Limitation), view);
+        return new Cam16(new Model(j, c, h, m, s, q, xyz.Limitation), view);
     }
     
     internal static Xyz ToXyz(Cam16 cam, WhitePoint whitePoint, ChromaticAdaptor chromaticAdaptor)
@@ -214,7 +216,7 @@ public record Cam16
         return chromaticAdaptor.AdaptFrom(xyz);
     }
     
-    internal static Cam16ViewingConditions View(WhitePoint whitePoint, double la, double yb, double c, double f, double nc)
+    internal static View View(WhitePoint whitePoint, double la, double yb, double c, double f, double nc)
     {
         var (xw, yw, zw) = whitePoint;
         xw *= 100;
@@ -245,7 +247,7 @@ public record Cam16
         }
             
         var aw = (2 * raw + gaw + baw / 20.0 - 0.305) * nbb;
-        return new Cam16ViewingConditions(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
+        return new View(c, nc, dr, dg, db, fl, n, z, nbb, ncb, aw);
     }
     
     // unlikely for the CAM wrapper to be tested for equivalence

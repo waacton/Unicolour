@@ -103,7 +103,7 @@ public class RoundtripXyzTests
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
         var cam02 = Cam02.FromXyz(original, CamConfig.WhitePoint, CamConfig.View02, XyzConfig.ChromaticAdaptor);
         var roundtrip = Cam02.ToXyz(cam02, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip) : original, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -111,9 +111,9 @@ public class RoundtripXyzTests
     {
         // CAM16 -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
         var original = new Xyz(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
-        var cam16 = Cam16.FromXyz(original, CamConfig, XyzConfig.ChromaticAdaptor);
-        var roundtrip = Cam16.ToXyz(cam16, CamConfig, XyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? ViaCamWithNaN(roundtrip) : original, Tolerance);
+        var cam16 = Cam16.FromXyz(original, CamConfig.WhitePoint, CamConfig.View16, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Cam16.ToXyz(cam16, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
+        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -138,14 +138,5 @@ public class RoundtripXyzTests
         {
             TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, viaHctTolerance);
         }
-    }
-    
-    // when NaNs occur during CAM <-> XYZ conversion
-    // if the NaN occurs during CAM -> XYZ: all value are NaN
-    // if the NaN occurs during XYZ -> CAM: J, H, Q have values and C, M, S are NaN - J is the first item of the triplet
-    private static ColourTriplet ViaCamWithNaN(ColourTriplet triplet)
-    {
-        var first = double.IsNaN(triplet.First) ? double.NaN : triplet.First;
-        return new(first, double.NaN, double.NaN);
     }
 }

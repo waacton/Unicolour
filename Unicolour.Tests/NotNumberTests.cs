@@ -134,7 +134,7 @@ public class NotNumberTests
     public void Oklrch(Configuration config, double l, double c, double h) => AssertUnicolour(new(config, ColourSpace.Oklrch, l, c, h));
     
     [TestCaseSource(nameof(TestData))]
-    public void Cam02Jch(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jch, j, s, h));
+    public void Cam02Jch(Configuration config, double j, double c, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jch, j, c, h));
     
     [TestCaseSource(nameof(TestData))]
     public void Cam02Jmh(Configuration config, double j, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jmh, j, m, h));
@@ -143,7 +143,7 @@ public class NotNumberTests
     public void Cam02Jsh(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Jsh, j, s, h));
     
     [TestCaseSource(nameof(TestData))]
-    public void Cam02Qch(Configuration config, double q, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qch, q, s, h));
+    public void Cam02Qch(Configuration config, double q, double c, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qch, q, c, h));
     
     [TestCaseSource(nameof(TestData))]
     public void Cam02Qmh(Configuration config, double q, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam02Qmh, q, m, h));
@@ -155,7 +155,25 @@ public class NotNumberTests
     public void Cam02Ucs(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam02Ucs, j, a, b));
     
     [TestCaseSource(nameof(TestData))]
-    public void Cam16(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16, j, a, b));
+    public void Cam16Jch(Configuration config, double j, double c, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Jch, j, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Jmh(Configuration config, double j, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Jmh, j, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Jsh(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Jsh, j, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Qch(Configuration config, double q, double s, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Qch, q, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Qmh(Configuration config, double q, double m, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Qmh, q, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Qsh(Configuration config, double q, double c, double h) => AssertUnicolour(new(config, ColourSpace.Cam16Qsh, q, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void Cam16Ucs(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16Ucs, j, a, b));
     
     [TestCaseSource(nameof(TestData))]
     public void Hct(Configuration config, double h, double c, double t) => AssertUnicolour(new(config, ColourSpace.Hct, h, c, t));

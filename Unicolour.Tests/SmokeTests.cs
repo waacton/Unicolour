@@ -46,7 +46,7 @@ public class SmokeTests
         new(ColourSpace.Oklrab, 0, -0.5, -0.5, 0), new(ColourSpace.Oklrab, 1, 0.5, 0.5, 1), new(ColourSpace.Oklrab, 0.5, -0.001, 0.001, 0.5), 
         new(ColourSpace.Oklrch, 0, 0, 0, 0), new(ColourSpace.Oklrch, 1, 0.5, 360, 1), new(ColourSpace.Oklrch, 0.5, 0.25, 180, 0.5), 
         new(ColourSpace.Cam02Ucs, 0, -50, -50, 0), new(ColourSpace.Cam02Ucs, 100, 50, 50, 1), new(ColourSpace.Cam02Ucs, 50, -1, 1, 0.5), 
-        new(ColourSpace.Cam16, 0, -50, -50, 0), new(ColourSpace.Cam16, 100, 50, 50, 1), new(ColourSpace.Cam16, 50, -1, 1, 0.5),
+        new(ColourSpace.Cam16Ucs, 0, -50, -50, 0), new(ColourSpace.Cam16Ucs, 100, 50, 50, 1), new(ColourSpace.Cam16Ucs, 50, -1, 1, 0.5),
         new(ColourSpace.Hct, 0, 0, 0, 0), new(ColourSpace.Hct, 360, 120, 100, 1), new(ColourSpace.Hct, 180, 60, 50, 0.5),
         new(ColourSpace.Munsell, 0, 0, 0, 0), new(ColourSpace.Munsell, 360, 10, 20, 1), new(ColourSpace.Munsell, 180, 5, 10, 0.5)
     ];
@@ -115,7 +115,7 @@ public class SmokeTests
         new(ColourSpace.Oklrab, 0, 0), new(ColourSpace.Oklrab, 1, 1), new(ColourSpace.Oklrab, 0.5, 0.5), 
         new(ColourSpace.Oklrch, 0, 0), new(ColourSpace.Oklrch, 1, 1), new(ColourSpace.Oklrch, 0.5, 0.5), 
         new(ColourSpace.Cam02Ucs, 0, 0), new(ColourSpace.Cam02Ucs, 100, 1), new(ColourSpace.Cam02Ucs, 50, 0.5), 
-        new(ColourSpace.Cam16, 0, 0), new(ColourSpace.Cam16, 100, 1), new(ColourSpace.Cam16, 50, 0.5),
+        new(ColourSpace.Cam16Ucs, 0, 0), new(ColourSpace.Cam16Ucs, 100, 1), new(ColourSpace.Cam16Ucs, 50, 0.5),
         new(ColourSpace.Hct, 0, 0), new(ColourSpace.Hct, 100, 1), new(ColourSpace.Hct, 50, 0.5),
         new(ColourSpace.Munsell, 0, 0), new(ColourSpace.Munsell, 10, 1), new(ColourSpace.Munsell, 5, 0.5)
     ];

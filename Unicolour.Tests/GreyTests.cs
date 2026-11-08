@@ -31,6 +31,12 @@ public class GreyTests
         { ColourSpace.Cam02Qch, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
         { ColourSpace.Cam02Qmh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
         { ColourSpace.Cam02Qsh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam16Jch, (chainedHued: [ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Jmh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Jsh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qch, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qmh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qsh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
         { ColourSpace.Hct, (chainedHued: [], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
         { ColourSpace.Munsell, (chainedHued: [], upstreamUnhued: ColourSpace.Xyy, downstreamUnhued: null) }
     };
@@ -143,7 +149,13 @@ public class GreyTests
         new TestCaseData(new Cam02Qmh(75), new Cam02Qmh(75, 0, 0)).SetName(nameof(Cam02Qmh)),
         new TestCaseData(new Cam02Qsh(75), new Cam02Qsh(75, 0, 0)).SetName(nameof(Cam02Qsh)),
         new TestCaseData(new Cam02Ucs(75), new Cam02Ucs(75, 0, 0)).SetName(nameof(Cam02Ucs)),
-        new TestCaseData(new Cam16(75, CamConfiguration.StandardRgb), new Cam16(75, 0, 0, CamConfiguration.StandardRgb)).SetName(nameof(Cam16)),
+        new TestCaseData(new Cam16Jch(75), new Cam16Jch(75, 0, 0)).SetName(nameof(Cam16Jch)),
+        new TestCaseData(new Cam16Jmh(75), new Cam16Jmh(75, 0, 0)).SetName(nameof(Cam16Jmh)),
+        new TestCaseData(new Cam16Jsh(75), new Cam16Jsh(75, 0, 0)).SetName(nameof(Cam16Jsh)),
+        new TestCaseData(new Cam16Qch(75), new Cam16Qch(75, 0, 0)).SetName(nameof(Cam16Qch)),
+        new TestCaseData(new Cam16Qmh(75), new Cam16Qmh(75, 0, 0)).SetName(nameof(Cam16Qmh)),
+        new TestCaseData(new Cam16Qsh(75), new Cam16Qsh(75, 0, 0)).SetName(nameof(Cam16Qsh)),
+        new TestCaseData(new Cam16Ucs(75), new Cam16Ucs(75, 0, 0)).SetName(nameof(Cam16Ucs)),
         new TestCaseData(new Hct(75), new Hct(0, 0, 75)).SetName(nameof(Hct)),
         new TestCaseData(new Munsell(7.5), new Munsell(0, 7.5, 0)).SetName(nameof(Munsell))
     ];

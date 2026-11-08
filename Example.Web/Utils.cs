@@ -78,7 +78,13 @@ internal static class Utils
         { ColourSpace.Cam02Qmh, [new(0, 125), new(0, 120), new(0, 360)] },
         { ColourSpace.Cam02Qsh, [new(0, 125), new(0, 120), new(0, 360)] },
         { ColourSpace.Cam02Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
-        { ColourSpace.Cam16, [new(0, 100), new(-50, 50), new(-50, 50)] },
+        { ColourSpace.Cam16Jch, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Jmh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Jsh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Qch, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Qmh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Qsh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.Cam16Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
         { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
     };
@@ -128,7 +134,13 @@ internal static class Utils
         { ColourSpace.Cam02Qmh, ["Q", "M", "H"] },
         { ColourSpace.Cam02Qsh, ["Q", "S", "H"] },
         { ColourSpace.Cam02Ucs, ["J", "A", "B"] },
-        { ColourSpace.Cam16, ["J", "A", "B"] },
+        { ColourSpace.Cam16Jch, ["J", "C", "H"] },
+        { ColourSpace.Cam16Jmh, ["J", "M", "H"] },
+        { ColourSpace.Cam16Jsh, ["J", "S", "H"] },
+        { ColourSpace.Cam16Qch, ["Q", "C", "H"] },
+        { ColourSpace.Cam16Qmh, ["Q", "M", "H"] },
+        { ColourSpace.Cam16Qsh, ["Q", "S", "H"] },
+        { ColourSpace.Cam16Ucs, ["J", "A", "B"] },
         { ColourSpace.Hct, ["H", "C", "T"] },
         { ColourSpace.Munsell, ["H", "V", "C"] }
     };

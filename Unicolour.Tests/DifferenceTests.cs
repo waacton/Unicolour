@@ -285,7 +285,7 @@ public class DifferenceTests
     [TestCase(DeltaE.Ok, ColourSpace.Oklab)]
     [TestCase(DeltaE.Ok2, ColourSpace.Oklab)]
     [TestCase(DeltaE.Cam02, ColourSpace.Cam02Ucs)]
-    [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
+    [TestCase(DeltaE.Cam16, ColourSpace.Cam16Ucs)]
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)
     {
         var colour = new Unicolour(colourSpace, double.NaN, double.NaN, double.NaN);

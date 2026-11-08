@@ -34,7 +34,7 @@ public class MixHueNoComponentTests : MixHueAgnosticTests
         new(ColourSpace.Oklab, new Range(0, 1), new Range(-0.5, 0.5), new Range(-0.5, 0.5)),
         new(ColourSpace.Oklrab, new Range(0, 1), new Range(-0.5, 0.5), new Range(-0.5, 0.5)),
         new(ColourSpace.Cam02Ucs, new Range(0, 100), new Range(-50, 50), new Range(-50, 50)),
-        new(ColourSpace.Cam16, new Range(0, 100), new Range(-50, 50), new Range(-50, 50))
+        new(ColourSpace.Cam16Ucs, new Range(0, 100), new Range(-50, 50), new Range(-50, 50))
     ];
 
     public MixHueNoComponentTests(ColourSpace colourSpace, Range first, Range second, Range third) 

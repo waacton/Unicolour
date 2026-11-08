@@ -84,19 +84,19 @@ public record Cam02
         return new Model(j, c, h, m, s, q, source.Limitation);
     }
 
-    internal static double NegativeReflectQ(double j, ViewingConditions view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
     internal static double NegativeReflectJ(double q, ViewingConditions view) => double.IsNaN(q) ? double.NaN : Math.Sign(q) * J(Math.Abs(q), view);
-    internal static double NegativeReflectM(double c, ViewingConditions view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
-    internal static double NegativeReflectS(double m, double q) => double.IsNaN(m) || double.IsNaN(q) ? double.NaN : Math.Sign(m) * Math.Sign(q) * S(Math.Abs(m), Math.Abs(q));
     internal static double NegativeReflectC(double m, ViewingConditions view) => double.IsNaN(m) ? double.NaN : Math.Sign(m) * C(Math.Abs(m), view);
+    internal static double NegativeReflectQ(double j, ViewingConditions view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
     internal static double NegativeReflectC(double s, double q, ViewingConditions view) => double.IsNaN(s) || double.IsNaN(q) ? double.NaN : Math.Sign(s) * Math.Sign(q) * C(Math.Abs(s), Math.Abs(q), view);
+    internal static double NegativeReflectS(double m, double q) => double.IsNaN(m) || double.IsNaN(q) ? double.NaN : Math.Sign(m) * Math.Sign(q) * S(Math.Abs(m), Math.Abs(q));
+    internal static double NegativeReflectM(double c, ViewingConditions view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
     
-    private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
-    private static double J(double q, ViewingConditions view) => Math.Pow(q / Math.Pow(view.Fl, 0.25) / (view.Aw + 4) / (4 / view.C), 1 / 0.5) * 100;
-    private static double M(double c, ViewingConditions view) => c * Math.Pow(view.Fl, 0.25);
-    private static double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+    private static double J(double q, ViewingConditions view) => 6.25 * Math.Pow(view.C * q / ((view.Aw + 4) * Math.Pow(view.Fl, 0.25)), 2);
     private static double C(double m, ViewingConditions view) => m / Math.Pow(view.Fl, 0.25);
+    private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
     private static double C(double s, double q, ViewingConditions view) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+    private static double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
+    private static double M(double c, ViewingConditions view) => c * Math.Pow(view.Fl, 0.25);
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {

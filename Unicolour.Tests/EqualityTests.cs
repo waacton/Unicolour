@@ -185,6 +185,37 @@ public class EqualityTests
     }
     
     [Test]
+    public void Cam16VsSameRef()
+    {
+        var camA = new Cam16(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camB = camA;
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void Cam16VsSameVal()
+    {
+        var camA = new Cam16(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camB = new Cam16(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void Cam16VsDifferent()
+    {
+        var camA = new Cam16(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        var camB = new Cam16(new Cam.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.View16);
+        AssertNotEqual(camA, camB);
+    }
+    
+    [Test]
+    public void Cam16VsNull()
+    {
+        var cam = new Cam16(new Cam.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.View16);
+        Assert.That(cam.Equals(null), Is.False);
+    }
+    
+    [Test]
     public void IccChannelsVsSameRef()
     {
         var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
@@ -289,14 +320,21 @@ public class EqualityTests
     {
         AssertEqual(colour1.Alpha, colour2.Alpha);
         AssertEqual(colour1.Cam02, colour2.Cam02);
-        AssertEqual(colour1.Cam02Jmh, colour2.Cam02Jmh);
         AssertEqual(colour1.Cam02Jch, colour2.Cam02Jch);
+        AssertEqual(colour1.Cam02Jmh, colour2.Cam02Jmh);
         AssertEqual(colour1.Cam02Jsh, colour2.Cam02Jsh);
-        AssertEqual(colour1.Cam02Qmh, colour2.Cam02Qmh);
         AssertEqual(colour1.Cam02Qch, colour2.Cam02Qch);
+        AssertEqual(colour1.Cam02Qmh, colour2.Cam02Qmh);
         AssertEqual(colour1.Cam02Qsh, colour2.Cam02Qsh);
         AssertEqual(colour1.Cam02Ucs, colour2.Cam02Ucs);
         AssertEqual(colour1.Cam16, colour2.Cam16);
+        AssertEqual(colour1.Cam16Jch, colour2.Cam16Jch);
+        AssertEqual(colour1.Cam16Jmh, colour2.Cam16Jmh);
+        AssertEqual(colour1.Cam16Jsh, colour2.Cam16Jsh);
+        AssertEqual(colour1.Cam16Qch, colour2.Cam16Qch);
+        AssertEqual(colour1.Cam16Qmh, colour2.Cam16Qmh);
+        AssertEqual(colour1.Cam16Qsh, colour2.Cam16Qsh);
+        AssertEqual(colour1.Cam16Ucs, colour2.Cam16Ucs);
         AssertEqual(colour1.Chromaticity, colour2.Chromaticity);
         AssertEqual(colour1.Description, colour2.Description);
         AssertEqual(colour1.DominantWavelength, colour2.DominantWavelength);

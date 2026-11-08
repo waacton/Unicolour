@@ -48,7 +48,13 @@ internal class Gamut
     private static readonly Gamut Cam02Qmh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
     private static readonly Gamut Cam02Qsh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
     private static readonly Gamut Cam02Ucs = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
-    private static readonly Gamut Cam16 = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
+    private static readonly Gamut Cam16Jch = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Jmh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Jsh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Qch = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Qmh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Qsh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut Cam16Ucs = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
     private static readonly Gamut Hct = new(new Range(0, 360), new Range(0, 120), new Range(0, 100));
     private static readonly Gamut Munsell = new(new Range(0, 360), new Range(0, 10), new Range(0, 26));
     
@@ -118,7 +124,13 @@ internal class Gamut
         { ColourSpace.Cam02Qmh, Cam02Qmh },
         { ColourSpace.Cam02Qsh, Cam02Qsh },
         { ColourSpace.Cam02Ucs, Cam02Ucs },
-        { ColourSpace.Cam16, Cam16 },
+        { ColourSpace.Cam16Jch, Cam16Jch },
+        { ColourSpace.Cam16Jmh, Cam16Jmh },
+        { ColourSpace.Cam16Jsh, Cam16Jsh },
+        { ColourSpace.Cam16Qch, Cam16Qch },
+        { ColourSpace.Cam16Qmh, Cam16Qmh },
+        { ColourSpace.Cam16Qsh, Cam16Qsh },
+        { ColourSpace.Cam16Ucs, Cam16Ucs },
         { ColourSpace.Hct, Hct },
         { ColourSpace.Munsell, Munsell }
     };

@@ -95,7 +95,12 @@ internal static class TestUtils
         var colourBases = colourSpaces.Select(ColourBase (x) => colour.GetTriplet(x)).ToList();
         
         // CAM spaces often go convert via the model, which also propagates limitation
-        if (colourSpaces.ContainsAny([ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh]))
+        ColourSpace[] camSpaces = [
+            ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh,
+            ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh
+        ];
+        
+        if (colourSpaces.ContainsAny(camSpaces))
         {
             colourBases.Add(colour.Cam02.Model);
         }
@@ -322,7 +327,13 @@ internal static class TestUtils
         { typeof(Cam02Qmh), ColourSpace.Cam02Qmh },
         { typeof(Cam02Qsh), ColourSpace.Cam02Qsh },
         { typeof(Cam02Ucs), ColourSpace.Cam02Ucs },
-        { typeof(Cam16), ColourSpace.Cam16 },
+        { typeof(Cam16Jch), ColourSpace.Cam16Jch },
+        { typeof(Cam16Jmh), ColourSpace.Cam16Jmh },
+        { typeof(Cam16Jsh), ColourSpace.Cam16Jsh },
+        { typeof(Cam16Qch), ColourSpace.Cam16Qch },
+        { typeof(Cam16Qmh), ColourSpace.Cam16Qmh },
+        { typeof(Cam16Qsh), ColourSpace.Cam16Qsh },
+        { typeof(Cam16Ucs), ColourSpace.Cam16Ucs },
         { typeof(Hct), ColourSpace.Hct },
         { typeof(Munsell), ColourSpace.Munsell }
     };

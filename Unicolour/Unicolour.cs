@@ -53,6 +53,13 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam02Qsh Cam02Qsh => Cam02.Qsh;
     public Cam02Ucs Cam02Ucs => field ??= EvaluateCam02Ucs();
     public Cam16 Cam16 => field ??= EvaluateCam16();
+    public Cam16Jch Cam16Jch => Cam16.Jch;
+    public Cam16Jmh Cam16Jmh => Cam16.Jmh;
+    public Cam16Jsh Cam16Jsh => Cam16.Jsh;
+    public Cam16Qch Cam16Qch => Cam16.Qch;
+    public Cam16Qmh Cam16Qmh => Cam16.Qmh;
+    public Cam16Qsh Cam16Qsh => Cam16.Qsh;
+    public Cam16Ucs Cam16Ucs => field ??= EvaluateCam16Ucs();
     public Hct Hct => field ??= EvaluateHct();
     public Munsell Munsell => field ??= EvaluateMunsell();
     

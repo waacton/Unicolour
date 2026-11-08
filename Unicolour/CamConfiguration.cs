@@ -56,6 +56,7 @@ public class CamConfiguration
     };
     
     internal Cam.ViewingConditions View02 => field ??= Cam02.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
+    internal Cam.ViewingConditions View16 => field ??= Cam16.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
 
     public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround, string name = Utils.Unnamed)
     {

@@ -116,6 +116,22 @@ public class KnownCam02Tests
         var expectedUcs = new Cam02Ucs(0, 0, 0);
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
+    
+    [Test]
+    public void NegativeReflectJ()
+    {
+        var positive = Cam02.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(positive, Is.EqualTo(-negative));
+    }
+    
+    [Test]
+    public void NegativeReflectC1()
+    {
+        var positive = Cam02.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(negative, Is.EqualTo(-positive));
+    }
 
     [Test]
     public void NegativeReflectQ()
@@ -126,11 +142,14 @@ public class KnownCam02Tests
     }
     
     [Test]
-    public void NegativeReflectJ()
+    public void NegativeReflectC2()
     {
-        var positive = Cam02.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View02);
-        Assert.That(positive, Is.EqualTo(-negative));
+        var positive = Cam02.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam02.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View02);
+        Assert.That(negative, Is.EqualTo(-positive));
+        
+        var doubleNegative = Cam02.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
     [Test]
@@ -149,25 +168,6 @@ public class KnownCam02Tests
         Assert.That(negative, Is.EqualTo(-positive));
         
         var doubleNegative = Cam02.NegativeReflectS(m: -50, q: -50);
-        Assert.That(doubleNegative, Is.EqualTo(positive));
-    }
-    
-    [Test]
-    public void NegativeReflectC1()
-    {
-        var positive = Cam02.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View02);
-        Assert.That(negative, Is.EqualTo(-positive));
-    }
-    
-    [Test]
-    public void NegativeReflectC2()
-    {
-        var positive = Cam02.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View02);
-        var negative = Cam02.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View02);
-        Assert.That(negative, Is.EqualTo(-positive));
-        
-        var doubleNegative = Cam02.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View02);
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     

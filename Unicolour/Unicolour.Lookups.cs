@@ -49,7 +49,13 @@ public partial class Unicolour
             ColourSpace.Cam02Qmh => Cam02Qmh,
             ColourSpace.Cam02Qsh => Cam02Qsh,
             ColourSpace.Cam02Ucs => Cam02Ucs,
-            ColourSpace.Cam16 => Cam16,
+            ColourSpace.Cam16Jch => Cam16Jch,
+            ColourSpace.Cam16Jmh => Cam16Jmh,
+            ColourSpace.Cam16Jsh => Cam16Jsh,
+            ColourSpace.Cam16Qch => Cam16Qch,
+            ColourSpace.Cam16Qmh => Cam16Qmh,
+            ColourSpace.Cam16Qsh => Cam16Qsh,
+            ColourSpace.Cam16Ucs => Cam16Ucs,
             ColourSpace.Hct => Hct,
             ColourSpace.Munsell => Munsell,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -102,7 +108,13 @@ public partial class Unicolour
             ColourSpace.Cam02Qmh => new Cam02Qmh(first, second, third, limitation),
             ColourSpace.Cam02Qsh => new Cam02Qsh(first, second, third, limitation),
             ColourSpace.Cam02Ucs => new Cam02Ucs(first, second, third, limitation),
-            ColourSpace.Cam16 => new Cam16(new Cam.Ucs(first, second, third), config.Cam, limitation),
+            ColourSpace.Cam16Jch => new Cam16Jch(first, second, third, limitation),
+            ColourSpace.Cam16Jmh => new Cam16Jmh(first, second, third, limitation),
+            ColourSpace.Cam16Jsh => new Cam16Jsh(first, second, third, limitation),
+            ColourSpace.Cam16Qch => new Cam16Qch(first, second, third, limitation),
+            ColourSpace.Cam16Qmh => new Cam16Qmh(first, second, third, limitation),
+            ColourSpace.Cam16Qsh => new Cam16Qsh(first, second, third, limitation),
+            ColourSpace.Cam16Ucs => new Cam16Ucs(first, second, third, limitation),
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -155,7 +167,13 @@ public partial class Unicolour
             ColourSpace.Cam02Qmh => new Cam02Qmh(grey),
             ColourSpace.Cam02Qsh => new Cam02Qsh(grey),
             ColourSpace.Cam02Ucs => new Cam02Ucs(grey),
-            ColourSpace.Cam16 => new Cam16(grey, config.Cam),
+            ColourSpace.Cam16Jch => new Cam16Jch(grey),
+            ColourSpace.Cam16Jmh => new Cam16Jmh(grey),
+            ColourSpace.Cam16Jsh => new Cam16Jsh(grey),
+            ColourSpace.Cam16Qch => new Cam16Qch(grey),
+            ColourSpace.Cam16Qmh => new Cam16Qmh(grey),
+            ColourSpace.Cam16Qsh => new Cam16Qsh(grey),
+            ColourSpace.Cam16Ucs => new Cam16Ucs(grey),
             ColourSpace.Hct => new Hct(grey),
             ColourSpace.Munsell => new Munsell(grey),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -306,7 +324,13 @@ public partial class Unicolour
             ColourSpace.Cam02Qmh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Cam02Qsh => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Cam02Ucs => Cam02.ToXyz(Cam02, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
-            ColourSpace.Cam16 => Cam16.ToXyz(Cam16, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jch => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jmh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Jsh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qch => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qmh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Qsh => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.Cam16Ucs => Cam16.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
@@ -613,8 +637,23 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam16 => (Cam16)SourceTriplet,
-            _ => Cam16.FromXyz(Xyz, Configuration.Cam, Configuration.Xyz.ChromaticAdaptor)
+            ColourSpace.Cam16Jch => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jmh => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jsh => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qch => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qmh => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qsh => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Ucs => Cam16Ucs.ToCam16(Cam16Ucs, Configuration.Cam.View16),
+            _ => Cam16.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View16, Configuration.Xyz.ChromaticAdaptor)
+        };
+    }
+    
+    private Cam16Ucs EvaluateCam16Ucs()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.Cam16Ucs => (Cam16Ucs)SourceTriplet,
+            _ => Cam16Ucs.FromCam16(Cam16)
         };
     }
     

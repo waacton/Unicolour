@@ -164,7 +164,7 @@ public partial class Unicolour
     
     /*
      * evaluation method switch expressions are arranged as follows:
-     * - first item     = target space is the initial space, simply return initial representation
+     * - first item     = target space is the initial space, simply return source triplet
      * - middle items   = reverse transforms to the target space; only the immediate transforms
      * - default item   = forward transform from a base space
      * -----------------

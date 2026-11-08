@@ -560,7 +560,7 @@ public class AchromaticTests
 
     private static void AssertNotAchromatic(Unicolour colour)
     {
-        // if initial representation has no limitation, at least one downstream representation should inherit no limitation
+        // if initial triplet has no limitation, at least one downstream triplet should inherit no limitation
         // though it's still possible for their actual limitation to be achromatic or NaN, especially with outlier values like negatives
         var downstreamSpaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToArray();
         Assert.That(TestUtils.Limitations(colour, downstreamSpaces, baselines: true), Has.Some.EqualTo(Limitation.None));

@@ -67,7 +67,7 @@ public partial class Unicolour : IEquatable<Unicolour>
     public double DominantWavelength => Wxy.IsNaN ? double.NaN : Wxy.W;
     public double ExcitationPurity => Wxy.IsNaN ? double.NaN : Wxy.X;
     
-    private bool? isInPointerGamut = null, isInMacAdamLimits = null, isImaginary = null; // want only the backing field to be nullable, `field` keyword does not support this
+    private bool? isInPointerGamut, isInMacAdamLimits, isImaginary; // want only the backing field to be nullable, `field` keyword does not support this
     public bool IsInRgbGamut => Rgb.IsInGamut;
     public bool IsInPointerGamut => isInPointerGamut ??= PointerGamut.IsInGamut(this);
     public bool IsInMacAdamLimits => isInMacAdamLimits ??= MacAdamLimits.IsInLimits(this);

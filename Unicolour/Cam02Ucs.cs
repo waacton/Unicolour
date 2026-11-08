@@ -37,7 +37,7 @@ public record Cam02Ucs : ColourTriplet
         return new Cam02Ucs(j, a, b, cam02.Jmh.Limitation);
     }
     
-    internal static Cam02 ToCam02(Cam02Ucs ucs, Cam.ViewingConditions view)
+    internal static Cam02 ToCam02(Cam02Ucs ucs, Cam02ViewingConditions view)
     {
         var (j, a, b) = ucs;
         j = j / (1.7 - 0.007 * j);

@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
-using static Wacton.Unicolour.Cam;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -17,7 +16,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 200, 18, Surround.Average);
 
-        var expectedModel = new Model(
+        var expectedModel = new Cam02Model(
             j: 48.0314,
             c: 38.7789,
             h: 191.0452,
@@ -40,7 +39,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.1931, 0.2393, 0.1014, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 20, 18, Surround.Average);
         
-        var expectedModel = new Model(
+        var expectedModel = new Cam02Model(
             j: 47.6856,
             c: 36.0527,
             h: 185.3445,
@@ -63,7 +62,7 @@ public class KnownCam02Tests
         var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
-        var expectedModel = new Model(
+        var expectedModel = new Cam02Model(
             j: 34.434525727858997,
             c: 67.365010921125943,
             h: 22.279164147957065,
@@ -112,7 +111,7 @@ public class KnownCam02Tests
         var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
         var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
         var xyz = new Xyz(0, 0, 0, whitePoint);
-        var expectedModel = new Model(0, 0, 0, 0, 0, 0);
+        var expectedModel = new Cam02Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Cam02Ucs(0, 0, 0);
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
@@ -171,7 +170,7 @@ public class KnownCam02Tests
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
-    private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Cam02Ucs expectedUcs)
+    private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Cam02Model expectedModel, Cam02Ucs expectedUcs)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
         var cam02 = Cam02.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
@@ -183,6 +182,7 @@ public class KnownCam02Tests
         AssertModel(cam02.Model.Colourfulness, expectedModel.Colourfulness);
         AssertModel(cam02.Model.Saturation, expectedModel.Saturation);
         AssertModel(cam02.Model.Brightness, expectedModel.Brightness);
+        Assert.That(cam02.Model.HueComposition, Is.EqualTo(expectedModel.HueComposition));
         
         AssertModel(cam02.Model.J, expectedModel.Lightness);
         AssertModel(cam02.Model.C, expectedModel.Chroma);
@@ -190,6 +190,7 @@ public class KnownCam02Tests
         AssertModel(cam02.Model.M, expectedModel.Colourfulness);
         AssertModel(cam02.Model.S, expectedModel.Saturation);
         AssertModel(cam02.Model.Q, expectedModel.Brightness);
+        Assert.That(cam02.Model.Hc, Is.EqualTo(expectedModel.HueComposition));
 
         AssertModel(cam02.Model.Lightness, expectedModel.J);
         AssertModel(cam02.Model.Chroma, expectedModel.C);
@@ -197,6 +198,7 @@ public class KnownCam02Tests
         AssertModel(cam02.Model.Colourfulness, expectedModel.M);
         AssertModel(cam02.Model.Saturation, expectedModel.S);
         AssertModel(cam02.Model.Brightness, expectedModel.Q);
+        Assert.That(cam02.Model.HueComposition, Is.EqualTo(expectedModel.Hc));
         
         TestUtils.AssertTriplet(cam02.Jch, new Cam02Jch(expectedModel.J, expectedModel.C, expectedModel.H), ModelTolerance);
         TestUtils.AssertTriplet(cam02.Jmh, new Cam02Jmh(expectedModel.J, expectedModel.M, expectedModel.H), ModelTolerance);

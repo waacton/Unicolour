@@ -295,7 +295,7 @@ public class ConfigureXyzTests
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
         var initialCamUcs = new Cam16Ucs(62.47, 42.60, -1.36);
-        var initialCam = Cam16Ucs.ToCam16(initialCamUcs, initialCamConfig.View02);
+        var initialCam = Cam16Ucs.ToCam16(initialCamUcs, initialCamConfig.View16);
         var expectedXyz = Cam16.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);

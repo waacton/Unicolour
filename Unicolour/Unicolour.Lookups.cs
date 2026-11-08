@@ -613,12 +613,12 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam02Jch => new Cam02(SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Jmh => new Cam02(SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Jsh => new Cam02(SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qch => new Cam02(SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qmh => new Cam02(SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Qsh => new Cam02(SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jch => new Cam02((Cam02Jch)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jmh => new Cam02((Cam02Jmh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Jsh => new Cam02((Cam02Jsh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qch => new Cam02((Cam02Qch)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qmh => new Cam02((Cam02Qmh)SourceTriplet, Configuration.Cam.View02),
+            ColourSpace.Cam02Qsh => new Cam02((Cam02Qsh)SourceTriplet, Configuration.Cam.View02),
             ColourSpace.Cam02Ucs => Cam02Ucs.ToCam02(Cam02Ucs, Configuration.Cam.View02),
             _ => Cam02.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View02, Configuration.Xyz.ChromaticAdaptor)
         };
@@ -637,12 +637,12 @@ public partial class Unicolour
     {
         return SourceColourSpace switch
         {
-            ColourSpace.Cam16Jch => new Cam16(SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Jmh => new Cam16(SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Jsh => new Cam16(SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qch => new Cam16(SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qmh => new Cam16(SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Qsh => new Cam16(SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jch => new Cam16((Cam16Jch)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jmh => new Cam16((Cam16Jmh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Jsh => new Cam16((Cam16Jsh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qch => new Cam16((Cam16Qch)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qmh => new Cam16((Cam16Qmh)SourceTriplet, Configuration.Cam.View16),
+            ColourSpace.Cam16Qsh => new Cam16((Cam16Qsh)SourceTriplet, Configuration.Cam.View16),
             ColourSpace.Cam16Ucs => Cam16Ucs.ToCam16(Cam16Ucs, Configuration.Cam.View16),
             _ => Cam16.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View16, Configuration.Xyz.ChromaticAdaptor)
         };

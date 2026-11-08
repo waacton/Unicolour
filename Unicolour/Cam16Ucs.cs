@@ -32,7 +32,7 @@ public record Cam16Ucs : ColourTriplet
         return new Cam16Ucs(j, a, b, cam16.Jmh.Limitation);
     }
     
-    internal static Cam16 ToCam16(Cam16Ucs ucs, Cam.ViewingConditions view)
+    internal static Cam16 ToCam16(Cam16Ucs ucs, Cam16ViewingConditions view)
     {
         var (j, a, b) = ucs;
         j = j / (1.7 - 0.007 * j);

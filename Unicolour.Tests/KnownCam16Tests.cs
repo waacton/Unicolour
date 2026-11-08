@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
-using static Wacton.Unicolour.Cam;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -16,7 +15,7 @@ public class KnownCam16Tests
         var xyz = new Xyz(0.20654008, 0.12197225, 0.05136952, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
-        var expectedModel = new Model(
+        var expectedModel = new Cam16Model(
             j: 33.880368498111686,
             c: 69.444353357408033,
             h: 19.510887327451748,
@@ -39,7 +38,7 @@ public class KnownCam16Tests
         var xyz = new Xyz(0.23446234045762356, 0.23897966766938545, 0.6049634765734733, whitePoint);
         var camConfig = new CamConfiguration(whitePoint, 40, 20, Surround.Average);
         
-        var expectedModel = new Model(
+        var expectedModel = new Cam16Model(
             j: 45.54426472036036,
             c: 45.070010482937676,
             h: 259.225345298129,
@@ -90,7 +89,7 @@ public class KnownCam16Tests
         var whitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
         var camConfig = new CamConfiguration(whitePoint, CamConfiguration.LuxToLuminance(lux), background, surround);
         var xyz = new Xyz(0, 0, 0, whitePoint);
-        var expectedModel = new Model(0, 0, 0, 0, 0, 0);
+        var expectedModel = new Cam16Model(0, 0, 0, 0, 0, 0);
         var expectedUcs = new Cam16Ucs(0, 0, 0);
         AssertCam16(xyz, camConfig, expectedModel, expectedUcs, "20B80R");
     }
@@ -149,7 +148,7 @@ public class KnownCam16Tests
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
-    private static void AssertCam16(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Cam16Ucs expectedUcs, string expectedHueComposition)
+    private static void AssertCam16(Xyz xyz, CamConfiguration camConfig, Cam16Model expectedModel, Cam16Ucs expectedUcs, string expectedHueComposition)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
         var cam16 = Cam16.FromXyz(xyz, camConfig.WhitePoint, camConfig.View16, chromaticAdaptor);

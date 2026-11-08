@@ -63,6 +63,12 @@ public class GreyTests
     [TestCase(ColourSpace.Cam02Qch, 0, 0, 180)]
     [TestCase(ColourSpace.Cam02Qmh, 0, 0, 180)]
     [TestCase(ColourSpace.Cam02Qsh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jsh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qsh, 0, 0, 180)]
     [TestCase(ColourSpace.Hct, 180, 0, 0)]
     [TestCase(ColourSpace.Munsell, 180, 0, 0)]
     public void WithHue(ColourSpace colourSpace, double first, double second, double third)

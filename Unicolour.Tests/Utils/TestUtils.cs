@@ -95,14 +95,14 @@ internal static class TestUtils
         var colourBases = colourSpaces.Select(ColourBase (x) => colour.GetTriplet(x)).ToList();
         
         // CAM spaces often go convert via the model, which also propagates limitation
-        ColourSpace[] camSpaces = [
-            ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh,
-            ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh
-        ];
-        
-        if (colourSpaces.ContainsAny(camSpaces))
+        if (colourSpaces.ContainsAny([ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh]))
         {
             colourBases.Add(colour.Cam02.Model);
+        }
+        
+        if (colourSpaces.ContainsAny([ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh]))
+        {
+            colourBases.Add(colour.Cam16.Model);
         }
         
         return colourBases.Select(x => baselines ? x.LimitationBaseline : x.Limitation).ToArray();

@@ -28,11 +28,7 @@ public record WhitePoint : ColourTriplet
 
     private WhitePoint(ColourTriplet xyz) : base(xyz.First, xyz.Second, xyz.Third) {}
     
-    public void Deconstruct(out double x, out double y, out double z)
-    {
-        (x, y, z) = (X, Y, Z);
-    }
-    
+    // deconstruct for XYZ triplet is handled by the colour base
     public void Deconstruct(out double x, out double y)
     {
         (x, y) = (Chromaticity.X, Chromaticity.Y);

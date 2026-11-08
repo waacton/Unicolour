@@ -2,14 +2,18 @@
 
 internal static class Interpolation
 {
+    private record Endpoint(ColourTriplet Triplet, Alpha Alpha)
+    {
+        internal ColourTriplet Triplet { get; } = Triplet;
+        internal Alpha Alpha { get; } = Alpha;
+    }
+
     internal static Unicolour Mix(Unicolour startColour, Unicolour endColour, ColourSpace colourSpace, double distance, HueSpan hueSpan, bool premultiplyAlpha)
     {
-        var (start, end, config) = AdjustConfig(startColour, endColour);
-        
-        var startRepresentation = start.GetTriplet(colourSpace);
-        var startAlpha = start.Alpha;
-        var endRepresentation = end.GetTriplet(colourSpace);
-        var endAlpha = end.Alpha;
+        (startColour, endColour, var config) = AdjustConfig(startColour, endColour);
+
+        var from = new Endpoint(startColour.GetTriplet(colourSpace), startColour.Alpha);
+        var to = new Endpoint(endColour.GetTriplet(colourSpace), endColour.Alpha);
 
         Func<double, double> mapToHue = colourSpace == ColourSpace.Wxy
             ? value => Hue.FromWavelength(value, config.Xyz)
@@ -19,21 +23,8 @@ internal static class Interpolation
             ? value => Hue.ToWavelength(value, config.Xyz)
             : value => value;
 
-        var (startTriplet, endTriplet) = GetTripletsToInterpolate(
-            (startRepresentation, startAlpha), 
-            (endRepresentation, endAlpha),
-            hueSpan, premultiplyAlpha, mapToHue);
-        
-        var triplet = InterpolateTriplet(startTriplet, endTriplet, distance).WithHueModulo().WithHueMap(mapFromHue);
-        var alpha = Linear(startAlpha.Clipped.A, endAlpha.Clipped.A, distance);
-        
-        if (premultiplyAlpha)
-        {
-            triplet = triplet.WithUnpremultipliedAlpha(alpha);
-        }
-        
-        var limitation = InterpolateLimitation(startRepresentation, endRepresentation);
-        var (first, second, third) = triplet;
+        (from, to) = AdaptCoordinates(from, to, hueSpan, premultiplyAlpha, mapToHue);
+        var ((first, second, third), alpha, limitation) = Interpolate(from, to, distance, premultiplyAlpha, mapFromHue);
         return new Unicolour(config, colourSpace, first, second, third, alpha, limitation);
     }
     
@@ -60,34 +51,31 @@ internal static class Interpolation
             : (start, end.ConvertToConfiguration(config), config);
     }
     
-    private static (ColourTriplet start, ColourTriplet end) GetTripletsToInterpolate(
-        (ColourTriplet triplet, Alpha alpha) start, 
-        (ColourTriplet triplet, Alpha alpha) end,
-        HueSpan hueSpan, bool premultiplyAlpha, Func<double, double> mapToHue)
+    private static (Endpoint start, Endpoint end) AdaptCoordinates(Endpoint from, Endpoint to, HueSpan hueSpan, bool premultiplyAlpha, Func<double, double> mapToHue)
     {
         ColourTriplet startTriplet;
         ColourTriplet endTriplet;
         
         // these can't give different answers since they use the same colour space
         // (except by reflection, in which case an error would be thrown when later trying to read the hue component)
-        var hasHueComponent = start.triplet.HasHueComponent || end.triplet.HasHueComponent;
+        var hasHueComponent = from.Triplet.HasHueComponent || to.Triplet.HasHueComponent;
         if (hasHueComponent)
         {
-            (startTriplet, endTriplet) = GetTripletsWithHue(start.triplet, end.triplet, hueSpan, mapToHue);
+            (startTriplet, endTriplet) = GetTripletsWithHue(from.Triplet, to.Triplet, hueSpan, mapToHue);
         }
         else
         {
-            startTriplet = start.triplet;
-            endTriplet = end.triplet;
+            startTriplet = from.Triplet;
+            endTriplet = to.Triplet;
         }
         
         if (premultiplyAlpha)
         {
-            startTriplet = startTriplet.WithPremultipliedAlpha(start.alpha.Clipped.A);
-            endTriplet = endTriplet.WithPremultipliedAlpha(end.alpha.Clipped.A);
+            startTriplet = startTriplet.WithPremultipliedAlpha(from.Alpha.Clipped.A);
+            endTriplet = endTriplet.WithPremultipliedAlpha(to.Alpha.Clipped.A);
         }
 
-        return (startTriplet, endTriplet);
+        return (new Endpoint(startTriplet, from.Alpha), new Endpoint(endTriplet, to.Alpha));
     }
     
     private static (ColourTriplet start, ColourTriplet end) GetTripletsWithHue(
@@ -119,18 +107,23 @@ internal static class Interpolation
         return (adjustedStartHue, adjustedEndHue);
     }
     
-    private static ColourTriplet InterpolateTriplet(ColourTriplet start, ColourTriplet end, double distance)
+    private static (ColourTriplet triplet, double alpha, Limitation limitation) Interpolate(
+        Endpoint from, Endpoint to, double distance, bool premultiplyAlpha, Func<double, double> mapFromHue)
     {
-        var first = Linear(start.First, end.First, distance);
-        var second = Linear(start.Second, end.Second, distance);
-        var third = Linear(start.Third, end.Third, distance);
+        var first = Linear(from.Triplet.First, to.Triplet.First, distance);
+        var second = Linear(from.Triplet.Second, to.Triplet.Second, distance);
+        var third = Linear(from.Triplet.Third, to.Triplet.Third, distance);
+        var alpha = Linear(from.Alpha.Clipped.A, to.Alpha.Clipped.A, distance);
+        var limitation = InterpolateLimitation(from.Triplet, to.Triplet);
 
-        if (start.HasHueComponent)
+        var triplet = new ColourTriplet(first, second, third, limitation);
+        triplet = triplet.WithHueModulo().WithHueMap(mapFromHue);
+        if (premultiplyAlpha)
         {
-            return new(first, second, third, start.HueIndex!.Value);
+            triplet = triplet.WithUnpremultipliedAlpha(alpha);
         }
-
-        return new(first, second, third);
+        
+        return (triplet, alpha, limitation);
     }
 
     internal static double Linear(double startValue, double endValue, double distance)

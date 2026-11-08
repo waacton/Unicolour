@@ -15,19 +15,13 @@ public record Cam02
     private readonly ColourTriplet? source;
     private readonly View view;
     
-    public Model Model => field ??= GetModel();
     public Jch Jch => field ??= source as Jch ?? new Jch(Model.J, Model.C, Model.H, Model.Limitation);
     public Jmh Jmh => field ??= source as Jmh ?? new Jmh(Model.J, Model.M, Model.H, Model.Limitation);
     public Jsh Jsh => field ??= source as Jsh ?? new Jsh(Model.J, Model.S, Model.H, Model.Limitation);
     public Qch Qch => field ??= source as Qch ?? new Qch(Model.Q, Model.C, Model.H, Model.Limitation);
     public Qmh Qmh => field ??= source as Qmh ?? new Qmh(Model.Q, Model.M, Model.H, Model.Limitation);
     public Qsh Qsh => field ??= source as Qsh ?? new Qsh(Model.Q, Model.S, Model.H, Model.Limitation);
-    
-    internal Cam02(Model model, View view)
-    {
-        Model = model;
-        this.view = view;
-    }
+    public Model Model => field ??= GetModel();
     
     public Cam02(Jch jch, View view) : this((ColourTriplet)jch, view) {}
     public Cam02(Jmh jmh, View view) : this((ColourTriplet)jmh, view) {}
@@ -38,6 +32,12 @@ public record Cam02
     internal Cam02(ColourTriplet source, View view)
     {
         this.source = source;
+        this.view = view;
+    }
+    
+    internal Cam02(Model model, View view)
+    {
+        Model = model;
         this.view = view;
     }
     

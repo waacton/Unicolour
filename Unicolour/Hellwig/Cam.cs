@@ -146,13 +146,13 @@ public record Cam
         var h = ToDegrees(hRad).WithHueModulo();
 
         // step 5 (different to CAM16)
-        var et = 0.0582 * Math.Cos(hRad) - 0.0258 * Math.Cos(2 * hRad) - 0.1357 * Math.Cos(3 * hRad)
+        var et = -0.0582 * Math.Cos(hRad) - 0.0258 * Math.Cos(2 * hRad) - 0.1347 * Math.Cos(3 * hRad)
                  + 0.0289 * Math.Cos(4 * hRad) - 0.1475 * Math.Sin(hRad) - 0.0308 * Math.Sin(2 * hRad)
                  + 0.0385 * Math.Sin(3 * hRad) + 0.0096 * Math.Sin(4 * hRad) + 1;
         
         // step 6 (different to CAM16)
         var achromatic = p2;
-
+        
         // step 7
         var j = 100 * Math.Pow(achromatic / view.Aw, view.C * view.Z);
         
@@ -175,7 +175,7 @@ public record Cam
         
         // step 2 (different to CAM16)
         var hRad = ToRadians(h);
-        var et = 0.0582 * Math.Cos(hRad) - 0.0258 * Math.Cos(2 * hRad) - 0.1357 * Math.Cos(3 * hRad)
+        var et = -0.0582 * Math.Cos(hRad) - 0.0258 * Math.Cos(2 * hRad) - 0.1347 * Math.Cos(3 * hRad)
                  + 0.0289 * Math.Cos(4 * hRad) - 0.1475 * Math.Sin(hRad) - 0.0308 * Math.Sin(2 * hRad)
                  + 0.0385 * Math.Sin(3 * hRad) + 0.0096 * Math.Sin(4 * hRad) + 1;
         

@@ -52,6 +52,13 @@ public enum ColourSpace
     Cam16Qch,
     Cam16Qsh,
     Cam16Ucs,
+    HellwigJmh,
+    HellwigJch,
+    HellwigJsh,
+    HellwigQmh,
+    HellwigQch,
+    HellwigQsh,
+    HellwigUcs,
     Hct,
     Munsell
 }

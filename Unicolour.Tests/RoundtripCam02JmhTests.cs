@@ -39,8 +39,8 @@ public class RoundtripCam02JmhTests
     {
         var original = new Jmh(triplet.First, triplet.Second, triplet.Third);
         var cam02 = new Cam(original, CamConfig.View02);
-        var cam02Ucs = Ucs.FromCam02(cam02);
-        var roundtrip = Ucs.ToCam02(cam02Ucs, CamConfig.View02).Jmh;
+        var cam02Ucs = Ucs.FromCam(cam02);
+        var roundtrip = Ucs.ToCam(cam02Ucs, CamConfig.View02).Jmh;
         
         switch (cam02.Model.M)
         {

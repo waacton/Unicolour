@@ -102,6 +102,13 @@ static Table GetTable(Unicolour colour)
     table.AddRow("Cam16Qmh", $"{colour.Cam16Qmh}");
     table.AddRow("Cam16Qsh", $"{colour.Cam16Qsh}");
     table.AddRow("Cam16Ucs", $"{colour.Cam16Ucs}");
+    table.AddRow("HellwigJch", $"{colour.HellwigJch}");
+    table.AddRow("HellwigJmh", $"{colour.HellwigJmh}");
+    table.AddRow("HellwigJsh", $"{colour.HellwigJsh}");
+    table.AddRow("HellwigQch", $"{colour.HellwigQch}");
+    table.AddRow("HellwigQmh", $"{colour.HellwigQmh}");
+    table.AddRow("HellwigQsh", $"{colour.HellwigQsh}");
+    table.AddRow("HellwigUcs", $"{colour.HellwigUcs}");
     table.AddRow("Hct", $"{colour.Hct}");
     table.AddRow("Munsell", $"{colour.Munsell}");
     table.AddRow("Icc", $"{colour.Icc}");

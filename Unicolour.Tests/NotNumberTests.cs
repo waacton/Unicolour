@@ -176,6 +176,27 @@ public class NotNumberTests
     public void Cam16Ucs(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.Cam16Ucs, j, a, b));
     
     [TestCaseSource(nameof(TestData))]
+    public void HellwigJch(Configuration config, double j, double c, double h) => AssertUnicolour(new(config, ColourSpace.HellwigJch, j, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigJmh(Configuration config, double j, double m, double h) => AssertUnicolour(new(config, ColourSpace.HellwigJmh, j, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigJsh(Configuration config, double j, double s, double h) => AssertUnicolour(new(config, ColourSpace.HellwigJsh, j, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigQch(Configuration config, double q, double s, double h) => AssertUnicolour(new(config, ColourSpace.HellwigQch, q, s, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigQmh(Configuration config, double q, double m, double h) => AssertUnicolour(new(config, ColourSpace.HellwigQmh, q, m, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigQsh(Configuration config, double q, double c, double h) => AssertUnicolour(new(config, ColourSpace.HellwigQsh, q, c, h));
+    
+    [TestCaseSource(nameof(TestData))]
+    public void HellwigUcs(Configuration config, double j, double a, double b) => AssertUnicolour(new(config, ColourSpace.HellwigUcs, j, a, b));
+    
+    [TestCaseSource(nameof(TestData))]
     public void Hct(Configuration config, double h, double c, double t) => AssertUnicolour(new(config, ColourSpace.Hct, h, c, t));
     
     [TestCaseSource(nameof(TestData))]

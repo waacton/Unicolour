@@ -39,8 +39,8 @@ public class RoundtripCam02QshTests
     {
         var original = new Qsh(triplet.First, triplet.Second, triplet.Third);
         var cam02 = new Cam(original, CamConfig.View02);
-        var cam02Ucs = Ucs.FromCam02(cam02);
-        var roundtrip = Ucs.ToCam02(cam02Ucs, CamConfig.View02).Qsh;
+        var cam02Ucs = Ucs.FromCam(cam02);
+        var roundtrip = Ucs.ToCam(cam02Ucs, CamConfig.View02).Qsh;
         
         switch (cam02.Model.M)
         {

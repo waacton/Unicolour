@@ -85,6 +85,13 @@ internal static class Utils
         { ColourSpace.Cam16Qmh, [new(0, 125), new(0, 120), new(0, 360)] },
         { ColourSpace.Cam16Qsh, [new(0, 125), new(0, 120), new(0, 360)] },
         { ColourSpace.Cam16Ucs, [new(0, 100), new(-50, 50), new(-50, 50)] },
+        { ColourSpace.HellwigJch, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigJmh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigJsh, [new(0, 100), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigQch, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigQmh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigQsh, [new(0, 125), new(0, 120), new(0, 360)] },
+        { ColourSpace.HellwigUcs, [new(0, 100), new(-50, 50), new(-50, 50)] },
         { ColourSpace.Hct, [new(0, 360), new(0, 120), new(0, 100)] },
         { ColourSpace.Munsell, [new(0, 360), new(1, 10), new(0, 26)] }
     };
@@ -141,6 +148,13 @@ internal static class Utils
         { ColourSpace.Cam16Qmh, ["Q", "M", "H"] },
         { ColourSpace.Cam16Qsh, ["Q", "S", "H"] },
         { ColourSpace.Cam16Ucs, ["J", "A", "B"] },
+        { ColourSpace.HellwigJch, ["J", "C", "H"] },
+        { ColourSpace.HellwigJmh, ["J", "M", "H"] },
+        { ColourSpace.HellwigJsh, ["J", "S", "H"] },
+        { ColourSpace.HellwigQch, ["Q", "C", "H"] },
+        { ColourSpace.HellwigQmh, ["Q", "M", "H"] },
+        { ColourSpace.HellwigQsh, ["Q", "S", "H"] },
+        { ColourSpace.HellwigUcs, ["J", "A", "B"] },
         { ColourSpace.Hct, ["H", "C", "T"] },
         { ColourSpace.Munsell, ["H", "V", "C"] }
     };

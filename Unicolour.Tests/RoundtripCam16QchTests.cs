@@ -39,8 +39,8 @@ public class RoundtripCam16QchTests
     {
         var original = new Qch(triplet.First, triplet.Second, triplet.Third);
         var cam16 = new Cam(original, CamConfig.View16);
-        var cam16Ucs = Ucs.FromCam16(cam16);
-        var roundtrip = Ucs.ToCam16(cam16Ucs, CamConfig.View16).Qch;
+        var cam16Ucs = Ucs.FromCam(cam16);
+        var roundtrip = Ucs.ToCam(cam16Ucs, CamConfig.View16).Qch;
         
         switch (cam16.Model.M)
         {

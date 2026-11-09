@@ -276,7 +276,7 @@ public class ConfigureXyzTests
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
         var initialCamUcs = new Cam02.Ucs(62.86, 40.81, -1.18);
-        var initialCam = Cam02.Ucs.ToCam02(initialCamUcs, initialCamConfig.View02);
+        var initialCam = Cam02.Ucs.ToCam(initialCamUcs, initialCamConfig.View02);
         var expectedXyz = Cam02.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
@@ -285,7 +285,7 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
     
-    [Test]
+    [Test] // TODO: Hellwig variant
     public void Cam16WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
@@ -295,7 +295,7 @@ public class ConfigureXyzTests
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
         var initialCamUcs = new Cam16.Ucs(62.47, 42.60, -1.36);
-        var initialCam = Cam16.Ucs.ToCam16(initialCamUcs, initialCamConfig.View16);
+        var initialCam = Cam16.Ucs.ToCam(initialCamUcs, initialCamConfig.View16);
         var expectedXyz = Cam16.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);

@@ -29,7 +29,13 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
         new(ColourSpace.Cam16Jsh, new Range(0, 100), new Range(0, 120)),
         new(ColourSpace.Cam16Qch, new Range(0, 100), new Range(0, 120)),
         new(ColourSpace.Cam16Qmh, new Range(0, 100), new Range(0, 120)),
-        new(ColourSpace.Cam16Qsh, new Range(0, 100), new Range(0, 120))
+        new(ColourSpace.Cam16Qsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQsh, new Range(0, 100), new Range(0, 120))
     ];
 
     public MixHueThirdComponentTests(ColourSpace colourSpace, Range first, Range second) 

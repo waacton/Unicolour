@@ -26,6 +26,7 @@ public static class ColourSpaces
         ColourSpace.Oklab, ColourSpace.Oklch, ColourSpace.Okhsv, ColourSpace.Okhsl, ColourSpace.Okhwb, ColourSpace.Oklrab, ColourSpace.Oklrch,
         ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh, ColourSpace.Cam02Ucs,
         ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh, ColourSpace.Cam16Ucs,
+        ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh, ColourSpace.HellwigUcs,
         ColourSpace.Hct,
         ColourSpace.Munsell
     ];

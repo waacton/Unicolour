@@ -56,6 +56,13 @@ public partial class Unicolour
             ColourSpace.Cam16Qmh => Cam16Qmh,
             ColourSpace.Cam16Qsh => Cam16Qsh,
             ColourSpace.Cam16Ucs => Cam16Ucs,
+            ColourSpace.HellwigJch => HellwigJch,
+            ColourSpace.HellwigJmh => HellwigJmh,
+            ColourSpace.HellwigJsh => HellwigJsh,
+            ColourSpace.HellwigQch => HellwigQch,
+            ColourSpace.HellwigQmh => HellwigQmh,
+            ColourSpace.HellwigQsh => HellwigQsh,
+            ColourSpace.HellwigUcs => HellwigUcs,
             ColourSpace.Hct => Hct,
             ColourSpace.Munsell => Munsell,
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -115,6 +122,13 @@ public partial class Unicolour
             ColourSpace.Cam16Qmh => new Cam16.Qmh(first, second, third, limitation),
             ColourSpace.Cam16Qsh => new Cam16.Qsh(first, second, third, limitation),
             ColourSpace.Cam16Ucs => new Cam16.Ucs(first, second, third, limitation),
+            ColourSpace.HellwigJch => new Hellwig.Jch(first, second, third, limitation),
+            ColourSpace.HellwigJmh => new Hellwig.Jmh(first, second, third, limitation),
+            ColourSpace.HellwigJsh => new Hellwig.Jsh(first, second, third, limitation),
+            ColourSpace.HellwigQch => new Hellwig.Qch(first, second, third, limitation),
+            ColourSpace.HellwigQmh => new Hellwig.Qmh(first, second, third, limitation),
+            ColourSpace.HellwigQsh => new Hellwig.Qsh(first, second, third, limitation),
+            ColourSpace.HellwigUcs => new Hellwig.Ucs(first, second, third, limitation),
             ColourSpace.Hct => new Hct(first, second, third, limitation),
             ColourSpace.Munsell => new Munsell(first, second, third, limitation),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -174,6 +188,13 @@ public partial class Unicolour
             ColourSpace.Cam16Qmh => new Cam16.Qmh(grey),
             ColourSpace.Cam16Qsh => new Cam16.Qsh(grey),
             ColourSpace.Cam16Ucs => new Cam16.Ucs(grey),
+            ColourSpace.HellwigJch => new Hellwig.Jch(grey),
+            ColourSpace.HellwigJmh => new Hellwig.Jmh(grey),
+            ColourSpace.HellwigJsh => new Hellwig.Jsh(grey),
+            ColourSpace.HellwigQch => new Hellwig.Qch(grey),
+            ColourSpace.HellwigQmh => new Hellwig.Qmh(grey),
+            ColourSpace.HellwigQsh => new Hellwig.Qsh(grey),
+            ColourSpace.HellwigUcs => new Hellwig.Ucs(grey),
             ColourSpace.Hct => new Hct(grey),
             ColourSpace.Munsell => new Munsell(grey),
             _ => throw new ArgumentOutOfRangeException(nameof(colourSpace), colourSpace, null)
@@ -331,6 +352,13 @@ public partial class Unicolour
             ColourSpace.Cam16Qmh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Cam16Qsh => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Cam16Ucs => Wacton.Unicolour.Cam16.Cam.ToXyz(Cam16, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigJch => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigJmh => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigJsh => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigQch => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigQmh => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigQsh => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
+            ColourSpace.HellwigUcs => Wacton.Unicolour.Hellwig.Cam.ToXyz(Hellwig, Configuration.Cam.WhitePoint, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Hct => Hct.ToXyz(Hct, Configuration.Xyz.ChromaticAdaptor),
             ColourSpace.Munsell => Xyy.ToXyz(Xyy),
             _ => throw new ArgumentOutOfRangeException()
@@ -619,7 +647,7 @@ public partial class Unicolour
             ColourSpace.Cam02Qch => new Cam02.Cam((Cam02.Qch)SourceTriplet, Configuration.Cam.View02),
             ColourSpace.Cam02Qmh => new Cam02.Cam((Cam02.Qmh)SourceTriplet, Configuration.Cam.View02),
             ColourSpace.Cam02Qsh => new Cam02.Cam((Cam02.Qsh)SourceTriplet, Configuration.Cam.View02),
-            ColourSpace.Cam02Ucs => Wacton.Unicolour.Cam02.Ucs.ToCam02(Cam02Ucs, Configuration.Cam.View02),
+            ColourSpace.Cam02Ucs => Wacton.Unicolour.Cam02.Ucs.ToCam(Cam02Ucs, Configuration.Cam.View02),
             _ => Wacton.Unicolour.Cam02.Cam.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View02, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -629,7 +657,7 @@ public partial class Unicolour
         return SourceColourSpace switch
         {
             ColourSpace.Cam02Ucs => (Cam02.Ucs)SourceTriplet,
-            _ => Wacton.Unicolour.Cam02.Ucs.FromCam02(Cam02)
+            _ => Wacton.Unicolour.Cam02.Ucs.FromCam(Cam02)
         };
     }
     
@@ -643,7 +671,7 @@ public partial class Unicolour
             ColourSpace.Cam16Qch => new Cam16.Cam((Cam16.Qch)SourceTriplet, Configuration.Cam.View16),
             ColourSpace.Cam16Qmh => new Cam16.Cam((Cam16.Qmh)SourceTriplet, Configuration.Cam.View16),
             ColourSpace.Cam16Qsh => new Cam16.Cam((Cam16.Qsh)SourceTriplet, Configuration.Cam.View16),
-            ColourSpace.Cam16Ucs => Wacton.Unicolour.Cam16.Ucs.ToCam16(Cam16Ucs, Configuration.Cam.View16),
+            ColourSpace.Cam16Ucs => Wacton.Unicolour.Cam16.Ucs.ToCam(Cam16Ucs, Configuration.Cam.View16),
             _ => Wacton.Unicolour.Cam16.Cam.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.View16, Configuration.Xyz.ChromaticAdaptor)
         };
     }
@@ -653,7 +681,31 @@ public partial class Unicolour
         return SourceColourSpace switch
         {
             ColourSpace.Cam16Ucs => (Cam16.Ucs)SourceTriplet,
-            _ => Wacton.Unicolour.Cam16.Ucs.FromCam16(Cam16)
+            _ => Wacton.Unicolour.Cam16.Ucs.FromCam(Cam16)
+        };
+    }
+    
+    private Hellwig.Cam EvaluateHellwig()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.HellwigJch => new Hellwig.Cam((Hellwig.Jch)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigJmh => new Hellwig.Cam((Hellwig.Jmh)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigJsh => new Hellwig.Cam((Hellwig.Jsh)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigQch => new Hellwig.Cam((Hellwig.Qch)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigQmh => new Hellwig.Cam((Hellwig.Qmh)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigQsh => new Hellwig.Cam((Hellwig.Qsh)SourceTriplet, Configuration.Cam.ViewHellwig),
+            ColourSpace.HellwigUcs => Wacton.Unicolour.Hellwig.Ucs.ToCam(HellwigUcs, Configuration.Cam.ViewHellwig),
+            _ => Wacton.Unicolour.Hellwig.Cam.FromXyz(Xyz, Configuration.Cam.WhitePoint, Configuration.Cam.ViewHellwig, Configuration.Xyz.ChromaticAdaptor)
+        };
+    }
+    
+    private Hellwig.Ucs EvaluateHellwigUcs()
+    {
+        return SourceColourSpace switch
+        {
+            ColourSpace.HellwigUcs => (Hellwig.Ucs)SourceTriplet,
+            _ => Wacton.Unicolour.Hellwig.Ucs.FromCam(Hellwig)
         };
     }
     

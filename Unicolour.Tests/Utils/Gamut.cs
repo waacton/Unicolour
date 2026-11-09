@@ -55,6 +55,13 @@ internal class Gamut
     private static readonly Gamut Cam16Qmh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
     private static readonly Gamut Cam16Qsh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
     private static readonly Gamut Cam16Ucs = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
+    private static readonly Gamut HellwigJch = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigJmh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigJsh = new(new Range(0, 100), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigQch = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigQmh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigQsh = new(new Range(0, 125), new Range(0, 120), new Range(0, 360));
+    private static readonly Gamut HellwigUcs = new(new Range(0, 100), new Range(-50, 50), new Range(-50, 50));
     private static readonly Gamut Hct = new(new Range(0, 360), new Range(0, 120), new Range(0, 100));
     private static readonly Gamut Munsell = new(new Range(0, 360), new Range(0, 10), new Range(0, 26));
     
@@ -131,6 +138,13 @@ internal class Gamut
         { ColourSpace.Cam16Qmh, Cam16Qmh },
         { ColourSpace.Cam16Qsh, Cam16Qsh },
         { ColourSpace.Cam16Ucs, Cam16Ucs },
+        { ColourSpace.HellwigJch, HellwigJch },
+        { ColourSpace.HellwigJmh, HellwigJmh },
+        { ColourSpace.HellwigJsh, HellwigJsh },
+        { ColourSpace.HellwigQch, HellwigQch },
+        { ColourSpace.HellwigQmh, HellwigQmh },
+        { ColourSpace.HellwigQsh, HellwigQsh },
+        { ColourSpace.HellwigUcs, HellwigUcs },
         { ColourSpace.Hct, Hct },
         { ColourSpace.Munsell, Munsell }
     };

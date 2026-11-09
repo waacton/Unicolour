@@ -340,6 +340,14 @@ public class EqualityTests
         AssertEqual(colour1.DominantWavelength, colour2.DominantWavelength);
         AssertEqual(colour1.ExcitationPurity, colour2.ExcitationPurity);
         AssertEqual(colour1.Hct, colour2.Hct);
+        AssertEqual(colour1.Hellwig, colour2.Hellwig);
+        AssertEqual(colour1.HellwigJch, colour2.HellwigJch);
+        AssertEqual(colour1.HellwigJmh, colour2.HellwigJmh);
+        AssertEqual(colour1.HellwigJsh, colour2.HellwigJsh);
+        AssertEqual(colour1.HellwigQch, colour2.HellwigQch);
+        AssertEqual(colour1.HellwigQmh, colour2.HellwigQmh);
+        AssertEqual(colour1.HellwigQsh, colour2.HellwigQsh);
+        AssertEqual(colour1.HellwigUcs, colour2.HellwigUcs);
         AssertEqual(colour1.Hex, colour2.Hex);
         AssertEqual(colour1.Hpluv, colour2.Hpluv);
         AssertEqual(colour1.Hsb, colour2.Hsb);

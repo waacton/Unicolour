@@ -57,6 +57,7 @@ public class CamConfiguration
     
     internal Cam02.ViewingConditions View02 => field ??= new Cam02.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
     internal Cam16.ViewingConditions View16 => field ??= new Cam16.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
+    internal Hellwig.ViewingConditions ViewHellwig => field ??= new Hellwig.ViewingConditions(WhitePoint, AdaptingLuminance, BackgroundLuminance, C, F, Nc);
 
     public CamConfiguration(WhitePoint whitePoint, double adaptingLuminance, double backgroundLuminance, Surround surround, string name = Utils.Unnamed)
     {

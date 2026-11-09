@@ -23,16 +23,16 @@ public record Ucs : ColourTriplet
      * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
      */
     
-    internal static Ucs FromCam16(Cam cam16)
+    internal static Ucs FromCam(Cam cam)
     {
-        var (j, m, h) = cam16.Jmh;
+        var (j, m, h) = cam.Jmh;
         j = 1.7 * j / (1 + 0.007 * j);
         m = Math.Log(1 + 0.0228 * m) / 0.0228;
         (j, var a, var b) = FromLchTriplet(new(j, m, h));
-        return new Ucs(j, a, b, cam16.Jmh.Limitation);
+        return new Ucs(j, a, b, cam.Jmh.Limitation);
     }
     
-    internal static Cam ToCam16(Ucs ucs, ViewingConditions view)
+    internal static Cam ToCam(Ucs ucs, ViewingConditions view)
     {
         var (j, a, b) = ucs;
         j = j / (1.7 - 0.007 * j);

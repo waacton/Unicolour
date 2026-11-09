@@ -28,7 +28,7 @@ public record Ucs : ColourTriplet
      * but would need to consider how it affects the structure of Unicolour objects
      */
     
-    internal static Ucs FromCam02(Cam cam)
+    internal static Ucs FromCam(Cam cam)
     {
         var (j, m, h) = cam.Jmh;
         j = 1.7 * j / (1 + 0.007 * j);
@@ -37,7 +37,7 @@ public record Ucs : ColourTriplet
         return new Ucs(j, a, b, cam.Jmh.Limitation);
     }
     
-    internal static Cam ToCam02(Ucs ucs, ViewingConditions view)
+    internal static Cam ToCam(Ucs ucs, ViewingConditions view)
     {
         var (j, a, b) = ucs;
         j = j / (1.7 - 0.007 * j);

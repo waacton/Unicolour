@@ -129,13 +129,13 @@ public record Cam
         // step 2
         var (rc, gc, bc) = (view.Dr * rgb.First, view.Dg * rgb.Second, view.Db * rgb.Third);
 
-        // step 3
+        // step 3 (different to CAM02)
         var (ra, ga, ba) = (RgbA(rc), RgbA(gc), RgbA(bc));
         double RgbA(double input)
         {
             if (double.IsNaN(input)) return double.NaN;
             var power = Math.Pow(view.Fl * Math.Abs(input) / 100.0, 0.42);
-            return 400 * Math.Sign(input) * (power / (power + 27.13));
+            return Math.Sign(input) * 400 * (power / (power + 27.13));
         }
 
         // step 4
@@ -169,29 +169,29 @@ public record Cam
     {
         var view = cam.view;
         
+        // step 1
         var (j, c, h) = cam.Jch;
-        
-        // step 1 (NOTE: currently not supporting partial models - all model values will be present)
         var alpha = j == 0 ? 0 : c / Math.Sqrt(j / 100.0);
         var t = Math.Pow(alpha / Math.Pow(1.64 - Math.Pow(0.29, view.N), 0.73), 1 / 0.9);
         
         // step 2
-        var et = 0.25 * (Math.Cos(ToRadians(h) + 2) + 3.8);
+        var hRad = ToRadians(h);
+        var et = 0.25 * (Math.Cos(hRad + 2) + 3.8);
         var achromatic = view.Aw * Math.Pow(j / 100.0, 1 / (view.C * view.Z));
         var p1 = et * (50000 / 13.0) * view.Nc * view.Ncb;
         var p2 = achromatic / view.Nbb;
         
         // step 3
         var gamma = 23 * (p2 + 0.305) * t / 
-                    (23 * p1 + 11 * t * Math.Cos(ToRadians(h)) + 108 * t * Math.Sin(ToRadians(h)));
-        var a = gamma * Math.Cos(ToRadians(h));
-        var b = gamma * Math.Sin(ToRadians(h));
+                    (23 * p1 + 11 * t * Math.Cos(hRad) + 108 * t * Math.Sin(hRad));
+        var a = gamma * Math.Cos(hRad);
+        var b = gamma * Math.Sin(hRad);
         
         // step 4
         var components = Matrix.From(p2, a, b);
         var (ra, ga, ba) = ReverseStep4.Multiply(components).ToTriplet();
         
-        // step 5
+        // step 5 (diffrent to CAM02)
         var (rc, gc, bc) = (RgbC(ra), RgbC(ga), RgbC(ba));
         double RgbC(double input)
         {

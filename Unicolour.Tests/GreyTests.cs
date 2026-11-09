@@ -37,6 +37,12 @@ public class GreyTests
         { ColourSpace.Cam16Qch, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
         { ColourSpace.Cam16Qmh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
         { ColourSpace.Cam16Qsh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.HellwigJch, (chainedHued: [ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
+        { ColourSpace.HellwigJmh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
+        { ColourSpace.HellwigJsh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
+        { ColourSpace.HellwigQch, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
+        { ColourSpace.HellwigQmh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
+        { ColourSpace.HellwigQsh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.HellwigUcs) },
         { ColourSpace.Hct, (chainedHued: [], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
         { ColourSpace.Munsell, (chainedHued: [], upstreamUnhued: ColourSpace.Xyy, downstreamUnhued: null) }
     };
@@ -69,6 +75,12 @@ public class GreyTests
     [TestCase(ColourSpace.Cam16Qch, 0, 0, 180)]
     [TestCase(ColourSpace.Cam16Qmh, 0, 0, 180)]
     [TestCase(ColourSpace.Cam16Qsh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJch, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJmh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJsh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQch, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQmh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQsh, 0, 0, 180)]
     [TestCase(ColourSpace.Hct, 180, 0, 0)]
     [TestCase(ColourSpace.Munsell, 180, 0, 0)]
     public void WithHue(ColourSpace colourSpace, double first, double second, double third)

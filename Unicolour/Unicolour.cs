@@ -60,6 +60,14 @@ public partial class Unicolour : IEquatable<Unicolour>
     public Cam16.Qmh Cam16Qmh => Cam16.Qmh;
     public Cam16.Qsh Cam16Qsh => Cam16.Qsh;
     public Cam16.Ucs Cam16Ucs => field ??= EvaluateCam16Ucs();
+    public Hellwig.Cam Hellwig => field ??= EvaluateHellwig();
+    public Hellwig.Jch HellwigJch => Hellwig.Jch;
+    public Hellwig.Jmh HellwigJmh => Hellwig.Jmh;
+    public Hellwig.Jsh HellwigJsh => Hellwig.Jsh;
+    public Hellwig.Qch HellwigQch => Hellwig.Qch;
+    public Hellwig.Qmh HellwigQmh => Hellwig.Qmh;
+    public Hellwig.Qsh HellwigQsh => Hellwig.Qsh;
+    public Hellwig.Ucs HellwigUcs => field ??= EvaluateHellwigUcs();
     public Hct Hct => field ??= EvaluateHct();
     public Munsell Munsell => field ??= EvaluateMunsell();
     

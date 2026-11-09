@@ -531,6 +531,44 @@ public class AchromaticTests
     [TestCase(50.0, 0.0, -0.00000000001, false)]
     public void Cam16Ucs(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Ucs, j, a, b), expected);
     
+    private static readonly TestCaseData[] HellwigData =
+    [
+        new(50, 0.0, 180.0, false),
+        new(50, -0.00000000001, 180.0, false),
+        new(50, 0.00000000001, 180.0, false),
+        new(0.0, 60, 180.0, false), 
+        new(-0.00000000001, 60, 180.0, false),
+        new(0.00000000001, 60, 180.0, false),
+        new(100, 60, 180.0, false),
+        new(100.00000000001, 60, 180.0, false),
+        new(99.99999999999, 60, 180.0, false)
+    ];
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJch(double j, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJch, j, c, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJmh(double j, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJmh, j, m, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJsh(double j, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJsh, j, s, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQch(double q, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQch, q, c, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQmh(double q, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQmh, q, m, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQsh(double q, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQsh, q, s, h), expected);
+    
+    [TestCase(50.0, 0.0, 0.0, true)]
+    [TestCase(50.0, 0.00000000001, 0.0, false)]
+    [TestCase(50.0, -0.00000000001, 0.0, false)]
+    [TestCase(50.0, 0.0, 0.00000000001, false)]
+    [TestCase(50.0, 0.0, -0.00000000001, false)]
+    public void HellwigUcs(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.HellwigUcs, j, a, b), expected);
+    
     [TestCase(180.0, 0.0, 50, false)]
     [TestCase(180.0, -0.00000000001, 50, false)]
     [TestCase(180.0, 0.00000000001, 50, false)]
@@ -572,6 +610,7 @@ public class AchromaticTests
         ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, 
         ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh, ColourSpace.Cam02Ucs,
         ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh, ColourSpace.Cam16Ucs,
+        ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh, ColourSpace.HellwigUcs,
         ColourSpace.Hct
     ];
     

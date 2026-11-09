@@ -69,8 +69,8 @@ public class KnownCam16Tests
         var (x, y, z) = whitePoint;
         var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
         var xyz = new Xyz(x, y, z, whitePoint);
-        var cam16 = Cam16.Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View16, chromaticAdaptor);
-        var cam16Ucs = Ucs.FromCam16(cam16);
+        var cam16 = Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View16, chromaticAdaptor);
+        var cam16Ucs = Ucs.FromCam(cam16);
         
         AssertModel(cam16.Model.J, 100);
         AssertModel(cam16Ucs.J, 100);
@@ -98,62 +98,62 @@ public class KnownCam16Tests
     [Test]
     public void NegativeReflectJ()
     {
-        var positive = Cam16.Cam.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View16);
-        var negative = Cam16.Cam.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View16);
+        var positive = Cam.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View16);
+        var negative = Cam.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View16);
         Assert.That(positive, Is.EqualTo(-negative));
     }
     
     [Test]
     public void NegativeReflectC1()
     {
-        var positive = Cam16.Cam.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View16);
-        var negative = Cam16.Cam.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View16);
+        var positive = Cam.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View16);
+        var negative = Cam.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View16);
         Assert.That(negative, Is.EqualTo(-positive));
     }
     
     [Test]
     public void NegativeReflectQ()
     {
-        var positive = Cam16.Cam.NegativeReflectQ(j: 50, CamConfiguration.StandardRgb.View16);
-        var negative = Cam16.Cam.NegativeReflectQ(j: -50, CamConfiguration.StandardRgb.View16);
+        var positive = Cam.NegativeReflectQ(j: 50, CamConfiguration.StandardRgb.View16);
+        var negative = Cam.NegativeReflectQ(j: -50, CamConfiguration.StandardRgb.View16);
         Assert.That(positive, Is.EqualTo(-negative));
     }
     
     [Test]
     public void NegativeReflectC2()
     {
-        var positive = Cam16.Cam.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View16);
-        var negative = Cam16.Cam.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View16);
+        var positive = Cam.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View16);
+        var negative = Cam.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View16);
         Assert.That(negative, Is.EqualTo(-positive));
         
-        var doubleNegative = Cam16.Cam.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View16);
+        var doubleNegative = Cam.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View16);
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
     [Test]
     public void NegativeReflectM()
     {
-        var positive = Cam16.Cam.NegativeReflectM(c: 50, CamConfiguration.StandardRgb.View16);
-        var negative = Cam16.Cam.NegativeReflectM(c: -50, CamConfiguration.StandardRgb.View16);
+        var positive = Cam.NegativeReflectM(c: 50, CamConfiguration.StandardRgb.View16);
+        var negative = Cam.NegativeReflectM(c: -50, CamConfiguration.StandardRgb.View16);
         Assert.That(negative, Is.EqualTo(-positive));
     }
     
     [Test]
     public void NegativeReflectS()
     {
-        var positive = Cam16.Cam.NegativeReflectS(m: 50, q: 50);
-        var negative = Cam16.Cam.NegativeReflectS(m: 50, q: -50);
+        var positive = Cam.NegativeReflectS(m: 50, q: 50);
+        var negative = Cam.NegativeReflectS(m: 50, q: -50);
         Assert.That(negative, Is.EqualTo(-positive));
         
-        var doubleNegative = Cam16.Cam.NegativeReflectS(m: -50, q: -50);
+        var doubleNegative = Cam.NegativeReflectS(m: -50, q: -50);
         Assert.That(doubleNegative, Is.EqualTo(positive));
     }
     
     private static void AssertCam16(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs, string expectedHueComposition)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
-        var cam16 = Cam16.Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View16, chromaticAdaptor);
-        var cam16Ucs = Ucs.FromCam16(cam16);
+        var cam16 = Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View16, chromaticAdaptor);
+        var cam16Ucs = Ucs.FromCam(cam16);
         
         Assert.That(expectedModel.HueComposition, Is.EqualTo(expectedHueComposition));
         

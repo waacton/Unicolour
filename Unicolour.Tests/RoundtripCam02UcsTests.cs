@@ -16,8 +16,8 @@ public class RoundtripCam02UcsTests
     public void ViaCam02(ColourTriplet triplet)
     {
         var original = new Ucs(triplet.First, triplet.Second, triplet.Third);
-        var cam02 = Ucs.ToCam02(original, CamConfig.View02);
-        var roundtrip = Ucs.FromCam02(cam02);
+        var cam02 = Ucs.ToCam(original, CamConfig.View02);
+        var roundtrip = Ucs.FromCam(cam02);
         TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

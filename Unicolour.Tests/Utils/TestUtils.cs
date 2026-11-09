@@ -187,13 +187,35 @@ internal static class TestUtils
         {
             AccessProperty(() => colour.Alpha);
             AccessProperty(() => colour.Cam02);
+            AccessProperty(() => colour.Cam02Jch);
+            AccessProperty(() => colour.Cam02Jmh);
+            AccessProperty(() => colour.Cam02Jsh);
+            AccessProperty(() => colour.Cam02Qch);
+            AccessProperty(() => colour.Cam02Qmh);
+            AccessProperty(() => colour.Cam02Qsh);
+            AccessProperty(() => colour.Cam02Ucs);
             AccessProperty(() => colour.Cam16);
+            AccessProperty(() => colour.Cam16Jch);
+            AccessProperty(() => colour.Cam16Jmh);
+            AccessProperty(() => colour.Cam16Jsh);
+            AccessProperty(() => colour.Cam16Qch);
+            AccessProperty(() => colour.Cam16Qmh);
+            AccessProperty(() => colour.Cam16Qsh);
+            AccessProperty(() => colour.Cam16Ucs);
             AccessProperty(() => colour.Chromaticity);
             AccessProperty(() => colour.Configuration);
             AccessProperty(() => colour.Description);
             AccessProperty(() => colour.DominantWavelength);
             AccessProperty(() => colour.ExcitationPurity);
             AccessProperty(() => colour.Hct);
+            AccessProperty(() => colour.Hellwig);
+            AccessProperty(() => colour.HellwigJch);
+            AccessProperty(() => colour.HellwigJmh);
+            AccessProperty(() => colour.HellwigJsh);
+            AccessProperty(() => colour.HellwigQch);
+            AccessProperty(() => colour.HellwigQmh);
+            AccessProperty(() => colour.HellwigQsh);
+            AccessProperty(() => colour.HellwigUcs);
             AccessProperty(() => colour.Hex);
             AccessProperty(() => colour.Hpluv);
             AccessProperty(() => colour.Hsb);
@@ -224,7 +246,7 @@ internal static class TestUtils
             AccessProperty(() => colour.Okhwb);
             AccessProperty(() => colour.RelativeLuminance);
             AccessProperty(() => colour.Rgb);
-            AccessProperty(() => colour.Rgb.Byte255);
+            AccessProperty(() => colour.Rgb255);
             AccessProperty(() => colour.RgbLinear);
             AccessProperty(() => colour.Temperature);
             AccessProperty(() => colour.Tsl);
@@ -334,6 +356,13 @@ internal static class TestUtils
         { typeof(Cam16.Qmh), ColourSpace.Cam16Qmh },
         { typeof(Cam16.Qsh), ColourSpace.Cam16Qsh },
         { typeof(Cam16.Ucs), ColourSpace.Cam16Ucs },
+        { typeof(Hellwig.Jch), ColourSpace.HellwigJch },
+        { typeof(Hellwig.Jmh), ColourSpace.HellwigJmh },
+        { typeof(Hellwig.Jsh), ColourSpace.HellwigJsh },
+        { typeof(Hellwig.Qch), ColourSpace.HellwigQch },
+        { typeof(Hellwig.Qmh), ColourSpace.HellwigQmh },
+        { typeof(Hellwig.Qsh), ColourSpace.HellwigQsh },
+        { typeof(Hellwig.Ucs), ColourSpace.HellwigUcs },
         { typeof(Hct), ColourSpace.Hct },
         { typeof(Munsell), ColourSpace.Munsell }
     };

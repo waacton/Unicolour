@@ -117,6 +117,16 @@ public class RoundtripXyzTests
     }
     
     [TestCaseSource(nameof(Triplets))]
+    public void ViaHellwig(ColourTriplet triplet)
+    {
+        // Hellwig -> XYZ can produce NaNs due to a negative number to a fractional power in the conversion process
+        var original = new Xyz(triplet.First, triplet.Second, triplet.Third, XyzConfig.WhitePoint);
+        var hellwig = Hellwig.Cam.FromXyz(original, CamConfig.WhitePoint, CamConfig.ViewHellwig, XyzConfig.ChromaticAdaptor);
+        var roundtrip = Hellwig.Cam.ToXyz(hellwig, CamConfig.WhitePoint, XyzConfig.ChromaticAdaptor);
+        TestUtils.AssertTriplet(roundtrip, roundtrip.Limitation == Limitation.NaN ? new ColourTriplet(double.NaN, double.NaN, double.NaN) : original, Tolerance);
+    }
+    
+    [TestCaseSource(nameof(Triplets))]
     public void ViaHct(ColourTriplet triplet)
     {
         // HCT -> XYZ can produce NaNs due to a negative number to a fractional power in the CAM16 conversion process

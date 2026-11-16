@@ -275,7 +275,7 @@ public class ConfigureXyzTests
         }
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
-        var initialCamUcs = new Cam02.Ucs(62.86, 40.81, -1.18);
+        var initialCamUcs = new Cam02.Ucs(62.86, 40.81, -1.18); // JCH 49.89 93.24 358.4°
         var initialCam = Cam02.Ucs.ToCam(initialCamUcs, initialCamConfig.View02);
         var expectedXyz = Cam02.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
@@ -285,7 +285,7 @@ public class ConfigureXyzTests
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
     
-    [Test] // TODO: Hellwig variant
+    [Test]
     public void Cam16WhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
     {
         CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
@@ -294,13 +294,32 @@ public class ConfigureXyzTests
         }
         
         var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
-        var initialCamUcs = new Cam16.Ucs(62.47, 42.60, -1.36);
+        var initialCamUcs = new Cam16.Ucs(62.47, 42.60, -1.36); // JCH 49.47 99.65 358.2°
         var initialCam = Cam16.Ucs.ToCam(initialCamUcs, initialCamConfig.View16);
         var expectedXyz = Cam16.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         
         var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
         var cam = Cam16.Cam.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.View16, XyzConfiguration.D65.ChromaticAdaptor);
         var xyz = Cam16.Cam.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
+    }
+    
+    [Test]
+    public void HellwigWhitePointRoundTrip([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant camIlluminant)
+    {
+        CamConfiguration CamConfig(WhitePoint whitePoint, CamConfiguration baseConfig)
+        {
+            return new(whitePoint, baseConfig.AdaptingLuminance, baseConfig.BackgroundLuminance, baseConfig.Surround);
+        }
+        
+        var initialCamConfig = CamConfig(XyzConfiguration.D65.WhitePoint, CamConfiguration.StandardRgb);
+        var initialCamUcs = new Hellwig.Ucs(62.47, 30.51, -0.98); // JMH 49.47 44.10 358.2°
+        var initialCam = Hellwig.Ucs.ToCam(initialCamUcs, initialCamConfig.ViewHellwig);
+        var expectedXyz = Hellwig.Cam.ToXyz(initialCam, initialCamConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
+        
+        var camConfig = CamConfig(camIlluminant.GetWhitePoint(Observer.Degree2), CamConfiguration.StandardRgb);
+        var cam = Hellwig.Cam.FromXyz(expectedXyz, camConfig.WhitePoint, camConfig.ViewHellwig, XyzConfiguration.D65.ChromaticAdaptor);
+        var xyz = Hellwig.Cam.ToXyz(cam, camConfig.WhitePoint, XyzConfiguration.D65.ChromaticAdaptor);
         TestUtils.AssertTriplet(xyz, expectedXyz, 0.00000000001);
     }
 }

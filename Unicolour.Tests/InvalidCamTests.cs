@@ -25,4 +25,14 @@ public class InvalidCamTests
         var cam = new Hellwig.Cam(new Rgb(0.1, 0.2, 0.3), Configuration.Default.Cam.ViewHellwig);
         Assert.Throws<ArgumentOutOfRangeException>(() => _ = cam.Model);
     }
+    
+    [Test]
+    public void InvalidSurround()
+    {
+        const Surround badSurround = (Surround)int.MaxValue;
+        var camConfig = new CamConfiguration(RgbModels.StandardRgb.WhitePoint, 0, 0, badSurround);
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.F; });
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.C; });
+        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.Nc; });
+    }
 }

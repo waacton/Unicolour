@@ -7,7 +7,7 @@ var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent
 var black = new Unicolour("#000000");
 var white = new Unicolour("#FFFFFF");
 
-const int col1Width = 8;
+const int col1Width = 10;
 const int col2Width = 32;
 const int barLength = col1Width + 2 + col2Width + 2 + 3; // 2 per column padding, 3 for all borders
 

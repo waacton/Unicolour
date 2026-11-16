@@ -18,9 +18,9 @@ public record Ucs : ColourTriplet
     public override string ToString() => base.ToString();
     
     /*
-     * CAM-UCS is a transform of CAM 
-     * Forward: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
-     * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
+     * CAM16-UCS is a transform of CAM16
+     * Forward: https://doi.org/10.1002/col.22131 · https://doi.org/10.1002/col.20227
+     * Reverse: https://doi.org/10.1002/col.22131 · https://doi.org/10.1002/col.20227
      */
     
     internal static Ucs FromCam(Cam cam)

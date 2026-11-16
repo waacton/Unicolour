@@ -174,6 +174,13 @@ public class GreyTests
         new TestCaseData(new Cam16.Qmh(75), new Cam16.Qmh(75, 0, 0)).SetName(nameof(Cam16.Qmh)),
         new TestCaseData(new Cam16.Qsh(75), new Cam16.Qsh(75, 0, 0)).SetName(nameof(Cam16.Qsh)),
         new TestCaseData(new Cam16.Ucs(75), new Cam16.Ucs(75, 0, 0)).SetName(nameof(Cam16.Ucs)),
+        new TestCaseData(new Hellwig.Jch(75), new Hellwig.Jch(75, 0, 0)).SetName(nameof(Hellwig.Jch)),
+        new TestCaseData(new Hellwig.Jmh(75), new Hellwig.Jmh(75, 0, 0)).SetName(nameof(Hellwig.Jmh)),
+        new TestCaseData(new Hellwig.Jsh(75), new Hellwig.Jsh(75, 0, 0)).SetName(nameof(Hellwig.Jsh)),
+        new TestCaseData(new Hellwig.Qch(75), new Hellwig.Qch(75, 0, 0)).SetName(nameof(Hellwig.Qch)),
+        new TestCaseData(new Hellwig.Qmh(75), new Hellwig.Qmh(75, 0, 0)).SetName(nameof(Hellwig.Qmh)),
+        new TestCaseData(new Hellwig.Qsh(75), new Hellwig.Qsh(75, 0, 0)).SetName(nameof(Hellwig.Qsh)),
+        new TestCaseData(new Hellwig.Ucs(75), new Hellwig.Ucs(75, 0, 0)).SetName(nameof(Hellwig.Ucs)),
         new TestCaseData(new Hct(75), new Hct(0, 0, 75)).SetName(nameof(Hct)),
         new TestCaseData(new Munsell(7.5), new Munsell(0, 7.5, 0)).SetName(nameof(Munsell))
     ];

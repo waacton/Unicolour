@@ -18,9 +18,9 @@ public record Ucs : ColourTriplet
     public override string ToString() => base.ToString();
     
     /*
-     * CAM-UCS is a transform of CAM 
-     * Forward: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
-     * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227 · https://doi.org/10.48550/arXiv.1802.06067
+     * CAM02-UCS is a transform of CAM02
+     * Forward: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227
+     * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.1002/col.20227
      *
      * NOTE: if ever want to support CAM02-LCD & CAM02-SCD (Large / Small Colour Difference)
      * see Table 2.2 in "CIECAM02 and Its Recent Developments" (https://doi.org/10.1007/978-1-4419-6190-7_2)

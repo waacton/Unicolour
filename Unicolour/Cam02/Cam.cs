@@ -82,20 +82,12 @@ public record Cam
 
         return new Model(j, c, h, m, s, q, source.Limitation);
     }
-
-    internal static double NegativeReflectJ(double q, ViewingConditions view) => double.IsNaN(q) ? double.NaN : Math.Sign(q) * J(Math.Abs(q), view);
-    internal static double NegativeReflectC(double m, ViewingConditions view) => double.IsNaN(m) ? double.NaN : Math.Sign(m) * C(Math.Abs(m), view);
-    internal static double NegativeReflectQ(double j, ViewingConditions view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
-    internal static double NegativeReflectC(double s, double q, ViewingConditions view) => double.IsNaN(s) || double.IsNaN(q) ? double.NaN : Math.Sign(s) * Math.Sign(q) * C(Math.Abs(s), Math.Abs(q), view);
-    internal static double NegativeReflectS(double m, double q) => double.IsNaN(m) || double.IsNaN(q) ? double.NaN : Math.Sign(m) * Math.Sign(q) * S(Math.Abs(m), Math.Abs(q));
-    internal static double NegativeReflectM(double c, ViewingConditions view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
     
-    private static double J(double q, ViewingConditions view) => 6.25 * Math.Pow(view.C * q / ((view.Aw + 4) * Math.Pow(view.Fl, 0.25)), 2);
-    private static double C(double m, ViewingConditions view) => m / Math.Pow(view.Fl, 0.25);
-    private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
-    private static double C(double s, double q, ViewingConditions view) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
-    private static double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
-    private static double M(double c, ViewingConditions view) => c * Math.Pow(view.Fl, 0.25);
+    /*
+     * CAM02 is a transform of XYZ
+     * Forward: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.48550/arXiv.1802.06067
+     * Reverse: https://doi.org/10.1007/978-1-4419-6190-7_2 · https://doi.org/10.48550/arXiv.1802.06067
+     */
 
     internal static readonly Matrix MCAT02 = new(new[,]
     {
@@ -110,8 +102,8 @@ public record Cam
         { -0.22981, +1.18340, +0.04641 },
         { 0.00000, 0.00000, +1.00000 }
     });
-    
-    internal static readonly Matrix ForwardStep4 = new(new[,]
+
+    private static readonly Matrix ForwardStep4 = new(new[,]
     {
         { 2, 1, 1 / 20.0 },
         { 1, -12 / 11.0, 1 / 11.0 },
@@ -119,7 +111,7 @@ public record Cam
         { 1, 1, 21 / 20.0 }
     });
 
-    internal static readonly Matrix ReverseStep4 = new Matrix(new double[,]
+    private static readonly Matrix ReverseStep4 = new Matrix(new double[,]
     {
         { 460, 451, 288 },
         { 460, -891, -261 },
@@ -164,13 +156,13 @@ public record Cam
         var j = 100 * Math.Pow(achromatic / view.Aw, view.C * view.Z);
 
         // step 9
-        var q = 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+        var q = Q(j, view);
 
         // step 10
         var t = 50000 / 13.0 * view.Nc * view.Ncb * et * Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2)) / (u + 0.305);
         var alpha = Math.Pow(t, 0.9) * Math.Pow(1.64 - Math.Pow(0.29, view.N), 0.73);
         var c = alpha * Math.Sqrt(j / 100.0);
-        var m = c * Math.Pow(view.Fl, 0.25);
+        var m = M(c, view);
         var s = 50 * Math.Sqrt(alpha * view.C / (view.Aw + 4));
 
         return new Cam(new Model(j, c, h, m, s, q, xyz.Limitation), view);
@@ -226,6 +218,20 @@ public record Cam
         var xyz = new Xyz(xyzMatrix.ToTriplet(), whitePoint, cam.Jch.Limitation);
         return chromaticAdaptor.AdaptFrom(xyz);
     }
+    
+    internal static double NegativeReflectJ(double q, ViewingConditions view) => double.IsNaN(q) ? double.NaN : Math.Sign(q) * J(Math.Abs(q), view);
+    internal static double NegativeReflectC(double m, ViewingConditions view) => double.IsNaN(m) ? double.NaN : Math.Sign(m) * C(Math.Abs(m), view);
+    internal static double NegativeReflectQ(double j, ViewingConditions view) => double.IsNaN(j) ? double.NaN : Math.Sign(j) * Q(Math.Abs(j), view);
+    internal static double NegativeReflectC(double s, double q, ViewingConditions view) => double.IsNaN(s) || double.IsNaN(q) ? double.NaN : Math.Sign(s) * Math.Sign(q) * C(Math.Abs(s), Math.Abs(q), view);
+    internal static double NegativeReflectM(double c, ViewingConditions view) => double.IsNaN(c) ? double.NaN : Math.Sign(c) * M(Math.Abs(c), view);
+    internal static double NegativeReflectS(double m, double q) => double.IsNaN(m) || double.IsNaN(q) ? double.NaN : Math.Sign(m) * Math.Sign(q) * S(Math.Abs(m), Math.Abs(q));
+    
+    private static double J(double q, ViewingConditions view) => 6.25 * Math.Pow(view.C * q / ((view.Aw + 4) * Math.Pow(view.Fl, 0.25)), 2);
+    private static double C(double m, ViewingConditions view) => m / Math.Pow(view.Fl, 0.25);
+    private static double Q(double j, ViewingConditions view) => 4 / view.C * Math.Pow(j / 100.0, 0.5) * (view.Aw + 4) * Math.Pow(view.Fl, 0.25);
+    private static double C(double s, double q, ViewingConditions view) => Math.Pow(s / 100.0, 2) * (q / Math.Pow(view.Fl, 0.25));
+    private static double M(double c, ViewingConditions view) => c * Math.Pow(view.Fl, 0.25);
+    private static double S(double m, double q) => q == 0 ? 0 : 100 * Math.Pow(m / q, 0.5);
     
     // unlikely for the CAM wrapper to be tested for equivalence
     // but the lazy-loaded field-backed properties cause complexity for the record

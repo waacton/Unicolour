@@ -1,4 +1,3 @@
-using System;
 using NUnit.Framework;
 using Wacton.Unicolour.Tests.Utils;
 
@@ -21,7 +20,7 @@ public class ConfigureCamTests
         TestUtils.AssertTriplet(camUcs, expectedCamUcs, 0.00000000001);
     }
     
-    [Test] // TODO: Hellwig variant
+    [Test]
     public void XyzWhitePointRoundTripViaCam16([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
         var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
@@ -35,14 +34,19 @@ public class ConfigureCamTests
         var camUcs = Cam16.Ucs.FromCam(cam);
         TestUtils.AssertTriplet(camUcs, expectedCamUcs, 0.00000000001);
     }
-
+    
     [Test]
-    public void InvalidSurround()
+    public void XyzWhitePointRoundTripViaHellwig([ValueSource(typeof(TestUtils), nameof(TestUtils.AllIlluminants))] Illuminant xyzIlluminant)
     {
-        const Surround badSurround = (Surround)int.MaxValue;
-        var camConfig = new CamConfiguration(RgbModels.StandardRgb.WhitePoint, 0, 0, badSurround);
-        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.F; });
-        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.C; });
-        Assert.Throws<ArgumentOutOfRangeException>(() => { _ = camConfig.Nc; });
+        var initialXyzConfig = new XyzConfiguration(CamConfiguration.StandardRgb.WhitePoint);
+        var initialXyz = new Xyz(0.4676, 0.2387, 0.2974, initialXyzConfig.WhitePoint);
+        var expectedCam = Hellwig.Cam.FromXyz(initialXyz, CamConfiguration.StandardRgb.WhitePoint, CamConfiguration.StandardRgb.ViewHellwig, initialXyzConfig.ChromaticAdaptor);
+        var expectedCamUcs = Hellwig.Ucs.FromCam(expectedCam);
+
+        var xyzConfig = new XyzConfiguration(xyzIlluminant, Observer.Degree2);
+        var xyz = Hellwig.Cam.ToXyz(expectedCam, CamConfiguration.StandardRgb.WhitePoint, xyzConfig.ChromaticAdaptor);
+        var cam = Hellwig.Cam.FromXyz(xyz, CamConfiguration.StandardRgb.WhitePoint, CamConfiguration.StandardRgb.ViewHellwig, xyzConfig.ChromaticAdaptor);
+        var camUcs = Hellwig.Ucs.FromCam(cam);
+        TestUtils.AssertTriplet(camUcs, expectedCamUcs, 0.00000000001);
     }
 }

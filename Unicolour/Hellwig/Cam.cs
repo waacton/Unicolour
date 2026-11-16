@@ -95,7 +95,7 @@ public record Cam
     private static double Q(double j, ViewingConditions view) => 2 / view.C * (j / 100.0) * view.Aw;
     private static double M(double c, ViewingConditions view) => c * view.Aw / 35.0;
     private static double M(double s, double q) => s * q / 100.0;
-    private static double S(double m, double q) => q == 0 ? 0 : 100 * m / q;
+    private static double S(double m, double q) => q == 0 ? 0 : 100 * (m / q);
 
     internal static readonly Matrix M16 = new(new[,]
     {
@@ -162,7 +162,7 @@ public record Cam
         // step 9 (different to CAM16)
         var m = 43 * view.Nc * et * Math.Sqrt(Math.Pow(a, 2) + Math.Pow(b, 2));
         var c = 35 * (m / view.Aw);
-        var s = 100 * (m / q);
+        var s = q == 0 ? 0 : 100 * (m / q);
         return new Cam(new Model(j, c, h, m, s, q, xyz.Limitation), view);
     }
     
@@ -172,6 +172,14 @@ public record Cam
         
         // step 1
         var (j, m, h) = cam.Jmh;
+        var c = C(m, view); // calculate directly, avoids building full model
+        if (c < 0)
+        {
+            // unlike CAM16, negative chroma does not result in NaN
+            // but like CAM16 where negative chroma is handled by negative alpha reflection, it results in a nonsense roundtrip
+            // so this early exit maintains consistency with CAM02 and CAM16, and avoids trying to make sense of negative chroma
+            return new Xyz(double.NaN, double.NaN, double.NaN, whitePoint, cam.Jmh.Limitation);
+        }
         
         // step 2 (different to CAM16)
         var hRad = ToRadians(h);

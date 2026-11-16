@@ -10,7 +10,6 @@ public record ViewingConditions
     public double Dg { get; }
     public double Db { get; }
     public double Fl { get; }
-    public double N { get; }
     public double Z { get; }
     public double Aw { get; }
     
@@ -49,8 +48,7 @@ public record ViewingConditions
         Dr = dr;
         Dg = dg;
         Db = db;
-        Fl = fl;    
-        N = n;    
+        Fl = fl;
         Z = z;
         Aw = aw;
     }

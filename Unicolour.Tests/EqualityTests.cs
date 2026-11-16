@@ -216,6 +216,37 @@ public class EqualityTests
     }
     
     [Test]
+    public void HellwigVsSameRef()
+    {
+        var camA = new Hellwig.Cam(new Hellwig.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        var camB = camA;
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void HellwigVsSameVal()
+    {
+        var camA = new Hellwig.Cam(new Hellwig.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        var camB = new Hellwig.Cam(new Hellwig.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        AssertEqual(camA, camB);
+    }
+    
+    [Test]
+    public void HellwigVsDifferent()
+    {
+        var camA = new Hellwig.Cam(new Hellwig.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        var camB = new Hellwig.Cam(new Hellwig.Model(0.9, 0.8, 0.7, 0.6, 0.5, 0.4), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        AssertNotEqual(camA, camB);
+    }
+    
+    [Test]
+    public void HellwigVsNull()
+    {
+        var cam = new Hellwig.Cam(new Hellwig.Model(0.1, 0.2, 0.3, 0.4, 0.5, 0.6), TestUtils.DefaultFogra39Config.Cam.ViewHellwig);
+        Assert.That(cam.Equals(null), Is.False);
+    }
+    
+    [Test]
     public void IccChannelsVsSameRef()
     {
         var channels1 = new Channels(0.25, 0.5, 0.5, 0.75);
@@ -320,7 +351,7 @@ public class EqualityTests
     {
         AssertEqual(colour1.Alpha, colour2.Alpha);
         AssertEqual(colour1.Cam02, colour2.Cam02);
-        AssertEqual(colour1.Cam16Jch, colour2.Cam16Jch);
+        AssertEqual(colour1.Cam02Jch, colour2.Cam02Jch);
         AssertEqual(colour1.Cam02Jmh, colour2.Cam02Jmh);
         AssertEqual(colour1.Cam02Jsh, colour2.Cam02Jsh);
         AssertEqual(colour1.Cam02Qch, colour2.Cam02Qch);

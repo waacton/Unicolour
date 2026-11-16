@@ -171,6 +171,13 @@ public record Cam
         
         // step 1
         var (j, c, h) = cam.Jch;
+        if (c < 0)
+        {
+            // negative chroma will eventually result in NaN (due to t being negative to the power of non-integer)
+            // technically could avoid NaN by t = negative-reflection(f(alpha)) but results in a nonsense roundtrip
+            return new Xyz(double.NaN, double.NaN, double.NaN, whitePoint, cam.Jch.Limitation);
+        }
+        
         var alpha = j == 0 ? 0 : c / Math.Sqrt(j / 100.0);
         var t = Math.Pow(alpha / Math.Pow(1.64 - Math.Pow(0.29, view.N), 0.73), 1 / 0.9);
         
@@ -182,8 +189,7 @@ public record Cam
         var p2 = achromatic / view.Nbb;
         
         // step 3
-        var gamma = 23 * (p2 + 0.305) * t / 
-                    (23 * p1 + 11 * t * Math.Cos(hRad) + 108 * t * Math.Sin(hRad));
+        var gamma = 23 * (p2 + 0.305) * t / (23 * p1 + 11 * t * Math.Cos(hRad) + 108 * t * Math.Sin(hRad));
         var a = gamma * Math.Cos(hRad);
         var b = gamma * Math.Sin(hRad);
         

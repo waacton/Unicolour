@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Lms : ColourRepresentation
+public record Lms : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double L => First;
-    public double M => Second;
-    public double S => Third;
+    public double L => this[0];
+    public double M => this[1];
+    public double S => this[2];
     
-    protected override bool IsTripletAchromatic => L == M && M == S;
+    protected override bool HasAchromaticValues => L == M && M == S;
     
     public Lms(double l, double m, double s) : this(l, m, s, Limitation.None) {}
     public Lms(double grey) : this(grey, grey, grey, Limitation.Achromatic) {}

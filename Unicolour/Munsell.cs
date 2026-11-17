@@ -3,19 +3,15 @@ using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public partial record Munsell : ColourRepresentation
+public partial record Munsell : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double H => First;
-    public double V => Second;
-    public double C => Third;
-    
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    public double H => this[0];
+    public double V => this[1];
+    public double C => this[2];
     
     public Munsell(double h1, string h2, double v, double c) : this(FromMunsell(h1, h2), v, c) {}
     public Munsell(double v) : this(0, v, 0, Limitation.Achromatic) {}
-    internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, limitation) {}
+    internal Munsell(double h, double v, double c, Limitation limitation = Limitation.None) : base(h, v, c, 0, limitation) {}
 
     public (double number, string letter) HueNotation => ToMunsell(H);
     protected override string String => Limitation != Limitation.Achromatic ? $"{HueNotation.number:0.##}{HueNotation.letter} {V:0.##}/{C:0.##}" : $"N {V:0.##}/";
@@ -239,8 +235,8 @@ public partial record Munsell : ColourRepresentation
         var unwrappedH = Unwrap(lowerH, h);
         var hueDistance = Math.Abs(unwrappedH.start - unwrappedH.end) / DegreesPerHueNumber;
         
-        var lowerChromaticity = Node.Lookup(lowerH, nodeV, nodeC);
-        var upperChromaticity = Node.Lookup(upperH, nodeV, nodeC);
+        var lowerChromaticity = Node.LookupChromaticity(lowerH, nodeV, nodeC);
+        var upperChromaticity = Node.LookupChromaticity(upperH, nodeV, nodeC);
         
         // extension to algorithm to handle edge cases
         // and allow extrapolation in cases where only one of the hues has chroma data

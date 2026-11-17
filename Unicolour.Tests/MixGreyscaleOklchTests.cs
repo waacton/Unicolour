@@ -22,10 +22,10 @@ public class MixGreyscaleOklchTests
         var fromOklchWhite = oklchWhite.Mix(green, ColourSpace.Oklch, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromOklabBlack.Oklch.Triplet, new(0.25, 0.25, 120));
-        AssertTriplet(fromOklabWhite.Oklch.Triplet, new(0.75, 0.25, 120));
-        AssertTriplet(fromOklchBlack.Oklch.Triplet, new(0.25, 0.5, 150));
-        AssertTriplet(fromOklchWhite.Oklch.Triplet, new(0.75, 0.5, 150));
+        AssertTriplet(fromOklabBlack.Oklch, new(0.25, 0.25, 120));
+        AssertTriplet(fromOklabWhite.Oklch, new(0.75, 0.25, 120));
+        AssertTriplet(fromOklchBlack.Oklch, new(0.25, 0.5, 150));
+        AssertTriplet(fromOklchWhite.Oklch, new(0.75, 0.5, 150));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleOklchTests
         var toOklchWhite = blue.Mix(oklchWhite, ColourSpace.Oklch, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toOklabBlack.Oklch.Triplet, new(0.25, 0.25, 240));
-        AssertTriplet(toOklabWhite.Oklch.Triplet, new(0.75, 0.25, 240));
-        AssertTriplet(toOklchBlack.Oklch.Triplet, new(0.25, 0.5, 210));
-        AssertTriplet(toOklchWhite.Oklch.Triplet, new(0.75, 0.5, 210));
+        AssertTriplet(toOklabBlack.Oklch, new(0.25, 0.25, 240));
+        AssertTriplet(toOklabWhite.Oklch, new(0.75, 0.25, 240));
+        AssertTriplet(toOklchBlack.Oklch, new(0.25, 0.5, 210));
+        AssertTriplet(toOklchWhite.Oklch, new(0.75, 0.5, 210));
     }
     
     [Test]
@@ -60,14 +60,14 @@ public class MixGreyscaleOklchTests
         var blackToGrey = black.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklab, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklab, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklab, new(0.75, 0, 0));
         
         // colours created from Oklab therefore hue does not change
-        AssertTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklch, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklch, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklch, new(0.75, 0, 0));
     }
     
     [Test]
@@ -81,14 +81,14 @@ public class MixGreyscaleOklchTests
         var blackToGrey = black.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Oklch, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Oklab.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Oklab.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Oklab.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Oklab, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Oklab, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Oklab, new(0.75, 0, 0));
         
         // colours created from Oklch therefore hue changes
-        AssertTriplet(blackToWhite.Oklch.Triplet, new(0.5, 0, 330));
-        AssertTriplet(blackToGrey.Oklch.Triplet, new(0.25, 0, 50));
-        AssertTriplet(whiteToGrey.Oklch.Triplet, new(0.75, 0, 20));
+        AssertTriplet(blackToWhite.Oklch, new(0.5, 0, 330));
+        AssertTriplet(blackToGrey.Oklch, new(0.25, 0, 50));
+        AssertTriplet(whiteToGrey.Oklch, new(0.75, 0, 20));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

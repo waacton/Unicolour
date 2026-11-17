@@ -21,11 +21,11 @@ public class RoundtripTslTests
         var negativeChroma = original.S < 0;
         if (negativeChroma)
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(0, 0, original.L, HueIndex: 0), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Tsl(0, 0, original.L), Tolerance);
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

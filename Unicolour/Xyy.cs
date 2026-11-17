@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Xyy : ColourRepresentation
+public record Xyy : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public Chromaticity Chromaticity => new(First, Second);
-    public double Luminance => Third;
+    public Chromaticity Chromaticity => new(this[0], this[1]);
+    public double Luminance => this[2];
     
     internal WhitePoint WhitePoint { get; }
-    protected override bool IsTripletAchromatic => Chromaticity == WhitePoint.Chromaticity;
+    protected override bool HasAchromaticValues => Chromaticity == WhitePoint.Chromaticity;
 
     public Xyy(double x, double y, double luminance, WhitePoint whitePoint) : this(x, y, luminance, whitePoint, Limitation.None) {}
     public Xyy(double luminance, WhitePoint whitePoint) : this(whitePoint.Chromaticity.X, whitePoint.Chromaticity.Y, luminance, whitePoint, Limitation.Achromatic) {}
@@ -52,7 +51,7 @@ public record Xyy : ColourRepresentation
     
     // this is separated out to allow Xyy -> Xyz conversion without white point context
     // only intended for use to define actual white points (which themselves are the context!)
-    internal static (double x, double y, double z) ToXyz(Chromaticity chromaticity, double luminance)
+    internal static ColourTriplet ToXyz(Chromaticity chromaticity, double luminance)
     {
         // X and Z become a vertical asymptote when chromaticity.Y == 0, so neither positive or negative infinity are suitable
         // implementations typically fall back to (0, 0, 0) black but that seems misleading
@@ -60,13 +59,13 @@ public record Xyy : ColourRepresentation
         var useFallback = chromaticity.Y == 0.0;
         if (useFallback)
         {
-            return (double.NaN, luminance, double.NaN);
+            return new(double.NaN, luminance, double.NaN);
         }
         
         var factor = luminance / chromaticity.Y;
         var x = factor * chromaticity.X;
         var y = luminance;
         var z = factor * (1 - chromaticity.X - chromaticity.Y);
-        return (x, y, z);
+        return new(x, y, z);
     }
 }

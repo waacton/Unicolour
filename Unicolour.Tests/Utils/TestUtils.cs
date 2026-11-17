@@ -92,10 +92,25 @@ internal static class TestUtils
     
     internal static Limitation[] Limitations(Unicolour colour, ColourSpace[] colourSpaces, bool baselines)
     {
-        var colourRepresentations = colourSpaces.Select(colour.GetRepresentation);
-        return baselines
-            ? colourRepresentations.Select(x => x.LimitationBaseline).ToArray()
-            : colourRepresentations.Select(x => x.Limitation).ToArray();
+        var colourBases = colourSpaces.Select(ColourBase (x) => colour.GetTriplet(x)).ToList();
+        
+        // CAM spaces often go convert via the model, which also propagates limitation
+        if (colourSpaces.ContainsAny([ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh]))
+        {
+            colourBases.Add(colour.Cam02.Model);
+        }
+        
+        if (colourSpaces.ContainsAny([ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh]))
+        {
+            colourBases.Add(colour.Cam16.Model);
+        }
+        
+        if (colourSpaces.ContainsAny([ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh]))
+        {
+            colourBases.Add(colour.Hellwig.Model);
+        }
+        
+        return colourBases.Select(x => baselines ? x.LimitationBaseline : x.Limitation).ToArray();
     }
         
     internal const double MixTolerance = 0.00000000005;
@@ -105,16 +120,16 @@ internal static class TestUtils
         actual = actual.WithHueModulo();
         expected = expected.WithHueModulo();
 
-        var diffs = actual.ToArray().Zip(expected.ToArray(), (a, b) => Math.Abs(a - b));
+        var diffs = actual.Values.Zip(expected.Values, (a, b) => Math.Abs(a - b));
         return diffs.Max();
     }
     
-    internal static void AssertColour<T>(Unicolour colour, T expected, double tolerance) where T : ColourRepresentation
+    internal static void AssertColour<T>(Unicolour colour, T expected, double tolerance) where T : ColourTriplet
     {
-        var colourSpace = RepresentationTypeToColourSpace[typeof(T)];
-        var colourRepresentation = colour.GetRepresentation(colourSpace);
-        var tolerances = GetTolerances(tolerance, colourRepresentation.HueIndex);
-        AssertTriplet(colourRepresentation.Triplet, expected.Triplet, tolerances);
+        var colourSpace = TripletTypeToColourSpace[typeof(T)];
+        var colourTriplet = colour.GetTriplet(colourSpace);
+        var tolerances = GetTolerances(tolerance, colourTriplet.HueIndex);
+        AssertTriplet(colourTriplet, expected, tolerances);
     }
 
     internal static void AssertTriplet(ColourTriplet actual, ColourTriplet expected, double tolerance, string? info = null)
@@ -177,13 +192,34 @@ internal static class TestUtils
         {
             AccessProperty(() => colour.Alpha);
             AccessProperty(() => colour.Cam02);
+            AccessProperty(() => colour.Cam02Jch);
+            AccessProperty(() => colour.Cam02Jmh);
+            AccessProperty(() => colour.Cam02Jsh);
+            AccessProperty(() => colour.Cam02Qch);
+            AccessProperty(() => colour.Cam02Qmh);
+            AccessProperty(() => colour.Cam02Qsh);
+            AccessProperty(() => colour.Cam02Ucs);
             AccessProperty(() => colour.Cam16);
+            AccessProperty(() => colour.Cam16Jch);
+            AccessProperty(() => colour.Cam16Jmh);
+            AccessProperty(() => colour.Cam16Jsh);
+            AccessProperty(() => colour.Cam16Qch);
+            AccessProperty(() => colour.Cam16Qmh);
+            AccessProperty(() => colour.Cam16Qsh);
+            AccessProperty(() => colour.Cam16Ucs);
             AccessProperty(() => colour.Chromaticity);
             AccessProperty(() => colour.Configuration);
             AccessProperty(() => colour.Description);
             AccessProperty(() => colour.DominantWavelength);
             AccessProperty(() => colour.ExcitationPurity);
             AccessProperty(() => colour.Hct);
+            AccessProperty(() => colour.Hellwig);
+            AccessProperty(() => colour.HellwigJch);
+            AccessProperty(() => colour.HellwigJmh);
+            AccessProperty(() => colour.HellwigJsh);
+            AccessProperty(() => colour.HellwigQch);
+            AccessProperty(() => colour.HellwigQmh);
+            AccessProperty(() => colour.HellwigQsh);
             AccessProperty(() => colour.Hex);
             AccessProperty(() => colour.Hpluv);
             AccessProperty(() => colour.Hsb);
@@ -214,7 +250,7 @@ internal static class TestUtils
             AccessProperty(() => colour.Okhwb);
             AccessProperty(() => colour.RelativeLuminance);
             AccessProperty(() => colour.Rgb);
-            AccessProperty(() => colour.Rgb.Byte255);
+            AccessProperty(() => colour.Rgb255);
             AccessProperty(() => colour.RgbLinear);
             AccessProperty(() => colour.Temperature);
             AccessProperty(() => colour.Tsl);
@@ -251,7 +287,7 @@ internal static class TestUtils
         Assert.That(object1.ToString(), Is.EqualTo(object2.ToString()));
     }
 
-    internal static void AssertNotEqual<T>(T object1, T object2)
+    internal static void AssertNotEqual<T>(T object1, T object2, bool expectDifferentString = true)
     {
         if (object1 == null || object2 == null)
         {
@@ -261,11 +297,18 @@ internal static class TestUtils
         
         Assert.That(object1, Is.Not.EqualTo(object2));
         Assert.That(object1.Equals(object2), Is.False);
+
+        // it is reasonable for 2 objects to be different types but have the same hash code and string representation
+        // e.g. Rgb(0, 0, 0) and RgbLinear(0, 0, 0) - not equal but same hash code (1252698706) and string ("0.00 0.00 0.00")
+        // (this is allowed; equal objects must have equal hash codes, but unequal objects are not required to have different hash codes)
+        // if it becomes an issue, somehow affecting performance, can consider using incorporating EqualityContract.GetHashCode()
+        // but it's likely that trying to enforce uniqueness would be more costly than the extra Equals() calls triggered by hash collisions
+        if (!expectDifferentString) return;
         Assert.That(object1.GetHashCode(), Is.Not.EqualTo(object2.GetHashCode()));
         Assert.That(object1.ToString(), Is.Not.EqualTo(object2.ToString()));
     }
     
-    private static readonly Dictionary<Type, ColourSpace> RepresentationTypeToColourSpace = new()
+    private static readonly Dictionary<Type, ColourSpace> TripletTypeToColourSpace = new()
     {
         { typeof(Rgb), ColourSpace.Rgb },
         { typeof(Rgb255), ColourSpace.Rgb255 },
@@ -303,8 +346,26 @@ internal static class TestUtils
         { typeof(Okhwb), ColourSpace.Okhwb },
         { typeof(Oklrab), ColourSpace.Oklrab },
         { typeof(Oklrch), ColourSpace.Oklrch },
-        { typeof(Cam02), ColourSpace.Cam02 },
-        { typeof(Cam16), ColourSpace.Cam16 },
+        { typeof(Cam02.Jch), ColourSpace.Cam02Jch },
+        { typeof(Cam02.Jmh), ColourSpace.Cam02Jmh },
+        { typeof(Cam02.Jsh), ColourSpace.Cam02Jsh },
+        { typeof(Cam02.Qch), ColourSpace.Cam02Qch },
+        { typeof(Cam02.Qmh), ColourSpace.Cam02Qmh },
+        { typeof(Cam02.Qsh), ColourSpace.Cam02Qsh },
+        { typeof(Cam02.Ucs), ColourSpace.Cam02Ucs },
+        { typeof(Cam16.Jch), ColourSpace.Cam16Jch },
+        { typeof(Cam16.Jmh), ColourSpace.Cam16Jmh },
+        { typeof(Cam16.Jsh), ColourSpace.Cam16Jsh },
+        { typeof(Cam16.Qch), ColourSpace.Cam16Qch },
+        { typeof(Cam16.Qmh), ColourSpace.Cam16Qmh },
+        { typeof(Cam16.Qsh), ColourSpace.Cam16Qsh },
+        { typeof(Cam16.Ucs), ColourSpace.Cam16Ucs },
+        { typeof(Hellwig.Jch), ColourSpace.HellwigJch },
+        { typeof(Hellwig.Jmh), ColourSpace.HellwigJmh },
+        { typeof(Hellwig.Jsh), ColourSpace.HellwigJsh },
+        { typeof(Hellwig.Qch), ColourSpace.HellwigQch },
+        { typeof(Hellwig.Qmh), ColourSpace.HellwigQmh },
+        { typeof(Hellwig.Qsh), ColourSpace.HellwigQsh },
         { typeof(Hct), ColourSpace.Hct },
         { typeof(Munsell), ColourSpace.Munsell }
     };

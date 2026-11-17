@@ -16,6 +16,6 @@ public class RoundtripYcgcoTests
         var original = new Ycgco(triplet.First, triplet.Second, triplet.Third);
         var rgb = Ycgco.ToRgb(original);
         var roundtrip = Ycgco.FromRgb(rgb);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

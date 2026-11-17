@@ -17,6 +17,6 @@ public class RoundtripLmsTests
         var original = new Lms(triplet.First, triplet.Second, triplet.Third);
         var xyz = Lms.ToXyz(original, XyzConfig.ChromaticAdaptor);
         var roundtrip = Lms.FromXyz(xyz, XyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

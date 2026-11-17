@@ -60,7 +60,7 @@ public class GamutMapChromaReductionTests
         var gamutMapped = original.MapToRgbGamut();
         Assert.That(original.IsInRgbGamut, Is.True);
         Assert.That(gamutMapped.IsInRgbGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Triplet, Tolerance);
+        TestUtils.AssertTriplet(gamutMapped.Rgb, original.Rgb, Tolerance);
     }
     
     [TestCase]
@@ -81,7 +81,7 @@ public class GamutMapChromaReductionTests
         var original = new Unicolour(ColourSpace.Oklch, 0.5, -0.5, 180);
         var gamutMapped = original.MapToRgbGamut();
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Clipped.Triplet, Tolerance);
+        TestUtils.AssertTriplet(gamutMapped.Rgb, original.Rgb.Clipped, Tolerance);
     }
 
     [TestCase(double.PositiveInfinity)]
@@ -98,7 +98,7 @@ public class GamutMapChromaReductionTests
         var original = new Unicolour(ColourSpace.Oklch, 0.5, 0.1, -180);
         var gamutMapped = original.MapToRgbGamut();
         Assert.That(gamutMapped.Rgb.IsInGamut, Is.True);
-        TestUtils.AssertTriplet(gamutMapped.Rgb.Triplet, original.Rgb.Clipped.Triplet, 0.0001);
+        TestUtils.AssertTriplet(gamutMapped.Rgb, original.Rgb.Clipped, 0.0001);
     }
     
     /* search result that is in gamut before being clipped is hard to come by */

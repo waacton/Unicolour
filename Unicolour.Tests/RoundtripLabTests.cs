@@ -17,7 +17,7 @@ public class RoundtripLabTests
         var original = new Lab(triplet.First, triplet.Second, triplet.Third);
         var xyz = Lab.ToXyz(original, XyzConfig.WhitePoint);
         var roundtrip = Lab.FromXyz(xyz);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
     
     [TestCaseSource(nameof(Triplets))]
@@ -26,6 +26,6 @@ public class RoundtripLabTests
         var original = new Lab(triplet.First, triplet.Second, triplet.Third);
         var lchab = Lchab.FromLab(original);
         var roundtrip = Lchab.ToLab(lchab);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

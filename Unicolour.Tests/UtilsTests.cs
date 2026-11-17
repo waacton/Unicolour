@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 using static Wacton.Unicolour.Utils;
 
@@ -171,5 +172,16 @@ public class UtilsTests
         Assert.That(radius, Is.EqualTo(distance));
         Assert.That(radius, Is.EqualTo(expectedRadius).Within(0.0000000000001));
         Assert.That(angle, Is.EqualTo(expectedAngle));
+    }
+
+    [Test]
+    public void ArrayCopy()
+    {
+        double[] original = [0.1, 0.2, 0.3];
+        var copy = Copy(original);
+        Assert.That(copy.SequenceEqual(original), Is.True);
+        
+        original[0] = 0.9;
+        Assert.That(copy.SequenceEqual(original), Is.False);
     }
 }

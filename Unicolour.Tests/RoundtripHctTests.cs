@@ -24,7 +24,7 @@ public class RoundtripHctTests
         if (!xyz.HctToXyzSearchResult!.Converged)
         {
             Assert.That(original.C < 0 || original.C > 88 || original.T < 12, Is.True);
-            TestUtils.AssertTriplet(roundtrip.Triplet, new(double.NaN, double.NaN, double.NaN), Tolerance);
+            TestUtils.AssertTriplet(roundtrip, new Hct(double.NaN, double.NaN, double.NaN), Tolerance);
             return;
         }
     
@@ -33,13 +33,13 @@ public class RoundtripHctTests
         // which presents as at least a NaN CAM16.Model.C, while LAB.L is calculated correctly 
         if (roundtrip.Limitation == Limitation.NaN)
         {
-            var cam16 = Hct.Cam16Component(xyz);
-            var lab = Hct.LabComponent(xyz);
+            var cam16 = Hct.GetCam16(xyz);
+            var lab = Lab.FromXyz(xyz);
             Assert.That(cam16.Model.C, Is.NaN);
             Assert.That(lab.L, Is.NaN.Or.EqualTo(original.T).Within(Tolerance));
             return;
         }
     
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

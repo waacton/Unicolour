@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
-using static Wacton.Unicolour.Cam;
+using Wacton.Unicolour.Cam02;
+using Wacton.Unicolour.Tests.Utils;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -17,17 +18,17 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 200, 18, Surround.Average);
 
         var expectedModel = new Model(
-            J: 48.0314,
-            C: 38.7789,
-            H: 191.0452,
-            M: 38.7789,
-            S: 46.0177,
-            Q: 183.1240);
+            j: 48.0314,
+            c: 38.7789,
+            h: 191.0452,
+            m: 38.7789,
+            s: 46.0177,
+            q: 183.1240);
         
         var expectedUcs = new Ucs(
-            J: 61.1077,
-            A: -27.2696,
-            B: -5.3230);
+            j: 61.1077,
+            a: -27.2696,
+            b: -5.3230);
 
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
@@ -40,17 +41,17 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 20, 18, Surround.Average);
         
         var expectedModel = new Model(
-            J: 47.6856,
-            C: 36.0527,
-            H: 185.3445,
-            M: 29.7580,
-            S: 51.1275,
-            Q: 113.8401);
+            j: 47.6856,
+            c: 36.0527,
+            h: 185.3445,
+            m: 29.7580,
+            s: 51.1275,
+            q: 113.8401);
         
         var expectedUcs = new Ucs(
-            J: 60.7779,
-            A: -22.6157,
-            B: -2.1157);
+            j: 60.7779,
+            a: -22.6157,
+            b: -2.1157);
 
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
@@ -63,17 +64,17 @@ public class KnownCam02Tests
         var camConfig = new CamConfiguration(whitePoint, 318.31, 20, Surround.Average);
 
         var expectedModel = new Model(
-            J: 34.434525727858997,
-            C: 67.365010921125943,
-            H: 22.279164147957065,
-            M: 70.024939419291414,
-            S: 62.81485585332716,
-            Q: 177.47124941102123);
+            j: 34.434525727858997,
+            c: 67.365010921125943,
+            h: 22.279164147957065,
+            m: 70.024939419291414,
+            s: 62.81485585332716,
+            q: 177.47124941102123);
         
         var expectedUcs = new Ucs(
-            J: 47.16899898,
-            A: 38.72623785,
-            B: 15.8663383);
+            j: 47.16899898,
+            a: 38.72623785,
+            b: 15.8663383);
 
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
@@ -92,11 +93,11 @@ public class KnownCam02Tests
         var (x, y, z) = whitePoint;
         var chromaticAdaptor = new ChromaticAdaptor(whitePoint, ChromaticAdaptation.Bradford);
         var xyz = new Xyz(x, y, z, whitePoint);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
+        var cam02 = Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Ucs.FromCam(cam02);
         
-        AssertModelDouble(cam02.Model.J, 100);
-        AssertModelDouble(cam02.Ucs.J, 100);
-        AssertModelDouble(cam02.J, 100);
+        AssertModel(cam02.Model.J, 100);
+        AssertModel(cam02Ucs.J, 100);
     }
     
     // when XYZ input is all zero, i.e. fully black
@@ -116,49 +117,98 @@ public class KnownCam02Tests
         AssertCam02(xyz, camConfig, expectedModel, expectedUcs);
     }
     
+    [Test]
+    public void NegativeReflectJ()
+    {
+        var positive = Cam.NegativeReflectJ(q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam.NegativeReflectJ(q: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(positive, Is.EqualTo(-negative));
+    }
+    
+    [Test]
+    public void NegativeReflectC1()
+    {
+        var positive = Cam.NegativeReflectC(m: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam.NegativeReflectC(m: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(negative, Is.EqualTo(-positive));
+    }
+
+    [Test]
+    public void NegativeReflectQ()
+    {
+        var positive = Cam.NegativeReflectQ(j: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam.NegativeReflectQ(j: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(positive, Is.EqualTo(-negative));
+    }
+    
+    [Test]
+    public void NegativeReflectC2()
+    {
+        var positive = Cam.NegativeReflectC(s: 50, q: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam.NegativeReflectC(s: -50, q: 50, CamConfiguration.StandardRgb.View02);
+        Assert.That(negative, Is.EqualTo(-positive));
+        
+        var doubleNegative = Cam.NegativeReflectC(s: -50, q: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(doubleNegative, Is.EqualTo(positive));
+    }
+    
+    [Test]
+    public void NegativeReflectM()
+    {
+        var positive = Cam.NegativeReflectM(c: 50, CamConfiguration.StandardRgb.View02);
+        var negative = Cam.NegativeReflectM(c: -50, CamConfiguration.StandardRgb.View02);
+        Assert.That(negative, Is.EqualTo(-positive));
+    }
+    
+    [Test]
+    public void NegativeReflectS()
+    {
+        var positive = Cam.NegativeReflectS(m: 50, q: 50);
+        var negative = Cam.NegativeReflectS(m: 50, q: -50);
+        Assert.That(negative, Is.EqualTo(-positive));
+        
+        var doubleNegative = Cam.NegativeReflectS(m: -50, q: -50);
+        Assert.That(doubleNegative, Is.EqualTo(positive));
+    }
+    
     private static void AssertCam02(Xyz xyz, CamConfiguration camConfig, Model expectedModel, Ucs expectedUcs)
     {
         var chromaticAdaptor = new ChromaticAdaptor(xyz.WhitePoint, ChromaticAdaptation.Bradford);
-        var cam02 = Cam02.FromXyz(xyz, camConfig, chromaticAdaptor);
-        AssertModel(cam02.Model, expectedModel);
-        AssertUcs(cam02, expectedUcs);
+        var cam02 = Cam.FromXyz(xyz, camConfig.WhitePoint, camConfig.View02, chromaticAdaptor);
+        var cam02Ucs = Ucs.FromCam(cam02);
+        
+        AssertModel(cam02.Model.Lightness, expectedModel.Lightness);
+        AssertModel(cam02.Model.Chroma, expectedModel.Chroma);
+        AssertModel(cam02.Model.HueAngle, expectedModel.HueAngle);
+        AssertModel(cam02.Model.Colourfulness, expectedModel.Colourfulness);
+        AssertModel(cam02.Model.Saturation, expectedModel.Saturation);
+        AssertModel(cam02.Model.Brightness, expectedModel.Brightness);
+        Assert.That(cam02.Model.HueComposition, Is.EqualTo(expectedModel.HueComposition));
+        
+        AssertModel(cam02.Model.J, expectedModel.Lightness);
+        AssertModel(cam02.Model.C, expectedModel.Chroma);
+        AssertModel(cam02.Model.H, expectedModel.HueAngle);
+        AssertModel(cam02.Model.M, expectedModel.Colourfulness);
+        AssertModel(cam02.Model.S, expectedModel.Saturation);
+        AssertModel(cam02.Model.Q, expectedModel.Brightness);
+        Assert.That(cam02.Model.Hc, Is.EqualTo(expectedModel.HueComposition));
+
+        AssertModel(cam02.Model.Lightness, expectedModel.J);
+        AssertModel(cam02.Model.Chroma, expectedModel.C);
+        AssertModel(cam02.Model.HueAngle, expectedModel.H);
+        AssertModel(cam02.Model.Colourfulness, expectedModel.M);
+        AssertModel(cam02.Model.Saturation, expectedModel.S);
+        AssertModel(cam02.Model.Brightness, expectedModel.Q);
+        Assert.That(cam02.Model.HueComposition, Is.EqualTo(expectedModel.Hc));
+        
+        TestUtils.AssertTriplet(cam02.Jch, new Jch(expectedModel.J, expectedModel.C, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Jmh, new Jmh(expectedModel.J, expectedModel.M, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Jsh, new Jsh(expectedModel.J, expectedModel.S, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qch, new Qch(expectedModel.Q, expectedModel.C, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qmh, new Qmh(expectedModel.Q, expectedModel.M, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02.Qsh, new Qsh(expectedModel.Q, expectedModel.S, expectedModel.H), ModelTolerance);
+        TestUtils.AssertTriplet(cam02Ucs, expectedUcs, UcsTolerance);
     }
     
-    private static void AssertModel(Model actual, Model expected)
-    {
-        AssertModelDouble(actual.Lightness, expected.Lightness);
-        AssertModelDouble(actual.Chroma, expected.Chroma);
-        AssertModelDouble(actual.HueAngle, expected.HueAngle);
-        AssertModelDouble(actual.Colourfulness, expected.Colourfulness);
-        AssertModelDouble(actual.Saturation, expected.Saturation);
-        AssertModelDouble(actual.Brightness, expected.Brightness);
-        
-        AssertModelDouble(actual.J, expected.Lightness);
-        AssertModelDouble(actual.C, expected.Chroma);
-        AssertModelDouble(actual.H, expected.HueAngle);
-        AssertModelDouble(actual.M, expected.Colourfulness);
-        AssertModelDouble(actual.S, expected.Saturation);
-        AssertModelDouble(actual.Q, expected.Brightness);
-
-        AssertModelDouble(actual.Lightness, expected.J);
-        AssertModelDouble(actual.Chroma, expected.C);
-        AssertModelDouble(actual.HueAngle, expected.H);
-        AssertModelDouble(actual.Colourfulness, expected.M);
-        AssertModelDouble(actual.Saturation, expected.S);
-        AssertModelDouble(actual.Brightness, expected.Q);
-    }
-    
-    private static void AssertUcs(Cam02 actual, Ucs expected)
-    {
-        AssertUcsDouble(actual.Ucs.J, expected.J);
-        AssertUcsDouble(actual.Ucs.A, expected.A);
-        AssertUcsDouble(actual.Ucs.B, expected.B);
-        
-        AssertUcsDouble(actual.J, expected.J);
-        AssertUcsDouble(actual.A, expected.A);
-        AssertUcsDouble(actual.B, expected.B);
-    }
-
-    private static void AssertModelDouble(double actual, double expected) => Assert.That(actual, Is.EqualTo(expected).Within(ModelTolerance));
-    private static void AssertUcsDouble(double actual, double expected) => Assert.That(actual, Is.EqualTo(expected).Within(UcsTolerance));
+    private static void AssertModel(double actual, double expected) => Assert.That(actual, Is.EqualTo(expected).Within(ModelTolerance));
 }

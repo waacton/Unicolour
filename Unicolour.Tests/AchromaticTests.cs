@@ -455,19 +455,112 @@ public class AchromaticTests
     [TestCase(0.99999999999, 0.25, 180.0, false)]
     public void Oklrch(double l, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Oklrch, l, c, h), expected);
     
-    [TestCase(50.0, 0.0, 0.0, true)]
-    [TestCase(50.0, 0.00000000001, 0.0, false)]
-    [TestCase(50.0, -0.00000000001, 0.0, false)]
-    [TestCase(50.0, 0.0, 0.00000000001, false)]
-    [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam02(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02, j, a, b), expected);
+    private static readonly TestCaseData[] Cam02Data =
+    [
+        new(50, 0.0, 180.0, false),
+        new(50, -0.00000000001, 180.0, false),
+        new(50, 0.00000000001, 180.0, false),
+        new(0.0, 60, 180.0, false), 
+        new(-0.00000000001, 60, 180.0, false),
+        new(0.00000000001, 60, 180.0, false),
+        new(100, 60, 180.0, false),
+        new(100.00000000001, 60, 180.0, false),
+        new(99.99999999999, 60, 180.0, false)
+    ];
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jch(double j, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jch, j, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jmh(double j, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jmh, j, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Jsh(double j, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Jsh, j, s, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qch(double q, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qch, q, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qmh(double q, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qmh, q, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam02Data))]
+    public void Cam02Qsh(double q, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Qsh, q, s, h), expected);
     
     [TestCase(50.0, 0.0, 0.0, true)]
     [TestCase(50.0, 0.00000000001, 0.0, false)]
     [TestCase(50.0, -0.00000000001, 0.0, false)]
     [TestCase(50.0, 0.0, 0.00000000001, false)]
     [TestCase(50.0, 0.0, -0.00000000001, false)]
-    public void Cam16(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam16, j, a, b), expected);
+    public void Cam02Ucs(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam02Ucs, j, a, b), expected);
+    
+    private static readonly TestCaseData[] Cam16Data =
+    [
+        new(50, 0.0, 180.0, false),
+        new(50, -0.00000000001, 180.0, false),
+        new(50, 0.00000000001, 180.0, false),
+        new(0.0, 60, 180.0, false), 
+        new(-0.00000000001, 60, 180.0, false),
+        new(0.00000000001, 60, 180.0, false),
+        new(100, 60, 180.0, false),
+        new(100.00000000001, 60, 180.0, false),
+        new(99.99999999999, 60, 180.0, false)
+    ];
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Jch(double j, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Jch, j, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Jmh(double j, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Jmh, j, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Jsh(double j, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Jsh, j, s, h), expected);
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Qch(double q, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Qch, q, c, h), expected);
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Qmh(double q, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Qmh, q, m, h), expected);
+    
+    [TestCaseSource(nameof(Cam16Data))]
+    public void Cam16Qsh(double q, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Qsh, q, s, h), expected);
+    
+    [TestCase(50.0, 0.0, 0.0, true)]
+    [TestCase(50.0, 0.00000000001, 0.0, false)]
+    [TestCase(50.0, -0.00000000001, 0.0, false)]
+    [TestCase(50.0, 0.0, 0.00000000001, false)]
+    [TestCase(50.0, 0.0, -0.00000000001, false)]
+    public void Cam16Ucs(double j, double a, double b, bool expected) => AssertUnicolour(new(ColourSpace.Cam16Ucs, j, a, b), expected);
+    
+    private static readonly TestCaseData[] HellwigData =
+    [
+        new(50, 0.0, 180.0, false),
+        new(50, -0.00000000001, 180.0, false),
+        new(50, 0.00000000001, 180.0, false),
+        new(0.0, 60, 180.0, false), 
+        new(-0.00000000001, 60, 180.0, false),
+        new(0.00000000001, 60, 180.0, false),
+        new(100, 60, 180.0, false),
+        new(100.00000000001, 60, 180.0, false),
+        new(99.99999999999, 60, 180.0, false)
+    ];
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJch(double j, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJch, j, c, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJmh(double j, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJmh, j, m, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigJsh(double j, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigJsh, j, s, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQch(double q, double c, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQch, q, c, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQmh(double q, double m, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQmh, q, m, h), expected);
+    
+    [TestCaseSource(nameof(HellwigData))]
+    public void HellwigQsh(double q, double s, double h, bool expected) => AssertUnicolour(new(ColourSpace.HellwigQsh, q, s, h), expected);
     
     [TestCase(180.0, 0.0, 50, false)]
     [TestCase(180.0, -0.00000000001, 50, false)]
@@ -492,10 +585,10 @@ public class AchromaticTests
     private static void AssertUnicolour(Unicolour colour, bool expectAchromatic)
     {
         var expectedLimitation = expectAchromatic ? Limitation.Achromatic : Limitation.None;
-        Assert.That(colour.SourceRepresentation.LimitationBaseline, Is.EqualTo(Limitation.None));
-        Assert.That(colour.SourceRepresentation.Limitation, Is.EqualTo(expectedLimitation));
+        Assert.That(colour.SourceTriplet.LimitationBaseline, Is.EqualTo(Limitation.None));
+        Assert.That(colour.SourceTriplet.Limitation, Is.EqualTo(expectedLimitation));
 
-        if (colour.SourceRepresentation.Limitation == Limitation.Achromatic)
+        if (colour.SourceTriplet.Limitation == Limitation.Achromatic)
         {
             AssertAchromatic(colour);
         }
@@ -507,7 +600,11 @@ public class AchromaticTests
     
     private static readonly ColourSpace[] NaNProducingSpaces =
     [
-        ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, ColourSpace.Cam02, ColourSpace.Cam16, ColourSpace.Hct
+        ColourSpace.Ictcp, ColourSpace.Jzazbz, ColourSpace.Jzczhz, 
+        ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh, ColourSpace.Cam02Ucs,
+        ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh, ColourSpace.Cam16Ucs,
+        ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh,
+        ColourSpace.Hct
     ];
     
     private static void AssertAchromatic(Unicolour colour)
@@ -526,7 +623,7 @@ public class AchromaticTests
 
     private static void AssertNotAchromatic(Unicolour colour)
     {
-        // if initial representation has no limitation, at least one downstream representation should inherit no limitation
+        // if initial triplet has no limitation, at least one downstream triplet should inherit no limitation
         // though it's still possible for their actual limitation to be achromatic or NaN, especially with outlier values like negatives
         var downstreamSpaces = TestUtils.AllColourSpaces.Except([colour.SourceColourSpace]).ToArray();
         Assert.That(TestUtils.Limitations(colour, downstreamSpaces, baselines: true), Has.Some.EqualTo(Limitation.None));

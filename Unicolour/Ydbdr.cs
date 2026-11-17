@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Ydbdr : ColourRepresentation
+public record Ydbdr : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double Y => First;
-    public double Db => Second;
-    public double Dr => Third;
+    public double Y => this[0];
+    public double Db => this[1];
+    public double Dr => this[2];
     
-    protected override bool IsTripletAchromatic => Db == 0.0 && Dr == 0.0;
+    protected override bool HasAchromaticValues => Db == 0.0 && Dr == 0.0;
     
     public Ydbdr(double y, double db, double dr) : this(y, db, dr, Limitation.None) {}
     public Ydbdr(double y) : this(y, 0, 0, Limitation.Achromatic) {}

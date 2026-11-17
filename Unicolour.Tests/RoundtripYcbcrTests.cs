@@ -27,6 +27,6 @@ public class RoundtripYcbcrTests
         var original = new Ycbcr(triplet.First, triplet.Second, triplet.Third);
         var ypbpr = Ycbcr.ToYpbpr(original, ybrConfig);
         var roundtrip = Ycbcr.FromYpbpr(ypbpr, ybrConfig);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

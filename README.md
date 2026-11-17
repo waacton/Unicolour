@@ -3,9 +3,9 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/293,463/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/349,353/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
-![AI generated](https://badgen.net/static/ai%20generated/0%20%25%20✨/8800ff/)
+![AI generated](https://badgen.net/static/ai%20generated/%20zero%20%25%20✨/8800ff/)
 
 Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion
@@ -684,7 +684,7 @@ mindmap
       ("D50")
         ("ProPhoto RGB")
     ("R 0.73 0.27<br>G 0.00 1.00<br>B 0.00 -0.08")
-      ("W 0.32168 0.33767")
+      ("“D60”")
         ("ACES 2065-1")
     ("R 0.71 0.29<br>G 0.17 0.83<br>B 0.13 0.04")
       ("“D60”")

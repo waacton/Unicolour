@@ -64,14 +64,14 @@ public class KnownHsluvTests
         var info = $"{hex} \n-> RGB: {colour.Rgb} \n-> XYZ: {colour.Xyz} \n-> LUV: {colour.Luv} \n-> LCH: {colour.Lchuv}";
         
         ColourTriplet HandleNoHue(ColourTriplet triplet, bool isAchromatic) => isAchromatic ? triplet.WithHueOverride(0) : triplet;
-        var lchuv = HandleNoHue(colour.Lchuv.Triplet, colour.Lchuv.Limitation == Limitation.Achromatic);
-        var hsluv = HandleNoHue(colour.Hsluv.Triplet, colour.Hsluv.Limitation == Limitation.Achromatic);
-        var hpluv = HandleNoHue(colour.Hpluv.Triplet, colour.Hpluv.Limitation == Limitation.Achromatic);
+        var lchuv = HandleNoHue(colour.Lchuv, colour.Lchuv.Limitation == Limitation.Achromatic);
+        var hsluv = HandleNoHue(colour.Hsluv, colour.Hsluv.Limitation == Limitation.Achromatic);
+        var hpluv = HandleNoHue(colour.Hpluv, colour.Hpluv.Limitation == Limitation.Achromatic);
         
         // accuracy drops off when saturation goes beyond 100% (mostly at 1,500%+), so be slightly more tolerant for larger values
-        AssertSnapshot(colour.Rgb.Triplet, testColour.Rgb!, 0.00000000001, info);
-        AssertSnapshot(colour.Xyz.Triplet, testColour.Xyz!, 0.0005, info);
-        AssertSnapshot(colour.Luv.Triplet, testColour.Luv!, 0.025, info);
+        AssertSnapshot(colour.Rgb, testColour.Rgb!, 0.00000000001, info);
+        AssertSnapshot(colour.Xyz, testColour.Xyz!, 0.0005, info);
+        AssertSnapshot(colour.Luv, testColour.Luv!, 0.025, info);
         AssertSnapshot(lchuv, testColour.Lchuv!, 0.25, info);
         AssertSnapshot(hsluv, testColour.Hsluv!, tolerance: 0.06, info);
         AssertSnapshot(hpluv, testColour.Hpluv!, tolerance: hpluv.Second > 100 ? 0.135 : 0.06, info);

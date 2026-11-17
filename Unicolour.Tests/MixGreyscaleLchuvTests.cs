@@ -22,10 +22,10 @@ public class MixGreyscaleLchuvTests
         var fromLchuvWhite = lchuvWhite.Mix(green, ColourSpace.Lchuv, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromLuvBlack.Lchuv.Triplet, new(25, 50, 120));
-        AssertTriplet(fromLuvWhite.Lchuv.Triplet, new(75, 50, 120));
-        AssertTriplet(fromLchuvBlack.Lchuv.Triplet, new(25, 100, 150));
-        AssertTriplet(fromLchuvWhite.Lchuv.Triplet, new(75, 100, 150));
+        AssertTriplet(fromLuvBlack.Lchuv, new(25, 50, 120));
+        AssertTriplet(fromLuvWhite.Lchuv, new(75, 50, 120));
+        AssertTriplet(fromLchuvBlack.Lchuv, new(25, 100, 150));
+        AssertTriplet(fromLchuvWhite.Lchuv, new(75, 100, 150));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleLchuvTests
         var toLchuvWhite = blue.Mix(lchuvWhite, ColourSpace.Lchuv, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toLuvBlack.Lchuv.Triplet, new(25, 50, 240));
-        AssertTriplet(toLuvWhite.Lchuv.Triplet, new(75, 50, 240));
-        AssertTriplet(toLchuvBlack.Lchuv.Triplet, new(25, 100, 210));
-        AssertTriplet(toLchuvWhite.Lchuv.Triplet, new(75, 100, 210));
+        AssertTriplet(toLuvBlack.Lchuv, new(25, 50, 240));
+        AssertTriplet(toLuvWhite.Lchuv, new(75, 50, 240));
+        AssertTriplet(toLchuvBlack.Lchuv, new(25, 100, 210));
+        AssertTriplet(toLchuvWhite.Lchuv, new(75, 100, 210));
     }
     
     [Test]
@@ -60,14 +60,14 @@ public class MixGreyscaleLchuvTests
         var blackToGrey = black.Mix(grey, ColourSpace.Lchuv, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Lchuv, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Luv.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Luv, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Luv, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Luv, new(75, 0, 0));
         
         // colours created from LUV therefore hue does not change
-        AssertTriplet(blackToWhite.Lchuv.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Lchuv.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Lchuv.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lchuv, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lchuv, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lchuv, new(75, 0, 0));
     }
     
     [Test]
@@ -81,14 +81,14 @@ public class MixGreyscaleLchuvTests
         var blackToGrey = black.Mix(grey, ColourSpace.Lchuv, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Lchuv, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Luv.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Luv.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Luv.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Luv, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Luv, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Luv, new(75, 0, 0));
         
         // colours created from LCHuv therefore hue changes
-        AssertTriplet(blackToWhite.Lchuv.Triplet, new(50, 0, 330));
-        AssertTriplet(blackToGrey.Lchuv.Triplet, new(25, 0, 50));
-        AssertTriplet(whiteToGrey.Lchuv.Triplet, new(75, 0, 20));
+        AssertTriplet(blackToWhite.Lchuv, new(50, 0, 330));
+        AssertTriplet(blackToGrey.Lchuv, new(25, 0, 50));
+        AssertTriplet(whiteToGrey.Lchuv, new(75, 0, 20));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

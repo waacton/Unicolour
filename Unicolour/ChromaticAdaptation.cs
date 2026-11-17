@@ -47,8 +47,8 @@ public class ChromaticAdaptation
     
     internal Matrix GetTransformMatrix(WhitePoint sourceWhitePoint, WhitePoint destinationWhitePoint)
     {
-        var sourceWhite = Matrix.From(sourceWhitePoint.Triplet);
-        var destinationWhite = Matrix.From(destinationWhitePoint.Triplet);
+        var sourceWhite = Matrix.From(sourceWhitePoint);
+        var destinationWhite = Matrix.From(destinationWhitePoint);
 
         var sourceLms = AdaptationMatrix.Multiply(sourceWhite).ToTriplet();
         var destinationLms = AdaptationMatrix.Multiply(destinationWhite).ToTriplet();

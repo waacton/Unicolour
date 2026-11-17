@@ -10,7 +10,7 @@
 
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
-      <PackageReference Include="Wacton.Unicolour" Version="6.4.0" Aliases="NuGetPackage" />
+      <PackageReference Include="Wacton.Unicolour" Version="8.0.0" Aliases="NuGetPackage" />
     </ItemGroup>
 
     <ItemGroup>

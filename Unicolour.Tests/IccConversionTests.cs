@@ -9,10 +9,9 @@ using Wacton.Unicolour.Tests.Utils;
 namespace Wacton.Unicolour.Tests;
 
 /*
- * test data extracted from ICC reference implementation of iccMAX
- * (https://github.com/InternationalColorConsortium/DemoIccMAX)
- * if these values are wrong because the ICC can't write software
- * that conforms to their own complex specification
+ * test data extracted from iccDEV, the ICC's reference implementation
+ * (https://github.com/waacton/iccDEV-ConversionTestData · https://github.com/InternationalColorConsortium/iccDEV)
+ * if these values are wrong because the ICC can't write software that conforms to their own complex specification
  * then what chance do I have?
  */
 public class IccConversionTests
@@ -157,7 +156,6 @@ public class IccConversionTests
 
     private static void AddTestData(IccFile iccFile)
     {
-        const string DataSource = "ICC";
         var profile = iccFile.GetProfile();
         List<TestCaseData> toPcsTestData = [];
         List<TestCaseData> toDeviceTestData = [];
@@ -172,20 +170,20 @@ public class IccConversionTests
         {
             var transformName = transform switch
             {
-                IccTransform.ToPcs => "ToPcs",
-                IccTransform.ToDevice => "ToDevice",
+                IccTransform.ToPcs => "DeviceToPcs",
+                IccTransform.ToDevice => "PcsToDevice",
                 _ => throw new ArgumentOutOfRangeException(nameof(transform), transform, null)
             };
 
             var intentValue = (int)intent;
-            var csvFileName = $"{iccFile.Name}_{transformName}_{DataSource}-{intentValue}.csv";
+            var csvFileName = $"{iccFile.Name}_{transformName}_Intent{intentValue}.csv";
             var csvPath = Path.Combine(IccFile.DataFolderName, csvFileName);
             if (!File.Exists(csvPath))
             {
                 return [];
             }
             
-            var testColours = ParseCsv(profile, transform, csvPath, DataSource, intent).ToList();
+            var testColours = ParseCsv(profile, transform, csvPath, intent).ToList();
             var testCases = testColours.Select(x => new TestCaseData(x).SetName($"{iccFile}, {x}"));
             return testCases.ToList();
         }
@@ -194,7 +192,7 @@ public class IccConversionTests
         ToDeviceTestData.AddRange(toDeviceTestData);
     }
 
-    private static List<IccTestColour> ParseCsv(Profile profile, IccTransform iccTransform, string csvFile, string source, Intent intent)
+    private static List<IccTestColour> ParseCsv(Profile profile, IccTransform iccTransform, string csvFile, Intent intent)
     {
         var lines = File.ReadAllLines(csvFile);
         double[] ArrayFromString(string value) => value.Split(",").Select(double.Parse).ToArray();
@@ -205,7 +203,7 @@ public class IccConversionTests
             var split = line.Split(",-->,").ToList();
             var input = ArrayFromString(split[0]); // before the "-->"
             var output = ArrayFromString(split[1]); // after the "-->"
-            data.Add(new IccTestColour(profile, iccTransform, source, intent, input, output));
+            data.Add(new IccTestColour(profile, iccTransform, intent, input, output));
         }
 
         return data;

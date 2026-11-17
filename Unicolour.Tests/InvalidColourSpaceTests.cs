@@ -49,7 +49,7 @@ public class InvalidColourSpaceTests
 
     private static void AssertDoesNotThrow(Action action) => Assert.DoesNotThrow(action.Invoke);
     private static void AssertThrows<T>(Action action) => Assert.Throws(ExceptionConstraint<T>(), action.Invoke);
-    private static ExactTypeConstraint ExceptionConstraint<T>() => Is.TypeOf<TargetInvocationException>().And.InnerException.TypeOf<T>();
+    private static ExactTypeConstraint<T> ExceptionConstraint<T>() => Is.TypeOf<TargetInvocationException>().And.InnerException.TypeOf<T>();
 
     private void InvokePrivateMethod(string name, params object[] args) => GetPrivateMethod(name).Invoke(colour, args);
     private void InvokePrivateGenericMethod(string name, Type genericType, params object[] args) => GetPrivateMethod(name, genericType).Invoke(colour, args);

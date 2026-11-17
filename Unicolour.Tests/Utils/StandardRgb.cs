@@ -13,6 +13,8 @@ internal static class StandardRgb
     internal static readonly Unicolour Black = new(ColourSpace.Rgb, 0, 0, 0);
     internal static readonly Unicolour White = new(ColourSpace.Rgb, 1, 1, 1);
     internal static readonly Unicolour Grey = new(ColourSpace.Rgb, 0.5, 0.5, 0.5);
+    
+    internal static readonly Unicolour DeepPink = new(ColourSpace.Rgb255, 255, 20, 147);
 
     internal static readonly Dictionary<string, Unicolour> Lookup = new()
     {
@@ -24,6 +26,6 @@ internal static class StandardRgb
         { nameof(Yellow), Yellow },
         { nameof(Black), Black },
         { nameof(White), White },
-        { nameof(Grey), Grey }
+        { nameof(DeepPink), DeepPink }
     };
 }

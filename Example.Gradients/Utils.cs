@@ -55,7 +55,7 @@ internal static class Utils
     
     private static void SetColumnPixels(Image<Rgba32> image, int column, int height, Unicolour colour)
     {
-        var rgba32 = AsRgba32(colour);
+        var rgba32 = ToPixel(colour);
         for (var row = 0; row < height; row++)
         {
             image[column, row] = rgba32;
@@ -65,8 +65,13 @@ internal static class Utils
     private static void SetLabel(Image<Rgba32> image, string text, Unicolour colour)
     {
         var row = image.Height / 2.0 - FontSize / 2.0;
-        var textLocation = new PointF(16, (int)row);
-        image.Mutate(context => context.DrawText(text, Font, AsRgba32(colour), textLocation));
+        var textOptions = new RichTextOptions(Font)
+        {
+            Origin = new PointF(16, (int)row)
+            
+        };
+        
+        image.Mutate(context => context.Paint(canvas => canvas.DrawText(textOptions, text, ToBrush(colour), pen: null)));
     }
 
     internal static Image<Rgba32> DrawRows(Image<Rgba32>[] rows, int rowWidth, int rowHeight)
@@ -109,16 +114,21 @@ internal static class Utils
             sweepAngle: segment.distance + (addOverlap ? 0.5f : 0f));
 
         var path = builder.Build();
-        
-        image.Mutate(ctx => ctx.Draw(AsRgba32(segment.colour), segment.thickness, path));
+        var pen = new SolidPen(ToBrush(segment.colour), segment.thickness);
+        image.Mutate(context => context.Paint(canvas => canvas.Draw(pen, path)));
     }
 
-    private static Rgba32 AsRgba32(Unicolour colour)
+    private static Rgba32 ToPixel(Unicolour colour)
     {
         var (r, g, b) = colour.MapToRgbGamut(GamutMap.RgbClipping).Rgb.Byte255;
         var alpha = colour.Alpha.A255;
         var a = colour.IsInRgbGamut || !RenderOutOfGamutAsTransparent ? alpha : 0;
-        return new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
+        return new Rgba32((byte)r, (byte)g, (byte)b, (byte)a);
+    }
+    
+    private static SolidBrush ToBrush(Unicolour colour)
+    {
+        return new SolidBrush(Color.FromPixel(ToPixel(colour)));
     }
 
     internal static string GetOutputPath(string filename) => Path.Combine(OutputDirectory, filename);

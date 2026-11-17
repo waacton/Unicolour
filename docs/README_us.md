@@ -3,7 +3,7 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/293,323/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/293,463/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 ![AI generated](https://badgen.net/static/ai%20generated/0%20%25%20✨/8800ff/)
 
@@ -504,7 +504,7 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Math.Pow(value, 2.19921875)
 );
 
-var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, ChromaticAdaptation.VonKries);
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var color = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);

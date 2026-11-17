@@ -33,6 +33,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 170.565257)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 258.682686)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 176.314083)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Cie76(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -50,6 +51,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 68.800069)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 100.577051)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 70.580743)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Cie94Graphics(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -67,6 +69,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 64.530477)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 92.093048)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 71.003011)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Cie94Textiles(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -85,6 +88,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 86.608245)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 83.185881)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 52.881375)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Ciede2000(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -102,6 +106,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 65.837219)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 124.001222)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 109.761942)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void CmcAcceptability(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -119,6 +124,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 62.338288)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 110.145001)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 108.570712)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void CmcPerceptibility(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -136,6 +142,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 239.982435)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 234.838743)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 322.659678)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Itp(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName].ConvertToConfiguration(SdrConfig);
@@ -153,6 +160,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.195524)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 0.271571)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.281457)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Z(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName].ConvertToConfiguration(SdrConfig);
@@ -169,6 +177,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 201.534889)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 308.110214)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 196.009473)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Hyab(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -178,18 +187,36 @@ public class DifferenceTests
     }
     
     [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 1.000000)]
-    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.519797)]
-    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 0.673409)]
-    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 0.537117)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.519813)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 0.673372)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 0.537090)]
     [TestCase(nameof(StandardRgb.White), nameof(StandardRgb.Black), 1.000000)]
-    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.519797)]
-    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 0.673409)]
-    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.537117)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.519813)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 0.673372)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 0.537090)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Ok(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
         var sample = StandardRgb.Lookup[sampleName];
         var delta = reference.Difference(sample, DeltaE.Ok);
+        Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
+    }
+    
+    [TestCase(nameof(StandardRgb.Black), nameof(StandardRgb.White), 1.000000)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Green), 0.954043)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Blue), 1.139506)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Red), 1.030046)]
+    [TestCase(nameof(StandardRgb.White), nameof(StandardRgb.Black), 1.000000)]
+    [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 0.954043)]
+    [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 1.139506)]
+    [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 1.030046)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
+    public void Ok2(string referenceName, string sampleName, double expectedDelta)
+    {
+        var reference = StandardRgb.Lookup[referenceName];
+        var sample = StandardRgb.Lookup[sampleName];
+        var delta = reference.Difference(sample, DeltaE.Ok2);
         Assert.That(delta, Is.EqualTo(expectedDelta).Within(Tolerance));
     }
     
@@ -201,6 +228,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 76.105436)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 92.321874)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 84.119853)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Cam02(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -217,6 +245,7 @@ public class DifferenceTests
     [TestCase(nameof(StandardRgb.Green), nameof(StandardRgb.Red), 22.523082)]
     [TestCase(nameof(StandardRgb.Blue), nameof(StandardRgb.Green), 24.596320)]
     [TestCase(nameof(StandardRgb.Red), nameof(StandardRgb.Blue), 20.689226)]
+    [TestCase(nameof(StandardRgb.DeepPink), nameof(StandardRgb.DeepPink), 0)]
     public void Cam16(string referenceName, string sampleName, double expectedDelta)
     {
         var reference = StandardRgb.Lookup[referenceName];
@@ -227,7 +256,7 @@ public class DifferenceTests
     
     [Test, Combinatorial]
     public void RandomSymmetric(
-        [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
+        [Values(DeltaE.Cie76, DeltaE.Ciede2000, DeltaE.Itp, DeltaE.Z, DeltaE.Hyab, DeltaE.Ok, DeltaE.Ok2, DeltaE.Cam02, DeltaE.Cam16)] DeltaE deltaE, 
         [ValueSource(nameof(ReferenceSamplePairs))] (Unicolour reference, Unicolour sample) pair)
     {
         var reference = pair.reference;
@@ -254,6 +283,7 @@ public class DifferenceTests
     [TestCase(DeltaE.Z, ColourSpace.Jzczhz)]
     [TestCase(DeltaE.Hyab, ColourSpace.Lab)]
     [TestCase(DeltaE.Ok, ColourSpace.Oklab)]
+    [TestCase(DeltaE.Ok2, ColourSpace.Oklab)]
     [TestCase(DeltaE.Cam02, ColourSpace.Cam02)]
     [TestCase(DeltaE.Cam16, ColourSpace.Cam16)]
     public void AssertNotNumberDeltas(DeltaE deltaE, ColourSpace colourSpace)

@@ -151,7 +151,7 @@ var (l, c, h) = colour.Oklch;
 > ```
 >
 > Achromatic colours can be constructed with a single value:
-> ```c#
+> ```cs
 > Unicolour grey = new(ColourSpace.Rgb, 0.5);
 > var hex = grey.Hex; // #808080
 > ```
@@ -221,7 +221,7 @@ var palette = red.Palette(blue, ColourSpace.Hsl, 10, HueSpan.Longer);
 ```
 
 The hue of colours created from a single achromatic value are ignored.
-```c#
+```cs
 var yellow = new Unicolour(ColourSpace.Hsb, 60, 1, 1);
 
 // hue moves 50% from 60° to 240° = 150°
@@ -497,7 +497,7 @@ var rgbConfig = new RgbConfiguration(
     toLinear: value => Math.Pow(value, 2.19921875)
 );
 
-var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, Adaptation.VonKries);
+var xyzConfig = new XyzConfiguration(Illuminant.C, Observer.Degree10, ChromaticAdaptation.VonKries);
 
 var config = new Configuration(rgbConfig, xyzConfig);
 var colour = new Unicolour(config, ColourSpace.Rgb255, 202, 97, 143);

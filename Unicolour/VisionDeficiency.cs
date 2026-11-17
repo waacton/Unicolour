@@ -51,7 +51,7 @@ public static class VisionDeficiency
     
     internal static Unicolour ApplySimulation(Unicolour colour, ColourSpace colourSpace, double[,] simulationMatrix)
     {
-        var colourMatrix = Matrix.From(colour.GetRepresentation(colourSpace));
+        var colourMatrix = Matrix.From(colour.GetTriplet(colourSpace));
         var simulatedLms = new Matrix(simulationMatrix).Multiply(colourMatrix).ToTriplet();
         return new Unicolour(colourSpace, simulatedLms.Tuple, colour.Alpha.A);
     }

@@ -17,7 +17,25 @@ public class MixHueThirdComponentTests : MixHueAgnosticTests
         new(ColourSpace.Lchab, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Lchuv, new Range(0, 100), new Range(0, 100)),
         new(ColourSpace.Jzczhz, new Range(0, 0.16), new Range(0, 0.16)),
-        new(ColourSpace.Oklch, new Range(0, 1), new Range(0, 0.5))
+        new(ColourSpace.Oklch, new Range(0, 1), new Range(0, 0.5)),
+        new(ColourSpace.Cam02Jch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam02Jmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam02Jsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam02Qch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam02Qmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam02Qsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Jch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Jmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Jsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Qch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Qmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.Cam16Qsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigJsh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQch, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQmh, new Range(0, 100), new Range(0, 120)),
+        new(ColourSpace.HellwigQsh, new Range(0, 100), new Range(0, 120))
     ];
 
     public MixHueThirdComponentTests(ColourSpace colourSpace, Range first, Range second) 

@@ -32,10 +32,10 @@ public class MixGreyscaleHctTests
         const double expectedFromRgbWhiteChroma = (RgbWhiteChroma + 100) * 0.5;
         
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromRgbBlack.Hct.Triplet, new(120, 50, 25));
-        AssertTriplet(fromRgbWhite.Hct.Triplet, new(120, expectedFromRgbWhiteChroma, 75));
-        AssertTriplet(fromHctBlack.Hct.Triplet, new(150, 100, 25));
-        AssertTriplet(fromHctWhite.Hct.Triplet, new(150, 100, 75));
+        AssertTriplet(fromRgbBlack.Hct, new(120, 50, 25));
+        AssertTriplet(fromRgbWhite.Hct, new(120, expectedFromRgbWhiteChroma, 75));
+        AssertTriplet(fromHctBlack.Hct, new(150, 100, 25));
+        AssertTriplet(fromHctWhite.Hct, new(150, 100, 75));
     }
 
     [Test]
@@ -58,10 +58,10 @@ public class MixGreyscaleHctTests
         const double expectedFromRgbWhiteChroma = (RgbWhiteChroma + 100) * 0.5;
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toRgbBlack.Hct.Triplet, new(240, 50, 25));
-        AssertTriplet(toRgbWhite.Hct.Triplet, new(240, expectedFromRgbWhiteChroma, 75));
-        AssertTriplet(toHctBlack.Hct.Triplet, new(210, 100, 25));
-        AssertTriplet(toHctWhite.Hct.Triplet, new(210, 100, 75));
+        AssertTriplet(toRgbBlack.Hct, new(240, 50, 25));
+        AssertTriplet(toRgbWhite.Hct, new(240, expectedFromRgbWhiteChroma, 75));
+        AssertTriplet(toHctBlack.Hct, new(210, 100, 25));
+        AssertTriplet(toHctWhite.Hct, new(210, 100, 75));
     }
     
     // note: due to how HCT is derived
@@ -105,9 +105,9 @@ public class MixGreyscaleHctTests
         AssertGrey(whiteToGrey.Rgb);
         
         // colours created from HCT therefore hue changes
-        AssertTriplet(blackToWhite.Hct.Triplet, new(330, 0, 50));
-        AssertTriplet(blackToGrey.Hct.Triplet, new(50, 0, 25));
-        AssertTriplet(whiteToGrey.Hct.Triplet, new(20, 0, 75));
+        AssertTriplet(blackToWhite.Hct, new(330, 0, 50));
+        AssertTriplet(blackToGrey.Hct, new(50, 0, 25));
+        AssertTriplet(whiteToGrey.Hct, new(20, 0, 75));
     }
 
     private static void AssertGrey(Rgb rgb)

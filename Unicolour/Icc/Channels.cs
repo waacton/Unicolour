@@ -1,23 +1,18 @@
 ﻿namespace Wacton.Unicolour.Icc;
 
-public record Channels(params double[] Values)
+public record Channels : ColourBase
 {
-    public double[] Values { get; } = Values;
     public string ColourSpace { get; private set; } = "unknown";
     public string? Error { get; private set; }
-
-    internal bool IsNaN => Limitation == Limitation.NaN;
     
-    private Limitation LimitationBaseline = Limitation.None;
-    private Limitation Limitation
-    {
-        get
-        {
-            if (LimitationBaseline == Limitation.NaN || Values.Any(double.IsNaN)) return Limitation.NaN;
-            if (LimitationBaseline == Limitation.Achromatic) return Limitation.Achromatic; // cannot infer achromatic from ICC channels (e.g. FOGRA39 0.5 0.5 0.5 0.5 is not grey)
-            return Limitation.None;
-        }
-    }
+    // cannot infer achromatic from ICC channels alone, e.g.
+    // - FOGRA39 0.5 0.5 0.5 0.5 is not grey
+    // - an RGB space 0 0 0 would be achromatic, but a HLS space 0 0 0 would not be because one of those represents a hue value of 0 degrees
+    protected override bool HasAchromaticValues => false;
+    
+    // create a copy of the backing array in case external code sets array contents
+    public Channels(params double[] values) : this(Utils.Copy(values), Limitation.None) {}
+    private Channels(double[] values, Limitation limitationBaseline) : base(values, limitationBaseline) {}
     
     /*
      * ICC channels are a transform of XYZ (in terms of Unicolour implementation)
@@ -43,10 +38,9 @@ public record Channels(params double[] Values)
             error = e.Message;
         }
 
-        return new Channels(channels)
+        return new Channels(channels, xyz.Limitation)
         {
             ColourSpace = profile.Header.DataColourSpace,
-            LimitationBaseline = xyz.Limitation,
             Error = error
         };
     }
@@ -82,15 +76,14 @@ public record Channels(params double[] Values)
     internal static Channels UncalibratedFromRgb(Rgb rgb)
     {
         var (r, g, b) = rgb;
-        var black = 1 - rgb.ToArray().Max();
+        var black = 1 - rgb.Values.Max();
         var scale = 1 - black;
         var c = scale == 0.0 ? 0 : (1 - r - black) / scale;
         var m = scale == 0.0 ? 0 : (1 - g - black) / scale;
         var y = scale == 0.0 ? 0 : (1 - b - black) / scale;
-        return new Channels(c, m, y, black)
+        return new Channels([c, m, y, black], rgb.Limitation)
         {
-            ColourSpace = UncalibratedCmyk,
-            LimitationBaseline = rgb.Limitation
+            ColourSpace = UncalibratedCmyk
         };
     }
 
@@ -114,17 +107,16 @@ public record Channels(params double[] Values)
 
     public virtual bool Equals(Channels? other)
     {
-        if (ReferenceEquals(null, other)) return false;
+        if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
-        return Values.SequenceEqual(other.Values) && ColourSpace == other.ColourSpace;
+        return base.Equals(other) && ColourSpace == other.ColourSpace;
     }
 
     public override int GetHashCode()
     {
         unchecked
         {
-            var valuesHashCode = Values.Aggregate(0, (hashCode, value) => (hashCode * 397) ^ value.GetHashCode());
-            return (valuesHashCode * 397) ^ ColourSpace.GetHashCode();
+            return (base.GetHashCode() * 397) ^ ColourSpace.GetHashCode();
         }
     }
 }

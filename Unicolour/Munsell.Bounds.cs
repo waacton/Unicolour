@@ -87,7 +87,7 @@ public partial record Munsell
                 return range;
             }
         
-            var nodes = Node.LookupCache.Values.Where(x => x.Hue == h && x.Value == v).ToArray();
+            var nodes = Node.Lookup.Values.Where(x => x.Hue == h && x.Value == v).ToArray();
             range = !nodes.Any() ? (0, 0) : (nodes.Min(x => x.Chroma), nodes.Max(x => x.Chroma));
             ChromaRange[key] = range;
             return range;

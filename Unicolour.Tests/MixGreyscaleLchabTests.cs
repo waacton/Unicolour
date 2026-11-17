@@ -22,10 +22,10 @@ public class MixGreyscaleLchabTests
         var fromLchabWhite = lchabWhite.Mix(green, ColourSpace.Lchab, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromLabBlack.Lchab.Triplet, new(25, 50, 120));
-        AssertTriplet(fromLabWhite.Lchab.Triplet, new(75, 50, 120));
-        AssertTriplet(fromLchabBlack.Lchab.Triplet, new(25, 100, 150));
-        AssertTriplet(fromLchabWhite.Lchab.Triplet, new(75, 100, 150));
+        AssertTriplet(fromLabBlack.Lchab, new(25, 50, 120));
+        AssertTriplet(fromLabWhite.Lchab, new(75, 50, 120));
+        AssertTriplet(fromLchabBlack.Lchab, new(25, 100, 150));
+        AssertTriplet(fromLchabWhite.Lchab, new(75, 100, 150));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleLchabTests
         var toLchabWhite = blue.Mix(lchabWhite, ColourSpace.Lchab, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toLabBlack.Lchab.Triplet, new(25, 50, 240));
-        AssertTriplet(toLabWhite.Lchab.Triplet, new(75, 50, 240));
-        AssertTriplet(toLchabBlack.Lchab.Triplet, new(25, 100, 210));
-        AssertTriplet(toLchabWhite.Lchab.Triplet, new(75, 100, 210));
+        AssertTriplet(toLabBlack.Lchab, new(25, 50, 240));
+        AssertTriplet(toLabWhite.Lchab, new(75, 50, 240));
+        AssertTriplet(toLchabBlack.Lchab, new(25, 100, 210));
+        AssertTriplet(toLchabWhite.Lchab, new(75, 100, 210));
     }
     
     [Test]
@@ -60,14 +60,14 @@ public class MixGreyscaleLchabTests
         var blackToGrey = black.Mix(grey, ColourSpace.Lchab, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Lchab, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lab, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lab, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lab, new(75, 0, 0));
         
         // colours created from LAB therefore hue does not change
-        AssertTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lchab, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lchab, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lchab, new(75, 0, 0));
     }
     
     [Test]
@@ -81,14 +81,14 @@ public class MixGreyscaleLchabTests
         var blackToGrey = black.Mix(grey, ColourSpace.Lchab, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Lchab, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Lab.Triplet, new(50, 0, 0));
-        AssertTriplet(blackToGrey.Lab.Triplet, new(25, 0, 0));
-        AssertTriplet(whiteToGrey.Lab.Triplet, new(75, 0, 0));
+        AssertTriplet(blackToWhite.Lab, new(50, 0, 0));
+        AssertTriplet(blackToGrey.Lab, new(25, 0, 0));
+        AssertTriplet(whiteToGrey.Lab, new(75, 0, 0));
         
         // colours created from LCHab therefore hue changes
-        AssertTriplet(blackToWhite.Lchab.Triplet, new(50, 0, 330));
-        AssertTriplet(blackToGrey.Lchab.Triplet, new(25, 0, 50));
-        AssertTriplet(whiteToGrey.Lchab.Triplet, new(75, 0, 20));
+        AssertTriplet(blackToWhite.Lchab, new(50, 0, 330));
+        AssertTriplet(blackToGrey.Lchab, new(25, 0, 50));
+        AssertTriplet(whiteToGrey.Lchab, new(75, 0, 20));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

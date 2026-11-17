@@ -31,7 +31,7 @@ public static class GamutGenerator
 
             foreach (var colourSpace in ColourSpaces)
             {
-                var (first, second, third) = colour.GetRepresentation(colourSpace);
+                var (first, second, third) = colour.GetTriplet(colourSpace);
                 
                 if (first < channel1Min[colourSpace]) channel1Min[colourSpace] = first;
                 if (second < channel2Min[colourSpace]) channel2Min[colourSpace] = second;

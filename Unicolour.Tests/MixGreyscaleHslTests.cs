@@ -22,10 +22,10 @@ public class MixGreyscaleHslTests
         var fromHslWhite = hslWhite.Mix(green, ColourSpace.Hsl, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromRgbBlack.Hsl.Triplet, new(120, 0.5, 0.25));
-        AssertTriplet(fromRgbWhite.Hsl.Triplet, new(120, 0.5, 0.75));
-        AssertTriplet(fromHslBlack.Hsl.Triplet, new(150, 1, 0.25));
-        AssertTriplet(fromHslWhite.Hsl.Triplet, new(150, 0.5, 0.75));
+        AssertTriplet(fromRgbBlack.Hsl, new(120, 0.5, 0.25));
+        AssertTriplet(fromRgbWhite.Hsl, new(120, 0.5, 0.75));
+        AssertTriplet(fromHslBlack.Hsl, new(150, 1, 0.25));
+        AssertTriplet(fromHslWhite.Hsl, new(150, 0.5, 0.75));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleHslTests
         var toHslWhite = blue.Mix(hslWhite, ColourSpace.Hsl, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toRgbBlack.Hsl.Triplet, new(240, 0.5, 0.25));
-        AssertTriplet(toRgbWhite.Hsl.Triplet, new(240, 0.5, 0.75));
-        AssertTriplet(toHslBlack.Hsl.Triplet, new(210, 1, 0.25));
-        AssertTriplet(toHslWhite.Hsl.Triplet, new(210, 0.5, 0.75));
+        AssertTriplet(toRgbBlack.Hsl, new(240, 0.5, 0.25));
+        AssertTriplet(toRgbWhite.Hsl, new(240, 0.5, 0.75));
+        AssertTriplet(toHslBlack.Hsl, new(210, 1, 0.25));
+        AssertTriplet(toHslWhite.Hsl, new(210, 0.5, 0.75));
     }
     
     [Test]
@@ -60,14 +60,14 @@ public class MixGreyscaleHslTests
         var blackToGrey = black.Mix(grey, ColourSpace.Hsl, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Hsl, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
-        AssertTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));
-        AssertTriplet(whiteToGrey.Rgb.Triplet, new(0.75, 0.75, 0.75));
+        AssertTriplet(blackToWhite.Rgb, new(0.5, 0.5, 0.5));
+        AssertTriplet(blackToGrey.Rgb, new(0.25, 0.25, 0.25));
+        AssertTriplet(whiteToGrey.Rgb, new(0.75, 0.75, 0.75));
         
         // colours created from RGB therefore hue does not change
-        AssertTriplet(blackToWhite.Hsl.Triplet, new(0, 0, 0.5));
-        AssertTriplet(blackToGrey.Hsl.Triplet, new(0, 0, 0.25));
-        AssertTriplet(whiteToGrey.Hsl.Triplet, new(0, 0, 0.75));
+        AssertTriplet(blackToWhite.Hsl, new(0, 0, 0.5));
+        AssertTriplet(blackToGrey.Hsl, new(0, 0, 0.25));
+        AssertTriplet(whiteToGrey.Hsl, new(0, 0, 0.75));
     }
     
     [Test]
@@ -81,14 +81,14 @@ public class MixGreyscaleHslTests
         var blackToGrey = black.Mix(grey, ColourSpace.Hsl, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Hsl, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Rgb.Triplet, new(0.5, 0.5, 0.5));
-        AssertTriplet(blackToGrey.Rgb.Triplet, new(0.25, 0.25, 0.25));
-        AssertTriplet(whiteToGrey.Rgb.Triplet, new(0.75, 0.75, 0.75));
+        AssertTriplet(blackToWhite.Rgb, new(0.5, 0.5, 0.5));
+        AssertTriplet(blackToGrey.Rgb, new(0.25, 0.25, 0.25));
+        AssertTriplet(whiteToGrey.Rgb, new(0.75, 0.75, 0.75));
         
         // colours created from HSL therefore hue changes
-        AssertTriplet(blackToWhite.Hsl.Triplet, new(330, 0, 0.5));
-        AssertTriplet(blackToGrey.Hsl.Triplet, new(50, 0, 0.25));
-        AssertTriplet(whiteToGrey.Hsl.Triplet, new(20, 0, 0.75));
+        AssertTriplet(blackToWhite.Hsl, new(330, 0, 0.5));
+        AssertTriplet(blackToGrey.Hsl, new(50, 0, 0.25));
+        AssertTriplet(whiteToGrey.Hsl, new(20, 0, 0.75));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

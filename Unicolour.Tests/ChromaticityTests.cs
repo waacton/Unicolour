@@ -15,7 +15,7 @@ public class ChromaticityTests
         var luminance = triplet.Third;
         var fromChromaticity = new Unicolour(chromaticity, luminance);
         var fromXyy = new Unicolour(ColourSpace.Xyy, chromaticity.X, chromaticity.Y, luminance);
-        TestUtils.AssertTriplet(fromChromaticity.Xyy.Triplet, fromXyy.Xyy.Triplet, 0.0);
+        TestUtils.AssertTriplet(fromChromaticity.Xyy, fromXyy.Xyy, 0.0);
         Assert.That(fromChromaticity.Chromaticity, Is.EqualTo(fromXyy.Chromaticity));
     }
     

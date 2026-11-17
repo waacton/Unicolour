@@ -14,9 +14,10 @@ public static class Temperature
         List<Unicolour> scaledColours = [];
         for (var i = 1000; i <= 13000; i += 100)
         {
-            var rgbComponents = new Unicolour(i).Rgb.ToArray();
-            var max = rgbComponents.Max();
-            var scaledRgb = rgbComponents.Select(x => x / max).ToArray();
+            var colourFromCct = new Unicolour(i);
+            var rgb = colourFromCct.Rgb.ToArray();
+            var max = rgb.Max();
+            var scaledRgb = rgb.Select(x => x / max).ToArray();
             var scaledColour = new Unicolour(ColourSpace.Rgb, scaledRgb[0], scaledRgb[1], scaledRgb[2]);
             scaledColours.Add(scaledColour);
         }

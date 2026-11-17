@@ -44,15 +44,33 @@ public class SmokeTests
         new(ColourSpace.Okhsl, 0, 0, 0, 0), new(ColourSpace.Okhsl, 360, 1, 1, 1), new(ColourSpace.Okhsl, 180, 0.4, 0.6, 0.5), 
         new(ColourSpace.Okhwb, 0, 0, 0, 0), new(ColourSpace.Okhwb, 360, 1, 1, 1), new(ColourSpace.Okhwb, 180, 0.4, 0.6, 0.5), 
         new(ColourSpace.Oklrab, 0, -0.5, -0.5, 0), new(ColourSpace.Oklrab, 1, 0.5, 0.5, 1), new(ColourSpace.Oklrab, 0.5, -0.001, 0.001, 0.5), 
-        new(ColourSpace.Oklrch, 0, 0, 0, 0), new(ColourSpace.Oklrch, 1, 0.5, 360, 1), new(ColourSpace.Oklrch, 0.5, 0.25, 180, 0.5), 
-        new(ColourSpace.Cam02, 0, -50, -50, 0), new(ColourSpace.Cam02, 100, 50, 50, 1), new(ColourSpace.Cam02, 50, -1, 1, 0.5), 
-        new(ColourSpace.Cam16, 0, -50, -50, 0), new(ColourSpace.Cam16, 100, 50, 50, 1), new(ColourSpace.Cam16, 50, -1, 1, 0.5),
+        new(ColourSpace.Oklrch, 0, 0, 0, 0), new(ColourSpace.Oklrch, 1, 0.5, 360, 1), new(ColourSpace.Oklrch, 0.5, 0.25, 180, 0.5),
+        new(ColourSpace.Cam02Jch, 0, 0, 0, 0), new(ColourSpace.Cam02Jch, 100, 120, 360, 1), new(ColourSpace.Cam02Jch, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Jmh, 0, 0, 0, 0), new(ColourSpace.Cam02Jmh, 100, 120, 360, 1), new(ColourSpace.Cam02Jmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Jsh, 0, 0, 0, 0), new(ColourSpace.Cam02Jsh, 100, 120, 360, 1), new(ColourSpace.Cam02Jsh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Qch, 0, 0, 0, 0), new(ColourSpace.Cam02Qch, 100, 120, 360, 1), new(ColourSpace.Cam02Qch, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Qmh, 0, 0, 0, 0), new(ColourSpace.Cam02Qmh, 100, 120, 360, 1), new(ColourSpace.Cam02Qmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Qsh, 0, 0, 0, 0), new(ColourSpace.Cam02Qsh, 100, 120, 360, 1), new(ColourSpace.Cam02Qsh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam02Ucs, 0, -50, -50, 0), new(ColourSpace.Cam02Ucs, 100, 50, 50, 1), new(ColourSpace.Cam02Ucs, 50, -1, 1, 0.5),
+        new(ColourSpace.Cam16Jch, 0, 0, 0, 0), new(ColourSpace.Cam16Jch, 100, 120, 360, 1), new(ColourSpace.Cam16Jch, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Jmh, 0, 0, 0, 0), new(ColourSpace.Cam16Jmh, 100, 120, 360, 1), new(ColourSpace.Cam16Jmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Jsh, 0, 0, 0, 0), new(ColourSpace.Cam16Jsh, 100, 120, 360, 1), new(ColourSpace.Cam16Jsh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Qch, 0, 0, 0, 0), new(ColourSpace.Cam16Qch, 100, 120, 360, 1), new(ColourSpace.Cam16Qch, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Qmh, 0, 0, 0, 0), new(ColourSpace.Cam16Qmh, 100, 120, 360, 1), new(ColourSpace.Cam16Qmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Qsh, 0, 0, 0, 0), new(ColourSpace.Cam16Qsh, 100, 120, 360, 1), new(ColourSpace.Cam16Qsh, 50, 60, 180, 0.5), 
+        new(ColourSpace.Cam16Ucs, 0, -50, -50, 0), new(ColourSpace.Cam16Ucs, 100, 50, 50, 1), new(ColourSpace.Cam16Ucs, 50, -1, 1, 0.5),
+        new(ColourSpace.HellwigJch, 0, 0, 0, 0), new(ColourSpace.HellwigJch, 100, 120, 360, 1), new(ColourSpace.HellwigJch, 50, 60, 180, 0.5), 
+        new(ColourSpace.HellwigJmh, 0, 0, 0, 0), new(ColourSpace.HellwigJmh, 100, 120, 360, 1), new(ColourSpace.HellwigJmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.HellwigJsh, 0, 0, 0, 0), new(ColourSpace.HellwigJsh, 100, 120, 360, 1), new(ColourSpace.HellwigJsh, 50, 60, 180, 0.5), 
+        new(ColourSpace.HellwigQch, 0, 0, 0, 0), new(ColourSpace.HellwigQch, 100, 120, 360, 1), new(ColourSpace.HellwigQch, 50, 60, 180, 0.5), 
+        new(ColourSpace.HellwigQmh, 0, 0, 0, 0), new(ColourSpace.HellwigQmh, 100, 120, 360, 1), new(ColourSpace.HellwigQmh, 50, 60, 180, 0.5), 
+        new(ColourSpace.HellwigQsh, 0, 0, 0, 0), new(ColourSpace.HellwigQsh, 100, 120, 360, 1), new(ColourSpace.HellwigQsh, 50, 60, 180, 0.5), 
         new(ColourSpace.Hct, 0, 0, 0, 0), new(ColourSpace.Hct, 360, 120, 100, 1), new(ColourSpace.Hct, 180, 60, 50, 0.5),
         new(ColourSpace.Munsell, 0, 0, 0, 0), new(ColourSpace.Munsell, 360, 10, 20, 1), new(ColourSpace.Munsell, 180, 5, 10, 0.5)
     ];
     
     [TestCaseSource(nameof(ColourSpaceTestCases))]
-    public void UnicolourNoAlpha(ColourSpace colourSpace, double first, double second, double third, double alpha)
+    public void UnicolourNoAlpha(ColourSpace colourSpace, double first, double second, double third, double _)
     {
         var tuple = (first, second, third);
         var expected = new Unicolour(colourSpace, first, second, third);
@@ -114,8 +132,26 @@ public class SmokeTests
         new(ColourSpace.Okhwb, 0, 0), new(ColourSpace.Okhwb, 1, 1), new(ColourSpace.Okhwb, 0.5, 0.5), 
         new(ColourSpace.Oklrab, 0, 0), new(ColourSpace.Oklrab, 1, 1), new(ColourSpace.Oklrab, 0.5, 0.5), 
         new(ColourSpace.Oklrch, 0, 0), new(ColourSpace.Oklrch, 1, 1), new(ColourSpace.Oklrch, 0.5, 0.5), 
-        new(ColourSpace.Cam02, 0, 0), new(ColourSpace.Cam02, 100, 1), new(ColourSpace.Cam02, 50, 0.5), 
-        new(ColourSpace.Cam16, 0, 0), new(ColourSpace.Cam16, 100, 1), new(ColourSpace.Cam16, 50, 0.5),
+        new(ColourSpace.Cam02Jch, 0, 0), new(ColourSpace.Cam02Jch, 100, 1), new(ColourSpace.Cam02Jch, 50, 0.5), 
+        new(ColourSpace.Cam02Jmh, 0, 0), new(ColourSpace.Cam02Jmh, 100, 1), new(ColourSpace.Cam02Jmh, 50, 0.5), 
+        new(ColourSpace.Cam02Jsh, 0, 0), new(ColourSpace.Cam02Jsh, 100, 1), new(ColourSpace.Cam02Jsh, 50, 0.5), 
+        new(ColourSpace.Cam02Qch, 0, 0), new(ColourSpace.Cam02Qch, 100, 1), new(ColourSpace.Cam02Qch, 50, 0.5), 
+        new(ColourSpace.Cam02Qmh, 0, 0), new(ColourSpace.Cam02Qmh, 100, 1), new(ColourSpace.Cam02Qmh, 50, 0.5), 
+        new(ColourSpace.Cam02Qsh, 0, 0), new(ColourSpace.Cam02Qsh, 100, 1), new(ColourSpace.Cam02Qsh, 50, 0.5), 
+        new(ColourSpace.Cam02Ucs, 0, 0), new(ColourSpace.Cam02Ucs, 100, 1), new(ColourSpace.Cam02Ucs, 50, 0.5),
+        new(ColourSpace.Cam16Jch, 0, 0), new(ColourSpace.Cam16Jch, 100, 1), new(ColourSpace.Cam16Jch, 50, 0.5), 
+        new(ColourSpace.Cam16Jmh, 0, 0), new(ColourSpace.Cam16Jmh, 100, 1), new(ColourSpace.Cam16Jmh, 50, 0.5), 
+        new(ColourSpace.Cam16Jsh, 0, 0), new(ColourSpace.Cam16Jsh, 100, 1), new(ColourSpace.Cam16Jsh, 50, 0.5), 
+        new(ColourSpace.Cam16Qch, 0, 0), new(ColourSpace.Cam16Qch, 100, 1), new(ColourSpace.Cam16Qch, 50, 0.5), 
+        new(ColourSpace.Cam16Qmh, 0, 0), new(ColourSpace.Cam16Qmh, 100, 1), new(ColourSpace.Cam16Qmh, 50, 0.5), 
+        new(ColourSpace.Cam16Qsh, 0, 0), new(ColourSpace.Cam16Qsh, 100, 1), new(ColourSpace.Cam16Qsh, 50, 0.5), 
+        new(ColourSpace.Cam16Ucs, 0, 0), new(ColourSpace.Cam16Ucs, 100, 1), new(ColourSpace.Cam16Ucs, 50, 0.5),
+        new(ColourSpace.HellwigJch, 0, 0), new(ColourSpace.HellwigJch, 100, 1), new(ColourSpace.HellwigJch, 50, 0.5), 
+        new(ColourSpace.HellwigJmh, 0, 0), new(ColourSpace.HellwigJmh, 100, 1), new(ColourSpace.HellwigJmh, 50, 0.5), 
+        new(ColourSpace.HellwigJsh, 0, 0), new(ColourSpace.HellwigJsh, 100, 1), new(ColourSpace.HellwigJsh, 50, 0.5), 
+        new(ColourSpace.HellwigQch, 0, 0), new(ColourSpace.HellwigQch, 100, 1), new(ColourSpace.HellwigQch, 50, 0.5), 
+        new(ColourSpace.HellwigQmh, 0, 0), new(ColourSpace.HellwigQmh, 100, 1), new(ColourSpace.HellwigQmh, 50, 0.5), 
+        new(ColourSpace.HellwigQsh, 0, 0), new(ColourSpace.HellwigQsh, 100, 1), new(ColourSpace.HellwigQsh, 50, 0.5), 
         new(ColourSpace.Hct, 0, 0), new(ColourSpace.Hct, 100, 1), new(ColourSpace.Hct, 50, 0.5),
         new(ColourSpace.Munsell, 0, 0), new(ColourSpace.Munsell, 10, 1), new(ColourSpace.Munsell, 5, 0.5)
     ];

@@ -22,7 +22,7 @@ public class RoundtripOkhslTests
         // OKHSV <-> OKLAB is not robust when values are outwith the usual 0 - 1 range
         // many instances of these out-of-gamut values do roundtrip
         // but this confirms that when they do not, it is related to these unusual values
-        if (TestUtils.MaxDiff(roundtrip.Triplet, original.Triplet) > Tolerance)
+        if (TestUtils.MaxDiff(roundtrip, original) > Tolerance)
         {
             Assert.That(original.S < 0 ||  original.L < 0 || original.S > 1 || original.L > 1);
             
@@ -34,7 +34,7 @@ public class RoundtripOkhslTests
         }
         else
         {
-            TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+            TestUtils.AssertTriplet(roundtrip, original, Tolerance);
         }
     }
 }

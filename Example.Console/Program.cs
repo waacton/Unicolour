@@ -4,10 +4,10 @@ using Wacton.Unicolour.Icc;
 
 var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent.RelativeColorimetric, "SWOP2006"));
 
-var white = new Unicolour("#000000");
-var black = new Unicolour("#FFFFFF");
+var black = new Unicolour("#000000");
+var white = new Unicolour("#FFFFFF");
 
-const int col1Width = 8;
+const int col1Width = 10;
 const int col2Width = 32;
 const int barLength = col1Width + 2 + col2Width + 2 + 3; // 2 per column padding, 3 for all borders
 
@@ -54,7 +54,7 @@ static Table GetTable(Unicolour colour)
     table.AddColumn(new TableColumn("Value").Width(col2Width));
 
     table.AddRow("Hex", $"{colour.Hex}");
-    table.AddRow("Rgb 255", $"{colour.Rgb.Byte255}");
+    table.AddRow("Rgb 255", $"{colour.Rgb255}");
     table.AddRow("Rgb", $"{colour.Rgb}");
     table.AddRow("Rgb Lin.", $"{colour.RgbLinear}");
     table.AddRow("Hsl", $"{colour.Hsl}");
@@ -88,8 +88,26 @@ static Table GetTable(Unicolour colour)
     table.AddRow("Okhsv", $"{colour.Okhsv}");
     table.AddRow("Okhsl", $"{colour.Okhsl}");
     table.AddRow("Okhwb", $"{colour.Okhwb}");
-    table.AddRow("Cam02", $"{colour.Cam02}");
-    table.AddRow("Cam16", $"{colour.Cam16}");
+    table.AddRow("Cam02Jch", $"{colour.Cam02Jch}");
+    table.AddRow("Cam02Jmh", $"{colour.Cam02Jmh}");
+    table.AddRow("Cam02Jsh", $"{colour.Cam02Jsh}");
+    table.AddRow("Cam02Qch", $"{colour.Cam02Qch}");
+    table.AddRow("Cam02Qmh", $"{colour.Cam02Qmh}");
+    table.AddRow("Cam02Qsh", $"{colour.Cam02Qsh}");
+    table.AddRow("Cam02Ucs", $"{colour.Cam02Ucs}");
+    table.AddRow("Cam16Jch", $"{colour.Cam16Jch}");
+    table.AddRow("Cam16Jmh", $"{colour.Cam16Jmh}");
+    table.AddRow("Cam16Jsh", $"{colour.Cam16Jsh}");
+    table.AddRow("Cam16Qch", $"{colour.Cam16Qch}");
+    table.AddRow("Cam16Qmh", $"{colour.Cam16Qmh}");
+    table.AddRow("Cam16Qsh", $"{colour.Cam16Qsh}");
+    table.AddRow("Cam16Ucs", $"{colour.Cam16Ucs}");
+    table.AddRow("HellwigJch", $"{colour.HellwigJch}");
+    table.AddRow("HellwigJmh", $"{colour.HellwigJmh}");
+    table.AddRow("HellwigJsh", $"{colour.HellwigJsh}");
+    table.AddRow("HellwigQch", $"{colour.HellwigQch}");
+    table.AddRow("HellwigQmh", $"{colour.HellwigQmh}");
+    table.AddRow("HellwigQsh", $"{colour.HellwigQsh}");
     table.AddRow("Hct", $"{colour.Hct}");
     table.AddRow("Munsell", $"{colour.Munsell}");
     table.AddRow("Icc", $"{colour.Icc}");

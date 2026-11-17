@@ -3,9 +3,9 @@
 [![GitLab](https://badgen.net/static/gitlab/source/ff1493?icon=gitlab)](https://gitlab.com/Wacton/Unicolour)
 [![NuGet](https://badgen.net/nuget/v/Wacton.Unicolour?icon)](https://www.nuget.org/packages/Wacton.Unicolour/)
 [![pipeline status](https://gitlab.com/Wacton/Unicolour/badges/main/pipeline.svg)](https://gitlab.com/Wacton/Unicolour/-/commits/main)
-[![tests passed](https://badgen.net/static/tests/293,323/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
+[![tests passed](https://badgen.net/static/tests/349,353/green/)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
 [![coverage report](https://gitlab.com/Wacton/Unicolour/badges/main/coverage.svg)](https://gitlab.com/Wacton/Unicolour/-/pipelines)
-![AI generated](https://badgen.net/static/ai%20generated/0%20%25%20✨/8800ff/)
+![AI generated](https://badgen.net/static/ai%20generated/%20zero%20%25%20✨/8800ff/)
 
 Unicolour is the most comprehensive .NET library for working with colour:
 - Colour space conversion
@@ -52,7 +52,9 @@ It can be used to [mix](https://github.com/waacton/Unicolour#mix-colours) and [c
 > TSL · XYB ·
 > LMS · IPT · ICTCP · Jzazbz · JzCzhz ·
 > Oklab · Oklch · Okhsv · Okhsl · Okhwb · Oklrab · Oklrch ·
-> CIECAM02 · CAM16 ·
+> CIECAM02 JCh · CIECAM02 JMh · CIECAM02 Jsh · CIECAM02 QCh · CIECAM02 QMh · CIECAM02 Qsh · CIECAM02-UCS ·
+> CAM16 JCh · CAM16 JMh · CAM16 Jsh · CAM16 QCh · CAM16 QMh · CAM16 Qsh · CAM16-UCS ·
+> Hellwig JCh · Hellwig JMh · Hellwig Jsh · Hellwig QCh · Hellwig QMh · Hellwig Qsh ·
 > HCT ·
 > Munsell HVC ·
 > CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion)
@@ -156,49 +158,67 @@ var (l, c, h) = colour.Oklch;
 > var hex = grey.Hex; // #808080
 > ```
 
-| Colour&nbsp;space                                                                   | Enum                    | Property       |
-|-------------------------------------------------------------------------------------|-------------------------|----------------|
-| RGB&nbsp;(0–255)                                                                    | `ColourSpace.Rgb255`    | `.Rgb.Byte255` |
-| RGB                                                                                 | `ColourSpace.Rgb`       | `.Rgb`         |
-| Linear&nbsp;RGB                                                                     | `ColourSpace.RgbLinear` | `.RgbLinear`   |
-| HSB&nbsp;/&nbsp;HSV                                                                 | `ColourSpace.Hsb`       | `.Hsb`         |
-| HSL                                                                                 | `ColourSpace.Hsl`       | `.Hsl`         |
-| HWB                                                                                 | `ColourSpace.Hwb`       | `.Hwb`         |
-| HSI                                                                                 | `ColourSpace.Hsi`       | `.Hsi`         |
-| CIEXYZ                                                                              | `ColourSpace.Xyz`       | `.Xyz`         |
-| CIExyY                                                                              | `ColourSpace.Xyy`       | `.Xyy`         |
-| [WXY](https://unicolour.wacton.xyz/wxy-colour-space)                                | `ColourSpace.Wxy`       | `.Wxy`         |
-| CIELAB                                                                              | `ColourSpace.Lab`       | `.Lab`         |
-| CIELChab                                                                            | `ColourSpace.Lchab`     | `.Lchab`       |
-| CIELUV                                                                              | `ColourSpace.Luv`       | `.Luv`         |
-| CIELChuv                                                                            | `ColourSpace.Lchuv`     | `.Lchuv`       |
-| HSLuv                                                                               | `ColourSpace.Hsluv`     | `.Hsluv`       |
-| HPLuv                                                                               | `ColourSpace.Hpluv`     | `.Hpluv`       |
-| YPbPr                                                                               | `ColourSpace.Ypbpr`     | `.Ypbpr`       |
-| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_                                              | `ColourSpace.Ycbcr`     | `.Ycbcr`       |
-| YCgCo                                                                               | `ColourSpace.Ycgco`     | `.Ycgco`       |
-| YUV&nbsp;_(PAL)_                                                                    | `ColourSpace.Yuv`       | `.Yuv`         |
-| YIQ&nbsp;_(NTSC)_                                                                   | `ColourSpace.Yiq`       | `.Yiq`         |
-| YDbDr&nbsp;_(SECAM)_                                                                | `ColourSpace.Ydbdr`     | `.Ydbdr`       |
-| TSL                                                                                 | `ColourSpace.Tsl`       | `.Tsl`         |
-| XYB                                                                                 | `ColourSpace.Xyb`       | `.Xyb`         |
-| LMS                                                                                 | `ColourSpace.Lms`       | `.Lms`         | 
-| IPT                                                                                 | `ColourSpace.Ipt`       | `.Ipt`         |
-| ICTCP                                                                               | `ColourSpace.Ictcp`     | `.Ictcp`       |
-| Jzazbz                                                                              | `ColourSpace.Jzazbz`    | `.Jzazbz`      |
-| JzCzhz                                                                              | `ColourSpace.Jzczhz`    | `.Jzczhz`      |
-| Oklab                                                                               | `ColourSpace.Oklab`     | `.Oklab`       |
-| Oklch                                                                               | `ColourSpace.Oklch`     | `.Oklch`       |
-| Okhsv                                                                               | `ColourSpace.Okhsv`     | `.Okhsv`       |
-| Okhsl                                                                               | `ColourSpace.Okhsl`     | `.Okhsl`       |
-| Okhwb                                                                               | `ColourSpace.Okhwb`     | `.Okhwb`       |
-| Oklrab                                                                              | `ColourSpace.Oklrab`    | `.Oklrab`      |
-| Oklrch                                                                              | `ColourSpace.Oklrch`    | `.Oklrch`      |
-| CIECAM02                                                                            | `ColourSpace.Cam02`     | `.Cam02`       |
-| CAM16                                                                               | `ColourSpace.Cam16`     | `.Cam16`       |
-| HCT                                                                                 | `ColourSpace.Hct`       | `.Hct`         |
-| Munsell HVC                                                                         | `ColourSpace.Munsell`   | `.Munsell`     |
-| CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion) | -                       | `.Icc`         |
+| Colour&nbsp;space                                                                   | Enum                     | Property                                 |
+|-------------------------------------------------------------------------------------|--------------------------|------------------------------------------|
+| RGB&nbsp;(0–255)                                                                    | `ColourSpace.Rgb255`     | `.Rgb255`&nbsp;·&nbsp;`.Rgb.Byte255`     |
+| RGB                                                                                 | `ColourSpace.Rgb`        | `.Rgb`                                   |
+| Linear&nbsp;RGB                                                                     | `ColourSpace.RgbLinear`  | `.RgbLinear`                             |
+| HSB&nbsp;/&nbsp;HSV                                                                 | `ColourSpace.Hsb`        | `.Hsb`                                   |
+| HSL                                                                                 | `ColourSpace.Hsl`        | `.Hsl`                                   |
+| HWB                                                                                 | `ColourSpace.Hwb`        | `.Hwb`                                   |
+| HSI                                                                                 | `ColourSpace.Hsi`        | `.Hsi`                                   |
+| CIEXYZ                                                                              | `ColourSpace.Xyz`        | `.Xyz`                                   |
+| CIExyY                                                                              | `ColourSpace.Xyy`        | `.Xyy`                                   |
+| [WXY](https://unicolour.wacton.xyz/wxy-colour-space)                                | `ColourSpace.Wxy`        | `.Wxy`                                   |
+| CIELAB                                                                              | `ColourSpace.Lab`        | `.Lab`                                   |
+| CIELChab                                                                            | `ColourSpace.Lchab`      | `.Lchab`                                 |
+| CIELUV                                                                              | `ColourSpace.Luv`        | `.Luv`                                   |
+| CIELChuv                                                                            | `ColourSpace.Lchuv`      | `.Lchuv`                                 |
+| HSLuv                                                                               | `ColourSpace.Hsluv`      | `.Hsluv`                                 |
+| HPLuv                                                                               | `ColourSpace.Hpluv`      | `.Hpluv`                                 |
+| YPbPr                                                                               | `ColourSpace.Ypbpr`      | `.Ypbpr`                                 |
+| YCbCr&nbsp;/&nbsp;YUV&nbsp;_(digital)_                                              | `ColourSpace.Ycbcr`      | `.Ycbcr`                                 |
+| YCgCo                                                                               | `ColourSpace.Ycgco`      | `.Ycgco`                                 |
+| YUV&nbsp;_(PAL)_                                                                    | `ColourSpace.Yuv`        | `.Yuv`                                   |
+| YIQ&nbsp;_(NTSC)_                                                                   | `ColourSpace.Yiq`        | `.Yiq`                                   |
+| YDbDr&nbsp;_(SECAM)_                                                                | `ColourSpace.Ydbdr`      | `.Ydbdr`                                 |
+| TSL                                                                                 | `ColourSpace.Tsl`        | `.Tsl`                                   |
+| XYB                                                                                 | `ColourSpace.Xyb`        | `.Xyb`                                   |
+| LMS                                                                                 | `ColourSpace.Lms`        | `.Lms`                                   | 
+| IPT                                                                                 | `ColourSpace.Ipt`        | `.Ipt`                                   |
+| ICTCP                                                                               | `ColourSpace.Ictcp`      | `.Ictcp`                                 |
+| Jzazbz                                                                              | `ColourSpace.Jzazbz`     | `.Jzazbz`                                |
+| JzCzhz                                                                              | `ColourSpace.Jzczhz`     | `.Jzczhz`                                |
+| Oklab                                                                               | `ColourSpace.Oklab`      | `.Oklab`                                 |
+| Oklch                                                                               | `ColourSpace.Oklch`      | `.Oklch`                                 |
+| Okhsv                                                                               | `ColourSpace.Okhsv`      | `.Okhsv`                                 |
+| Okhsl                                                                               | `ColourSpace.Okhsl`      | `.Okhsl`                                 |
+| Okhwb                                                                               | `ColourSpace.Okhwb`      | `.Okhwb`                                 |
+| Oklrab                                                                              | `ColourSpace.Oklrab`     | `.Oklrab`                                |
+| Oklrch                                                                              | `ColourSpace.Oklrch`     | `.Oklrch`                                |
+| CIECAM02&nbsp;JCh                                                                   | `ColourSpace.Cam02Jch`   | `.Cam02Jch`&nbsp;·&nbsp;`.Cam02.Jch`     |
+| CIECAM02&nbsp;JMh                                                                   | `ColourSpace.Cam02Jmh`   | `.Cam02Jmh`&nbsp;·&nbsp;`.Cam02.Jmh`     |
+| CIECAM02&nbsp;Jsh                                                                   | `ColourSpace.Cam02Jsh`   | `.Cam02Jsh`&nbsp;·&nbsp;`.Cam02.Jsh`     |
+| CIECAM02&nbsp;QCh                                                                   | `ColourSpace.Cam02Qch`   | `.Cam02Qch`&nbsp;·&nbsp;`.Cam02.Qch`     |
+| CIECAM02&nbsp;QMh                                                                   | `ColourSpace.Cam02Qmh`   | `.Cam02Qmh`&nbsp;·&nbsp;`.Cam02.Qmh`     |
+| CIECAM02&nbsp;Qsh                                                                   | `ColourSpace.Cam02Qsh`   | `.Cam02Qsh`&nbsp;·&nbsp;`.Cam02.Qsh`     |
+| CIECAM02-UCS                                                                        | `ColourSpace.Cam02Ucs`   | `.Cam02Ucs`                              |
+| CAM16&nbsp;JCh                                                                      | `ColourSpace.Cam16Jch`   | `.Cam16Jch`&nbsp;·&nbsp;`.Cam16.Jch`     |
+| CAM16&nbsp;JMh                                                                      | `ColourSpace.Cam16Jmh`   | `.Cam16Jmh`&nbsp;·&nbsp;`.Cam16.Jmh`     |
+| CAM16&nbsp;Jsh                                                                      | `ColourSpace.Cam16Jsh`   | `.Cam16Jsh`&nbsp;·&nbsp;`.Cam16.Jsh`     |
+| CAM16&nbsp;QCh                                                                      | `ColourSpace.Cam16Qch`   | `.Cam16Qch`&nbsp;·&nbsp;`.Cam16.Qch`     |
+| CAM16&nbsp;QMh                                                                      | `ColourSpace.Cam16Qmh`   | `.Cam16Qmh`&nbsp;·&nbsp;`.Cam16.Qmh`     |
+| CAM16&nbsp;Qsh                                                                      | `ColourSpace.Cam16Qsh`   | `.Cam16Qsh`&nbsp;·&nbsp;`.Cam16.Qsh`     |
+| CAM16-UCS                                                                           | `ColourSpace.Cam16Ucs`   | `.Cam16Ucs`                              |
+| Hellwig&nbsp;JCh                                                                    | `ColourSpace.HellwigJch` | `.HellwigJch`&nbsp;·&nbsp;`.Hellwig.Jch` |
+| Hellwig&nbsp;JMh                                                                    | `ColourSpace.HellwigJmh` | `.HellwigJmh`&nbsp;·&nbsp;`.Hellwig.Jmh` |
+| Hellwig&nbsp;Jsh                                                                    | `ColourSpace.HellwigJsh` | `.HellwigJsh`&nbsp;·&nbsp;`.Hellwig.Jsh` |
+| Hellwig&nbsp;QCh                                                                    | `ColourSpace.HellwigQch` | `.HellwigQch`&nbsp;·&nbsp;`.Hellwig.Qch` |
+| Hellwig&nbsp;QMh                                                                    | `ColourSpace.HellwigQmh` | `.HellwigQmh`&nbsp;·&nbsp;`.Hellwig.Qmh` |
+| Hellwig&nbsp;Qsh                                                                    | `ColourSpace.HellwigQsh` | `.HellwigQsh`&nbsp;·&nbsp;`.Hellwig.Qsh` |
+| HCT                                                                                 | `ColourSpace.Hct`        | `.Hct`                                   |
+| Munsell HVC                                                                         | `ColourSpace.Munsell`    | `.Munsell`                               |
+| CMYK [?](https://github.com/waacton/Unicolour#use-icc-profiles-for-cmyk-conversion) | -                        | `.Icc`                                   |
 
 > Munsell HVC colours are defined by 4 attributes, but are managed in Unicolour using 3.
 > The Munsell hue notation is mapped to conventional degrees, with 5R at 0° and 360° and 5BG at 180°.
@@ -290,6 +310,7 @@ var difference = red.Difference(blue, DeltaE.Cie76);
 | ΔEz                                                    | `DeltaE.Z`                 |
 | ΔEHyAB                                                 | `DeltaE.Hyab`              |
 | ΔEOK                                                   | `DeltaE.Ok`                |
+| ΔEOK2                                                  | `DeltaE.Ok2`               |
 | ΔECAM02                                                | `DeltaE.Cam02`             |
 | ΔECAM16                                                | `DeltaE.Cam16`             |
 
@@ -453,7 +474,7 @@ either because conversion formulas have limitations or because a user passes the
 Although these values don't make sense to use, they should propagate safely and avoid triggering exceptions.
 ```cs
 var bad1 = new Unicolour(ColourSpace.Oklab, double.NegativeInfinity, double.NaN, double.Epsilon);
-var bad2 = new Unicolour(ColourSpace.Cam16, double.NaN, double.MaxValue, double.MinValue);
+var bad2 = new Unicolour(ColourSpace.Cam16Ucs, double.NaN, double.MaxValue, double.MinValue);
 var bad3 = bad1.Mix(bad2, ColourSpace.Hct, amount: double.PositiveInfinity);
 ```
 

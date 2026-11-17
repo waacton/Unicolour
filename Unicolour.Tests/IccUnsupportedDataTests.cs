@@ -112,8 +112,8 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         var actualUnicolour = new Unicolour(config, new Channels(input));
         var expectedUnicolour = new Unicolour(config, new Channels(effectiveInput));
         
-        TestUtils.AssertTriplet(actualUnicolour.Xyz.Triplet, expectedUnicolour.Xyz.Triplet, 0);
-        TestUtils.AssertTriplet(actualUnicolour.Rgb.Triplet, expectedUnicolour.Rgb.Triplet, 0);
+        TestUtils.AssertTriplet(actualUnicolour.Xyz, expectedUnicolour.Xyz, 0);
+        TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Not.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
         Assert.That(iccConfig.Error, Is.Null);
@@ -134,7 +134,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         var actualUnicolour = new Unicolour(config, new Channels(input));
         var expectedUnicolour = new Unicolour(config, new Channels(effectiveInput));
         
-        TestUtils.AssertTriplet(actualUnicolour.Rgb.Triplet, expectedUnicolour.Rgb.Triplet, 0);
+        TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
         Assert.That(iccConfig.Error, Is.Null);

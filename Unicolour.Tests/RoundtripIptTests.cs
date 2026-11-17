@@ -17,6 +17,6 @@ public class RoundtripIptTests
         var original = new Ipt(triplet.First, triplet.Second, triplet.Third);
         var xyz = Ipt.ToXyz(original, XyzConfig.ChromaticAdaptor);
         var roundtrip = Ipt.FromXyz(xyz, XyzConfig.ChromaticAdaptor);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

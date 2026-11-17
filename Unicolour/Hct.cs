@@ -1,20 +1,17 @@
-﻿using static Wacton.Unicolour.Utils;
+﻿using Wacton.Unicolour.Cam16;
+using static Wacton.Unicolour.Utils;
 
 namespace Wacton.Unicolour;
 
-public record Hct : ColourRepresentation
+public record Hct : ColourTriplet
 {
-    protected internal override int? HueIndex => 0;
-    public double H => First;
-    public double C => Second;
-    public double T => Third;
-    
-    // a colour defined using all 3 coordinates of a hue-based system by definition has hue and chroma (even if it cannot be detected)
-    protected override bool IsTripletAchromatic => false;
+    public double H => this[0];
+    public double C => this[1];
+    public double T => this[2];
     
     public Hct(double h, double c, double t) : this(h, c, t, Limitation.None) {}
     public Hct(double t) : this(0, 0, t, Limitation.Achromatic) {}
-    internal Hct(double h, double c, double t, Limitation limitation) : base(h, c, t, limitation) {}
+    internal Hct(double h, double c, double t, Limitation limitation) : base(h, c, t, 0, limitation) {}
 
     protected override string String => Limitation != Limitation.Achromatic ? $"{H:F1}° {C:F2} {T:F2}" : $"{NoHue}° {C:F2} {T:F2}";
     public override string ToString() => base.ToString();
@@ -33,18 +30,17 @@ public record Hct : ColourRepresentation
     private static readonly WhitePoint HctWhitePoint = Illuminant.D65.GetWhitePoint(Observer.Degree2);
     private static readonly ChromaticAdaptor HctChromaticAdaptor = new(HctWhitePoint, ChromaticAdaptation.Bradford);
 
-    internal static Cam16 Cam16Component(Xyz xyz) => Cam16.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor);
-    internal static Lab LabComponent(Xyz xyz) => Lab.FromXyz(xyz);
+    internal static Cam GetCam16(Xyz xyz) => Cam.FromXyz(xyz, CamConfiguration.Hct.WhitePoint, CamConfiguration.Hct.View16, HctChromaticAdaptor);
     
     internal static Hct FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor)
     {
         var d65Xyz = chromaticAdaptor.AdaptTo(xyz, HctWhitePoint);
-        var cam16 = Cam16Component(d65Xyz);
-        var lab = LabComponent(d65Xyz);
+        var cam16Component = GetCam16(d65Xyz);
+        var labComponent = Lab.FromXyz(d65Xyz);
 
-        var h = cam16.Model.H;
-        var c = cam16.Model.C;
-        var t = lab.L;
+        var h = cam16Component.Model.H;
+        var c = cam16Component.Model.C;
+        var t = labComponent.L;
         return new Hct(h, c, t, xyz.Limitation);
     }
     
@@ -100,7 +96,7 @@ public record Hct : ColourRepresentation
         foreach (var (x, z) in xzPairs)
         {
             var xyz = new Xyz(x, targetY, z, HctWhitePoint);
-            var j = Cam16.FromXyz(xyz, CamConfiguration.Hct, HctChromaticAdaptor).Model.J;
+            var j = GetCam16(xyz).Model.J;
             var data = ProcessJ(targetY, j, hct);
             if (Math.Abs(data.DeltaY) < best.DeltaY)
             {
@@ -114,9 +110,8 @@ public record Hct : ColourRepresentation
     private static HctToXyzSearchData ProcessJ(double targetY, double j, Hct hct)
     {
         var (h, c, _) = hct;
-        var camModel = new Cam.Model(j, c, h, 0, 0, 0);
-        var cam16 = new Cam16(camModel, CamConfiguration.Hct, Limitation.None);
-        var xyz = Cam16.ToXyz(cam16, CamConfiguration.Hct, HctChromaticAdaptor);
+        var cam16 = new Cam(new Jch(j, c, h), CamConfiguration.Hct.View16);
+        var xyz = Cam.ToXyz(cam16, CamConfiguration.Hct.WhitePoint, HctChromaticAdaptor);
         var deltaY = xyz.Y - targetY;
         return new HctToXyzSearchData(hct, j, cam16, xyz, targetY, deltaY);
     }
@@ -136,11 +131,11 @@ internal record HctToXyzSearchResult(HctToXyzSearchData Data, int Iterations, bo
     public override string ToString() => $"{Data} · Iterations:{Iterations} · Converged:{Converged}";
 }
 
-internal record HctToXyzSearchData(Hct Hct, double J, Cam16 Cam16, Xyz Xyz, double TargetY, double DeltaY)
+internal record HctToXyzSearchData(Hct Hct, double J, Cam Cam16, Xyz Xyz, double TargetY, double DeltaY)
 {
     internal Hct Hct { get; } = Hct;
     internal double J { get; } = J;
-    internal Cam16 Cam16 { get; } = Cam16;
+    internal Cam Cam16 { get; } = Cam16;
     internal Xyz Xyz { get; } = Xyz;
     internal double TargetY { get; } = TargetY;
     internal double DeltaY { get; } = DeltaY;

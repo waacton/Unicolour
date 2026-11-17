@@ -31,18 +31,13 @@ internal static class GamutMapping
         var config = colour.Configuration;
         var alpha = colour.Alpha.A;
         var lchab = colour.Lchab;
-
-        if (lchab.IsNaN)
-        {
-            return new Unicolour(config, ColourSpace.Xyz, double.NaN, double.NaN, double.NaN, alpha);
-        }
         
-        var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config.Value).Lchab.WithHueModulo();
+        var (l, _, h) = colour.ConvertToConfiguration(PointerGamut.Config).Lchab.WithHueModulo();
         l = l.Clamp(PointerGamut.MinL, PointerGamut.MaxL);
 
         var gamutBoundaryColour = lchab.C <= 0
-            ? new Unicolour(PointerGamut.Config.Value, ColourSpace.Lab, l, 0, 0, alpha)
-            : new Unicolour(PointerGamut.Config.Value, ColourSpace.Lchab, l, PointerGamut.GetMaxC(l, h), h, alpha);
+            ? new Unicolour(PointerGamut.Config, ColourSpace.Lab, l, 0, 0, alpha)
+            : new Unicolour(PointerGamut.Config, ColourSpace.Lchab, l, PointerGamut.GetMaxC(l, h), h, alpha);
 
         return gamutBoundaryColour.ConvertToConfiguration(config);
     }

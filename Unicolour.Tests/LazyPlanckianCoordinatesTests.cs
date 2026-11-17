@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Reflection;
+using NUnit.Framework;
 
 namespace Wacton.Unicolour.Tests;
 
@@ -8,24 +9,24 @@ public class LazyPlanckianCoordinatesTests
     public void DirectAccess()
     {
         var planckian = new Planckian(Observer.Degree2);
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.False);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
 
-        _ = planckian.StandardRangeCoordinates.Value;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        _ = planckian.StandardRangeCoordinates;
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
         
-        _ = planckian.BelowRangeCoordinates.Value;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        _ = planckian.BelowRangeCoordinates;
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.True);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
         
-        _ = planckian.AboveRangeCoordinates.Value;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.True);
+        _ = planckian.AboveRangeCoordinates;
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.True);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.True);
     }
     
     [Test]
@@ -37,14 +38,14 @@ public class LazyPlanckianCoordinatesTests
         
         var white = new Unicolour(config, ColourSpace.Rgb, 1, 1, 1);
         var planckian = white.Configuration.Xyz.Planckian;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.False);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
 
         _ = white.Temperature;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
         Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
@@ -59,14 +60,14 @@ public class LazyPlanckianCoordinatesTests
         
         var red = new Unicolour(config, ColourSpace.Rgb, 1, 0, 0);
         var planckian = red.Configuration.Xyz.Planckian;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.False);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
 
         _ = red.Temperature;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.True);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
         Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
@@ -81,17 +82,39 @@ public class LazyPlanckianCoordinatesTests
         
         var blue = new Unicolour(config, ColourSpace.Rgb, 0, 0, 1);
         var planckian = blue.Configuration.Xyz.Planckian;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.False);
+
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.False);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.False);
 
         _ = blue.Temperature;
-        Assert.That(planckian.StandardRangeCoordinates.IsValueCreated, Is.True);
-        Assert.That(planckian.BelowRangeCoordinates.IsValueCreated, Is.False);
-        Assert.That(planckian.AboveRangeCoordinates.IsValueCreated, Is.True);
+        Assert.That(HasStandardRangeCoordinates(planckian), Is.True);
+        Assert.That(HasBelowRangeCoordinates(planckian), Is.False);
+        Assert.That(HasAboveRangeCoordinates(planckian), Is.True);
         
         var black = new Unicolour(config, ColourSpace.Rgb, 0, 0, 0);
         Assert.That(black.Configuration.Xyz.Planckian, Is.EqualTo(planckian));
+    }
+    
+    private static bool HasStandardRangeCoordinates(Planckian planckian)
+    {
+        // Planckian.StandardRangeCoordinates is an internal get-only property, which results in a generated backing field
+        var backingField = typeof(Planckian).GetField("<StandardRangeCoordinates>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        return backingField.GetValue(planckian) != null;
+    }
+    
+    private static bool HasBelowRangeCoordinates(Planckian planckian)
+    {
+        // Planckian.BelowRangeCoordinates is an internal get-only property, which results in a generated backing field
+        var backingField = typeof(Planckian).GetField("<BelowRangeCoordinates>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        return backingField.GetValue(planckian) != null;
+    }
+    
+    private static bool HasAboveRangeCoordinates(Planckian planckian)
+    {
+        // Planckian.AboveRangeCoordinates is an internal get-only property, which results in a generated backing field
+        var backingField = typeof(Planckian).GetField("<AboveRangeCoordinates>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        return backingField.GetValue(planckian) != null;
     }
 }
 

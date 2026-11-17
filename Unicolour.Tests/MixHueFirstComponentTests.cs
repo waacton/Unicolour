@@ -173,7 +173,7 @@ public class MixHueFirstComponentTests : MixHueAgnosticTests
     // this extra step is needed to handle the unusual WXY "hue"
     private new void AssertMix(Unicolour colour, (double first, double second, double third, double alpha) expected)
     {
-        var tripletWithDegree = colour.GetRepresentation(ColourSpace).Triplet.WithHueMap(mapToHue).WithHueModulo();
+        var tripletWithDegree = colour.GetTriplet(ColourSpace).WithHueMap(mapToHue).WithHueModulo();
         TestUtils.AssertMixed(tripletWithDegree, colour.Alpha.A, expected);
     }
 }

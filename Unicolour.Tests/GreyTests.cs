@@ -7,26 +7,44 @@ namespace Wacton.Unicolour.Tests;
 
 public class GreyTests
 {
-    private static readonly Dictionary<ColourSpace, ColourSpace[]> AdjacentHueSpaces = new()
+    private static readonly Dictionary<ColourSpace, (ColourSpace[] chainedHued, ColourSpace upstreamUnhued, ColourSpace? downstreamUnhued)> HuedSpaces = new()
     {
-        { ColourSpace.Hsb, [ColourSpace.Hsl, ColourSpace.Hwb] },
-        { ColourSpace.Hsl, [ColourSpace.Hsb, ColourSpace.Hwb] },
-        { ColourSpace.Hwb, [ColourSpace.Hsb, ColourSpace.Hsl] },
-        { ColourSpace.Hsi, [] },
-        { ColourSpace.Wxy, [] },
-        { ColourSpace.Lchab, [] },
-        { ColourSpace.Lchuv, [ColourSpace.Hsluv, ColourSpace.Hpluv] },
-        { ColourSpace.Hsluv, [ColourSpace.Lchuv, ColourSpace.Hpluv] },
-        { ColourSpace.Hpluv, [ColourSpace.Lchuv, ColourSpace.Hsluv] },
-        { ColourSpace.Tsl, [] },
-        { ColourSpace.Jzczhz, [] },
-        { ColourSpace.Oklch, [] },
-        { ColourSpace.Okhsv, [ColourSpace.Okhwb] },
-        { ColourSpace.Okhsl, [] },
-        { ColourSpace.Okhwb, [ColourSpace.Okhsv] },
-        { ColourSpace.Oklrch, [] },
-        { ColourSpace.Hct, [] },
-        { ColourSpace.Munsell, [] }
+        { ColourSpace.Hsb, (chainedHued: [ColourSpace.Hsl, ColourSpace.Hwb], upstreamUnhued: ColourSpace.Rgb, downstreamUnhued: null) },
+        { ColourSpace.Hsl, (chainedHued: [ColourSpace.Hsb, ColourSpace.Hwb], upstreamUnhued: ColourSpace.Rgb, downstreamUnhued: null) },
+        { ColourSpace.Hwb, (chainedHued: [ColourSpace.Hsb, ColourSpace.Hsl], upstreamUnhued: ColourSpace.Rgb, downstreamUnhued: null) },
+        { ColourSpace.Hsi, (chainedHued: [], upstreamUnhued: ColourSpace.Rgb, downstreamUnhued: null) },
+        { ColourSpace.Wxy, (chainedHued: [], upstreamUnhued: ColourSpace.Xyy, downstreamUnhued: null) },
+        { ColourSpace.Lchab, (chainedHued: [], upstreamUnhued: ColourSpace.Lab, downstreamUnhued: null) },
+        { ColourSpace.Lchuv, (chainedHued: [ColourSpace.Hsluv, ColourSpace.Hpluv], upstreamUnhued: ColourSpace.Luv, downstreamUnhued: null) },
+        { ColourSpace.Hsluv, (chainedHued: [ColourSpace.Lchuv, ColourSpace.Hpluv], upstreamUnhued: ColourSpace.Luv, downstreamUnhued: null) },
+        { ColourSpace.Hpluv, (chainedHued: [ColourSpace.Lchuv, ColourSpace.Hsluv], upstreamUnhued: ColourSpace.Luv, downstreamUnhued: null) },
+        { ColourSpace.Tsl, (chainedHued: [], upstreamUnhued: ColourSpace.Rgb, downstreamUnhued: null) },
+        { ColourSpace.Jzczhz, (chainedHued: [], upstreamUnhued: ColourSpace.Jzazbz, downstreamUnhued: null) },
+        { ColourSpace.Oklch, (chainedHued: [], upstreamUnhued: ColourSpace.Oklab, downstreamUnhued: null) },
+        { ColourSpace.Okhsv, (chainedHued: [ColourSpace.Okhwb], upstreamUnhued: ColourSpace.Oklab, downstreamUnhued: null) },
+        { ColourSpace.Okhsl, (chainedHued: [], upstreamUnhued: ColourSpace.Oklab, downstreamUnhued: null) },
+        { ColourSpace.Okhwb, (chainedHued: [ColourSpace.Okhsv], upstreamUnhued: ColourSpace.Oklab, downstreamUnhued: null) },
+        { ColourSpace.Oklrch, (chainedHued: [], upstreamUnhued: ColourSpace.Oklrab, downstreamUnhued: null) },
+        { ColourSpace.Cam02Jch, (chainedHued: [ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam02Jmh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam02Jsh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam02Qch, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qmh, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam02Qmh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam02Qsh, (chainedHued: [ColourSpace.Cam02Jch, ColourSpace.Cam02Jmh, ColourSpace.Cam02Jsh, ColourSpace.Cam02Qch, ColourSpace.Cam02Qmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam02Ucs) },
+        { ColourSpace.Cam16Jch, (chainedHued: [ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Jmh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Jsh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qch, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qmh, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qmh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.Cam16Qsh, (chainedHued: [ColourSpace.Cam16Jch, ColourSpace.Cam16Jmh, ColourSpace.Cam16Jsh, ColourSpace.Cam16Qch, ColourSpace.Cam16Qmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: ColourSpace.Cam16Ucs) },
+        { ColourSpace.HellwigJch, (chainedHued: [ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.HellwigJmh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.HellwigJsh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.HellwigQch, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQmh, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.HellwigQmh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQsh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.HellwigQsh, (chainedHued: [ColourSpace.HellwigJch, ColourSpace.HellwigJmh, ColourSpace.HellwigJsh, ColourSpace.HellwigQch, ColourSpace.HellwigQmh], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.Hct, (chainedHued: [], upstreamUnhued: ColourSpace.Xyz, downstreamUnhued: null) },
+        { ColourSpace.Munsell, (chainedHued: [], upstreamUnhued: ColourSpace.Xyy, downstreamUnhued: null) }
     };
     
     [TestCase(ColourSpace.Hsb, 180, 0, 0)]
@@ -45,28 +63,49 @@ public class GreyTests
     [TestCase(ColourSpace.Okhsl, 180, 0, 0)]
     [TestCase(ColourSpace.Okhwb, 180, 0, 1)]
     [TestCase(ColourSpace.Oklrch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Jch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Jmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Jsh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Qch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Qmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam02Qsh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Jsh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qch, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qmh, 0, 0, 180)]
+    [TestCase(ColourSpace.Cam16Qsh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJch, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJmh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigJsh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQch, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQmh, 0, 0, 180)]
+    [TestCase(ColourSpace.HellwigQsh, 0, 0, 180)]
     [TestCase(ColourSpace.Hct, 180, 0, 0)]
     [TestCase(ColourSpace.Munsell, 180, 0, 0)]
     public void WithHue(ColourSpace colourSpace, double first, double second, double third)
     {
+        var (chainedHued, upstreamUnhued, downstreamUnhued) = HuedSpaces[colourSpace];
+        ColourSpace[] firstUnhued = downstreamUnhued == null ? [upstreamUnhued] : [upstreamUnhued, downstreamUnhued.Value];
+        var other = TestUtils.AllColourSpaces.Except(chainedHued.Concat(firstUnhued).Concat([colourSpace])).ToArray();
+        
         // grey != achromatic, hue-based colours that are created with 3 values explicitly have chroma information, even though they appear greyscale
-        var colour = new Unicolour(colourSpace, first, second, third);
-        var adjacentHuedSpaces = AdjacentHueSpaces[colourSpace];
-        
-        var initial = colour.SourceRepresentation;
-        Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.None));
-        Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: true), Has.All.EqualTo(Limitation.None));
-        Assert.That(TestUtils.Limitations(colour, adjacentHuedSpaces, baselines: false), Has.All.EqualTo(Limitation.None));
-        
-        // hued-spaces and adjacent hued-spaces do not have achromatic limitation
         // (e.g. hue 180 chroma 0 has a cyan hue, just the lack of chroma makes it ineffectual) 
-        // the first non-hued space to be converted to (e.g. RGB from HSB) will inherit no limitation, but report as achromatic
-        // (since the lack of a hue component means grey truly a colour with no known hue)
-        // and all subsequent downstream spaces will inherit that achromatic limitation
-        var otherSpaces = TestUtils.AllColourSpaces.Except(adjacentHuedSpaces.Concat([colour.SourceColourSpace])).ToArray();
-        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: true), Has.One.EqualTo(Limitation.None));
-        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: true), Has.Exactly(otherSpaces.Length - 1).EqualTo(Limitation.Achromatic));
-        Assert.That(TestUtils.Limitations(colour, otherSpaces, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
+        var colour = new Unicolour(colourSpace, first, second, third);
+        Assert.That(colour.SourceTriplet.LimitationBaseline, Is.EqualTo(Limitation.None));
+        
+        // hued spaces chained to the initial space also do not have achromatic limitation, they have received a hue value, just with no chroma
+        Assert.That(TestUtils.Limitations(colour, chainedHued, baselines: true), Has.All.EqualTo(Limitation.None));
+        Assert.That(TestUtils.Limitations(colour, chainedHued, baselines: false), Has.All.EqualTo(Limitation.None));
+        
+        // first upstream and downstream unhued spaces will inherit no limitation, but report as achromatic
+        // (e.g. HSB -> RGB, since the lack of a hue component means grey truly a colour with no known hue)
+        Assert.That(TestUtils.Limitations(colour, firstUnhued, baselines: true), Has.All.EqualTo(Limitation.None));
+        Assert.That(TestUtils.Limitations(colour, firstUnhued, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
+        
+        // all other spaces will inherit that achromatic limitation
+        Assert.That(TestUtils.Limitations(colour, other, baselines: true), Has.All.EqualTo(Limitation.Achromatic));
+        Assert.That(TestUtils.Limitations(colour, other, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
     }
 
     private static readonly Configuration Config = new(ybrConfig: YbrConfiguration.Jpeg); // allows YCbCr to start from 0 instead of 16, otherwise produces negative XYZ leading to NaN CAM values
@@ -77,7 +116,7 @@ public class GreyTests
         // when a hue-based colour is created with a single value, it represents grey level and there is no chroma information - at this point it is truly achromatic
         var colour = new Unicolour(Config, colourSpace, 0);
         
-        var initial = colour.SourceRepresentation;
+        var initial = colour.SourceTriplet;
         Assert.That(initial.LimitationBaseline, Is.EqualTo(Limitation.Achromatic));
         Assert.That(TestUtils.Limitations(colour, TestUtils.AllColourSpaces, baselines: true), Has.All.EqualTo(Limitation.Achromatic));
         Assert.That(TestUtils.Limitations(colour, TestUtils.AllColourSpaces, baselines: false), Has.All.EqualTo(Limitation.Achromatic));
@@ -121,14 +160,32 @@ public class GreyTests
         new TestCaseData(new Okhwb(0.75), new Okhwb(0, 0.75, 0.25)).SetName(nameof(Okhwb)),
         new TestCaseData(new Oklrab(0.75), new Oklrab(0.75, 0, 0)).SetName(nameof(Oklrab)),
         new TestCaseData(new Oklrch(0.75), new Oklrch(0.75, 0, 0)).SetName(nameof(Oklrch)),
-        new TestCaseData(new Cam02(75, CamConfiguration.StandardRgb), new Cam02(75, 0, 0, CamConfiguration.StandardRgb)).SetName(nameof(Cam02)),
-        new TestCaseData(new Cam16(75, CamConfiguration.StandardRgb), new Cam16(75, 0, 0, CamConfiguration.StandardRgb)).SetName(nameof(Cam16)),
+        new TestCaseData(new Cam02.Jch(75), new Cam02.Jch(75, 0, 0)).SetName(nameof(Cam02.Jch)),
+        new TestCaseData(new Cam02.Jmh(75), new Cam02.Jmh(75, 0, 0)).SetName(nameof(Cam02.Jmh)),
+        new TestCaseData(new Cam02.Jsh(75), new Cam02.Jsh(75, 0, 0)).SetName(nameof(Cam02.Jsh)),
+        new TestCaseData(new Cam02.Qch(75), new Cam02.Qch(75, 0, 0)).SetName(nameof(Cam02.Qch)),
+        new TestCaseData(new Cam02.Qmh(75), new Cam02.Qmh(75, 0, 0)).SetName(nameof(Cam02.Qmh)),
+        new TestCaseData(new Cam02.Qsh(75), new Cam02.Qsh(75, 0, 0)).SetName(nameof(Cam02.Qsh)),
+        new TestCaseData(new Cam02.Ucs(75), new Cam02.Ucs(75, 0, 0)).SetName(nameof(Cam02.Ucs)),
+        new TestCaseData(new Cam16.Jch(75), new Cam16.Jch(75, 0, 0)).SetName(nameof(Cam16.Jch)),
+        new TestCaseData(new Cam16.Jmh(75), new Cam16.Jmh(75, 0, 0)).SetName(nameof(Cam16.Jmh)),
+        new TestCaseData(new Cam16.Jsh(75), new Cam16.Jsh(75, 0, 0)).SetName(nameof(Cam16.Jsh)),
+        new TestCaseData(new Cam16.Qch(75), new Cam16.Qch(75, 0, 0)).SetName(nameof(Cam16.Qch)),
+        new TestCaseData(new Cam16.Qmh(75), new Cam16.Qmh(75, 0, 0)).SetName(nameof(Cam16.Qmh)),
+        new TestCaseData(new Cam16.Qsh(75), new Cam16.Qsh(75, 0, 0)).SetName(nameof(Cam16.Qsh)),
+        new TestCaseData(new Cam16.Ucs(75), new Cam16.Ucs(75, 0, 0)).SetName(nameof(Cam16.Ucs)),
+        new TestCaseData(new Hellwig.Jch(75), new Hellwig.Jch(75, 0, 0)).SetName(nameof(Hellwig.Jch)),
+        new TestCaseData(new Hellwig.Jmh(75), new Hellwig.Jmh(75, 0, 0)).SetName(nameof(Hellwig.Jmh)),
+        new TestCaseData(new Hellwig.Jsh(75), new Hellwig.Jsh(75, 0, 0)).SetName(nameof(Hellwig.Jsh)),
+        new TestCaseData(new Hellwig.Qch(75), new Hellwig.Qch(75, 0, 0)).SetName(nameof(Hellwig.Qch)),
+        new TestCaseData(new Hellwig.Qmh(75), new Hellwig.Qmh(75, 0, 0)).SetName(nameof(Hellwig.Qmh)),
+        new TestCaseData(new Hellwig.Qsh(75), new Hellwig.Qsh(75, 0, 0)).SetName(nameof(Hellwig.Qsh)),
         new TestCaseData(new Hct(75), new Hct(0, 0, 75)).SetName(nameof(Hct)),
         new TestCaseData(new Munsell(7.5), new Munsell(0, 7.5, 0)).SetName(nameof(Munsell))
     ];
 
     [TestCaseSource(nameof(GreyData))]
-    public void AchromaticConstructor(ColourRepresentation achromatic, ColourRepresentation grey)
+    public void AchromaticConstructor(ColourTriplet achromatic, ColourTriplet grey)
     {
         Assert.That(achromatic.LimitationBaseline, Is.EqualTo(Limitation.Achromatic));
         Assert.That(grey.LimitationBaseline, Is.EqualTo(Limitation.None));
@@ -136,7 +193,6 @@ public class GreyTests
         Assert.That(achromatic.Limitation, Is.EqualTo(Limitation.Achromatic));
         Assert.That(grey.Limitation, Is.EqualTo(grey.HasHueComponent ? Limitation.None : Limitation.Achromatic));
         
-        Assert.That(achromatic, Is.Not.EqualTo(grey));
-        Assert.That(achromatic.Triplet, Is.EqualTo(grey.Triplet));
+        Assert.That(achromatic.Tuple, Is.EqualTo(grey.Tuple));
     }
 }

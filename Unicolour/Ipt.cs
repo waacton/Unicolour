@@ -1,13 +1,12 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Ipt : ColourRepresentation
+public record Ipt : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double I => First;
-    public double P => Second;
-    public double T => Third;
+    public double I => this[0];
+    public double P => this[1];
+    public double T => this[2];
     
-    protected override bool IsTripletAchromatic => P == 0.0 && T == 0.0;
+    protected override bool HasAchromaticValues => P == 0.0 && T == 0.0;
     
     public Ipt(double i, double p, double t) : this(i, p, t, Limitation.None) {}
     public Ipt(double i) : this(i, 0, 0, Limitation.Achromatic) {}

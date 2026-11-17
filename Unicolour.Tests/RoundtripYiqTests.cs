@@ -16,6 +16,6 @@ public class RoundtripYiqTests
         var original = new Yiq(triplet.First, triplet.Second, triplet.Third);
         var yuv = Yiq.ToYuv(original);
         var roundtrip = Yiq.FromYuv(yuv);
-        TestUtils.AssertTriplet(roundtrip.Triplet, original.Triplet, Tolerance);
+        TestUtils.AssertTriplet(roundtrip, original, Tolerance);
     }
 }

@@ -22,10 +22,10 @@ public class MixGreyscaleJzczhzTests
         var fromJchWhite = jchWhite.Mix(green, ColourSpace.Jzczhz, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(fromJabBlack.Jzczhz.Triplet, new(0.25, 0.25, 120));
-        AssertTriplet(fromJabWhite.Jzczhz.Triplet, new(0.75, 0.25, 120));
-        AssertTriplet(fromJchBlack.Jzczhz.Triplet, new(0.25, 0.5, 150));
-        AssertTriplet(fromJchWhite.Jzczhz.Triplet, new(0.75, 0.5, 150));
+        AssertTriplet(fromJabBlack.Jzczhz, new(0.25, 0.25, 120));
+        AssertTriplet(fromJabWhite.Jzczhz, new(0.75, 0.25, 120));
+        AssertTriplet(fromJchBlack.Jzczhz, new(0.25, 0.5, 150));
+        AssertTriplet(fromJchWhite.Jzczhz, new(0.75, 0.5, 150));
     }
     
     [Test]
@@ -43,10 +43,10 @@ public class MixGreyscaleJzczhzTests
         var toJzczhzWhite = blue.Mix(jcWhite, ColourSpace.Jzczhz, premultiplyAlpha: false);
 
         // greyscale mixes differently depending on the initial colour space
-        AssertTriplet(toJzazbzBlack.Jzczhz.Triplet, new(0.25, 0.25, 240));
-        AssertTriplet(toJzazbzWhite.Jzczhz.Triplet, new(0.75, 0.25, 240));
-        AssertTriplet(toJzczhzBlack.Jzczhz.Triplet, new(0.25, 0.5, 210));
-        AssertTriplet(toJzczhzWhite.Jzczhz.Triplet, new(0.75, 0.5, 210));
+        AssertTriplet(toJzazbzBlack.Jzczhz, new(0.25, 0.25, 240));
+        AssertTriplet(toJzazbzWhite.Jzczhz, new(0.75, 0.25, 240));
+        AssertTriplet(toJzczhzBlack.Jzczhz, new(0.25, 0.5, 210));
+        AssertTriplet(toJzczhzWhite.Jzczhz, new(0.75, 0.5, 210));
     }
     
     [Test]
@@ -60,14 +60,14 @@ public class MixGreyscaleJzczhzTests
         var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Jzazbz.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Jzazbz.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Jzazbz.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Jzazbz, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Jzazbz, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Jzazbz, new(0.75, 0, 0));
         
         // colours created from Jzazbz therefore hue does not change
-        AssertTriplet(blackToWhite.Jzczhz.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Jzczhz.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Jzczhz.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Jzczhz, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Jzczhz, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Jzczhz, new(0.75, 0, 0));
     }
     
     [Test]
@@ -81,14 +81,14 @@ public class MixGreyscaleJzczhzTests
         var blackToGrey = black.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         var whiteToGrey = white.Mix(grey, ColourSpace.Jzczhz, premultiplyAlpha: false);
         
-        AssertTriplet(blackToWhite.Jzazbz.Triplet, new(0.5, 0, 0));
-        AssertTriplet(blackToGrey.Jzazbz.Triplet, new(0.25, 0, 0));
-        AssertTriplet(whiteToGrey.Jzazbz.Triplet, new(0.75, 0, 0));
+        AssertTriplet(blackToWhite.Jzazbz, new(0.5, 0, 0));
+        AssertTriplet(blackToGrey.Jzazbz, new(0.25, 0, 0));
+        AssertTriplet(whiteToGrey.Jzazbz, new(0.75, 0, 0));
         
         // colours created from Jzczhz therefore hue changes
-        AssertTriplet(blackToWhite.Jzczhz.Triplet, new(0.5, 0, 330));
-        AssertTriplet(blackToGrey.Jzczhz.Triplet, new(0.25, 0, 50));
-        AssertTriplet(whiteToGrey.Jzczhz.Triplet, new(0.75, 0, 20));
+        AssertTriplet(blackToWhite.Jzczhz, new(0.5, 0, 330));
+        AssertTriplet(blackToGrey.Jzczhz, new(0.25, 0, 50));
+        AssertTriplet(whiteToGrey.Jzczhz, new(0.75, 0, 20));
     }
     
     private static void AssertTriplet(ColourTriplet actual, ColourTriplet expected)

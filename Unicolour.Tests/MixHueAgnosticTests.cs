@@ -121,7 +121,7 @@ public abstract class MixHueAgnosticTests
     
     protected void AssertMix(Unicolour colour, (double first, double second, double third, double alpha) expected)
     {
-        TestUtils.AssertMixed(colour.GetRepresentation(ColourSpace).Triplet, colour.Alpha.A, expected);
+        TestUtils.AssertMixed(colour.GetTriplet(ColourSpace), colour.Alpha.A, expected);
     }
 }
 

@@ -1,20 +1,19 @@
 ﻿namespace Wacton.Unicolour;
 
-public record Rgb : ColourRepresentation
+public record Rgb : ColourTriplet
 {
-    protected internal override int? HueIndex => null;
-    public double R => First;
-    public double G => Second;
-    public double B => Third;
+    public double R => this[0];
+    public double G => this[1];
+    public double B => this[2];
     
-    protected override bool IsTripletAchromatic => R == G && G == B;
+    protected override bool HasAchromaticValues => R == G && G == B;
     
     public Rgb Clipped => new(R.Clamp(0.0, 1.0), G.Clamp(0.0, 1.0), B.Clamp(0.0, 1.0), Limitation);
     
     // for almost all cases, doing this check in linear RGB will return the same result
     // but handling it here feels most natural as it is the intended "display" space
     // and isn't concerned about questionable custom to-linear functions (e.g. where RGB <= 1.0 but RGB-Linear > 1.0)
-    internal bool IsInGamut => !IsNaN && Triplet == Clipped.Triplet;
+    internal bool IsInGamut => !IsNaN && this == Clipped;
     public Rgb255 Byte255 => new(To255(R), To255(G), To255(B), Limitation);
 
     public Rgb(double r, double g, double b) : this(r, g, b, Limitation.None) {}

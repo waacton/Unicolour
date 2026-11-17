@@ -50,8 +50,8 @@ public class Profile
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
-        var xyzD50 = chromaticAdaptor.AdaptTo(xyz, Transform.XyzD50.WhitePoint).ToArray();
-        return Transform.FromXyz(xyzD50, intent);
+        var xyzD50 = chromaticAdaptor.AdaptTo(xyz, Transform.XyzD50.WhitePoint);
+        return Transform.FromXyz(xyzD50.Values, intent);
     }
     
     internal Xyz ToXyz(double[] deviceValues, Intent intent, ChromaticAdaptor chromaticAdaptor)

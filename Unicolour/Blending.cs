@@ -21,12 +21,12 @@ internal static class Blending
         var config = source.Configuration;
         backdrop = backdrop.ConvertToConfiguration(config);
 
-        var cs = source.Rgb.Clipped.Triplet;
-        var cb = backdrop.Rgb.Clipped.Triplet;
+        var cs = source.Rgb.Clipped;
+        var cb = backdrop.Rgb.Clipped;
         var @as = source.Alpha.Clipped.A;
         var ab = backdrop.Alpha.Clipped.A;
 
-        var blend = BlendColour(cb.ToArray(), cs.ToArray(), blendMode, config.Ybr);
+        var blend = BlendColour(cb.Values, cs.Values, blendMode, config.Ybr);
         var co = CompositeAlpha(cb, ab, cs, @as, blend);
         
         // CSS spec implies that 'co' is premultipied and 'Co' is the actual colour component

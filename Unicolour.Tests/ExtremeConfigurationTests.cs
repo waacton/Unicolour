@@ -74,7 +74,7 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
         var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.38, 0.12, 0.19));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Ictcp, 0.44, 0.13, 0.21));
     }
     
     [Test, Combinatorial]
@@ -82,7 +82,7 @@ public class ExtremeConfigurationTests
         [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whiteLuminance)
     {
         var config = new Configuration(dynamicRange: new(whiteLuminance, whiteLuminance, whiteLuminance, whiteLuminance));
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.106, 0.107, 0.005));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Jzazbz, 0.143, 0.127, 0.006));
     }
     
     [Test, Combinatorial]
@@ -93,7 +93,13 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfig: camConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02, 62.86, 40.81, -1.18));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jch, 49.89, 93.24, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jmh, 49.89, 67.40, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Jsh, 49.89, 87.83, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qch, 87.37, 93.24, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qmh, 87.37, 67.40, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Qsh, 87.37, 87.83, 358.4));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam02Ucs, 62.86, 40.81, -1.18));
     }
     
     [Test, Combinatorial]
@@ -104,6 +110,28 @@ public class ExtremeConfigurationTests
     {
         var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
         var config = new Configuration(camConfig: camConfig);
-        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16, 62.47, 42.60, -1.36));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Jch, 49.47, 99.65, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Jmh, 49.47, 72.04, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Jsh, 49.47, 90.99, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Qch, 87.01, 99.65, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Qmh, 87.01, 72.04, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Qsh, 87.01, 90.99, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.Cam16Ucs, 62.47, 42.60, -1.36));
+    }
+    
+    [Test, Combinatorial]
+    public void Hellwig(
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double whitePoint, 
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double adaptingLuminance,
+        [ValueSource(typeof(TestUtils), nameof(TestUtils.ExtremeDoubles))] double backgroundLuminance)
+    {
+        var camConfig = new CamConfiguration(new WhitePoint(whitePoint, whitePoint, whitePoint), adaptingLuminance, backgroundLuminance, Surround.Average);
+        var config = new Configuration(camConfig: camConfig);
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigJch, 49.47, 60.51, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigJmh, 49.47, 44.10, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigJsh, 49.47, 120.56, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigQch, 36.58, 60.51, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigQmh, 36.58, 44.10, 358.2));
+        TestUtils.AssertNoPropertyError(new Unicolour(config, ColourSpace.HellwigQsh, 36.58, 120.56, 358.2));
     }
 }

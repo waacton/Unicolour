@@ -43,7 +43,7 @@ public partial class ColourSpacePicker : ComponentBase
     
     private void UpdateSliderProperties()
     {
-        var (first, second, third) = State.Colour.GetRepresentation(colourSpace);
+        var (first, second, third) = State.Colour.GetTriplet(colourSpace);
         UpdateSlider(0, first);
         UpdateSlider(1, second);
         UpdateSlider(2, third);

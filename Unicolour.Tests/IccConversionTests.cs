@@ -178,7 +178,7 @@ public class IccConversionTests
     }
     
     [Test]
-    public void NoClipDifferenceUnicolourFromCmyk()
+    public void NoClipDifferenceUnicolourFromCmykPerceptual()
     {
         // values from test data generated using v2.4.2.6 of iccDEV (via https://github.com/waacton/iccDEV-ConversionTestData)
         var iccFile = IccFile.Fogra39;
@@ -200,7 +200,7 @@ public class IccConversionTests
     }
     
     [Test]
-    public void NoClipDifferenceUnicolourToCmyk()
+    public void NoClipDifferenceUnicolourToCmykPerceptual()
     {
         // values from test data generated using v2.4.2.6 of iccDEV (via https://github.com/waacton/iccDEV-ConversionTestData)
         var iccFile = IccFile.Fogra39;
@@ -219,6 +219,49 @@ public class IccConversionTests
         var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, noClip: true));
         Assert.That(colourD50NoClip.Configuration.Icc.NoClip, Is.True);
         Assert.That(colourD65NoClip.Icc.Values, Is.EqualTo(expectedNoClipCmyk).Within(tolerance));
+    }
+    
+    [Test]
+    public void NoClipDifferenceUnicolourToCmykAbsolute()
+    {
+        // values from test data generated using v2.4.2.6 of iccDEV (via https://github.com/waacton/iccDEV-ConversionTestData)
+        // also used as example in https://github.com/waacton/Unicolour/issues/13
+        var iccFile = IccFile.JapanColor2011;
+        const Intent intent = Intent.AbsoluteColorimetric;
+        var labD50 = new Lab(40, 50, 100);
+        double[] expectedCmyk = [0.157557,0.879845,0.999638,0.057330];
+        double[] expectedNoClipCmyk = [0.073305,0.833796,0.999763,0.056473];
+        const double tolerance = 0.000005;
+        
+        var colourD50 = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent), ColourSpace.Lab, labD50.Tuple);
+        var colourD65 = colourD50.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent));
+        Assert.That(colourD50.Configuration.Icc.NoClip, Is.False);
+        Assert.That(colourD65.Icc.Values, Is.EqualTo(expectedCmyk).Within(tolerance));
+        
+        var colourD50NoClip = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent, noClip: true), ColourSpace.Lab, labD50.Tuple);
+        var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, noClip: true));
+        Assert.That(colourD50NoClip.Configuration.Icc.NoClip, Is.True);
+        Assert.That(colourD65NoClip.Icc.Values, Is.EqualTo(expectedNoClipCmyk).Within(tolerance));
+    }
+    
+    // https://github.com/waacton/Unicolour/issues/13 · values taken from LittleCMS
+    private static readonly TestCaseData[] IccToIccTestData =
+    [
+        new(IccFile.Fogra39, IccFile.StandardRgbV4, false, new[] { 0.00151168, 0.0, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV4, true, new[] { 0.02593735, 0.01725858, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV2, false, new[] { 0.0, 0.0, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV2, true, new[] { 0.01896696, 0.0, 0.0 })
+    ];
+
+    [TestCaseSource(nameof(IccToIccTestData))]
+    public void NoClipDifferenceIccToIcc(IccFile sourceIccFile, IccFile targetIccFile, bool noClip, double[] expected)
+    {
+        var sourceConfig = new Configuration(iccConfig: new IccConfiguration(sourceIccFile.GetProfile(), Intent.Perceptual, noClip));
+        var targetConfig = new Configuration(iccConfig: new IccConfiguration(targetIccFile.GetProfile(), Intent.Perceptual, noClip));
+
+        var source = new Unicolour(sourceConfig, new Channels(1.0, 1.0, 1.0, 1.0));
+        var target = source.ConvertToConfiguration(targetConfig);
+        Assert.That(target.Icc.Values, Is.EqualTo(expected).Within(0.00075));
     }
 
     private static void AddTestData(IccFile iccFile)

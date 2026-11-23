@@ -35,8 +35,8 @@ internal abstract class Transform
         this.hasPerceptualHandling = hasPerceptualHandling;
     }
 
-    internal abstract double[] ToXyz(double[] deviceValues, Intent intent);
-    internal abstract double[] FromXyz(double[] xyz, Intent intent);
+    internal abstract double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false);
+    internal abstract double[] FromXyz(double[] xyz, Intent intent, bool noClip = false);
     
     // A -> CLUT -> B (or input -> CLUT -> output)
     internal static double[] AB(double[] aCurveInputs, List<Curve> aCurves, Clut clut, List<Curve> bCurves)
@@ -117,7 +117,7 @@ internal abstract class Transform
         AbsoluteColorimetric
     }
     
-    protected double[] AdjustXyz(double[] xyz, Intent intent, bool isDeviceToPcs)
+    protected double[] AdjustXyz(double[] xyz, Intent intent, bool isDeviceToPcs, bool noClip)
     {
         var pcsAdjustment = intent switch
         {
@@ -132,13 +132,9 @@ internal abstract class Transform
          * e.g. CIccCmm::Apply --> CIccApplyCmm::Apply --> CIccApplyXform::Apply --> CIccPcsXform::Apply --> CIccApplyPcsStep::Apply
          *      --> CIccPcsStepLab2ToXYZ::Apply IccCmm.cpp:4807 --> icLabtoXYZ IccUtil.cpp:874 --> icICubeth IccUtil.cpp:849
          */
-        if (IsLabPcs)
+        if (pcsAdjustment != PcsAdjustment.None && IsLabPcs && !noClip)
         {
-            xyz = pcsAdjustment switch
-            {
-                PcsAdjustment.None => xyz,
-                _ => NegativeClip(xyz)
-            };
+            xyz = NegativeClip(xyz);
         }
         
         xyz = pcsAdjustment switch
@@ -147,21 +143,6 @@ internal abstract class Transform
             PcsAdjustment.AbsoluteColorimetric => AdjustXyzAbsolute(xyz, isDeviceToPcs),
             _ => xyz
         };
-
-        /*
-         * when using XYZ PCS, negative values are clipped after PCS adjustment
-         * see DemoIccMAX --- IccCmm.cpp > CIccXform::AdjustPCS > CIccPCS::NegClip (assumes #ifndef SAMPLEICC_NOCLIPLABTOXYZ)
-         * triggered by CIccXform::CheckDstAbs after transform when device-to-PCS
-         * triggered by CIccXform::CheckSrcAbs before transform when PCS-to-device
-         */
-        if (!IsLabPcs)
-        {
-            xyz = pcsAdjustment switch
-            {
-                PcsAdjustment.None => xyz,
-                _ => xyz
-            };
-        }
         
         return xyz;
     }

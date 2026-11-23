@@ -14,7 +14,7 @@ public partial class State : ComponentBase
         Colour = new Unicolour(Config, "ff1493");
     }
     
-    public static readonly Configuration NoConfig = new(iccConfig: new IccConfiguration(profile: null, "⚠️ Uncalibrated CMYK"));
+    public static readonly Configuration NoConfig = new(iccConfig: new IccConfiguration(profile: null, name: "⚠️ Uncalibrated CMYK"));
     public static Configuration Config { get; private set; } = NoConfig;
     
     private static Unicolour colour = null!;

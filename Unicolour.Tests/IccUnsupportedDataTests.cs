@@ -11,7 +11,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
     [TestCase(Source.FromRgb)]
     public void NotProvided(Source source)
     {
-        var iccConfig = new IccConfiguration(null, "not provided");
+        var iccConfig = new IccConfiguration(null, name: "not provided");
         AssertNotProvided(iccConfig, source);
     }
     
@@ -22,7 +22,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         var profile = IccFile.CxHue45Abstract.GetProfile();
         Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
-        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "not supported header");
+        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, name: "not supported header");
         AssertNotSupportedHeader(iccConfig, profile.Header, source);
     }
     
@@ -37,7 +37,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.Throws<NotSupportedException>(() => { profile.Transform.ToXyz([], Intent.Unspecified); });
         Assert.Throws<NotSupportedException>(() => { profile.Transform.FromXyz([], Intent.Unspecified); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not supported transform");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not supported transform");
         AssertNotSupportedTransformDToB(iccConfig, profile.Header, source);
     }
     
@@ -52,7 +52,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.Throws<NotSupportedException>(() => { profile.Transform.ToXyz([], Intent.Unspecified); });
         Assert.Throws<NotSupportedException>(() => { profile.Transform.FromXyz([], Intent.Unspecified); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not supported transform");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not supported transform");
         AssertNotSupportedTransformNone(iccConfig, profile.Header, source);
     }
     
@@ -65,7 +65,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.DoesNotThrow(() => { profile = new Profile(bytes); });
         Assert.Throws<ArgumentException>(() => { profile.ErrorIfUnsupported(); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not correct signature");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not correct signature");
         AssertNotCorrectProfileSignature(iccConfig, profile.Header, source);
     }
     
@@ -78,7 +78,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.DoesNotThrow(() => { profile = new Profile(bytes); });
         Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not valid lut");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not valid lut");
         AssertNotValidTagSignature(iccConfig, profile.Header, source, "lutSignature");
     }
     
@@ -91,7 +91,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         Assert.DoesNotThrow(() => { profile = new Profile(bytes); });
         Assert.DoesNotThrow(() => { profile.ErrorIfUnsupported(); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not valid curve");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not valid curve");
         AssertNotValidTagSignature(iccConfig, profile.Header, source, "curveSignature");
     }
     
@@ -116,6 +116,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Not.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
+        Assert.That(iccConfig.NoClip, Is.False);
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(actualUnicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
         Assert.That(expectedUnicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
@@ -137,6 +138,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+        Assert.That(iccConfig.NoClip, Is.False);
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(actualUnicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
         Assert.That(expectedUnicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));

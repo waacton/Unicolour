@@ -28,6 +28,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
         }
@@ -38,6 +39,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -54,6 +56,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.StartsWith(ErrorNotFound, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -65,6 +68,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.StartsWith(ErrorNotFound, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -82,6 +86,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotEnoughBytes, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -93,6 +98,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotEnoughBytes, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -110,6 +116,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotParsed, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -121,6 +128,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotParsed, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -138,6 +146,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -149,6 +158,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -166,6 +176,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -177,6 +188,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -194,6 +206,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -205,6 +218,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotSupported, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -222,6 +236,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotCorrectSignature, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
             Assert.That(colour.Icc.Error, Is.Null);
@@ -233,6 +248,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error!.Contains(ErrorNotCorrectSignature, StringComparison.CurrentCultureIgnoreCase));
             Assert.That(colour.Icc, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
@@ -250,6 +266,7 @@ public abstract class IccUnsupportedTests
             TestUtils.AssertColour(colour, expected, 0);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error, Is.Null);
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Signatures.Cmyk));
             Assert.That(colour.Icc.Error!.Contains(argumentName));
@@ -261,6 +278,7 @@ public abstract class IccUnsupportedTests
             var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
             Assert.That(iccConfig.Profile, Is.Not.Null);
             Assert.That(iccConfig.Intent, Is.EqualTo(header.Intent));
+            Assert.That(iccConfig.NoClip, Is.False);
             Assert.That(iccConfig.Error, Is.Null);
             Assert.That(colour.Icc.Values, Is.EqualTo(expected));
             Assert.That(colour.Icc.ColourSpace, Is.EqualTo(Signatures.Cmyk));

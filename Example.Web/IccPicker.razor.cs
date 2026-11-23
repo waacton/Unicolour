@@ -32,7 +32,7 @@ public partial class IccPicker : ComponentBase
         try
         {
             var profile = new Profile(memory.ToArray(), file.Name);
-            config = new Configuration(iccConfig: new IccConfiguration(profile, profile.Name));
+            config = new Configuration(iccConfig: new IccConfiguration(profile, name: profile.Name));
         }
         catch (Exception)
         {

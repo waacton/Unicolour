@@ -344,7 +344,7 @@ public class EqualityTests
     private static YbrConfiguration GetNew(YbrConfiguration config, string name) => new(config.Kr, config.Kb, config.RangeY, config.RangeC, name);
     private static CamConfiguration GetNew(CamConfiguration config, string name) => new(config.WhitePoint, config.AdaptingLuminance, config.BackgroundLuminance, config.Surround, name);
     private static DynamicRange GetNew(DynamicRange config, string name) => new(config.WhiteLuminance, config.MaxLuminance, config.MinLuminance, config.HlgWhiteLevel, name);
-    private static IccConfiguration GetNew(IccConfiguration config, string name) => config.Profile == null ? new(config.Profile, name) : new(config.Profile, config.Intent, name);
+    private static IccConfiguration GetNew(IccConfiguration config, string name) => config.Profile == null ? new(config.Profile, name: name) : new(config.Profile, config.Intent, name: name);
     private static ColourTriplet GetDifferent(ColourTriplet triplet, double diff = 0.1) => new(triplet.First + diff, triplet.Second + diff, triplet.Third + diff);
 
     private static void AssertUnicoloursEqual(Unicolour colour1, Unicolour colour2)
@@ -477,6 +477,7 @@ public class EqualityTests
         AssertEqual(config1.Icc, config2.Icc);
         AssertEqual(config1.Icc.Profile, config2.Icc.Profile);
         AssertEqual(config1.Icc.Intent, config2.Icc.Intent);
+        AssertEqual(config1.Icc.NoClip, config2.Icc.NoClip);
         AssertEqual(config1.Icc.Error, config2.Icc.Error);
     }
 

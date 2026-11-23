@@ -4,10 +4,11 @@ namespace Wacton.Unicolour;
 
 public class IccConfiguration
 {
-    public static readonly IccConfiguration None = new(null, "None");
+    public static readonly IccConfiguration None = new(null, name: "None");
 
     public Profile? Profile { get; }
     public Intent Intent { get; }
+    public bool NoClip { get; }
     public string? Error { get; } 
     public string Name { get; }
 
@@ -17,15 +18,16 @@ public class IccConfiguration
     internal bool HasSupportedProfile => Profile != null && Error == null;
     internal ColourSpace ConnectingSpace => HasSupportedProfile ? ColourSpace.Xyz : ColourSpace.Rgb;
 
-    public IccConfiguration(string profilePath, Intent intent, string name = Utils.Unnamed) : this(GetProfile(profilePath), intent, name) {}
-    public IccConfiguration(byte[] bytes, Intent intent, string name = Utils.Unnamed) : this(GetProfile(bytes), intent, name) {}
-    public IccConfiguration(Stream stream, Intent intent, string name = Utils.Unnamed) : this(GetProfile(stream), intent, name) {}
-    private IccConfiguration((Profile? profile, string? error) profileResult, Intent intent, string name)
+    public IccConfiguration(string profilePath, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(profilePath), intent, noClip, name) {}
+    public IccConfiguration(byte[] bytes, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(bytes), intent, noClip, name) {}
+    public IccConfiguration(Stream stream, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(stream), intent, noClip, name) {}
+    private IccConfiguration((Profile? profile, string? error) profileResult, Intent intent, bool noClip, string name)
     {
         if (profileResult.profile == null)
         {
             Profile = null;
             Intent = intent;
+            NoClip = noClip;
             Error = profileResult.error;
             Name = name;
             return;
@@ -35,22 +37,25 @@ public class IccConfiguration
         // which seems to make sense here since Unicolour is effectively the PCS between the two
         Profile = profileResult.profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
+        NoClip = noClip;
         Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
-    public IccConfiguration(Profile profile, Intent intent, string name = Utils.Unnamed)
+    public IccConfiguration(Profile profile, Intent intent, bool noClip = false, string name = Utils.Unnamed)
     {
         Profile = profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
+        NoClip = noClip;
         Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
-    public IccConfiguration(Profile? profile, string name = Utils.Unnamed)
+    public IccConfiguration(Profile? profile, bool noClip = false, string name = Utils.Unnamed)
     {
         Profile = profile;
         Intent = Profile == null ? Intent.Unspecified : Profile.Header.Intent;
+        NoClip = noClip;
         Error = Profile == null ? null : GetProfileSupportError(Profile);
         Name = name;
     }

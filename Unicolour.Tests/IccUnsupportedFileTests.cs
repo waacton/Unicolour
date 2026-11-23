@@ -14,7 +14,7 @@ public class IccUnsupportedFileTests : IccUnsupportedTests
         const string path = "🚫";
         Assert.Throws<FileNotFoundException>(() => { _ = new Profile(path); });
         
-        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not found");
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, name: "not found");
         AssertNotFound(iccConfig, source);
     }
     
@@ -26,7 +26,7 @@ public class IccUnsupportedFileTests : IccUnsupportedTests
         File.WriteAllBytes(path, CreateBytes(64));
         Assert.Throws<ArgumentException>(() => { _ = new Profile(path); });
 
-        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not enough bytes");
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, name: "not enough bytes");
         AssertNotEnoughBytes(iccConfig, source);
         
         File.Delete(path);
@@ -40,7 +40,7 @@ public class IccUnsupportedFileTests : IccUnsupportedTests
         File.WriteAllBytes(path, CreateBytes(512));
         Assert.Throws<ArgumentException>(() => { _ = new Profile(path); });
         
-        var iccConfig = new IccConfiguration(path, Intent.Unspecified, "not parseable");
+        var iccConfig = new IccConfiguration(path, Intent.Unspecified, name: "not parseable");
         AssertNotParseable(iccConfig, source);
         
         File.Delete(path);

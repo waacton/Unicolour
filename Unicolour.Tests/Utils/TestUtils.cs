@@ -74,7 +74,7 @@ internal static class TestUtils
         YbrConfiguration.Jpeg
     ];
 
-    private static readonly IccConfiguration IccFogra39 = new(IccFile.Fogra39.GetProfile(), Intent.RelativeColorimetric, "Fogra39 relative");
+    private static readonly IccConfiguration IccFogra39 = new(IccFile.Fogra39.GetProfile(), Intent.RelativeColorimetric, name: "Fogra39 relative");
     internal static readonly Configuration DefaultFogra39Config = new(iccConfig: IccFogra39);
 
     internal static readonly Configuration D65Config = new(xyzConfig: XyzConfiguration.D65); // same as Configuration.Default

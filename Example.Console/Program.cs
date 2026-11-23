@@ -2,7 +2,7 @@
 using Wacton.Unicolour;
 using Wacton.Unicolour.Icc;
 
-var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent.RelativeColorimetric, "SWOP2006"));
+var config = new Configuration(iccConfig: new("./SWOP2006_Coated5v2.icc", Intent.RelativeColorimetric, name: "SWOP2006"));
 
 var black = new Unicolour("#000000");
 var white = new Unicolour("#FFFFFF");

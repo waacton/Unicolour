@@ -13,7 +13,7 @@ public class IccUnsupportedStreamTests : IccUnsupportedTests
         var bytes = CreateBytes(64);
         Assert.Throws<ArgumentException>(() => { _ = new Profile(bytes); });
 
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not enough bytes");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not enough bytes");
         AssertNotEnoughBytes(iccConfig, source);
     }
     
@@ -24,7 +24,7 @@ public class IccUnsupportedStreamTests : IccUnsupportedTests
         var bytes = CreateBytes(512);
         Assert.Throws<ArgumentException>(() => { _ = new Profile(bytes); });
         
-        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, "not parseable");
+        var iccConfig = new IccConfiguration(bytes, Intent.Unspecified, name: "not parseable");
         AssertNotParseable(iccConfig, source);
     }
 }

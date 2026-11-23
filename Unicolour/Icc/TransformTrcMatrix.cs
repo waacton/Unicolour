@@ -18,17 +18,17 @@ internal class TransformTrcMatrix : Transform
         matricesInverse = new Lazy<Matrices>(() => new Matrices(Multiply: GetMatrix().Inverse(), Offset: Matrices.ZeroOffset));
     }
     
-    internal override double[] ToXyz(double[] deviceValues, Intent intent)
+    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false)
     {
         // this transform can only be used with XYZ PCS, no need to handle LAB PCS
         var xyz = ToPcs(deviceValues);
-        return AdjustXyz(xyz, intent, isDeviceToPcs: true);
+        return AdjustXyz(xyz, intent, isDeviceToPcs: true, noClip);
     }
 
-    internal override double[] FromXyz(double[] xyz, Intent intent)
+    internal override double[] FromXyz(double[] xyz, Intent intent, bool noClip = false)
     {
         // this transform can only be used with XYZ PCS, no need to handle LAB PCS
-        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false);
+        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false, noClip);
         return ToDevice(xyz);
     }
     

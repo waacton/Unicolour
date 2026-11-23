@@ -15,7 +15,7 @@ public class ConfigureIccTests
     public void ConvertBetweenProfiles(string sourceFileName, string destinationFileName)
     {
         var sourceFile = IccFile.Lookup[sourceFileName];
-        var sourceIccConfig = new IccConfiguration(sourceFile.Path, Intent.Unspecified, "source");
+        var sourceIccConfig = new IccConfiguration(sourceFile.Path, Intent.Unspecified, name: "source");
         var sourceConfig = new Configuration(iccConfig: sourceIccConfig);
         var sourceDeviceChannels = IccFile.GetDeviceChannels(sourceFile);
         var sourceCmyk = new double[sourceDeviceChannels];
@@ -29,7 +29,7 @@ public class ConfigureIccTests
         var connectingRgb = sourceUnicolour.Rgb;
         
         var destinationFile = IccFile.Lookup[destinationFileName];
-        var destinationIccConfig = new IccConfiguration(destinationFile.Path, Intent.Unspecified, "destination");
+        var destinationIccConfig = new IccConfiguration(destinationFile.Path, Intent.Unspecified, name: "destination");
         var destinationConfig = new Configuration(iccConfig: destinationIccConfig);
         var destinationUnicolour = new Unicolour(destinationConfig, ColourSpace.Rgb, connectingRgb.Tuple);
         var destinationCmyk = destinationUnicolour.Icc;
@@ -49,27 +49,27 @@ public class ConfigureIccTests
         var iccFile = IccFile.Fogra39;
         
         var path = iccFile.Path;
-        var fromPath = new IccConfiguration(path, intent, "from path").Profile!;
+        var fromPath = new IccConfiguration(path, intent, name: "from path").Profile!;
         
         var bytes = File.ReadAllBytes(path);
-        var fromBytes = new IccConfiguration(bytes, intent, "from bytes").Profile!;
+        var fromBytes = new IccConfiguration(bytes, intent, name: "from bytes").Profile!;
 
         using var stream = File.OpenRead(path);
-        var fromStream = new IccConfiguration(stream, intent, "from stream").Profile!;
+        var fromStream = new IccConfiguration(stream, intent, name: "from stream").Profile!;
 
         var profile = iccFile.GetProfile();
-        var fromProfile = new IccConfiguration(profile, intent, "from profile").Profile!;
+        var fromProfile = new IccConfiguration(profile, intent, name: "from profile").Profile!;
 
         var profileCustomName = iccFile.GetProfile("test-custom-name");
-        var fromProfileCustomName = new IccConfiguration(profileCustomName, intent, "from profile custom name").Profile!;
+        var fromProfileCustomName = new IccConfiguration(profileCustomName, intent, name: "from profile custom name").Profile!;
 
-        AssertConfig(fromPath, fromBytes);
-        AssertConfig(fromPath, fromStream);
-        AssertConfig(fromPath, fromProfile);
-        AssertConfig(fromPath, fromProfileCustomName);
+        AssertProfile(fromPath, fromBytes);
+        AssertProfile(fromPath, fromStream);
+        AssertProfile(fromPath, fromProfile);
+        AssertProfile(fromPath, fromProfileCustomName);
     }
 
-    private static void AssertConfig(Profile profile1, Profile profile2)
+    private static void AssertProfile(Profile profile1, Profile profile2)
     {
         Assert.That(profile1.Length, Is.EqualTo(profile2.Length));
 
@@ -113,7 +113,7 @@ public class ConfigureIccTests
     public void NoIntent()
     {
         var profile = IccFile.Fogra39.GetProfile();
-        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, "unspecified");
+        var iccConfig = new IccConfiguration(profile, Intent.Unspecified, name: "unspecified");
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
     }
 }

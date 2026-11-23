@@ -24,13 +24,12 @@ public record Channels : ColourBase
     internal static Channels FromXyz(Xyz xyz, ChromaticAdaptor chromaticAdaptor, IccConfiguration iccConfig)
     {
         var profile = iccConfig.Profile!;
-        var intent = iccConfig.Intent;
         
         double[] channels;
         string? error = null;
         try
         {
-            channels = profile.FromXyz(xyz, intent, chromaticAdaptor);
+            channels = profile.FromXyz(xyz, iccConfig.Intent, iccConfig.NoClip, chromaticAdaptor);
         }
         catch (Exception e)
         {
@@ -48,13 +47,12 @@ public record Channels : ColourBase
     internal static Xyz ToXyz(Channels channels, ChromaticAdaptor chromaticAdaptor, IccConfiguration iccConfig)
     {
         var profile = iccConfig.Profile!;
-        var intent = iccConfig.Intent;
         channels.ColourSpace = profile.Header.DataColourSpace;
 
         Xyz xyz;
         try
         {
-            xyz = profile.ToXyz(channels.Values, intent, chromaticAdaptor);
+            xyz = profile.ToXyz(channels.Values, iccConfig.Intent, iccConfig.NoClip, chromaticAdaptor);
         }
         catch (Exception e)
         {

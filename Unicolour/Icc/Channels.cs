@@ -29,7 +29,7 @@ public record Channels : ColourBase
         string? error = null;
         try
         {
-            channels = profile.FromXyz(xyz, iccConfig.Intent, iccConfig.NoClip, chromaticAdaptor);
+            channels = profile.FromXyz(xyz, iccConfig.Intent, iccConfig.ClipNegativeXyz, chromaticAdaptor);
         }
         catch (Exception e)
         {
@@ -52,7 +52,7 @@ public record Channels : ColourBase
         Xyz xyz;
         try
         {
-            xyz = profile.ToXyz(channels.Values, iccConfig.Intent, iccConfig.NoClip, chromaticAdaptor);
+            xyz = profile.ToXyz(channels.Values, iccConfig.Intent, iccConfig.ClipNegativeXyz, chromaticAdaptor);
         }
         catch (Exception e)
         {

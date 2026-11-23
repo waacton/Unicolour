@@ -35,8 +35,8 @@ internal abstract class Transform
         this.hasPerceptualHandling = hasPerceptualHandling;
     }
 
-    internal abstract double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false);
-    internal abstract double[] FromXyz(double[] xyz, Intent intent, bool noClip = false);
+    internal abstract double[] ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz = true);
+    internal abstract double[] FromXyz(double[] xyz, Intent intent, bool clipNegativeXyz = true);
     
     // A -> CLUT -> B (or input -> CLUT -> output)
     internal static double[] AB(double[] aCurveInputs, List<Curve> aCurves, Clut clut, List<Curve> bCurves)
@@ -117,7 +117,7 @@ internal abstract class Transform
         AbsoluteColorimetric
     }
     
-    protected double[] AdjustXyz(double[] xyz, Intent intent, bool isDeviceToPcs, bool noClip)
+    protected double[] AdjustXyz(double[] xyz, Intent intent, bool isDeviceToPcs, bool clipNegativeXyz)
     {
         var pcsAdjustment = intent switch
         {
@@ -125,14 +125,14 @@ internal abstract class Transform
             Intent.AbsoluteColorimetric => PcsAdjustment.AbsoluteColorimetric,
             _ => PcsAdjustment.None
         };
-
+        
         /*
          * when using LAB PCS, negative values are clipped before PCS adjustment
          * see iccDEV with default compilatiuon flag #ifndef SAMPLEICC_NOCLIPLABTOXYZ
          * e.g. CIccCmm::Apply --> CIccApplyCmm::Apply --> CIccApplyXform::Apply --> CIccPcsXform::Apply --> CIccApplyPcsStep::Apply
          *      --> CIccPcsStepLab2ToXYZ::Apply IccCmm.cpp:4807 --> icLabtoXYZ IccUtil.cpp:874 --> icICubeth IccUtil.cpp:849
          */
-        if (pcsAdjustment != PcsAdjustment.None && IsLabPcs && !noClip)
+        if (pcsAdjustment != PcsAdjustment.None && IsLabPcs && clipNegativeXyz)
         {
             xyz = NegativeClip(xyz);
         }

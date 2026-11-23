@@ -116,7 +116,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Not.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
-        Assert.That(iccConfig.NoClip, Is.False);
+        Assert.That(iccConfig.ClipNegativeXyz, Is.True);
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(actualUnicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
         Assert.That(expectedUnicolour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
@@ -138,7 +138,7 @@ public class IccUnsupportedDataTests : IccUnsupportedTests
         TestUtils.AssertTriplet(actualUnicolour.Rgb, expectedUnicolour.Rgb, 0);
         Assert.That(iccConfig.Profile, Is.Null);
         Assert.That(iccConfig.Intent, Is.EqualTo(Intent.Unspecified));
-        Assert.That(iccConfig.NoClip, Is.False);
+        Assert.That(iccConfig.ClipNegativeXyz, Is.True);
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(actualUnicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));
         Assert.That(expectedUnicolour.Icc.ColourSpace, Is.EqualTo(Channels.UncalibratedCmyk));

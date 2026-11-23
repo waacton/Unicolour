@@ -477,7 +477,7 @@ public class EqualityTests
         AssertEqual(config1.Icc, config2.Icc);
         AssertEqual(config1.Icc.Profile, config2.Icc.Profile);
         AssertEqual(config1.Icc.Intent, config2.Icc.Intent);
-        AssertEqual(config1.Icc.NoClip, config2.Icc.NoClip);
+        AssertEqual(config1.Icc.ClipNegativeXyz, config2.Icc.ClipNegativeXyz);
         AssertEqual(config1.Icc.Error, config2.Icc.Error);
     }
 

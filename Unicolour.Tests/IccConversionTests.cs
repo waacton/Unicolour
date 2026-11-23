@@ -49,19 +49,19 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(ToPcsTestData))]
-    public void DeviceToPcs(IccTestColour testColour) => DeviceToPcs(testColour, noClip: false);
+    public void DeviceToPcs(IccTestColour testColour) => DeviceToPcs(testColour, clipNegativeXyz: true);
     
     [TestCaseSource(nameof(ToPcsNoClipTestData))]
-    public void DeviceToPcsNoClip(IccTestColour testColour) => DeviceToPcs(testColour, noClip: true);
+    public void DeviceToPcsNoClip(IccTestColour testColour) => DeviceToPcs(testColour, clipNegativeXyz: false);
     
-    private void DeviceToPcs(IccTestColour testColour, bool noClip)
+    private void DeviceToPcs(IccTestColour testColour, bool clipNegativeXyz)
     {
         var expected = testColour.Output;
         var pcs = testColour.Profile.Header.Pcs; 
         var deviceValues = testColour.Input;
         var intent = testColour.Intent;
         
-        var actual = testColour.Profile.Transform.ToXyz(deviceValues, intent, noClip);
+        var actual = testColour.Profile.Transform.ToXyz(deviceValues, intent, clipNegativeXyz);
         if (pcs == Signatures.Lab)
         {
             var xyz = new Xyz(actual[0], actual[1], actual[2], Transform.XyzD50.WhitePoint);
@@ -79,12 +79,12 @@ public class IccConversionTests
     }
 
     [TestCaseSource(nameof(ToDeviceTestData))]
-    public void PcsToDevice(IccTestColour testColour) => PcsToDevice(testColour, noClip: false);
+    public void PcsToDevice(IccTestColour testColour) => PcsToDevice(testColour, clipNegativeXyz: true);
     
     [TestCaseSource(nameof(ToDeviceNoClipTestData))]
-    public void PcsToDeviceNoClip(IccTestColour testColour) => PcsToDevice(testColour, noClip: true);
+    public void PcsToDeviceNoClip(IccTestColour testColour) => PcsToDevice(testColour, clipNegativeXyz: false);
         
-    private void PcsToDevice(IccTestColour testColour, bool noClip)
+    private void PcsToDevice(IccTestColour testColour, bool clipNegativeXyz)
     {
         var expected = testColour.Output;
         var pcs = testColour.Profile.Header.Pcs;
@@ -96,7 +96,7 @@ public class IccConversionTests
             ? Lab.ToXyz(new Lab(first, second, third), Transform.XyzD50.WhitePoint)
             : new Xyz(first, second, third, Transform.XyzD50.WhitePoint);
         
-        var actual = testColour.Profile.Transform.FromXyz(xyz.Values, intent, noClip);
+        var actual = testColour.Profile.Transform.FromXyz(xyz.Values, intent, clipNegativeXyz);
         var tolerance = device switch
         {
             Signatures.Cmyk => 0.00000175,
@@ -124,7 +124,7 @@ public class IccConversionTests
         var config = new Configuration(iccConfig: iccConfig);
         var colour = new Unicolour(config, ColourSpace.Rgb, rgb.Tuple);
         Assert.That(iccConfig.Intent, Is.EqualTo(profile.Header.Intent));
-        Assert.That(iccConfig.NoClip, Is.False);
+        Assert.That(iccConfig.ClipNegativeXyz, Is.True);
         Assert.That(iccConfig.Error, Is.Null);
         Assert.That(colour.Icc.Values, Is.EqualTo(expected));
         Assert.That(colour.Icc.ColourSpace, Is.EqualTo(profile.Header.DataColourSpace));
@@ -132,44 +132,44 @@ public class IccConversionTests
     }
     
     [TestCaseSource(nameof(UnicolourFromCmykTestData))]
-    public void UnicolourFromCmyk(IccFile iccFile, Intent intent, double[] cmykValues) => UnicolourFromCmyk(iccFile, intent, cmykValues, noClip: false);
+    public void UnicolourFromCmyk(IccFile iccFile, Intent intent, double[] cmykValues) => UnicolourFromCmyk(iccFile, intent, cmykValues, clipNegativeXyz: true);
     
     [TestCaseSource(nameof(UnicolourFromCmykTestData))]
-    public void UnicolourFromCmykNoClip(IccFile iccFile, Intent intent, double[] cmykValues) => UnicolourFromCmyk(iccFile, intent, cmykValues, noClip: true);
+    public void UnicolourFromCmykNoClip(IccFile iccFile, Intent intent, double[] cmykValues) => UnicolourFromCmyk(iccFile, intent, cmykValues, clipNegativeXyz: false);
 
-    private static void UnicolourFromCmyk(IccFile iccFile, Intent intent, double[] cmykValues, bool noClip)
+    private static void UnicolourFromCmyk(IccFile iccFile, Intent intent, double[] cmykValues, bool clipNegativeXyz)
     {
         var profile = iccFile.GetProfile();
         
         // device channels values are used to create D65 unicolour
-        var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent, noClip);
+        var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent, clipNegativeXyz);
         var colourD65 = new Unicolour(iccD65Config, new Channels(cmykValues));
         
         // unicolour converted to the ICC D50 white point
-        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent, noClip);
+        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent, clipNegativeXyz);
         var colourD50 = colourD65.ConvertToConfiguration(iccD50Config);
         
         // the XYZ values should be the same as calling the core ICC profile function
-        var expectedXyzD50 = profile.Transform.ToXyz(cmykValues, intent, noClip);
+        var expectedXyzD50 = profile.Transform.ToXyz(cmykValues, intent, clipNegativeXyz);
         Assert.That(colourD50.Xyz.Values, Is.EqualTo(expectedXyzD50).Within(1e-15));
     }
     
     [TestCaseSource(nameof(UnicolourToCmykTestData))]
-    public void UnicolourToCmyk(IccFile iccFile, Intent intent, double[] xyzValues) => UnicolourToCmyk(iccFile, intent, xyzValues, noClip: false);
+    public void UnicolourToCmyk(IccFile iccFile, Intent intent, double[] xyzValues) => UnicolourToCmyk(iccFile, intent, xyzValues, clipNegativeXyz: true);
     
     [TestCaseSource(nameof(UnicolourToCmykTestData))]
-    public void UnicolourToCmykNoClip(IccFile iccFile, Intent intent, double[] xyzValues) => UnicolourToCmyk(iccFile, intent, xyzValues, noClip: true);
+    public void UnicolourToCmykNoClip(IccFile iccFile, Intent intent, double[] xyzValues) => UnicolourToCmyk(iccFile, intent, xyzValues, clipNegativeXyz: false);
     
-    private static void UnicolourToCmyk(IccFile iccFile, Intent intent, double[] xyzValues, bool noClip)
+    private static void UnicolourToCmyk(IccFile iccFile, Intent intent, double[] xyzValues, bool clipNegativeXyz)
     {
         var profile = iccFile.GetProfile();
         
         // XYZ values are used to create D50 unicolour
-        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent, noClip);
+        var iccD50Config = GetConfig(Transform.XyzD50, iccFile, intent, clipNegativeXyz);
         var colourD50 = new Unicolour(iccD50Config, ColourSpace.Xyz, xyzValues[0], xyzValues[1], xyzValues[2]);
         
         // unicolour converted to the ICC D65 white point
-        var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent, noClip);
+        var iccD65Config = GetConfig(XyzConfiguration.D65, iccFile, intent, clipNegativeXyz);
         var colourD65 = colourD50.ConvertToConfiguration(iccD65Config);
         
         // the CMYK values should be the same as calling the core ICC profile function
@@ -190,12 +190,12 @@ public class IccConversionTests
         
         var colourD65 = new Unicolour(GetConfig(XyzConfiguration.D65, iccFile, intent), cmyk);
         var colourD50 = colourD65.ConvertToConfiguration(GetConfig(Transform.XyzD50, iccFile, intent));
-        Assert.That(colourD65.Configuration.Icc.NoClip, Is.False);
+        Assert.That(colourD65.Configuration.Icc.ClipNegativeXyz, Is.True);
         TestUtils.AssertTriplet(colourD50.Lab, expectedLabD50, tolerance);
         
-        var colourD65NoClip = new Unicolour(GetConfig(XyzConfiguration.D65, iccFile, intent, noClip: true), cmyk);
-        var colourD50NoClip = colourD65NoClip.ConvertToConfiguration(GetConfig(Transform.XyzD50, iccFile, intent, noClip: true));
-        Assert.That(colourD65NoClip.Configuration.Icc.NoClip, Is.True);
+        var colourD65NoClip = new Unicolour(GetConfig(XyzConfiguration.D65, iccFile, intent, clipNegativeXyz: false), cmyk);
+        var colourD50NoClip = colourD65NoClip.ConvertToConfiguration(GetConfig(Transform.XyzD50, iccFile, intent, clipNegativeXyz: false));
+        Assert.That(colourD65NoClip.Configuration.Icc.ClipNegativeXyz, Is.False);
         TestUtils.AssertTriplet(colourD50NoClip.Lab, expectedNoClipLabD50, tolerance);
     }
     
@@ -212,12 +212,12 @@ public class IccConversionTests
         
         var colourD50 = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent), ColourSpace.Lab, labD50.Tuple);
         var colourD65 = colourD50.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent));
-        Assert.That(colourD50.Configuration.Icc.NoClip, Is.False);
+        Assert.That(colourD50.Configuration.Icc.ClipNegativeXyz, Is.True);
         Assert.That(colourD65.Icc.Values, Is.EqualTo(expectedCmyk).Within(tolerance));
         
-        var colourD50NoClip = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent, noClip: true), ColourSpace.Lab, labD50.Tuple);
-        var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, noClip: true));
-        Assert.That(colourD50NoClip.Configuration.Icc.NoClip, Is.True);
+        var colourD50NoClip = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent, clipNegativeXyz: false), ColourSpace.Lab, labD50.Tuple);
+        var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, clipNegativeXyz: false));
+        Assert.That(colourD50NoClip.Configuration.Icc.ClipNegativeXyz, Is.False);
         Assert.That(colourD65NoClip.Icc.Values, Is.EqualTo(expectedNoClipCmyk).Within(tolerance));
     }
     
@@ -235,29 +235,29 @@ public class IccConversionTests
         
         var colourD50 = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent), ColourSpace.Lab, labD50.Tuple);
         var colourD65 = colourD50.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent));
-        Assert.That(colourD50.Configuration.Icc.NoClip, Is.False);
+        Assert.That(colourD50.Configuration.Icc.ClipNegativeXyz, Is.True);
         Assert.That(colourD65.Icc.Values, Is.EqualTo(expectedCmyk).Within(tolerance));
         
-        var colourD50NoClip = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent, noClip: true), ColourSpace.Lab, labD50.Tuple);
-        var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, noClip: true));
-        Assert.That(colourD50NoClip.Configuration.Icc.NoClip, Is.True);
+        var colourD50NoClip = new Unicolour(GetConfig(Transform.XyzD50, iccFile, intent, clipNegativeXyz: false), ColourSpace.Lab, labD50.Tuple);
+        var colourD65NoClip = colourD50NoClip.ConvertToConfiguration(GetConfig(XyzConfiguration.D65, iccFile, intent, clipNegativeXyz: false));
+        Assert.That(colourD50NoClip.Configuration.Icc.ClipNegativeXyz, Is.False);
         Assert.That(colourD65NoClip.Icc.Values, Is.EqualTo(expectedNoClipCmyk).Within(tolerance));
     }
     
     // https://github.com/waacton/Unicolour/issues/13 · values taken from LittleCMS
     private static readonly TestCaseData[] IccToIccTestData =
     [
-        new(IccFile.Fogra39, IccFile.StandardRgbV4, false, new[] { 0.00151168, 0.0, 0.0 }),
-        new(IccFile.Fogra39, IccFile.StandardRgbV4, true, new[] { 0.02593735, 0.01725858, 0.0 }),
-        new(IccFile.Fogra39, IccFile.StandardRgbV2, false, new[] { 0.0, 0.0, 0.0 }),
-        new(IccFile.Fogra39, IccFile.StandardRgbV2, true, new[] { 0.01896696, 0.0, 0.0 })
+        new(IccFile.Fogra39, IccFile.StandardRgbV4, true, new[] { 0.00151168, 0.0, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV4, false, new[] { 0.02593735, 0.01725858, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV2, true, new[] { 0.0, 0.0, 0.0 }),
+        new(IccFile.Fogra39, IccFile.StandardRgbV2, false, new[] { 0.01896696, 0.0, 0.0 })
     ];
 
     [TestCaseSource(nameof(IccToIccTestData))]
-    public void NoClipDifferenceIccToIcc(IccFile sourceIccFile, IccFile targetIccFile, bool noClip, double[] expected)
+    public void NoClipDifferenceIccToIcc(IccFile sourceIccFile, IccFile targetIccFile, bool clipNegativeXyz, double[] expected)
     {
-        var sourceConfig = new Configuration(iccConfig: new IccConfiguration(sourceIccFile.GetProfile(), Intent.Perceptual, noClip));
-        var targetConfig = new Configuration(iccConfig: new IccConfiguration(targetIccFile.GetProfile(), Intent.Perceptual, noClip));
+        var sourceConfig = new Configuration(iccConfig: new IccConfiguration(sourceIccFile.GetProfile(), Intent.Perceptual, clipNegativeXyz));
+        var targetConfig = new Configuration(iccConfig: new IccConfiguration(targetIccFile.GetProfile(), Intent.Perceptual, clipNegativeXyz));
 
         var source = new Unicolour(sourceConfig, new Channels(1.0, 1.0, 1.0, 1.0));
         var target = source.ConvertToConfiguration(targetConfig);
@@ -275,12 +275,12 @@ public class IccConversionTests
         foreach (var intent in Intents)
         {
             toPcsTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent));
-            toPcsNoClipTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent, noClip: true));
+            toPcsNoClipTestData.AddRange(ParseTestCaseData(IccTransform.ToPcs, intent, clipNegativeXyz: false));
             toDeviceTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent));
-            toDeviceNoClipTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent, noClip: true));
+            toDeviceNoClipTestData.AddRange(ParseTestCaseData(IccTransform.ToDevice, intent, clipNegativeXyz: false));
         }
         
-        List<TestCaseData> ParseTestCaseData(IccTransform transform, Intent intent, bool noClip = false)
+        List<TestCaseData> ParseTestCaseData(IccTransform transform, Intent intent, bool clipNegativeXyz = true)
         {
             var transformName = transform switch
             {
@@ -290,8 +290,8 @@ public class IccConversionTests
             };
 
             var intentValue = (int)intent;
-            var noClipSuffix = noClip ? "_NoClip" : string.Empty;
-            var csvFileName = $"{iccFile.Name}_{transformName}_Intent{intentValue}{noClipSuffix}.csv";
+            var clipNegativeXyzSuffix = clipNegativeXyz ? string.Empty : "_NoClip";
+            var csvFileName = $"{iccFile.Name}_{transformName}_Intent{intentValue}{clipNegativeXyzSuffix}.csv";
             var csvPath = Path.Combine(IccFile.DataFolderName, csvFileName);
             if (!File.Exists(csvPath))
             {
@@ -369,9 +369,9 @@ public class IccConversionTests
         return testCases;
     }
 
-    private static Configuration GetConfig(XyzConfiguration xyzConfig, IccFile iccFile, Intent intent, bool noClip = false)
+    private static Configuration GetConfig(XyzConfiguration xyzConfig, IccFile iccFile, Intent intent, bool clipNegativeXyz = true)
     {
-        var iccConfig = new IccConfiguration(iccFile.GetProfile(), intent, noClip);
+        var iccConfig = new IccConfiguration(iccFile.GetProfile(), intent, clipNegativeXyz);
         return new Configuration(xyzConfig: xyzConfig, iccConfig: iccConfig);
     }
     

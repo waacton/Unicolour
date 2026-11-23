@@ -8,7 +8,7 @@ public class IccConfiguration
 
     public Profile? Profile { get; }
     public Intent Intent { get; }
-    public bool NoClip { get; }
+    public bool ClipNegativeXyz { get; }
     public string? Error { get; } 
     public string Name { get; }
 
@@ -18,16 +18,16 @@ public class IccConfiguration
     internal bool HasSupportedProfile => Profile != null && Error == null;
     internal ColourSpace ConnectingSpace => HasSupportedProfile ? ColourSpace.Xyz : ColourSpace.Rgb;
 
-    public IccConfiguration(string profilePath, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(profilePath), intent, noClip, name) {}
-    public IccConfiguration(byte[] bytes, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(bytes), intent, noClip, name) {}
-    public IccConfiguration(Stream stream, Intent intent, bool noClip = false, string name = Utils.Unnamed) : this(GetProfile(stream), intent, noClip, name) {}
-    private IccConfiguration((Profile? profile, string? error) profileResult, Intent intent, bool noClip, string name)
+    public IccConfiguration(string profilePath, Intent intent, bool clipNegativeXyz = true, string name = Utils.Unnamed) : this(GetProfile(profilePath), intent, clipNegativeXyz, name) {}
+    public IccConfiguration(byte[] bytes, Intent intent, bool clipNegativeXyz = true, string name = Utils.Unnamed) : this(GetProfile(bytes), intent, clipNegativeXyz, name) {}
+    public IccConfiguration(Stream stream, Intent intent, bool clipNegativeXyz = true, string name = Utils.Unnamed) : this(GetProfile(stream), intent, clipNegativeXyz, name) {}
+    private IccConfiguration((Profile? profile, string? error) profileResult, Intent intent, bool clipNegativeXyz, string name)
     {
         if (profileResult.profile == null)
         {
             Profile = null;
             Intent = intent;
-            NoClip = noClip;
+            ClipNegativeXyz = clipNegativeXyz;
             Error = profileResult.error;
             Name = name;
             return;
@@ -37,25 +37,25 @@ public class IccConfiguration
         // which seems to make sense here since Unicolour is effectively the PCS between the two
         Profile = profileResult.profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
-        NoClip = noClip;
+        ClipNegativeXyz = clipNegativeXyz;
         Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
-    public IccConfiguration(Profile profile, Intent intent, bool noClip = false, string name = Utils.Unnamed)
+    public IccConfiguration(Profile profile, Intent intent, bool clipNegativeXyz = true, string name = Utils.Unnamed)
     {
         Profile = profile;
         Intent = intent == Intent.Unspecified ? Profile.Header.Intent : intent;
-        NoClip = noClip;
+        ClipNegativeXyz = clipNegativeXyz;
         Error = GetProfileSupportError(Profile);
         Name = name;
     }
     
-    public IccConfiguration(Profile? profile, bool noClip = false, string name = Utils.Unnamed)
+    public IccConfiguration(Profile? profile, bool clipNegativeXyz = true, string name = Utils.Unnamed)
     {
         Profile = profile;
         Intent = Profile == null ? Intent.Unspecified : Profile.Header.Intent;
-        NoClip = noClip;
+        ClipNegativeXyz = clipNegativeXyz;
         Error = Profile == null ? null : GetProfileSupportError(Profile);
         Name = name;
     }

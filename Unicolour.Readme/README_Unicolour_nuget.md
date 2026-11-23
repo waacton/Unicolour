@@ -637,6 +637,7 @@ Some commonly used profiles can be found in the [ICC profile registry](https://w
 - Parameters
   - ICC profile (`.icc` file)
   - Rendering intent
+  - Clipping policy for negative XYZ values (when PCS is LAB and PCS adjustment is required)
 
 ### White points
 Most colour spaces are impacted by the reference white point.

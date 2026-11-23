@@ -46,19 +46,19 @@ public class Profile
         }
     }
     
-    internal double[] FromXyz(Xyz xyz, Intent intent, bool noClip, ChromaticAdaptor chromaticAdaptor)
+    internal double[] FromXyz(Xyz xyz, Intent intent, bool clipNegativeXyz, ChromaticAdaptor chromaticAdaptor)
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this "StandardD50"-to-device calculation
         var xyzD50 = chromaticAdaptor.AdaptTo(xyz, Transform.XyzD50.WhitePoint);
-        return Transform.FromXyz(xyzD50.Values, intent, noClip);
+        return Transform.FromXyz(xyzD50.Values, intent, clipNegativeXyz);
     }
     
-    internal Xyz ToXyz(double[] deviceValues, Intent intent, bool noClip, ChromaticAdaptor chromaticAdaptor)
+    internal Xyz ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz, ChromaticAdaptor chromaticAdaptor)
     {
         // NOTE: iccMAX allows "profile connection conditions" (customToStandardPCC, standardToCustomPCC)
         // but if it is ever implemented, it probably doesn't change this device-to-"StandardD50" calculation
-        var xyzD50 = Transform.ToXyz(deviceValues, intent, noClip);
+        var xyzD50 = Transform.ToXyz(deviceValues, intent, clipNegativeXyz);
         var xyz = new Xyz(xyzD50[0], xyzD50[1], xyzD50[2], Transform.XyzD50.WhitePoint);
         return chromaticAdaptor.AdaptFrom(xyz);
     }

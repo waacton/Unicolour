@@ -21,7 +21,7 @@ internal class TransformAToB : Transform
         ba2 = tags.BToA2;
     }
 
-    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false)
+    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz = true)
     {
         var lazyLuts = intent switch
         {
@@ -49,10 +49,10 @@ internal class TransformAToB : Transform
             xyz = IccXyzToXyz(iccXyz);
         }
         
-        return AdjustXyz(xyz, intent, isDeviceToPcs: true, noClip);
+        return AdjustXyz(xyz, intent, isDeviceToPcs: true, clipNegativeXyz);
     }
 
-    internal override double[] FromXyz(double[] xyz, Intent intent, bool noClip = false)
+    internal override double[] FromXyz(double[] xyz, Intent intent, bool clipNegativeXyz = true)
     {
         // unlike TRC transforms which are easily reversible
         // AToB transform needs explicit tag for the reverse operation, which is not guaranteed to be present
@@ -73,7 +73,7 @@ internal class TransformAToB : Transform
 
         var luts = lazyLuts.Value!;
         
-        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false, noClip);
+        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false, clipNegativeXyz);
         
         double[] pcsValues;
         if (IsLabPcs)

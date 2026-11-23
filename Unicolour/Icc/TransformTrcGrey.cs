@@ -15,7 +15,7 @@ internal class TransformTrcGrey : Transform
         bCurvesInverse = new Lazy<List<Curve>>(() => [tags.GreyTrc.Value!.Inverse()]);
     }
     
-    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false)
+    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz = true)
     {
         // PCS is the single-channel "GRAY"
         var pcsValues = ToPcs(deviceValues);
@@ -33,12 +33,12 @@ internal class TransformTrcGrey : Transform
             xyz = RefWhite.Select(value => value * grey).ToArray();
         }
         
-        return AdjustXyz(xyz, intent, isDeviceToPcs: true, noClip);
+        return AdjustXyz(xyz, intent, isDeviceToPcs: true, clipNegativeXyz);
     }
 
-    internal override double[] FromXyz(double[] xyz, Intent intent, bool noClip = false)
+    internal override double[] FromXyz(double[] xyz, Intent intent, bool clipNegativeXyz = true)
     {
-        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false, noClip);
+        xyz = AdjustXyz(xyz, intent, isDeviceToPcs: false, clipNegativeXyz);
 
         double grey;
         if (IsLabPcs)

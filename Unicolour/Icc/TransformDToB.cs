@@ -7,12 +7,12 @@ internal class TransformDToB : Transform
     {
     }
 
-    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false)
+    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz = true)
     {
         throw new NotSupportedException("Transform DToB is not supported");
     }
 
-    internal override double[] FromXyz(double[] xyz, Intent intent, bool noClip = false)
+    internal override double[] FromXyz(double[] xyz, Intent intent, bool clipNegativeXyz = true)
     {
         // if ever supported, check whether BToD is required
         // or whether it might be missing, like BToA in input `scnr` profiles

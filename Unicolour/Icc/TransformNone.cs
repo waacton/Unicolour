@@ -7,12 +7,12 @@ internal class TransformNone : Transform
     {
     }
 
-    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool noClip = false)
+    internal override double[] ToXyz(double[] deviceValues, Intent intent, bool clipNegativeXyz = true)
     {
         throw new NotSupportedException("Transform is not defined");
     }
 
-    internal override double[] FromXyz(double[] xyz, Intent intent, bool noClip = false)
+    internal override double[] FromXyz(double[] xyz, Intent intent, bool clipNegativeXyz = true)
     {
         throw new NotSupportedException("Transform is not defined");
     }

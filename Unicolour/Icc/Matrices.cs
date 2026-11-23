@@ -13,7 +13,7 @@ internal record Matrices(Matrix Multiply, Matrix Offset)
         var offsetArray = Offset.ToTriplet();
 
         // NOTE: apparently should be clipped to 0 - 1 before used downstream
-        // but can't find evidence of this in DemoIccMAX reference implementation
+        // but can't find evidence of this in iccDEV reference implementation
         var matrixOutput = new double[3];
         matrixOutput[0] = multiplied[0] + offsetArray[0];
         matrixOutput[1] = multiplied[1] + offsetArray[1];

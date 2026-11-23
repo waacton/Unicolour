@@ -167,7 +167,7 @@ internal record ParametricCurve(Func<double, double> function, string name) : Cu
      *      Any function value outside the range shall be clipped to the range of the function."
      * however, this doesn't make sense for LAB parametric curves (e.g. sRGB v4 preference)
      * which are not at all in 0 - 1 range
-     * (and DemoIccMAX reference implementation does not clip 🤷, and least not at this level)
+     * (and iccDEV reference implementation does not clip 🤷, and least not at this level)
      */
     private readonly Func<double, double> function = function;
     private readonly string name = name;

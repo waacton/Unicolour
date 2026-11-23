@@ -128,9 +128,9 @@ internal abstract class Transform
 
         /*
          * when using LAB PCS, negative values are clipped before PCS adjustment
-         * see DemoIccMAX --- IccCmm.cpp > CIccXform::AdjustPCS > CIccPCS::LabToXyz > IccUtil.cpp icLabtoXYZ > icICubeth (assumes #ifndef SAMPLEICC_NOCLIPLABTOXYZ)
-         * triggered by CIccXform::CheckDstAbs after transform when device-to-PCS
-         * triggered by CIccXform::CheckSrcAbs before transform when PCS-to-device
+         * see iccDEV with default compilatiuon flag #ifndef SAMPLEICC_NOCLIPLABTOXYZ
+         * e.g. CIccCmm::Apply --> CIccApplyCmm::Apply --> CIccApplyXform::Apply --> CIccPcsXform::Apply --> CIccApplyPcsStep::Apply
+         *      --> CIccPcsStepLab2ToXYZ::Apply IccCmm.cpp:4807 --> icLabtoXYZ IccUtil.cpp:874 --> icICubeth IccUtil.cpp:849
          */
         if (IsLabPcs)
         {
@@ -159,7 +159,7 @@ internal abstract class Transform
             xyz = pcsAdjustment switch
             {
                 PcsAdjustment.None => xyz,
-                _ => NegativeClip(xyz)
+                _ => xyz
             };
         }
         
